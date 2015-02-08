@@ -56,9 +56,21 @@
     <addaction name="separator"/>
     <addaction name="action_Reset_default"/>
    </widget>
+   <widget class="QMenu" name="menu_Board">
+    <property name="title">
+     <string>&amp;Board</string>
+    </property>
+    <addaction name="actionSho_w"/>
+    <addaction name="action_Hide"/>
+    <addaction name="separator"/>
+    <addaction name="action_Play"/>
+    <addaction name="actionP_ause"/>
+    <addaction name="actionS_top"/>
+   </widget>
    <addaction name="menu_File"/>
    <addaction name="menu_Edit"/>
    <addaction name="menu_Settings"/>
+   <addaction name="menu_Board"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -167,6 +179,31 @@
   <action name="action_Reset_default">
    <property name="text">
     <string>&amp;Reset default</string>
+   </property>
+  </action>
+  <action name="actionSho_w">
+   <property name="text">
+    <string>Sho&amp;w</string>
+   </property>
+  </action>
+  <action name="action_Hide">
+   <property name="text">
+    <string>&amp;Hide</string>
+   </property>
+  </action>
+  <action name="action_Play">
+   <property name="text">
+    <string>&amp;Play</string>
+   </property>
+  </action>
+  <action name="actionP_ause">
+   <property name="text">
+    <string>P&amp;ause</string>
+   </property>
+  </action>
+  <action name="actionS_top">
+   <property name="text">
+    <string>S&amp;top</string>
    </property>
   </action>
  </widget>
