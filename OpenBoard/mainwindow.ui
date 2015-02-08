@@ -47,8 +47,18 @@
     <addaction name="separator"/>
     <addaction name="action_Find"/>
    </widget>
+   <widget class="QMenu" name="menu_Settings">
+    <property name="title">
+     <string>&amp;Settings</string>
+    </property>
+    <addaction name="action_Font"/>
+    <addaction name="action_Color"/>
+    <addaction name="separator"/>
+    <addaction name="action_Reset_default"/>
+   </widget>
    <addaction name="menu_File"/>
    <addaction name="menu_Edit"/>
+   <addaction name="menu_Settings"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -142,6 +152,21 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+F</string>
+   </property>
+  </action>
+  <action name="action_Font">
+   <property name="text">
+    <string>&amp;Font</string>
+   </property>
+  </action>
+  <action name="action_Color">
+   <property name="text">
+    <string>&amp;Color</string>
+   </property>
+  </action>
+  <action name="action_Reset_default">
+   <property name="text">
+    <string>&amp;Reset default</string>
    </property>
   </action>
  </widget>
