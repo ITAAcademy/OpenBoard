@@ -6,6 +6,9 @@
 #include <QFontDialog>
 #include <QColor>
 #include <QColorDialog>
+#include <QtCore>
+#include <QtGui>
+#include <QtWidgets>
 
 namespace Ui {
 class MainWindow;
@@ -26,8 +29,12 @@ private slots:
 
     void on_action_Color_triggered();
 
+    void on_action_delayTB_triggered();
+
 private:
-    Ui::MainWindow *ui;
+    Ui::MainWindow  *ui;
+    QSlider         *sliderTB;
+    QSpinBox        *spinBoxTB;
 };
 
 #endif // MAINWINDOW_H

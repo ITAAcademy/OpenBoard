@@ -86,12 +86,12 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="action_delayTB"/>
    <addaction name="action_clearTB"/>
    <addaction name="action_colorTB"/>
    <addaction name="action_backTB"/>
    <addaction name="action_crossTB"/>
    <addaction name="action_animatedTB"/>
+   <addaction name="action_delayTB"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="action_New">
