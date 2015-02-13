@@ -4,6 +4,8 @@
 #include <QMainWindow>
 #include <QFont>
 #include <QFontDialog>
+#include <QColor>
+#include <QColorDialog>
 
 namespace Ui {
 class MainWindow;
@@ -21,6 +23,8 @@ private slots:
     void on_action_Font_triggered();
 
     void on_action_Reset_default_triggered();
+
+    void on_action_Color_triggered();
 
 private:
     Ui::MainWindow *ui;

@@ -27,3 +27,9 @@ void MainWindow::on_action_Reset_default_triggered()
 {
     ui->menuBar->setFont(QFont("Times",8,1,false));
 }
+
+void MainWindow::on_action_Color_triggered()
+{
+    QColor colorm;
+    colorm = QColorDialog::getColor();
+}
