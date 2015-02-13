@@ -25,9 +25,17 @@ private slots:
     void on_action_Reset_default_triggered();
 
     void on_action_Color_triggered();
+    
+    bool on_action_Save_as_triggered();
+    bool on_action_Save_triggered();
+    void on_action_Open_triggered();
+    void on_action_New_triggered();
 
 private:
     Ui::MainWindow *ui;
+    bool saveFile();
+    bool maybeSave();
+    QString curFile;
 };
 
 #endif // MAINWINDOW_H
