@@ -22,3 +22,8 @@ void MainWindow::on_action_Font_triggered()
         return;
     setFont(font);
 }
+
+void MainWindow::on_action_Reset_default_triggered()
+{
+    ui->menuBar->setFont(QFont("Times",8,1,false));
+}

@@ -20,6 +20,8 @@ public:
 private slots:
     void on_action_Font_triggered();
 
+    void on_action_Reset_default_triggered();
+
 private:
     Ui::MainWindow *ui;
 };
