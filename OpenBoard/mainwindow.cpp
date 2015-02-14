@@ -31,7 +31,7 @@ void MainWindow::on_action_Show_triggered()
 void MainWindow::on_action_Hide_triggered()
 {
     mpGLWidget->hide();
-
+}
 void MainWindow::on_action_Font_triggered()
 {
     bool ok;
