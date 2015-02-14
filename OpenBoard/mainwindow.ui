@@ -92,6 +92,12 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="action_clearTB"/>
+   <addaction name="action_colorTB"/>
+   <addaction name="action_backTB"/>
+   <addaction name="action_crossTB"/>
+   <addaction name="action_animatedTB"/>
+   <addaction name="action_delayTB"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="action_New">
@@ -222,6 +228,42 @@
   <action name="action_About">
    <property name="text">
     <string>&amp;About</string>
+   </property>
+  </action>
+  <action name="action_delayTB">
+   <property name="text">
+    <string>\p</string>
+   </property>
+   <property name="toolTip">
+    <string>Pause</string>
+   </property>
+  </action>
+  <action name="action_clearTB">
+   <property name="text">
+    <string>\a</string>
+   </property>
+   <property name="toolTip">
+    <string>a</string>
+   </property>
+  </action>
+  <action name="action_colorTB">
+   <property name="text">
+    <string>\c</string>
+   </property>
+  </action>
+  <action name="action_backTB">
+   <property name="text">
+    <string>\n</string>
+   </property>
+  </action>
+  <action name="action_crossTB">
+   <property name="text">
+    <string>\-</string>
+   </property>
+  </action>
+  <action name="action_animatedTB">
+   <property name="text">
+    <string>\&lt;</string>
    </property>
   </action>
  </widget>

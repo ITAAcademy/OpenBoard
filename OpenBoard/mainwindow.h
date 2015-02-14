@@ -6,6 +6,9 @@
 #include <QFontDialog>
 #include <QColor>
 #include <QColorDialog>
+#include <QtCore>
+#include <QtGui>
+#include <QtWidgets>
 
 #include "glwidget.h"
 
@@ -37,12 +40,17 @@ private slots:
     void on_action_Open_triggered();
     void on_action_New_triggered();
 
+    void on_action_delayTB_triggered();
+
 private:
     Ui::MainWindow *ui;
     GLWidget *mpGLWidget;
     bool saveFile();
     bool maybeSave();
     QString curFile;
+    Ui::MainWindow  *ui;
+    QSlider         *sliderTB;
+    QSpinBox        *spinBoxTB;
 };
 
 #endif // MAINWINDOW_H
