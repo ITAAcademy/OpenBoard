@@ -40,17 +40,17 @@ private slots:
     void on_action_Open_triggered();
     void on_action_New_triggered();
 
-    void on_action_delayTB_triggered();
-
 private:
-    Ui::MainWindow *ui;
-    GLWidget *mpGLWidget;
-    bool saveFile();
-    bool maybeSave();
-    QString curFile;
     Ui::MainWindow  *ui;
+
+    GLWidget        *mpGLWidget;
+
+    QString         curFile;
     QSlider         *sliderTB;
     QSpinBox        *spinBoxTB;
+
+    bool saveFile();
+    bool maybeSave();
 };
 
 #endif // MAINWINDOW_H

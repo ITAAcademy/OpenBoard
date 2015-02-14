@@ -12,7 +12,9 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
     mpGLWidget = new GLWidget;
+
     //fixed toolBar
     ui->mainToolBar->setMovable(false);
     //enable to hide toolBar (rightMouseClick)
@@ -22,7 +24,6 @@ MainWindow::MainWindow(QWidget *parent) :
     spinBoxTB = new QSpinBox(this);
     connect(spinBoxTB, SIGNAL(valueChanged(int)), sliderTB, SLOT(setValue(int)));
     connect(sliderTB, SIGNAL(valueChanged(int)), spinBoxTB, SLOT(setValue(int)));
-
     //sliderTB->setRange(0,400);
     //sliderTB->setTickInterval(1);
     ui->mainToolBar->addWidget(sliderTB);
