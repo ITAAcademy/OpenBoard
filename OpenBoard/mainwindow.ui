@@ -101,6 +101,10 @@
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="action_New">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/new-file-icon.png</normaloff>:/icons/new-file-icon.png</iconset>
+   </property>
    <property name="text">
     <string>&amp;New</string>
    </property>
@@ -109,6 +113,10 @@
    </property>
   </action>
   <action name="action_Open">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/open-file-icon.png</normaloff>:/icons/open-file-icon.png</iconset>
+   </property>
    <property name="text">
     <string>&amp;Open</string>
    </property>
@@ -117,6 +125,10 @@
    </property>
   </action>
   <action name="action_Save">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/Save-icon.png</normaloff>:/icons/Save-icon.png</iconset>
+   </property>
    <property name="text">
     <string>&amp;Save</string>
    </property>
@@ -125,11 +137,19 @@
    </property>
   </action>
   <action name="action_Save_as">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/Save-as-icon.png</normaloff>:/icons/Save-as-icon.png</iconset>
+   </property>
    <property name="text">
     <string>Save &amp;as...</string>
    </property>
   </action>
   <action name="action_Exit">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/Close-2-icon.png</normaloff>:/icons/Close-2-icon.png</iconset>
+   </property>
    <property name="text">
     <string>&amp;Exit</string>
    </property>
@@ -138,6 +158,10 @@
    </property>
   </action>
   <action name="action_Undo">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/undo-icon.png</normaloff>:/icons/undo-icon.png</iconset>
+   </property>
    <property name="text">
     <string>&amp;Undo</string>
    </property>
@@ -146,6 +170,10 @@
    </property>
   </action>
   <action name="action_Redo">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/redo-icon.png</normaloff>:/icons/redo-icon.png</iconset>
+   </property>
    <property name="text">
     <string>&amp;Redo</string>
    </property>
@@ -154,6 +182,10 @@
    </property>
   </action>
   <action name="action_Cut">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/cut-icon.png</normaloff>:/icons/cut-icon.png</iconset>
+   </property>
    <property name="text">
     <string>&amp;Cut</string>
    </property>
@@ -162,6 +194,10 @@
    </property>
   </action>
   <action name="action_Copy">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/Copy-icon.png</normaloff>:/icons/Copy-icon.png</iconset>
+   </property>
    <property name="text">
     <string>&amp;Copy</string>
    </property>
@@ -170,6 +206,10 @@
    </property>
   </action>
   <action name="action_Paste">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/Paste-icon.png</normaloff>:/icons/Paste-icon.png</iconset>
+   </property>
    <property name="text">
     <string>&amp;Paste</string>
    </property>
@@ -178,6 +218,10 @@
    </property>
   </action>
   <action name="action_Find">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/search-icon.png</normaloff>:/icons/search-icon.png</iconset>
+   </property>
    <property name="text">
     <string>&amp;Find</string>
    </property>
@@ -186,11 +230,19 @@
    </property>
   </action>
   <action name="action_Font">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/font-x-generic-icon.png</normaloff>:/icons/font-x-generic-icon.png</iconset>
+   </property>
    <property name="text">
     <string>&amp;Font</string>
    </property>
   </action>
   <action name="action_Color">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/colors-icon.png</normaloff>:/icons/colors-icon.png</iconset>
+   </property>
    <property name="text">
     <string>&amp;Color</string>
    </property>
@@ -211,26 +263,46 @@
    </property>
   </action>
   <action name="action_Play">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/play-8-icon.png</normaloff>:/icons/play-8-icon.png</iconset>
+   </property>
    <property name="text">
     <string>&amp;Play</string>
    </property>
   </action>
   <action name="action_Pause">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/pause-icon.png</normaloff>:/icons/pause-icon.png</iconset>
+   </property>
    <property name="text">
     <string>P&amp;ause</string>
    </property>
   </action>
   <action name="action_Stop">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/stop-icon.png</normaloff>:/icons/stop-icon.png</iconset>
+   </property>
    <property name="text">
     <string>S&amp;top</string>
    </property>
   </action>
   <action name="action_About">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/Feather-icon.png</normaloff>:/icons/Feather-icon.png</iconset>
+   </property>
    <property name="text">
     <string>&amp;About</string>
    </property>
   </action>
   <action name="action_delayTB">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/pause-icon.png</normaloff>:/icons/pause-icon.png</iconset>
+   </property>
    <property name="text">
     <string>\p</string>
    </property>
@@ -239,6 +311,10 @@
    </property>
   </action>
   <action name="action_clearTB">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/Actions-edit-clear-icon.png</normaloff>:/icons/Actions-edit-clear-icon.png</iconset>
+   </property>
    <property name="text">
     <string>\a</string>
    </property>
@@ -247,27 +323,45 @@
    </property>
   </action>
   <action name="action_colorTB">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/ToolBar-color.png</normaloff>:/icons/ToolBar-color.png</iconset>
+   </property>
    <property name="text">
     <string>\c</string>
    </property>
   </action>
   <action name="action_backTB">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/next-2-icon.png</normaloff>:/icons/next-2-icon.png</iconset>
+   </property>
    <property name="text">
     <string>\n</string>
    </property>
   </action>
   <action name="action_crossTB">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/Actions-format-text-strikethrough-icon.png</normaloff>:/icons/Actions-format-text-strikethrough-icon.png</iconset>
+   </property>
    <property name="text">
     <string>\-</string>
    </property>
   </action>
   <action name="action_animatedTB">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/remove-icon.png</normaloff>:/icons/remove-icon.png</iconset>
+   </property>
    <property name="text">
     <string>\&lt;</string>
    </property>
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
+ <resources>
+  <include location="icons.qrc"/>
+ </resources>
  <connections/>
 </ui>

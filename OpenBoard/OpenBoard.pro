@@ -20,3 +20,7 @@ HEADERS  += mainwindow.h \
     glwidget.h
 
 FORMS    += mainwindow.ui
+
+RESOURCES += \
+    icons.qrc
+    RC_FILE = myapp.rc
