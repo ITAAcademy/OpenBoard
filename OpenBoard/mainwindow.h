@@ -37,6 +37,10 @@ private slots:
 
     void on_action_Color_triggered();
     
+    void on_action_Cut_triggered();
+    void on_action_Copy_triggered();
+    void on_action_Paste_triggered();
+
     bool on_action_Save_as_triggered();
     bool on_action_Save_triggered();
     void on_action_Open_triggered();

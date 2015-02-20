@@ -29,6 +29,10 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->mainToolBar->addWidget(sliderTB);
     ui->mainToolBar->addWidget(spinBoxTB);
 
+    connect(ui->action_Cut, SIGNAL(triggered()), this, SLOT(on_action_Cut_triggered()));
+    connect(ui->action_Copy, SIGNAL(triggered()), this, SLOT(on_action_Copy_triggered()));
+    connect(ui->action_Paste, SIGNAL(triggered()), this, SLOT(on_action_Paste_triggered()));
+
     if(mSettings.FirstRun())
     {
 
@@ -95,6 +99,21 @@ void MainWindow::on_action_Color_triggered()
     colorm = QColorDialog::getColor();
 }
 
+void MainWindow::on_action_Cut_triggered()
+{
+    ui->textEdit->cut();
+}
+
+void MainWindow::on_action_Copy_triggered()
+{
+    ui->textEdit->copy();
+}
+
+void MainWindow::on_action_Paste_triggered()
+{
+    ui->textEdit->paste();
+}
+
 bool MainWindow::saveFile()
 {
 
@@ -107,7 +126,7 @@ bool MainWindow::saveFile()
     else
     {
         QMessageBox::warning(this, "Error",
-                             tr("Ощибка записи файла")
+                             tr("Ощибка записи файла") //щ
                              .arg(curFile)
                              .arg(file.errorString()));
         return false;
@@ -171,7 +190,7 @@ void MainWindow::on_action_Open_triggered()
             }
             else
             {
-                QMessageBox::warning(this, "Error",tr("Ощибка открытия файла"));
+                QMessageBox::warning(this, "Error",tr("Ощибка открытия файла")); //щ
             }
         }
     }
