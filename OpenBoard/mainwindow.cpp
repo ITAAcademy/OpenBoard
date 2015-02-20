@@ -126,6 +126,14 @@ void MainWindow::on_action_Select_all_triggered()
     ui->textEdit->selectAll();
 }
 
+void MainWindow::on_action_Exit_triggered()
+{
+
+
+    maybeSave();
+    this->close();
+}
+
 bool MainWindow::saveFile()
 {
 
