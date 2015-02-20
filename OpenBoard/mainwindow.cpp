@@ -29,9 +29,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->mainToolBar->addWidget(sliderTB);
     ui->mainToolBar->addWidget(spinBoxTB);
 
-    connect(ui->action_Cut, SIGNAL(triggered()), this, SLOT(on_action_Cut_triggered()));
-    connect(ui->action_Copy, SIGNAL(triggered()), this, SLOT(on_action_Copy_triggered()));
-    connect(ui->action_Paste, SIGNAL(triggered()), this, SLOT(on_action_Paste_triggered()));
 
     if(mSettings.FirstRun())
     {
@@ -112,6 +109,11 @@ void MainWindow::on_action_Copy_triggered()
 void MainWindow::on_action_Paste_triggered()
 {
     ui->textEdit->paste();
+}
+
+void MainWindow::on_action_Select_all_triggered()
+{
+    ui->textEdit->selectAll();
 }
 
 bool MainWindow::saveFile()

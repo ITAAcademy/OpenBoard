@@ -50,6 +50,7 @@
     <addaction name="action_Cut"/>
     <addaction name="action_Copy"/>
     <addaction name="action_Paste"/>
+    <addaction name="action_Select_all"/>
     <addaction name="separator"/>
     <addaction name="action_Find"/>
    </widget>
@@ -356,6 +357,14 @@
    </property>
    <property name="text">
     <string>\&lt;</string>
+   </property>
+  </action>
+  <action name="action_Select_all">
+   <property name="text">
+    <string>Select all</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+A</string>
    </property>
   </action>
  </widget>
