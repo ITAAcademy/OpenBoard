@@ -28,10 +28,34 @@ MainWindow::MainWindow(QWidget *parent) :
     //sliderTB->setTickInterval(1);
     ui->mainToolBar->addWidget(sliderTB);
     ui->mainToolBar->addWidget(spinBoxTB);
+
+    if(mSettings.FirstRun())
+    {
+
+
+        setGeometry(QRect(335,100,760,558));
+        setFont(QFont("Times",10,1,false));
+
+
+        mSettings.setMainWindowRect(geometry());
+        mSettings.setMainWindowTitle(windowTitle());
+        mSettings.setMainWindowFont(font());
+
+    }
+    else
+    {
+        setWindowTitle(mSettings.getMainWindowTitle());
+        setGeometry(mSettings.getMainWindowRect());
+        setFont(mSettings.getMainWindowFont());
+
+
+    }
 }
 
 MainWindow::~MainWindow()
 {
+    mSettings.setMainWindowRect(geometry());
+    mSettings.setMainWindowFont(font());
     delete ui;
 }
 void MainWindow::on_menu_Board_triggered()

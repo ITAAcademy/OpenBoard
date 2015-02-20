@@ -9,8 +9,10 @@
 #include <QtCore>
 #include <QtGui>
 #include <QtWidgets>
+#include <QSettings>
 
 #include "glwidget.h"
+#include "settings.h"
 
 namespace Ui {
 class MainWindow;
@@ -49,6 +51,7 @@ private:
     QString         curFile;
     QSlider         *sliderTB;
     QSpinBox        *spinBoxTB;
+    pSettings            mSettings;
 
     bool saveFile();
     bool maybeSave();
