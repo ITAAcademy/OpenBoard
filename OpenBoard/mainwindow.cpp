@@ -96,6 +96,16 @@ void MainWindow::on_action_Color_triggered()
     colorm = QColorDialog::getColor();
 }
 
+void MainWindow::on_action_Undo_triggered()
+{
+    ui->textEdit->undo();
+}
+
+void MainWindow::on_action_Redo_triggered()
+{
+    ui->textEdit->redo();
+}
+
 void MainWindow::on_action_Cut_triggered()
 {
     ui->textEdit->cut();
