@@ -59,8 +59,6 @@ private:
     GLWidget        *mpGLWidget;
 
     QString         curFile;
-    QSlider         *sliderTB;
-    QSpinBox        *spinBoxTB;
     pSettings            mSettings;
 
     bool saveFile();
