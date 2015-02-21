@@ -22,8 +22,10 @@ MainWindow::MainWindow(QWidget *parent) :
     sliderTB = new QSlider(Qt::Horizontal, this);
     spinBoxTB = new QSpinBox(this);
 
-    connect(spinBoxTB, SIGNAL(valueChanged(int)), sliderTB, SLOT(setValue(int)));
+
     connect(sliderTB, SIGNAL(valueChanged(int)), spinBoxTB, SLOT(setValue(int)));
+    connect(spinBoxTB, SIGNAL(valueChanged(int)), sliderTB, SLOT(setValue(int)));
+
 
     //sliderTB->setRange(0,400);
     //sliderTB->setTickInterval(1);
@@ -32,6 +34,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->mainToolBar->addWidget(spinBoxTB);
     ui->widget_Find->setVisible(false);
 
+    ui->widget_Find->setVisible(false);
     connect(ui->button_Find, SIGNAL(pressed()), this, SLOT(search()));
 
 
@@ -68,10 +71,12 @@ void MainWindow::on_action_Show_triggered()
 
     mpGLWidget->show();
 }
+
 void MainWindow::on_action_Hide_triggered()
 {
     mpGLWidget->hide();
 }
+
 void MainWindow::on_action_Font_triggered()
 {   //call QtFontDialog & setFont to all elements (this)
     bool ok;
@@ -118,9 +123,15 @@ void MainWindow::on_action_Paste_triggered()
     ui->textEdit->paste();
 }
 
+
 void MainWindow::on_action_Select_all_triggered()
 {
-    ui->textEdit->selectAll();
+    if(ui->textEdit->hasFocus()) {
+        ui->textEdit->selectAll();
+    }
+    if(ui->lineEdit_Find->hasFocus()) {
+        ui->lineEdit_Find->selectAll();
+    }
 }
 
 void MainWindow::on_action_Find_triggered()
@@ -128,6 +139,7 @@ void MainWindow::on_action_Find_triggered()
     ui->widget_Find->setVisible(!ui->widget_Find->isVisible());
     if(ui->widget_Find->isVisible()) {
         ui->lineEdit_Find->setFocus();
+        ui->lineEdit_Find->selectAll();
     }
     else {
         ui->textEdit->setFocus();
@@ -136,10 +148,9 @@ void MainWindow::on_action_Find_triggered()
 
 void MainWindow::on_action_Exit_triggered()
 {
-    if(maybeSave()) {
-
+    if(maybeSave())
+    {
         this->close();
-
     }
 }
 
