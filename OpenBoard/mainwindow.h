@@ -28,15 +28,16 @@ public:
 
 private slots:
 
-    void on_menu_Board_triggered();
+//    board
     void on_action_Show_triggered();
     void on_action_Hide_triggered();
-    void on_action_Font_triggered();
 
+//    settings
+    void on_action_Font_triggered();
+    void on_action_Color_triggered();
     void on_action_Reset_default_triggered();
 
-    void on_action_Color_triggered();
-    
+//    edit
     void on_action_Undo_triggered();
     void on_action_Redo_triggered();
     void on_action_Cut_triggered();
@@ -46,11 +47,20 @@ private slots:
     void on_action_Find_triggered();
         void search();
 
+//    file
     void on_action_Exit_triggered();
     bool on_action_Save_as_triggered();
     bool on_action_Save_triggered();
     void on_action_Open_triggered();
     void on_action_New_triggered();
+
+//    toolbar
+    void on_action_clearTB_triggered();
+    void on_action_colorTB_triggered();
+    void on_action_backTB_triggered();
+    void on_action_crossTB_triggered();
+    void on_action_animatedTB_triggered();
+    void on_action_delayTB_triggered();
 
 private:
 
@@ -61,7 +71,9 @@ private:
     QString         curFile;
     QSlider         *sliderTB;
     QSpinBox        *spinBoxTB;
-    pSettings            mSettings;
+    pSettings       mSettings;
+
+    QTimer          *timer;
 
     bool saveFile();
     bool maybeSave();
