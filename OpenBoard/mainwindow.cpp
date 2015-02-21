@@ -12,46 +12,43 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
-    mpGLWidget = new GLWidget;
-
     //fixed toolBar
     ui->mainToolBar->setMovable(false);
     //enable to hide toolBar (rightMouseClick)
     ui->mainToolBar->setContextMenuPolicy(Qt::CustomContextMenu);
 
+    mpGLWidget = new GLWidget;
+
     sliderTB = new QSlider(Qt::Horizontal, this);
     spinBoxTB = new QSpinBox(this);
-    connect(spinBoxTB, SIGNAL(valueChanged(int)), sliderTB, SLOT(setValue(int)));
+
     connect(sliderTB, SIGNAL(valueChanged(int)), spinBoxTB, SLOT(setValue(int)));
+    connect(spinBoxTB, SIGNAL(valueChanged(int)), sliderTB, SLOT(setValue(int)));
+
     //sliderTB->setRange(0,400);
     //sliderTB->setTickInterval(1);
+
     ui->mainToolBar->addWidget(sliderTB);
     ui->mainToolBar->addWidget(spinBoxTB);
 
+    ui->widget_Find->setVisible(false);
     connect(ui->button_Find, SIGNAL(pressed()), this, SLOT(search()));
 
-    ui->widget_Find->setVisible(false);
     if(mSettings.FirstRun())
     {
-
-
         setGeometry(QRect(335,100,760,558));
         setFont(QFont("Times",10,1,false));
-
 
         mSettings.setMainWindowRect(geometry());
         mSettings.setMainWindowTitle(windowTitle());
         mSettings.setMainWindowFont(font());
-
     }
+
     else
     {
         setWindowTitle(mSettings.getMainWindowTitle());
         setGeometry(mSettings.getMainWindowRect());
         setFont(mSettings.getMainWindowFont());
-
-
     }
 }
 
@@ -61,10 +58,7 @@ MainWindow::~MainWindow()
     mSettings.setMainWindowFont(font());
     delete ui;
 }
-void MainWindow::on_menu_Board_triggered()
-{
 
-}
 void MainWindow::on_action_Show_triggered()
 {
     mpGLWidget->setFixedSize(450,450);
@@ -73,10 +67,12 @@ void MainWindow::on_action_Show_triggered()
 
     mpGLWidget->show();
 }
+
 void MainWindow::on_action_Hide_triggered()
 {
     mpGLWidget->hide();
 }
+
 void MainWindow::on_action_Font_triggered()
 {   //call QtFontDialog & setFont to all elements (this)
     bool ok;
@@ -123,9 +119,15 @@ void MainWindow::on_action_Paste_triggered()
     ui->textEdit->paste();
 }
 
+
 void MainWindow::on_action_Select_all_triggered()
 {
-    ui->textEdit->selectAll();
+    if(ui->textEdit->hasFocus()) {
+        ui->textEdit->selectAll();
+    }
+    if(ui->lineEdit_Find->hasFocus()) {
+        ui->lineEdit_Find->selectAll();
+    }
 }
 
 void MainWindow::on_action_Find_triggered()
@@ -133,6 +135,7 @@ void MainWindow::on_action_Find_triggered()
     ui->widget_Find->setVisible(!ui->widget_Find->isVisible());
     if(ui->widget_Find->isVisible()) {
         ui->lineEdit_Find->setFocus();
+        ui->lineEdit_Find->selectAll();
     }
     else {
         ui->textEdit->setFocus();
@@ -141,8 +144,10 @@ void MainWindow::on_action_Find_triggered()
 
 void MainWindow::on_action_Exit_triggered()
 {
-    maybeSave();
-    this->close();
+    if(maybeSave())
+    {
+        this->close();
+    }
 }
 
 bool MainWindow::saveFile()
@@ -300,3 +305,41 @@ void MainWindow::on_action_New_triggered()
     }
 
 }
+
+
+void MainWindow::on_action_clearTB_triggered()
+{
+    QString text = ui->action_clearTB->text();
+    ui->textEdit->insertPlainText(text);
+}
+
+void MainWindow::on_action_colorTB_triggered()
+{
+    QString text = ui->action_colorTB->text();
+    ui->textEdit->insertPlainText(text);
+}
+
+void MainWindow::on_action_backTB_triggered()
+{
+    QString text = ui->action_backTB->text();
+    ui->textEdit->insertPlainText(text);
+}
+
+void MainWindow::on_action_crossTB_triggered()
+{
+    QString text = ui->action_crossTB->text();
+    ui->textEdit->insertPlainText(text);
+}
+
+void MainWindow::on_action_animatedTB_triggered()
+{
+    QString text = ui->action_animatedTB->text();
+    ui->textEdit->insertPlainText(text);
+}
+
+void MainWindow::on_action_delayTB_triggered()
+{
+    QString text = ui->action_delayTB->text();
+    ui->textEdit->insertPlainText(text);
+}
+
