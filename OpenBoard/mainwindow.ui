@@ -72,16 +72,16 @@
       <property name="minimumSize">
        <size>
         <width>0</width>
-        <height>25</height>
+        <height>35</height>
        </size>
       </property>
       <property name="maximumSize">
        <size>
         <width>16777215</width>
-        <height>25</height>
+        <height>35</height>
        </size>
       </property>
-      <layout class="QVBoxLayout" name="verticalLayout_Slider">
+      <layout class="QVBoxLayout" name="verticalLayout_2">
        <property name="leftMargin">
         <number>0</number>
        </property>
@@ -95,11 +95,24 @@
         <number>0</number>
        </property>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_Slider">
+        <widget class="Line" name="line">
+         <property name="minimumSize">
+          <size>
+           <width>0</width>
+           <height>0</height>
+          </size>
+         </property>
+         <property name="orientation">
+          <enum>Qt::Horizontal</enum>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
          <item>
           <widget class="QLabel" name="label">
            <property name="text">
-            <string>Change pause value</string>
+            <string>Pause value</string>
            </property>
           </widget>
          </item>
@@ -225,6 +238,9 @@
    <addaction name="menu_Help"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
+   <property name="whatsThis">
+    <string/>
+   </property>
    <attribute name="toolBarArea">
     <enum>BottomToolBarArea</enum>
    </attribute>
@@ -241,7 +257,7 @@
   <widget class="QStatusBar" name="statusBar"/>
   <action name="action_New">
    <property name="icon">
-    <iconset>
+    <iconset resource="icons.qrc">
      <normaloff>:/icons/new-file-icon.png</normaloff>:/icons/new-file-icon.png</iconset>
    </property>
    <property name="text">
@@ -253,7 +269,7 @@
   </action>
   <action name="action_Open">
    <property name="icon">
-    <iconset>
+    <iconset resource="icons.qrc">
      <normaloff>:/icons/open-file-icon.png</normaloff>:/icons/open-file-icon.png</iconset>
    </property>
    <property name="text">
@@ -265,7 +281,7 @@
   </action>
   <action name="action_Save">
    <property name="icon">
-    <iconset>
+    <iconset resource="icons.qrc">
      <normaloff>:/icons/Save-icon.png</normaloff>:/icons/Save-icon.png</iconset>
    </property>
    <property name="text">
@@ -277,7 +293,7 @@
   </action>
   <action name="action_Save_as">
    <property name="icon">
-    <iconset>
+    <iconset resource="icons.qrc">
      <normaloff>:/icons/Save-as-icon.png</normaloff>:/icons/Save-as-icon.png</iconset>
    </property>
    <property name="text">
@@ -286,7 +302,7 @@
   </action>
   <action name="action_Exit">
    <property name="icon">
-    <iconset>
+    <iconset resource="icons.qrc">
      <normaloff>:/icons/Close-2-icon.png</normaloff>:/icons/Close-2-icon.png</iconset>
    </property>
    <property name="text">
@@ -298,7 +314,7 @@
   </action>
   <action name="action_Undo">
    <property name="icon">
-    <iconset>
+    <iconset resource="icons.qrc">
      <normaloff>:/icons/undo-icon.png</normaloff>:/icons/undo-icon.png</iconset>
    </property>
    <property name="text">
@@ -310,7 +326,7 @@
   </action>
   <action name="action_Redo">
    <property name="icon">
-    <iconset>
+    <iconset resource="icons.qrc">
      <normaloff>:/icons/redo-icon.png</normaloff>:/icons/redo-icon.png</iconset>
    </property>
    <property name="text">
@@ -322,7 +338,7 @@
   </action>
   <action name="action_Cut">
    <property name="icon">
-    <iconset>
+    <iconset resource="icons.qrc">
      <normaloff>:/icons/cut-icon.png</normaloff>:/icons/cut-icon.png</iconset>
    </property>
    <property name="text">
@@ -334,7 +350,7 @@
   </action>
   <action name="action_Copy">
    <property name="icon">
-    <iconset>
+    <iconset resource="icons.qrc">
      <normaloff>:/icons/Copy-icon.png</normaloff>:/icons/Copy-icon.png</iconset>
    </property>
    <property name="text">
@@ -346,7 +362,7 @@
   </action>
   <action name="action_Paste">
    <property name="icon">
-    <iconset>
+    <iconset resource="icons.qrc">
      <normaloff>:/icons/Paste-icon.png</normaloff>:/icons/Paste-icon.png</iconset>
    </property>
    <property name="text">
@@ -358,7 +374,7 @@
   </action>
   <action name="action_Find">
    <property name="icon">
-    <iconset>
+    <iconset resource="icons.qrc">
      <normaloff>:/icons/search-icon.png</normaloff>:/icons/search-icon.png</iconset>
    </property>
    <property name="text">
@@ -370,7 +386,7 @@
   </action>
   <action name="action_Font">
    <property name="icon">
-    <iconset>
+    <iconset resource="icons.qrc">
      <normaloff>:/icons/font-x-generic-icon.png</normaloff>:/icons/font-x-generic-icon.png</iconset>
    </property>
    <property name="text">
@@ -382,7 +398,7 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset>
+    <iconset resource="icons.qrc">
      <normaloff>:/icons/colors-icon.png</normaloff>:/icons/colors-icon.png</iconset>
    </property>
    <property name="text">
@@ -409,7 +425,7 @@
   </action>
   <action name="action_Play">
    <property name="icon">
-    <iconset>
+    <iconset resource="icons.qrc">
      <normaloff>:/icons/play-8-icon.png</normaloff>:/icons/play-8-icon.png</iconset>
    </property>
    <property name="text">
@@ -418,7 +434,7 @@
   </action>
   <action name="action_Pause">
    <property name="icon">
-    <iconset>
+    <iconset resource="icons.qrc">
      <normaloff>:/icons/pause-icon.png</normaloff>:/icons/pause-icon.png</iconset>
    </property>
    <property name="text">
@@ -427,7 +443,7 @@
   </action>
   <action name="action_Stop">
    <property name="icon">
-    <iconset>
+    <iconset resource="icons.qrc">
      <normaloff>:/icons/stop-icon.png</normaloff>:/icons/stop-icon.png</iconset>
    </property>
    <property name="text">
@@ -436,7 +452,7 @@
   </action>
   <action name="action_About">
    <property name="icon">
-    <iconset>
+    <iconset resource="icons.qrc">
      <normaloff>:/icons/Feather-icon.png</normaloff>:/icons/Feather-icon.png</iconset>
    </property>
    <property name="text">
@@ -445,19 +461,19 @@
   </action>
   <action name="action_delayTB">
    <property name="icon">
-    <iconset>
+    <iconset resource="icons.qrc">
      <normaloff>:/icons/pause-icon.png</normaloff>:/icons/pause-icon.png</iconset>
    </property>
    <property name="text">
     <string>\p</string>
    </property>
    <property name="toolTip">
-    <string>Pause</string>
+    <string>long pressing - will be changed pause value</string>
    </property>
   </action>
   <action name="action_clearTB">
    <property name="icon">
-    <iconset>
+    <iconset resource="icons.qrc">
      <normaloff>:/icons/Actions-edit-clear-icon.png</normaloff>:/icons/Actions-edit-clear-icon.png</iconset>
    </property>
    <property name="text">
@@ -472,7 +488,7 @@
     <bool>true</bool>
    </property>
    <property name="icon">
-    <iconset>
+    <iconset resource="icons.qrc">
      <normaloff>:/icons/ToolBar-color.png</normaloff>:/icons/ToolBar-color.png</iconset>
    </property>
    <property name="text">
@@ -481,7 +497,7 @@
   </action>
   <action name="action_backTB">
    <property name="icon">
-    <iconset>
+    <iconset resource="icons.qrc">
      <normaloff>:/icons/next-2-icon.png</normaloff>:/icons/next-2-icon.png</iconset>
    </property>
    <property name="text">
@@ -490,7 +506,7 @@
   </action>
   <action name="action_crossTB">
    <property name="icon">
-    <iconset>
+    <iconset resource="icons.qrc">
      <normaloff>:/icons/Actions-format-text-strikethrough-icon.png</normaloff>:/icons/Actions-format-text-strikethrough-icon.png</iconset>
    </property>
    <property name="text">
@@ -499,7 +515,7 @@
   </action>
   <action name="action_animatedTB">
    <property name="icon">
-    <iconset>
+    <iconset resource="icons.qrc">
      <normaloff>:/icons/remove-icon.png</normaloff>:/icons/remove-icon.png</iconset>
    </property>
    <property name="text">
@@ -516,6 +532,41 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
- <resources/>
- <connections/>
+ <resources>
+  <include location="icons.qrc"/>
+ </resources>
+ <connections>
+  <connection>
+   <sender>horizontalSlider</sender>
+   <signal>sliderMoved(int)</signal>
+   <receiver>spinBox</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>340</x>
+     <y>373</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>556</x>
+     <y>383</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>spinBox</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>horizontalSlider</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>562</x>
+     <y>367</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>484</x>
+     <y>369</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

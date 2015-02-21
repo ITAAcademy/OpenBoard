@@ -21,6 +21,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->mainToolBar->setContextMenuPolicy(Qt::CustomContextMenu);
 
     connect(ui->button_Find, SIGNAL(pressed()), this, SLOT(search()));
+    connect(ui->action_delayTB, SIGNAL(pressed()), this, SLOT(longPressBtn()));
 
     ui->widget_Find->setVisible(false);
     ui->widget_Slider->setVisible(false);
@@ -292,3 +293,14 @@ void MainWindow::on_action_New_triggered()
     }
 
 }
+
+void MainWindow::on_action_delayTB_triggered()
+{
+    ui->widget_Slider->setVisible(!ui->widget_Slider->isVisible());
+}
+void MainWindow::longPressBtn()
+{
+
+}
+
+
