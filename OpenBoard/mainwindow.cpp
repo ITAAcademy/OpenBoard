@@ -22,17 +22,21 @@ MainWindow::MainWindow(QWidget *parent) :
     sliderTB = new QSlider(Qt::Horizontal, this);
     spinBoxTB = new QSpinBox(this);
 
+
     connect(sliderTB, SIGNAL(valueChanged(int)), spinBoxTB, SLOT(setValue(int)));
     connect(spinBoxTB, SIGNAL(valueChanged(int)), sliderTB, SLOT(setValue(int)));
+
 
     //sliderTB->setRange(0,400);
     //sliderTB->setTickInterval(1);
 
     ui->mainToolBar->addWidget(sliderTB);
     ui->mainToolBar->addWidget(spinBoxTB);
+    ui->widget_Find->setVisible(false);
 
     ui->widget_Find->setVisible(false);
     connect(ui->button_Find, SIGNAL(pressed()), this, SLOT(search()));
+
 
     if(mSettings.FirstRun())
     {

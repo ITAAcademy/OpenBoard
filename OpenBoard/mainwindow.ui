@@ -147,7 +147,7 @@
     <enum>BottomToolBarArea</enum>
    </attribute>
    <attribute name="toolBarBreak">
-    <bool>true</bool>
+    <bool>false</bool>
    </attribute>
    <addaction name="action_clearTB"/>
    <addaction name="action_colorTB"/>
