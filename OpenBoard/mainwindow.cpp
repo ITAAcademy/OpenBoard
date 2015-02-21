@@ -32,6 +32,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->button_Find, SIGNAL(pressed()), this, SLOT(search()));
 
     ui->widget_Find->setVisible(false);
+    ui->widget_slider->setVisible(false);
     if(mSettings.FirstRun())
     {
 
