@@ -53,7 +53,6 @@ private slots:
     bool on_action_Save_triggered();
     void on_action_Open_triggered();
     void on_action_New_triggered();
-    void on_action_delayTB_triggered();
 
 //    toolbar
     void on_action_clearTB_triggered();
@@ -70,12 +69,7 @@ private:
     GLWidget        *mpGLWidget;
 
     QString         curFile;
-    QSlider         *sliderTB;
-    QSpinBox        *spinBoxTB;
     pSettings       mSettings;
-
-    QTimer          *timer;
-    pSettings            mSettings;
 
     bool saveFile();
     bool maybeSave();

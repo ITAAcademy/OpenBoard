@@ -19,29 +19,13 @@ MainWindow::MainWindow(QWidget *parent) :
 
     mpGLWidget = new GLWidget;
 
-    sliderTB = new QSlider(Qt::Horizontal, this);
-    spinBoxTB = new QSpinBox(this);
-
-
-    connect(sliderTB, SIGNAL(valueChanged(int)), spinBoxTB, SLOT(setValue(int)));
-    connect(spinBoxTB, SIGNAL(valueChanged(int)), sliderTB, SLOT(setValue(int)));
-
-
-    //sliderTB->setRange(0,400);
-    //sliderTB->setTickInterval(1);
-
-    ui->mainToolBar->addWidget(sliderTB);
-    ui->mainToolBar->addWidget(spinBoxTB);
-    ui->widget_Find->setVisible(false);
-
-    ui->widget_Find->setVisible(false);
     connect(ui->button_Find, SIGNAL(pressed()), this, SLOT(search()));
-
 
     ui->widget_Find->setVisible(false);
     ui->widget_Slider->setVisible(false);
     ui->horizontalSlider->setValue(60);
     ui->spinBox->setValue(60);
+
     if(mSettings.FirstRun())
     {
         setGeometry(QRect(335,100,760,558));
@@ -356,13 +340,9 @@ void MainWindow::on_action_animatedTB_triggered()
 
 void MainWindow::on_action_delayTB_triggered()
 {
+    //hide-show//ui->widget_Slider->setVisible(!ui->widget_Slider->isVisible());
     QString text = ui->action_delayTB->text();
     if(ui->textEdit->hasFocus()) {
         ui->textEdit->insertPlainText(text);
     }
-}
-
-void MainWindow::on_action_delayTB_triggered()
-{
-    ui->widget_Slider->setVisible(!ui->widget_Slider->isVisible());
 }
