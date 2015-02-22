@@ -341,8 +341,11 @@ void MainWindow::on_action_animatedTB_triggered()
 void MainWindow::on_action_delayTB_triggered()
 {
     //hide-show//ui->widget_Slider->setVisible(!ui->widget_Slider->isVisible());
+    int val = ui->spinBox->value();
+    QString valToStr = QString::number(val);
     QString text = ui->action_delayTB->text();
     if(ui->textEdit->hasFocus()) {
         ui->textEdit->insertPlainText(text);
+        ui->textEdit->insertPlainText(valToStr);
     }
 }
