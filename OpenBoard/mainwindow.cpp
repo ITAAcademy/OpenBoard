@@ -353,9 +353,15 @@ void MainWindow::on_action_animatedTB_triggered()
 
 void MainWindow::on_action_delayTB_triggered()
 {
-    QString text = ui->action_delayTB->text();
-    if(ui->textEdit->hasFocus()) {
-        ui->textEdit->insertPlainText(text);
+    if(spinBoxTB->value() != 0) {
+
+        QString text = ui->action_delayTB->text();
+        text += QString::number(spinBoxTB->value() / 10);
+        text += QString::number(spinBoxTB->value() % 10);
+
+        if(ui->textEdit->hasFocus()) {
+            ui->textEdit->insertPlainText(text);
+        }
     }
 }
 
