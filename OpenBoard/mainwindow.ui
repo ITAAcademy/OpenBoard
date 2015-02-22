@@ -130,6 +130,9 @@
              <height>25</height>
             </size>
            </property>
+           <property name="minimum">
+            <number>1</number>
+           </property>
            <property name="value">
             <number>60</number>
            </property>
@@ -154,6 +157,9 @@
              <width>50</width>
              <height>25</height>
             </size>
+           </property>
+           <property name="minimum">
+            <number>1</number>
            </property>
            <property name="value">
             <number>60</number>
