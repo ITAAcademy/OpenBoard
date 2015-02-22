@@ -38,6 +38,10 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->button_Find, SIGNAL(pressed()), this, SLOT(search()));
 
 
+    ui->widget_Find->setVisible(false);
+    ui->widget_Slider->setVisible(false);
+    ui->horizontalSlider->setValue(60);
+    ui->spinBox->setValue(60);
     if(mSettings.FirstRun())
     {
         setGeometry(QRect(335,100,760,558));
@@ -300,7 +304,6 @@ void MainWindow::on_action_Open_triggered()
     }
 }
 
-
 void MainWindow::on_action_New_triggered()
 {
     if (maybeSave())
@@ -359,3 +362,7 @@ void MainWindow::on_action_delayTB_triggered()
     }
 }
 
+void MainWindow::on_action_delayTB_triggered()
+{
+    ui->widget_Slider->setVisible(!ui->widget_Slider->isVisible());
+}
