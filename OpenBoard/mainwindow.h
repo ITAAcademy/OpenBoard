@@ -45,7 +45,6 @@ private slots:
     void on_action_Select_all_triggered();
     void on_action_Find_triggered();
         void search();
-        void longPressBtn();
 
     void on_action_Exit_triggered();
     bool on_action_Save_as_triggered();

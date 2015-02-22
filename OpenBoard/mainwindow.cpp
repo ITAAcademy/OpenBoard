@@ -21,10 +21,11 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->mainToolBar->setContextMenuPolicy(Qt::CustomContextMenu);
 
     connect(ui->button_Find, SIGNAL(pressed()), this, SLOT(search()));
-    connect(ui->action_delayTB, SIGNAL(pressed()), this, SLOT(longPressBtn()));
 
     ui->widget_Find->setVisible(false);
     ui->widget_Slider->setVisible(false);
+    ui->horizontalSlider->setValue(60);
+    ui->spinBox->setValue(60);
     if(mSettings.FirstRun())
     {
 
@@ -284,7 +285,6 @@ void MainWindow::on_action_Open_triggered()
     }
 }
 
-
 void MainWindow::on_action_New_triggered()
 {
     if (maybeSave())
@@ -298,9 +298,3 @@ void MainWindow::on_action_delayTB_triggered()
 {
     ui->widget_Slider->setVisible(!ui->widget_Slider->isVisible());
 }
-void MainWindow::longPressBtn()
-{
-
-}
-
-
