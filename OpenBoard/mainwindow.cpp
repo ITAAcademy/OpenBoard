@@ -19,24 +19,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
     mpGLWidget = new GLWidget;
 
-    sliderTB = new QSlider(Qt::Horizontal, this);
-    spinBoxTB = new QSpinBox(this);
-
-
-    connect(sliderTB, SIGNAL(valueChanged(int)), spinBoxTB, SLOT(setValue(int)));
-    connect(spinBoxTB, SIGNAL(valueChanged(int)), sliderTB, SLOT(setValue(int)));
-
-
-    //sliderTB->setRange(0,400);
-    //sliderTB->setTickInterval(1);
-
-    ui->mainToolBar->addWidget(sliderTB);
-    ui->mainToolBar->addWidget(spinBoxTB);
-    ui->widget_Find->setVisible(false);
-
-    ui->widget_Find->setVisible(false);
     connect(ui->button_Find, SIGNAL(pressed()), this, SLOT(search()));
 
+    ui->widget_Find->setVisible(false);
+//    ui->widget_delayTB->setVisible(false);
 
     if(mSettings.FirstRun())
     {
@@ -136,6 +122,10 @@ void MainWindow::on_action_Select_all_triggered()
 
 void MainWindow::on_action_Find_triggered()
 {
+//    a temporary solution
+    ui->widget_delayTB->setVisible(!ui->widget_delayTB->isVisible());
+//    a temporary solution
+
     ui->widget_Find->setVisible(!ui->widget_Find->isVisible());
     if(ui->widget_Find->isVisible()) {
         ui->lineEdit_Find->setFocus();
@@ -300,7 +290,6 @@ void MainWindow::on_action_Open_triggered()
     }
 }
 
-
 void MainWindow::on_action_New_triggered()
 {
     if (maybeSave())
@@ -353,15 +342,17 @@ void MainWindow::on_action_animatedTB_triggered()
 
 void MainWindow::on_action_delayTB_triggered()
 {
-    if(spinBoxTB->value() != 0) {
+
+//    ui->widget_delayTB->setVisible(!ui->widget_delayTB->isVisible());
+
+    if(ui->spinBox_delayTB->value() != 0) {
 
         QString text = ui->action_delayTB->text();
-        text += QString::number(spinBoxTB->value() / 10);
-        text += QString::number(spinBoxTB->value() % 10);
+        text += QString::number(ui->spinBox_delayTB->value() / 10);
+        text += QString::number(ui->spinBox_delayTB->value() % 10);
 
         if(ui->textEdit->hasFocus()) {
             ui->textEdit->insertPlainText(text);
         }
     }
 }
-
