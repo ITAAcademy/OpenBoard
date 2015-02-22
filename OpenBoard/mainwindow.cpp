@@ -314,36 +314,48 @@ void MainWindow::on_action_New_triggered()
 void MainWindow::on_action_clearTB_triggered()
 {
     QString text = ui->action_clearTB->text();
-    ui->textEdit->insertPlainText(text);
+    if(ui->textEdit->hasFocus()) {
+        ui->textEdit->insertPlainText(text);
+    }
 }
 
 void MainWindow::on_action_colorTB_triggered()
 {
     QString text = ui->action_colorTB->text();
-    ui->textEdit->insertPlainText(text);
+    if(ui->textEdit->hasFocus()) {
+        ui->textEdit->insertPlainText(text);
+    }
 }
 
 void MainWindow::on_action_backTB_triggered()
 {
     QString text = ui->action_backTB->text();
-    ui->textEdit->insertPlainText(text);
+    if(ui->textEdit->hasFocus()) {
+        ui->textEdit->insertPlainText(text);
+    }
 }
 
 void MainWindow::on_action_crossTB_triggered()
 {
     QString text = ui->action_crossTB->text();
-    ui->textEdit->insertPlainText(text);
+    if(ui->textEdit->hasFocus()) {
+        ui->textEdit->insertPlainText(text);
+    }
 }
 
 void MainWindow::on_action_animatedTB_triggered()
 {
     QString text = ui->action_animatedTB->text();
-    ui->textEdit->insertPlainText(text);
+    if(ui->textEdit->hasFocus()) {
+        ui->textEdit->insertPlainText(text);
+    }
 }
 
 void MainWindow::on_action_delayTB_triggered()
 {
     QString text = ui->action_delayTB->text();
-    ui->textEdit->insertPlainText(text);
+    if(ui->textEdit->hasFocus()) {
+        ui->textEdit->insertPlainText(text);
+    }
 }
 
