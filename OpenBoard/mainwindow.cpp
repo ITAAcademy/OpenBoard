@@ -354,5 +354,6 @@ void MainWindow::on_action_delayTB_triggered()
         if(ui->textEdit->hasFocus()) {
             ui->textEdit->insertPlainText(text);
         }
+
     }
 }
