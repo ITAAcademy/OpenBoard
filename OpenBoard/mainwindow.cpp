@@ -22,7 +22,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->button_Find, SIGNAL(pressed()), this, SLOT(search()));
 
     ui->widget_Find->setVisible(false);
-//    ui->widget_delayTB->setVisible(false);
+    ui->widget_delayTB->setVisible(false);
 
     if(mSettings.FirstRun())
     {
@@ -356,4 +356,9 @@ void MainWindow::on_action_delayTB_triggered()
         }
 
     }
+}
+
+void MainWindow::on_action_delay_menuTB_triggered()
+{
+    ui->widget_delayTB->setVisible(!ui->widget_delayTB->isVisible());
 }

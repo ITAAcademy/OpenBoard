@@ -61,6 +61,7 @@ private slots:
     void on_action_crossTB_triggered();
     void on_action_animatedTB_triggered();
     void on_action_delayTB_triggered();
+    void on_action_delay_menuTB_triggered();
 
 private:
 

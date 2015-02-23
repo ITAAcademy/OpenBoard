@@ -67,6 +67,19 @@
       </item>
      </layout>
     </item>
+    <item row="3" column="0">
+     <widget class="Line" name="line">
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+     </widget>
+    </item>
     <item row="2" column="0">
      <widget class="QWidget" name="widget_delayTB" native="true">
       <property name="minimumSize">
@@ -171,19 +184,6 @@
       </layout>
      </widget>
     </item>
-    <item row="3" column="0">
-     <widget class="Line" name="line">
-      <property name="minimumSize">
-       <size>
-        <width>0</width>
-        <height>0</height>
-       </size>
-      </property>
-      <property name="orientation">
-       <enum>Qt::Horizontal</enum>
-      </property>
-     </widget>
-    </item>
    </layout>
   </widget>
   <widget class="QMenuBar" name="menuBar">
@@ -262,14 +262,13 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
-   <addaction name="separator"/>
+   <addaction name="action_delay_menuTB"/>
    <addaction name="action_delayTB"/>
    <addaction name="action_backTB"/>
    <addaction name="action_animatedTB"/>
    <addaction name="action_crossTB"/>
    <addaction name="action_colorTB"/>
    <addaction name="action_clearTB"/>
-   <addaction name="separator"/>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
   <action name="action_New">
@@ -525,6 +524,9 @@
    </property>
   </action>
   <action name="action_backTB">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="icons.qrc">
      <normaloff>:/icons/next-2-icon.png</normaloff>:/icons/next-2-icon.png</iconset>
@@ -575,6 +577,24 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+A</string>
+   </property>
+  </action>
+  <action name="action_delay_menuTB">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/pause-icon.png</normaloff>:/icons/pause-icon.png</iconset>
+   </property>
+   <property name="text">
+    <string>Delay menu</string>
+   </property>
+   <property name="toolTip">
+    <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Delay (Alt + 1)&lt;/p&gt;&lt;p&gt;Long pressing - open delay menu&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+   </property>
+   <property name="shortcut">
+    <string>Alt+Q</string>
    </property>
   </action>
  </widget>
