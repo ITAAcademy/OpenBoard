@@ -3,7 +3,6 @@
 
 #include <QMenu>
 #include <QAction>
-#include <QMessageBox>
 #include <QFileDialog>
 #include <QDebug>
 
@@ -20,9 +19,11 @@ MainWindow::MainWindow(QWidget *parent) :
     mpGLWidget = new GLWidget;
 
     connect(ui->button_Find, SIGNAL(pressed()), this, SLOT(search()));
+    connect(ui->action_delayTB, SIGNAL(hovered()), this, SLOT(mousePressEvent()));
+    connect(ui->action_delayTB, SIGNAL(triggered()), this, SLOT(mouseReleaseEvent()));
 
     ui->widget_Find->setVisible(false);
-//    ui->widget_delayTB->setVisible(false);
+    ui->widget_delayTB->setVisible(false);
 
     if(mSettings.FirstRun())
     {
@@ -342,9 +343,6 @@ void MainWindow::on_action_animatedTB_triggered()
 
 void MainWindow::on_action_delayTB_triggered()
 {
-
-//    ui->widget_delayTB->setVisible(!ui->widget_delayTB->isVisible());
-
     if(ui->spinBox_delayTB->value() != 0) {
 
         QString text = ui->action_delayTB->text();
@@ -354,6 +352,22 @@ void MainWindow::on_action_delayTB_triggered()
         if(ui->textEdit->hasFocus()) {
             ui->textEdit->insertPlainText(text);
         }
-
     }
+}
+
+void MainWindow::mousePressEvent()
+{
+    mElapsedTimer.start();
+}
+
+void MainWindow::mouseReleaseEvent()
+{
+    if(mElapsedTimer.elapsed() > 500)
+        ui->widget_delayTB->setVisible(!ui->widget_delayTB->isVisible());
+//    else
+//    {
+//        QMessageBox msg;
+//        msg.setText("No long press");
+//        msg.exec();
+//    }
 }

@@ -10,6 +10,8 @@
 #include <QtGui>
 #include <QtWidgets>
 #include <QSettings>
+#include <QMessageBox>
+#include <QElapsedTimer>
 
 #include "glwidget.h"
 #include "settings.h"
@@ -62,6 +64,10 @@ private slots:
     void on_action_animatedTB_triggered();
     void on_action_delayTB_triggered();
 
+//    longpress on button
+    void mousePressEvent();
+    void mouseReleaseEvent();
+
 private:
 
     Ui::MainWindow  *ui;
@@ -70,6 +76,7 @@ private:
 
     QString         curFile;
     pSettings       mSettings;
+    QElapsedTimer   mElapsedTimer;
 
     bool saveFile();
     bool maybeSave();
