@@ -69,6 +69,7 @@ private slots:
     void on_delayBtn_released();
     void show_pause_menu();
 
+
 private:
 
     Ui::MainWindow  *ui;
@@ -78,6 +79,7 @@ private:
     QString         curFile;
     pSettings       mSettings;
     QTimer          *mTimer;
+
 
     bool saveFile();
     bool maybeSave();

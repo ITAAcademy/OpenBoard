@@ -308,6 +308,7 @@ void MainWindow::on_delayBtn_released()
 {
     if(mTimer->isActive()) {
         mTimer->stop();
+
         QString text = ui->action_delayTB->text();
         text += QString::number(ui->spinBox_delayTB->value() / 10);
         text += QString::number(ui->spinBox_delayTB->value() % 10);
