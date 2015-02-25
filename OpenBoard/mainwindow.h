@@ -57,16 +57,16 @@ private slots:
     void on_action_New_triggered();
 
 //    toolbar
-    void on_action_clearTB_triggered();
-    void on_action_colorTB_triggered();
-    void on_action_backTB_triggered();
-    void on_action_crossTB_triggered();
-    void on_action_animatedTB_triggered();
-    void on_action_delayTB_triggered();
+    void on_delayBtn_clicked();
+    void on_backBtn_clicked();
+    void on_animationBtn_clicked();
+    void on_crossBtn_clicked();
+    void on_colorBtn_clicked();
+    void on_clearBtn_clicked();
 
 //    longpress on button
-    void mousePressEvent();
-    void mouseReleaseEvent();
+    void on_delayBtn_pressed();
+    void on_delayBtn_released();
 
 private:
 
