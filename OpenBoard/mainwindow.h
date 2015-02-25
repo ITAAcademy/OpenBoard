@@ -10,6 +10,8 @@
 #include <QtGui>
 #include <QtWidgets>
 #include <QSettings>
+#include <QMessageBox>
+#include <QElapsedTimer>
 
 #include "glwidget.h"
 #include "settings.h"
@@ -55,13 +57,16 @@ private slots:
     void on_action_New_triggered();
 
 //    toolbar
-    void on_action_clearTB_triggered();
-    void on_action_colorTB_triggered();
-    void on_action_backTB_triggered();
-    void on_action_crossTB_triggered();
-    void on_action_animatedTB_triggered();
-    void on_action_delayTB_triggered();
-    void on_action_delay_menuTB_triggered();
+    void on_delayBtn_clicked();
+    void on_backBtn_clicked();
+    void on_animationBtn_clicked();
+    void on_crossBtn_clicked();
+    void on_colorBtn_clicked();
+    void on_clearBtn_clicked();
+
+//    longpress on button
+    void on_delayBtn_pressed();
+    void show_pause_menu();
 
 private:
 
@@ -71,6 +76,7 @@ private:
 
     QString         curFile;
     pSettings       mSettings;
+    QTimer          *mTimer;
 
     bool saveFile();
     bool maybeSave();

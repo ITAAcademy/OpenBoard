@@ -3,7 +3,6 @@
 
 #include <QMenu>
 #include <QAction>
-#include <QMessageBox>
 #include <QFileDialog>
 #include <QDebug>
 
@@ -12,10 +11,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    //fixed toolBar
-    ui->mainToolBar->setMovable(false);
-    //enable to hide toolBar (rightMouseClick)
-    ui->mainToolBar->setContextMenuPolicy(Qt::CustomContextMenu);
 
     mpGLWidget = new GLWidget;
 
@@ -123,7 +118,7 @@ void MainWindow::on_action_Select_all_triggered()
 void MainWindow::on_action_Find_triggered()
 {
 //    a temporary solution
-    ui->widget_delayTB->setVisible(!ui->widget_delayTB->isVisible());
+//    ui->widget_delayTB->setVisible(!ui->widget_delayTB->isVisible());
 //    a temporary solution
 
     ui->widget_Find->setVisible(!ui->widget_Find->isVisible());
@@ -299,66 +294,62 @@ void MainWindow::on_action_New_triggered()
 
 }
 
-
-void MainWindow::on_action_clearTB_triggered()
+void MainWindow::on_delayBtn_pressed()
 {
-    QString text = ui->action_clearTB->text();
-    if(ui->textEdit->hasFocus()) {
-        ui->textEdit->insertPlainText(text);
-    }
+    mTimer = new QTimer(this);
+    mTimer->start(500);
+    connect(mTimer, SIGNAL(timeout()), this, SLOT(show_pause_menu()));
 }
 
-void MainWindow::on_action_colorTB_triggered()
+void MainWindow::show_pause_menu()
 {
-    QString text = ui->action_colorTB->text();
-    if(ui->textEdit->hasFocus()) {
-        ui->textEdit->insertPlainText(text);
-    }
+    ui->widget_delayTB->setVisible(!ui->widget_delayTB->isVisible());
+    delete mTimer;
 }
 
-void MainWindow::on_action_backTB_triggered()
+void MainWindow::on_delayBtn_clicked()
 {
-    QString text = ui->action_backTB->text();
-    if(ui->textEdit->hasFocus()) {
-        ui->textEdit->insertPlainText(text);
-    }
-}
-
-void MainWindow::on_action_crossTB_triggered()
-{
-    QString text = ui->action_crossTB->text();
-    if(ui->textEdit->hasFocus()) {
-        ui->textEdit->insertPlainText(text);
-    }
-}
-
-void MainWindow::on_action_animatedTB_triggered()
-{
-    QString text = ui->action_animatedTB->text();
-    if(ui->textEdit->hasFocus()) {
-        ui->textEdit->insertPlainText(text);
-    }
-}
-
-void MainWindow::on_action_delayTB_triggered()
-{
-
-//    ui->widget_delayTB->setVisible(!ui->widget_delayTB->isVisible());
-
     if(ui->spinBox_delayTB->value() != 0) {
 
         QString text = ui->action_delayTB->text();
         text += QString::number(ui->spinBox_delayTB->value() / 10);
         text += QString::number(ui->spinBox_delayTB->value() % 10);
 
-        if(ui->textEdit->hasFocus()) {
-            ui->textEdit->insertPlainText(text);
-        }
-
+        ui->textEdit->insertPlainText(text);
     }
 }
 
-void MainWindow::on_action_delay_menuTB_triggered()
+void MainWindow::on_backBtn_clicked()
 {
-    ui->widget_delayTB->setVisible(!ui->widget_delayTB->isVisible());
+    QString text = ui->action_backTB->text();
+    ui->textEdit->insertPlainText(text);
 }
+
+void MainWindow::on_animationBtn_clicked()
+{
+    QString text = ui->action_clearTB->text();
+    ui->textEdit->insertPlainText(text);
+}
+
+void MainWindow::on_crossBtn_clicked()
+{
+    QString text = ui->action_crossTB->text();
+    ui->textEdit->insertPlainText(text);
+}
+
+void MainWindow::on_colorBtn_clicked()
+{
+    QString text = ui->action_colorTB->text();
+    ui->textEdit->insertPlainText(text);
+}
+
+void MainWindow::on_clearBtn_clicked()
+{
+    QString text = ui->action_clearTB->text();
+    ui->textEdit->insertPlainText(text);
+}
+
+//void MainWindow::on_action_delay_menuTB_triggered()
+//{
+//    ui->widget_delayTB->setVisible(!ui->widget_delayTB->isVisible());
+//}
