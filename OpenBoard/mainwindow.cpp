@@ -321,16 +321,6 @@ void MainWindow::show_pause_menu()
     ui->widget_delayTB->setVisible(!ui->widget_delayTB->isVisible());
 }
 
-void MainWindow::on_delayBtn_clicked()
-{
-
-//    QString text = ui->action_delayTB->text();
-//    text += QString::number(ui->spinBox_delayTB->value() / 10);
-//    text += QString::number(ui->spinBox_delayTB->value() % 10);
-
-//    ui->textEdit->insertPlainText(text);
-}
-
 void MainWindow::on_backBtn_clicked()
 {
     QString text = ui->action_backTB->text();
@@ -360,8 +350,3 @@ void MainWindow::on_clearBtn_clicked()
     QString text = ui->action_clearTB->text();
     ui->textEdit->insertPlainText(text);
 }
-
-//void MainWindow::on_action_delay_menuTB_triggered()
-//{
-//    ui->widget_delayTB->setVisible(!ui->widget_delayTB->isVisible());
-//}

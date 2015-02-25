@@ -62,7 +62,6 @@ private slots:
     void on_action_New_triggered();
 
 //    toolbar
-    void on_delayBtn_clicked();
     void on_backBtn_clicked();
     void on_animationBtn_clicked();
     void on_crossBtn_clicked();
