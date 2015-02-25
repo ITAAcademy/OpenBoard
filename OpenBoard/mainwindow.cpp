@@ -1,11 +1,10 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include <QMenu>
-#include <QAction>
-#include <QFileDialog>
-#include <QDebug>
-#define TIMER_VALUE 300
+#define TIMER_VALUE         300
+#define GLWIDGET_SIZE       450,450
+#define WINDOW_POS          80,100,760,560
+                   //CENTER 335,100,760,558
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -26,7 +25,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     if(mSettings.FirstRun())
     {
-        setGeometry(QRect(335,100,760,558));
+        setGeometry(QRect(WINDOW_POS));
         setFont(QFont("Times",10,1,false));
 
         mSettings.setMainWindowRect(geometry());
@@ -51,7 +50,7 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_action_Show_triggered()
 {
-    mpGLWidget->setFixedSize(450,450);
+    mpGLWidget->setFixedSize(GLWIDGET_SIZE);
 
     mpGLWidget->move(pos().x() + width(), pos().y());
 

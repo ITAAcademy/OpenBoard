@@ -3,15 +3,20 @@
 
 #include <QMainWindow>
 #include <QFont>
-#include <QFontDialog>
-#include <QColor>
 #include <QColorDialog>
+#include <QFontDialog>
+#include <QFileDialog>
+#include <QColor>
 #include <QtCore>
 #include <QtGui>
 #include <QtWidgets>
 #include <QSettings>
 #include <QMessageBox>
 #include <QElapsedTimer>
+#include <QMenu>
+#include <QAction>
+
+#include <QDebug>
 
 #include "glwidget.h"
 #include "settings.h"
