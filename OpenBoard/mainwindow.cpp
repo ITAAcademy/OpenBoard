@@ -310,8 +310,9 @@ void MainWindow::on_delayBtn_clicked()
     if(ui->spinBox_delayTB->value() != 0) {
 
         QString text = ui->action_delayTB->text();
-        //text += QString::number(ui->spinBox_delayTB->text() / 10);
-        //text += QString::number(ui->spinBox_delayTB->text() % 10);
+        text += QString::number(ui->spinBox_delayTB->value() / 10);
+        text += QString::number(ui->spinBox_delayTB->value() % 10);
+
         ui->textEdit->insertPlainText(text);
     }
 }
