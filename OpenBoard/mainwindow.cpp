@@ -16,6 +16,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     mTimer = new QTimer(this);
     mTimer->setSingleShot(true);
+    connect(mTimer, SIGNAL(timeout()), this, SLOT(show_pause_menu()));
 
     connect(ui->button_Find, SIGNAL(pressed()), this, SLOT(search()));
 
@@ -299,14 +300,13 @@ void MainWindow::on_action_New_triggered()
 
 void MainWindow::on_delayBtn_pressed()
 {
-    mTimer->start(500);
-    connect(mTimer, SIGNAL(timeout()), this, SLOT(show_pause_menu()));
+    mTimer->start(300);
 }
 
 void MainWindow::on_delayBtn_released()
 {
     if(mTimer->isActive()) {
-
+        mTimer->stop();
         QString text = ui->action_delayTB->text();
         text += QString::number(ui->spinBox_delayTB->value() / 10);
         text += QString::number(ui->spinBox_delayTB->value() % 10);
