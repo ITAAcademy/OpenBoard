@@ -14,6 +14,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     mpGLWidget = new GLWidget;
 
+    mTimer = new QTimer(this);
+    mTimer->setSingleShot(true);
+
     connect(ui->button_Find, SIGNAL(pressed()), this, SLOT(search()));
 
     ui->widget_Find->setVisible(false);
@@ -296,20 +299,13 @@ void MainWindow::on_action_New_triggered()
 
 void MainWindow::on_delayBtn_pressed()
 {
-    mTimer = new QTimer(this);
     mTimer->start(500);
     connect(mTimer, SIGNAL(timeout()), this, SLOT(show_pause_menu()));
 }
 
-void MainWindow::show_pause_menu()
+void MainWindow::on_delayBtn_released()
 {
-    ui->widget_delayTB->setVisible(!ui->widget_delayTB->isVisible());
-    delete mTimer;
-}
-
-void MainWindow::on_delayBtn_clicked()
-{
-    if(ui->spinBox_delayTB->value() != 0) {
+    if(mTimer->isActive()) {
 
         QString text = ui->action_delayTB->text();
         text += QString::number(ui->spinBox_delayTB->value() / 10);
@@ -317,6 +313,21 @@ void MainWindow::on_delayBtn_clicked()
 
         ui->textEdit->insertPlainText(text);
     }
+}
+
+void MainWindow::show_pause_menu()
+{
+    ui->widget_delayTB->setVisible(!ui->widget_delayTB->isVisible());
+}
+
+void MainWindow::on_delayBtn_clicked()
+{
+
+//    QString text = ui->action_delayTB->text();
+//    text += QString::number(ui->spinBox_delayTB->value() / 10);
+//    text += QString::number(ui->spinBox_delayTB->value() % 10);
+
+//    ui->textEdit->insertPlainText(text);
 }
 
 void MainWindow::on_backBtn_clicked()
