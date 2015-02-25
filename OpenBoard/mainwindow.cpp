@@ -5,6 +5,7 @@
 #include <QAction>
 #include <QFileDialog>
 #include <QDebug>
+#define TIMER_VALUE 300
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -300,7 +301,7 @@ void MainWindow::on_action_New_triggered()
 
 void MainWindow::on_delayBtn_pressed()
 {
-    mTimer->start(300);
+    mTimer->start(TIMER_VALUE);
 }
 
 void MainWindow::on_delayBtn_released()
