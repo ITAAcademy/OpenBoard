@@ -67,6 +67,8 @@ private slots:
 //    longpress on button
     void on_delayBtn_pressed();
     void on_delayBtn_released();
+    void show_pause_menu();
+
 
 private:
 
@@ -76,7 +78,8 @@ private:
 
     QString         curFile;
     pSettings       mSettings;
-    QElapsedTimer   mElapsedTimer;
+    QTimer          *mTimer;
+
 
     bool saveFile();
     bool maybeSave();

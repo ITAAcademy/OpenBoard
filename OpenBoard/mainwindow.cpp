@@ -5,6 +5,7 @@
 #include <QAction>
 #include <QFileDialog>
 #include <QDebug>
+#define TIMER_VALUE 300
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -13,6 +14,10 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
 
     mpGLWidget = new GLWidget;
+
+    mTimer = new QTimer(this);
+    mTimer->setSingleShot(true);
+    connect(mTimer, SIGNAL(timeout()), this, SLOT(show_pause_menu()));
 
     connect(ui->button_Find, SIGNAL(pressed()), this, SLOT(search()));
 
@@ -296,18 +301,13 @@ void MainWindow::on_action_New_triggered()
 
 void MainWindow::on_delayBtn_pressed()
 {
-    mElapsedTimer.start();
+    mTimer->start(TIMER_VALUE);
 }
 
 void MainWindow::on_delayBtn_released()
 {
-    if(mElapsedTimer.elapsed() > 500)
-        ui->widget_delayTB->setVisible(!ui->widget_delayTB->isVisible());
-}
-
-void MainWindow::on_delayBtn_clicked()
-{
-    if(ui->spinBox_delayTB->value() != 0) {
+    if(mTimer->isActive()) {
+        mTimer->stop();
 
         QString text = ui->action_delayTB->text();
         text += QString::number(ui->spinBox_delayTB->value() / 10);
@@ -315,6 +315,21 @@ void MainWindow::on_delayBtn_clicked()
 
         ui->textEdit->insertPlainText(text);
     }
+}
+
+void MainWindow::show_pause_menu()
+{
+    ui->widget_delayTB->setVisible(!ui->widget_delayTB->isVisible());
+}
+
+void MainWindow::on_delayBtn_clicked()
+{
+
+//    QString text = ui->action_delayTB->text();
+//    text += QString::number(ui->spinBox_delayTB->value() / 10);
+//    text += QString::number(ui->spinBox_delayTB->value() % 10);
+
+//    ui->textEdit->insertPlainText(text);
 }
 
 void MainWindow::on_backBtn_clicked()
@@ -346,3 +361,8 @@ void MainWindow::on_clearBtn_clicked()
     QString text = ui->action_clearTB->text();
     ui->textEdit->insertPlainText(text);
 }
+
+//void MainWindow::on_action_delay_menuTB_triggered()
+//{
+//    ui->widget_delayTB->setVisible(!ui->widget_delayTB->isVisible());
+//}
