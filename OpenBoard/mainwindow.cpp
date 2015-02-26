@@ -48,6 +48,12 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::closeEvent(QCloseEvent*)
+{
+    mpGLWidget->close();
+    delete mpGLWidget;
+}
+
 void MainWindow::on_action_Show_triggered()
 {
     mpGLWidget->setFixedSize(GLWIDGET_SIZE);

@@ -36,6 +36,8 @@ public:
 private slots:
 
 //    board
+    void closeEvent(QCloseEvent* event);
+
     void on_action_Show_triggered();
     void on_action_Hide_triggered();
 
