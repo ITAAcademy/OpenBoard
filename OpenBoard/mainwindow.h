@@ -41,6 +41,8 @@ private slots:
     void on_action_Show_triggered();
     void on_action_Hide_triggered();
 
+    void onTextChanged();
+
 //    settings
     void on_action_Font_triggered();
     void on_action_Color_triggered();

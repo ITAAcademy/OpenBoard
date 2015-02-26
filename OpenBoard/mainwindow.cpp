@@ -2,7 +2,7 @@
 #include "ui_mainwindow.h"
 
 #define TIMER_VALUE         300
-#define GLWIDGET_SIZE       450,450
+#define GLWIDGET_SIZE       560,560
 #define WINDOW_POS          80,100,760,560
                    //CENTER 335,100,760,558
 
@@ -19,6 +19,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(mTimer, SIGNAL(timeout()), this, SLOT(show_pause_menu()));
 
     connect(ui->button_Find, SIGNAL(pressed()), this, SLOT(search()));
+
+    connect(ui->textEdit, SIGNAL(textChanged()), this, SLOT(onTextChanged()));
 
     ui->widget_Find->setVisible(false);
     ui->widget_delayTB->setVisible(false);
@@ -355,4 +357,12 @@ void MainWindow::on_clearBtn_clicked()
 {
     QString text = ui->action_clearTB->text();
     ui->textEdit->insertPlainText(text);
+}
+void MainWindow::onTextChanged()
+{
+    QString str=ui->textEdit->toPlainText();
+    mpGLWidget->textArray.clear();
+    mpGLWidget->textArray.append(str);
+
+    mpGLWidget->updateGL();
 }
