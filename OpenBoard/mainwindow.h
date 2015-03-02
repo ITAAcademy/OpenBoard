@@ -72,11 +72,15 @@ private slots:
     void on_colorBtn_clicked();
     void on_clearBtn_clicked();
 
-//    longpress on button
+//    longpress on button delay
     void on_delayBtn_pressed();
     void on_delayBtn_released();
     void show_pause_menu();
 
+//    longpress on button color
+    void on_colorBtn_pressed();
+    void on_colorBtn_released();
+    void show_color_dialog();
 
 private:
 
@@ -87,6 +91,9 @@ private:
     QString         curFile;
     pSettings       mSettings;
     QTimer          *mTimer;
+    QTimer          *mTimerClr;
+    QString         textColorName;
+    QColor          colorPkr;
 
 
     bool saveFile();

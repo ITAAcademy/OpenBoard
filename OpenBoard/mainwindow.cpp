@@ -15,8 +15,11 @@ MainWindow::MainWindow(QWidget *parent) :
     mpGLWidget = new GLWidget;
 
     mTimer = new QTimer(this);
+    mTimerClr = new QTimer(this);
     mTimer->setSingleShot(true);
+    mTimerClr->setSingleShot(true);
     connect(mTimer, SIGNAL(timeout()), this, SLOT(show_pause_menu()));
+    connect(mTimerClr, SIGNAL(timeout()), this, SLOT(show_color_dialog()));
 
     connect(ui->button_Find, SIGNAL(pressed()), this, SLOT(search()));
 
@@ -347,10 +350,39 @@ void MainWindow::on_crossBtn_clicked()
     ui->textEdit->insertPlainText(text);
 }
 
+void MainWindow::on_colorBtn_pressed()
+{
+    mTimerClr->start(TIMER_VALUE);
+}
+
+void MainWindow::on_colorBtn_released()
+{
+    if(mTimerClr->isActive()) {
+        mTimerClr->stop();
+
+        QString text = ui->action_colorTB->text();
+        textColorName = colorPkr.name();
+        text += textColorName;
+        text.remove(2,1);
+        ui->textEdit->insertPlainText(text);
+    }
+}
+
+void MainWindow::show_color_dialog()
+{
+    colorPkr = QColorDialog::getColor(Qt::black, this);
+
+    if(colorPkr.isValid())
+        textColorName = colorPkr.name();
+}
+
 void MainWindow::on_colorBtn_clicked()
 {
-    QString text = ui->action_colorTB->text();
-    ui->textEdit->insertPlainText(text);
+
+//    QString text = ui->action_colorTB->text();
+//    text += textColorName;
+//    text.remove(2,1);
+//    ui->textEdit->insertPlainText(text);
 }
 
 void MainWindow::on_clearBtn_clicked()
