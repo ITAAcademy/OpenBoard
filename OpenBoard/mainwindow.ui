@@ -102,6 +102,12 @@
            <property name="minimum">
             <number>1</number>
            </property>
+           <property name="singleStep">
+            <number>1</number>
+           </property>
+           <property name="pageStep">
+            <number>1</number>
+           </property>
            <property name="value">
             <number>60</number>
            </property>
@@ -864,22 +870,6 @@
  </resources>
  <connections>
   <connection>
-   <sender>slider_delayTB</sender>
-   <signal>sliderMoved(int)</signal>
-   <receiver>spinBox_delayTB</receiver>
-   <slot>setValue(int)</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>533</x>
-     <y>350</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>589</x>
-     <y>350</y>
-    </hint>
-   </hints>
-  </connection>
-  <connection>
    <sender>spinBox_delayTB</sender>
    <signal>valueChanged(int)</signal>
    <receiver>slider_delayTB</receiver>
@@ -892,6 +882,22 @@
     <hint type="destinationlabel">
      <x>506</x>
      <y>346</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>slider_delayTB</sender>
+   <signal>valueChanged(int)</signal>
+   <receiver>spinBox_delayTB</receiver>
+   <slot>setValue(int)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>400</x>
+     <y>339</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>551</x>
+     <y>333</y>
     </hint>
    </hints>
   </connection>
