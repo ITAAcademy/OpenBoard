@@ -337,7 +337,7 @@ void MainWindow::on_backBtn_clicked()
 
 void MainWindow::on_animationBtn_clicked()
 {
-    QString text = ui->action_clearTB->text();
+    QString text = ui->action_animatedTB->text();
     ui->textEdit->insertPlainText(text);
 }
 
