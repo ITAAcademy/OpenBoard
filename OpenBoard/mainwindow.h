@@ -1,4 +1,4 @@
-#ifndef MAINWINDOW_H
+﻿#ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
 #include <QMainWindow>
@@ -40,6 +40,9 @@ private slots:
 
     void on_action_Show_triggered();
     void on_action_Hide_triggered();
+    void on_action_Play_triggered();
+    void on_action_Pause_triggered();
+    void on_action_Stop_triggered();
 
     void onTextChanged();
 

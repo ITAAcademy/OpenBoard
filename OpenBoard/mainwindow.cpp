@@ -1,4 +1,4 @@
-#include "mainwindow.h"
+﻿#include "mainwindow.h"
 #include "ui_mainwindow.h"
 
 #define TIMER_VALUE         300
@@ -395,6 +395,26 @@ void MainWindow::onTextChanged()
     QString str=ui->textEdit->toPlainText();
     mpGLWidget->textArray.clear();
     mpGLWidget->textArray.append(str);
-
     mpGLWidget->updateGL();
+   if (mpGLWidget->mIsAnimatedStart){
+      mpGLWidget->pauseAnimated();
+   }
+}
+void MainWindow::on_action_Play_triggered()
+{
+    QString str=ui->textEdit->toPlainText();
+    mpGLWidget->textArray.clear();
+    mpGLWidget->textArray.append(str);
+    mpGLWidget->setFixedSize(GLWIDGET_SIZE);
+    mpGLWidget->move(pos().x() + width(), pos().y());
+    mpGLWidget->show();
+    mpGLWidget->drawAnimated();
+}
+void MainWindow::on_action_Stop_triggered()
+{
+    mpGLWidget->stopAnimated();
+}
+void MainWindow::on_action_Pause_triggered()
+{
+    mpGLWidget->pauseAnimated();
 }
