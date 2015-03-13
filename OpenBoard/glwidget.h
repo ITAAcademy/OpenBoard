@@ -3,6 +3,7 @@
 
 #include <QGLWidget>
 #include <QVector>
+#include <QFont>
 
 class GLWidget : public QGLWidget
 {
@@ -11,13 +12,25 @@ public:
 
 public:
     static GLWidget *glRender();
-    void drawText(QString str,int x,int y);
-    QVector<QString> textArray;
+    void drawText(QString textArray);
+
 
 protected:
     void initializeGL();
     void paintGL();
     void resizeGL();
+
+private:
+    int mX;
+    int mY;
+    int mCharWidth;
+    int mCharHeight;
+
+    QString             mStr;
+    QFont               mFont;
+
+public:
+    QVector<QString>    textArray;
 };
 
 #endif // GLWIDGET_H
