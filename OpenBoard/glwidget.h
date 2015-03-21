@@ -13,11 +13,12 @@ class GLWidget : public QGLWidget
 public:
     GLWidget();
 
+    void setDrawText(const QString &str);
+
 public:
     bool    mIsAnimatedStart;
 
     static GLWidget *glRender();
-    void drawText(QString str,int x,int y);
     void drawAnimated();
     void stopAnimated();
     void pauseAnimated();
@@ -25,18 +26,22 @@ public:
     QVector<QString> textArray;
     QString strstr;
 
-
 protected:
     void initializeGL();
-    void paintGL();
     void resizeGL();
-
+    void paintGL();
 
 private:
+    void _recalculate(const QString &str);
     int     index;
 
     QElapsedTimer mElapsedTimer;
     QTimer *mTimer;
+    QFont   mFont;
+    int mX;
+    int mY;
+    int mCharWidth;
+    int mCharHeight;
 
 };
 

@@ -393,12 +393,14 @@ void MainWindow::on_clearBtn_clicked()
 void MainWindow::onTextChanged()
 {
     QString str=ui->textEdit->toPlainText();
-    mpGLWidget->textArray.clear();
-    mpGLWidget->textArray.append(str);
+    mpGLWidget->setDrawText(str);
     mpGLWidget->updateGL();
+    /*mpGLWidget->textArray.clear();
+    mpGLWidget->textArray.append(str);
+
    if (mpGLWidget->mIsAnimatedStart){
       mpGLWidget->pauseAnimated();
-   }
+   }*/
 }
 void MainWindow::on_action_Play_triggered()
 {
