@@ -3,7 +3,6 @@
 
 #include <QGLWidget>
 #include <QVector>
-#include <QFont>
 #include <QTimer>
 
 #include <QElapsedTimer>
@@ -18,7 +17,6 @@ public:
     bool    mIsAnimatedStart;
 
     static GLWidget *glRender();
-    void drawText(QString textArray);
     void drawText(QString str,int x,int y);
     void drawAnimated();
     void stopAnimated();
@@ -33,17 +31,6 @@ protected:
     void paintGL();
     void resizeGL();
 
-private:
-    int mX;
-    int mY;
-    int mCharWidth;
-    int mCharHeight;
-
-    QString             mStr;
-    QFont               mFont;
-
-public:
-    QVector<QString>    textArray;
 
 private:
     int     index;

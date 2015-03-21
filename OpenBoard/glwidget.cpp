@@ -18,15 +18,6 @@ GLWidget::GLWidget()
 
 {
     msRender = this;
-    //-------------------------------------------
-    mFont.setPixelSize(16);
-    mFont.setBold(true);
-    QFontMetrics metricts(mFont);
-    mX = 0;
-    mY = metricts.height();
-    mCharWidth = metricts.width('w');
-    mCharHeight = metricts.height();
-    //mIsShowCursor = true;
 }
 
 void GLWidget::initializeGL()
@@ -46,29 +37,11 @@ void GLWidget::initializeGL()
 void GLWidget::paintGL()
 {
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-   //glMatrixMode( GL_PROJECTION );
+   glMatrixMode( GL_PROJECTION );
    glLoadIdentity();
-
+   glViewport( 0, 0, width(), height() );
    glOrtho( 0.0, width(), height(), 0.0, -1.0, 1.0 );
    glMatrixMode( GL_MODELVIEW );
-   glColor3ub(254, 254, 254);
-
-    //drawText(str);
-   /*int y = mY;
-   for(int i = 0; i < textArray.size(); ++i)
-   {
-       renderText(mX, y, textArray[i], mFont);
-       y += mCharHeight;
-   }*/
-
-   //static int i = 0;
-    //int y = mY;
-      for(int i = 0; i < textArray.size(); ++i){
-          drawText(textArray[i]);
-
-      //++i;
-      }
-      //update();
 
    //for rendering text into widget in two cases: if mIsAnimatedStart=true and mIsAnimatedStart=false
    for(int i = 0; i < textArray.size(); ++i){
@@ -94,14 +67,32 @@ void GLWidget::paintGL()
 }
 void GLWidget::resizeGL()
 {
-    glViewport( 0, 0, width(), height() );
-}
-void GLWidget::drawText(QString textArray){
-
-    //GLWidget::glRender()->renderText( 10.0, 20.0, 0.0, str, QFont("Arial", 12, QFont::Bold, false) );
-    int y = mY;
-        renderText(mX, y, textArray, mFont);
-        y += mCharHeight;
-
 }
 
+void GLWidget::drawText(QString str,int x,int y)
+{
+    x = 10;
+    y = 20;
+    GLWidget::glRender()->renderText( x, y, 0.0, str, QFont("Arial", 12, QFont::Bold, false) );
+}
+
+void GLWidget::drawAnimated()
+{
+    mIsAnimatedStart = true;
+    mTimer = new QTimer(this);
+    mTimer->start(300);
+    connect(mTimer, SIGNAL(timeout()), this, SLOT(repaint()));
+}
+void GLWidget::stopAnimated()
+{
+    mTimer->stop();
+    mIsAnimatedStart = false;
+    strstr = "";
+    index = 0;
+}
+
+void GLWidget::pauseAnimated()
+{
+    mTimer->stop();
+    mIsAnimatedStart = false;
+}
