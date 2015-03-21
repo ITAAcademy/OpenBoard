@@ -1,5 +1,8 @@
-#include "glwidget.h"
+﻿#include "glwidget.h"
 #include <QFont>
+#include <QDebug>
+#include <QThread>
+#include <QChar>
 
 static GLWidget *msRender = 0;
 
@@ -9,6 +12,9 @@ GLWidget *GLWidget::glRender()
 }
 
 GLWidget::GLWidget()
+    :strstr()
+    ,index(0)
+    ,mIsAnimatedStart(false)
 
 {
     msRender = this;
@@ -28,9 +34,7 @@ void GLWidget::initializeGL()
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     glClearColor(0.5,0.5,0.5,1);
-
     glOrtho(0, 450, 600, 0, 0, 1);
-
     glEnable(GL_SMOOTH);
     glDisable(GL_DEPTH_TEST);
     glEnable(GL_BLEND);
@@ -38,7 +42,6 @@ void GLWidget::initializeGL()
     glEnable(GL_LINE_SMOOTH);
     glEnable(GL_POINT_SMOOTH);
     glEnable(GL_TEXTURE_2D);
-
 }
 void GLWidget::paintGL()
 {
@@ -66,8 +69,29 @@ void GLWidget::paintGL()
       //++i;
       }
       //update();
-}
 
+   //for rendering text into widget in two cases: if mIsAnimatedStart=true and mIsAnimatedStart=false
+   for(int i = 0; i < textArray.size(); ++i){
+        QString tmp = textArray[i];
+        if (mIsAnimatedStart){
+          if(index <= tmp.length()) {
+              strstr.append(tmp[index]);
+              int x = 10;
+              drawText(strstr,x,i);
+              x += 10;
+              index += 1;
+        }else  {
+            mTimer->stop();
+            drawText(strstr,1,1);
+            index = 0;
+            mIsAnimatedStart = false;
+        }
+        }else{
+          drawText(tmp,1,1);
+        }
+        ++i;
+      }
+}
 void GLWidget::resizeGL()
 {
     glViewport( 0, 0, width(), height() );
