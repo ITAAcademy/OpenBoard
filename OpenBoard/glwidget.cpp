@@ -62,7 +62,7 @@ void GLWidget::paintGL()
    }
 
    //for rendering text into widget in two cases: if mIsAnimatedStart=true and mIsAnimatedStart=false
-   for(int i = 0; i < textArray.size(); ++i)
+/*   for(int i = 0; i < textArray.size(); ++i)
     {
         QString tmp = textArray[i];
         if (mIsAnimatedStart)
@@ -87,6 +87,7 @@ void GLWidget::paintGL()
         }
         ++i;
     }
+    */
 }
 
 void GLWidget::_recalculate(const QString &str)
@@ -99,22 +100,37 @@ void GLWidget::_recalculate(const QString &str)
     for(int i = 0; i < str.size(); i++)
     {
         lineWidth += mtr.width(str[i]);
-        if(lineWidth > 540)
+        if(lineWidth > 544)
         {
             textArray.push_back(tmpStr);
             lineWidth = 0;
             tmpStr = str[i];
             continue;
         }
+// parse key-press 'Enter'
+            if(str[i] == '\n')
+            {
+                textArray.push_back(tmpStr);
+                lineWidth = 0;
+                tmpStr.clear();
+            } else
+// parse str[i] '\'
+            if(str[i] == '\\')
+            {
+                i+=1;
+// analog "parse key-press 'Enter'"
+                if(str[i] == 'n')
+                {
+                    textArray.push_back(tmpStr);
+                    lineWidth = 0;
+                    tmpStr.clear();
+                }
 
-        if(str[i] == '\n')
-        {
-            textArray.push_back(tmpStr);
-            lineWidth = 0;
-            tmpStr.clear();
-        }
-        else
-            tmpStr += str[i];
+            }
+            else
+                tmpStr += str[i];
+
+
     }
     if(tmpStr.size() > 0)
         textArray.push_back(tmpStr);
