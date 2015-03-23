@@ -706,6 +706,9 @@
    </property>
   </action>
   <action name="action_Play">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="icons.qrc">
      <normaloff>:/icons/play-8-icon.png</normaloff>:/icons/play-8-icon.png</iconset>
@@ -715,6 +718,9 @@
    </property>
   </action>
   <action name="action_Pause">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="icons.qrc">
      <normaloff>:/icons/pause-icon.png</normaloff>:/icons/pause-icon.png</iconset>
@@ -724,6 +730,9 @@
    </property>
   </action>
   <action name="action_Stop">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="icon">
     <iconset resource="icons.qrc">
      <normaloff>:/icons/stop-icon.png</normaloff>:/icons/stop-icon.png</iconset>

@@ -2,8 +2,9 @@
 #include "ui_mainwindow.h"
 
 #define TIMER_VALUE         300
-#define GLWIDGET_SIZE       560,560
+#define GLWIDGET_SIZE       640,480
 #define WINDOW_POS          80,100,760,560
+#define WINDOW_MARGING          20
                    //CENTER 335,100,760,558
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -27,6 +28,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->widget_Find->setVisible(false);
     ui->widget_delayTB->setVisible(false);
+  //  drawWidget->setVisible(false);
+  //  on_action_Show_triggered();
+
 
     if(mSettings.FirstRun())
     {
@@ -56,21 +60,51 @@ MainWindow::~MainWindow()
 void MainWindow::closeEvent(QCloseEvent*)
 {
     mpGLWidget->close();
+    mpQmlWidget.close();
     delete mpGLWidget;
 }
 
 void MainWindow::on_action_Show_triggered()
 {
+/*
+ * QML
+*/
+    mpQmlWidget.show();
+    mpQmlWidget.setFixedSize(GLWIDGET_SIZE);
+    mpQmlWidget.move(pos().x() + width() + WINDOW_MARGING, pos().y());
+    ui->action_Pause->setEnabled(true);
+    ui->action_Play->setEnabled(true);
+    ui->action_Stop->setEnabled(true);
+
+/*
     mpGLWidget->setFixedSize(GLWIDGET_SIZE);
-
     mpGLWidget->move(pos().x() + width(), pos().y());
-
     mpGLWidget->show();
+*/
+
+
 }
 
 void MainWindow::on_action_Hide_triggered()
 {
-    mpGLWidget->hide();
+   // mpGLWidget->hide();
+    if(mpQmlWidget.IsPlay())
+        mpQmlWidget.stopAnimated();
+    mpQmlWidget.hide();
+    ui->action_Pause->setEnabled(false);
+    ui->action_Play->setEnabled(false);
+    ui->action_Stop->setEnabled(false);
+
+}
+
+void MainWindow::moveEvent(QMoveEvent *event)
+{
+    mpQmlWidget.move(pos().x() + width() + WINDOW_MARGING, pos().y());
+}
+
+void MainWindow::resizeEvent(QResizeEvent *event)
+{
+    mpQmlWidget.move(pos().x() + width() + WINDOW_MARGING, pos().y());
 }
 
 void MainWindow::on_action_Font_triggered()
@@ -294,7 +328,7 @@ void MainWindow::on_action_Open_triggered()
             }
             else
             {
-                QMessageBox::warning(this, "Error",tr("Ощибка открытия файла")); //щ
+                QMessageBox::warning(this, "Error",tr("Ошыбка открытия файла")); //щ
             }
         }
     }
@@ -392,29 +426,46 @@ void MainWindow::on_clearBtn_clicked()
 }
 void MainWindow::onTextChanged()
 {
-    QString str=ui->textEdit->toPlainText();
-    mpGLWidget->textArray.clear();
+   // DrawData temp = mpQmlWidget.getDrawData();
+    /*if(!ui->textEdit->toPlainText().isEmpty())
+        this->inputText += ui->textEdit->toPlainText().at(ui->textEdit->toPlainText().size() - 1);
+    mpQmlWidget.setDrawText(inputText);*/
+    //mpQmlWidget.setDrawText(ui->textEdit->toPlainText());
+    emit mpQmlWidget.drawTextChanged();
+    //mpQmlWidget.Encode(mpQmlWidget.grabFramebuffer());
+    /*mpGLWidget->textArray.clear();
     mpGLWidget->textArray.append(str);
     mpGLWidget->updateGL();
    if (mpGLWidget->mIsAnimatedStart){
       mpGLWidget->pauseAnimated();
-   }
+   }*/
 }
 void MainWindow::on_action_Play_triggered()
 {
-    QString str=ui->textEdit->toPlainText();
-    mpGLWidget->textArray.clear();
+    if(mpQmlWidget.IsPlay())
+        ui->action_Play->setText("Play");
+    mpQmlWidget.drawAnimated();
+   /* mpGLWidget->textArray.clear();
     mpGLWidget->textArray.append(str);
     mpGLWidget->setFixedSize(GLWIDGET_SIZE);
     mpGLWidget->move(pos().x() + width(), pos().y());
     mpGLWidget->show();
     mpGLWidget->drawAnimated();
+    */
 }
 void MainWindow::on_action_Stop_triggered()
 {
-    mpGLWidget->stopAnimated();
+    mpQmlWidget.stopAnimated();
+    ui->action_Play->setText("Play");
+   // mpGLWidget->stopAnimated();
 }
 void MainWindow::on_action_Pause_triggered()
 {
-    mpGLWidget->pauseAnimated();
+    ui->action_Play->setText("Resume");
+    mpQmlWidget.pauseAnimated();
+    //mpGLWidget->pauseAnimated();
 }
+
+
+
+

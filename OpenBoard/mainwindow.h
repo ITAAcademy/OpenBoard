@@ -19,11 +19,13 @@
 #include <QDebug>
 
 #include "glwidget.h"
+#include "qmlwidget.h"
 #include "settings.h"
 
 namespace Ui {
 class MainWindow;
 }
+
 
 class MainWindow : public QMainWindow
 {
@@ -37,7 +39,8 @@ private slots:
 
 //    board
     void closeEvent(QCloseEvent* event);
-
+    void moveEvent(QMoveEvent *event);
+    void resizeEvent(QResizeEvent *event);
     void on_action_Show_triggered();
     void on_action_Hide_triggered();
     void on_action_Play_triggered();
@@ -85,11 +88,14 @@ private slots:
     void on_colorBtn_released();
     void show_color_dialog();
 
+
+
 private:
 
     Ui::MainWindow  *ui;
 
     GLWidget        *mpGLWidget;
+    QmlWidget       mpQmlWidget;
 
     QString         curFile;
     pSettings       mSettings;
@@ -97,10 +103,11 @@ private:
     QTimer          *mTimerClr;
     QString         textColorName;
     QColor          colorPkr;
-
+    QString         inputText;
 
     bool saveFile();
     bool maybeSave();
+
 };
 
 #endif // MAINWINDOW_H

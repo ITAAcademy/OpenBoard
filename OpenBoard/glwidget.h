@@ -1,7 +1,7 @@
 ﻿#ifndef GLWIDGET_H
 #define GLWIDGET_H
 
-#include <QGLWidget>
+#include <QtOpenGL/QGLWidget>
 #include <QVector>
 #include <QTimer>
 
