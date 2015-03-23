@@ -22,6 +22,7 @@ GLWidget::GLWidget()
     mFont.setPixelSize(14);
     mFont.setBold(true);
     mFont.setFamily("Courier");
+    mFont.setStrikeOut(0);
 
     QFontMetrics metricts(mFont);
 
@@ -124,8 +125,15 @@ void GLWidget::_recalculate(const QString &str)
                     textArray.push_back(tmpStr);
                     lineWidth = 0;
                     tmpStr.clear();
+                } else
+                if(str[i] == '-')
+                {
+                    //setStrikeOut
+                } else
+                if(str[i] == 'p')
+                {
+                    //pause
                 }
-
             }
             else
                 tmpStr += str[i];
