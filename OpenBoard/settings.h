@@ -22,11 +22,19 @@ public:
     void setMainWindowTitle (const QString &aTitle);
     void setMainWindowRect  (const QRect &aRect);
     void setMainWindowFont  (const QFont &aFont);
-
+    void setMainWindowColor (const QColor &aColor);
+    void setBoardFont       (const QFont &bFont);
+    void setBoardFontColor  (const QColor &bColor);
 
     const QString   &getMainWindowTitle ()const;
     const QRect     &getMainWindowRect  ()const;
     const QFont     &getMainWindowFont  ()const;
+    const QColor    &getMainWindowColor ()const;
+    const QFont     &getBoardFont       ()const;
+    const QColor    &getBoardFontColor  ()const;
+
+
+
 
 private:
 
@@ -37,6 +45,10 @@ private:
     QString     mainWindowTitle;
     QRect       mainWindowRect;
     QFont       mainWindowFont;
+    QColor      mainWindowColor;
+    QFont       boardFont;
+    QColor      boardFontColor;
+
 
     QSettings   *mSettings;
 };

@@ -74,6 +74,7 @@ void QmlWidget::setDrawText(QString &data)
     drawText = data;
 }
 
+
 VideoCodecSettings QmlWidget::videoCodecSettings() const
 {
     //x264 loseless fast preset
@@ -153,6 +154,28 @@ void QmlWidget::onState(Encoder::State state)
         }*/
 }
 
+QString QmlWidget::getFont()
+{
+    return boardFont;
+}
+
+QString QmlWidget::getColor()
+{
+    return boardColor;
+}
+
+void QmlWidget::setFont(QString &font)
+{
+    boardFont = font;
+    qDebug() << boardFont;
+}
+
+void QmlWidget::setColor(QString &color)
+{
+    boardColor = color;
+    qDebug() << boardColor;
+}
+
 void QmlWidget::generateFrames()
 {
     //generate 500 frames
@@ -181,4 +204,14 @@ bool QmlWidget::IsPlay() const
 {
     return isPlay;
 }
+/*
+QString QmlWidget::getColor()
+{
+    return boardFontColor;
+}
 
+QString QmlWidget::getFont()
+{
+    return boardFont;
+}
+*/

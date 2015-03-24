@@ -111,21 +111,57 @@ void MainWindow::on_action_Font_triggered()
 {   //call QtFontDialog & setFont to all elements (this)
     bool ok;
     QFont font;
-    font = QFontDialog::getFont(&ok, QFont( "Times", 10 ), this);
+    font = QFontDialog::getFont(&ok, QFont("Times",10,1,false), this);
     if (!ok)
         return;
+    ui->menuBar->setFont(font);
+    ui->textEdit->setFont(font);
     setFont(font);
+}
+
+void MainWindow::on_action_Board_Font_triggered()
+{
+    bool ok;
+    QFont font;
+    font = QFontDialog::getFont(&ok, QFont("Times",10,1,false), this);
+    if (!ok)
+        return;
+
+    QString qmlFont;
+    QFontInfo fontInf(font);
+    qmlFont = QString::number(fontInf.pointSize()) + "pt \"" + font.family() + "\"";
+    mpQmlWidget.setFont(qmlFont);
 }
 
 void MainWindow::on_action_Reset_default_triggered()
 {   //set font to menuBar: Times, 8 pt, normal
-    ui->menuBar->setFont(QFont("Times",8,1,false));
+    QFont font = (QFont("Times",10,1,false));
+    ui->menuBar->setFont(font);
+    ui->textEdit->setFont(font);
+    ui->textEdit->setTextColor("#000000");
+    QString temp = ui->textEdit->toPlainText();
+    ui->textEdit->clear();
+    ui->textEdit->insertPlainText(temp);
+    setFont(font);
 }
 
 void MainWindow::on_action_Color_triggered()
-{   //call QtColorDialog
+{
     QColor colorm;
     colorm = QColorDialog::getColor();
+    QString col = colorm.name();
+    ui->textEdit->setTextColor(col);
+    QString temp = ui->textEdit->toPlainText();
+    ui->textEdit->clear();
+    ui->textEdit->insertPlainText(temp);
+}
+
+void MainWindow::on_action_Board_Color_triggered()
+{
+    QColor colorm;
+    colorm = QColorDialog::getColor();
+    QString col = colorm.name();
+    mpQmlWidget.setColor(col);
 }
 
 void MainWindow::on_action_Undo_triggered()
@@ -430,7 +466,7 @@ void MainWindow::onTextChanged()
     /*if(!ui->textEdit->toPlainText().isEmpty())
         this->inputText += ui->textEdit->toPlainText().at(ui->textEdit->toPlainText().size() - 1);
     mpQmlWidget.setDrawText(inputText);*/
-    //mpQmlWidget.setDrawText(ui->textEdit->toPlainText());
+    mpQmlWidget.setDrawText(ui->textEdit->toPlainText());
     emit mpQmlWidget.drawTextChanged();
     //mpQmlWidget.Encode(mpQmlWidget.grabFramebuffer());
     /*mpGLWidget->textArray.clear();

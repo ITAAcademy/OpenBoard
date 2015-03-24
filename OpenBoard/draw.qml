@@ -206,11 +206,10 @@ Item{
                 var pt = 36;
                 var font = "LC Chalk";
                // console.debug(cFontLoader.status);
-                context.font = pt + "pt \"" + font + "\"";
-                context.fillStyle = "#FFFFFF";
+                context.font = forma.getFont();//pt + "pt \"" + font + "\"";
+                context.fillStyle = forma.getColor();
                 wrapText(context, forma.drawText, marginLeft, marginTop + pt, maxWidth, lineHeight + pt);
 
         }
-
     }
 }

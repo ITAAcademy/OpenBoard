@@ -45,6 +45,10 @@ struct DrawData{
 
 class QmlWidget : public QQuickWidget
 {
+
+    QString boardFont;
+    QString boardColor;
+
     Q_OBJECT
     Q_PROPERTY(QString  drawText READ getDrawText WRITE setDrawText NOTIFY drawTextChanged)
 public:
@@ -65,6 +69,10 @@ signals:
     void drawTextChanged();
 public slots:
     void onState(Encoder::State state);
+    Q_INVOKABLE QString getFont();
+    Q_INVOKABLE QString getColor();
+    void setFont(QString &font);
+    void setColor(QString &color);
 private:
     QString drawText;
     Recorder rec;

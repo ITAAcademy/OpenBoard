@@ -476,7 +476,7 @@
      <x>0</x>
      <y>0</y>
      <width>600</width>
-     <height>21</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -510,6 +510,8 @@
     </property>
     <addaction name="action_Font"/>
     <addaction name="action_Color"/>
+    <addaction name="action_Board_Font"/>
+    <addaction name="action_Board_Color"/>
     <addaction name="separator"/>
     <addaction name="action_Reset_default"/>
    </widget>
@@ -735,7 +737,7 @@
    </property>
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/icons/stop-icon.png</normaloff>:/icons/stop-icon.png</iconset>
+     <normaloff>:/icons/ToolBar-color.png</normaloff>:/icons/ToolBar-color.png</iconset>
    </property>
    <property name="text">
     <string>S&amp;top</string>
@@ -870,6 +872,24 @@
    </property>
    <property name="shortcut">
     <string>Alt+Q</string>
+   </property>
+  </action>
+  <action name="action_Board_Font">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/b-font-x-generic-icon.png</normaloff>:/icons/b-font-x-generic-icon.png</iconset>
+   </property>
+   <property name="text">
+    <string>Board Font</string>
+   </property>
+  </action>
+  <action name="action_Board_Color">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/colors-iconB.png</normaloff>:/icons/colors-iconB.png</iconset>
+   </property>
+   <property name="text">
+    <string>Board Color</string>
    </property>
   </action>
  </widget>

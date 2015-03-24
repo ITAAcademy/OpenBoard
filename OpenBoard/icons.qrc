@@ -26,5 +26,7 @@
         <file>font/Comic_Sans_MS.ttf</file>
         <file>font/DS_VTCorona_Cyr.ttf</file>
         <file>font/Segoe_Script_Bold.ttf</file>
+        <file>icons/colors-iconB.png</file>
+        <file>icons/b-font-x-generic-icon.png</file>
     </qresource>
 </RCC>

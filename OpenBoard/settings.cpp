@@ -25,6 +25,7 @@ void pSettings::saveSettings()
     mSettings->setValue("FirstRun/IsRunFirst",  true);
     mSettings->setValue("MainWindow/title",     mainWindowTitle);
     mSettings->setValue("MainWindow/position",  mainWindowRect);
+    mSettings->setValue("MainWindow/color",     mainWindowColor);
     mSettings->setValue("MainWindow/font",      mainWindowFont.toString());
 }
 
@@ -38,8 +39,10 @@ void pSettings::loadSettings()
 
     mainWindowTitle = mSettings->value("MainWindow/title")              .toString();
     mainWindowRect  = mSettings->value("MainWindow/position")           .toRect();
+    mainWindowColor = mSettings->value("MainWindow/color")              .toString();
     mainWindowFont.fromString(mSettings->value("MainWindow/font")       .toString());
 }
+
 
 
 
@@ -53,11 +56,25 @@ void pSettings::setMainWindowRect(const QRect &aRect)
     mainWindowRect = aRect;
 }
 
+void pSettings::setMainWindowColor(const QColor &aColor)
+{
+    mainWindowColor = aColor;
+}
+
 void pSettings::setMainWindowFont(const QFont &aFont)
 {
     mainWindowFont = aFont;
 }
 
+void pSettings::setBoardFont(const QFont &bFont)
+{
+    boardFont = bFont;
+}
+
+void pSettings::setBoardFontColor(const QColor &bColor)
+{
+    boardFontColor = bColor;
+}
 
 
 const bool &pSettings::FirstRun()const
@@ -75,9 +92,24 @@ const QRect &pSettings::getMainWindowRect()const
     return mainWindowRect;
 }
 
+const QColor &pSettings::getMainWindowColor() const
+{
+    return mainWindowColor;
+}
+
 const QFont &pSettings::getMainWindowFont()const
 {
     return mainWindowFont;
+}
+
+const QFont &pSettings::getBoardFont()const
+{
+    return boardFont;
+}
+
+const QColor &pSettings::getBoardFontColor() const
+{
+    return boardFontColor;
 }
 
 
