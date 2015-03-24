@@ -101,6 +101,9 @@ private:
 
     bool saveFile();
     bool maybeSave();
+
+// parsing
+    QVector<QString> textParsing(QString text);
 };
 
 #endif // MAINWINDOW_H

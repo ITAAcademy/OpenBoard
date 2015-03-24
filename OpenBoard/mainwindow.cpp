@@ -392,9 +392,9 @@ void MainWindow::on_clearBtn_clicked()
 }
 void MainWindow::onTextChanged()
 {
-    QString str=ui->textEdit->toPlainText();
+    QString str = ui->textEdit->toPlainText();
     mpGLWidget->textArray.clear();
-    mpGLWidget->textArray.append(str);
+    mpGLWidget->textArray = textParsing(str);
     mpGLWidget->updateGL();
    if (mpGLWidget->mIsAnimatedStart){
       mpGLWidget->pauseAnimated();
@@ -404,7 +404,7 @@ void MainWindow::on_action_Play_triggered()
 {
     QString str=ui->textEdit->toPlainText();
     mpGLWidget->textArray.clear();
-    mpGLWidget->textArray.append(str);
+    mpGLWidget->textArray = textParsing(str);
     mpGLWidget->setFixedSize(GLWIDGET_SIZE);
     mpGLWidget->move(pos().x() + width(), pos().y());
     mpGLWidget->show();
@@ -417,4 +417,72 @@ void MainWindow::on_action_Stop_triggered()
 void MainWindow::on_action_Pause_triggered()
 {
     mpGLWidget->pauseAnimated();
+}
+
+QVector<QString> MainWindow::textParsing(QString text)
+{
+    QVector<QString> text_pars;
+    text_pars.clear();
+
+    for(int i = 0; i < text.length(); i++)
+    {
+        QString str = NULL;
+        str.append(text[i]);
+        str.append(text[i+1]);
+
+        if(str == (QString)"\\n")
+        {
+            text_pars.push_back(str);
+            i++;
+            continue;
+        }
+        if(str == (QString)"\\a")
+        {
+            text_pars.push_back(str);
+            i++;
+            continue;
+        }
+        if(str == (QString)"\\-")
+        {
+            text_pars.push_back(str);
+            i++;
+            continue;
+        }
+        if(str == (QString)"\\<")
+        {
+            text_pars.push_back(str);
+            i++;
+            continue;
+        }
+        if(str == (QString)"\\\\")
+        {
+            text_pars.push_back(str);
+            i++;
+            continue;
+        }
+        if(str == (QString)"\\p")
+        {
+            str.append(text[i+2]);
+            str.append(text[i+3]);
+            text_pars.push_back(str);
+            i += 3;
+            continue;
+        }
+        if(str == (QString)"\\c")
+        {
+            for(int j=2; j<=7; j++)
+                str.append(text[i+j]);
+            text_pars.push_back(str);
+            i += 7;
+            continue;
+        }
+        else
+        {
+            str.clear();
+            str.append(text[i]);
+            text_pars.push_back(str);
+        }
+    }
+
+    return text_pars;
 }

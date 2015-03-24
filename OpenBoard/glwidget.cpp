@@ -1,8 +1,8 @@
-﻿#include "glwidget.h"
-#include <QFont>
+﻿#include <QFont>
 #include <QDebug>
 #include <QThread>
 #include <QChar>
+#include "glwidget.h"
 
 static GLWidget *msRender = 0;
 
@@ -12,11 +12,10 @@ GLWidget *GLWidget::glRender()
 }
 
 GLWidget::GLWidget()
-    :strstr()
-    ,index(0)
-    ,mIsAnimatedStart(false)
-
 {
+    strstr.clear();
+    index = 0;
+    mIsAnimatedStart = false;
     msRender = this;
 }
 
@@ -43,28 +42,17 @@ void GLWidget::paintGL()
    glOrtho( 0.0, width(), height(), 0.0, -1.0, 1.0 );
    glMatrixMode( GL_MODELVIEW );
 
-   //for rendering text into widget in two cases: if mIsAnimatedStart=true and mIsAnimatedStart=false
-   for(int i = 0; i < textArray.size(); ++i){
-        QString tmp = textArray[i];
-        if (mIsAnimatedStart){
-          if(index <= tmp.length()) {
-              strstr.append(tmp[index]);
-              int x = 10;
-              drawText(strstr,x,i);
-              x += 10;
-              index += 1;
-        }else  {
-            mTimer->stop();
-            drawText(strstr,1,1);
-            index = 0;
-            mIsAnimatedStart = false;
-        }
-        }else{
-          drawText(tmp,1,1);
-        }
-        ++i;
-      }
+   //output parsing line on canvas
+   for(int i = 0; i < textArray.size(); i++)
+   {
+       strstr.append(textArray[i]);
+   }
+   if(mIsAnimatedStart)
+       drawText(strstr,1,1);
+
+   strstr.clear();
 }
+
 void GLWidget::resizeGL()
 {
 }

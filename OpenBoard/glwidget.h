@@ -13,7 +13,16 @@ class GLWidget : public QGLWidget
 public:
     GLWidget();
 
+private:
+    int index;
+
+    QElapsedTimer mElapsedTimer;
+    QTimer *mTimer;
+
 public:
+    QVector<QString> textArray;
+    QString strstr;
+
     bool    mIsAnimatedStart;
 
     static GLWidget *glRender();
@@ -22,21 +31,10 @@ public:
     void stopAnimated();
     void pauseAnimated();
 
-    QVector<QString> textArray;
-    QString strstr;
-
-
 protected:
     void initializeGL();
     void paintGL();
     void resizeGL();
-
-
-private:
-    int     index;
-
-    QElapsedTimer mElapsedTimer;
-    QTimer *mTimer;
 
 };
 
