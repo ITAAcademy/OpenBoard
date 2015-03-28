@@ -42,9 +42,10 @@ MainWindow::MainWindow(QWidget *parent) :
         mSettings.setMainWindowFont(font());
         mSettings.setMainWindowColor(this->ui->textEdit->textColor());
         mSettings.setBoardFontColor(QColor::QColor ("#00ff00"));
+        mSettings.setBoardFont(QFont("Times",10,1,false));
     }
 
-    else
+  //  else
     {
 
         setWindowTitle(mSettings.getMainWindowTitle());
@@ -52,6 +53,7 @@ MainWindow::MainWindow(QWidget *parent) :
         setFont(mSettings.getMainWindowFont());
 this->ui->textEdit->setTextColor(mSettings.getMainWindowColor());
         mpQmlWidget.setColor(mSettings.getBoardFontColor().name());
+        mpQmlWidget.setFont(mSettings.getBoardFont().toString());
     }
 }
 
@@ -61,6 +63,7 @@ MainWindow::~MainWindow()
     mSettings.setMainWindowFont(font());
     mSettings.setMainWindowColor(this->ui->textEdit->textColor());
     mSettings.setBoardFontColor(QColor::QColor (mpQmlWidget.getColor()));
+    mSettings.setBoardFont(mpQmlWidget.getFont());
     delete ui;
 }
 
