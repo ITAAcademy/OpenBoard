@@ -13,7 +13,8 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    mpGLWidget = new GLWidget;
+  //  mpGLWidget = new GLWidget;
+    mpQmlWidget = new QmlWidget();
 
     mTimer = new QTimer(this);
     mTimerClr = new QTimer(this);
@@ -59,9 +60,10 @@ MainWindow::~MainWindow()
 
 void MainWindow::closeEvent(QCloseEvent*)
 {
-    mpGLWidget->close();
-    mpQmlWidget.close();
-    delete mpGLWidget;
+   // mpGLWidget->close();
+    mpQmlWidget->close();
+    delete mpQmlWidget;
+    //delete mpGLWidget;
 }
 
 void MainWindow::on_action_Show_triggered()
@@ -69,12 +71,16 @@ void MainWindow::on_action_Show_triggered()
 /*
  * QML
 */
-    mpQmlWidget.show();
-    mpQmlWidget.setFixedSize(GLWIDGET_SIZE);
-    mpQmlWidget.move(pos().x() + width() + WINDOW_MARGING, pos().y());
+   // mpQmlWidget = new QmlWidget();
+    mpQmlWidget->show();
+    mpQmlWidget->setFixedSize(GLWIDGET_SIZE);
+    mpQmlWidget->move(pos().x() + width() + WINDOW_MARGING, pos().y());
     ui->action_Pause->setEnabled(true);
     ui->action_Play->setEnabled(true);
     ui->action_Stop->setEnabled(true);
+    //mpQmlWidget.create();
+    mpQmlWidget->setDrawText(ui->textEdit->toPlainText());
+    emit mpQmlWidget->drawTextChanged();
 
 /*
     mpGLWidget->setFixedSize(GLWIDGET_SIZE);
@@ -88,9 +94,11 @@ void MainWindow::on_action_Show_triggered()
 void MainWindow::on_action_Hide_triggered()
 {
    // mpGLWidget->hide();
-    if(mpQmlWidget.IsPlay())
-        mpQmlWidget.stopAnimated();
-    mpQmlWidget.hide();
+    if(mpQmlWidget->IsPlay())
+        mpQmlWidget->stopAnimated();
+    mpQmlWidget->hide();
+    mpQmlWidget->close();
+    delete mpQmlWidget;
     ui->action_Pause->setEnabled(false);
     ui->action_Play->setEnabled(false);
     ui->action_Stop->setEnabled(false);
@@ -99,12 +107,12 @@ void MainWindow::on_action_Hide_triggered()
 
 void MainWindow::moveEvent(QMoveEvent *event)
 {
-    mpQmlWidget.move(pos().x() + width() + WINDOW_MARGING, pos().y());
+    mpQmlWidget->move(pos().x() + width() + WINDOW_MARGING, pos().y());
 }
 
 void MainWindow::resizeEvent(QResizeEvent *event)
 {
-    mpQmlWidget.move(pos().x() + width() + WINDOW_MARGING, pos().y());
+    mpQmlWidget->move(pos().x() + width() + WINDOW_MARGING, pos().y());
 }
 
 void MainWindow::on_action_Font_triggered()
@@ -430,8 +438,9 @@ void MainWindow::onTextChanged()
     /*if(!ui->textEdit->toPlainText().isEmpty())
         this->inputText += ui->textEdit->toPlainText().at(ui->textEdit->toPlainText().size() - 1);
     mpQmlWidget.setDrawText(inputText);*/
-    //mpQmlWidget.setDrawText(ui->textEdit->toPlainText());
-    emit mpQmlWidget.drawTextChanged();
+    /*mpQmlWidget->setDrawText(ui->textEdit->toPlainText());
+    emit mpQmlWidget->drawTextChanged();*/
+    mpQmlWidget->drawWT(ui->textEdit->toPlainText().at(ui->textEdit->toPlainText().length() - 1));
     //mpQmlWidget.Encode(mpQmlWidget.grabFramebuffer());
     /*mpGLWidget->textArray.clear();
     mpGLWidget->textArray.append(str);
@@ -442,9 +451,9 @@ void MainWindow::onTextChanged()
 }
 void MainWindow::on_action_Play_triggered()
 {
-    if(mpQmlWidget.IsPlay())
+    if(mpQmlWidget->IsPlay())
         ui->action_Play->setText("Play");
-    mpQmlWidget.drawAnimated();
+    mpQmlWidget->drawAnimated();
    /* mpGLWidget->textArray.clear();
     mpGLWidget->textArray.append(str);
     mpGLWidget->setFixedSize(GLWIDGET_SIZE);
@@ -455,14 +464,14 @@ void MainWindow::on_action_Play_triggered()
 }
 void MainWindow::on_action_Stop_triggered()
 {
-    mpQmlWidget.stopAnimated();
+    mpQmlWidget->stopAnimated();
     ui->action_Play->setText("Play");
    // mpGLWidget->stopAnimated();
 }
 void MainWindow::on_action_Pause_triggered()
 {
     ui->action_Play->setText("Resume");
-    mpQmlWidget.pauseAnimated();
+    mpQmlWidget->pauseAnimated();
     //mpGLWidget->pauseAnimated();
 }
 

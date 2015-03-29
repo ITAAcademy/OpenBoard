@@ -47,19 +47,23 @@ class QmlWidget : public QQuickWidget
 {
     Q_OBJECT
     Q_PROPERTY(QString  drawText READ getDrawText WRITE setDrawText NOTIFY drawTextChanged)
+
 public:
     explicit QmlWidget(QWidget *parent = 0);
     ~QmlWidget();
     void moveEvent(QMoveEvent *event);
+    void paintEvent(QPaintEvent * event);
     void drawMyText(QString str);
     void drawAnimated();
     void stopAnimated();
     void pauseAnimated();
+    void drawWT( QString str );
     VideoCodecSettings videoCodecSettings() const;
     AudioCodecSettings audioCodecSettings() const;
-    void setDrawText( QString &data );
+    void setDrawText( QString data );
     //Q_INVOKABLE void Encode( QImage img );
     QString getDrawText();
+    void recreate();
 
 signals:
     void drawTextChanged();
@@ -74,12 +78,14 @@ private:
     Recorder *m_recorder;
     void generateFrames();
     bool isPlay;
+    QObject *canvas;
     /*QtAV::VideoOutput *m_vo;
     QtAV::AVPlayer *m_player;*/
 public:
     //DrawData        *drawData;
     bool IsPlay() const;
 };
+
 
 
 

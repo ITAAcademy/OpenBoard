@@ -94,8 +94,8 @@ private:
 
     Ui::MainWindow  *ui;
 
-    GLWidget        *mpGLWidget;
-    QmlWidget       mpQmlWidget;
+ //   GLWidget        *mpGLWidget;
+    QmlWidget       *mpQmlWidget;
 
     QString         curFile;
     pSettings       mSettings;

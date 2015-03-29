@@ -1,4 +1,4 @@
-QT       += widgets core gui opengl quick widgets quickwidgets #av avwidgets
+QT       += widgets core gui opengl quick widgets quickwidgets  #av avwidgets
 
 SOURCES += main.cpp\
         mainwindow.cpp \
@@ -31,10 +31,15 @@ unix {
     QMAKE_CXXFLAGS += -std=c++0x
 }
 
-CONFIG(debug, debug|release) {
-    win32: LIBS += -lqtmeld1
-    unix: LIBS += -lqtmeld
-} else {
-    win32: LIBS += -lqtmel1
-    unix: LIBS += -lqtmel
-}
+INCLUDEPATH += G:/havok/cv/opencv/build/include
+LIBS += "G:/havok/cv/opencv/build/x86/vc10/bin/*.dll"
+
+
+INCLUDEPATH += F:/QA/QtMEL-master/include
+LIBS += "F:/QA/QtMEL-master/libsQt5/*.dll"
+
+
+
+OTHER_FILES += \
+    boarFunc.js \
+    draw.qml

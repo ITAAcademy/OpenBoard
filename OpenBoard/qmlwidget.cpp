@@ -1,20 +1,27 @@
 #include "qmlwidget.h"
-
-
-
+/*
+ *scroll
+ *
+int k = canvas->property("scroll").toInt() - 10;
+canvas->setProperty("scroll", k);
+*/
 QmlWidget::QmlWidget(QWidget *parent) :
     QQuickWidget(parent)
 {
     //qRegisterMetaType<DrawData>("DrawData");
     engine()->rootContext()->setContextProperty(QLatin1String("forma"), this);
+
     isPlay = false;
-    setSource(QUrl("qrc:/draw.qml"));
+    setSource(QUrl("../OpenBoard/draw.qml"));
+
     this->setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint | Qt::WindowTitleHint);
     this->setResizeMode(QQuickWidget::SizeRootObjectToView );
     m_screenGrabber = new ScreenGrabber();
     m_audioGrabber = new AudioGrabber();
     m_encoder = new Encoder();
     m_recorder = new Recorder();
+    canvas = rootObject()->findChild<QObject *>("mcanvas");
+
     //setCursor(Qt::NoArrow);
     QPixmap pix(1,1);
     QColor color(0,0,0,0);
@@ -27,6 +34,7 @@ QmlWidget::QmlWidget(QWidget *parent) :
     */
     connect(m_recorder->encoder(), SIGNAL(stateChanged(Encoder::State)), this, SLOT(onState(Encoder::State)));
     connect(m_encoder, SIGNAL(stateChanged(Encoder::State)), this, SLOT(onState(Encoder::State)));
+
 
     /*
      *
@@ -64,12 +72,20 @@ void QmlWidget::moveEvent(QMoveEvent *event)
     m_screenGrabber->setCaptureRect(captureRect);
 }
 
+void QmlWidget::paintEvent(QPaintEvent *event)
+{
+    m_encoder->encodeVideoFrame(this->grabFramebuffer());
+    //this is needed to prevent RAM overflow on some computers
+
+
+}
+
 QString QmlWidget::getDrawText()
 {
     return drawText;
 }
 
-void QmlWidget::setDrawText(QString &data)
+void QmlWidget::setDrawText(QString data)
 {
     drawText = data;
 }
@@ -123,21 +139,33 @@ void QmlWidget::drawAnimated()
     if(!fileName.size())
         return;
    // QString filePath = ui->filePathLabel->text() == tr("None") ? "" : ui->filePathLabel->text();
+
+    m_recorder->encoder()->setFilePath(fileName);
+    /*
     m_recorder->setImageGrabber(m_screenGrabber);
     m_recorder->setAudioGrabber(m_audioGrabber);
-    m_recorder->encoder()->setFilePath(fileName);
-
     QRect captureRect(this->pos(), this->size() );
     m_screenGrabber->setCaptureRect(captureRect);
     m_recorder->encoder()->setVideoSize(captureRect.size());
-    m_recorder->encoder()->setEncodingMode(/*Encoder::VideoAudioMode :*/ Encoder::VideoMode);
+    m_recorder->encoder()->setEncodingMode( Encoder::VideoMode);
     m_recorder->start();
+   */
+    m_encoder->setVideoCodecSettings(videoCodecSettings());
+    m_encoder->setEncodingMode(Encoder::VideoMode);
+    m_encoder->setVideoCodec(EncoderGlobal::H264);
+    m_encoder->setAudioCodec(EncoderGlobal::MP3);
+    m_encoder->setOutputPixelFormat(EncoderGlobal::YUV420P);
+    m_encoder->setFilePath(qApp->applicationDirPath() + "/video.avi");
+    m_encoder->setVideoSize(this->size());
+    m_encoder->setFixedFrameRate(25);
+    m_encoder->start();
     isPlay = true;
 }
 
 void QmlWidget::stopAnimated()
 {
-    m_recorder->stop();
+    m_encoder->stop();
+    //m_recorder->stop();
     isPlay = false;
 }
 
@@ -148,22 +176,21 @@ void QmlWidget::pauseAnimated()
 
 void QmlWidget::onState(Encoder::State state)
 {
-    /*if (state == Encoder::ActiveState) {
-            generateFrames();
-        }*/
-}
 
+   //     generateFrames();
+
+}
 void QmlWidget::generateFrames()
 {
     //generate 500 frames
 
+    //generate 500 frames
     for (int i = 0; i < 500; ++i) {
         QImage frame(QSize(1024, 768), QImage::Format_RGB16);
         frame.fill(Qt::yellow);
         QPainter painter(&frame);
         painter.setPen(QPen(Qt::red, 3));
         painter.drawRect(i, i, 30, 30);
-        //ui->statusBar->showMessage(QString::number(i/5) + "%");
         m_encoder->encodeVideoFrame(frame);
 
         //this is needed to prevent RAM overflow on some computers
@@ -182,3 +209,17 @@ bool QmlWidget::IsPlay() const
     return isPlay;
 }
 
+void QmlWidget::recreate()
+{
+    this->create();
+}
+
+
+void QmlWidget::drawWT(QString str)
+{
+    QVariant returnedValue;
+    QVariant msg = str;
+    QMetaObject::invokeMethod(canvas, "bDrawWT",
+            Q_RETURN_ARG(QVariant, returnedValue),
+            Q_ARG(QVariant, msg));
+}
