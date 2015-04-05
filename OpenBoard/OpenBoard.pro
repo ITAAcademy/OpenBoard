@@ -31,8 +31,9 @@ unix {
     QMAKE_CXXFLAGS += -std=c++0x
 }
 
-INCLUDEPATH += F:/QA/QtMEL-master/include
-LIBS += "F:/QA/QtMEL-master/libsQt5/*.dll"
+INCLUDEPATH += ThirdPart/include
+LIBS += "C:/Projects/OpenBoard/OpenBoard/ThirdPart/*.dll"
+
 
 OTHER_FILES += \
     boarFunc.js \
