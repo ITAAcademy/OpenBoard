@@ -42,7 +42,10 @@ QmlWidget::QmlWidget(QWidget *parent) :
     canvas = rootObject()->findChild<QObject *>("mcanvas");
     maxWidth = width() - marginLeft;
     QMetaObject::invokeMethod(canvas, "init");
-
+    QFont canvasFont(font);
+    canvasFont.setPixelSize(20);
+    setTextFont(canvasFont);
+    setFillColor(QColor(255,255,255));
 
     /*
      *cursor ALPHA
@@ -62,8 +65,7 @@ QmlWidget::QmlWidget(QWidget *parent) :
 QmlWidget::~QmlWidget()
 {
     delete m_encoder;
-    if(fMetrics != 0)
-        delete fMetrics;
+    delete fMetrics;
 }
 
 void QmlWidget::moveEvent(QMoveEvent *event)
@@ -200,7 +202,7 @@ void QmlWidget::crossOutLastSymbol()
         deltaY++;
     }
 
-    tx = maxWidth *deltaY - (widht - x + marginLeft);
+    tx = (maxWidth - marginLeft)*deltaY - (widht - x  + marginLeft);
 
     ty -= (lineHeight + pt)*deltaY;
 
@@ -238,9 +240,9 @@ void QmlWidget::setTextFont(const QFont &value)
 {
     textFont = value;
     fMetrics = new QFontMetrics(value);
-    pt = value.pointSize();
+    pt = value.pixelSize();
     QVariant a = QVariant(value.family());
-    QVariant b = QVariant(value.pointSize());
+    QVariant b = QVariant(value.pixelSize());
     QVariant c = QVariant(" "); //style
     QMetaObject::invokeMethod(canvas, "initFont",
             Q_ARG(QVariant, b),
@@ -321,7 +323,7 @@ void QmlWidget::drawWrapText(QString str)
     deleteWT = 0;
     QVariant returnedValue;
     QVariant msg = str;
-    int widht = fMetrics->width(str)*1.5 ;//+ fMetrics->leftBearing(str.at(0)) + fMetrics->rightBearing(str.at(0));
+    int widht = fMetrics->width(str)*1.5 + fMetrics->leftBearing(str.at(0)) + fMetrics->rightBearing(str.at(0));
 
     if(widht + x > maxWidth)
     {

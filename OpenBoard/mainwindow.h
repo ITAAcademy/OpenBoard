@@ -52,6 +52,8 @@ private slots:
 //    settings
     void on_action_Font_triggered();
     void on_action_Color_triggered();
+    void on_action_Board_Font_triggered();
+    void on_action_Board_Color_triggered();
     void on_action_Reset_default_triggered();
 
 //    edit

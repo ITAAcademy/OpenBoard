@@ -25,5 +25,7 @@
         <file>font/Comic_Sans_MS.ttf</file>
         <file>font/DS_VTCorona_Cyr.ttf</file>
         <file>font/Segoe_Script_Bold.ttf</file>
+        <file>boarFunc.js</file>
+        <file>draw.qml</file>
     </qresource>
 </RCC>

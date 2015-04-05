@@ -31,14 +31,8 @@ unix {
     QMAKE_CXXFLAGS += -std=c++0x
 }
 
-INCLUDEPATH += G:/havok/cv/opencv/build/include
-LIBS += "G:/havok/cv/opencv/build/x86/vc10/bin/*.dll"
-
-
 INCLUDEPATH += F:/QA/QtMEL-master/include
 LIBS += "F:/QA/QtMEL-master/libsQt5/*.dll"
-
-
 
 OTHER_FILES += \
     boarFunc.js \

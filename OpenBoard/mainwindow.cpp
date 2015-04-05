@@ -32,29 +32,43 @@ MainWindow::MainWindow(QWidget *parent) :
   //  drawWidget->setVisible(false);
   //  on_action_Show_triggered();
 
+    ui->action_Board_Color->setEnabled(false);
+    ui->action_Board_Font->setEnabled(false);
 
     if(mSettings.FirstRun())
-    {
-        setGeometry(QRect(WINDOW_POS));
-        setFont(QFont("Times",10,1,false));
+        {
+            setGeometry(QRect(WINDOW_POS));
+            setFont(QFont("Tahoma",10,1,false));
 
-        mSettings.setMainWindowRect(geometry());
-        mSettings.setMainWindowTitle(windowTitle());
-        mSettings.setMainWindowFont(font());
-    }
+            mSettings.setMainWindowRect(geometry());
+            mSettings.setMainWindowTitle(windowTitle());
+            mSettings.setMainWindowFont(font());
+            mSettings.setMainWindowColor(this->ui->textEdit->textColor());
+            QColor col (255,255,255);
+            mSettings.setBoardFontColor(QColor(255,255,255));
 
-    else
-    {
-        setWindowTitle(mSettings.getMainWindowTitle());
-        setGeometry(mSettings.getMainWindowRect());
-        setFont(mSettings.getMainWindowFont());
-    }
+
+            QFont sfont("Tahoma", 10);
+            mSettings.setBoardFont(QFont("Tahoma",20,1,false));
+            mSettings.saveSettings();
+        }
+
+      //  else
+        {
+
+            setWindowTitle(mSettings.getMainWindowTitle());
+            setGeometry(mSettings.getMainWindowRect());
+            this->ui->textEdit->setTextColor(mSettings.getMainWindowColor());
+this->ui->textEdit->setFont(mSettings.getMainWindowFont());
+
+
+        }
 }
 
 MainWindow::~MainWindow()
 {
     mSettings.setMainWindowRect(geometry());
-    mSettings.setMainWindowFont(font());
+
     delete ui;
 }
 
@@ -63,15 +77,20 @@ void MainWindow::closeEvent(QCloseEvent*)
    // mpGLWidget->close();
     mpQmlWidget->close();
     delete mpQmlWidget;
+
     //delete mpGLWidget;
 }
 
 void MainWindow::on_action_Show_triggered()
 {
+    if (ui->action_Board_Color->isEnabled()==false)
+   ui->action_Board_Color->setEnabled(true);
+    if (ui->action_Board_Font->isEnabled()==false)
+   ui->action_Board_Font->setEnabled(true);
 /*
  * QML
 */
-   // mpQmlWidget = new QmlWidget();
+    mpQmlWidget = new QmlWidget();
     mpQmlWidget->show();
     mpQmlWidget->setFixedSize(GLWIDGET_SIZE);
     mpQmlWidget->move(pos().x() + width() + WINDOW_MARGING, pos().y());
@@ -80,6 +99,13 @@ void MainWindow::on_action_Show_triggered()
     ui->action_Stop->setEnabled(true);
     //mpQmlWidget.create();
     mpQmlWidget->setDrawText(ui->textEdit->toPlainText());
+    /*
+     * init
+     */
+
+    mpQmlWidget->setTextFont(mSettings.getBoardFont());
+    mpQmlWidget->setFillColor(mSettings.getBoardFontColor());
+
     emit mpQmlWidget->drawTextChanged();
 
 /*
@@ -102,6 +128,8 @@ void MainWindow::on_action_Hide_triggered()
     ui->action_Pause->setEnabled(false);
     ui->action_Play->setEnabled(false);
     ui->action_Stop->setEnabled(false);
+   ui->action_Board_Color->setEnabled(false);
+   ui->action_Board_Font->setEnabled(false);
 
 }
 
@@ -122,18 +150,79 @@ void MainWindow::on_action_Font_triggered()
     font = QFontDialog::getFont(&ok, QFont( "Times", 10 ), this);
     if (!ok)
         return;
-    setFont(font);
+  // setFont(font);
+    ui->textEdit->setFont(font);
+
+    mSettings.setMainWindowFont(font);
+
+    ///!!!!!!!!!
+    /*// bool ok;
+    QFont font;
+    font = QFontDialog::getFont(&ok, QFont("Tahoma",10,1,false), this);
+    if (!ok)
+        return;
+
+    QString qmlFont;
+    QFontInfo fontInf(font);
+    qmlFont = QString::number(fontInf.pointSize()) + "pt \"" + font.family() + "\"";
+    mpQmlWidget.setFont(qmlFont);   */
+}
+
+//!!!!!!!!!!!!!!!!!!
+//!
+void MainWindow::on_action_Board_Font_triggered()
+{
+    bool ok;
+    QFont font;
+    font = QFontDialog::getFont(&ok, QFont("Tahoma",10,1,false), this);
+    if (!ok)
+        return;
+
+ /*   QString qmlFont;
+    QFontInfo fontInf(font);
+    qmlFont = QString::number(fontInf.pointSize()) + "pt \"" + font.family() + "\"";*/
+    mpQmlWidget->setTextFont(font);
+   // mSettings.setBoardFont(font);
+   mSettings.setBoardFont(font);
 }
 
 void MainWindow::on_action_Reset_default_triggered()
-{   //set font to menuBar: Times, 8 pt, normal
-    ui->menuBar->setFont(QFont("Times",8,1,false));
+{
+    QFont font = (QFont("Tahoma",10,1,false));
+        ui->menuBar->setFont(font);
+        ui->textEdit->setFont(font);
+        ui->textEdit->setTextColor("#000000");
+        QString temp = ui->textEdit->toPlainText();
+        ui->textEdit->clear();
+        ui->textEdit->insertPlainText(temp);
+       // setFont(font);
 }
 
 void MainWindow::on_action_Color_triggered()
 {   //call QtColorDialog
     QColor colorm;
     colorm = QColorDialog::getColor();
+    //!!!!!!!!!!!
+    QString col = colorm.name();
+        ui->textEdit->setTextColor(col);
+        QString temp = ui->textEdit->toPlainText();
+        ui->textEdit->clear();
+        ui->textEdit->insertPlainText(temp);
+
+          mSettings.setMainWindowColor(colorm);
+}
+
+//!!!!!!!!!!!!!
+//!
+ void MainWindow::on_action_Board_Color_triggered()
+{
+    QColor colorm;
+    colorm = QColorDialog::getColor();
+   // QString col = colorm.name();
+    mpQmlWidget->setFillColor(colorm);
+    mSettings.setBoardFontColor(colorm);
+
+
 }
 
 void MainWindow::on_action_Undo_triggered()
@@ -419,8 +508,16 @@ void MainWindow::show_color_dialog()
 }
 
 void MainWindow::on_colorBtn_clicked()
-{
+{  //!!!!!!!!!!!!!!!!
+    if(mTimerClr->isActive()) {
+            mTimerClr->stop();
 
+            QString text = ui->action_colorTB->text();
+            textColorName = colorPkr.name();
+            text += textColorName;
+            text.remove(2,1);
+            ui->textEdit->insertPlainText(text);
+        }
 //    QString text = ui->action_colorTB->text();
 //    text += textColorName;
 //    text.remove(2,1);
@@ -434,13 +531,15 @@ void MainWindow::on_clearBtn_clicked()
 }
 void MainWindow::onTextChanged()
 {
-   // DrawData temp = mpQmlWidget.getDrawData();
-    /*if(!ui->textEdit->toPlainText().isEmpty())
-        this->inputText += ui->textEdit->toPlainText().at(ui->textEdit->toPlainText().size() - 1);
-    mpQmlWidget.setDrawText(inputText);*/
-    /*mpQmlWidget->setDrawText(ui->textEdit->toPlainText());
-    emit mpQmlWidget->drawTextChanged();*/
-    mpQmlWidget->drawWT(ui->textEdit->toPlainText().at(ui->textEdit->toPlainText().length() - 1));
+    if(mpQmlWidget->isVisible() && ui->textEdit->toPlainText().length() != 0)
+        mpQmlWidget->drawWrapText(ui->textEdit->toPlainText().at(ui->textEdit->toPlainText().length() - 1));
+    /*
+    // DrawData temp = mpQmlWidget.getDrawData();
+     /*if(!ui->textEdit->toPlainText().isEmpty())
+         this->inputText += ui->textEdit->toPlainText().at(ui->textEdit->toPlainText().size() - 1);
+     mpQmlWidget.setDrawText(inputText);*/
+     /*mpQmlWidget->setDrawText(ui->textEdit->toPlainText());
+     emit mpQmlWidget->drawTextChanged();*/
     //mpQmlWidget.Encode(mpQmlWidget.grabFramebuffer());
     /*mpGLWidget->textArray.clear();
     mpGLWidget->textArray.append(str);

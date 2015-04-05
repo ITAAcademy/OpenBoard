@@ -1,19 +1,5 @@
 var context;
-var lineHeight = 25;
-var marginLeft = 20;
-var marginTop = 40;
-var maxWidth; //размер поле, где выводится текст
-var pt = 36;
-var font = "LC Chalk";
-var isWord  =  new Boolean(true);
-var x = marginLeft,y = lineHeight + pt;
-var indexW = 1;
-var indexRow = 0;
-var listWords = new String(); // вся стрічка
-var listStr = []; // номер з якої починається і-та стрічка
-listStr[0] = 0;
-var indexInLsit = 1;
-var brickWT = 0;
+
 
 var animateList = [];
 //animateList[0].text = 5;
@@ -93,7 +79,7 @@ function setCharAt(str,index,chr) {
     if(index > str.length-1) return str;
     return str.substr(0,index) + chr + str.substr(index+1);
 }
-function drawAnimationText( input/*text, delta, iterator, tx, ty, index*/)
+function fillAnimationText( input/*text, delta, iterator, tx, ty, index*/)
 {
     //var iterator = tx;
     var style = context.fillStyle;
@@ -172,47 +158,19 @@ function drawWrapText(context, text, x, y, maxWidth, lineHeight) {
         }
        // context.fillText(line, x, y);
       }
-function initFont()
-{
-    context.font = "italic "+ pt + "pt \"" + font + "\"";// "bold 10pt  \"font_name\" "
-    context.fillStyle = "#FFFFFF";
-}
+
 
 function init()
 {
     context = mainDrawElm.getContext("2d");
-    maxWidth = mainDrawElm.width - marginLeft; //размер поле, где выводится текст
-    initFont();
-}
-function isLastRow()
-{
-    if(y  + mainDrawElm.scroll*indexRow > mainDrawElm.height )
-    {
-        //context.reset();
-        //context.reset();
-        var img = context.getImageData(0, 0, mainDrawElm.width, mainDrawElm.height);
-        clear();
-        /*for(var i = 0; i < indexInLsit; i++)
-        {
-            var str = listWords.substring(listStr[i],listStr[i+1]);
-            //console.debug("i=" + i +" "     "+  index = " + indexInLsit);
-            context.fillText(str, x, y);
-            y += lineHeight + pt;
-        }*/
-        //context. putImageData(img, 0, y);
-        mainDrawElm.scroll = -(lineHeight + pt);
-        context.translate(0, mainDrawElm.scroll);
-        context.drawImage(img, 0, (lineHeight + pt)*indexRow);
-        //mainDrawElm.scroll = -1;
-
-        indexRow++;
-    }
+  //  initFont();
 }
 
-function drawWT( WT )
+
+function drawWrapText( WT )
 {
     init();
-     console.debug(lineHeight + pt  + y  + mainDrawElm.scroll*indexRow);
+  //  console.debug(lineHeight + pt  + y  + mainDrawElm.scroll*indexRow);
     var widht = context.measureText(WT).width;
     if(widht + x > maxWidth)
     {
@@ -239,7 +197,7 @@ function drawWT( WT )
     //drawWrapText(context, forma.drawText, marginLeft, marginTop + pt, maxWidth, lineHeight + pt);
 }
 
-function clear()
+function clear(y)
 {
     context.clearRect(0,0, mainDrawElm.width, y);
     //y = 0;
@@ -256,6 +214,8 @@ function brickLastWT()
     /*context.fillText("/", x - context.measureText(tWT).width, y);
     context.fillText("\\", x - context.measureText(tWT).width, y);*/
     addAnimationText("/", 1, x - context.measureText(tWT).width, y);
-    //drawAnimationText("/", 1, x - context.measureText(tWT).width, y)
+    //fillAnimationText("/", 1, x - context.measureText(tWT).width, y)
 
 }
+
+
