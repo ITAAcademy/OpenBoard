@@ -4,13 +4,17 @@ SOURCES += main.cpp\
         mainwindow.cpp \
     glwidget.cpp \
     settings.cpp \
-    qmlwidget.cpp
+    qmlwidget.cpp \
+    unit.cpp \
+    unitsumbol.cpp
 
 
 HEADERS  += mainwindow.h \
     glwidget.h \
     settings.h \
-    qmlwidget.h
+    qmlwidget.h \
+    unit.h \
+    unitsumbol.h
 
 FORMS    += mainwindow.ui
 
@@ -32,7 +36,7 @@ unix {
 }
 
 INCLUDEPATH += ThirdPart/include
-LIBS += "C:/Projects/OpenBoard/OpenBoard/ThirdPart/*.dll"
+LIBS += "C:/Project/OpenBoard/ThirdPart/*.dll"
 
 
 OTHER_FILES += \
