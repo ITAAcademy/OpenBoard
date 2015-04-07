@@ -6,7 +6,8 @@ SOURCES += main.cpp\
     settings.cpp \
     qmlwidget.cpp \
     unit.cpp \
-    unitsumbol.cpp
+    unitsumbol.cpp \
+    unitcommand.cpp
 
 
 HEADERS  += mainwindow.h \
@@ -14,7 +15,8 @@ HEADERS  += mainwindow.h \
     settings.h \
     qmlwidget.h \
     unit.h \
-    unitsumbol.h
+    unitsumbol.h \
+    unitcommand.h
 
 FORMS    += mainwindow.ui
 
@@ -36,7 +38,7 @@ unix {
 }
 
 INCLUDEPATH += ThirdPart/include
-LIBS += "C:/Project/OpenBoard/ThirdPart/*.dll"
+LIBS += "C:/Users/HOME/Downloads/libV2/libV2/*.dll"
 
 
 OTHER_FILES += \
