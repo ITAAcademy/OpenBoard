@@ -4,12 +4,17 @@ UnitSumbol::UnitSumbol() : Unit()
 {
     Size = 0;
     Color = "";
-    Type = "";
+    Font = "";
 }
 
 UnitSumbol::~UnitSumbol()
 {
 
+}
+
+void UnitSumbol::draw(QmlWidget *canvas)
+{
+    canvas->drawWrapText(unit_data);
 }
 
 void UnitSumbol::setUnitSumbolColor(QString color)
@@ -24,7 +29,7 @@ void UnitSumbol::setUnitSumbolSize(int size)
 
 void UnitSumbol::setUnitSumbolType(QString str)
 {
-    Type = str;
+    Font = str;
 }
 
 QString UnitSumbol::getUnitSumbolColor()
@@ -34,7 +39,7 @@ QString UnitSumbol::getUnitSumbolColor()
 
 QString UnitSumbol::getUnitSumbolType()
 {
-    return Type;
+    return Font;
 }
 
 int UnitSumbol::getUnitSumbolSize()

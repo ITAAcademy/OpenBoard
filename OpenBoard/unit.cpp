@@ -12,6 +12,10 @@ Unit::~Unit()
 
 }
 
+void Unit::draw(QmlWidget *canvas)
+{
+}
+
 void Unit::setUnitData(QString str)
 {
     unit_data = str;
