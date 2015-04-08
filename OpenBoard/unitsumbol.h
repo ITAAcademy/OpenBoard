@@ -14,8 +14,8 @@ private:
 public:
     UnitSumbol();
     virtual ~UnitSumbol();
-    virtual void draw(QmlWidget* canvas);
 
+    void draw(QmlWidget* canvas);
     void setUnitSumbolType(QString str);
     void setUnitSumbolSize(int size);
     void setUnitSumbolColor(QString color);

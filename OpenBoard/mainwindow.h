@@ -21,6 +21,7 @@
 #include "glwidget.h"
 #include "qmlwidget.h"
 #include "settings.h"
+#include "parser.h"
 
 namespace Ui {
 class MainWindow;

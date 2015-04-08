@@ -114,7 +114,6 @@ void MainWindow::on_action_Show_triggered()
     mpGLWidget->show();
 */
 
-
 }
 
 void MainWindow::on_action_Hide_triggered()
