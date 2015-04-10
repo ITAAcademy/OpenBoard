@@ -27,5 +27,6 @@
         <file>font/Segoe_Script_Bold.ttf</file>
         <file>boarFunc.js</file>
         <file>draw.qml</file>
+        <file>icons/12video icon.png</file>
     </qresource>
 </RCC>

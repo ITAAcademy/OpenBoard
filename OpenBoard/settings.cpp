@@ -62,7 +62,7 @@ void pSettings::loadSettings()
     boardFont.setFamily(mSettings->value("Board/fontFamily").toString());
     boardFont.setPointSize(mSettings->value("Board/fontSize").toInt());
 
- boardFontColor = mSettings->value("Board/fontColor").toString();
+    boardFontColor = mSettings->value("Board/fontColor").toString();
    //  mainWindowFont.fromString(mSettings->value("MainWindow/font") .toString());
     //QString sFont = QString(mSettings->value("Board/font").toString());
     //boardFont.fromString(sFont);

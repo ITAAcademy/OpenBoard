@@ -19,7 +19,7 @@ void UnitCommand::setUnitCommandType(QString str)
 
 void UnitCommand::changeColor(QmlWidget *canvas)
 {
-    canvas->setFillColor(unit_data);
+    canvas->setFillColor(QColor(unit_data));
 }
 
 void UnitCommand::nextLine(QmlWidget *canvas)
@@ -49,7 +49,7 @@ void UnitCommand::pause(QmlWidget *canvas)
 
 void UnitCommand::backSlash(QmlWidget *canvas)
 {
-    canvas->drawWrapText("\\");
+    this->setPosition(canvas->drawWrapText("\\"));
 }
 
 void UnitCommand::draw(QmlWidget *canvas)

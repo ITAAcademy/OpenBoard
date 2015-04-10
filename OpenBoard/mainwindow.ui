@@ -422,7 +422,14 @@
     <item row="1" column="0">
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
-       <widget class="QTextEdit" name="textEdit"/>
+       <widget class="QFrame" name="frame">
+        <property name="frameShape">
+         <enum>QFrame::StyledPanel</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Raised</enum>
+        </property>
+       </widget>
       </item>
       <item>
        <widget class="QWidget" name="widget_Find" native="true">
@@ -525,6 +532,7 @@
     <addaction name="action_Play"/>
     <addaction name="action_Pause"/>
     <addaction name="action_Stop"/>
+    <addaction name="actionRecord_to_file"/>
    </widget>
    <widget class="QMenu" name="menu_Help">
     <property name="title">
@@ -890,6 +898,18 @@
    </property>
    <property name="text">
     <string>Convas Color</string>
+   </property>
+  </action>
+  <action name="actionRecord_to_file">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/12video icon.png</normaloff>:/icons/12video icon.png</iconset>
+   </property>
+   <property name="text">
+    <string>Record to file</string>
    </property>
   </action>
  </widget>

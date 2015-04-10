@@ -5,17 +5,6 @@ Item{
         color: "#000000"
         anchors.fill: parent
     }
-    MouseArea{
-        anchors.fill: parent
-        property int mx: -1
-        property int my: -1
-        id: mouse
-        onClicked: {
-            console.debug("click");
-            //forma.crossOutLastSymbol();
-
-        }
-    }
     Canvas{
         id: mainDrawElm
         objectName: "mcanvas"
@@ -35,6 +24,10 @@ Item{
 
         function clear(){
             JS.context.clearRect(0,0, mainDrawElm.width, mainDrawElm.height);
+            JS.context.lineWidth = 3;
+
+            // set line color
+            JS.context.strokeStyle = '#ff0000';
         }
 
         function bdrawWrapText( a ){
@@ -82,6 +75,17 @@ Item{
         function setColor( col )
         {
             JS.context.fillStyle = col;
+        }
+
+        function drawFigure(x, y, w, h, type, fill)
+        {
+            if(type == 0) //line
+            {
+                JS.context.beginPath();
+                JS.context.moveTo(x, y);
+                JS.context.lineTo(w, h);
+                JS.context.stroke();
+            }
         }
 
         //function drawSymbol(st);

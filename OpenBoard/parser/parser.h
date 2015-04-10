@@ -1,7 +1,7 @@
 #ifndef PARSER
 #define PARSER
 
-#include <QLinkedList>
+#include <QList>
 #include <QString>
 
 #include "unit.h"
@@ -14,7 +14,7 @@ public:
     Parser();
     virtual ~Parser();
 
-    int ParsingLine(QLinkedList<Unit*>& list, QString& str);
+    int ParsingLine(QList<Unit*>& list, QString& str);
 };
 
 #endif // PARSER

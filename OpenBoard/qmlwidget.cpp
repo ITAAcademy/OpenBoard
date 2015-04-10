@@ -13,7 +13,7 @@ QmlWidget::QmlWidget(QWidget *parent) :
     //setSource(QUrl("../OpenBoard/draw.qml"));
     setSource(QUrl("qrc:/draw.qml"));
     m_encoder = new Encoder(this);
-
+    bRecord = false;
     this->setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint | Qt::WindowTitleHint);
     this->setResizeMode(QQuickWidget::SizeRootObjectToView );
     /*
@@ -31,10 +31,13 @@ QmlWidget::QmlWidget(QWidget *parent) :
     indexW = 1;
     indexRow = 0;
     scroll = 0;
+    delay = 1000/3;
     //listStr[0] = 0;
     indexInLsit = 1;
     deleteWT = 0;
-    isPlay = false;
+    fMetrics = new QFontMetrics(QFont(font));
+    curStatus = STOP;
+    tickTimer.setSingleShot(true);
     /*
      * canvas set
     */
@@ -73,7 +76,7 @@ void QmlWidget::moveEvent(QMoveEvent *event)
 
 void QmlWidget::paintEvent(QPaintEvent *event)
 {
-    if(isPlay)
+    if(curStatus == PLAY && bRecord)
         m_encoder->encodeVideoFrame(this->grabFramebuffer());
 }
 
@@ -85,7 +88,7 @@ void QmlWidget::resizeEvent(QResizeEvent *envent)
 
 void QmlWidget::mousePressEvent(QMouseEvent *event)
 {
-    crossOutLastSymbol();
+    //crossOutLastSymbol();
 }
 
 QString QmlWidget::getDrawText()
@@ -137,47 +140,75 @@ AudioCodecSettings QmlWidget::audioCodecSettings() const
     return settings;
 }
 
-void QmlWidget::drawAnimated()
+void QmlWidget::drawAnimated(bool record)
 {
-    if(isPlay)
+    if(curStatus == this->PAUSE)
     {
         //m_recorder->resume();
+        curStatus = PLAY;
         return;
     }
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Choose file..."), qApp->applicationDirPath(), tr("Videos (*.avi *.mp4)"));
-    if(!fileName.size())
-        return;
+    if(record)
+    {
+        QString fileName = QFileDialog::getSaveFileName(this, tr("Choose file..."), qApp->applicationDirPath(), tr("Videos (*.avi *.mp4)"));
+        if(!fileName.size())
+            return;
 
-    m_encoder->setVideoCodecSettings(videoCodecSettings());
-   // m_encoder->setAudioCodecSettings(audioCodecSettings());
-   // m_encoder->setEncodingMode(Encoder::VideoAudioMode);
-    m_encoder->setEncodingMode(Encoder::VideoMode);
-    m_encoder->setVideoCodec(EncoderGlobal::H264);
-    m_encoder->setAudioCodec(EncoderGlobal::MP3);
-    m_encoder->setOutputPixelFormat(EncoderGlobal::YUV420P);
-    m_encoder->setFilePath( fileName );
-    m_encoder->setVideoSize(this->size());
-    m_encoder->setFixedFrameRate(25);
-    m_encoder->start();
-    isPlay = true;
+        m_encoder->setVideoCodecSettings(videoCodecSettings());
+       // m_encoder->setAudioCodecSettings(audioCodecSettings());
+       // m_encoder->setEncodingMode(Encoder::VideoAudioMode);
+        m_encoder->setEncodingMode(Encoder::VideoMode);
+        m_encoder->setVideoCodec(EncoderGlobal::H264);
+        m_encoder->setAudioCodec(EncoderGlobal::MP3);
+        m_encoder->setOutputPixelFormat(EncoderGlobal::YUV420P);
+        m_encoder->setFilePath( fileName );
+        m_encoder->setVideoSize(this->size());
+        m_encoder->setFixedFrameRate(25);
+        m_encoder->start();
+    }
+    curStatus = PLAY;
+    bRecord = record;
+    qDebug() << "Start play";
 }
 
 void QmlWidget::stopAnimated()
 {
     m_encoder->stop();
-    isPlay = false;
+    curStatus = STOP;
+    bRecord = false;
+    qDebug() << "Stop play";
 }
 
 void QmlWidget::pauseAnimated()
 {
+    curStatus = PAUSE;
+    qDebug() << "Pause play";
     //m_recorder->pause();
 }
+bool QmlWidget::isRecord() const
+{
+    return bRecord;
+}
+
 
 void QmlWidget::clearCanvas()
 {
     QMetaObject::invokeMethod(canvas, "clear");
+    symbolPositionList.clear();
     x = marginLeft;
     y = marginTop;
+}
+
+void QmlWidget::drawFigure(int x, int y, int width, int height, QmlWidget::FigureType type, bool fill = true)
+{
+
+    QMetaObject::invokeMethod(canvas, "drawFigure",
+            Q_ARG(QVariant, QVariant(x)),
+            Q_ARG(QVariant, QVariant(y)),
+            Q_ARG(QVariant, QVariant(width)),
+            Q_ARG(QVariant, QVariant(height)),
+            Q_ARG(QVariant, QVariant(type)),
+            Q_ARG(QVariant, QVariant(fill)));
 }
 
 void QmlWidget::nextRow()
@@ -188,11 +219,11 @@ void QmlWidget::nextRow()
 
 void QmlWidget::crossOutLastSymbol()
 {
-    int tx = x, ty = y;
-    int k = 0;
-    QString str = listWords.right(1 + deleteWT);
+   // QPoint delPos = symbolPositionList.at(symbolPositionList.length() - 1 - deleteWT);
+    //int k = 0;
+    //QString str = listWords.right(1 + deleteWT);
     deleteWT++;
-    int widht = fMetrics->width(str)*1.5;
+    /*int widht = fMetrics->width(str)*1.5;
     int deltaY = deltaY = (widht - x) /(maxWidth - marginLeft);
 
     if(x - widht <= marginLeft)
@@ -204,8 +235,8 @@ void QmlWidget::crossOutLastSymbol()
 
     ty -= (lineHeight + pt)*deltaY;
 
-    fillText("/", tx, ty);
-    fillText("\\", tx, ty);
+    fillText("/", delPos.x(), delPos.y());
+    fillText("\\", delPos.x(), delPos.y());*/
 }
 
 void QmlWidget::generateFrames()
@@ -229,6 +260,32 @@ void QmlWidget::generateFrames()
     m_encoder->stop();
 
 }
+QColor QmlWidget::getMainFillColor() const
+{
+    return mainFillColor;
+}
+
+void QmlWidget::setMainFillColor(const QColor &value)
+{
+    mainFillColor = value;
+    setFillColor(value);
+}
+
+int QmlWidget::getDelay() const
+{
+    return delay;
+}
+
+void QmlWidget::setDelay(int value)
+{
+    delay = value;
+}
+
+int QmlWidget::getCountDeleteWT() const
+{
+    return deleteWT;
+}
+
 QFont QmlWidget::getTextFont() const
 {
     return textFont;
@@ -251,6 +308,7 @@ void QmlWidget::setTextFont(const QFont &value)
 void QmlWidget::setFillColor(QColor col)
 {
     QString sColor = QString("rgba(%1, %2, %3, %4)").arg(col.red()).arg(col.green()).arg(col.blue()).arg(col.alpha());
+    fillColor = col;
     QMetaObject::invokeMethod(canvas, "setColor",Q_ARG(QVariant, QVariant(sColor)));
 }
 
@@ -264,9 +322,9 @@ void QmlWidget::setFillGradient(int x, int y, int width, int height, GradientSet
             Q_ARG(QVariant, QVariant(color.list)));
 }
 
-bool QmlWidget::IsPlay() const
+QmlWidget::StatusDraw QmlWidget::getStatus() const
 {
-    return isPlay;
+    return curStatus;
 }
 
 void QmlWidget::recreate()
@@ -316,12 +374,33 @@ void QmlWidget::isLastRow()
        indexRow++;
     }
 }
-void QmlWidget::drawWrapText(QString str)
+QPoint QmlWidget::drawWrapText(QString str)
 {
-    deleteWT = 0;
+    if(deleteWT != 0)
+    {
+        if(deleteWT >= symbolPositionList.length())
+            deleteWT = symbolPositionList.length() - 1;
+        QPoint delPos = symbolPositionList.at(symbolPositionList.length() - 1 - deleteWT);
+       // QPoint delPos2 = symbolPositionList.at(symbolPositionList.length() - 1);
+
+        if(deleteWT != 1)
+        {
+            drawFigure(delPos.x(), delPos.y() - fMetrics->height()/4,x, y - fMetrics->height()/4, LINE, 0);
+        }
+        else{
+            delPos = symbolPositionList.at(symbolPositionList.length() - 1);
+            QColor temp = fillColor;
+            setFillColor(QColor("#ff0000"));
+            fillText("/", delPos.x(), delPos.y());
+            fillText("\\", delPos.x(), delPos.y());
+            setFillColor(temp);
+        }
+        deleteWT = 0;
+    }
+    QPoint res(x,y);
     QVariant returnedValue;
     QVariant msg = str;
-    int widht = fMetrics->width(str)*1.5 ;//+ fMetrics->leftBearing(str.at(0)) + fMetrics->rightBearing(str.at(0));
+    int widht = fMetrics->width(str)*1.125 ;//+ fMetrics->leftBearing(str.at(0)) + fMetrics->rightBearing(str.at(0));
 
     if(widht + x > maxWidth)
     {
@@ -339,5 +418,11 @@ void QmlWidget::drawWrapText(QString str)
     fillText(str, x, y);
     listWords += str;
     x += widht;
+    symbolPositionList.push_back(res);
+    tickTimer.start(delay);
+    while (tickTimer.isActive()) {
+       qApp->processEvents();
+    }
+    return res;
 }
 

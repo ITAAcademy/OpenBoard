@@ -27,6 +27,12 @@ void Unit::setPosition(int x, int y)
     pos_y = y;
 }
 
+void Unit::setPosition(QPoint pos)
+{
+    pos_x = pos.x();
+    pos_y = pos.y();
+}
+
 QString Unit::getUnitData()
 {
     return unit_data;

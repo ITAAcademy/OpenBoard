@@ -1,24 +1,24 @@
 QT       += widgets core gui opengl quick widgets quickwidgets  #av avwidgets
 
 SOURCES += main.cpp\
-        mainwindow.cpp \
-    glwidget.cpp \
+    mainwindow.cpp \
     settings.cpp \
     qmlwidget.cpp \
-    unit.cpp \
-    unitsumbol.cpp \
-    unitcommand.cpp \
-    parser.cpp
+    parser\unit.cpp \
+    parser\unitsumbol.cpp \
+    parser\unitcommand.cpp \
+    parser\parser.cpp \
+    editWidget/mytextedit.cpp
 
 
 HEADERS  += mainwindow.h \
-    glwidget.h \
     settings.h \
     qmlwidget.h \
-    unit.h \
-    unitsumbol.h \
-    unitcommand.h \
-    parser.h
+    parser\unit.h \
+    parser\unitsumbol.h \
+    parser\unitcommand.h \
+    parser\parser.h \
+    editWidget/mytextedit.h
 
 FORMS    += mainwindow.ui
 
@@ -40,9 +40,10 @@ unix {
 }
 
 INCLUDEPATH += ThirdPart/include
-LIBS += "C:/Project/OpenBoard/ThirdPart/*.dll"
+LIBS += "F:/QA/QtMEL-master/libsQt5/*.dll"
 
 
 OTHER_FILES += \
     boarFunc.js \
-    draw.qml
+    draw.qml \
+    icons/12video icon.png

@@ -30,6 +30,8 @@ using namespace QtAV;
 #define STREAM_FRAME_RATE 10
 #define STREAM_DURATION 60
 
+
+
 class Encoder;
 
 struct DrawData{
@@ -38,10 +40,13 @@ struct DrawData{
     bool IsPlay;
 };
 
+
 class QmlWidget : public QQuickWidget
 {
     Q_OBJECT
     Q_PROPERTY(QString  drawText READ getDrawText WRITE setDrawText NOTIFY drawTextChanged)
+
+public:
     /*
      * Структурка для градіента
      */
@@ -53,8 +58,14 @@ class QmlWidget : public QQuickWidget
             list.push_back(QString("rgba(%1, %2, %3, %4)").arg(r).arg(g).arg(b).arg(a));
         }
     };
+    // status state
+    enum StatusDraw{
+     PLAY , STOP, PAUSE
+    };
+    enum FigureType{
+        LINE, RECTANGLE
+    };
 
-public:
     /*
      * Events
      */
@@ -68,10 +79,11 @@ public:
      * Canvas control
      */
     void clearCanvas();
+    void drawFigure (int x, int y, int width, int height, FigureType type, bool fill);
     void nextRow();
     Q_INVOKABLE void crossOutLastSymbol();
     void crossOutWithAnimation();
-    void drawWrapText( QString str ); // main draw function
+    QPoint drawWrapText( QString str ); // main draw function
     void setFillColor( QColor col);
     void setFillGradient( int x , int y, int width, int height, GradientSetting color);
     void fillText( QString str, int x, int y);
@@ -80,7 +92,7 @@ public:
     /*
      * G/S
      */
-    bool IsPlay() const;
+    StatusDraw getStatus() const;
     QFont getTextFont() const;
     void setTextFont(const QFont &value);
     void setDrawText( QString data );
@@ -91,9 +103,17 @@ public:
     */
     VideoCodecSettings videoCodecSettings() const;
     AudioCodecSettings audioCodecSettings() const;
-    void drawAnimated();
+public slots:
+    void drawAnimated( bool record );
     void stopAnimated();
     void pauseAnimated();
+public:
+    bool isRecord() const;
+    int getCountDeleteWT() const;
+    int getDelay() const;
+    void setDelay(int value);
+    QColor getMainFillColor() const;
+    void setMainFillColor(const QColor &value);
 
 signals:
     void drawTextChanged();
@@ -102,8 +122,9 @@ public slots:
 private:
     QString drawText;
     Encoder *m_encoder;
+    bool bRecord;
     void generateFrames();
-    bool isPlay;
+    StatusDraw curStatus; // 0 - stop; 1 - play; -1 - pause
     QObject *canvas;
     /*
      * Сavas property
@@ -119,12 +140,17 @@ private:
     int indexW ;
     int indexRow;
     int scroll;
+    QColor fillColor;
+    QColor mainFillColor;
+    QList <QPoint> symbolPositionList;
     QString listWords; // вся стрічка
     QList<int> listStr; // номер з якої починається і-та стрічка
     QFont textFont;
     QFontMetrics *fMetrics;
     int indexInLsit;
     int deleteWT;
+    QTimer tickTimer;
+    int delay;
 
 };
 

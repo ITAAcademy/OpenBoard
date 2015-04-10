@@ -11,8 +11,9 @@ Parser::~Parser()
 
 }
 
-int Parser::ParsingLine(QLinkedList<Unit*> &list, QString& str)
+int Parser::ParsingLine(QList<Unit*> &list, QString& str)
 {
+    list.clear();
     QString pars_line;
     int state = -1;
 
@@ -85,10 +86,10 @@ int Parser::ParsingLine(QLinkedList<Unit*> &list, QString& str)
 
                 QRegExp exp("[0-9]");
                 pars_line.clear();
-
+                int count = 0;
                 if(exp.exactMatch((QString)str[i+2]))
                 {
-                    while(exp.exactMatch((QString)str[i+2]))
+                    while(exp.exactMatch((QString)str[i+2]) && count++ < 2)
                     {
                         pars_line += str[i+2];
                         i++;
@@ -111,21 +112,19 @@ int Parser::ParsingLine(QLinkedList<Unit*> &list, QString& str)
                 UnitCommand* command = new UnitCommand();
                 command->setUnitCommandType("ChangeColor");
 
-                QRegExp exp("[0-9A-Z]");
+                QRegExp exp("[0-9a-f]");
                 pars_line.clear();
-                int tmp = 1;
-
-                if(exp.exactMatch((QString)str[i+2]))
+                pars_line += "#";
+                int tmp = 0;
+                while(exp.exactMatch((QString)str[i+2]) &&  tmp < 6 )
                 {
-                    while(exp.exactMatch((QString)str[i+2]) && tmp <= 6)
-                    {
-                        pars_line += str[i+2];
-                        i++; tmp++;
-                    }
+                    pars_line += str[i+2];
+                    i++; tmp++;
                 }
-                else
+                if(tmp < 6)
                 {
                     state = i;
+                    qDebug() << "color error";
                     break;
                 }
 

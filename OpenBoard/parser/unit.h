@@ -20,6 +20,7 @@ public:
 
     void setUnitData(QString str);
     void setPosition(int x, int y);
+    void setPosition(QPoint pos);
 
     QString getUnitData();
     int getPosition_X();

@@ -18,10 +18,10 @@
 
 #include <QDebug>
 
-#include "glwidget.h"
 #include "qmlwidget.h"
 #include "settings.h"
-#include "parser.h"
+#include "parser/parser.h"
+#include "editWidget/mytextedit.h"
 
 namespace Ui {
 class MainWindow;
@@ -99,7 +99,7 @@ private:
 
  //   GLWidget        *mpGLWidget;
     QmlWidget       *mpQmlWidget;
-
+    MyTextEdit       *textEdit;
     QString         curFile;
     pSettings       mSettings;
     QTimer          *mTimer;
@@ -107,9 +107,13 @@ private:
     QString         textColorName;
     QColor          colorPkr;
     QString         inputText;
-
+    QList <Unit*>mUnitList;
+    Parser          mParser;
+    QThread drawThread;
     bool saveFile();
     bool maybeSave();
+
+
 
 };
 
