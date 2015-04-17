@@ -12,7 +12,11 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+<<<<<<< HEAD
     bHide = false;
+=======
+
+>>>>>>> origin/yuriy
 //    connect(&drawThread, SIGNAL(started()), this, SLOT(myfunction())); //cant have parameter sorry, when using connect
 
     mpQmlWidget = new QmlWidget();
@@ -21,6 +25,7 @@ MainWindow::MainWindow(QWidget *parent) :
     textEdit->setEnabled(true);
 
     ui->verticalLayout->addWidget(textEdit,-1);
+<<<<<<< HEAD
     mTimer = new QTimer(this);
     mTimerClr = new QTimer(this);
     mTimer->setSingleShot(true);
@@ -30,6 +35,13 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->button_Find, SIGNAL(pressed()), this, SLOT(search()));
     connect(textEdit, SIGNAL(textChanged()), this, SLOT(onTextChanged()));
  //   connect(ui->actionSend_to_youTube, SIGNAL( triggered()), this, SLOT (on_action_youTube_triggered()));
+=======
+    connect(ui->button_Delay, SIGNAL(pressed()), this, SLOT(delay_released()));
+    //connect(QColorDialog, SIGNAL(finished()), this, SLOT(on_colorBtn_released()));
+    connect(ui->button_Find, SIGNAL(pressed()), this, SLOT(search()));
+    connect(textEdit, SIGNAL(textChanged()), this, SLOT(onTextChanged()));
+    connect(ui->actionSend_to_youTube, SIGNAL( triggered()), this, SLOT (on_action_youTube_triggered()));
+>>>>>>> origin/yuriy
 
     ui->widget_Find->setVisible(false);
     ui->widget_delayTB->setVisible(false);
@@ -65,19 +77,124 @@ MainWindow::MainWindow(QWidget *parent) :
             this->textEdit->setTextColor(mSettings.getMainWindowColor());
 this->textEdit->setFont(mSettings.getMainWindowFont());
 
+<<<<<<< HEAD
 
         }
+=======
+       toolBar= new QToolBar;
+       toolBar->addAction(QPixmap(":/icons/new-file-icon.png").scaled(QSize(16, 16)), "New", this, SLOT(on_action_New_triggered()));
+       toolBar->addAction(QPixmap(":/icons/open-file-icon.png").scaled(QSize(16, 16)), "Open", this, SLOT(on_action_Open_triggered()));
+       toolBar->addAction(QPixmap(":/icons/Save-icon.png").scaled(QSize(16, 16)), "Save", this, SLOT(on_action_Save_triggered()));
+       toolBar->addAction(QPixmap(":/icons/Save-as-icon.png").scaled(QSize(16, 16)), "Save as", this, SLOT(on_action_Save_as_triggered()));
+       toolBar->addAction(QPixmap(":/icons/Close-2-icon.png").scaled(QSize(16, 16)), "Exit", this, SLOT(on_action_Exit_triggered()));
+toolBar->addSeparator();
+
+
+
+a_undo = new QAction(this);
+a_undo->setEnabled(true);
+a_undo->setIcon(QPixmap(":/icons/undo-icon.png").scaled(QSize(16, 16)));
+a_undo->setStatusTip(tr("Undo"));
+connect(a_undo,SIGNAL(triggered()),this,  SLOT(on_action_Undo_triggered()));
+toolBar->addAction(a_undo);
+       //toolBar->addAction(QPixmap(":/icons/undo-icon.png").scaled(QSize(16, 16)), "Undo", this, SLOT(on_action_Undo_triggered()));
+
+a_redo = new QAction(this);
+a_redo->setEnabled(true);
+a_redo->setIcon(QPixmap(":/icons/redo-icon.png").scaled(QSize(16, 16)));
+a_redo->setStatusTip(tr("Redo"));
+connect(a_redo,SIGNAL(triggered()),this,  SLOT(on_action_Redo_triggered()));
+toolBar->addAction(a_redo);
+   //    toolBar->addAction(QPixmap(":/icons/redo-icon.png").scaled(QSize(16, 16)), "Redo", this, SLOT(on_action_Redo_triggered()));
+
+
+
+
+       toolBar->addAction(QPixmap(":/icons/cut-icon.png").scaled(QSize(16, 16)), "Cut", this, SLOT(on_action_Cut_triggered()));
+       toolBar->addAction(QPixmap(":/icons/Copy-icon.png").scaled(QSize(16, 16)), "Copy", this, SLOT(on_action_Copy_triggered()));
+       toolBar->addAction(QPixmap(":/icons/Paste-icon.png").scaled(QSize(16, 16)), "Paste", this, SLOT(on_action_Paste_triggered()));
+       toolBar->addAction(QPixmap(":/icons/select_all.png").scaled(QSize(16, 16)), "Select all", this, SLOT(on_action_Select_all_triggered()));
+       toolBar->addAction(QPixmap(":/icons/search-icon.png").scaled(QSize(16, 16)), "Search", this, SLOT(on_action_Find_triggered()));
+toolBar->addSeparator();
+
+       toolBar->addAction(QPixmap(":/icons/font-x-generic-icon.png").scaled(QSize(16, 16)), "Font text area", this, SLOT(on_action_Font_triggered()));
+       toolBar->addAction(QPixmap(":/icons/colors-icon.png").scaled(QSize(16, 16)), "Color text area", this, SLOT(on_action_Color_triggered()));
+
+       a_font_canvas = new QAction(this);
+       a_font_canvas->setEnabled(false);
+       a_font_canvas->setIcon(QPixmap(":/icons/font-x-generic-icon.png").scaled(QSize(16, 16)));
+       a_font_canvas->setStatusTip(tr("Font canvas"));
+       connect(a_font_canvas,SIGNAL(triggered()),this,  SLOT(on_action_Board_Font_triggered()));
+       toolBar->addAction(a_font_canvas);
+
+       a_color_canvas = new QAction(this);
+       a_color_canvas->setEnabled(false);
+       a_color_canvas->setIcon(QPixmap(":/icons/colors-icon.png").scaled(QSize(16, 16)));
+       a_color_canvas->setStatusTip(tr("Font canvas"));
+       connect(a_color_canvas,SIGNAL(triggered()),this,  SLOT(on_action_Board_Color_triggered()));
+       toolBar->addAction(a_color_canvas);
+
+       toolBar->addAction(QPixmap(":/icons/default_programs.png").scaled(QSize(16, 16)), "Reset default", this, SLOT(on_action_Reset_default_triggered()));
+toolBar->addSeparator();
+       toolBar->addAction(QPixmap(":/icons/gnome_show_desktop.png").scaled(QSize(16, 16)), "Show canvas", this, SLOT(on_action_Show_triggered()));
+       toolBar->addAction(QPixmap(":/icons/hide_icon.png").scaled(QSize(16, 16)), "Hide canvas", this, SLOT(on_action_Hide_triggered()));
+
+       a_play = new QAction(this);
+       a_play->setEnabled(false);
+       a_play->setIcon(QPixmap(":/icons/play-8-icon.png").scaled(QSize(16, 16)));
+       a_play->setStatusTip(tr("Play"));
+       connect(a_play,SIGNAL(triggered()),this,  SLOT(on_action_Play_triggered()));
+       toolBar->addAction(a_play);
+
+       a_pause = new QAction(this);
+       a_pause->setEnabled(false);
+       a_pause->setIcon(QPixmap(":/icons/pause-icon.png").scaled(QSize(16, 16)));
+       a_pause->setStatusTip(tr("Pause"));
+       connect(a_pause,SIGNAL(triggered()),this,  SLOT(on_action_Pause_triggered()));
+       toolBar->addAction(a_pause);
+
+       a_stop = new QAction(this);
+       a_stop->setEnabled(false);
+       a_stop->setIcon(QPixmap(":/icons/stop_icon.png").scaled(QSize(16, 16)));
+       a_stop->setStatusTip(tr("Stop"));
+       connect(a_stop,SIGNAL(triggered()),this,  SLOT(on_action_Stop_triggered()));
+       toolBar->addAction(a_stop);
+
+       a_record_to_file = new QAction(this);
+       a_record_to_file->setEnabled(false);
+       a_record_to_file->setIcon(QPixmap(":/icons/12video icon.png").scaled(QSize(16, 16)));
+       a_record_to_file->setStatusTip(tr("Record in file"));
+       a_record_to_file->setCheckable(true);
+       a_record_to_file->setChecked(false);
+       connect(a_record_to_file,SIGNAL(triggered()),this,  SLOT(a_record_to_file_triggered()));
+       toolBar->addAction(a_record_to_file);
+
+      // toolBar->addAction(QPixmap(":/icons/12video icon.png").scaled(QSize(16, 16)), "Record in file", this, SLOT(on_actionRecord_to_file_triggered()));  //yvguj vgju ftu
+       toolBar->addAction(QPixmap(":/icons/youtube_icon.png").scaled(QSize(16, 16)), "Send to YouTube", this, SLOT(on_action_youTube_triggered()));
+       toolBar->addAction(QPixmap(":/icons/info.png").scaled(QSize(16, 16)), "About", this, SLOT(on_action_About_triggered()));
+toolBar->setMovable(false);
+//toolBar->setAllowedAreas(Qt::BottomToolBarArea);
+
+        addToolBar(Qt::TopToolBarArea, toolBar);
+     // toolBar->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
+       }
+>>>>>>> origin/yuriy
 }
 
 MainWindow::~MainWindow()
 {
     mSettings.setMainWindowRect(geometry());
+<<<<<<< HEAD
 
+=======
+delete toolBar;
+>>>>>>> origin/yuriy
     delete ui;
 }
 
 void MainWindow::closeEvent(QCloseEvent*)
 {
+<<<<<<< HEAD
     if(mpQmlWidget != 0 && bHide != true)
     {
         qDebug() << bHide;
@@ -93,11 +210,21 @@ void MainWindow::closeEvent(QCloseEvent*)
     //delete mUnitList;
     delete youtube;
     */
+=======
+   // mpGLWidget->close();
+    mpQmlWidget->close();
+    delete mpQmlWidget;
+
+>>>>>>> origin/yuriy
     //delete mpGLWidget;
 }
 
 void MainWindow::on_action_Show_triggered()
 {
+<<<<<<< HEAD
+=======
+
+>>>>>>> origin/yuriy
     if (ui->action_Board_Color->isEnabled()==false)
    ui->action_Board_Color->setEnabled(true);
     if (ui->action_Board_Font->isEnabled()==false)
@@ -122,20 +249,35 @@ void MainWindow::on_action_Show_triggered()
     mpQmlWidget->setMainFillColor(mSettings.getBoardFontColor());
 
     emit mpQmlWidget->drawTextChanged();
+<<<<<<< HEAD
     bHide = false;
+=======
+>>>>>>> origin/yuriy
 
 /*
     mpGLWidget->setFixedSize(GLWIDGET_SIZE);
     mpGLWidget->move(pos().x() + width(), pos().y());
     mpGLWidget->show();
 */
+<<<<<<< HEAD
 
+=======
+    a_play->setEnabled(true);
+    a_pause->setEnabled(true);
+    a_stop->setEnabled(true);
+    a_font_canvas->setEnabled(true);
+    a_color_canvas->setEnabled(true);
+    a_record_to_file->setEnabled(true);
+    a_undo->setEnabled(true);
+    a_redo->setEnabled(true);
+>>>>>>> origin/yuriy
 }
 
 void MainWindow::on_action_Hide_triggered()
 {
    // mpGLWidget->hide();
     if(mpQmlWidget->getStatus() == mpQmlWidget->PLAY || mpQmlWidget->getStatus() == mpQmlWidget->PAUSE)
+<<<<<<< HEAD
     {
         mpQmlWidget->stopAnimated();
         on_action_Stop_triggered();
@@ -149,12 +291,30 @@ void MainWindow::on_action_Hide_triggered()
        // qDebug() << mpQmlWidget;
         qApp->processEvents();
     }
+=======
+      //  mpQmlWidget->stopAnimated();
+    on_action_Stop_triggered();
+    mpQmlWidget->hide();
+    mpQmlWidget->close();
+   // delete mpQmlWidget;
+>>>>>>> origin/yuriy
     ui->action_Pause->setEnabled(false);
     ui->action_Play->setEnabled(false);
     ui->action_Stop->setEnabled(false);
    ui->action_Board_Color->setEnabled(false);
    ui->action_Board_Font->setEnabled(false);
 
+<<<<<<< HEAD
+=======
+   a_play->setEnabled(false);
+   a_pause->setEnabled(false);
+   a_stop->setEnabled(false);
+   a_font_canvas->setEnabled(false);
+   a_color_canvas->setEnabled(false);
+   a_record_to_file->setEnabled(false);
+   a_undo->setEnabled(false);
+   a_redo->setEnabled(false);
+>>>>>>> origin/yuriy
 }
 
 void MainWindow::moveEvent(QMoveEvent *event)
@@ -294,10 +454,33 @@ void MainWindow::on_action_Find_triggered()
     ui->widget_Find->setVisible(!ui->widget_Find->isVisible());
     if(ui->widget_Find->isVisible()) {
         ui->lineEdit_Find->setFocus();
+<<<<<<< HEAD
         ui->lineEdit_Find->selectAll();
     }
     else {
         textEdit->setFocus();
+=======
+      //  ui->lineEdit_Find->selectAll();
+     //   ui->lineEdit_Find->setSelection(0,100);
+    }
+    else {
+
+        textEdit->setFocus();
+
+        QString str = ui->lineEdit_Find->text();
+            QList<QTextEdit::ExtraSelection> extraSelections;
+            textEdit->moveCursor(QTextCursor::Start);
+            QColor color = QColor(Qt::white).lighter(130);
+           while(textEdit->find(str))
+                {
+                    QTextEdit::ExtraSelection extra;
+                    extra.format.setBackground(color);
+
+                    extra.cursor = textEdit->textCursor();
+                    extraSelections.append(extra);
+                }
+               textEdit->setExtraSelections(extraSelections);
+>>>>>>> origin/yuriy
     }
 }
 
@@ -466,6 +649,7 @@ void MainWindow::on_action_New_triggered()
 
 void MainWindow::on_delayBtn_pressed()
 {
+<<<<<<< HEAD
     mTimer->start(TIMER_VALUE);
 }
 
@@ -480,6 +664,17 @@ void MainWindow::on_delayBtn_released()
 
         textEdit->insertPlainText(text);
     }
+=======
+    show_pause_menu();
+}
+
+void MainWindow::delay_released()
+{
+    QString text = ui->action_delayTB->text();
+    text += QString::number(ui->spinBox_delayTB->value());
+
+    textEdit->insertPlainText(text);
+>>>>>>> origin/yuriy
 }
 
 void MainWindow::show_pause_menu()
@@ -507,11 +702,16 @@ void MainWindow::on_crossBtn_clicked()
 
 void MainWindow::on_colorBtn_pressed()
 {
+<<<<<<< HEAD
     mTimerClr->start(TIMER_VALUE);
+=======
+    show_color_dialog();
+>>>>>>> origin/yuriy
 }
 
 void MainWindow::on_colorBtn_released()
 {
+<<<<<<< HEAD
     if(mTimerClr->isActive()) {
         mTimerClr->stop();
 
@@ -521,14 +721,28 @@ void MainWindow::on_colorBtn_released()
         text.remove(2,1);
         textEdit->insertPlainText(text);
     }
+=======
+    QString text = ui->action_colorTB->text();
+    textColorName = colorPkr.name();
+    text += textColorName;
+    text.remove(2,1);
+    textEdit->insertPlainText(text);
+>>>>>>> origin/yuriy
 }
 
 void MainWindow::show_color_dialog()
 {
+<<<<<<< HEAD
     colorPkr = QColorDialog::getColor(Qt::black, this);
 
     if(colorPkr.isValid())
         textColorName = colorPkr.name();
+=======
+    colorPkr = QColorDialog::getColor();
+
+    if(colorPkr.isValid())
+        on_colorBtn_released();
+>>>>>>> origin/yuriy
 }
 
 void MainWindow::on_colorBtn_clicked()
@@ -555,6 +769,10 @@ void MainWindow::on_clearBtn_clicked()
 }
 void MainWindow::onTextChanged()
 {
+<<<<<<< HEAD
+=======
+    //qDebug() << "onTextChanged";
+>>>>>>> origin/yuriy
     if(mpQmlWidget->isVisible() && textEdit->toPlainText().length() != 0)
         //mpQmlWidget->drawWrapText(textEdit->toPlainText().at(textEdit->toPlainText().length() - 1));
     {
@@ -584,6 +802,7 @@ void MainWindow::onTextChanged()
 
 void MainWindow::on_action_Play_triggered()
 {
+<<<<<<< HEAD
     emit textEdit->textChanged();
     if(mpQmlWidget->getStatus() == QmlWidget::PAUSE)
         ui->action_Play->setText("Play");
@@ -605,6 +824,35 @@ void MainWindow::on_action_Play_triggered()
     }
     mpQmlWidget->drawWrapText(" ");
     on_action_Stop_triggered();
+=======
+     ui->action_Play->setEnabled(false);
+     a_play->setEnabled(false);
+     ui->action_Undo->setEnabled(false);
+     ui->action_Redo->setEnabled(false);
+     a_undo->setEnabled(false);
+     a_redo->setEnabled(false);
+    if(mpQmlWidget->getStatus() == QmlWidget::PAUSE)
+            ui->action_Play->setText("Play");
+        else
+        {
+            mpQmlWidget->clearCanvas();
+            mpQmlWidget->setFillColor(mpQmlWidget->getMainFillColor());
+        }
+        mpQmlWidget->drawAnimated(ui->actionRecord_to_file->isChecked());
+        textEdit->setEnabled(false);
+    // reinit
+        int i = 0;
+        onTextChanged();
+        qDebug() << mUnitList.size();
+        while( i < mUnitList.size() && mpQmlWidget->getStatus() != QmlWidget::STOP)
+        {
+            while(mpQmlWidget->getStatus() == QmlWidget::PAUSE)
+                qApp->processEvents();
+            mUnitList.at(i++)->draw(mpQmlWidget);
+        }
+        mpQmlWidget->drawWrapText(" ");
+        on_action_Stop_triggered();
+>>>>>>> origin/yuriy
 }
 
 void MainWindow::on_action_Stop_triggered()
@@ -613,9 +861,22 @@ void MainWindow::on_action_Stop_triggered()
     ui->action_Play->setText("Play");
     textEdit->setEnabled(true);
     // mpGLWidget->stopAnimated();
+<<<<<<< HEAD
 }
 
 void MainWindow::on_action_youTube()
+=======
+     ui->action_Play->setEnabled(true);
+     a_play->setEnabled(true);
+     ui->action_Undo->setEnabled(true);
+     ui->action_Redo->setEnabled(true);
+     a_undo->setEnabled(true);
+     a_redo->setEnabled(true);
+
+}
+
+void MainWindow::on_action_youTube_triggered()
+>>>>>>> origin/yuriy
 {
     QString fileName = QFileDialog::getOpenFileName(this, tr("Choose file..."), qApp->applicationDirPath(), tr("Videos (*.avi *.mp4)"));
     youtube= new YouTubeWrapper(QString(fileName),this);
@@ -626,8 +887,36 @@ void MainWindow::on_action_Pause_triggered()
     ui->action_Play->setText("Resume");
     mpQmlWidget->pauseAnimated();
     //mpGLWidget->pauseAnimated();
+<<<<<<< HEAD
+=======
+    ui->action_Play->setEnabled(true);
+    a_play->setEnabled(true);
+    ui->action_Undo->setEnabled(true);
+    ui->action_Redo->setEnabled(true);
+    a_undo->setEnabled(true);
+    a_redo->setEnabled(true);
+>>>>>>> origin/yuriy
 }
 
 
 
+<<<<<<< HEAD
 
+=======
+void MainWindow::a_record_to_file_triggered()
+{
+    ui->actionRecord_to_file->setChecked(!(ui->actionRecord_to_file->isChecked()));
+}
+
+void MainWindow::on_actionRecord_to_file_triggered()
+{
+   // ui->actionRecord_to_file->setChecked((ui->actionRecord_to_file->isChecked()));
+    a_record_to_file->setChecked(!(a_record_to_file->isChecked()));
+}
+
+void MainWindow::on_action_About_triggered()
+{
+    messAbout.setText("This is program for making video-lessons.\nITA, 2015");
+    messAbout.show();
+}
+>>>>>>> origin/yuriy

@@ -13,6 +13,7 @@ QmlWidget::QmlWidget(QWidget *parent) :
     //setSource(QUrl("../OpenBoard/draw.qml"));
     setSource(QUrl("qrc:/draw.qml"));
     m_encoder = new Encoder(this);
+<<<<<<< HEAD
 
     audioRecorder = new QAudioRecorder(this);
     QAudioEncoderSettings audioSettings;
@@ -33,6 +34,8 @@ QmlWidget::QmlWidget(QWidget *parent) :
             SLOT(displayErrorMessage()));
     probe->setSource(audioRecorder);
 
+=======
+>>>>>>> origin/yuriy
     bRecord = false;
     this->setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint | Qt::WindowTitleHint);
     this->setResizeMode(QQuickWidget::SizeRootObjectToView );
@@ -58,12 +61,15 @@ QmlWidget::QmlWidget(QWidget *parent) :
     fMetrics = new QFontMetrics(QFont(font));
     curStatus = STOP;
     tickTimer.setSingleShot(true);
+<<<<<<< HEAD
     fps_timer = new QTimer();
     //fps_timer->setInterval(1000/32);
        fps_timer->setInterval(1000/31);
     fps_timer->setSingleShot(true);
     connect(fps_timer, SIGNAL(timeout()), this, SLOT ( fps_control() ));
     fps_stabilitron = 0;
+=======
+>>>>>>> origin/yuriy
     /*
      * canvas set
     */
@@ -83,10 +89,15 @@ QmlWidget::QmlWidget(QWidget *parent) :
     pix.fill(color);
     QCursor mCursor(pix);
     setCursor(mCursor);*/
+<<<<<<< HEAD
     /*QString fileName = QFileDialog::getSaveFileName();
     qDebug() << "qweqw";
     audioRecorder->setOutputLocation(QUrl::fromLocalFile(fileName));*/
    // audioRecorder->record();
+=======
+
+
+>>>>>>> origin/yuriy
 
 }
 
@@ -95,7 +106,10 @@ QmlWidget::~QmlWidget()
     delete m_encoder;
     if(fMetrics != 0)
         delete fMetrics;
+<<<<<<< HEAD
     delete audioRecorder;
+=======
+>>>>>>> origin/yuriy
 }
 
 void QmlWidget::moveEvent(QMoveEvent *event)
@@ -106,6 +120,7 @@ void QmlWidget::moveEvent(QMoveEvent *event)
 void QmlWidget::paintEvent(QPaintEvent *event)
 {
     if(curStatus == PLAY && bRecord)
+<<<<<<< HEAD
     {
     //    m_encoder->encodeVideoFrame(this->grabFramebuffer());
         /*if (fps_stabilitron % 25 == 0) {
@@ -115,6 +130,9 @@ void QmlWidget::paintEvent(QPaintEvent *event)
         }
             fps_stabilitron++;*/
     }
+=======
+        m_encoder->encodeVideoFrame(this->grabFramebuffer());
+>>>>>>> origin/yuriy
 }
 
 void QmlWidget::resizeEvent(QResizeEvent *envent)
@@ -150,7 +168,11 @@ VideoCodecSettings QmlWidget::videoCodecSettings() const
     settings.setSubpixelMotionEstimationQuality(3);
     settings.setMotionEstimationRange(16);
     settings.setGopSize(250);
+<<<<<<< HEAD
     settings.setMinimumKeyframeInterval(2);
+=======
+    settings.setMinimumKeyframeInterval(25);
+>>>>>>> origin/yuriy
     settings.setSceneChangeThreshold(40);
     settings.setIQuantFactor(0.71f);
     settings.setBFrameStrategy(1);
@@ -192,18 +214,28 @@ void QmlWidget::drawAnimated(bool record)
             return;
 
         m_encoder->setVideoCodecSettings(videoCodecSettings());
+<<<<<<< HEAD
         m_encoder->setAudioCodecSettings(audioCodecSettings());
         m_encoder->setEncodingMode(Encoder::VideoAudioMode);
        // m_encoder->setEncodingMode(Encoder::VideoMode);
+=======
+       // m_encoder->setAudioCodecSettings(audioCodecSettings());
+       // m_encoder->setEncodingMode(Encoder::VideoAudioMode);
+        m_encoder->setEncodingMode(Encoder::VideoMode);
+>>>>>>> origin/yuriy
         m_encoder->setVideoCodec(EncoderGlobal::H264);
         m_encoder->setAudioCodec(EncoderGlobal::MP3);
         m_encoder->setOutputPixelFormat(EncoderGlobal::YUV420P);
         m_encoder->setFilePath( fileName );
         m_encoder->setVideoSize(this->size());
         m_encoder->setFixedFrameRate(25);
+<<<<<<< HEAD
         fps_timer->start();
         m_encoder->start();
         audioRecorder->record();
+=======
+        m_encoder->start();
+>>>>>>> origin/yuriy
     }
     curStatus = PLAY;
     bRecord = record;
@@ -213,8 +245,11 @@ void QmlWidget::drawAnimated(bool record)
 void QmlWidget::stopAnimated()
 {
     m_encoder->stop();
+<<<<<<< HEAD
     audioRecorder->stop();
     fps_timer->stop();
+=======
+>>>>>>> origin/yuriy
     curStatus = STOP;
     bRecord = false;
     qDebug() << "Stop play";
@@ -301,6 +336,7 @@ void QmlWidget::generateFrames()
     m_encoder->stop();
 
 }
+<<<<<<< HEAD
 
 void QmlWidget::processBuffer(const QAudioBuffer& buffer)
 {
@@ -332,6 +368,8 @@ void QmlWidget::fps_control()
     fps_timer->start();
 }
 
+=======
+>>>>>>> origin/yuriy
 QColor QmlWidget::getMainFillColor() const
 {
     return mainFillColor;
@@ -399,6 +437,11 @@ QmlWidget::StatusDraw QmlWidget::getStatus() const
     return curStatus;
 }
 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> origin/yuriy
 void QmlWidget::recreate()
 {
     this->create();

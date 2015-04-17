@@ -141,6 +141,29 @@
            </property>
           </widget>
          </item>
+<<<<<<< HEAD
+=======
+         <item>
+          <spacer name="horizontalSpacer_2">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="button_Delay">
+           <property name="text">
+            <string>Delay</string>
+           </property>
+          </widget>
+         </item>
+>>>>>>> origin/yuriy
         </layout>
        </item>
       </layout>
@@ -702,16 +725,37 @@
    </property>
   </action>
   <action name="action_Reset_default">
+<<<<<<< HEAD
+=======
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/default_programs.png</normaloff>:/icons/default_programs.png</iconset>
+   </property>
+>>>>>>> origin/yuriy
    <property name="text">
     <string>&amp;Reset default</string>
    </property>
   </action>
   <action name="action_Show">
+<<<<<<< HEAD
+=======
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/gnome_show_desktop.png</normaloff>:/icons/gnome_show_desktop.png</iconset>
+   </property>
+>>>>>>> origin/yuriy
    <property name="text">
     <string>Sho&amp;w</string>
    </property>
   </action>
   <action name="action_Hide">
+<<<<<<< HEAD
+=======
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/hide_icon.png</normaloff>:/icons/hide_icon.png</iconset>
+   </property>
+>>>>>>> origin/yuriy
    <property name="text">
     <string>&amp;Hide</string>
    </property>
@@ -746,7 +790,11 @@
    </property>
    <property name="icon">
     <iconset resource="icons.qrc">
+<<<<<<< HEAD
      <normaloff>:/icons/ToolBar-color.png</normaloff>:/icons/ToolBar-color.png</iconset>
+=======
+     <normaloff>:/icons/stop_icon.png</normaloff>:/icons/stop_icon.png</iconset>
+>>>>>>> origin/yuriy
    </property>
    <property name="text">
     <string>S&amp;top</string>
@@ -755,7 +803,11 @@
   <action name="action_About">
    <property name="icon">
     <iconset resource="icons.qrc">
+<<<<<<< HEAD
      <normaloff>:/icons/Feather-icon.png</normaloff>:/icons/Feather-icon.png</iconset>
+=======
+     <normaloff>:/icons/info.png</normaloff>:/icons/info.png</iconset>
+>>>>>>> origin/yuriy
    </property>
    <property name="text">
     <string>&amp;About</string>
@@ -858,6 +910,13 @@
    </property>
   </action>
   <action name="action_Select_all">
+<<<<<<< HEAD
+=======
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/select_all.png</normaloff>:/icons/select_all.png</iconset>
+   </property>
+>>>>>>> origin/yuriy
    <property name="text">
     <string>Select all</string>
    </property>
@@ -914,6 +973,13 @@
    </property>
   </action>
   <action name="actionSend_to_youTube">
+<<<<<<< HEAD
+=======
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/youtube_icon.png</normaloff>:/icons/youtube_icon.png</iconset>
+   </property>
+>>>>>>> origin/yuriy
    <property name="text">
     <string>Send to youTube</string>
    </property>
