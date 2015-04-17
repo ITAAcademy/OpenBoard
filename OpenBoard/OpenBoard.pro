@@ -1,4 +1,4 @@
-QT       += widgets core gui opengl quick widgets quickwidgets  #av avwidgets
+QT       += widgets core gui opengl quick widgets quickwidgets network webkitwidgets#av avwidgets
 
 SOURCES += main.cpp\
     mainwindow.cpp \
@@ -8,7 +8,10 @@ SOURCES += main.cpp\
     parser\unitsumbol.cpp \
     parser\unitcommand.cpp \
     parser\parser.cpp \
-    editWidget/mytextedit.cpp
+    editWidget/mytextedit.cpp \
+    youtube/logindialog.cpp \
+    youtube/oauth2.cpp \
+    youtube/youtubewrapper.cpp
 
 
 HEADERS  += mainwindow.h \
@@ -18,9 +21,13 @@ HEADERS  += mainwindow.h \
     parser\unitsumbol.h \
     parser\unitcommand.h \
     parser\parser.h \
-    editWidget/mytextedit.h
+    editWidget/mytextedit.h \
+    youtube/logindialog.h \
+    youtube/oauth2.h \
+    youtube/youtubewrapper.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    youtube/logindialog.ui
 
 RESOURCES += \
     icons.qrc

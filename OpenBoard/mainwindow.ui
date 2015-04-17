@@ -533,6 +533,7 @@
     <addaction name="action_Pause"/>
     <addaction name="action_Stop"/>
     <addaction name="actionRecord_to_file"/>
+    <addaction name="actionSend_to_youTube"/>
    </widget>
    <widget class="QMenu" name="menu_Help">
     <property name="title">
@@ -910,6 +911,11 @@
    </property>
    <property name="text">
     <string>Record to file</string>
+   </property>
+  </action>
+  <action name="actionSend_to_youTube">
+   <property name="text">
+    <string>Send to youTube</string>
    </property>
   </action>
  </widget>
