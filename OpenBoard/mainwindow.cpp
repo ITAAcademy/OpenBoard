@@ -12,7 +12,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
+    bHide = false;
 //    connect(&drawThread, SIGNAL(started()), this, SLOT(myfunction())); //cant have parameter sorry, when using connect
 
     mpQmlWidget = new QmlWidget();
@@ -21,11 +21,15 @@ MainWindow::MainWindow(QWidget *parent) :
     textEdit->setEnabled(true);
 
     ui->verticalLayout->addWidget(textEdit,-1);
-    connect(ui->button_Delay, SIGNAL(pressed()), this, SLOT(delay_released()));
-    //connect(QColorDialog, SIGNAL(finished()), this, SLOT(on_colorBtn_released()));
+    mTimer = new QTimer(this);
+    mTimerClr = new QTimer(this);
+    mTimer->setSingleShot(true);
+    mTimerClr->setSingleShot(true);
+    connect(mTimer, SIGNAL(timeout()), this, SLOT(show_pause_menu()));
+    connect(mTimerClr, SIGNAL(timeout()), this, SLOT(show_color_dialog()));
     connect(ui->button_Find, SIGNAL(pressed()), this, SLOT(search()));
     connect(textEdit, SIGNAL(textChanged()), this, SLOT(onTextChanged()));
-    connect(ui->actionSend_to_youTube, SIGNAL( triggered()), this, SLOT (on_action_youTube_triggered()));
+ //   connect(ui->actionSend_to_youTube, SIGNAL( triggered()), this, SLOT (on_action_youTube_triggered()));
 
     ui->widget_Find->setVisible(false);
     ui->widget_delayTB->setVisible(false);
@@ -74,10 +78,21 @@ MainWindow::~MainWindow()
 
 void MainWindow::closeEvent(QCloseEvent*)
 {
-   // mpGLWidget->close();
-    mpQmlWidget->close();
-    delete mpQmlWidget;
-
+    if(mpQmlWidget != 0 && bHide != true)
+    {
+        qDebug() << bHide;
+        mpQmlWidget->close();
+        on_action_Stop_triggered();
+        delete mpQmlWidget;
+    }
+    // add if not empty
+    /*
+    delete textEdit;
+    delete mTimer;
+    delete mTimerClr;
+    //delete mUnitList;
+    delete youtube;
+    */
     //delete mpGLWidget;
 }
 
@@ -107,6 +122,7 @@ void MainWindow::on_action_Show_triggered()
     mpQmlWidget->setMainFillColor(mSettings.getBoardFontColor());
 
     emit mpQmlWidget->drawTextChanged();
+    bHide = false;
 
 /*
     mpGLWidget->setFixedSize(GLWIDGET_SIZE);
@@ -120,10 +136,19 @@ void MainWindow::on_action_Hide_triggered()
 {
    // mpGLWidget->hide();
     if(mpQmlWidget->getStatus() == mpQmlWidget->PLAY || mpQmlWidget->getStatus() == mpQmlWidget->PAUSE)
+    {
         mpQmlWidget->stopAnimated();
-    mpQmlWidget->hide();
+        on_action_Stop_triggered();
+    }
     mpQmlWidget->close();
+    bHide = true;
     delete mpQmlWidget;
+
+    while (mpQmlWidget != 0)
+    {
+       // qDebug() << mpQmlWidget;
+        qApp->processEvents();
+    }
     ui->action_Pause->setEnabled(false);
     ui->action_Play->setEnabled(false);
     ui->action_Stop->setEnabled(false);
@@ -441,15 +466,20 @@ void MainWindow::on_action_New_triggered()
 
 void MainWindow::on_delayBtn_pressed()
 {
-    show_pause_menu();
+    mTimer->start(TIMER_VALUE);
 }
 
-void MainWindow::delay_released()
+void MainWindow::on_delayBtn_released()
 {
-    QString text = ui->action_delayTB->text();
-    text += QString::number(ui->spinBox_delayTB->value());
+    if(mTimer->isActive()) {
+        mTimer->stop();
 
-    textEdit->insertPlainText(text);
+        QString text = ui->action_delayTB->text();
+        text += QString::number(ui->spinBox_delayTB->value() / 10);
+        text += QString::number(ui->spinBox_delayTB->value() % 10);
+
+        textEdit->insertPlainText(text);
+    }
 }
 
 void MainWindow::show_pause_menu()
@@ -477,24 +507,28 @@ void MainWindow::on_crossBtn_clicked()
 
 void MainWindow::on_colorBtn_pressed()
 {
-    show_color_dialog();
+    mTimerClr->start(TIMER_VALUE);
 }
 
 void MainWindow::on_colorBtn_released()
 {
-    QString text = ui->action_colorTB->text();
-    textColorName = colorPkr.name();
-    text += textColorName;
-    text.remove(2,1);
-    textEdit->insertPlainText(text);
+    if(mTimerClr->isActive()) {
+        mTimerClr->stop();
+
+        QString text = ui->action_colorTB->text();
+        textColorName = colorPkr.name();
+        text += textColorName;
+        text.remove(2,1);
+        textEdit->insertPlainText(text);
+    }
 }
 
 void MainWindow::show_color_dialog()
 {
-    colorPkr = QColorDialog::getColor();
+    colorPkr = QColorDialog::getColor(Qt::black, this);
 
     if(colorPkr.isValid())
-        on_colorBtn_released();
+        textColorName = colorPkr.name();
 }
 
 void MainWindow::on_colorBtn_clicked()
@@ -550,6 +584,7 @@ void MainWindow::onTextChanged()
 
 void MainWindow::on_action_Play_triggered()
 {
+    emit textEdit->textChanged();
     if(mpQmlWidget->getStatus() == QmlWidget::PAUSE)
         ui->action_Play->setText("Play");
     else
@@ -561,6 +596,7 @@ void MainWindow::on_action_Play_triggered()
     textEdit->setEnabled(false);
 // reinit
     int i = 0;
+    qDebug() << mUnitList.size();
     while( i < mUnitList.size() && mpQmlWidget->getStatus() != QmlWidget::STOP)
     {
         while(mpQmlWidget->getStatus() == QmlWidget::PAUSE)
@@ -579,7 +615,7 @@ void MainWindow::on_action_Stop_triggered()
     // mpGLWidget->stopAnimated();
 }
 
-void MainWindow::on_action_youTube_triggered()
+void MainWindow::on_action_youTube()
 {
     QString fileName = QFileDialog::getOpenFileName(this, tr("Choose file..."), qApp->applicationDirPath(), tr("Videos (*.avi *.mp4)"));
     youtube= new YouTubeWrapper(QString(fileName),this);

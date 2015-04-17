@@ -14,6 +14,8 @@
 #include <QPainter>
 #include <QMetaObject>
 #include <QFontMetrics>
+#include <QtMultimedia/QAudioRecorder>
+#include <QtMultimedia/QAudioProbe>
 
 #include <Encoder>
 #include <ScreenGrabber>
@@ -119,9 +121,15 @@ signals:
     void drawTextChanged();
 public slots:
 
+private slots:
+    void processBuffer(const QAudioBuffer &buffer);
+    void displayErrorMessage();
+    void fps_control();
 private:
     QString drawText;
     Encoder *m_encoder;
+    QAudioRecorder *audioRecorder;
+    QAudioProbe *probe;
     bool bRecord;
     void generateFrames();
     StatusDraw curStatus; // 0 - stop; 1 - play; -1 - pause
@@ -151,6 +159,8 @@ private:
     int deleteWT;
     QTimer tickTimer;
     int delay;
+    int fps_stabilitron;
+    QTimer *fps_timer;
 
 };
 

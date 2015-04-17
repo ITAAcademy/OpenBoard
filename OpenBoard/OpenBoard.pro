@@ -1,4 +1,4 @@
-QT       += widgets core gui opengl quick widgets quickwidgets network webkitwidgets#av avwidgets
+QT       += widgets core multimedia gui opengl quick widgets quickwidgets network webkitwidgets#av avwidgets
 
 SOURCES += main.cpp\
     mainwindow.cpp \

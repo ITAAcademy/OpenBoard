@@ -48,7 +48,7 @@ public slots:
     void on_action_Play_triggered();
     void on_action_Pause_triggered();
     void on_action_Stop_triggered();
-    void on_action_youTube_triggered();
+    void on_action_youTube();
 
     void onTextChanged();
 
@@ -83,12 +83,12 @@ public slots:
     void on_colorBtn_clicked();
     void on_clearBtn_clicked();
 
-//    press on button delay
+//    longpress on button delay
     void on_delayBtn_pressed();
-    void delay_released();
+    void on_delayBtn_released();
     void show_pause_menu();
 
-//    press on button color
+//    longpress on button color
     void on_colorBtn_pressed();
     void on_colorBtn_released();
     void show_color_dialog();
@@ -114,6 +114,7 @@ private:
     QThread drawThread;
     bool saveFile();
     bool maybeSave();
+    bool bHide;
     YouTubeWrapper *youtube;
 
 
