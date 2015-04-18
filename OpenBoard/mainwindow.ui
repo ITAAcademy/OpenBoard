@@ -141,6 +141,26 @@
            </property>
           </widget>
          </item>
+         <item>
+          <spacer name="horizontalSpacer_2">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="button_Delay">
+           <property name="text">
+            <string>Delay</string>
+           </property>
+          </widget>
+         </item>
         </layout>
        </item>
       </layout>
@@ -483,7 +503,7 @@
      <x>0</x>
      <y>0</y>
      <width>600</width>
-     <height>21</height>
+     <height>26</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -533,6 +553,7 @@
     <addaction name="action_Pause"/>
     <addaction name="action_Stop"/>
     <addaction name="actionRecord_to_file"/>
+    <addaction name="actionSend_to_youTube"/>
    </widget>
    <widget class="QMenu" name="menu_Help">
     <property name="title">
@@ -910,6 +931,11 @@
    </property>
    <property name="text">
     <string>Record to file</string>
+   </property>
+  </action>
+  <action name="actionSend_to_youTube">
+   <property name="text">
+    <string>Send to youTube</string>
    </property>
   </action>
  </widget>
