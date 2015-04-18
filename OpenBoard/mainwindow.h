@@ -22,7 +22,6 @@
 #include "settings.h"
 #include "parser/parser.h"
 #include "editWidget/mytextedit.h"
-#include "youtube/youtubewrapper.h"
 
 namespace Ui {
 class MainWindow;
@@ -37,7 +36,7 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-public slots:
+private slots:
 
 //    board
     void closeEvent(QCloseEvent* event);
@@ -48,7 +47,6 @@ public slots:
     void on_action_Play_triggered();
     void on_action_Pause_triggered();
     void on_action_Stop_triggered();
-    void on_action_youTube_triggered();
 
     void onTextChanged();
 
@@ -114,7 +112,7 @@ private:
     QThread drawThread;
     bool saveFile();
     bool maybeSave();
-    YouTubeWrapper *youtube;
+
 
 
 };

@@ -21,15 +21,17 @@ MainWindow::MainWindow(QWidget *parent) :
     textEdit->setEnabled(true);
 
     ui->verticalLayout->addWidget(textEdit,-1);
+
     mTimer = new QTimer(this);
     mTimerClr = new QTimer(this);
     mTimer->setSingleShot(true);
     mTimerClr->setSingleShot(true);
     connect(mTimer, SIGNAL(timeout()), this, SLOT(show_pause_menu()));
     connect(mTimerClr, SIGNAL(timeout()), this, SLOT(show_color_dialog()));
+
     connect(ui->button_Find, SIGNAL(pressed()), this, SLOT(search()));
+
     connect(textEdit, SIGNAL(textChanged()), this, SLOT(onTextChanged()));
-    connect(ui->actionSend_to_youTube, SIGNAL( triggered()), this, SLOT (on_action_youTube_triggered()));
 
     ui->widget_Find->setVisible(false);
     ui->widget_delayTB->setVisible(false);
@@ -589,14 +591,7 @@ void MainWindow::on_action_Stop_triggered()
     mpQmlWidget->stopAnimated();
     ui->action_Play->setText("Play");
     textEdit->setEnabled(true);
-    // mpGLWidget->stopAnimated();
-}
-
-void MainWindow::on_action_youTube_triggered()
-{
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Choose file..."), qApp->applicationDirPath(), tr("Videos (*.avi *.mp4)"));
-    youtube= new YouTubeWrapper(QString(fileName),this);
-    youtube->getAuth()->startLogin(true);
+   // mpGLWidget->stopAnimated();
 }
 void MainWindow::on_action_Pause_triggered()
 {
