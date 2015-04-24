@@ -98,10 +98,12 @@ public slots:
 private slots:
     void on_actionRecord_to_file_triggered();
 
+    void on_action_About_triggered();
+
 private:
-
+QAction *a_play,*a_pause,*a_stop,*a_font_canvas,*a_color_canvas,*a_record_to_file;
     Ui::MainWindow  *ui;
-
+QMessageBox messAbout;
  //   GLWidget        *mpGLWidget;
     QmlWidget       *mpQmlWidget;
     MyTextEdit       *textEdit;
