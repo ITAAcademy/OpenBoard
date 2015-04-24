@@ -69,8 +69,27 @@ this->textEdit->setFont(mSettings.getMainWindowFont());
        toolBar->addAction(QPixmap(":/icons/Close-2-icon.png").scaled(QSize(16, 16)), "Exit", this, SLOT(on_action_Exit_triggered()));
 toolBar->addSeparator();
 
-       toolBar->addAction(QPixmap(":/icons/undo-icon.png").scaled(QSize(16, 16)), "Undo", this, SLOT(on_action_Undo_triggered()));
-       toolBar->addAction(QPixmap(":/icons/redo-icon.png").scaled(QSize(16, 16)), "Redo", this, SLOT(on_action_Redo_triggered()));
+
+
+a_undo = new QAction(this);
+a_undo->setEnabled(true);
+a_undo->setIcon(QPixmap(":/icons/undo-icon.png").scaled(QSize(16, 16)));
+a_undo->setStatusTip(tr("Undo"));
+connect(a_undo,SIGNAL(triggered()),this,  SLOT(on_action_Undo_triggered()));
+toolBar->addAction(a_undo);
+       //toolBar->addAction(QPixmap(":/icons/undo-icon.png").scaled(QSize(16, 16)), "Undo", this, SLOT(on_action_Undo_triggered()));
+
+a_redo = new QAction(this);
+a_redo->setEnabled(true);
+a_redo->setIcon(QPixmap(":/icons/redo-icon.png").scaled(QSize(16, 16)));
+a_redo->setStatusTip(tr("Redo"));
+connect(a_redo,SIGNAL(triggered()),this,  SLOT(on_action_Redo_triggered()));
+toolBar->addAction(a_redo);
+   //    toolBar->addAction(QPixmap(":/icons/redo-icon.png").scaled(QSize(16, 16)), "Redo", this, SLOT(on_action_Redo_triggered()));
+
+
+
+
        toolBar->addAction(QPixmap(":/icons/cut-icon.png").scaled(QSize(16, 16)), "Cut", this, SLOT(on_action_Cut_triggered()));
        toolBar->addAction(QPixmap(":/icons/Copy-icon.png").scaled(QSize(16, 16)), "Copy", this, SLOT(on_action_Copy_triggered()));
        toolBar->addAction(QPixmap(":/icons/Paste-icon.png").scaled(QSize(16, 16)), "Paste", this, SLOT(on_action_Paste_triggered()));
@@ -127,7 +146,7 @@ toolBar->addSeparator();
        a_record_to_file->setStatusTip(tr("Record in file"));
        a_record_to_file->setCheckable(true);
        a_record_to_file->setChecked(false);
-       connect(a_record_to_file,SIGNAL(triggered()),this,  SLOT(on_actionRecord_to_file_triggered()));
+       connect(a_record_to_file,SIGNAL(triggered()),this,  SLOT(a_record_to_file_triggered()));
        toolBar->addAction(a_record_to_file);
 
       // toolBar->addAction(QPixmap(":/icons/12video icon.png").scaled(QSize(16, 16)), "Record in file", this, SLOT(on_actionRecord_to_file_triggered()));  //yvguj vgju ftu
@@ -196,7 +215,8 @@ void MainWindow::on_action_Show_triggered()
     a_font_canvas->setEnabled(true);
     a_color_canvas->setEnabled(true);
     a_record_to_file->setEnabled(true);
-
+    a_undo->setEnabled(true);
+    a_redo->setEnabled(true);
 }
 
 void MainWindow::on_action_Hide_triggered()
@@ -220,6 +240,8 @@ void MainWindow::on_action_Hide_triggered()
    a_font_canvas->setEnabled(false);
    a_color_canvas->setEnabled(false);
    a_record_to_file->setEnabled(false);
+   a_undo->setEnabled(false);
+   a_redo->setEnabled(false);
 }
 
 void MainWindow::moveEvent(QMoveEvent *event)
@@ -359,10 +381,26 @@ void MainWindow::on_action_Find_triggered()
     ui->widget_Find->setVisible(!ui->widget_Find->isVisible());
     if(ui->widget_Find->isVisible()) {
         ui->lineEdit_Find->setFocus();
-        ui->lineEdit_Find->selectAll();
+      //  ui->lineEdit_Find->selectAll();
+     //   ui->lineEdit_Find->setSelection(0,100);
     }
     else {
+
         textEdit->setFocus();
+
+        QString str = ui->lineEdit_Find->text();
+            QList<QTextEdit::ExtraSelection> extraSelections;
+            textEdit->moveCursor(QTextCursor::Start);
+            QColor color = QColor(Qt::white).lighter(130);
+           while(textEdit->find(str))
+                {
+                    QTextEdit::ExtraSelection extra;
+                    extra.format.setBackground(color);
+
+                    extra.cursor = textEdit->textCursor();
+                    extraSelections.append(extra);
+                }
+               textEdit->setExtraSelections(extraSelections);
     }
 }
 
@@ -643,6 +681,10 @@ void MainWindow::on_action_Play_triggered()
 {
      ui->action_Play->setEnabled(false);
      a_play->setEnabled(false);
+     ui->action_Undo->setEnabled(false);
+     ui->action_Redo->setEnabled(false);
+     a_undo->setEnabled(false);
+     a_redo->setEnabled(false);
     if(mpQmlWidget->getStatus() == QmlWidget::PAUSE)
             ui->action_Play->setText("Play");
         else
@@ -674,6 +716,11 @@ void MainWindow::on_action_Stop_triggered()
     // mpGLWidget->stopAnimated();
      ui->action_Play->setEnabled(true);
      a_play->setEnabled(true);
+     ui->action_Undo->setEnabled(true);
+     ui->action_Redo->setEnabled(true);
+     a_undo->setEnabled(true);
+     a_redo->setEnabled(true);
+
 }
 
 void MainWindow::on_action_youTube_triggered()
@@ -689,16 +736,23 @@ void MainWindow::on_action_Pause_triggered()
     //mpGLWidget->pauseAnimated();
     ui->action_Play->setEnabled(true);
     a_play->setEnabled(true);
+    ui->action_Undo->setEnabled(true);
+    ui->action_Redo->setEnabled(true);
+    a_undo->setEnabled(true);
+    a_redo->setEnabled(true);
 }
 
 
 
-
+void MainWindow::a_record_to_file_triggered()
+{
+    ui->actionRecord_to_file->setChecked(!(ui->actionRecord_to_file->isChecked()));
+}
 
 void MainWindow::on_actionRecord_to_file_triggered()
 {
-    ui->actionRecord_to_file->setChecked(!(ui->actionRecord_to_file->isChecked()));
-    a_record_to_file->setChecked(ui->actionRecord_to_file->isChecked());
+   // ui->actionRecord_to_file->setChecked((ui->actionRecord_to_file->isChecked()));
+    a_record_to_file->setChecked(!(a_record_to_file->isChecked()));
 }
 
 void MainWindow::on_action_About_triggered()

@@ -53,6 +53,7 @@ public slots:
     void onTextChanged();
 
 //    settings
+    void a_record_to_file_triggered();
     void on_action_Font_triggered();
     void on_action_Color_triggered();
     void on_action_Board_Font_triggered();
@@ -101,7 +102,7 @@ private slots:
     void on_action_About_triggered();
 
 private:
-QAction *a_play,*a_pause,*a_stop,*a_font_canvas,*a_color_canvas,*a_record_to_file;
+QAction *a_play,*a_pause,*a_stop,*a_font_canvas,*a_color_canvas,*a_record_to_file,*a_undo,*a_redo;
     Ui::MainWindow  *ui;
 QMessageBox messAbout;
  //   GLWidget        *mpGLWidget;
