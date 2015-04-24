@@ -18,9 +18,11 @@
 
 #include <QDebug>
 
-#include "glwidget.h"
 #include "qmlwidget.h"
 #include "settings.h"
+#include "parser/parser.h"
+#include "editWidget/mytextedit.h"
+#include "youtube/youtubewrapper.h"
 
 namespace Ui {
 class MainWindow;
@@ -35,7 +37,7 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-private slots:
+public slots:
 
 //    board
     void closeEvent(QCloseEvent* event);
@@ -46,13 +48,14 @@ private slots:
     void on_action_Play_triggered();
     void on_action_Pause_triggered();
     void on_action_Stop_triggered();
+    void on_action_youTube_triggered();
 
     void onTextChanged();
 
 //    settings
     void on_action_Font_triggered();
-    void on_action_Board_Font_triggered();
     void on_action_Color_triggered();
+    void on_action_Board_Font_triggered();
     void on_action_Board_Color_triggered();
     void on_action_Reset_default_triggered();
 
@@ -80,25 +83,28 @@ private slots:
     void on_colorBtn_clicked();
     void on_clearBtn_clicked();
 
-//    longpress on button delay
+//    press on button delay
     void on_delayBtn_pressed();
-    void on_delayBtn_released();
+    void delay_released();
     void show_pause_menu();
 
-//    longpress on button color
+//    press on button color
     void on_colorBtn_pressed();
     void on_colorBtn_released();
     void show_color_dialog();
 
 
 
+private slots:
+    void on_actionRecord_to_file_triggered();
+
 private:
 
     Ui::MainWindow  *ui;
 
-    GLWidget        *mpGLWidget;
-    QmlWidget       mpQmlWidget;
-
+ //   GLWidget        *mpGLWidget;
+    QmlWidget       *mpQmlWidget;
+    MyTextEdit       *textEdit;
     QString         curFile;
     pSettings       mSettings;
     QTimer          *mTimer;
@@ -106,9 +112,13 @@ private:
     QString         textColorName;
     QColor          colorPkr;
     QString         inputText;
-
+    QList <Unit*>mUnitList;
+    Parser          mParser;
+    QThread drawThread;
     bool saveFile();
     bool maybeSave();
+    YouTubeWrapper *youtube;
+    QToolBar *toolBar;
 
 };
 

@@ -13,78 +13,135 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    mpGLWidget = new GLWidget;
+//    connect(&drawThread, SIGNAL(started()), this, SLOT(myfunction())); //cant have parameter sorry, when using connect
 
-    mTimer = new QTimer(this);
-    mTimerClr = new QTimer(this);
-    mTimer->setSingleShot(true);
-    mTimerClr->setSingleShot(true);
-    connect(mTimer, SIGNAL(timeout()), this, SLOT(show_pause_menu()));
-    connect(mTimerClr, SIGNAL(timeout()), this, SLOT(show_color_dialog()));
+    mpQmlWidget = new QmlWidget();
+    textEdit = new MyTextEdit(QColor("#000000"), QColor("#FF0000"), ui->centralWidget);
+    textEdit->setObjectName(QStringLiteral("textEdit"));
+    textEdit->setEnabled(true);
 
+    ui->verticalLayout->addWidget(textEdit,-1);
+    connect(ui->button_Delay, SIGNAL(pressed()), this, SLOT(delay_released()));
+    //connect(QColorDialog, SIGNAL(finished()), this, SLOT(on_colorBtn_released()));
     connect(ui->button_Find, SIGNAL(pressed()), this, SLOT(search()));
-
-    connect(ui->textEdit, SIGNAL(textChanged()), this, SLOT(onTextChanged()));
+    connect(textEdit, SIGNAL(textChanged()), this, SLOT(onTextChanged()));
+    connect(ui->actionSend_to_youTube, SIGNAL( triggered()), this, SLOT (on_action_youTube_triggered()));
 
     ui->widget_Find->setVisible(false);
     ui->widget_delayTB->setVisible(false);
   //  drawWidget->setVisible(false);
   //  on_action_Show_triggered();
 
+    ui->action_Board_Color->setEnabled(false);
+    ui->action_Board_Font->setEnabled(false);
 
     if(mSettings.FirstRun())
-    {
-        setGeometry(QRect(WINDOW_POS));
-        setFont(QFont("Times",10,1,false));
+        {
+            setGeometry(QRect(WINDOW_POS));
+            setFont(QFont("Tahoma",10,1,false));
 
-        mSettings.setMainWindowRect(geometry());
-        mSettings.setMainWindowTitle(windowTitle());
-        mSettings.setMainWindowFont(font());
-        mSettings.setMainWindowColor(this->ui->textEdit->textColor());
-        mSettings.setBoardFontColor(QColor::QColor ("#00ff00"));
-        mSettings.setBoardFont(QFont("Times",10,1,false));
-    }
+            mSettings.setMainWindowRect(geometry());
+            mSettings.setMainWindowTitle(windowTitle());
+            mSettings.setMainWindowFont(font());
+            mSettings.setMainWindowColor(this->textEdit->textColor());
+            QColor col (255,255,255);
+            mSettings.setBoardFontColor(QColor(255,255,255));
 
-  //  else
-    {
 
-        setWindowTitle(mSettings.getMainWindowTitle());
-        setGeometry(mSettings.getMainWindowRect());
-        setFont(mSettings.getMainWindowFont());
-this->ui->textEdit->setTextColor(mSettings.getMainWindowColor());
-        mpQmlWidget.setColor(mSettings.getBoardFontColor().name());
-        mpQmlWidget.setFont(mSettings.getBoardFont().toString());
-    }
+            QFont sfont("Tahoma", 10);
+            mSettings.setBoardFont(QFont("Tahoma",20,1,false));
+            mSettings.saveSettings();
+        }
+
+      //  else
+        {
+
+            setWindowTitle(mSettings.getMainWindowTitle());
+            setGeometry(mSettings.getMainWindowRect());
+            this->textEdit->setTextColor(mSettings.getMainWindowColor());
+this->textEdit->setFont(mSettings.getMainWindowFont());
+
+       toolBar= new QToolBar;
+       toolBar->addAction(QPixmap(":/icons/new-file-icon.png").scaled(QSize(16, 16)), "New", this, SLOT(on_action_New_triggered()));
+       toolBar->addAction(QPixmap(":/icons/open-file-icon.png").scaled(QSize(16, 16)), "Open", this, SLOT(on_action_Open_triggered()));
+       toolBar->addAction(QPixmap(":/icons/Save-icon.png").scaled(QSize(16, 16)), "Save", this, SLOT(on_action_Save_triggered()));
+       toolBar->addAction(QPixmap(":/icons/Save-as-icon.png").scaled(QSize(16, 16)), "Save as", this, SLOT(on_action_Save_as_triggered()));
+       toolBar->addAction(QPixmap(":/icons/Close-2-icon.png").scaled(QSize(16, 16)), "Exit", this, SLOT(on_action_Exit_triggered()));
+toolBar->addSeparator();
+
+       toolBar->addAction(QPixmap(":/icons/undo-icon.png").scaled(QSize(16, 16)), "Undo", this, SLOT(on_action_Undo_triggered()));
+       toolBar->addAction(QPixmap(":/icons/redo-icon.png").scaled(QSize(16, 16)), "Redo", this, SLOT(on_action_Redo_triggered()));
+       toolBar->addAction(QPixmap(":/icons/cut-icon.png").scaled(QSize(16, 16)), "Cut", this, SLOT(on_action_Cut_triggered()));
+       toolBar->addAction(QPixmap(":/icons/Copy-icon.png").scaled(QSize(16, 16)), "Copy", this, SLOT(on_action_Copy_triggered()));
+       toolBar->addAction(QPixmap(":/icons/Paste-icon.png").scaled(QSize(16, 16)), "Paste", this, SLOT(on_action_Paste_triggered()));
+       toolBar->addAction(QPixmap(":/icons/select_all.png").scaled(QSize(16, 16)), "Select all", this, SLOT(on_action_Select_all_triggered()));
+       toolBar->addAction(QPixmap(":/icons/search-icon.png").scaled(QSize(16, 16)), "Search", this, SLOT(on_action_Find_triggered()));
+toolBar->addSeparator();
+
+       toolBar->addAction(QPixmap(":/icons/font-x-generic-icon.png").scaled(QSize(16, 16)), "Font text area", this, SLOT(on_action_Font_triggered()));
+       toolBar->addAction(QPixmap(":/icons/colors-icon.png").scaled(QSize(16, 16)), "Color text area", this, SLOT(on_action_Color_triggered()));
+       toolBar->addAction(QPixmap(":/icons/font-x-generic-icon.png").scaled(QSize(16, 16)), "Font canvas", this, SLOT(on_action_Board_Font_triggered()));
+       toolBar->addAction(QPixmap(":/icons/colors-icon.png").scaled(QSize(16, 16)), "Color canvas", this, SLOT(on_action_Board_Color_triggered()));
+       toolBar->addAction(QPixmap(":/icons/default_programs.png").scaled(QSize(16, 16)), "Reset default", this, SLOT(on_action_Reset_default_triggered()));
+toolBar->addSeparator();
+       toolBar->addAction(QPixmap(":/icons/gnome_show_desktop.png").scaled(QSize(16, 16)), "Show canvas", this, SLOT(on_action_Show_triggered()));
+       toolBar->addAction(QPixmap(":/icons/hide_icon.png").scaled(QSize(16, 16)), "Hide canvas", this, SLOT(on_action_Hide_triggered()));
+       toolBar->addAction(QPixmap(":/icons/play-8-icon.png").scaled(QSize(16, 16)), "Play", this, SLOT(on_action_Play_triggered()));
+       toolBar->addAction(QPixmap(":/icons/pause-icon.png").scaled(QSize(16, 16)), "Pause", this, SLOT(on_action_Pause_triggered()));
+       toolBar->addAction(QPixmap(":/icons/stop_icon.png").scaled(QSize(16, 16)), "Stop", this, SLOT(on_action_Stop_triggered()));
+       toolBar->addAction(QPixmap(":/icons/12video icon.png").scaled(QSize(16, 16)), "Record in file", this, SLOT(on_actionRecord_to_file_triggered()));  //yvguj vgju ftu
+       toolBar->addAction(QPixmap(":/icons/youtube_icon.png").scaled(QSize(16, 16)), "Send to YouTube", this, SLOT(on_action_youTube_triggered()));
+       toolBar->addAction(QPixmap(":/icons/info.png").scaled(QSize(16, 16)), "About", this, SLOT(on_action_New_triggered()));
+toolBar->setMovable(false);
+//toolBar->setAllowedAreas(Qt::BottomToolBarArea);
+
+        addToolBar(Qt::TopToolBarArea, toolBar);
+     // toolBar->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
+       }
 }
 
 MainWindow::~MainWindow()
 {
     mSettings.setMainWindowRect(geometry());
-    mSettings.setMainWindowFont(font());
-    mSettings.setMainWindowColor(this->ui->textEdit->textColor());
-    mSettings.setBoardFontColor(QColor::QColor (mpQmlWidget.getColor()));
-    mSettings.setBoardFont(mpQmlWidget.getFont());
+delete toolBar;
     delete ui;
 }
 
 void MainWindow::closeEvent(QCloseEvent*)
 {
-    mpGLWidget->close();
-    mpQmlWidget.close();
-    delete mpGLWidget;
+   // mpGLWidget->close();
+    mpQmlWidget->close();
+    delete mpQmlWidget;
+
+    //delete mpGLWidget;
 }
 
 void MainWindow::on_action_Show_triggered()
 {
+    if (ui->action_Board_Color->isEnabled()==false)
+   ui->action_Board_Color->setEnabled(true);
+    if (ui->action_Board_Font->isEnabled()==false)
+   ui->action_Board_Font->setEnabled(true);
 /*
  * QML
 */
-    mpQmlWidget.show();
-    mpQmlWidget.setFixedSize(GLWIDGET_SIZE);
-    mpQmlWidget.move(pos().x() + width() + WINDOW_MARGING, pos().y());
+    mpQmlWidget = new QmlWidget();
+    mpQmlWidget->show();
+    mpQmlWidget->setFixedSize(GLWIDGET_SIZE);
+    mpQmlWidget->move(pos().x() + width() + WINDOW_MARGING, pos().y());
     ui->action_Pause->setEnabled(true);
     ui->action_Play->setEnabled(true);
     ui->action_Stop->setEnabled(true);
+    //mpQmlWidget.create();
+    mpQmlWidget->setDrawText(textEdit->toPlainText());
+    /*
+     * init
+     */
+
+    mpQmlWidget->setTextFont(mSettings.getBoardFont());
+    mpQmlWidget->setMainFillColor(mSettings.getBoardFontColor());
+
+    emit mpQmlWidget->drawTextChanged();
 
 /*
     mpGLWidget->setFixedSize(GLWIDGET_SIZE);
@@ -92,118 +149,146 @@ void MainWindow::on_action_Show_triggered()
     mpGLWidget->show();
 */
 
-
 }
 
 void MainWindow::on_action_Hide_triggered()
 {
    // mpGLWidget->hide();
-    if(mpQmlWidget.IsPlay())
-        mpQmlWidget.stopAnimated();
-    mpQmlWidget.hide();
+    if(mpQmlWidget->getStatus() == mpQmlWidget->PLAY || mpQmlWidget->getStatus() == mpQmlWidget->PAUSE)
+        mpQmlWidget->stopAnimated();
+    mpQmlWidget->hide();
+    mpQmlWidget->close();
+    delete mpQmlWidget;
     ui->action_Pause->setEnabled(false);
     ui->action_Play->setEnabled(false);
     ui->action_Stop->setEnabled(false);
+   ui->action_Board_Color->setEnabled(false);
+   ui->action_Board_Font->setEnabled(false);
 
 }
 
 void MainWindow::moveEvent(QMoveEvent *event)
 {
-    mpQmlWidget.move(pos().x() + width() + WINDOW_MARGING, pos().y());
+    mpQmlWidget->move(pos().x() + width() + WINDOW_MARGING, pos().y());
 }
 
 void MainWindow::resizeEvent(QResizeEvent *event)
 {
-    mpQmlWidget.move(pos().x() + width() + WINDOW_MARGING, pos().y());
+    mpQmlWidget->move(pos().x() + width() + WINDOW_MARGING, pos().y());
 }
 
 void MainWindow::on_action_Font_triggered()
 {   //call QtFontDialog & setFont to all elements (this)
     bool ok;
     QFont font;
-    font = QFontDialog::getFont(&ok, QFont("Times",10,1,false), this);
+    font = QFontDialog::getFont(&ok, QFont( "Times", 10 ), this);
     if (!ok)
         return;
-    ui->menuBar->setFont(font);
-    ui->textEdit->setFont(font);
-    setFont(font);
-}
+  // setFont(font);
+    textEdit->setFont(font);
 
-void MainWindow::on_action_Board_Font_triggered()
-{
-    bool ok;
+    mSettings.setMainWindowFont(font);
+
+    ///!!!!!!!!!
+    /*// bool ok;
     QFont font;
-    font = QFontDialog::getFont(&ok, QFont("Times",10,1,false), this);
+    font = QFontDialog::getFont(&ok, QFont("Tahoma",10,1,false), this);
     if (!ok)
         return;
 
     QString qmlFont;
     QFontInfo fontInf(font);
     qmlFont = QString::number(fontInf.pointSize()) + "pt \"" + font.family() + "\"";
-    mpQmlWidget.setFont(qmlFont);
+    mpQmlWidget.setFont(qmlFont);   */
+}
+
+//!!!!!!!!!!!!!!!!!!
+//!
+void MainWindow::on_action_Board_Font_triggered()
+{
+    bool ok;
+    QFont font;
+    font = QFontDialog::getFont(&ok, QFont("Tahoma",10,1,false), this);
+    if (!ok)
+        return;
+
+ /*   QString qmlFont;
+    QFontInfo fontInf(font);
+    qmlFont = QString::number(fontInf.pointSize()) + "pt \"" + font.family() + "\"";*/
+    mpQmlWidget->setTextFont(font);
+   // mSettings.setBoardFont(font);
+   mSettings.setBoardFont(font);
 }
 
 void MainWindow::on_action_Reset_default_triggered()
-{   //set font to menuBar: Times, 8 pt, normal
-    QFont font = (QFont("Times",10,1,false));
-    ui->menuBar->setFont(font);
-    ui->textEdit->setFont(font);
-    ui->textEdit->setTextColor("#000000");
-    QString temp = ui->textEdit->toPlainText();
-    ui->textEdit->clear();
-    ui->textEdit->insertPlainText(temp);
-    setFont(font);
+{
+    QFont font = (QFont("Tahoma",10,1,false));
+        ui->menuBar->setFont(font);
+        textEdit->setFont(font);
+        textEdit->setTextColor("#000000");
+        QString temp = textEdit->toPlainText();
+        textEdit->clear();
+        textEdit->insertPlainText(temp);
+       // setFont(font);
 }
 
 void MainWindow::on_action_Color_triggered()
-{
+{   //call QtColorDialog
     QColor colorm;
     colorm = QColorDialog::getColor();
+    //!!!!!!!!!!!
     QString col = colorm.name();
-    ui->textEdit->setTextColor(col);
-    QString temp = ui->textEdit->toPlainText();
-    ui->textEdit->clear();
-    ui->textEdit->insertPlainText(temp);
+        textEdit->setTextColor(col);
+        QString temp = textEdit->toPlainText();
+        textEdit->clear();
+        textEdit->insertPlainText(temp);
+
+          mSettings.setMainWindowColor(colorm);
 }
 
-void MainWindow::on_action_Board_Color_triggered()
+//!!!!!!!!!!!!!
+//!
+ void MainWindow::on_action_Board_Color_triggered()
 {
     QColor colorm;
     colorm = QColorDialog::getColor();
-    QString col = colorm.name();
-    mpQmlWidget.setColor(col);
+   // QString col = colorm.name();
+    mpQmlWidget->setMainFillColor(colorm);
+    mSettings.setBoardFontColor(colorm);
+
+
 }
 
 void MainWindow::on_action_Undo_triggered()
 {
-    ui->textEdit->undo();
+    textEdit->undo();
 }
 
 void MainWindow::on_action_Redo_triggered()
 {
-    ui->textEdit->redo();
+    textEdit->redo();
 }
 
 void MainWindow::on_action_Cut_triggered()
 {
-    ui->textEdit->cut();
+    textEdit->cut();
 }
 
 void MainWindow::on_action_Copy_triggered()
 {
-    ui->textEdit->copy();
+    textEdit->copy();
 }
 
 void MainWindow::on_action_Paste_triggered()
 {
-    ui->textEdit->paste();
+    textEdit->paste();
 }
 
 
 void MainWindow::on_action_Select_all_triggered()
 {
-    if(ui->textEdit->hasFocus()) {
-        ui->textEdit->selectAll();
+    if(textEdit->hasFocus()) {
+        textEdit->selectAll();
     }
     if(ui->lineEdit_Find->hasFocus()) {
         ui->lineEdit_Find->selectAll();
@@ -222,7 +307,7 @@ void MainWindow::on_action_Find_triggered()
         ui->lineEdit_Find->selectAll();
     }
     else {
-        ui->textEdit->setFocus();
+        textEdit->setFocus();
     }
 }
 
@@ -240,7 +325,7 @@ bool MainWindow::saveFile()
     QFile file(curFile);
     if(file.open(QFile::WriteOnly))
     {
-        file.write(ui->textEdit->toPlainText().toUtf8());
+        file.write(textEdit->toPlainText().toUtf8());
         return true;
     }
     else
@@ -255,7 +340,7 @@ bool MainWindow::saveFile()
 
 bool MainWindow::maybeSave()
 {
-    if(ui->textEdit->document()->isModified())
+    if(textEdit->document()->isModified())
     {
         QMessageBox::StandardButton ret =
                 QMessageBox::warning(
@@ -280,18 +365,18 @@ void MainWindow::search()
 
     QList<QTextEdit::ExtraSelection> extraSelections;
 
-    ui->textEdit->moveCursor(QTextCursor::Start);
+    textEdit->moveCursor(QTextCursor::Start);
     QColor color = QColor(Qt::yellow).lighter(130);
 
     if(ui->check_case_sensitive->isChecked() == false
             && ui->check_whole_words->isChecked() == false)
     {
-        while(ui->textEdit->find(str))
+        while(textEdit->find(str))
         {
             QTextEdit::ExtraSelection extra;
             extra.format.setBackground(color);
 
-            extra.cursor = ui->textEdit->textCursor();
+            extra.cursor = textEdit->textCursor();
             extraSelections.append(extra);
         }
     }
@@ -299,12 +384,12 @@ void MainWindow::search()
     else if(ui->check_case_sensitive->isChecked() == true
             && ui->check_whole_words->isChecked() == false)
     {
-        while(ui->textEdit->find(str, QTextDocument::FindCaseSensitively))
+        while(textEdit->find(str, QTextDocument::FindCaseSensitively))
         {
             QTextEdit::ExtraSelection extra;
             extra.format.setBackground(color);
 
-            extra.cursor = ui->textEdit->textCursor();
+            extra.cursor = textEdit->textCursor();
             extraSelections.append(extra);
         }
     }
@@ -312,12 +397,12 @@ void MainWindow::search()
     else if(ui->check_case_sensitive->isChecked() == false
             && ui->check_whole_words->isChecked() == true)
     {
-        while(ui->textEdit->find(str, QTextDocument::FindWholeWords))
+        while(textEdit->find(str, QTextDocument::FindWholeWords))
         {
             QTextEdit::ExtraSelection extra;
             extra.format.setBackground(color);
 
-            extra.cursor = ui->textEdit->textCursor();
+            extra.cursor = textEdit->textCursor();
             extraSelections.append(extra);
         }
     }
@@ -325,17 +410,17 @@ void MainWindow::search()
     else if (ui->check_case_sensitive->isChecked() == true
             && ui->check_whole_words->isChecked() == true)
     {
-        while(ui->textEdit->find(str, QTextDocument::FindWholeWords | QTextDocument::FindCaseSensitively))
+        while(textEdit->find(str, QTextDocument::FindWholeWords | QTextDocument::FindCaseSensitively))
         {
             QTextEdit::ExtraSelection extra;
             extra.format.setBackground(color);
 
-            extra.cursor = ui->textEdit->textCursor();
+            extra.cursor = textEdit->textCursor();
             extraSelections.append(extra);
         }
     }
 
-    ui->textEdit->setExtraSelections(extraSelections);
+    textEdit->setExtraSelections(extraSelections);
 }
 
 bool MainWindow::on_action_Save_as_triggered()
@@ -370,7 +455,7 @@ void MainWindow::on_action_Open_triggered()
             QFile file(fileName);
             if(file.open(QFile::ReadOnly))
             {
-                ui->textEdit->setPlainText(file.readAll());
+                textEdit->setPlainText(file.readAll());
             }
             else
             {
@@ -384,27 +469,22 @@ void MainWindow::on_action_New_triggered()
 {
     if (maybeSave())
     {
-        ui->textEdit->clear();
+        textEdit->clear();
     }
 
 }
 
 void MainWindow::on_delayBtn_pressed()
 {
-    mTimer->start(TIMER_VALUE);
+    show_pause_menu();
 }
 
-void MainWindow::on_delayBtn_released()
+void MainWindow::delay_released()
 {
-    if(mTimer->isActive()) {
-        mTimer->stop();
+    QString text = ui->action_delayTB->text();
+    text += QString::number(ui->spinBox_delayTB->value());
 
-        QString text = ui->action_delayTB->text();
-        text += QString::number(ui->spinBox_delayTB->value() / 10);
-        text += QString::number(ui->spinBox_delayTB->value() % 10);
-
-        ui->textEdit->insertPlainText(text);
-    }
+    textEdit->insertPlainText(text);
 }
 
 void MainWindow::show_pause_menu()
@@ -415,69 +495,85 @@ void MainWindow::show_pause_menu()
 void MainWindow::on_backBtn_clicked()
 {
     QString text = ui->action_backTB->text();
-    ui->textEdit->insertPlainText(text);
+    textEdit->insertPlainText(text);
 }
 
 void MainWindow::on_animationBtn_clicked()
 {
     QString text = ui->action_animatedTB->text();
-    ui->textEdit->insertPlainText(text);
+    textEdit->insertPlainText(text);
 }
 
 void MainWindow::on_crossBtn_clicked()
 {
     QString text = ui->action_crossTB->text();
-    ui->textEdit->insertPlainText(text);
+    textEdit->insertPlainText(text);
 }
 
 void MainWindow::on_colorBtn_pressed()
 {
-    mTimerClr->start(TIMER_VALUE);
+    show_color_dialog();
 }
 
 void MainWindow::on_colorBtn_released()
 {
-    if(mTimerClr->isActive()) {
-        mTimerClr->stop();
-
-        QString text = ui->action_colorTB->text();
-        textColorName = colorPkr.name();
-        text += textColorName;
-        text.remove(2,1);
-        ui->textEdit->insertPlainText(text);
-    }
+    QString text = ui->action_colorTB->text();
+    textColorName = colorPkr.name();
+    text += textColorName;
+    text.remove(2,1);
+    textEdit->insertPlainText(text);
 }
 
 void MainWindow::show_color_dialog()
 {
-    colorPkr = QColorDialog::getColor(Qt::black, this);
+    colorPkr = QColorDialog::getColor();
 
     if(colorPkr.isValid())
-        textColorName = colorPkr.name();
+        on_colorBtn_released();
 }
 
 void MainWindow::on_colorBtn_clicked()
-{
+{  //!!!!!!!!!!!!!!!!
+    if(mTimerClr->isActive()) {
+            mTimerClr->stop();
 
+            QString text = ui->action_colorTB->text();
+            textColorName = colorPkr.name();
+            text += textColorName;
+            text.remove(2,1);
+            textEdit->insertPlainText(text);
+        }
 //    QString text = ui->action_colorTB->text();
 //    text += textColorName;
 //    text.remove(2,1);
-//    ui->textEdit->insertPlainText(text);
+//    textEdit->insertPlainText(text);
 }
 
 void MainWindow::on_clearBtn_clicked()
 {
     QString text = ui->action_clearTB->text();
-    ui->textEdit->insertPlainText(text);
+    textEdit->insertPlainText(text);
 }
 void MainWindow::onTextChanged()
 {
-   // DrawData temp = mpQmlWidget.getDrawData();
-    /*if(!ui->textEdit->toPlainText().isEmpty())
-        this->inputText += ui->textEdit->toPlainText().at(ui->textEdit->toPlainText().size() - 1);
-    mpQmlWidget.setDrawText(inputText);*/
-    mpQmlWidget.setDrawText(ui->textEdit->toPlainText());
-    emit mpQmlWidget.drawTextChanged();
+    if(mpQmlWidget->isVisible() && textEdit->toPlainText().length() != 0)
+        //mpQmlWidget->drawWrapText(textEdit->toPlainText().at(textEdit->toPlainText().length() - 1));
+    {
+        QString str = textEdit->toPlainText();
+        int status = mParser.ParsingLine(mUnitList, str);
+        textEdit->textColorSet(status);
+        if(status != -1)
+            ui->action_Play->setEnabled(false);
+        else
+            ui->action_Play->setEnabled(true);
+    }
+    /*
+    // DrawData temp = mpQmlWidget.getDrawData();
+     /*if(!textEdit->toPlainText().isEmpty())
+         this->inputText += textEdit->toPlainText().at(textEdit->toPlainText().size() - 1);
+     mpQmlWidget.setDrawText(inputText);*/
+     /*mpQmlWidget->setDrawText(textEdit->toPlainText());
+     emit mpQmlWidget->drawTextChanged();*/
     //mpQmlWidget.Encode(mpQmlWidget.grabFramebuffer());
     /*mpGLWidget->textArray.clear();
     mpGLWidget->textArray.append(str);
@@ -486,32 +582,56 @@ void MainWindow::onTextChanged()
       mpGLWidget->pauseAnimated();
    }*/
 }
+
 void MainWindow::on_action_Play_triggered()
 {
-    if(mpQmlWidget.IsPlay())
+    if(mpQmlWidget->getStatus() == QmlWidget::PAUSE)
         ui->action_Play->setText("Play");
-    mpQmlWidget.drawAnimated();
-   /* mpGLWidget->textArray.clear();
-    mpGLWidget->textArray.append(str);
-    mpGLWidget->setFixedSize(GLWIDGET_SIZE);
-    mpGLWidget->move(pos().x() + width(), pos().y());
-    mpGLWidget->show();
-    mpGLWidget->drawAnimated();
-    */
+    else
+    {
+        mpQmlWidget->clearCanvas();
+        mpQmlWidget->setFillColor(mpQmlWidget->getMainFillColor());
+    }
+    mpQmlWidget->drawAnimated(ui->actionRecord_to_file->isChecked());
+    textEdit->setEnabled(false);
+// reinit
+    int i = 0;
+    while( i < mUnitList.size() && mpQmlWidget->getStatus() != QmlWidget::STOP)
+    {
+        while(mpQmlWidget->getStatus() == QmlWidget::PAUSE)
+            qApp->processEvents();
+        mUnitList.at(i++)->draw(mpQmlWidget);
+    }
+    mpQmlWidget->drawWrapText(" ");
+    on_action_Stop_triggered();
 }
+
 void MainWindow::on_action_Stop_triggered()
 {
-    mpQmlWidget.stopAnimated();
+    mpQmlWidget->stopAnimated();
     ui->action_Play->setText("Play");
-   // mpGLWidget->stopAnimated();
+    textEdit->setEnabled(true);
+    // mpGLWidget->stopAnimated();
+}
+
+void MainWindow::on_action_youTube_triggered()
+{
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Choose file..."), qApp->applicationDirPath(), tr("Videos (*.avi *.mp4)"));
+    youtube= new YouTubeWrapper(QString(fileName),this);
+    youtube->getAuth()->startLogin(true);
 }
 void MainWindow::on_action_Pause_triggered()
 {
     ui->action_Play->setText("Resume");
-    mpQmlWidget.pauseAnimated();
+    mpQmlWidget->pauseAnimated();
     //mpGLWidget->pauseAnimated();
 }
 
 
 
 
+
+void MainWindow::on_actionRecord_to_file_triggered()
+{
+    ui->actionRecord_to_file->setChecked(!(ui->actionRecord_to_file->isChecked()));
+}

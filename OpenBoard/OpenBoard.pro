@@ -1,18 +1,33 @@
-QT       += widgets core gui opengl quick widgets quickwidgets #av avwidgets
+QT       += widgets core gui opengl quick widgets quickwidgets network webkitwidgets#av avwidgets
 
 SOURCES += main.cpp\
-        mainwindow.cpp \
-    glwidget.cpp \
+    mainwindow.cpp \
     settings.cpp \
-    qmlwidget.cpp
+    qmlwidget.cpp \
+    parser\unit.cpp \
+    parser\unitsumbol.cpp \
+    parser\unitcommand.cpp \
+    parser\parser.cpp \
+    editWidget/mytextedit.cpp \
+    youtube/logindialog.cpp \
+    youtube/oauth2.cpp \
+    youtube/youtubewrapper.cpp
 
 
 HEADERS  += mainwindow.h \
-    glwidget.h \
     settings.h \
-    qmlwidget.h
+    qmlwidget.h \
+    parser\unit.h \
+    parser\unitsumbol.h \
+    parser\unitcommand.h \
+    parser\parser.h \
+    editWidget/mytextedit.h \
+    youtube/logindialog.h \
+    youtube/oauth2.h \
+    youtube/youtubewrapper.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    youtube/logindialog.ui
 
 RESOURCES += \
     icons.qrc
@@ -31,10 +46,15 @@ unix {
     QMAKE_CXXFLAGS += -std=c++0x
 }
 
-CONFIG(debug, debug|release) {
-    win32: LIBS += -lqtmeld1
-    unix: LIBS += -lqtmeld
-} else {
-    win32: LIBS += -lqtmel1
-    unix: LIBS += -lqtmel
-}
+#INCLUDEPATH += ThirdPart/include
+#LIBS += "F:/QA/QtMEL-master/libsQt5/*.dll"
+
+INCLUDEPATH += E:/Qt/QtMEL__/include
+LIBS += "E:/Qt/QtMEL__/libsQt5/*.dll"
+
+
+
+OTHER_FILES += \
+    boarFunc.js \
+    draw.qml \
+    icons/12video icon.png

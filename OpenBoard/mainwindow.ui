@@ -141,6 +141,26 @@
            </property>
           </widget>
          </item>
+         <item>
+          <spacer name="horizontalSpacer_2">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>40</width>
+             <height>20</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QPushButton" name="button_Delay">
+           <property name="text">
+            <string>Delay</string>
+           </property>
+          </widget>
+         </item>
         </layout>
        </item>
       </layout>
@@ -422,7 +442,14 @@
     <item row="1" column="0">
      <layout class="QVBoxLayout" name="verticalLayout">
       <item>
-       <widget class="QTextEdit" name="textEdit"/>
+       <widget class="QFrame" name="frame">
+        <property name="frameShape">
+         <enum>QFrame::StyledPanel</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Raised</enum>
+        </property>
+       </widget>
       </item>
       <item>
        <widget class="QWidget" name="widget_Find" native="true">
@@ -476,7 +503,7 @@
      <x>0</x>
      <y>0</y>
      <width>600</width>
-     <height>26</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menu_File">
@@ -525,6 +552,8 @@
     <addaction name="action_Play"/>
     <addaction name="action_Pause"/>
     <addaction name="action_Stop"/>
+    <addaction name="actionRecord_to_file"/>
+    <addaction name="actionSend_to_youTube"/>
    </widget>
    <widget class="QMenu" name="menu_Help">
     <property name="title">
@@ -693,16 +722,28 @@
    </property>
   </action>
   <action name="action_Reset_default">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/default_programs.png</normaloff>:/icons/default_programs.png</iconset>
+   </property>
    <property name="text">
     <string>&amp;Reset default</string>
    </property>
   </action>
   <action name="action_Show">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/gnome_show_desktop.png</normaloff>:/icons/gnome_show_desktop.png</iconset>
+   </property>
    <property name="text">
     <string>Sho&amp;w</string>
    </property>
   </action>
   <action name="action_Hide">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/hide_icon.png</normaloff>:/icons/hide_icon.png</iconset>
+   </property>
    <property name="text">
     <string>&amp;Hide</string>
    </property>
@@ -737,7 +778,7 @@
    </property>
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/icons/ToolBar-color.png</normaloff>:/icons/ToolBar-color.png</iconset>
+     <normaloff>:/icons/stop_icon.png</normaloff>:/icons/stop_icon.png</iconset>
    </property>
    <property name="text">
     <string>S&amp;top</string>
@@ -746,7 +787,7 @@
   <action name="action_About">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/icons/Feather-icon.png</normaloff>:/icons/Feather-icon.png</iconset>
+     <normaloff>:/icons/info.png</normaloff>:/icons/info.png</iconset>
    </property>
    <property name="text">
     <string>&amp;About</string>
@@ -849,6 +890,10 @@
    </property>
   </action>
   <action name="action_Select_all">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/select_all.png</normaloff>:/icons/select_all.png</iconset>
+   </property>
    <property name="text">
     <string>Select all</string>
    </property>
@@ -877,19 +922,40 @@
   <action name="action_Board_Font">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/icons/b-font-x-generic-icon.png</normaloff>:/icons/b-font-x-generic-icon.png</iconset>
+     <normaloff>:/icons/font-x-generic-icon.png</normaloff>:/icons/font-x-generic-icon.png</iconset>
    </property>
    <property name="text">
-    <string>Board Font</string>
+    <string>Convas Font</string>
    </property>
   </action>
   <action name="action_Board_Color">
    <property name="icon">
     <iconset resource="icons.qrc">
-     <normaloff>:/icons/colors-iconB.png</normaloff>:/icons/colors-iconB.png</iconset>
+     <normaloff>:/icons/ToolBar-color.png</normaloff>:/icons/ToolBar-color.png</iconset>
    </property>
    <property name="text">
-    <string>Board Color</string>
+    <string>Convas Color</string>
+   </property>
+  </action>
+  <action name="actionRecord_to_file">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/12video icon.png</normaloff>:/icons/12video icon.png</iconset>
+   </property>
+   <property name="text">
+    <string>Record to file</string>
+   </property>
+  </action>
+  <action name="actionSend_to_youTube">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/youtube_icon.png</normaloff>:/icons/youtube_icon.png</iconset>
+   </property>
+   <property name="text">
+    <string>Send to youTube</string>
    </property>
   </action>
  </widget>

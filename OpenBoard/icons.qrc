@@ -22,11 +22,18 @@
         <file>icons/remove-icon.png</file>
         <file>icons/stop-icon.png</file>
         <file>icons/Feather-icon.png</file>
-        <file>draw.qml</file>
         <file>font/Comic_Sans_MS.ttf</file>
         <file>font/DS_VTCorona_Cyr.ttf</file>
         <file>font/Segoe_Script_Bold.ttf</file>
-        <file>icons/colors-iconB.png</file>
-        <file>icons/b-font-x-generic-icon.png</file>
+        <file>boarFunc.js</file>
+        <file>draw.qml</file>
+        <file>icons/12video icon.png</file>
+        <file>icons/default_programs.png</file>
+        <file>icons/select_all.png</file>
+        <file>icons/gnome_show_desktop.png</file>
+        <file>icons/hide_icon.png</file>
+        <file>icons/youtube_icon.png</file>
+        <file>icons/stop_icon.png</file>
+        <file>icons/info.png</file>
     </qresource>
 </RCC>
