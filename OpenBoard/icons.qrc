@@ -28,8 +28,6 @@
         <file>boarFunc.js</file>
         <file>draw.qml</file>
         <file>icons/12video icon.png</file>
-<<<<<<< HEAD
-=======
         <file>icons/default_programs.png</file>
         <file>icons/select_all.png</file>
         <file>icons/gnome_show_desktop.png</file>
@@ -37,6 +35,6 @@
         <file>icons/youtube_icon.png</file>
         <file>icons/stop_icon.png</file>
         <file>icons/info.png</file>
->>>>>>> origin/yuriy
+        <file>icons/speed-icon.png</file>
     </qresource>
 </RCC>

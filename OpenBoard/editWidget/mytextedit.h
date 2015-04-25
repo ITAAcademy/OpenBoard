@@ -25,6 +25,9 @@ public:
     void textColorSet(int position);
    void mergeFormatOnWordOrSelection(int position);
 
+   QColor getColOrigin() const;
+   void setColOrigin(const QColor &value);
+
 public slots:
 
 };

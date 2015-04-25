@@ -48,19 +48,12 @@ public slots:
     void on_action_Play_triggered();
     void on_action_Pause_triggered();
     void on_action_Stop_triggered();
-<<<<<<< HEAD
-    void on_action_youTube();
-=======
     void on_action_youTube_triggered();
->>>>>>> origin/yuriy
 
     void onTextChanged();
 
 //    settings
-<<<<<<< HEAD
-=======
     void a_record_to_file_triggered();
->>>>>>> origin/yuriy
     void on_action_Font_triggered();
     void on_action_Color_triggered();
     void on_action_Board_Font_triggered();
@@ -91,43 +84,28 @@ public slots:
     void on_colorBtn_clicked();
     void on_clearBtn_clicked();
 
-<<<<<<< HEAD
-//    longpress on button delay
-    void on_delayBtn_pressed();
-    void on_delayBtn_released();
-    void show_pause_menu();
-
-//    longpress on button color
-=======
 //    press on button delay
     void on_delayBtn_pressed();
     void delay_released();
     void show_pause_menu();
 
 //    press on button color
->>>>>>> origin/yuriy
     void on_colorBtn_pressed();
     void on_colorBtn_released();
     void show_color_dialog();
 
 
 
-<<<<<<< HEAD
-private:
-
-    Ui::MainWindow  *ui;
-
-=======
 private slots:
     void on_actionRecord_to_file_triggered();
-
     void on_action_About_triggered();
 
+    void on_speedBtn_pressed();
+    void on_slider_speedTB_valueChanged(int value);
 private:
-QAction *a_play,*a_pause,*a_stop,*a_font_canvas,*a_color_canvas,*a_record_to_file,*a_undo,*a_redo;
+QAction *a_play,*a_pause,*a_stop,*a_font_canvas,*a_color_canvas,*a_record_to_file,*a_undo,*a_redo,*a_show,*a_hide;
     Ui::MainWindow  *ui;
 QMessageBox messAbout;
->>>>>>> origin/yuriy
  //   GLWidget        *mpGLWidget;
     QmlWidget       *mpQmlWidget;
     MyTextEdit       *textEdit;
@@ -143,14 +121,8 @@ QMessageBox messAbout;
     QThread drawThread;
     bool saveFile();
     bool maybeSave();
-<<<<<<< HEAD
-    bool bHide;
-    YouTubeWrapper *youtube;
-
-=======
     YouTubeWrapper *youtube;
     QToolBar *toolBar;
->>>>>>> origin/yuriy
 
 };
 

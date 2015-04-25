@@ -45,10 +45,20 @@ charCount=document()->characterCount();
  {
      mergeFormatOnWordOrSelection(position);
  }
+ 
+ QColor MyTextEdit::getColOrigin() const
+ {
+     return colOrigin;
+ }
+ 
+ void MyTextEdit::setColOrigin(const QColor &value)
+ {
+      textFormat.setForeground(value);
+ }
  void MyTextEdit::onEditText()
  {
      int parserOutEmulated=qrand()%document()->characterCount();
- textColorSet(0);/*СИМУЛЯЦІЯ, В ЦЮ ФУНКЦЦІЮ
+     textColorSet(0);/*СИМУЛЯЦІЯ, В ЦЮ ФУНКЦЦІЮ
  ПОДАЄТЬСЯ ВИВІД ПАРСЕРСА,що вказує на індекс помилки*/
  }
 
