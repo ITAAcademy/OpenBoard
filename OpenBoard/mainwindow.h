@@ -117,6 +117,7 @@ QMessageBox messAbout;
     QString         textColorName;
     QColor          colorPkr;
     QString         inputText;
+    int lastInpuDelay;
     QList <Unit*>mUnitList;
     Parser          mParser;
     QThread drawThread;

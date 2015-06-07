@@ -173,16 +173,20 @@ toolBar->setMovable(false);
 MainWindow::~MainWindow()
 {
     mSettings.setMainWindowRect(geometry());
-delete toolBar;
+    if(toolBar != NULL)
+        delete toolBar;
     delete ui;
 }
 
 void MainWindow::closeEvent(QCloseEvent*)
 {
    // mpGLWidget->close();
-    mpQmlWidget->close();
-    delete mpQmlWidget;
-
+    if(mpQmlWidget != NULL)
+    {
+        mpQmlWidget->stopAnimated();
+        mpQmlWidget->close();
+        delete mpQmlWidget;
+    }
     //delete mpGLWidget;
 }
 
@@ -199,6 +203,7 @@ void MainWindow::on_action_Show_triggered()
 */
     mpQmlWidget = new QmlWidget();
     mpQmlWidget->show();
+    mpQmlWidget->setDelay(1000/lastInpuDelay);
     mpQmlWidget->setFixedSize(GLWIDGET_SIZE);
     mpQmlWidget->move(pos().x() + width() + WINDOW_MARGING, pos().y());
     ui->action_Pause->setEnabled(true);
@@ -795,7 +800,9 @@ void MainWindow::on_speedBtn_pressed()
 
 void MainWindow::on_slider_speedTB_valueChanged(int value)
 {
-    mpQmlWidget->setDelay(1000/value);
+    lastInpuDelay = value;
+    if(mpQmlWidget != NULL)
+        mpQmlWidget->setDelay(1000/value);
 }
 
 void MainWindow::hideBoardSettings()

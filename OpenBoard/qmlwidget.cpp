@@ -287,6 +287,12 @@ void QmlWidget::crossOutLastSymbol()
     fillText("\\", delPos.x(), delPos.y());*/
 }
 
+void QmlWidget::crossOutWithAnimation()
+{
+    deleteWT++;
+    crossWithAnimation = true;
+}
+
 void QmlWidget::generateFrames()
 {
     //generate 500 frames for test
@@ -465,7 +471,25 @@ QPoint QmlWidget::drawWrapText(QString str)
         if(deleteWT != 1)
         {
            // setFillColor(QColor("#ff0000"));
-            drawFigure(delPos.x(), delPos.y() - fMetrics->height()/4,x, y - fMetrics->height()/4, LINE, 0);
+            int x1 = delPos.x();
+            int y1 = delPos.y() - fMetrics->height()/4;
+            int x2 = x;
+            int y2 = y - fMetrics->height()/4;
+            int nextY = lineHeight + pt;
+            if(y2 - y1 != 0)
+            {
+                int dif = (y2 - y1)/nextY;
+                drawFigure(0, y - fMetrics->height()/4,x, y - fMetrics->height()/4, LINE, 0);
+                for(int i = 1; i < dif; i++)
+                {
+                    int t_y = delPos.y() - fMetrics->height()/4 + nextY*i;
+                    drawFigure(0, t_y, maxWidth, t_y, LINE, 0);
+                }
+                drawFigure(delPos.x(), delPos.y() - fMetrics->height()/4, maxWidth, delPos.y() - fMetrics->height()/4, LINE, 0);
+            }
+            else
+                drawFigure(delPos.x(), delPos.y() - fMetrics->height()/4,x, y - fMetrics->height()/4, LINE, 0);
+
         }
         else{
             delPos = symbolPositionList.at(symbolPositionList.length() - 1);

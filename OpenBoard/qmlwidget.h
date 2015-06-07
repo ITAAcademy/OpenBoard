@@ -142,6 +142,7 @@ private:
     int marginTop;
     int maxWidth; //размер поле, где виводится текст
     int pt;
+    bool crossWithAnimation = false;
     QString font;
     bool isWord  ;
     int x ,y ;
