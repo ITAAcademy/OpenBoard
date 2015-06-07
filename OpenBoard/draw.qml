@@ -1,4 +1,4 @@
-import QtQuick 2.3
+import QtQuick 2.0
 import "boarFunc.js" as JS
 Item{
     Rectangle{
@@ -21,11 +21,15 @@ Item{
         property var listOfObjects : []
         property var indexWords : 0;
         property var indexSTR : 0;
+        property int lastHeight: mainDrawElm.height
+        property int globalScroll: 0
 
         function clear(){
-            JS.context.clearRect(0,0, mainDrawElm.width, mainDrawElm.height);
+            JS.context.clearRect(0,0, mainDrawElm.width,mainDrawElm.height);
             JS.context.lineWidth = 3;
-
+            JS.clear(lastHeight);
+            JS.context.translate(0, globalScroll);
+            globalScroll = 0;
             // set line color
             JS.context.strokeStyle = '#ff0000';
         }
@@ -62,7 +66,9 @@ Item{
         {
             var img = JS.context.getImageData(0, 0, mainDrawElm.width, mainDrawElm.height);
             JS.clear(y);
+            lastHeight = y;
             JS.context.translate(0, scroll);
+            mainDrawElm.globalScroll += scroll*(-1);
             JS.context.drawImage(img, 0, LPI); // LPI - висота стрічки
         }
 
@@ -92,7 +98,7 @@ Item{
        // Text { text: cFontLoader.status == FontLoader.Ready ? 'Loaded' : 'Not loaded' }
         Timer{
             id: fps
-            interval: 1000/60
+            interval: 1000/120
 
             onTriggered: {
                 mainDrawElm.requestPaint()

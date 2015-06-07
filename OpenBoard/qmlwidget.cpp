@@ -10,7 +10,7 @@ QmlWidget::QmlWidget(QWidget *parent) :
 {
     //qRegisterMetaType<DrawData>("DrawData");
      engine()->rootContext()->setContextProperty(QLatin1String("forma"), this);
-    //setSource(QUrl("../OpenBoard/draw.qml"));
+   // setSource(QUrl("draw.qml"));
     setSource(QUrl("qrc:/draw.qml"));
     m_encoder = new Encoder(this);
 
@@ -60,7 +60,7 @@ QmlWidget::QmlWidget(QWidget *parent) :
     tickTimer.setSingleShot(true);
     fps_timer = new QTimer();
     //fps_timer->setInterval(1000/32);
-       fps_timer->setInterval(1000/31);
+    fps_timer->setInterval(1000/31);
     fps_timer->setSingleShot(true);
     connect(fps_timer, SIGNAL(timeout()), this, SLOT ( fps_control() ));
     fps_stabilitron = 0;
@@ -92,6 +92,7 @@ QmlWidget::QmlWidget(QWidget *parent) :
 
 QmlWidget::~QmlWidget()
 {
+    stopAnimated();
     delete m_encoder;
     if(fMetrics != 0)
         delete fMetrics;
@@ -236,8 +237,14 @@ void QmlWidget::clearCanvas()
 {
     QMetaObject::invokeMethod(canvas, "clear");
     symbolPositionList.clear();
+    indexRow = 0;
+    indexW = 1;
     x = marginLeft;
-    y = marginTop;
+    y = lineHeight + pt;
+    scroll = 0;
+    //listStr[0] = 0;
+    indexInLsit = 1;
+    deleteWT = 0;
 }
 
 void QmlWidget::drawFigure(int x, int y, int width, int height, QmlWidget::FigureType type, bool fill = true)
@@ -448,15 +455,16 @@ void QmlWidget::isLastRow()
 }
 QPoint QmlWidget::drawWrapText(QString str)
 {
-    if(deleteWT != 0)
+    if(deleteWT != 0 && !symbolPositionList.isEmpty())
     {
         if(deleteWT >= symbolPositionList.length())
-            deleteWT = symbolPositionList.length() - 1;
-        QPoint delPos = symbolPositionList.at(symbolPositionList.length() - 1 - deleteWT);
+            deleteWT = symbolPositionList.length();
+        QPoint delPos = symbolPositionList.at(symbolPositionList.length() - deleteWT); // -2 is popravka
        // QPoint delPos2 = symbolPositionList.at(symbolPositionList.length() - 1);
 
         if(deleteWT != 1)
         {
+           // setFillColor(QColor("#ff0000"));
             drawFigure(delPos.x(), delPos.y() - fMetrics->height()/4,x, y - fMetrics->height()/4, LINE, 0);
         }
         else{
@@ -469,7 +477,7 @@ QPoint QmlWidget::drawWrapText(QString str)
         }
         deleteWT = 0;
     }
-    QPoint res(x,y);
+
     QVariant returnedValue;
     QVariant msg = str;
     int widht = fMetrics->width(str)*1.125 ;//+ fMetrics->leftBearing(str.at(0)) + fMetrics->rightBearing(str.at(0));
@@ -488,6 +496,7 @@ QPoint QmlWidget::drawWrapText(QString str)
     isLastRow();
     //fillAnimationText(str, x, y, 6);
     fillText(str, x, y);
+    QPoint res(x,y);
     listWords += str;
     x += widht;
     symbolPositionList.push_back(res);
@@ -495,6 +504,8 @@ QPoint QmlWidget::drawWrapText(QString str)
     while (tickTimer.isActive()) {
        qApp->processEvents();
     }
+ //   qDebug() << "Y: " << y;
+   // qDebug() << "Y: " << y;
     return res;
 }
 

@@ -39,12 +39,13 @@ void UnitCommand::deletePreChar(QmlWidget *canvas)
 
 void UnitCommand::erasePreChar(QmlWidget *canvas)
 {
+    canvas->crossOutLastSymbol();
     //canvas->crossOutWithAnimation();
 }
 
 void UnitCommand::pause(QmlWidget *canvas)
 {
-    QThread::msleep(unit_data.toULong());
+    QThread::msleep(unit_data.toULong()*100);
 }
 
 void UnitCommand::backSlash(QmlWidget *canvas)

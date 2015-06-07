@@ -1,4 +1,4 @@
-#include "youtubewrapper.h"
+#include "youtube/youtubewrapper.h"
 #include <youtube/oauth2.h>
 #include "QFile"
 #include <QSettings>

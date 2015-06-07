@@ -188,14 +188,12 @@ void MainWindow::closeEvent(QCloseEvent*)
 
 void MainWindow::on_action_Show_triggered()
 {
-a_show->setEnabled(false);
-ui->action_Show->setEnabled(false);
-a_hide->setEnabled(true);
-ui->action_Hide->setEnabled(true);
-    if (ui->action_Board_Color->isEnabled()==false)
-   ui->action_Board_Color->setEnabled(true);
-    if (ui->action_Board_Font->isEnabled()==false)
-   ui->action_Board_Font->setEnabled(true);
+    showBoardSettings();
+    a_show->setEnabled(false);
+    ui->action_Show->setEnabled(false);
+    a_hide->setEnabled(true);
+    ui->action_Hide->setEnabled(true);
+
 /*
  * QML
 */
@@ -230,15 +228,18 @@ ui->action_Hide->setEnabled(true);
     a_record_to_file->setEnabled(true);
     a_undo->setEnabled(true);
     a_redo->setEnabled(true);
+
+    ui->action_Pause->setEnabled(false);
+    a_pause->setEnabled(false);
 }
 
 void MainWindow::on_action_Hide_triggered()
 {
-    a_hide->setEnabled(false);
-    ui->action_Hide->setEnabled(false);
-    a_show->setEnabled(true);
-    ui->action_Show->setEnabled(true);
-   // mpGLWidget->hide();
+        a_hide->setEnabled(false);
+        ui->action_Hide->setEnabled(false);
+        a_show->setEnabled(true);
+        ui->action_Show->setEnabled(true);
+       // mpGLWidget->hide();
     if(mpQmlWidget->getStatus() == mpQmlWidget->PLAY || mpQmlWidget->getStatus() == mpQmlWidget->PAUSE)
       //  mpQmlWidget->stopAnimated();
     on_action_Stop_triggered();
@@ -248,8 +249,7 @@ void MainWindow::on_action_Hide_triggered()
     ui->action_Pause->setEnabled(false);
     ui->action_Play->setEnabled(false);
     ui->action_Stop->setEnabled(false);
-   ui->action_Board_Color->setEnabled(false);
-   ui->action_Board_Font->setEnabled(false);
+    hideBoardSettings();
 
    a_play->setEnabled(false);
    a_pause->setEnabled(false);
@@ -457,7 +457,7 @@ bool MainWindow::maybeSave()
                 QMessageBox::warning(
                     this,
                     "File",
-                    tr("Документ был изменен, сохранить изменения?"),
+                    tr("The document has been changed, save?"),
                     QMessageBox::Yes | QMessageBox::No | QMessageBox::Cancel);
         if (ret == QMessageBox::Yes)
         {
@@ -697,18 +697,21 @@ void MainWindow::onTextChanged()
 
 void MainWindow::on_action_Play_triggered()
 {
-     ui->action_Play->setEnabled(false);
-     a_play->setEnabled(false);
-     ui->action_Undo->setEnabled(false);
-     ui->action_Redo->setEnabled(false);
-     a_undo->setEnabled(false);
-     a_redo->setEnabled(false);
+    hideBoardSettings();
+    ui->action_Play->setEnabled(false);
+    a_play->setEnabled(false);
+    ui->action_Pause->setEnabled(true);
+    a_pause->setEnabled(true);
+    ui->action_Undo->setEnabled(false);
+    ui->action_Redo->setEnabled(false);
+    a_undo->setEnabled(false);
+    a_redo->setEnabled(false);
     if(mpQmlWidget->getStatus() == QmlWidget::PAUSE)
             ui->action_Play->setText("Play");
         else
         {
             mpQmlWidget->clearCanvas();
-            mpQmlWidget->setFillColor(mpQmlWidget->getMainFillColor());
+           // mpQmlWidget->setFillColor(mpQmlWidget->getMainFillColor());
         }
         mpQmlWidget->drawAnimated(ui->actionRecord_to_file->isChecked());
         textEdit->setEnabled(false);
@@ -728,8 +731,11 @@ void MainWindow::on_action_Play_triggered()
 
 void MainWindow::on_action_Stop_triggered()
 {
+    showBoardSettings();
     mpQmlWidget->stopAnimated();
     ui->action_Play->setText("Play");
+    ui->action_Pause->setEnabled(false);
+    a_pause->setEnabled(false);
     textEdit->setEnabled(true);
     // mpGLWidget->stopAnimated();
      ui->action_Play->setEnabled(true);
@@ -791,3 +797,39 @@ void MainWindow::on_slider_speedTB_valueChanged(int value)
 {
     mpQmlWidget->setDelay(1000/value);
 }
+
+void MainWindow::hideBoardSettings()
+{
+    if (ui->action_Board_Color->isEnabled()==true)
+     ui->action_Board_Color->setEnabled(false);
+    if (ui->action_Board_Font->isEnabled()==true)
+       ui->action_Board_Font->setEnabled(false);
+    a_color_canvas->setEnabled(false);
+    a_font_canvas->setEnabled(false);
+    setEnabledToolBar(false);
+}
+
+void MainWindow::showBoardSettings()
+{
+    if (ui->action_Board_Color->isEnabled()==false)
+     ui->action_Board_Color->setEnabled(true);
+    if (ui->action_Board_Font->isEnabled()==false)
+       ui->action_Board_Font->setEnabled(true);
+    a_color_canvas->setEnabled(true);
+    a_font_canvas->setEnabled(true);
+
+    setEnabledToolBar(true);
+}
+
+void MainWindow::setEnabledToolBar(bool status)
+{
+    ui->speedBtn->setEnabled(status);
+    ui->crossBtn->setEnabled(status);
+    ui->clearBtn->setEnabled(status);
+    ui->backBtn->setEnabled(status);
+    ui->delayBtn->setEnabled(status);
+    ui->colorBtn->setEnabled(status);
+    ui->animationBtn->setEnabled(status);
+
+}
+
