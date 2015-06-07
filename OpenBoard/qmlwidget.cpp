@@ -106,7 +106,7 @@ void QmlWidget::moveEvent(QMoveEvent *event)
 
 void QmlWidget::paintEvent(QPaintEvent *event)
 {
-    if(curStatus == PLAY && bRecord)
+ //   if(curStatus == PLAY && bRecord)
     {
     //    m_encoder->encodeVideoFrame(this->grabFramebuffer());
         /*if (fps_stabilitron % 25 == 0) {
@@ -205,6 +205,7 @@ void QmlWidget::drawAnimated(bool record)
         fps_timer->start();
         m_encoder->start();
         audioRecorder->record();
+        qDebug() << "Start record into file";
     }
     curStatus = PLAY;
     bRecord = record;
@@ -216,6 +217,20 @@ void QmlWidget::stopAnimated()
     m_encoder->stop();
     audioRecorder->stop();
     fps_timer->stop();
+
+    // max speed // stop draw function
+    double t_animationSpeed = animationSpeed;
+    int t_delay = delay;
+/*
+    animationSpeed = 1;
+    delay = 1;
+    while(busy)
+    {
+         qApp->processEvents();
+    }
+    animationSpeed = t_animationSpeed;
+    delay = t_delay;
+*/
     curStatus = STOP;
     bRecord = false;
     qDebug() << "Stop play";
@@ -345,6 +360,14 @@ void QmlWidget::fps_control()
     fps_timer->start();
 }
 
+void QmlWidget::pause(int ms)
+{
+    tickTimer.start(ms);
+    while (tickTimer.isActive()) {
+      qApp->processEvents();
+    }
+}
+
 QColor QmlWidget::getMainFillColor() const
 {
     return mainFillColor;
@@ -364,6 +387,8 @@ int QmlWidget::getDelay() const
 void QmlWidget::setDelay(int value)
 {
     delay = value;
+    animationSpeed = (double)1/(value*0.6);
+    qDebug() << animationSpeed;
 }
 
 int QmlWidget::getCountDeleteWT() const
@@ -461,6 +486,7 @@ void QmlWidget::isLastRow()
 }
 QPoint QmlWidget::drawWrapText(QString str)
 {
+    busy = true;
     if(deleteWT != 0 && !symbolPositionList.isEmpty())
     {
         if(deleteWT >= symbolPositionList.length())
@@ -476,20 +502,65 @@ QPoint QmlWidget::drawWrapText(QString str)
             int x2 = x;
             int y2 = y - fMetrics->height()/4;
             int nextY = lineHeight + pt;
+            double persent = 1;
+            int t_persent = 1;
+            if(crossWithAnimation)
+            {
+                t_persent = 0;
+                qDebug() << "set animation speed";
+                crossWithAnimation = false;
+            }
+            persent= t_persent;
             if(y2 - y1 != 0)
             {
                 int dif = (y2 - y1)/nextY;
-                drawFigure(0, y - fMetrics->height()/4,x, y - fMetrics->height()/4, LINE, 0);
+                while(persent <= 1)
+                {
+                    drawFigure(0, y - fMetrics->height()/4, x*persent, y - fMetrics->height()/4, LINE, 0);
+                    persent += animationSpeed;
+                    this->repaint();
+                    pause(10);
+                    if(curStatus == STOP )
+                        return QPoint(0,0);
+                }
+                persent= t_persent;
                 for(int i = 1; i < dif; i++)
                 {
-                    int t_y = delPos.y() - fMetrics->height()/4 + nextY*i;
-                    drawFigure(0, t_y, maxWidth, t_y, LINE, 0);
+                    while(persent <= 1)
+                    {
+                        int t_y = delPos.y() - fMetrics->height()/4 + nextY*i;
+                        drawFigure(0, t_y, maxWidth*persent, t_y, LINE, 0);
+                        persent += animationSpeed;
+                        this->repaint();
+                        pause(10);
+                        if(curStatus == STOP )
+                            return QPoint(0,0);
+                    }
                 }
-                drawFigure(delPos.x(), delPos.y() - fMetrics->height()/4, maxWidth, delPos.y() - fMetrics->height()/4, LINE, 0);
+                persent= t_persent;
+                while(persent <= 1)
+                {
+                    drawFigure(delPos.x(), delPos.y() - fMetrics->height()/4, maxWidth*persent, delPos.y() - fMetrics->height()/4, LINE, 0);
+                    persent += animationSpeed;
+                    this->repaint();
+                    pause(10);
+                    if(curStatus == STOP )
+                        return QPoint(0,0);
+                }
             }
             else
-                drawFigure(delPos.x(), delPos.y() - fMetrics->height()/4,x, y - fMetrics->height()/4, LINE, 0);
-
+            {
+                int t = (x-delPos.x());
+                while(persent <= 1)
+                {
+                    drawFigure(delPos.x(), delPos.y() - fMetrics->height()/4, delPos.x() + t*persent, y - fMetrics->height()/4, LINE, 0);
+                    persent += animationSpeed;
+                    this->repaint();
+                    pause(10);
+                    if(curStatus == STOP )
+                        return QPoint(0,0);
+                }
+            }
         }
         else{
             delPos = symbolPositionList.at(symbolPositionList.length() - 1);
@@ -528,6 +599,7 @@ QPoint QmlWidget::drawWrapText(QString str)
     while (tickTimer.isActive()) {
        qApp->processEvents();
     }
+    busy = false;
  //   qDebug() << "Y: " << y;
    // qDebug() << "Y: " << y;
     return res;

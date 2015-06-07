@@ -12,10 +12,12 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    drawThread.start();
 
 //    connect(&drawThread, SIGNAL(started()), this, SLOT(myfunction())); //cant have parameter sorry, when using connect
 
     mpQmlWidget = new QmlWidget();
+   // mpQmlWidget->moveToThread(&drawThread);
     textEdit = new MyTextEdit(QColor("#000000"), QColor("#FF0000"), ui->centralWidget);
     textEdit->setObjectName(QStringLiteral("textEdit"));
     textEdit->setEnabled(true);
@@ -29,6 +31,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->widget_Find->setVisible(false);
     ui->widget_delayTB->setVisible(false);
+    lastInpuDelay = ui->slider_speedTB->value();
   //  drawWidget->setVisible(false);
   //  on_action_Show_triggered();
 
@@ -163,7 +166,7 @@ MainWindow::MainWindow(QWidget *parent) :
       // toolBar->addAction(QPixmap(":/icons/12video icon.png").scaled(QSize(16, 16)), "Record in file", this, SLOT(on_actionRecord_to_file_triggered()));  //yvguj vgju ftu
        toolBar->addAction(QPixmap(":/icons/youtube_icon.png").scaled(QSize(16, 16)), "Send to YouTube", this, SLOT(on_action_youTube_triggered()));
        toolBar->addAction(QPixmap(":/icons/info.png").scaled(QSize(16, 16)), "About", this, SLOT(on_action_About_triggered()));
-toolBar->setMovable(false);
+       toolBar->setMovable(false);
 //toolBar->setAllowedAreas(Qt::BottomToolBarArea);
 
         addToolBar(Qt::TopToolBarArea, toolBar);
@@ -173,8 +176,10 @@ toolBar->setMovable(false);
 MainWindow::~MainWindow()
 {
     mSettings.setMainWindowRect(geometry());
+    //drawThread.quit();
     if(toolBar != NULL)
         delete toolBar;
+
     delete ui;
 }
 
@@ -184,6 +189,8 @@ void MainWindow::closeEvent(QCloseEvent*)
     if(mpQmlWidget != NULL)
     {
         mpQmlWidget->stopAnimated();
+        this->thread()->wait(200);
+        //mpQmlWidget->abor
         mpQmlWidget->close();
         delete mpQmlWidget;
     }
@@ -673,16 +680,41 @@ void MainWindow::on_clearBtn_clicked()
 void MainWindow::onTextChanged()
 {
     //qDebug() << "onTextChanged";
+    QString str = textEdit->toPlainText();
+    int status = mParser.ParsingLine(mUnitList, str);
+    textEdit->textColorSet(status);
     if(mpQmlWidget->isVisible() && textEdit->toPlainText().length() != 0)
         //mpQmlWidget->drawWrapText(textEdit->toPlainText().at(textEdit->toPlainText().length() - 1));
     {
-        QString str = textEdit->toPlainText();
-        int status = mParser.ParsingLine(mUnitList, str);
-        textEdit->textColorSet(status);
         if(status != -1)
+        {
             ui->action_Play->setEnabled(false);
+            a_play->setEnabled(false);
+            ui->action_Stop->setEnabled(false);
+            a_stop->setEnabled(false);
+            ui->statusBar->showMessage("Misstake in input data, you cannot play on board", 5000);
+        }
         else
+        {
             ui->action_Play->setEnabled(true);
+            a_play->setEnabled(true);
+            ui->action_Stop->setEnabled(true);
+            a_stop->setEnabled(true);
+        }
+    }
+    else
+    {
+        if(status != -1)
+        {
+            ui->action_Show->setEnabled(false);
+            a_show->setEnabled(false);
+            ui->statusBar->showMessage("Misstake in input data, you cannot create board", 5000);
+        }
+        else
+        {
+            ui->action_Show->setEnabled(true);
+            a_show->setEnabled(true);
+        }
     }
     /*
     // DrawData temp = mpQmlWidget.getDrawData();
@@ -723,13 +755,18 @@ void MainWindow::on_action_Play_triggered()
     // reinit
         int i = 0;
         onTextChanged();
-        qDebug() << mUnitList.size();
+      //  qDebug() << mUnitList.size();
+       // QString name = this->windowTitle();
         while( i < mUnitList.size() && mpQmlWidget->getStatus() != QmlWidget::STOP)
         {
             while(mpQmlWidget->getStatus() == QmlWidget::PAUSE)
                 qApp->processEvents();
             mUnitList.at(i++)->draw(mpQmlWidget);
+      //      setWindowTitle("Progress status:    " + QString::number(float((float)i/mUnitList.size())*100) + "%");
+            int temp = (int)((float)((float)i/mUnitList.size()*100));
+            ui->statusBar->showMessage("Progress status:    " + QString::number(temp) + "%");
         }
+     //   setWindowTitle(name);
         mpQmlWidget->drawWrapText(" ");
         on_action_Stop_triggered();
 }

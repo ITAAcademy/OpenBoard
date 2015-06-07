@@ -125,6 +125,7 @@ private slots:
     void processBuffer(const QAudioBuffer &buffer);
     void displayErrorMessage();
     void fps_control();
+    void pause(int ms);
 private:
     QString drawText;
     Encoder *m_encoder;
@@ -162,6 +163,8 @@ private:
     int delay;
     int fps_stabilitron;
     QTimer *fps_timer;
+    double animationSpeed = 0.01;
+    bool busy = false;
 
 };
 

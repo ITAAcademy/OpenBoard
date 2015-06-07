@@ -2,6 +2,7 @@
 #define UNIT
 
 #include <QString>
+#include <QtConcurrent/QtConcurrent>
 #include "qmlwidget.h"
 
 class Unit

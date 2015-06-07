@@ -704,7 +704,14 @@
    <addaction name="menu_Board"/>
    <addaction name="menu_Help"/>
   </widget>
-  <widget class="QStatusBar" name="statusBar"/>
+  <widget class="QStatusBar" name="statusBar">
+   <property name="autoFillBackground">
+    <bool>false</bool>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">color: rgb(255, 5, 9);</string>
+   </property>
+  </widget>
   <action name="action_New">
    <property name="icon">
     <iconset resource="icons.qrc">
