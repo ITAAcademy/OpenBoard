@@ -120,7 +120,7 @@ QMessageBox messAbout;
     int lastInpuDelay;
     QList <Unit*>mUnitList;
     Parser          mParser;
-    QThread drawThread;
+//    QThread drawThread;
     bool saveFile();
     bool maybeSave();
     YouTubeWrapper *youtube;

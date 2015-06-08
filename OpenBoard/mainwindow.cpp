@@ -12,7 +12,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    drawThread.start();
+    //drawThread.start();
 
 //    connect(&drawThread, SIGNAL(started()), this, SLOT(myfunction())); //cant have parameter sorry, when using connect
 
@@ -247,29 +247,28 @@ void MainWindow::on_action_Show_triggered()
 
 void MainWindow::on_action_Hide_triggered()
 {
-        a_hide->setEnabled(false);
-        ui->action_Hide->setEnabled(false);
-        a_show->setEnabled(true);
-        ui->action_Show->setEnabled(true);
-       // mpGLWidget->hide();
     if(mpQmlWidget->getStatus() == mpQmlWidget->PLAY || mpQmlWidget->getStatus() == mpQmlWidget->PAUSE)
       //  mpQmlWidget->stopAnimated();
-    on_action_Stop_triggered();
+    emit   on_action_Stop_triggered();
     mpQmlWidget->hide();
     mpQmlWidget->close();
-   // delete mpQmlWidget;
+    // delete mpQmlWidget;
     ui->action_Pause->setEnabled(false);
     ui->action_Play->setEnabled(false);
     ui->action_Stop->setEnabled(false);
     hideBoardSettings();
 
-   a_play->setEnabled(false);
-   a_pause->setEnabled(false);
-   a_stop->setEnabled(false);
-   a_font_canvas->setEnabled(false);
-   a_color_canvas->setEnabled(false);
-   a_record_to_file->setEnabled(false);
-   a_undo->setEnabled(false);
+    a_hide->setEnabled(false);
+    ui->action_Hide->setEnabled(false);
+    a_show->setEnabled(true);
+    ui->action_Show->setEnabled(true);
+    a_play->setEnabled(false);
+    a_pause->setEnabled(false);
+    a_stop->setEnabled(false);
+    a_font_canvas->setEnabled(false);
+    a_color_canvas->setEnabled(false);
+    a_record_to_file->setEnabled(false);
+    a_undo->setEnabled(false);
    a_redo->setEnabled(false);
 }
 
@@ -773,19 +772,24 @@ void MainWindow::on_action_Play_triggered()
 
 void MainWindow::on_action_Stop_triggered()
 {
-    showBoardSettings();
     mpQmlWidget->stopAnimated();
-    ui->action_Play->setText("Play");
-    ui->action_Pause->setEnabled(false);
-    a_pause->setEnabled(false);
     textEdit->setEnabled(true);
-    // mpGLWidget->stopAnimated();
-     ui->action_Play->setEnabled(true);
-     a_play->setEnabled(true);
-     ui->action_Undo->setEnabled(true);
-     ui->action_Redo->setEnabled(true);
-     a_undo->setEnabled(true);
-     a_redo->setEnabled(true);
+    ui->action_Undo->setEnabled(true);
+    ui->action_Redo->setEnabled(true);
+    a_undo->setEnabled(true);
+    a_redo->setEnabled(true);
+
+    if(mpQmlWidget->isVisible())
+    {
+        ui->action_Play->setText("Play");
+        ui->action_Play->setEnabled(true);
+        ui->action_Pause->setEnabled(false);
+        a_pause->setEnabled(false);
+        a_play->setEnabled(true);
+        showBoardSettings();
+    }
+
+
 
 }
 
