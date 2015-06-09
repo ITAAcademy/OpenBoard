@@ -747,7 +747,7 @@ void MainWindow::on_action_Play_triggered()
         else
         {
             mpQmlWidget->clearCanvas();
-           // mpQmlWidget->setFillColor(mpQmlWidget->getMainFillColor());
+            mpQmlWidget->setFillColor(mpQmlWidget->getMainFillColor());
         }
         mpQmlWidget->drawAnimated(ui->actionRecord_to_file->isChecked());
         textEdit->setEnabled(false);

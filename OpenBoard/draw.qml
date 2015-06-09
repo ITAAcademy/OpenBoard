@@ -27,7 +27,7 @@ Item{
         function clear(){
             JS.context.clearRect(0,0, mainDrawElm.width,mainDrawElm.height);
             JS.context.lineWidth = 3;
-            JS.clear(lastHeight);
+            JS.clear(lastHeight + 200);
             JS.context.translate(0, globalScroll);
             globalScroll = 0;
             // set line color

@@ -506,7 +506,7 @@ QPoint QmlWidget::drawWrapText(QString str)
             int t_persent = 1;
             if(crossWithAnimation)
             {
-                t_persent = 0;
+                t_persent = animationSpeed;
                 qDebug() << "set animation speed";
                 crossWithAnimation = false;
             }
@@ -514,7 +514,7 @@ QPoint QmlWidget::drawWrapText(QString str)
             if(y2 - y1 != 0)
             {
                 int dif = (y2 - y1)/nextY;
-                while(persent <= 1)
+                while(persent < 1)
                 {
                     drawFigure(0, y - fMetrics->height()/4, x*persent, y - fMetrics->height()/4, LINE, 0);
                     persent += animationSpeed;
@@ -523,12 +523,14 @@ QPoint QmlWidget::drawWrapText(QString str)
                     if(curStatus == STOP )
                         return QPoint(0,0);
                 }
+                drawFigure(0, y - fMetrics->height()/4, x, y - fMetrics->height()/4, LINE, 0);
+
                 persent= t_persent;
                 for(int i = 1; i < dif; i++)
                 {
-                    while(persent <= 1)
+                    int t_y =( delPos.y() - fMetrics->height()/4 )+ nextY*i;
+                    while(persent < 1)
                     {
-                        int t_y = delPos.y() - fMetrics->height()/4 + nextY*i;
                         drawFigure(0, t_y, maxWidth*persent, t_y, LINE, 0);
                         persent += animationSpeed;
                         this->repaint();
@@ -536,30 +538,33 @@ QPoint QmlWidget::drawWrapText(QString str)
                         if(curStatus == STOP )
                             return QPoint(0,0);
                     }
+                    drawFigure(0, t_y, maxWidth, t_y, LINE, 0);
                 }
                 persent= t_persent;
-                while(persent <= 1)
+                while(persent < 1)
                 {
-                    drawFigure(delPos.x(), delPos.y() - fMetrics->height()/4, maxWidth*persent, delPos.y() - fMetrics->height()/4, LINE, 0);
+                    drawFigure(delPos.x(), delPos.y() - fMetrics->height()/4, delPos.x() + (maxWidth - delPos.x())*persent, delPos.y() - fMetrics->height()/4, LINE, 0);
                     persent += animationSpeed;
                     this->repaint();
                     pause(10);
                     if(curStatus == STOP )
                         return QPoint(0,0);
                 }
+                drawFigure(delPos.x(), delPos.y() - fMetrics->height()/4, maxWidth, delPos.y() - fMetrics->height()/4, LINE, 0);
             }
             else
             {
-                int t = (x-delPos.x());
-                while(persent <= 1)
+                while(persent < 1)
                 {
-                    drawFigure(delPos.x(), delPos.y() - fMetrics->height()/4, delPos.x() + t*persent, y - fMetrics->height()/4, LINE, 0);
+                    drawFigure(delPos.x(), delPos.y() - fMetrics->height()/4, delPos.x() + (x - delPos.x())*persent, y - fMetrics->height()/4, LINE, 0);
+                 //   qDebug() << delPos.x() << "             " << delPos.x() + (maxWidth - delPos.x())*persent;
                     persent += animationSpeed;
                     this->repaint();
                     pause(10);
                     if(curStatus == STOP )
                         return QPoint(0,0);
                 }
+                drawFigure(delPos.x(), delPos.y() - fMetrics->height()/4, x, y - fMetrics->height()/4, LINE, 0);
             }
         }
         else{
