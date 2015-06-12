@@ -53,7 +53,7 @@ QmlWidget::QmlWidget(QWidget *parent) :
     scroll = 0;
     delay = 1000/3;
     //listStr[0] = 0;
-    indexInLsit = 1;
+    indexInList = 1;
     deleteWT = 0;
     fMetrics = new QFontMetrics(QFont(font));
     curStatus = STOP;
@@ -92,11 +92,18 @@ QmlWidget::QmlWidget(QWidget *parent) :
 
 QmlWidget::~QmlWidget()
 {
-    stopAnimated();
-    delete m_encoder;
-    if(fMetrics != 0)
+    if(m_encoder != NULL)
+        delete m_encoder;
+    if(audioRecorder != NULL)
+        delete audioRecorder;
+    if(probe != NULL)
+        delete probe;
+    if(canvas != NULL)
+        delete canvas;
+    if(fps_timer != NULL)
+        delete fps_timer;
+    if(fMetrics != NULL)
         delete fMetrics;
-    delete audioRecorder;
 }
 
 void QmlWidget::moveEvent(QMoveEvent *event)
@@ -122,6 +129,12 @@ void QmlWidget::resizeEvent(QResizeEvent *envent)
 {
     QQuickWidget::resizeEvent(envent);
     maxWidth = width() - marginLeft;
+}
+
+void QmlWidget::closeEvent(QCloseEvent *event)
+{
+    stopAnimated();
+    pause(200);
 }
 
 void QmlWidget::mousePressEvent(QMouseEvent *event)
@@ -174,7 +187,6 @@ AudioCodecSettings QmlWidget::audioCodecSettings() const
     settings.setSampleRate( 44100);
     settings.setChannelCount(2);
     settings.setSampleFormat(EncoderGlobal::Signed16);
-
     return settings;
 }
 
@@ -231,9 +243,9 @@ void QmlWidget::stopAnimated()
     animationSpeed = t_animationSpeed;
     delay = t_delay;
 */
-    curStatus = STOP;
     bRecord = false;
     qDebug() << "Stop play";
+    curStatus = STOP;
 }
 
 void QmlWidget::pauseAnimated()
@@ -258,7 +270,7 @@ void QmlWidget::clearCanvas()
     y = lineHeight + pt;
     scroll = 0;
     //listStr[0] = 0;
-    indexInLsit = 1;
+    indexInList = 1;
     deleteWT = 0;
 }
 
@@ -276,6 +288,7 @@ void QmlWidget::drawFigure(int x, int y, int width, int height, QmlWidget::Figur
 
 void QmlWidget::nextRow()
 {
+    isLastRow();
     y += lineHeight + pt;
     x = marginLeft;
 }
@@ -285,7 +298,7 @@ void QmlWidget::crossOutLastSymbol()
    // QPoint delPos = symbolPositionList.at(symbolPositionList.length() - 1 - deleteWT);
     //int k = 0;
     //QString str = listWords.right(1 + deleteWT);
-    deleteWT++;
+
     /*int widht = fMetrics->width(str)*1.5;
     int deltaY = deltaY = (widht - x) /(maxWidth - marginLeft);
 
@@ -300,11 +313,14 @@ void QmlWidget::crossOutLastSymbol()
 
     fillText("/", delPos.x(), delPos.y());
     fillText("\\", delPos.x(), delPos.y());*/
+    //if()
+    deleteWT++;
+
 }
 
 void QmlWidget::crossOutWithAnimation()
 {
-    deleteWT++;
+    crossOutLastSymbol();
     crossWithAnimation = true;
 }
 
@@ -444,10 +460,20 @@ void QmlWidget::recreate()
 
 void QmlWidget::fillText( QString str, int x, int y)
 {
+    QVariant arg1 = str;
+    QVariant arg2 = x;
+    QVariant arg3 = y;
+   /* qDebug() << "ARG1:  " << str.size();
+    qDebug() << "ARG2:  " << arg2;
+    qDebug() << "ARG3:  " << arg3;
+    if(arg1.isValid() && arg2.isValid() && arg3.isValid())
+       if(canvas != NULL)
+   */
     QMetaObject::invokeMethod(canvas, "fillText",
-            Q_ARG(QVariant, QVariant(str)),
-            Q_ARG(QVariant, QVariant(x)),
-                              Q_ARG(QVariant, QVariant(y)));
+        Q_ARG(QVariant, arg1),
+        Q_ARG(QVariant, arg2),
+        Q_ARG(QVariant, arg3));
+
 }
 
 void QmlWidget::fillAnimationText(QString str, int x, int y, float time)
@@ -484,11 +510,13 @@ void QmlWidget::isLastRow()
        indexRow++;
     }
 }
-QPoint QmlWidget::drawWrapText(QString str)
+
+bool QmlWidget::crossText()
 {
-    busy = true;
+    //qDebug() << "Cherk" << bool (deleteWT != 0 && !symbolPositionList.isEmpty());
     if(deleteWT != 0 && !symbolPositionList.isEmpty())
     {
+
         if(deleteWT >= symbolPositionList.length())
             deleteWT = symbolPositionList.length();
         QPoint delPos = symbolPositionList.at(symbolPositionList.length() - deleteWT); // -2 is popravka
@@ -497,10 +525,31 @@ QPoint QmlWidget::drawWrapText(QString str)
         if(deleteWT != 1)
         {
            // setFillColor(QColor("#ff0000"));
+            /*
+             *  fix more spase
+            */
+            //1_st / begin = spase
+            int i = 0;
+            while(listWords.at(listWords.size() - deleteWT + i) == ' ' && i != deleteWT - 1)
+            {
+                i++;
+            }
+            delPos = symbolPositionList.at(symbolPositionList.length() - deleteWT + i); // -2 is popravka
+            //default
             int x1 = delPos.x();
             int y1 = delPos.y() - fMetrics->height()/4;
-            int x2 = x;
-            int y2 = y - fMetrics->height()/4;
+            delPos = QPoint(x, y - fMetrics->height()/4);
+            // last = spase
+            i = 1;
+            while(listWords.at(listWords.size() - i) == ' ' && i != deleteWT - 1)
+            {
+                i++;
+            }
+            if(i != 1)
+                delPos = symbolPositionList.at(symbolPositionList.length() - i);
+            int x2 = delPos.x();
+            int y2 = delPos.y();
+
             int nextY = lineHeight + pt;
             double persent = 1;
             int t_persent = 1;
@@ -516,19 +565,19 @@ QPoint QmlWidget::drawWrapText(QString str)
                 int dif = (y2 - y1)/nextY;
                 while(persent < 1)
                 {
-                    drawFigure(0, y - fMetrics->height()/4, x*persent, y - fMetrics->height()/4, LINE, 0);
+                    drawFigure(0, y2, x2*persent, y2, LINE, 0);
                     persent += animationSpeed;
                     this->repaint();
                     pause(10);
                     if(curStatus == STOP )
-                        return QPoint(0,0);
+                        return false;
                 }
-                drawFigure(0, y - fMetrics->height()/4, x, y - fMetrics->height()/4, LINE, 0);
+                drawFigure(0, y2, x2, y2, LINE, 0);
 
                 persent= t_persent;
                 for(int i = 1; i < dif; i++)
                 {
-                    int t_y =( delPos.y() - fMetrics->height()/4 )+ nextY*i;
+                    int t_y =( y1 )+ nextY*i;
                     while(persent < 1)
                     {
                         drawFigure(0, t_y, maxWidth*persent, t_y, LINE, 0);
@@ -536,39 +585,42 @@ QPoint QmlWidget::drawWrapText(QString str)
                         this->repaint();
                         pause(10);
                         if(curStatus == STOP )
-                            return QPoint(0,0);
+                            return false;
                     }
                     drawFigure(0, t_y, maxWidth, t_y, LINE, 0);
                 }
                 persent= t_persent;
                 while(persent < 1)
                 {
-                    drawFigure(delPos.x(), delPos.y() - fMetrics->height()/4, delPos.x() + (maxWidth - delPos.x())*persent, delPos.y() - fMetrics->height()/4, LINE, 0);
+                    drawFigure(x1, y1, delPos.x() + (maxWidth - x1)*persent, y1, LINE, 0);
                     persent += animationSpeed;
                     this->repaint();
                     pause(10);
                     if(curStatus == STOP )
-                        return QPoint(0,0);
+                        return false;
                 }
-                drawFigure(delPos.x(), delPos.y() - fMetrics->height()/4, maxWidth, delPos.y() - fMetrics->height()/4, LINE, 0);
+                drawFigure(x1, y1, maxWidth, y1, LINE, 0);
             }
             else
             {
                 while(persent < 1)
                 {
-                    drawFigure(delPos.x(), delPos.y() - fMetrics->height()/4, delPos.x() + (x - delPos.x())*persent, y - fMetrics->height()/4, LINE, 0);
+                    drawFigure(x1, y1, x1 + (x2 - x1)*persent, y2, LINE, 0);
                  //   qDebug() << delPos.x() << "             " << delPos.x() + (maxWidth - delPos.x())*persent;
                     persent += animationSpeed;
                     this->repaint();
                     pause(10);
                     if(curStatus == STOP )
-                        return QPoint(0,0);
+                        return false;
                 }
-                drawFigure(delPos.x(), delPos.y() - fMetrics->height()/4, x, y - fMetrics->height()/4, LINE, 0);
+                drawFigure(x1, y1, x2, y2, LINE, 0);
             }
         }
         else{
-            delPos = symbolPositionList.at(symbolPositionList.length() - 1);
+            int i = 1;
+            while(symbolPositionList.length() != i && listWords.at(listWords.size() - i) == ' ')
+                i++;
+            delPos = symbolPositionList.at(symbolPositionList.length() - i);
             QColor temp = fillColor;
             setFillColor(QColor("#ff0000"));
             fillText("/", delPos.x(), delPos.y());
@@ -577,19 +629,24 @@ QPoint QmlWidget::drawWrapText(QString str)
         }
         deleteWT = 0;
     }
+    return true;
+}
 
-    QVariant returnedValue;
-    QVariant msg = str;
+QPoint QmlWidget::drawWrapText(QString str)
+{
+    busy = true;
+    if(!crossText())
+        return QPoint(0, 0);
     int widht = fMetrics->width(str)*1.125 ;//+ fMetrics->leftBearing(str.at(0)) + fMetrics->rightBearing(str.at(0));
 
     if(widht + x > maxWidth)
     {
-        if(isWord)
+       // if(isWord)
         {
             fillText("-", x, y);
             listWords += "-";
             listStr.push_back( listWords.length() );
-            indexInLsit++;
+            indexInList++;
         }
         nextRow();
     }

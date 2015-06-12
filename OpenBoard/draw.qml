@@ -43,7 +43,8 @@ Item{
         {
             //JS.init();
             //initFont()
-            JS.context.fillText( str, x, y);
+            //if(JS.context != null)
+                JS.context.fillText( str, x, y);
            // mainDrawElm.markDirty();
         }
         function init()

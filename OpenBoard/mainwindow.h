@@ -109,6 +109,7 @@ QAction *a_play,*a_pause,*a_stop,*a_font_canvas,*a_color_canvas,*a_record_to_fil
 QMessageBox messAbout;
  //   GLWidget        *mpGLWidget;
     QmlWidget       *mpQmlWidget;
+    int drawCounter;
     MyTextEdit       *textEdit;
     QString         curFile;
     pSettings       mSettings;

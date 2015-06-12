@@ -76,6 +76,7 @@ public:
     void moveEvent(QMoveEvent *event);
     void paintEvent(QPaintEvent * event);
     void resizeEvent(QResizeEvent *event);
+    void closeEvent(QCloseEvent *event);
     void mousePressEvent ( QMouseEvent * event );
     /*
      * Canvas control
@@ -126,6 +127,7 @@ private slots:
     void displayErrorMessage();
     void fps_control();
     void pause(int ms);
+    bool crossText();
 private:
     QString drawText;
     Encoder *m_encoder;
@@ -157,7 +159,7 @@ private:
     QList<int> listStr; // номер з якої починається і-та стрічка
     QFont textFont;
     QFontMetrics *fMetrics;
-    int indexInLsit;
+    int indexInList;
     int deleteWT;
     QTimer tickTimer;
     int delay;

@@ -188,12 +188,14 @@ void MainWindow::closeEvent(QCloseEvent*)
    // mpGLWidget->close();
     if(mpQmlWidget != NULL)
     {
-        mpQmlWidget->stopAnimated();
-        this->thread()->wait(200);
-        //mpQmlWidget->abor
+      //  mpQmlWidget->stopAnimated();
         mpQmlWidget->close();
+        while( mpQmlWidget->status() != QmlWidget::STOP )
+            qApp->processEvents();
+        //mpQmlWidget->abor
         delete mpQmlWidget;
     }
+    qDebug() << "Close drawWidget";
     //delete mpGLWidget;
 }
 
@@ -208,6 +210,8 @@ void MainWindow::on_action_Show_triggered()
 /*
  * QML
 */
+    if(mpQmlWidget != 0)
+        delete mpQmlWidget;
     mpQmlWidget = new QmlWidget();
     mpQmlWidget->show();
     mpQmlWidget->setDelay(1000/lastInpuDelay);
@@ -743,31 +747,35 @@ void MainWindow::on_action_Play_triggered()
     a_undo->setEnabled(false);
     a_redo->setEnabled(false);
     if(mpQmlWidget->getStatus() == QmlWidget::PAUSE)
-            ui->action_Play->setText("Play");
-        else
+        ui->action_Play->setText("Play");
+    else
+    {
+        mpQmlWidget->clearCanvas();
+        mpQmlWidget->setFillColor(mpQmlWidget->getMainFillColor());
+        drawCounter = 0;
+    }
+    mpQmlWidget->drawAnimated(ui->actionRecord_to_file->isChecked());
+    textEdit->setEnabled(false);
+
+    onTextChanged();
+  //  qDebug() << mUnitList.size();
+   // QString name = this->windowTitle();
+    while( drawCounter < mUnitList.size() && mpQmlWidget != 0 && mpQmlWidget->getStatus() != QmlWidget::STOP)
+    {
+        //while(mpQmlWidget->getStatus() == QmlWidget::PAUSE)
+        if( mpQmlWidget->getStatus() != QmlWidget::PAUSE )
         {
-            mpQmlWidget->clearCanvas();
-            mpQmlWidget->setFillColor(mpQmlWidget->getMainFillColor());
-        }
-        mpQmlWidget->drawAnimated(ui->actionRecord_to_file->isChecked());
-        textEdit->setEnabled(false);
-    // reinit
-        int i = 0;
-        onTextChanged();
-      //  qDebug() << mUnitList.size();
-       // QString name = this->windowTitle();
-        while( i < mUnitList.size() && mpQmlWidget->getStatus() != QmlWidget::STOP)
-        {
-            while(mpQmlWidget->getStatus() == QmlWidget::PAUSE)
-                qApp->processEvents();
-            mUnitList.at(i++)->draw(mpQmlWidget);
-      //      setWindowTitle("Progress status:    " + QString::number(float((float)i/mUnitList.size())*100) + "%");
-            int temp = (int)((float)((float)i/mUnitList.size()*100));
+            mUnitList.at(drawCounter++)->draw(mpQmlWidget);
+            int temp = (int)((float)((float)drawCounter/mUnitList.size()*100));
             ui->statusBar->showMessage("Progress status:    " + QString::number(temp) + "%");
         }
-     //   setWindowTitle(name);
+        else
+            qApp->processEvents();
+    }
+ //   setWindowTitle(name);
+    if(mpQmlWidget != NULL)
         mpQmlWidget->drawWrapText(" ");
-        on_action_Stop_triggered();
+    on_action_Stop_triggered();
 }
 
 void MainWindow::on_action_Stop_triggered()
