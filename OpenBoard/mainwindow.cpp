@@ -297,7 +297,6 @@ void MainWindow::on_action_Font_triggered()
     textEdit->setFont(font);
 
     mSettings.setMainWindowFont(font);
-
     ///!!!!!!!!!
     /*// bool ok;
     QFont font;
@@ -353,7 +352,9 @@ void MainWindow::on_action_Color_triggered()
         textEdit->clear();
         textEdit->insertPlainText(temp);
 
-          mSettings.setMainWindowColor(colorm);
+      mSettings.setMainWindowColor(colorm);
+      a_show->setEnabled(false);
+      ui->action_Show->setEnabled(false);
 }
 
 //!!!!!!!!!!!!!
