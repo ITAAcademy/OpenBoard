@@ -185,16 +185,12 @@ MainWindow::~MainWindow()
 
 void MainWindow::closeEvent(QCloseEvent*)
 {
-   // mpGLWidget->close();
+    on_action_Hide_triggered();
     if(mpQmlWidget != NULL)
     {
-      //  mpQmlWidget->stopAnimated();
-         on_action_Stop_triggered();
-        mpQmlWidget->close();
         while( mpQmlWidget->status() != QmlWidget::STOP )
             qApp->processEvents();
-        //mpQmlWidget->abor
-       // delete mpQmlWidget;
+        delete mpQmlWidget;
     }
     qDebug() << "Close drawWidget";
 }
