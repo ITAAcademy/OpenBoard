@@ -16,6 +16,7 @@
 #include <QFontMetrics>
 #include <QtMultimedia/QAudioRecorder>
 #include <QtMultimedia/QAudioProbe>
+#include <QtConcurrent>
 
 #include <Encoder>
 #include <ScreenGrabber>
@@ -83,6 +84,7 @@ public:
      */
     void clearCanvas();
     void drawFigure (int x, int y, int width, int height, FigureType type, bool fill);
+    void drawAnimationFigure (int x, int y, int width, int height, FigureType type, bool fill);
     void nextRow();
     Q_INVOKABLE void crossOutLastSymbol();
     void crossOutWithAnimation();
@@ -92,6 +94,8 @@ public:
     void fillText( QString str, int x, int y);
     void fillAnimationText(QString str, int x, int y, float time);
     void isLastRow();
+    void pause(int ms);
+    void update();
     /*
      * G/S
      */
@@ -126,8 +130,8 @@ private slots:
     void processBuffer(const QAudioBuffer &buffer);
     void displayErrorMessage();
     void fps_control();
-    void pause(int ms);
     bool crossText();
+    bool crossTextV2();
 private:
     QString drawText;
     Encoder *m_encoder;
@@ -137,6 +141,8 @@ private:
     void generateFrames();
     StatusDraw curStatus; // 0 - stop; 1 - play; -1 - pause
     QObject *canvas;
+    QThread drawThread;
+    QThread encoderThread;
     /*
      * Сavas property
     */

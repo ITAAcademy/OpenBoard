@@ -264,6 +264,8 @@ void QmlWidget::clearCanvas()
 {
     QMetaObject::invokeMethod(canvas, "clear");
     symbolPositionList.clear();
+    listWords.clear();
+    listStr.clear();
     indexRow = 0;
     indexW = 1;
     x = marginLeft;
@@ -283,7 +285,23 @@ void QmlWidget::drawFigure(int x, int y, int width, int height, QmlWidget::Figur
             Q_ARG(QVariant, QVariant(width)),
             Q_ARG(QVariant, QVariant(height)),
             Q_ARG(QVariant, QVariant(type)),
-            Q_ARG(QVariant, QVariant(fill)));
+                              Q_ARG(QVariant, QVariant(fill)));
+}
+
+void QmlWidget::drawAnimationFigure(int x, int y, int width, int height, QmlWidget::FigureType type, bool fill)
+{
+    float persent;
+    while(persent < 1)
+    {
+        drawFigure(x, y, x + (width - x)*persent, height, type, fill);
+     //   qDebug() << delPos.x() << "             " << delPos.x() + (maxWidth - delPos.x())*persent;
+        persent += animationSpeed;
+        this->repaint();
+        pause(10);
+        if(curStatus == STOP )
+            return;
+    }
+    drawFigure(x, y, width, height, type, fill);
 }
 
 void QmlWidget::nextRow()
@@ -382,6 +400,11 @@ void QmlWidget::pause(int ms)
     while (tickTimer.isActive()) {
       qApp->processEvents();
     }
+}
+
+void QmlWidget::update()
+{
+    crossTextV2();
 }
 
 QColor QmlWidget::getMainFillColor() const
@@ -528,27 +551,29 @@ bool QmlWidget::crossText()
             /*
              *  fix more spase
             */
-            //1_st / begin = spase
+            //1_st / begin = spase            
+            //default
+            delPos = QPoint(x, y);
+            // last = spase
             int i = 0;
-            while(listWords.at(listWords.size() - deleteWT + i) == ' ' && i != deleteWT - 1)
+            while(listWords.at(listWords.size() - i - 1) == ' ' && i != listWords.size() - 1)
             {
                 i++;
+               // qDebug() << "Coneccc:  " << symbolPositionList.at(symbolPositionList.length() - i - 1) <<"       "<< listWords.at(listWords.size() - i - 1) << "     "<< i;
             }
-            delPos = symbolPositionList.at(symbolPositionList.length() - deleteWT + i); // -2 is popravka
-            //default
+            if(i != 0)
+                delPos = symbolPositionList.at(symbolPositionList.length() - --i - 1);
+            int x2 = delPos.x();
+            int y2 = delPos.y()  - fMetrics->height()/4;
+
+            int j = 0;
+            while(listWords.at(listWords.size() - deleteWT + j - i) == ' ' && i != deleteWT - 1)
+            {
+                j++;
+            }
+            delPos = symbolPositionList.at(symbolPositionList.length() - deleteWT + j - i); // -2 is popravka
             int x1 = delPos.x();
             int y1 = delPos.y() - fMetrics->height()/4;
-            delPos = QPoint(x, y - fMetrics->height()/4);
-            // last = spase
-            i = 1;
-            while(listWords.at(listWords.size() - i) == ' ' && i != deleteWT - 1)
-            {
-                i++;
-            }
-            if(i != 1)
-                delPos = symbolPositionList.at(symbolPositionList.length() - i);
-            int x2 = delPos.x();
-            int y2 = delPos.y();
 
             int nextY = lineHeight + pt;
             double persent = 1;
@@ -560,7 +585,7 @@ bool QmlWidget::crossText()
                 crossWithAnimation = false;
             }
             persent= t_persent;
-            if(y2 - y1 != 0)
+            if(y2 - y1 >= nextY)
             {
                 int dif = (y2 - y1)/nextY;
                 while(persent < 1)
@@ -632,11 +657,82 @@ bool QmlWidget::crossText()
     return true;
 }
 
+bool QmlWidget::crossTextV2()
+{
+    if(deleteWT != 0 && !symbolPositionList.isEmpty())
+    {
+
+        if(deleteWT >= symbolPositionList.length())
+            deleteWT = symbolPositionList.length();
+        QPoint delPos = symbolPositionList.at(symbolPositionList.length() - deleteWT); // -2 is popravka
+        if(deleteWT != 1)
+        {
+            int i = 0;
+            while(listWords.at(listWords.size() - i - 1) <= 0x20 && i != listWords.size() - 1)
+            {
+                i++;
+            }
+            int pos2 = symbolPositionList.length() - i - 1;
+
+            int n = pos2;
+            int m = pos2;
+            int lastH = symbolPositionList[n].y();
+            deleteWT--;
+            while(deleteWT != 0 && n > 0)
+            {
+
+                while ( --n > 0 && lastH == symbolPositionList[n].y() && listWords[n] > 0x20 && deleteWT != 0)
+                {
+                    deleteWT--;
+                }
+                qDebug() << "startNEW with:  "<< hex << listWords[n + 1];
+                delPos = symbolPositionList.at(m); // -2 is popravka
+                int x2 = delPos.x() + fMetrics->width(listWords[m]);;
+                int y2 = delPos.y() - fMetrics->height()/4;
+                if( n == 0 )
+                    delPos = symbolPositionList.at(n); // -2 is popravka
+                else
+                    delPos = symbolPositionList.at(n + 1); // -2 is popravka
+                int x1 = delPos.x();
+                int y1 = delPos.y() - fMetrics->height()/4;
+                if(crossWithAnimation)
+                {
+                    qDebug() << "set animation speed";
+                  drawAnimationFigure(x1, y1, x2, y2, LINE, 0);
+                }
+                else
+                    drawFigure(x1, y1, x2, y2, LINE, 0);
+                lastH = symbolPositionList[n].y();
+                while ( n > 0 && listWords[n] <= 0x20)
+                    n--;
+                m = n;
+                if(n != 0)
+                    n++;
+            }
+            deleteWT = 0;
+            crossWithAnimation = false;
+        }
+        else{
+            int i = 1;
+            while(symbolPositionList.length() != i && listWords.at(listWords.size() - i) == ' ')
+                i++;
+            delPos = symbolPositionList.at(symbolPositionList.length() - i);
+            QColor temp = fillColor;
+            setFillColor(QColor("#ff0000"));
+            fillText("/", delPos.x(), delPos.y());
+            fillText("\\", delPos.x(), delPos.y());
+            setFillColor(temp);
+        }
+        deleteWT = 0;
+    }
+}
+
 QPoint QmlWidget::drawWrapText(QString str)
 {
     busy = true;
-    if(!crossText())
-        return QPoint(0, 0);
+    //if(!crossTextV2())
+     //   return QPoint(0, 0);
+    crossTextV2();
     int widht = fMetrics->width(str)*1.125 ;//+ fMetrics->leftBearing(str.at(0)) + fMetrics->rightBearing(str.at(0));
 
     if(widht + x > maxWidth)
@@ -645,6 +741,7 @@ QPoint QmlWidget::drawWrapText(QString str)
         {
             fillText("-", x, y);
             listWords += "-";
+            symbolPositionList.push_back(QPoint(x, y));
             listStr.push_back( listWords.length() );
             indexInList++;
         }

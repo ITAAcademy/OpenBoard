@@ -45,7 +45,9 @@ void UnitCommand::erasePreChar(QmlWidget *canvas)
 
 void UnitCommand::pause(QmlWidget *canvas)
 {
-    QThread::msleep(unit_data.toULong()*100);
+    //QThread::msleep(unit_data.toULong()*100);
+    canvas->update();
+    canvas->pause(unit_data.toULong()*100);
 }
 
 void UnitCommand::backSlash(QmlWidget *canvas)
