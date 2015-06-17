@@ -14,6 +14,14 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     //drawThread.start();
 
+    ui->delayBtn->setToolTip("Pause");
+    ui->speedBtn->setToolTip("Speed");
+    ui->backBtn->setToolTip("Paragraph");
+    ui->animationBtn->setToolTip("Animated cross out");
+    ui->crossBtn->setToolTip("Cross out");
+    ui->colorBtn->setToolTip("Color");
+    ui->clearBtn->setToolTip("Clean");
+
 //    connect(&drawThread, SIGNAL(started()), this, SLOT(myfunction())); //cant have parameter sorry, when using connect
 
     mpQmlWidget = new QmlWidget();
@@ -74,14 +82,14 @@ MainWindow::MainWindow(QWidget *parent) :
        a_undo = new QAction(this);
        a_undo->setEnabled(true);
        a_undo->setIcon(QPixmap(":/icons/undo-icon.png").scaled(QSize(16, 16)));
-       a_undo->setStatusTip(tr("Undo"));
+       a_undo->setToolTip(tr("Undo"));
        connect(a_undo,SIGNAL(triggered()),this,  SLOT(on_action_Undo_triggered()));
        toolBar->addAction(a_undo);
               //toolBar->addAction(QPixmap(":/icons/undo-icon.png").scaled(QSize(16, 16)), "Undo", this, SLOT(on_action_Undo_triggered()));
        a_redo = new QAction(this);
        a_redo->setEnabled(true);
        a_redo->setIcon(QPixmap(":/icons/redo-icon.png").scaled(QSize(16, 16)));
-       a_redo->setStatusTip(tr("Redo"));
+       a_redo->setToolTip(tr("Redo"));
        connect(a_redo,SIGNAL(triggered()),this,  SLOT(on_action_Redo_triggered()));
        toolBar->addAction(a_redo);
    //    toolBar->addAction(QPixmap(":/icons/redo-icon.png").scaled(QSize(16, 16)), "Redo", this, SLOT(on_action_Redo_triggered()));
@@ -102,14 +110,14 @@ MainWindow::MainWindow(QWidget *parent) :
        a_font_canvas = new QAction(this);
        a_font_canvas->setEnabled(false);
        a_font_canvas->setIcon(QPixmap(":/icons/font-x-generic-icon.png").scaled(QSize(16, 16)));
-       a_font_canvas->setStatusTip(tr("Font canvas"));
+       a_font_canvas->setToolTip(tr("Font canvas"));
        connect(a_font_canvas,SIGNAL(triggered()),this,  SLOT(on_action_Board_Font_triggered()));
        toolBar->addAction(a_font_canvas);
 
        a_color_canvas = new QAction(this);
        a_color_canvas->setEnabled(false);
        a_color_canvas->setIcon(QPixmap(":/icons/colors-icon.png").scaled(QSize(16, 16)));
-       a_color_canvas->setStatusTip(tr("Font canvas"));
+       a_color_canvas->setToolTip(tr("Font canvas"));
        connect(a_color_canvas,SIGNAL(triggered()),this,  SLOT(on_action_Board_Color_triggered()));
        toolBar->addAction(a_color_canvas);
 
@@ -119,7 +127,7 @@ MainWindow::MainWindow(QWidget *parent) :
        a_show = new QAction(this);
        a_show->setEnabled(true);
        a_show->setIcon(QPixmap(":/icons/gnome_show_desktop.png").scaled(QSize(16, 16)));
-       a_show->setStatusTip(tr("Show canvas"));
+       a_show->setToolTip(tr("Show canvas"));
        connect(a_show,SIGNAL(triggered()),this,  SLOT(on_action_Show_triggered()));
        toolBar->addAction(a_show);
       // toolBar->addAction(QPixmap(":/icons/gnome_show_desktop.png").scaled(QSize(16, 16)), "Show canvas", this, SLOT(on_action_Show_triggered()));
@@ -128,7 +136,7 @@ MainWindow::MainWindow(QWidget *parent) :
                a_hide = new QAction(this);
                a_hide->setEnabled(false);
                a_hide->setIcon(QPixmap(":/icons/hide_icon.png").scaled(QSize(16, 16)));
-               a_hide->setStatusTip(tr("Show canvas"));
+               a_hide->setToolTip(tr("Show canvas"));
                connect(a_hide,SIGNAL(triggered()),this,  SLOT(on_action_Hide_triggered()));
                toolBar->addAction(a_hide);
       // toolBar->addAction(QPixmap(":/icons/hide_icon.png").scaled(QSize(16, 16)), "Hide canvas", this, SLOT(on_action_Hide_triggered()));
@@ -136,28 +144,28 @@ MainWindow::MainWindow(QWidget *parent) :
        a_play = new QAction(this);
        a_play->setEnabled(false);
        a_play->setIcon(QPixmap(":/icons/play-8-icon.png").scaled(QSize(16, 16)));
-       a_play->setStatusTip(tr("Play"));
+       a_play->setToolTip(tr("Play"));
        connect(a_play,SIGNAL(triggered()),this,  SLOT(on_action_Play_triggered()));
        toolBar->addAction(a_play);
 
        a_pause = new QAction(this);
        a_pause->setEnabled(false);
        a_pause->setIcon(QPixmap(":/icons/pause-icon.png").scaled(QSize(16, 16)));
-       a_pause->setStatusTip(tr("Pause"));
+       a_pause->setToolTip(tr("Pause"));
        connect(a_pause,SIGNAL(triggered()),this,  SLOT(on_action_Pause_triggered()));
        toolBar->addAction(a_pause);
 
        a_stop = new QAction(this);
        a_stop->setEnabled(false);
        a_stop->setIcon(QPixmap(":/icons/stop_icon.png").scaled(QSize(16, 16)));
-       a_stop->setStatusTip(tr("Stop"));
+       a_stop->setToolTip(tr("Stop"));
        connect(a_stop,SIGNAL(triggered()),this,  SLOT(on_action_Stop_triggered()));
        toolBar->addAction(a_stop);
 
        a_record_to_file = new QAction(this);
        a_record_to_file->setEnabled(false);
        a_record_to_file->setIcon(QPixmap(":/icons/12video icon.png").scaled(QSize(16, 16)));
-       a_record_to_file->setStatusTip(tr("Record in file"));
+       a_record_to_file->setToolTip(tr("Record in file"));
        a_record_to_file->setCheckable(true);
        a_record_to_file->setChecked(false);
        connect(a_record_to_file,SIGNAL(triggered()),this,  SLOT(a_record_to_file_triggered()));
