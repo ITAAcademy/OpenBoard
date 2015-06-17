@@ -372,12 +372,12 @@ void MainWindow::on_action_Color_triggered()
 
 void MainWindow::on_action_Undo_triggered()
 {
-    textEdit->undo();
+    textEdit->undom();
 }
 
 void MainWindow::on_action_Redo_triggered()
 {
-    textEdit->redo();
+    textEdit->rendom();
 }
 
 void MainWindow::on_action_Cut_triggered()

@@ -62,3 +62,41 @@ charCount=document()->characterCount();
  ПОДАЄТЬСЯ ВИВІД ПАРСЕРСА,що вказує на індекс помилки*/
  }
 
+ void MyTextEdit::keyPressEvent(QKeyEvent *e) {
+ if(e->type() == QKeyEvent::KeyPress) {
+ if(e->matches(QKeySequence::Undo))
+ undom();
+ else
+     if(e->matches(QKeySequence::Redo))
+     rendom();
+     else
+ QTextEdit::keyPressEvent(e);
+ }
+ }
+
+ void MyTextEdit::undom()
+{
+     QTextCursor cursor = this->textCursor();
+     QString text = cursor.block().text();
+     CursorCymbol change;
+     change.cursor = cursor;
+     change.cymbol = text.at(text.size()-1);
+     undo_changes.push(change);
+     QTextEdit::undo();
+     QTextEdit::undo();
+     QTextEdit::undo();
+     this->setTextCursor(cursor);
+}
+
+ void MyTextEdit::rendom()
+ {
+     if (undo_changes.isEmpty()==false)
+     {
+     CursorCymbol change = undo_changes.pop();
+     this->setTextCursor(change.cursor);
+     QClipboard *clipboard = QApplication::clipboard();
+     QString ss; ss.append(change.cymbol);
+     clipboard->setText(ss);
+     paste();
+     }
+ }

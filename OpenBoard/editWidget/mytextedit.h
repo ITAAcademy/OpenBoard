@@ -3,6 +3,14 @@
 
 #include <QTextEdit>
 #include <QColor>
+#include <QStack>
+#include <QClipboard>
+#include <QApplication>
+
+struct CursorCymbol{
+    QTextCursor cursor;
+    QChar cymbol;
+};
 
 class MyTextEdit : public QTextEdit
 {
@@ -18,9 +26,13 @@ private:
      QColor colSelection;
      QColor colOrigin;
      int charCount = 0;
+     QStack<CursorCymbol> undo_changes;
 public slots:
   void onEditText();
 public:
+  void undom();
+  void rendom();
+    void keyPressEvent(QKeyEvent *e);
     explicit MyTextEdit(QColor originalColor, QColor specifiedColor, QWidget *parent = 0);
     void textColorSet(int position);
    void mergeFormatOnWordOrSelection(int position);
