@@ -189,14 +189,14 @@ void MainWindow::closeEvent(QCloseEvent*)
     if(mpQmlWidget != NULL)
     {
       //  mpQmlWidget->stopAnimated();
+         on_action_Stop_triggered();
         mpQmlWidget->close();
         while( mpQmlWidget->status() != QmlWidget::STOP )
             qApp->processEvents();
         //mpQmlWidget->abor
-        delete mpQmlWidget;
+       // delete mpQmlWidget;
     }
     qDebug() << "Close drawWidget";
-    //delete mpGLWidget;
 }
 
 void MainWindow::on_action_Show_triggered()
@@ -889,4 +889,3 @@ void MainWindow::setEnabledToolBar(bool status)
     ui->animationBtn->setEnabled(status);
 
 }
-
