@@ -33,6 +33,9 @@ Item{
             // set line color
             JS.context.strokeStyle = '#ff0000';
         }
+        function clearRectangle(x,y,width,height){
+                    JS.context.clearRect(x,y,width,height);
+                }
 
         function bdrawWrapText( a ){
             //console.debug("drawWrapText____OK" + a)
