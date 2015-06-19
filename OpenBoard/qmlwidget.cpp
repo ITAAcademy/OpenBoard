@@ -742,7 +742,7 @@ QPoint QmlWidget::drawWrapText(QString str)
     crossTextV2();
     int width = fMetrics->width(str)*1.125 ;//+ fMetrics->leftBearing(str.at(0)) + fMetrics->rightBearing(str.at(0));
 
-    if(str==" "){
+    if(str[0] <= 0x20){
          listChars.clear();
          widthToClean=0;
      }
