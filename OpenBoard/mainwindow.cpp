@@ -337,6 +337,9 @@ void MainWindow::on_action_Reset_default_triggered()
         QString temp = textEdit->toPlainText();
         textEdit->clear();
         textEdit->insertPlainText(temp);
+
+        ui->action_Show->setEnabled(false);
+        a_show->setEnabled(false);
        // setFont(font);
 }
 
