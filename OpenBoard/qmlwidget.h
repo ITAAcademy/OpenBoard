@@ -121,6 +121,7 @@ public:
     void setDelay(int value);
     QColor getMainFillColor() const;
     void setMainFillColor(const QColor &value);
+    void clear(int x,int y,int width,int height);
 
 signals:
     void drawTextChanged();
@@ -158,10 +159,12 @@ private:
     int indexW ;
     int indexRow;
     int scroll;
+    int widthToClean=0;
     QColor fillColor;
     QColor mainFillColor;
     QList <QPoint> symbolPositionList;
     QString listWords; // вся стрічка
+    QString listChars; // останнє введене слово
     QList<int> listStr; // номер з якої починається і-та стрічка
     QFont textFont;
     QFontMetrics *fMetrics;

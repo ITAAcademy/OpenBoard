@@ -480,7 +480,14 @@ void QmlWidget::recreate()
 {
     this->create();
 }
-
+void QmlWidget::clear(int x,int y,int width,int height){
+    QMetaObject::invokeMethod(canvas, "clearRectangle",
+            Q_ARG(QVariant, QVariant(x)),
+            Q_ARG(QVariant, QVariant(y)),
+            Q_ARG(QVariant, QVariant(width)),
+            Q_ARG(QVariant, QVariant(height))
+                  );
+}
 void QmlWidget::fillText( QString str, int x, int y)
 {
     QVariant arg1 = str;
@@ -733,26 +740,46 @@ QPoint QmlWidget::drawWrapText(QString str)
     //if(!crossTextV2())
      //   return QPoint(0, 0);
     crossTextV2();
-    int widht = fMetrics->width(str)*1.125 ;//+ fMetrics->leftBearing(str.at(0)) + fMetrics->rightBearing(str.at(0));
+    int width = fMetrics->width(str)*1.125 ;//+ fMetrics->leftBearing(str.at(0)) + fMetrics->rightBearing(str.at(0));
 
-    if(widht + x > maxWidth)
-    {
-       // if(isWord)
+    if(str==" "){
+         listChars.clear();
+         widthToClean=0;
+     }
+        if(width + x > maxWidth)
         {
-            fillText("-", x, y);
-            listWords += "-";
-            symbolPositionList.push_back(QPoint(x, y));
-            listStr.push_back( listWords.length() );
-            indexInList++;
+         qDebug()<<listChars;
+
+                //fillText("-", x, y);
+                //listChars += str;
+                //listWords.remove(indexInList,1);
+          int clearWidth = fMetrics->width(listChars);
+
+             // if(y  + scroll*indexRow > this->height() )
+             clear(x-widthToClean,y-fMetrics->height(),widthToClean,fMetrics->height()*1.25);
+
+             // listStr.push_back( listChars.length() );//не юзається.
+              // indexInList++;//не юзається.
+          //indexInList+=listChars.length();
+             nextRow();
+              isLastRow();
+            fillText(listChars.trimmed(),x,y);
+           // listWords += listChars.trimmed();
+           // listWords +=listChars;
+            //listStr.push_back( listWords.length() );
+
+            listChars.clear();
+            widthToClean=0;
+            x+=clearWidth;
         }
-        nextRow();
-    }
     isLastRow();
     //fillAnimationText(str, x, y, 6);
     fillText(str, x, y);
     QPoint res(x,y);
     listWords += str;
-    x += widht;
+    listChars += str.trimmed();
+    x += width;
+    widthToClean+=width;
     symbolPositionList.push_back(res);
     tickTimer.start(delay);
     while (tickTimer.isActive()) {
