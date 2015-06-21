@@ -611,6 +611,8 @@ void MainWindow::on_action_New_triggered()
 void MainWindow::on_delayBtn_pressed()
 {
     show_pause_menu();
+
+    textEdit->setFocus();
 }
 
 void MainWindow::delay_released()
@@ -630,23 +632,28 @@ void MainWindow::on_backBtn_clicked()
 {
     QString text = ui->action_backTB->text();
     textEdit->insertPlainText(text);
+    textEdit->setFocus();
 }
 
 void MainWindow::on_animationBtn_clicked()
 {
     QString text = ui->action_animatedTB->text();
     textEdit->insertPlainText(text);
+
+    textEdit->setFocus();
 }
 
 void MainWindow::on_crossBtn_clicked()
 {
     QString text = ui->action_crossTB->text();
     textEdit->insertPlainText(text);
+    textEdit->setFocus();
 }
 
 void MainWindow::on_colorBtn_pressed()
 {
     show_color_dialog();
+    textEdit->setFocus();
 }
 
 void MainWindow::on_colorBtn_released()
@@ -681,12 +688,14 @@ void MainWindow::on_colorBtn_clicked()
 //    text += textColorName;
 //    text.remove(2,1);
 //    textEdit->insertPlainText(text);
+    textEdit->setFocus();
 }
 
 void MainWindow::on_clearBtn_clicked()
 {
     QString text = ui->action_clearTB->text();
     textEdit->insertPlainText(text);
+    textEdit->setFocus();
 }
 void MainWindow::onTextChanged()
 {
@@ -853,6 +862,8 @@ void MainWindow::on_action_About_triggered()
 void MainWindow::on_speedBtn_pressed()
 {
     ui->widget_speedTB->setVisible(!ui->widget_speedTB->isVisible());
+
+    textEdit->setFocus();
 }
 
 void MainWindow::on_slider_speedTB_valueChanged(int value)
