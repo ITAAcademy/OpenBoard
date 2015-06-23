@@ -39,7 +39,8 @@ public:
     ~MainWindow();
 
 public slots:
-
+    void doUndoRedoStart();
+ void doUndoRedoEnd();
 //    board
     void closeEvent(QCloseEvent* event);
     void moveEvent(QMoveEvent *event);
@@ -105,6 +106,8 @@ private slots:
     void showBoardSettings();
     void setEnabledToolBar( bool status );
 private:
+    bool changeone;
+   QString directory;
 QAction *a_play,*a_pause,*a_stop,*a_font_canvas,*a_color_canvas,*a_record_to_file,*a_undo,*a_redo,*a_show,*a_hide;
     Ui::MainWindow  *ui;
 QMessageBox messAbout;

@@ -22,6 +22,10 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->colorBtn->setToolTip("Color");
     ui->clearBtn->setToolTip("Clean");
 
+    //QStandardPaths path;
+    directory = QStandardPaths::locate(QStandardPaths::DocumentsLocation, QString(),
+                                       QStandardPaths::LocateDirectory);
+
 //    connect(&drawThread, SIGNAL(started()), this, SLOT(myfunction())); //cant have parameter sorry, when using connect
 
     mpQmlWidget = new QmlWidget();
@@ -36,6 +40,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->button_Find, SIGNAL(pressed()), this, SLOT(search()));
     connect(textEdit, SIGNAL(textChanged()), this, SLOT(onTextChanged()));
     connect(ui->actionSend_to_youTube, SIGNAL( triggered()), this, SLOT (on_action_youTube_triggered()));
+    connect(textEdit,SIGNAL(doUndoRedoStart()),this,SLOT(doUndoRedoStart()));
+    connect(textEdit,SIGNAL(doUndoRedoEnd()),this,SLOT(doUndoRedoEnd()));
 
     ui->widget_Find->setVisible(false);
     ui->widget_delayTB->setVisible(false);
@@ -457,9 +463,20 @@ bool MainWindow::saveFile()
 {
 
     QFile file(curFile);
-    if(file.open(QFile::WriteOnly))
+    if(file.open(QIODevice::WriteOnly))
     {
-        file.write(textEdit->toPlainText().toUtf8());
+        ui->statusBar->showMessage("files saving...");
+
+         QString ss = textEdit->toPlainText();
+      QDataStream data;
+      data << ss;
+      QDataStream stream( &file );
+        //stream.setVersion( QDataStream::Qt_4_2 );
+
+        stream << data;
+
+        file.close();
+ui->statusBar->showMessage("file saved");
         return true;
     }
     else
@@ -572,9 +589,9 @@ bool MainWindow::on_action_Save_as_triggered()
 
 bool MainWindow::on_action_Save_triggered()
 {
-    if (curFile.isEmpty())
+    /*if (curFile.isEmpty())
         return on_action_Save_as_triggered();
-    else
+    else*/
         return saveFile();
 }
 
@@ -582,13 +599,14 @@ void MainWindow::on_action_Open_triggered()
 {
     if (maybeSave())
     {
-        QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), "D:/",
+        QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), directory,
                                                               tr("Text Files (*.txt);;All Files (*.*)"));
         if(!fileName.isEmpty())
         {
             QFile file(fileName);
             if(file.open(QFile::ReadOnly))
             {
+                curFile = fileName;
                 textEdit->setPlainText(file.readAll());
             }
             else
@@ -597,15 +615,17 @@ void MainWindow::on_action_Open_triggered()
             }
         }
     }
+     textEdit->openText();
 }
 
 void MainWindow::on_action_New_triggered()
 {
     if (maybeSave())
     {
+        curFile.clear();
         textEdit->clear();
     }
-
+textEdit->newText();
 }
 
 void MainWindow::on_delayBtn_pressed()
@@ -697,9 +717,24 @@ void MainWindow::on_clearBtn_clicked()
     textEdit->insertPlainText(text);
     textEdit->setFocus();
 }
+
+void MainWindow::doUndoRedoStart()
+{
+    disconnect(textEdit, SIGNAL(textChanged()), this, SLOT(onTextChanged()));
+}
+
+void MainWindow::doUndoRedoEnd()
+{
+    connect(textEdit, SIGNAL(textChanged()), this, SLOT(onTextChanged()));    
+    textEdit->document()->setModified(true);
+}
+
 void MainWindow::onTextChanged()
 {
-    //qDebug() << "onTextChanged";
+    disconnect(textEdit, SIGNAL(textChanged()), this, SLOT(onTextChanged()));
+    {
+
+   // qDebug() << "onTextChanged";
     QString str = textEdit->toPlainText();
     int status = mParser.ParsingLine(mUnitList, str);
     textEdit->textColorSet(status);
@@ -736,6 +771,10 @@ void MainWindow::onTextChanged()
             a_show->setEnabled(true);
         }
     }
+    }
+    textEdit->saveChanges();
+     connect(textEdit, SIGNAL(textChanged()), this, SLOT(onTextChanged()));
+
     /*
     // DrawData temp = mpQmlWidget.getDrawData();
      /*if(!textEdit->toPlainText().isEmpty())

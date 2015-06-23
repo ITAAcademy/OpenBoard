@@ -21,18 +21,23 @@ MyTextEdit::MyTextEdit(QColor originalColor,QColor specifiedColor,QWidget *paren
  QTime midnight(0,0,0);
  qsrand(midnight.secsTo(QTime::currentTime()));
 
+ //connect(this, SIGNAL(textChanged()),this, SLOT(saveChanges()));
+ pair_change=false;
+ t_cursor = this->textCursor();
+ newText();\
 }
 
  void MyTextEdit::mergeFormatOnWordOrSelection(int position)
  {
-     if (charCount==document()->characterCount()) return;
+    if (charCount==document()->characterCount()) return;
 charCount=document()->characterCount();
      QTextCursor cursor = textCursor();
      cursor.movePosition(QTextCursor::End, QTextCursor::MoveAnchor);
      cursor.movePosition(QTextCursor::Start, QTextCursor::KeepAnchor);
      cursor.mergeCharFormat(textFormat);
 
-     if (position>=0 && position<=document()->characterCount()){
+     if (position>=0 && position<=document()->characterCount())
+     {
          cursor.setPosition(position);
          cursor.movePosition(QTextCursor::Left, QTextCursor::MoveAnchor,3);
         cursor.movePosition(QTextCursor::Right, QTextCursor::KeepAnchor,6);
@@ -55,12 +60,13 @@ charCount=document()->characterCount();
  {
       textFormat.setForeground(value);
  }
+ /*
  void MyTextEdit::onEditText()
  {
-     int parserOutEmulated=qrand()%document()->characterCount();
+     /*int parserOutEmulated=qrand()%document()->characterCount();
      textColorSet(0);/*СИМУЛЯЦІЯ, В ЦЮ ФУНКЦЦІЮ
  ПОДАЄТЬСЯ ВИВІД ПАРСЕРСА,що вказує на індекс помилки*/
- }
+
 
  void MyTextEdit::keyPressEvent(QKeyEvent *e) {
  if(e->type() == QKeyEvent::KeyPress) {
@@ -76,27 +82,78 @@ charCount=document()->characterCount();
 
  void MyTextEdit::undom()
 {
-     QTextCursor cursor = this->textCursor();
-     QString text = cursor.block().text();
-     CursorCymbol change;
-     change.cursor = cursor;
-     change.cymbol = text.at(text.size()-1);
-     undo_changes.push(change);
-     QTextEdit::undo();
-     QTextEdit::undo();
-     QTextEdit::undo();
-     this->setTextCursor(cursor);
+     emit doUndoRedoStart();
+     if (undo_changes.size() >0)
+     {
+          qDebug() << "undom";
+         CursorCymbol backup;
+         backup.cursor = this->textCursor().position();
+         backup.cymbol = this->toPlainText();
+         qDebug() <<  backup.cymbol;
+                 redo_changes.push_back(backup);
+
+
+
+        CursorCymbol change ;
+
+       change = undo_changes.pop();
+      // curs.setPosition(change.cursor);
+        this->setText(change.cymbol);
+       t_cursor.setPosition(change.cursor);
+this->setTextCursor(t_cursor);
+     }
+     else this->setText("");
+
+ emit doUndoRedoEnd();
 }
 
  void MyTextEdit::rendom()
  {
-     if (undo_changes.isEmpty()==false)
+
+ if (redo_changes.size() >0)
+ {
+ emit doUndoRedoStart();
+     CursorCymbol backup;
+     backup.cursor = this->textCursor().position();
+     backup.cymbol = this->toPlainText();
+
+             undo_changes.push_back(backup);
+
+    CursorCymbol change ;
+   change = redo_changes.pop();
+    this->setText(change.cymbol);
+   t_cursor.setPosition(change.cursor);
+this->setTextCursor(t_cursor);
+
+    emit doUndoRedoEnd();
+ }
+ }
+
+ void MyTextEdit::saveChanges()
+ {
+
+
      {
-     CursorCymbol change = undo_changes.pop();
-     this->setTextCursor(change.cursor);
-     QClipboard *clipboard = QApplication::clipboard();
-     QString ss; ss.append(change.cymbol);
-     clipboard->setText(ss);
-     paste();
+      undo_changes.push(changebuf);
+     changebuf.cursor = this->textCursor().position();
+     changebuf.cymbol = this->toPlainText();
+
+      qDebug() << "\nundo";  for (int i=0; i< undo_changes.size(); i++)
+      {qDebug() << undo_changes[i].cymbol;
+          qDebug() << undo_changes[i].cursor;
+      }
+  //   qDebug() << "\nredo"; for (int i=0; i< redo_changes.size(); i++)           qDebug() << redo_changes[i].cymbol;
      }
+ }
+
+ void MyTextEdit::openText()
+ {
+     changebuf.cursor = 1;
+     changebuf.cymbol = this->toPlainText();
+ }
+
+ void MyTextEdit::newText()
+ {
+     changebuf.cursor = 0;
+     changebuf.cymbol = "";
  }
