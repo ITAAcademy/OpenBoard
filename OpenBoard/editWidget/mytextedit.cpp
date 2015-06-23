@@ -12,6 +12,8 @@
 MyTextEdit::MyTextEdit(QColor originalColor,QColor specifiedColor,QWidget *parent) :
     QTextEdit(parent)
 {
+
+
  //connect(this,SIGNAL(cursorPositionChanged()),this,SLOT(onEditText()));
   colSelection=specifiedColor;
   colOrigin=originalColor;
@@ -25,6 +27,7 @@ MyTextEdit::MyTextEdit(QColor originalColor,QColor specifiedColor,QWidget *paren
  pair_change=false;
  t_cursor = this->textCursor();
  newText();\
+
 }
 
  void MyTextEdit::mergeFormatOnWordOrSelection(int position)

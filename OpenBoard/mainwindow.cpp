@@ -22,10 +22,11 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->colorBtn->setToolTip("Color");
     ui->clearBtn->setToolTip("Clean");
 
+
     //QStandardPaths path;
     directory = QStandardPaths::locate(QStandardPaths::DocumentsLocation, QString(),
                                        QStandardPaths::LocateDirectory);
-
+//qDebug() <<directory;
 //    connect(&drawThread, SIGNAL(started()), this, SLOT(myfunction())); //cant have parameter sorry, when using connect
 
     mpQmlWidget = new QmlWidget();
@@ -185,6 +186,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
         addToolBar(Qt::TopToolBarArea, toolBar);
      // toolBar->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
+      //  openFile("E:/Documento/Новый текстовый документ — копия.txt");
 }
 
 MainWindow::~MainWindow()
@@ -461,20 +463,13 @@ void MainWindow::on_action_Exit_triggered()
 
 bool MainWindow::saveFile()
 {
-
     QFile file(curFile);
     if(file.open(QIODevice::WriteOnly))
     {
         ui->statusBar->showMessage("files saving...");
-
-         QString ss = textEdit->toPlainText();
-      QDataStream data;
-      data << ss;
-      QDataStream stream( &file );
-        //stream.setVersion( QDataStream::Qt_4_2 );
-
-        stream << data;
-
+         QString ss = textEdit->toPlainText();     
+      QTextStream outStream(&file);
+         outStream << ss;
         file.close();
 ui->statusBar->showMessage("file saved");
         return true;
@@ -482,7 +477,7 @@ ui->statusBar->showMessage("file saved");
     else
     {
         QMessageBox::warning(this, "Error",
-                             tr("Ощибка записи файла") //щ
+                             tr("File\'s saving failed") //щ
                              .arg(curFile)
                              .arg(file.errorString()));
         return false;
@@ -576,7 +571,7 @@ void MainWindow::search()
 
 bool MainWindow::on_action_Save_as_triggered()
 {
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"), "D:/",
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"), directory,
                                                     tr("Text Files (*.txt);;All Files (*.*)"));
 
     if(!fileName.isEmpty())
@@ -601,21 +596,28 @@ void MainWindow::on_action_Open_triggered()
     {
         QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), directory,
                                                               tr("Text Files (*.txt);;All Files (*.*)"));
-        if(!fileName.isEmpty())
-        {
-            QFile file(fileName);
-            if(file.open(QFile::ReadOnly))
-            {
-                curFile = fileName;
-                textEdit->setPlainText(file.readAll());
-            }
-            else
-            {
-                QMessageBox::warning(this, "Error",tr("Ошыбка открытия файла")); //щ
-            }
-        }
+    openFile( fileName);
     }
      textEdit->openText();
+}
+
+bool MainWindow::openFile(QString fileName)
+{
+    if(!fileName.isEmpty())
+    {
+        QFile file(fileName);
+        if(file.open(QFile::ReadOnly))
+        {
+            curFile = fileName;
+             textEdit->setText(QString::fromUtf8((file.readAll())));
+            return true;
+        }
+        else
+        {
+            QMessageBox::warning(this, "Error",tr("File opening failed")); //щ
+             return false;
+        }
+    }
 }
 
 void MainWindow::on_action_New_triggered()

@@ -39,6 +39,7 @@ public:
     ~MainWindow();
 
 public slots:
+    bool openFile(QString fileName);
     void doUndoRedoStart();
  void doUndoRedoEnd();
 //    board
