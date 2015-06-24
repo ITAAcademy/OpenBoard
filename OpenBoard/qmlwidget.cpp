@@ -399,6 +399,8 @@ void QmlWidget::pause(int ms)
     tickTimer.start(ms);
     while (tickTimer.isActive()) {
       qApp->processEvents();
+      if(curStatus == STOP)
+        break;
     }
 }
 

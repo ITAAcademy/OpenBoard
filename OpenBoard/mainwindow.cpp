@@ -140,12 +140,12 @@ MainWindow::MainWindow(QWidget *parent) :
       // toolBar->addAction(QPixmap(":/icons/gnome_show_desktop.png").scaled(QSize(16, 16)), "Show canvas", this, SLOT(on_action_Show_triggered()));
 
 
-               a_hide = new QAction(this);
-               a_hide->setEnabled(false);
-               a_hide->setIcon(QPixmap(":/icons/hide_icon.png").scaled(QSize(16, 16)));
-               a_hide->setToolTip(tr("Show canvas"));
-               connect(a_hide,SIGNAL(triggered()),this,  SLOT(on_action_Hide_triggered()));
-               toolBar->addAction(a_hide);
+       a_hide = new QAction(this);
+       a_hide->setEnabled(false);
+       a_hide->setIcon(QPixmap(":/icons/hide_icon.png").scaled(QSize(16, 16)));
+       a_hide->setToolTip(tr("Hide canvas"));
+       connect(a_hide,SIGNAL(triggered()),this,  SLOT(on_action_Hide_triggered()));
+       toolBar->addAction(a_hide);
       // toolBar->addAction(QPixmap(":/icons/hide_icon.png").scaled(QSize(16, 16)), "Hide canvas", this, SLOT(on_action_Hide_triggered()));
 
        a_play = new QAction(this);
@@ -738,10 +738,27 @@ void MainWindow::onTextChanged()
 
    // qDebug() << "onTextChanged";
     QString str = textEdit->toPlainText();
-    int status = mParser.ParsingLine(mUnitList, str);
+    /*
+     * bida z cursorom
+    */
+
+    QTextCursor cursor = textEdit->textCursor();
+    int cursPos = textEdit->textCursor().position();
+    int textSize = str.size();
+    int status = mParser.ParsingLine(mUnitList, str); // add parsing /n
+   /* if(textSize != str.size())
+    {
+        textEdit->clear();
+        textEdit->append(str);
+        if(cursPos != textSize)
+        {
+            cursor.setPosition(cursPos + 1);
+            textEdit->setTextCursor(cursor);
+        }
+    }
+    */
     textEdit->textColorSet(status);
     if(mpQmlWidget->isVisible() && textEdit->toPlainText().length() != 0)
-        //mpQmlWidget->drawWrapText(textEdit->toPlainText().at(textEdit->toPlainText().length() - 1));
     {
         if(status != -1)
         {
@@ -775,7 +792,7 @@ void MainWindow::onTextChanged()
     }
     }
     textEdit->saveChanges();
-     connect(textEdit, SIGNAL(textChanged()), this, SLOT(onTextChanged()));
+    connect(textEdit, SIGNAL(textChanged()), this, SLOT(onTextChanged()));
 
     /*
     // DrawData temp = mpQmlWidget.getDrawData();

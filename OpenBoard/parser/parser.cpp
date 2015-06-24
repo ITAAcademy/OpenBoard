@@ -29,7 +29,29 @@ int Parser::ParsingLine(QList<Unit*> &list, QString& str)
             pars_line.clear();
             pars_line = str[i];
         }
-
+        /*if(pars_line == (QString)"\n")
+        {
+            QStringRef section(&str, i + 1, 2);
+            if((section.at(0) == '\\' || section.at(0) == 'n') && section != "\\n")
+                str.remove(i, 2);
+            else if(section != "\\n" )
+            {
+                QStringRef section(&str, i + 2, 2);
+                if(section == "\\n")
+                    str.remove(i + 2, 2);
+                str.insert(i + 1, "\\n");
+            }
+            state = -1;
+            continue;
+        }*/
+        if(pars_line[0] == '\n')
+        {
+            UnitCommand* command = new UnitCommand();
+            command->setUnitCommandType("NextLine");
+            list.push_back(command);
+            state = -1;
+            continue;
+        }
         if(pars_line == (QString)"\\")
         {
             pars_line += str[i+1];

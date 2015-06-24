@@ -3,6 +3,7 @@
 
 #include <QList>
 #include <QString>
+#include <QStringRef>
 
 #include "unit.h"
 #include "unitsumbol.h"
