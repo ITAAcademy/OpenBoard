@@ -106,7 +106,7 @@ charCount=document()->characterCount();
        t_cursor.setPosition(change.cursor);
 this->setTextCursor(t_cursor);
      }
-     else this->setText("");
+     else this->clear();
 
  emit doUndoRedoEnd();
 }
@@ -116,18 +116,18 @@ this->setTextCursor(t_cursor);
 
  if (redo_changes.size() >0)
  {
- emit doUndoRedoStart();
-     CursorCymbol backup;
-     backup.cursor = this->textCursor().position();
-     backup.cymbol = this->toPlainText();
+    emit doUndoRedoStart();
 
-             undo_changes.push_back(backup);
+    CursorCymbol backup;
+    backup.cursor = this->textCursor().position();
+    backup.cymbol = this->toPlainText();
+    undo_changes.push_back(backup);
 
     CursorCymbol change ;
-   change = redo_changes.pop();
+    change = redo_changes.pop();
     this->setText(change.cymbol);
-   t_cursor.setPosition(change.cursor);
-this->setTextCursor(t_cursor);
+    t_cursor.setPosition(change.cursor);
+    this->setTextCursor(t_cursor);
 
     emit doUndoRedoEnd();
  }

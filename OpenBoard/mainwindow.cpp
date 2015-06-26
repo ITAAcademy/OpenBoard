@@ -463,15 +463,17 @@ void MainWindow::on_action_Exit_triggered()
 
 bool MainWindow::saveFile()
 {
+    if(curFile.isEmpty())
+        return on_action_Save_as_triggered();
     QFile file(curFile);
     if(file.open(QIODevice::WriteOnly))
     {
         ui->statusBar->showMessage("files saving...");
-         QString ss = textEdit->toPlainText();     
-      QTextStream outStream(&file);
-         outStream << ss;
+        QString ss = textEdit->toPlainText();
+        QTextStream outStream(&file);
+        outStream << ss;
         file.close();
-ui->statusBar->showMessage("file saved");
+        ui->statusBar->showMessage("file saved");
         return true;
     }
     else
@@ -727,6 +729,7 @@ void MainWindow::doUndoRedoStart()
 
 void MainWindow::doUndoRedoEnd()
 {
+    textEdit->textColorSet(-1);
     connect(textEdit, SIGNAL(textChanged()), this, SLOT(onTextChanged()));    
     textEdit->document()->setModified(true);
 }
