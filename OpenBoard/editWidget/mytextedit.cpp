@@ -88,12 +88,12 @@ charCount=document()->characterCount();
      emit doUndoRedoStart();
      if (undo_changes.size() >0)
      {
-          qDebug() << "undom";
+        //  qDebug() << "undom";
          CursorCymbol backup;
          backup.cursor = this->textCursor().position();
          backup.cymbol = this->toPlainText();
-         qDebug() <<  backup.cymbol;
-                 redo_changes.push_back(backup);
+       //  qDebug() <<  backup.cymbol;
+         redo_changes.push_back(backup);
 
 
 
@@ -101,11 +101,12 @@ charCount=document()->characterCount();
 
        change = undo_changes.pop();
       // curs.setPosition(change.cursor);
-        this->setText(change.cymbol);
+       this->clear();
+        this->append(change.cymbol);
        t_cursor.setPosition(change.cursor);
 this->setTextCursor(t_cursor);
      }
-     else this->setText("");
+     else this->clear();
 
  emit doUndoRedoEnd();
 }
@@ -115,18 +116,18 @@ this->setTextCursor(t_cursor);
 
  if (redo_changes.size() >0)
  {
- emit doUndoRedoStart();
-     CursorCymbol backup;
-     backup.cursor = this->textCursor().position();
-     backup.cymbol = this->toPlainText();
+    emit doUndoRedoStart();
 
-             undo_changes.push_back(backup);
+    CursorCymbol backup;
+    backup.cursor = this->textCursor().position();
+    backup.cymbol = this->toPlainText();
+    undo_changes.push_back(backup);
 
     CursorCymbol change ;
-   change = redo_changes.pop();
+    change = redo_changes.pop();
     this->setText(change.cymbol);
-   t_cursor.setPosition(change.cursor);
-this->setTextCursor(t_cursor);
+    t_cursor.setPosition(change.cursor);
+    this->setTextCursor(t_cursor);
 
     emit doUndoRedoEnd();
  }
@@ -141,10 +142,11 @@ this->setTextCursor(t_cursor);
      changebuf.cursor = this->textCursor().position();
      changebuf.cymbol = this->toPlainText();
 
-      qDebug() << "\nundo";  for (int i=0; i< undo_changes.size(); i++)
-      {qDebug() << undo_changes[i].cymbol;
+   /*  qDebug() << "\nundo";  for (int i=0; i< undo_changes.size(); i++)
+      {
+         qDebug() << undo_changes[i].cymbol;
           qDebug() << undo_changes[i].cursor;
-      }
+      }*/
   //   qDebug() << "\nredo"; for (int i=0; i< redo_changes.size(); i++)           qDebug() << redo_changes[i].cymbol;
      }
  }

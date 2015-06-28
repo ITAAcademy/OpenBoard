@@ -1,5 +1,5 @@
 #include "settings.h"
-
+#include <qDebug>
 
 pSettings::pSettings() :
     isFirstRun(false)
@@ -33,6 +33,8 @@ void pSettings::saveSettings()
         int fSize = mainWindowFont.pointSize();
         mSettings->setValue("MainWindow/fontFamily",      fFamily);
            mSettings->setValue("MainWindow/fontSize",      fSize);
+mSettings->setValue("MainWindow/fontBold",      (int)mainWindowFont.bold());
+mSettings->setValue("MainWindow/fontStyle",      (int)mainWindowFont.style());
 
            mSettings->setValue("Board/fontColor",          boardFontColor.name());
 
@@ -56,8 +58,10 @@ void pSettings::loadSettings()
 
     mainWindowColor = mSettings->value("MainWindow/fontColor") .toString();
     mainWindowFont.setFamily(mSettings->value("MainWindow/fontFamily").toString());
-  //  mainWindowFont = mSettings->value("MainWindow/fontColor").toString();
     mainWindowFont.setPointSize(mSettings->value("MainWindow/fontSize").toInt());
+    mainWindowFont.setBold(mSettings->value("MainWindow/fontBold").toInt());
+mainWindowFont.setStyle(QFont::Style(mSettings->value("MainWindow/fontStyle").toInt()));
+
 
     boardFont.setFamily(mSettings->value("Board/fontFamily").toString());
     boardFont.setPointSize(mSettings->value("Board/fontSize").toInt());
