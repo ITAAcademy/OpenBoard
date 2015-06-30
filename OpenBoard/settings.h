@@ -42,6 +42,7 @@ private:
     QString     mainWindowTitle;
     QRect       mainWindowRect;
     QFont       mainWindowFont;
+
     QColor      mainWindowColor;
        QFont     boardFont;
        QColor      boardFontColor;

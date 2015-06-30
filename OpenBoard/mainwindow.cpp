@@ -192,6 +192,7 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     mSettings.setMainWindowRect(geometry());
+    mSettings.saveSettings();
     //drawThread.quit();
     if(toolBar != NULL)
         delete toolBar;
@@ -328,7 +329,7 @@ void MainWindow::on_action_Board_Font_triggered()
 {
     bool ok;
     QFont font;
-    font = QFontDialog::getFont(&ok, QFont("Tahoma",10,1,false), this);
+    font = QFontDialog::getFont(&ok, mpQmlWidget->getTextFont(), this);
     if (!ok)
         return;
 
