@@ -83,7 +83,7 @@ public:
      * Canvas control
      */
     void clearCanvas();
-    void drawFigure (int x, int y, int width, int height, FigureType type, bool fill);
+    void drawFigure (int x, int y, int width, int height, FigureType type, bool fill, QColor col, float size);
     void drawAnimationFigure (int x, int y, int width, int height, FigureType type, bool fill);
     void nextRow();
     Q_INVOKABLE void crossOutLastSymbol();

@@ -274,18 +274,21 @@ void QmlWidget::clearCanvas()
     //listStr[0] = 0;
     indexInList = 1;
     deleteWT = 0;
+    crossWithAnimation = false;
 }
 
-void QmlWidget::drawFigure(int x, int y, int width, int height, QmlWidget::FigureType type, bool fill = true)
+void QmlWidget::drawFigure(int x, int y, int width, int height, QmlWidget::FigureType type, bool fill = true, QColor col = "#FF0000", float size = 2)
 {
-
+    QString sColor = QString("rgba(%1, %2, %3, %4)").arg(col.red()).arg(col.green()).arg(col.blue()).arg(col.alpha());
     QMetaObject::invokeMethod(canvas, "drawFigure",
             Q_ARG(QVariant, QVariant(x)),
             Q_ARG(QVariant, QVariant(y)),
             Q_ARG(QVariant, QVariant(width)),
             Q_ARG(QVariant, QVariant(height)),
             Q_ARG(QVariant, QVariant(type)),
-                              Q_ARG(QVariant, QVariant(fill)));
+            Q_ARG(QVariant, QVariant(fill)),
+                              Q_ARG(QVariant, QVariant(size)),
+                              Q_ARG(QVariant, QVariant(sColor)));
 }
 
 void QmlWidget::drawAnimationFigure(int x, int y, int width, int height, QmlWidget::FigureType type, bool fill)
@@ -445,15 +448,27 @@ QFont QmlWidget::getTextFont() const
 void QmlWidget::setTextFont(const QFont &value)
 {
     textFont = value;
+    if(fMetrics != NULL)
+        delete fMetrics;
     fMetrics = new QFontMetrics(value);
     pt = value.pointSize();
     QVariant a = QVariant(value.family());
     QVariant b = QVariant(value.pointSize());
-    QVariant c = QVariant(" "); //style
+    QString style = " ";
+    if(value.italic())
+        style.append("italic ");
+
+    if(value.bold())
+        style.append("bold ");
+
+    QVariant c = QVariant(style); //style
+
     QMetaObject::invokeMethod(canvas, "initFont",
             Q_ARG(QVariant, b),
             Q_ARG(QVariant, a),
-            Q_ARG(QVariant, c));
+            Q_ARG(QVariant, c),
+            Q_ARG(QVariant, value.underline()),
+            Q_ARG(QVariant, value.strikeOut()));
 }
 
 void QmlWidget::setFillColor(QColor col)
@@ -506,6 +521,20 @@ void QmlWidget::fillText( QString str, int x, int y)
         Q_ARG(QVariant, arg2),
         Q_ARG(QVariant, arg3));
 
+
+    if(textFont.strikeOut())
+    {
+        float x2 = x + fMetrics->width(str);
+        float y2 = y - fMetrics->height()/4;
+        drawFigure(x - fMetrics->width(str)*0.3f,y2 ,x2, y2,LINE, false, fillColor);
+    }
+
+    if(textFont.underline())
+    {
+        float x2 = x + fMetrics->width(str) ;
+        float y2 = y + fMetrics->height()*0.15;
+        drawFigure(x - fMetrics->width(str)*0.3f,y2 ,x2, y2,LINE, false, fillColor);
+    }
 }
 
 void QmlWidget::fillAnimationText(QString str, int x, int y, float time)
@@ -546,7 +575,7 @@ void QmlWidget::isLastRow()
 bool QmlWidget::crossText()
 {
     //qDebug() << "Cherk" << bool (deleteWT != 0 && !symbolPositionList.isEmpty());
-    if(deleteWT != 0 && !symbolPositionList.isEmpty())
+    if(deleteWT != 0 && !symbolPositionList.size() > 1)
     {
 
         if(deleteWT >= symbolPositionList.length())
@@ -670,9 +699,10 @@ bool QmlWidget::crossTextV2()
 {
     if(deleteWT != 0 && !symbolPositionList.isEmpty())
     {
-
-        if(deleteWT >= symbolPositionList.length())
+        qDebug() << deleteWT << "WT == symbolPositionList" << symbolPositionList.size();
+        if(deleteWT > symbolPositionList.length())
             deleteWT = symbolPositionList.length();
+
         QPoint delPos = symbolPositionList.at(symbolPositionList.length() - deleteWT); // -2 is popravka
         if(deleteWT != 1)
         {
@@ -698,16 +728,16 @@ bool QmlWidget::crossTextV2()
                 delPos = symbolPositionList.at(m); // -2 is popravka
                 int x2 = delPos.x() + fMetrics->width(listWords[m]);;
                 int y2 = delPos.y() - fMetrics->height()/4;
-                if( n == 0 )
+             /*   if( n == 0 )
                     delPos = symbolPositionList.at(n); // -2 is popravka
-                else
+                else*/
                     delPos = symbolPositionList.at(n + 1); // -2 is popravka
                 int x1 = delPos.x();
                 int y1 = delPos.y() - fMetrics->height()/4;
                 if(crossWithAnimation)
                 {
                     qDebug() << "set animation speed";
-                  drawAnimationFigure(x1, y1, x2, y2, LINE, 0);
+                    drawAnimationFigure(x1, y1, x2, y2, LINE, 0);
                 }
                 else
                     drawFigure(x1, y1, x2, y2, LINE, 0);
@@ -718,8 +748,6 @@ bool QmlWidget::crossTextV2()
                 if(n != 0)
                     n++;
             }
-            deleteWT = 0;
-            crossWithAnimation = false;
         }
         else{
             int i = 1;
@@ -734,6 +762,10 @@ bool QmlWidget::crossTextV2()
         }
         deleteWT = 0;
     }
+    else
+        deleteWT = 0;
+    deleteWT = 0;
+    crossWithAnimation = false;
 }
 
 QPoint QmlWidget::drawWrapText(QString str)

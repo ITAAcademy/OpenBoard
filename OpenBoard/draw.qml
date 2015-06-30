@@ -13,6 +13,9 @@ Item{
         //renderStrategy: Canvas.Threaded
         renderTarget: Canvas.Image
         property int index: 0
+        property bool cross: false
+        property bool underline: false
+        property var color: "#FFFFFF"
         property int animationIndex: 0
         property int scroll: -1
 
@@ -48,6 +51,12 @@ Item{
             //initFont()
             //if(JS.context != null)
                 JS.context.fillText( str, x, y);
+            /*
+            if(mainDrawElm.cross == true)
+                    drawCrossText(str, x, y);
+                if(mainDrawElm.underline == true)
+                    drawUnderLine(str, x, y);
+                */
            // mainDrawElm.markDirty();
         }
         function init()
@@ -76,27 +85,61 @@ Item{
             JS.context.drawImage(img, 0, LPI); // LPI - висота стрічки
         }
 
-        function initFont(pt, font, style)
+        function initFont(pt, font, style, underLine, crossOut)
         {
            // console.debug(pt +  " " + font)
-            JS.context.font = pt + "pt \"" + font + "\"";// "bold 10pt  \"font_name\" "
+            JS.context.font = style + pt + "pt \"" + font + "\"";// "bold 10pt  \"font_name\" "
+            mainDrawElm.cross = crossOut;
+            mainDrawElm.underline = underLine;
+            console.debug(mainDrawElm.cross +  " " + mainDrawElm.underline);
         }
 
         function setColor( col )
         {
             JS.context.fillStyle = col;
+            mainDrawElm.color = col;
+            console.debug("color set" + mainDrawElm.color);
         }
 
-        function drawFigure(x, y, w, h, type, fill)
+        function drawFigure(x, y, w, h, type, fill, size, color)
         {
             if(type == 0) //line
             {
                 JS.context.beginPath();
+                JS.context.strokeStyle = color;
+                JS.context.lineWidth = size;
                 JS.context.moveTo(x, y);
                 JS.context.lineTo(w, h);
                 JS.context.stroke();
             }
         }
+        function drawUnderLine(text, x, y){
+          var width = JS.context.measureText(text).width;
+          var height = JS.context.measureText(text).height;
+          var size =  Math.round(height*1.3);
+          size = size + y;
+           console.debug("                  height" + height)
+          JS.context.beginPath();
+          JS.context.strokeStyle = mainDrawElm.color;
+          JS.context.lineWidth = Math.round(0.15*height);
+          JS.context.moveTo(Math.round(x + 10),y);
+          JS.context.lineTo(x+width,y);
+          JS.context.stroke();
+        }
+
+        function drawCrossText(ctx, text, x, y){
+            var width = JS.context.measureText(text).width;
+            var size =  JS.context.measureText(text).height/2 +  0.3* JS.context.measureText(text).height;
+            size += y;
+
+            JS.context.beginPath();
+            JS.context.strokeStyle = mainDrawElm.color;
+            JS.context.lineWidth = 0.15* JS.context.measureText(text).height;
+            JS.context.moveTo(x - 0.3* JS.context.measureText(text).height,y);
+            JS.context.lineTo(x+width,y);
+            JS.context.stroke();
+        }
+
 
         //function drawSymbol(st);
        // Text { text: cFontLoader.status == FontLoader.Ready ? 'Loaded' : 'Not loaded' }

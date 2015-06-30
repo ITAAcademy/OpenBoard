@@ -192,7 +192,6 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     mSettings.setMainWindowRect(geometry());
-    mSettings.saveSettings();
     //drawThread.quit();
     if(toolBar != NULL)
         delete toolBar;
@@ -329,7 +328,7 @@ void MainWindow::on_action_Board_Font_triggered()
 {
     bool ok;
     QFont font;
-    font = QFontDialog::getFont(&ok, mpQmlWidget->getTextFont(), this);
+    font = QFontDialog::getFont(&ok, QFont("Tahoma",10,1,false), this);
     if (!ok)
         return;
 
@@ -361,16 +360,19 @@ void MainWindow::on_action_Color_triggered()
     QColor colorm;
     colorm = QColorDialog::getColor();
     //!!!!!!!!!!!
-    QString col = colorm.name();
+    if(colorm.isValid())
+    {
+        QString col = colorm.name();
         textEdit->setTextColor(col);
         textEdit->setColOrigin(colorm);
         QString temp = textEdit->toPlainText();
         textEdit->clear();
         textEdit->insertPlainText(temp);
 
-      mSettings.setMainWindowColor(colorm);
-      a_show->setEnabled(false);
-      ui->action_Show->setEnabled(false);
+        mSettings.setMainWindowColor(colorm);
+    }
+      /*a_show->setEnabled(false);
+      ui->action_Show->setEnabled(false);*/
 }
 
 //!!!!!!!!!!!!!
@@ -379,9 +381,14 @@ void MainWindow::on_action_Color_triggered()
 {
     QColor colorm;
     colorm = QColorDialog::getColor();
+
    // QString col = colorm.name();
-    mpQmlWidget->setMainFillColor(colorm);
-    mSettings.setBoardFontColor(colorm);
+    if(colorm.isValid())
+    {
+        mpQmlWidget->setMainFillColor(colorm);
+        mSettings.setBoardFontColor(colorm);
+    }
+
 
 
 }
@@ -853,7 +860,7 @@ void MainWindow::on_action_Play_triggered()
     }
  //   setWindowTitle(name);
     if(mpQmlWidget != NULL)
-        mpQmlWidget->drawWrapText(" ");
+        mpQmlWidget->update();
     on_action_Stop_triggered();
 }
 
