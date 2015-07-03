@@ -61,6 +61,7 @@ charCount=document()->characterCount();
  
  void MyTextEdit::setColOrigin(const QColor &value)
  {
+      colOrigin = value;
       textFormat.setForeground(value);
  }
  /*

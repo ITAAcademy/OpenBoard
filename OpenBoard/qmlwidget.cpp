@@ -526,14 +526,14 @@ void QmlWidget::fillText( QString str, int x, int y)
     {
         float x2 = x + fMetrics->width(str);
         float y2 = y - fMetrics->height()/4;
-        drawFigure(x - fMetrics->width(str)*0.3f,y2 ,x2, y2,LINE, false, fillColor);
+        drawFigure(x, y2 ,x2 + fMetrics->width(str)*0.3f, y2,LINE, false, fillColor);
     }
 
     if(textFont.underline())
     {
         float x2 = x + fMetrics->width(str) ;
         float y2 = y + fMetrics->height()*0.15;
-        drawFigure(x - fMetrics->width(str)*0.3f,y2 ,x2, y2,LINE, false, fillColor);
+        drawFigure(x ,y2 ,x2 + fMetrics->width(str)*0.4f, y2,LINE, false, fillColor);
     }
 }
 
@@ -728,9 +728,9 @@ bool QmlWidget::crossTextV2()
                 delPos = symbolPositionList.at(m); // -2 is popravka
                 int x2 = delPos.x() + fMetrics->width(listWords[m]);;
                 int y2 = delPos.y() - fMetrics->height()/4;
-             /*   if( n == 0 )
+                if( n == 0 )
                     delPos = symbolPositionList.at(n); // -2 is popravka
-                else*/
+                else
                     delPos = symbolPositionList.at(n + 1); // -2 is popravka
                 int x1 = delPos.x();
                 int y1 = delPos.y() - fMetrics->height()/4;
@@ -787,17 +787,17 @@ QPoint QmlWidget::drawWrapText(QString str)
                 //fillText("-", x, y);
                 //listChars += str;
                 //listWords.remove(indexInList,1);
-          int clearWidth = fMetrics->width(listChars);
+          int clearWidth = fMetrics->width(listChars); //
 
              // if(y  + scroll*indexRow > this->height() )
-             clear(x-widthToClean,y-fMetrics->height(),widthToClean,fMetrics->height()*1.25);
+             clear(x-widthToClean,y-fMetrics->height(), this->width(),fMetrics->height()*1.25);
 
              // listStr.push_back( listChars.length() );//не юзається.
               // indexInList++;//не юзається.
           //indexInList+=listChars.length();
              nextRow();
-              isLastRow();
-            fillText(listChars.trimmed(),x,y);
+             isLastRow();
+            fillText(listChars,x,y);
            // listWords += listChars.trimmed();
            // listWords +=listChars;
             //listStr.push_back( listWords.length() );

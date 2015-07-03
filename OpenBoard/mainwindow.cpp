@@ -302,7 +302,7 @@ void MainWindow::on_action_Font_triggered()
 {   //call QtFontDialog & setFont to all elements (this)
     bool ok;
     QFont font;
-    font = QFontDialog::getFont(&ok, QFont( "Times", 10 ), this);
+    font = QFontDialog::getFont(&ok, textEdit->font(), this);
     if (!ok)
         return;
   // setFont(font);
@@ -328,7 +328,7 @@ void MainWindow::on_action_Board_Font_triggered()
 {
     bool ok;
     QFont font;
-    font = QFontDialog::getFont(&ok, QFont("Tahoma",10,1,false), this);
+    font = QFontDialog::getFont(&ok, mpQmlWidget->getTextFont(), this);
     if (!ok)
         return;
 
@@ -358,7 +358,7 @@ void MainWindow::on_action_Reset_default_triggered()
 void MainWindow::on_action_Color_triggered()
 {   //call QtColorDialog
     QColor colorm;
-    colorm = QColorDialog::getColor();
+    colorm = QColorDialog::getColor(textEdit->getColOrigin());
     //!!!!!!!!!!!
     if(colorm.isValid())
     {
@@ -380,7 +380,7 @@ void MainWindow::on_action_Color_triggered()
  void MainWindow::on_action_Board_Color_triggered()
 {
     QColor colorm;
-    colorm = QColorDialog::getColor();
+    colorm = QColorDialog::getColor(mpQmlWidget->getMainFillColor());
 
    // QString col = colorm.name();
     if(colorm.isValid())
