@@ -187,6 +187,8 @@ MainWindow::MainWindow(QWidget *parent) :
         addToolBar(Qt::TopToolBarArea, toolBar);
      // toolBar->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
       //  openFile("E:/Documento/Новый текстовый документ — копия.txt");
+
+
 }
 
 MainWindow::~MainWindow()
@@ -359,14 +361,14 @@ void MainWindow::on_action_Color_triggered()
 {   //call QtColorDialog
     QColor colorm;
     colorm = QColorDialog::getColor(textEdit->getColOrigin());
-    //!!!!!!!!!!!
     if(colorm.isValid())
     {
         QString col = colorm.name();
-        textEdit->setTextColor(col);
-        textEdit->setColOrigin(colorm);
+          qDebug() << col;
         QString temp = textEdit->toPlainText();
         textEdit->clear();
+        textEdit->setTextColor(col);
+        textEdit->setColOrigin(colorm);
         textEdit->insertPlainText(temp);
 
         mSettings.setMainWindowColor(colorm);
@@ -411,6 +413,8 @@ void MainWindow::on_action_Cut_triggered()
 void MainWindow::on_action_Copy_triggered()
 {
     textEdit->copy();
+
+    qDebug() << textEdit->textColor().name();
 }
 
 void MainWindow::on_action_Paste_triggered()
