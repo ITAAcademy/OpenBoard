@@ -21,7 +21,7 @@ public:
     void pause(QmlWidget* canvas);
     void backSlash(QmlWidget* canvas);
     void draw(QmlWidget *canvas);
-
+    void clearPreChar(QmlWidget* canvas);
     QString getUnitCommandType();
 };
 

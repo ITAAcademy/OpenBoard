@@ -35,7 +35,13 @@ MainWindow::MainWindow(QWidget *parent) :
     textEdit->setObjectName(QStringLiteral("textEdit"));
     textEdit->setEnabled(true);
 
+    commandTextEdit = new KeyloggerTE(textEdit);
+    commandTextEdit->setObjectName(QStringLiteral("commandTextEdit"));
+    connect(commandTextEdit,SIGNAL(textChanged()),this,SLOT(key));
+    commandTextEdit->setEnabled(true);
+
     ui->verticalLayout->addWidget(textEdit,-1);
+    ui->verticalLayout->addWidget(commandTextEdit,-1);
     connect(ui->button_Delay, SIGNAL(pressed()), this, SLOT(delay_released()));
     //connect(QColorDialog, SIGNAL(finished()), this, SLOT(on_colorBtn_released()));
     connect(ui->button_Find, SIGNAL(pressed()), this, SLOT(search()));

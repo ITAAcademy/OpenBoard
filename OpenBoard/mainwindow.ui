@@ -631,7 +631,6 @@
    <zorder>widget_delayTB</zorder>
    <zorder>line</zorder>
    <zorder>widget_speedTB</zorder>
-   <zorder>horizontalSpacer</zorder>
    <zorder></zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">

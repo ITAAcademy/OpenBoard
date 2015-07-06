@@ -92,6 +92,15 @@ int Parser::ParsingLine(QList<Unit*> &list, QString& str)
                 i++;
                 continue;
             }
+            if (pars_line == (QString)"\\#")
+            {
+                UnitCommand* command = new UnitCommand();
+                command->setUnitCommandType("ClearPreChar");
+                list.push_back(command);
+                state = -1;
+                i++;
+                continue;
+            }
             if(pars_line == (QString)"\\\\")
             {
                 UnitCommand* command = new UnitCommand();

@@ -88,6 +88,7 @@ public:
     void nextRow();
     Q_INVOKABLE void crossOutLastSymbol();
     void crossOutWithAnimation();
+    void clearSymbol(int index);
     QPoint drawWrapText( QString str ); // main draw function
     void setFillColor( QColor col);
     void setFillGradient( int x , int y, int width, int height, GradientSetting color);

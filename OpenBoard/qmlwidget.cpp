@@ -276,6 +276,9 @@ void QmlWidget::clearCanvas()
     deleteWT = 0;
     crossWithAnimation = false;
 }
+void QmlWidget::clearSymbol(int index){
+QMetaObject::invokeMethod(canvas, "clearSymbol",  Q_ARG(QVariant, QVariant(index)));
+}
 
 void QmlWidget::drawFigure(int x, int y, int width, int height, QmlWidget::FigureType type, bool fill = true, QColor col = "#FF0000", float size = 2)
 {

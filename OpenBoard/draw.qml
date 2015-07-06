@@ -126,6 +126,9 @@ Item{
           JS.context.lineTo(x+width,y);
           JS.context.stroke();
         }
+        function clearSymbol(x){
+        //TODO
+        }
 
         function drawCrossText(ctx, text, x, y){
             var width = JS.context.measureText(text).width;

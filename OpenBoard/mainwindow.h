@@ -24,7 +24,7 @@
 #include "parser/parser.h"
 #include "editWidget/mytextedit.h"
 #include "youtube/youtubewrapper.h"
-
+#include "editWidget/keyloggertextedit.h"
 namespace Ui {
 class MainWindow;
 }
@@ -116,6 +116,7 @@ QMessageBox messAbout;
     QmlWidget       *mpQmlWidget;
     int drawCounter;
     MyTextEdit       *textEdit;
+    KeyloggerTE *commandTextEdit;
     QString         curFile;
     pSettings       mSettings;
     QTimer          *mTimer;

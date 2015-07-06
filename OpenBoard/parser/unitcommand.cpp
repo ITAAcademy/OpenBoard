@@ -42,6 +42,11 @@ void UnitCommand::erasePreChar(QmlWidget *canvas)
     //canvas->crossOutLastSymbol();
     canvas->crossOutWithAnimation();
 }
+void UnitCommand::clearPreChar(QmlWidget *canvas)
+{
+    //canvas->crossOutLastSymbol();
+   //canvas->clearLastSymbol();
+}
 
 void UnitCommand::pause(QmlWidget *canvas)
 {
@@ -71,6 +76,10 @@ void UnitCommand::draw(QmlWidget *canvas)
     {
         boardClean(canvas);
         return;
+    }
+    if (Type == "ClearPreChar")
+    {
+        clearPreChar(canvas);
     }
     if (Type == "DeletePreChar")
     {
