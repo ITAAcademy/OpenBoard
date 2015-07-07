@@ -73,6 +73,11 @@ QmlWidget::QmlWidget(QWidget *parent) :
     QMetaObject::invokeMethod(canvas, "init");
 
 
+    connect(this, SIGNAL(drawTextChanged()), this, SLOT(drawBuffer()));
+    stringList.append("");
+    indexRowInList = 0;
+    cursorIndex = 0;
+
     /*
      *cursor ALPHA
      *
@@ -275,7 +280,17 @@ void QmlWidget::clearCanvas()
     indexInList = 1;
     deleteWT = 0;
     crossWithAnimation = false;
+    indexRowInList = 0;
+
+
 }
+void QmlWidget::clearBuffer()
+{
+    stringList.clear();
+    stringList.append("");
+    cursorIndex = 0;
+}
+
 void QmlWidget::clearSymbol(int index){
 QMetaObject::invokeMethod(canvas, "clearSymbol",  Q_ARG(QVariant, QVariant(index)));
 }
@@ -308,13 +323,6 @@ void QmlWidget::drawAnimationFigure(int x, int y, int width, int height, QmlWidg
             return;
     }
     drawFigure(x, y, width, height, type, fill);
-}
-
-void QmlWidget::nextRow()
-{
-    isLastRow();
-    y += lineHeight + pt;
-    x = marginLeft;
 }
 
 void QmlWidget::crossOutLastSymbol()
@@ -529,14 +537,14 @@ void QmlWidget::fillText( QString str, int x, int y)
     {
         float x2 = x + fMetrics->width(str);
         float y2 = y - fMetrics->height()/4;
-        drawFigure(x, y2 ,x2 + fMetrics->width(str)*0.3f, y2,LINE, false, fillColor);
+        drawFigure(x, y2 ,x2 , y2,LINE, false, fillColor);
     }
 
     if(textFont.underline())
     {
         float x2 = x + fMetrics->width(str) ;
         float y2 = y + fMetrics->height()*0.15;
-        drawFigure(x ,y2 ,x2 + fMetrics->width(str)*0.4f, y2,LINE, false, fillColor);
+        drawFigure(x ,y2 ,x2 , y2,LINE, false, fillColor);
     }
 }
 
@@ -559,19 +567,6 @@ void QmlWidget::fillAnimationText(QString str, int x, int y, float time)
         qApp->processEvents(QEventLoop::ExcludeUserInputEvents);
         nx += widthT/time;
        // Sleep(time);
-    }
-}
-
-void QmlWidget::isLastRow()
-{
-    if(y  + scroll*indexRow > this->height() )
-    {
-        scroll = -(lineHeight + pt);
-        QMetaObject::invokeMethod(canvas, "isLastRow",
-                Q_ARG(QVariant, QVariant(scroll)),
-                Q_ARG(QVariant, QVariant((lineHeight + pt)*indexRow)),
-                Q_ARG(QVariant, QVariant(y)));
-       indexRow++;
     }
 }
 
@@ -819,12 +814,227 @@ QPoint QmlWidget::drawWrapText(QString str)
     widthToClean+=width;
     symbolPositionList.push_back(res);
     tickTimer.start(delay);
-    while (tickTimer.isActive()) {
+    /*while (tickTimer.isActive()) {
        qApp->processEvents();
-    }
+    }*/
     busy = false;
  //   qDebug() << "Y: " << y;
    // qDebug() << "Y: " << y;
     return res;
 }
 
+void QmlWidget::drawBuffer()
+{
+    busy = true;
+    //if(!crossTextV2())
+     //   return QPoint(0, 0);
+    //int width = fMetrics->width(str)*1.125 ;//+ fMetrics->leftBearing(str.at(0)) + fMetrics->rightBearing(str.at(0));
+    qDebug() << "DRAW";
+    clearCanvas();
+    int maxElm = (height()/(lineHeight + pt)) - 1;
+    int CurRow = convertTextBoxToBufferIndex(cursorIndex).y();
+    if(CurRow >= indexRowInList + maxElm)
+    {
+        indexRowInList += CurRow - (indexRowInList + maxElm) + 1;
+    }
+    if(CurRow < indexRowInList)
+    {
+        indexRowInList = CurRow;
+    }
+    qDebug() << "START draw with indexRowInList " << indexRowInList << "MAX elm " << maxElm << "CUR " << CurRow;
+    int i = indexRowInList;
+    while( i < stringList.length() && i < indexRowInList + maxElm)
+    {
+        qDebug() << stringList[i] << "@";
+        fillText(stringList[i],x, y);
+        /*
+         * next row
+         */
+
+        y += lineHeight + pt;
+        x = marginLeft;
+        i++;
+       // nextRow();
+    }
+    /*int i = indexInList - 1;
+    while( ++i < istringList.length())
+    {
+
+    }*/
+    /*
+    if(str[0] <= 0x20){
+         listChars.clear();
+         widthToClean=0;
+     }
+     */
+    /*
+        if(width + x > maxWidth)
+        {
+         qDebug()<<listChars;
+
+                //fillText("-", x, y);
+                //listChars += str;
+                //listWords.remove(indexInList,1);
+          int clearWidth = fMetrics->width(listChars); //
+
+             // if(y  + scroll*indexRow > this->height() )
+             clear(x-widthToClean,y-fMetrics->height(), this->width(),fMetrics->height()*1.25);
+
+             // listStr.push_back( listChars.length() );//не юзається.
+              // indexInList++;//не юзається.
+          //indexInList+=listChars.length();
+             nextRow();
+             isLastRow();
+            fillText(listChars,x,y);
+           // listWords += listChars.trimmed();
+           // listWords +=listChars;
+            //listStr.push_back( listWords.length() );
+
+            listChars.clear();
+            widthToClean=0;
+            x+=clearWidth;
+        }
+    isLastRow();
+    //fillAnimationText(str, x, y, 6);
+    fillText(str, x, y);
+    QPoint res(x,y);
+    listWords += str;
+    listChars += str.trimmed();
+    x += width;
+    widthToClean+=width;
+    symbolPositionList.push_back(res);
+    tickTimer.start(delay);
+    busy = false;
+ //   qDebug() << "Y: " << y;
+   // qDebug() << "Y: " << y;
+   */
+    busy = false;
+}
+
+void QmlWidget::insertToBuffer(const QChar ch)
+{
+    QPoint convertedIndex = convertTextBoxToBufferIndex(cursorIndex);
+    qDebug() << convertedIndex << " " << stringList.size() << " " << ch;
+    QString &str =  stringList[convertedIndex.y()];
+    if (convertedIndex.x()>=str.length())
+        str.append(ch);
+    else
+    str.insert(convertedIndex.x(), ch);
+
+    testWrap(convertedIndex.y());
+    listChars.append(ch);
+
+    emit drawTextChanged();
+    pause(delay);
+
+}
+
+void QmlWidget::deleteFromBuffer(int n)
+{
+    QPoint convertedIndex = convertTextBoxToBufferIndex(cursorIndex);
+    QString &str =  stringList[convertedIndex.y()];
+    if(n > 0)
+    {
+        str.remove(convertedIndex.x(), n);
+    }
+    else
+    {
+        str.remove(convertedIndex.x() + n, -n);
+    }
+
+    /*
+    if (convertedIndex.x()>=str.length())
+        str.append(ch);
+    else
+
+    testWrap(convertedIndex.y());
+    listChars.append(ch);
+*/
+    emit drawTextChanged();
+    pause(delay);
+}
+
+void QmlWidget::moveCursor(int n)
+{
+    cursorIndex += n;
+    qDebug() << "Cursor move to n " << n <<"=== cur state " << cursorIndex << "QPOINT  " << convertTextBoxToBufferIndex(cursorIndex);
+
+}
+
+QPoint QmlWidget::convertTextBoxToBufferIndex(int index)
+{
+    int i = 0;
+    int sumLength = 0;
+    while( i < stringList.length())
+    {
+        qDebug() <<"stringList:"<<stringList.length();
+        sumLength += stringList[i].length();
+          qDebug() <<"sumLength:"<<sumLength;
+           qDebug() <<"index:"<<index;
+             qDebug() <<"I:"<<i;
+        if(sumLength > index || (stringList[i].length() == 0 && sumLength - 1 == index))
+        {
+            int len = stringList[i].length();
+            return QPoint(len - sumLength + index , i);
+        }
+        i++;
+    }
+    return QPoint(stringList[i - 1].length(), i - 1);
+}
+
+void QmlWidget::testWrap(int kIndexOfRow)
+{
+    int i = kIndexOfRow;
+    int length = stringList.length();
+    while(stringList.length() > i)
+    {
+        QString &str =  stringList[i];
+        qDebug() <<"str:"<<stringList[i];
+        int width = fMetrics->width(stringList[i]) ;//+ fMetrics->leftBearing(str.at(0)) + fMetrics->rightBearing(str.at(0));
+        qDebug() <<"str:"<< maxWidth;
+        if(width > maxWidth)
+        {
+            qDebug() << "HER TAM";
+            int j = 0;
+            while( j < stringList[i].length() && str[stringList[i].length() - j - 1] > 0x20){j++;};
+                if(stringList.length() - 1 <= i)
+                    stringList.append("");
+
+            if(j >= stringList[i].length() - 1)
+                j = stringList[i].length()/4;
+            qDebug() << "HER TUT" << str.right(j);
+            stringList[i + 1].insert(0, str.right(j));
+            stringList[i].resize(stringList[i].length() - j);
+
+        }
+        i++;
+    }
+}
+
+void QmlWidget::nextRow( int n, bool Row)
+{
+    //isLastRow();
+    QPoint convertedIndex;
+    if( n == -1)
+        convertedIndex = convertTextBoxToBufferIndex(cursorIndex);
+    else
+        convertedIndex = convertTextBoxToBufferIndex(n);
+    int i = convertedIndex.y() + 1;
+    QString lastStr = stringList[i - 1].right(stringList[i - 1].length() - convertedIndex.x());
+
+    qDebug() << "           LASTSTR             " << convertedIndex.x();
+    if(i >= stringList.length() - 1)
+        stringList.append(lastStr);
+    else
+        stringList.insert(i, lastStr);
+    stringList[i - 1].resize(convertedIndex.x());
+   // moveCursor();
+    testWrap(i);
+
+}
+
+void QmlWidget::isLastRow()
+{
+    int maxElm = (height()/lineHeight + pt);
+
+}

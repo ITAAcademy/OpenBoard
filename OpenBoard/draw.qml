@@ -89,6 +89,7 @@ Item{
         {
            // console.debug(pt +  " " + font)
             JS.context.font = style + pt + "pt \"" + font + "\"";// "bold 10pt  \"font_name\" "
+            JS.context.kerning = 10;
             mainDrawElm.cross = crossOut;
             mainDrawElm.underline = underLine;
             console.debug(mainDrawElm.cross +  " " + mainDrawElm.underline);

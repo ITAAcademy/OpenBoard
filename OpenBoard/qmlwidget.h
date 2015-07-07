@@ -85,7 +85,7 @@ public:
     void clearCanvas();
     void drawFigure (int x, int y, int width, int height, FigureType type, bool fill, QColor col, float size);
     void drawAnimationFigure (int x, int y, int width, int height, FigureType type, bool fill);
-    void nextRow();
+    void nextRow(int n   = -1, bool Row = false);
     Q_INVOKABLE void crossOutLastSymbol();
     void crossOutWithAnimation();
     void clearSymbol(int index);
@@ -115,7 +115,7 @@ public slots:
     void drawAnimated( bool record );
     void stopAnimated();
     void pauseAnimated();
-public:
+public slots:
     bool isRecord() const;
     int getCountDeleteWT() const;
     int getDelay() const;
@@ -124,10 +124,31 @@ public:
     void setMainFillColor(const QColor &value);
     void clear(int x,int y,int width,int height);
 
+    /*
+     * wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww
+     *
+     */
+    void insertToBuffer(const QChar ch);
+    QPoint convertTextBoxToBufferIndex(int index);
+    void drawBuffer();
+    void moveCursor(int n = 1);
+
+    /*
+     *
+     *
+    */
+
+
+
+
+
 signals:
     void drawTextChanged();
 public slots:
 
+    void clearBuffer();
+    void testWrap(int kIndexOfRow);
+    void deleteFromBuffer(int n);
 private slots:
     void processBuffer(const QAudioBuffer &buffer);
     void displayErrorMessage();
@@ -177,6 +198,16 @@ private:
     QTimer *fps_timer;
     double animationSpeed = 0.01;
     bool busy = false;
+
+
+    /*
+     *new code
+     */
+
+    QStringList stringList;
+    int indexRowInList;
+    int cursorIndex;
+
 
 };
 

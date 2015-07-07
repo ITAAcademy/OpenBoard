@@ -247,7 +247,6 @@ void MainWindow::on_action_Show_triggered()
     mpQmlWidget->setTextFont(mSettings.getBoardFont());
     mpQmlWidget->setMainFillColor(mSettings.getBoardFontColor());
 
-    emit mpQmlWidget->drawTextChanged();
 
 /*
     mpGLWidget->setFixedSize(GLWIDGET_SIZE);
@@ -843,6 +842,7 @@ void MainWindow::on_action_Play_triggered()
     else
     {
         mpQmlWidget->clearCanvas();
+        mpQmlWidget->clearBuffer();
         mpQmlWidget->setFillColor(mpQmlWidget->getMainFillColor());
         drawCounter = 0;
     }

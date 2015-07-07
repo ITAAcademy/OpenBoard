@@ -12,13 +12,15 @@ class KeyloggerTE : public QTextEdit
 {
     Q_OBJECT
 private:
-
+int previousCursorPosition = 0;
 MyTextEdit *destination;
 public slots:
-   // void onEditText();
+
 public:
     void keyPressEvent(QKeyEvent *e);
-    explicit KeyloggerTE(MyTextEdit *destination);
+     void mousePressEvent(QMouseEvent *eventPress);
+     void mouseReleaseEvent(QMouseEvent *eventPress);
+    explicit KeyloggerTE(MyTextEdit *destination,QWidget *parent = 0);
 
 signals:
 };
