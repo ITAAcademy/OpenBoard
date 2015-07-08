@@ -15,6 +15,7 @@ void KeyloggerTE::keyPressEvent(QKeyEvent *event){
     QString keyChar(event->text());
    // QTextCursor
            int localCursorPosition = textCursor().position();
+           QString localText = toPlainText();
            int localCursorPositionInBlock = textCursor().positionInBlock();
            int localCursorBlockNumber = textCursor().blockNumber();
            int localCursorSelectionStart=textCursor().selectionStart();
@@ -74,6 +75,13 @@ void KeyloggerTE::keyPressEvent(QKeyEvent *event){
             textInField +=QString("\\dl%1").arg(delta, 3, 10, QChar('0'));
             else textInField +=QString("\\dr%1").arg(delta, 3, 10, QChar('0'));
         }
+        else if (localCursorPosition<localText.length())
+        {
+            textInField +="\\dr001";
+        }
+        qDebug()<<"textCursor().position():"<<textCursor().position();
+        qDebug()<<"previousCursorPosition:"<<previousCursorPosition;
+        qDebug()<<"localCursorPosition:"<<localCursorPosition;
         break;
     case Qt::Key_Backspace:
         qDebug() << "on_KEY_BACKSPACE";
