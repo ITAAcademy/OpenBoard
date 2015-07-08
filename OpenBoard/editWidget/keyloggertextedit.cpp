@@ -2,6 +2,7 @@
 #include "qdebug.h"
 #include <QKeyEvent>
 #include <QTextEdit>
+#include <qmath.h>
 KeyloggerTE::KeyloggerTE(MyTextEdit *destination,QWidget* parent){
 this->destination=destination;
     this->setParent(parent);
@@ -26,9 +27,19 @@ void KeyloggerTE::keyPressEvent(QKeyEvent *event){
     switch(keyCode){
     case Qt::Key_Up:
         qDebug() << "on_Key_UP";
+         if (textCursor().position()!=previousCursorPosition)
+         {
+           int delta =   abs(localCursorPosition - textCursor().position());
+            textInField +=QString("\\ml%1").arg(delta, 3, 10, QChar('0'));
+         }
         break;
     case Qt::Key_Down:
         qDebug() << "on_Key_DOWN";
+        if (textCursor().position()!=previousCursorPosition)
+        {
+          int delta =    abs(localCursorPosition - textCursor().position());
+           textInField +=QString("\\mr%1").arg(delta, 3, 10, QChar('0'));
+        }
         break;
     case Qt::Key_Left:
         qDebug() << "on_KEY_LEFT";
