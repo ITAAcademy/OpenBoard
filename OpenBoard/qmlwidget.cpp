@@ -942,17 +942,46 @@ void QmlWidget::insertToBuffer(const QChar ch)
 
 void QmlWidget::deleteFromBuffer(int n)
 {
-    QPoint convertedIndex = convertTextBoxToBufferIndex(cursorIndex);
-    QString &str =  stringList[convertedIndex.y()];
-    if(n > 0)
-    {
-        str.remove(convertedIndex.x(), n);
-    }
-    else
-    {
-        str.remove(convertedIndex.x() + n, -n);
-    }
+    int mustDell = qAbs(n);
 
+    while(mustDell > 0)
+    {
+
+        QPoint convertedIndex = convertTextBoxToBufferIndex(cursorIndex);
+        qDebug() << convertedIndex << "DELL   " << mustDell;
+        QString &str =  stringList[convertedIndex.y()];
+        int realDell;
+        if(n > 0)
+        {
+            if(mustDell > str.length() - convertedIndex.x())
+                realDell = str.length() - convertedIndex.x();
+            else
+                realDell = mustDell;
+            str.remove(convertedIndex.x(), realDell);
+            mustDell -= realDell;
+        }
+        else
+        {
+            if(mustDell > convertedIndex.x())
+                realDell = convertedIndex.x();
+            else
+                realDell = mustDell;
+            str.remove(convertedIndex.x() - realDell, realDell);
+            cursorIndex -= realDell;
+            mustDell -= realDell;
+            if(mustDell > 0)
+            {
+                if(convertedIndex.y() != 0)
+                {
+                    cursorIndex--;
+                    mustDell--;
+                    //stringList[convertedIndex.y() - 1].append(str);
+                    stringList.removeAt(convertedIndex.y());
+                }
+            }
+        }
+
+    }
     /*
     if (convertedIndex.x()>=str.length())
         str.append(ch);
@@ -995,7 +1024,6 @@ QPoint QmlWidget::convertTextBoxToBufferIndex(int index)
             int row = i;
            return QPoint( colum, row);
         }
-
         i++;
     }
     return QPoint(stringList[i - 1].length(), i - 1);
