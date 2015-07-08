@@ -60,8 +60,7 @@ QmlWidget::QmlWidget(QWidget *parent) :
     tickTimer.setSingleShot(true);
     fps_timer = new QTimer();
     //fps_timer->setInterval(1000/32);
-    fps_timer->setInterval(1000/31);
-    fps_timer->setSingleShot(true);
+    fps_timer->setInterval(25);
     connect(fps_timer, SIGNAL(timeout()), this, SLOT ( fps_control() ));
     fps_stabilitron = 0;
     /*
@@ -220,6 +219,7 @@ void QmlWidget::drawAnimated(bool record)
         m_encoder->setVideoSize(this->size());
         m_encoder->setFixedFrameRate(25);
         fps_timer->start();
+        fps_stabilitiTimer.start();
         m_encoder->start();
         audioRecorder->record();
         qDebug() << "Start record into file";
@@ -397,7 +397,15 @@ void QmlWidget::fps_control()
 {
     if(curStatus == PLAY && bRecord)
     {
-        m_encoder->encodeVideoFrame(this->grabFramebuffer());
+
+        {
+          //  qDebug() << "Draw";
+            pause(40 - fps_stabilitiTimer.elapsed());
+            fps_stabilitiTimer.restart();
+            m_encoder->encodeVideoFrame(this->grabFramebuffer());
+
+
+        }
         /*if (fps_stabilitron % 25 == 0) {
             while (m_encoder->encodedFrameCount() != fps_stabilitron) { qApp->processEvents(); }
             m_encoder->encodeVideoFrame(this->grabFramebuffer());
@@ -405,11 +413,15 @@ void QmlWidget::fps_control()
         }
             fps_stabilitron++;*/
     }
-    fps_timer->start();
+
 }
 
 void QmlWidget::pause(int ms)
 {
+    if( ms < 1)
+        return;
+    QTimer tickTimer;
+    tickTimer.setSingleShot(true);
     tickTimer.start(ms);
     while (tickTimer.isActive()) {
       qApp->processEvents();
@@ -850,7 +862,6 @@ void QmlWidget::drawBuffer()
         /*
          * next row
          */
-
         y += lineHeight + pt;
         x = marginLeft;
         i++;
@@ -957,6 +968,8 @@ void QmlWidget::deleteFromBuffer(int n)
 void QmlWidget::moveCursor(int n)
 {
     cursorIndex += n;
+    if(cursorIndex < 0)
+        cursorIndex = 0;
     qDebug() << "Cursor move to n " << n <<"=== cur state " << cursorIndex << "QPOINT  " << convertTextBoxToBufferIndex(cursorIndex);
 
 }
@@ -965,18 +978,24 @@ QPoint QmlWidget::convertTextBoxToBufferIndex(int index)
 {
     int i = 0;
     int sumLength = 0;
+    int numParagraph = 0;
     while( i < stringList.length())
     {
         qDebug() <<"stringList:"<<stringList.length();
-        sumLength += stringList[i].length();
-          qDebug() <<"sumLength:"<<sumLength;
-           qDebug() <<"index:"<<index;
-             qDebug() <<"I:"<<i;
-        if(sumLength > index || (stringList[i].length() == 0 && sumLength - 1 == index))
+
+        int lenNext = stringList[i].length() + 1;
+        sumLength += lenNext;
+        qDebug() <<"sumLength:"<<sumLength;
+        qDebug() <<"index:"<<index;
+        qDebug() <<"I:"<<i;
+
+        if(sumLength > index)
         {
-            int len = stringList[i].length();
-            return QPoint(len - sumLength + index , i);
+            int colum = index - (sumLength - lenNext);
+            int row = i;
+           return QPoint( colum, row);
         }
+
         i++;
     }
     return QPoint(stringList[i - 1].length(), i - 1);
@@ -1022,14 +1041,15 @@ void QmlWidget::nextRow( int n, bool Row)
     int i = convertedIndex.y() + 1;
     QString lastStr = stringList[i - 1].right(stringList[i - 1].length() - convertedIndex.x());
 
-    qDebug() << "           LASTSTR             " << convertedIndex.x();
-    if(i >= stringList.length() - 1)
+    qDebug() << "           LASTSTR    " << lastStr << "         " << convertedIndex.x();
+    if(i >= stringList.length())
         stringList.append(lastStr);
     else
         stringList.insert(i, lastStr);
     stringList[i - 1].resize(convertedIndex.x());
-   // moveCursor();
+    moveCursor(lastStr.length() + 1);
     testWrap(i);
+    emit drawTextChanged();
 
 }
 

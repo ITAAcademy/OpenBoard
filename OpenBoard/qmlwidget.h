@@ -196,6 +196,8 @@ private:
     int delay;
     int fps_stabilitron;
     QTimer *fps_timer;
+    QElapsedTimer fps_stabilitiTimer;
+    double timer_test;
     double animationSpeed = 0.01;
     bool busy = false;
 
