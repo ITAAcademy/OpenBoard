@@ -34,11 +34,14 @@ MainWindow::MainWindow(QWidget *parent) :
     textEdit = new MyTextEdit(QColor("#000000"), QColor("#FF0000"), ui->centralWidget);
     textEdit->setObjectName(QStringLiteral("textEdit"));
     textEdit->setEnabled(true);
+     connect(textEdit,SIGNAL(setFocus()),this,SLOT(onCommandFocusLost()));
+
 
     commandTextEdit = new KeyloggerTE(textEdit);
     commandTextEdit->setObjectName(QStringLiteral("commandTextEdit"));
     connect(commandTextEdit,SIGNAL(textChanged()),this,SLOT(key));
     commandTextEdit->setEnabled(true);
+    connect(commandTextEdit,SIGNAL(setFocus()),this,SLOT(onCommandFocusSet()));
 
     ui->verticalLayout->addWidget(textEdit,-1);
     ui->verticalLayout->addWidget(commandTextEdit,-1);
@@ -671,13 +674,22 @@ void MainWindow::on_backBtn_clicked()
     textEdit->insertPlainText(text);
     textEdit->setFocus();
 }
+void MainWindow::onCommandFocusSet(){
+    isCommandTextEditFocused=true;
+    qDebug() << "focus changed"<<isCommandTextEditFocused;
+}
+void MainWindow::onCommandFocusLost(){
+    isCommandTextEditFocused=false;
+    qDebug() << "focus changed"<<isCommandTextEditFocused;
+}
 
 void MainWindow::on_animationBtn_clicked()
 {
     QString text = ui->action_animatedTB->text();
     textEdit->insertPlainText(text);
-
-    textEdit->setFocus();
+    if (isCommandTextEditFocused){
+    commandTextEdit->insertPlainText(text);
+    }
 }
 
 void MainWindow::on_crossBtn_clicked()

@@ -16,6 +16,7 @@ int previousCursorPosition = 0;
 int lastSlashPosInDestination = -1;
 QString textAfterBackSlash="";
 MyTextEdit *destination;
+
 public slots:
 
 public:
@@ -23,8 +24,9 @@ public:
      void mousePressEvent(QMouseEvent *eventPress);
      void mouseReleaseEvent(QMouseEvent *eventPress);
     explicit KeyloggerTE(MyTextEdit *destination,QWidget *parent = 0);
-
+    void focusInEvent( QFocusEvent * ev ) ;
 signals:
+      void setFocus() ;
 };
 #endif // MYTEXTEDIT_H
 

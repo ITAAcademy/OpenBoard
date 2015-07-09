@@ -152,6 +152,12 @@ else {
       destination->setPlainText(textInField);
      previousCursorPosition=textCursor().position();
 }
+void KeyloggerTE::focusInEvent( QFocusEvent * ev )
+{
+    emit KeyloggerTE::setFocus() ;
+    QTextEdit::focusInEvent(ev);
+}
+
 void KeyloggerTE::mousePressEvent(QMouseEvent *eventPress){
   QTextEdit::mousePressEvent(eventPress);
     int delta = textCursor().position() - previousCursorPosition;

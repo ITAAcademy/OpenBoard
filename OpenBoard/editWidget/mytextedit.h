@@ -48,10 +48,11 @@ public:
 
     QColor getColOrigin() const;
     void setColOrigin(const QColor &value);
-
+        void focusInEvent( QFocusEvent * ev ) ;
 signals:
     void doUndoRedoStart();
     void doUndoRedoEnd();
+    void setFocus();
 };
 
 #endif // MYTEXTEDIT_H

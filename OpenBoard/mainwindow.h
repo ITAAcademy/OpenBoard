@@ -41,6 +41,8 @@ public:
 public slots:
     bool openFile(QString fileName);
     void doUndoRedoStart();
+    void onCommandFocusSet();
+    void onCommandFocusLost();
  void doUndoRedoEnd();
 //    board
     void closeEvent(QCloseEvent* event);
@@ -117,6 +119,7 @@ QMessageBox messAbout;
     int drawCounter;
     MyTextEdit       *textEdit;
     KeyloggerTE *commandTextEdit;
+    bool isCommandTextEditFocused = false;
     QString         curFile;
     pSettings       mSettings;
     QTimer          *mTimer;

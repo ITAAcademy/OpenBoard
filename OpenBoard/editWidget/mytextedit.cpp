@@ -29,7 +29,11 @@ MyTextEdit::MyTextEdit(QColor originalColor,QColor specifiedColor,QWidget *paren
  newText();\
 
 }
-
+void MyTextEdit::focusInEvent( QFocusEvent * ev )
+{
+    emit MyTextEdit::setFocus() ;
+    QTextEdit::focusInEvent(ev);
+}
  void MyTextEdit::mergeFormatOnWordOrSelection(int position)
  {
     if (charCount==document()->characterCount()) return;
