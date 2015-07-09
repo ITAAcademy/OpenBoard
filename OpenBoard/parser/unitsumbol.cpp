@@ -16,6 +16,7 @@ void UnitSumbol::draw(QmlWidget *canvas)
 {
     canvas->insertToBuffer(unit_data[0]);
     canvas->moveCursor();
+    canvas->update();
 }
 
 void UnitSumbol::setUnitSumbolColor(QString color)

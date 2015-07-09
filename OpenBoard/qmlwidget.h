@@ -85,7 +85,7 @@ public:
     void clearCanvas();
     void drawFigure (int x, int y, int width, int height, FigureType type, bool fill, QColor col, float size);
     void drawAnimationFigure (int x, int y, int width, int height, FigureType type, bool fill);
-    void nextRow(int n   = -1, bool Row = false);
+    void nextRow(int n   = -1, int Row = -1);
     Q_INVOKABLE void crossOutLastSymbol();
     void crossOutWithAnimation();
     void clearSymbol(int index);
@@ -145,10 +145,10 @@ public slots:
 signals:
     void drawTextChanged();
 public slots:
-
     void clearBuffer();
     void testWrap(int kIndexOfRow);
     void deleteFromBuffer(int n);
+    bool crossTextDraw();
 private slots:
     void processBuffer(const QAudioBuffer &buffer);
     void displayErrorMessage();
@@ -207,6 +207,7 @@ private:
      */
 
     QStringList stringList;
+    QList<short int> cross;
     int indexRowInList;
     int cursorIndex;
 

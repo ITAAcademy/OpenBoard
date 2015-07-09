@@ -1,6 +1,7 @@
 QT -= declarative sensors multimedia multimediawidgets printsupport opengl
 
 QT       += widgets multimedia quick quickwidgets network webkitwidgets concurrent
+CONFIG += c++11
 
 SOURCES += main.cpp\
     mainwindow.cpp \

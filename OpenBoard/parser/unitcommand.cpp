@@ -67,7 +67,7 @@ void UnitCommand::erasePreChar(QmlWidget *canvas)
 void UnitCommand::clearPreChar(QmlWidget *canvas)
 {
     //canvas->crossOutLastSymbol();
-   //canvas->clearLastSymbol();
+   canvas->crossOutLastSymbol();
 }
 
 void UnitCommand::pause(QmlWidget *canvas)
@@ -79,7 +79,9 @@ void UnitCommand::pause(QmlWidget *canvas)
 
 void UnitCommand::backSlash(QmlWidget *canvas)
 {
-    this->setPosition(canvas->drawWrapText("\\"));
+    canvas->insertToBuffer('\\');
+    canvas->moveCursor();
+    canvas->update();
 }
 
 void UnitCommand::draw(QmlWidget *canvas)
