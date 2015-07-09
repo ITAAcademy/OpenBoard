@@ -132,6 +132,8 @@ QMessageBox messAbout;
     bool maybeSave();
     YouTubeWrapper *youtube;
     QToolBar *toolBar;
+    bool play = false;
+
 
 };
 
