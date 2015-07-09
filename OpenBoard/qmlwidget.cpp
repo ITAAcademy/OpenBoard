@@ -235,6 +235,7 @@ void QmlWidget::drawAnimated(bool record)
 
 void QmlWidget::stopAnimated()
 {
+    curStatus = STOP;
     tickTimer.stop();
     m_encoder->stop();
     audioRecorder->stop();
@@ -242,8 +243,8 @@ void QmlWidget::stopAnimated()
 
     // max speed // stop draw function
     double t_animationSpeed = animationSpeed;
-    int t_delay = delay;
-/*
+/*    int t_delay = delay;
+
     animationSpeed = 1;
     delay = 1;
     while(busy)
@@ -254,8 +255,9 @@ void QmlWidget::stopAnimated()
     delay = t_delay;
 */
     bRecord = false;
+ //   pause(200);
     qDebug() << "Stop play";
-    curStatus = STOP;
+
 }
 
 void QmlWidget::pauseAnimated()
@@ -445,6 +447,7 @@ void QmlWidget::pause(int ms)
 
 void QmlWidget::update()
 {
+    busy = true;
     crossText();
     drawBuffer();
 }
@@ -856,7 +859,7 @@ void QmlWidget::moveCursor(int n)
     cursorIndex += n;
     if(cursorIndex < 0)
         cursorIndex = 0;
-    qDebug() << "Cursor move to n " << n <<"=== cur state " << cursorIndex << "QPOINT  " << convertTextBoxToBufferIndex(cursorIndex);
+ //   qDebug() << "Cursor move to n " << n <<"=== cur state " << cursorIndex << "QPOINT  " << convertTextBoxToBufferIndex(cursorIndex);
 
 }
 
