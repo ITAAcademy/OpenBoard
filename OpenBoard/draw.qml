@@ -50,7 +50,9 @@ Item{
             //JS.init();
             //initFont()
             //if(JS.context != null)
-                JS.context.fillText( str, x, y);
+            var text = str.replace(/(\t)/g, "    "); // I use 4 spaces for tabulation, but you can use anything you want
+                JS.context.fillText( text, x, y);
+            //console.log("QML__LOG:  " + str);
             /*
             if(mainDrawElm.cross == true)
                     drawCrossText(str, x, y);
