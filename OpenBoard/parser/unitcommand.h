@@ -19,7 +19,7 @@ public:
     void deletePreChar(QmlWidget* canvas);
     void deleteLeft(QmlWidget* canvas, int n);
     void deleteRight(QmlWidget* canvas, int n);
-    void erasePreChar(QmlWidget* canvas);
+    void erasePreChar(QmlWidget* canvas,int n);
     void pause(QmlWidget* canvas);
     void backSlash(QmlWidget* canvas);
     void draw(QmlWidget *canvas);

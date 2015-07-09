@@ -357,7 +357,7 @@ void QmlWidget::crossOutLastSymbol()
 
 }
 
-void QmlWidget::crossOutWithAnimation()
+void QmlWidget::crossOutWithAnimation(int n)
 {
   //  qDebug() << "URAAAA!!!  " << deleteWT;
     crossOutLastSymbol();

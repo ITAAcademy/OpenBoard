@@ -694,11 +694,35 @@ void MainWindow::onCommandFocusLost(){
 
 void MainWindow::on_animationBtn_clicked()
 {
+    QString textInField="";
+    textEdit->toPlainText();
     QString text = ui->action_animatedTB->text();
-    textEdit->insertPlainText(text);
+   // textEdit->insertPlainText(text);
     if (isCommandTextEditFocused){
-    commandTextEdit->insertPlainText(text);
+    //commandTextEdit->insertPlainText(text);
+    textInField = textEdit->toPlainText();
+    if (commandTextEdit->toPlainText().isEmpty())return;
+    if (commandTextEdit->textCursor().selectionEnd()-commandTextEdit->textCursor().selectionStart()==0)
+    {
+            textInField +=text;
+            textEdit->setPlainText(textInField);
     }
+    else {
+        int delta = commandTextEdit->textCursor().selectionEnd()-commandTextEdit->textCursor().selectionStart();
+        if (commandTextEdit->textCursor().position()!=commandTextEdit->textCursor().selectionEnd())
+        { textInField.chop(6);//Видаляємо перехід вліво КОСТИЛЯКА НА ЛОМАЦІ
+            QTextCursor tCursor = commandTextEdit->textCursor();
+            tCursor.clearSelection();
+           commandTextEdit->setTextCursor(tCursor);
+        }
+        textInField +=QString("\\<%1").arg(delta, 3, 10, QChar('0'));
+         textEdit->setPlainText(textInField);
+    }
+    }
+    else
+    textEdit->insertPlainText(text);
+
+
 }
 
 void MainWindow::on_crossBtn_clicked()

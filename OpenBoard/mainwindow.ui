@@ -1023,7 +1023,7 @@
      <normaloff>:/icons/remove-icon.png</normaloff>:/icons/remove-icon.png</iconset>
    </property>
    <property name="text">
-    <string>\&lt;</string>
+    <string>\&lt;001</string>
    </property>
    <property name="toolTip">
     <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Animated (Alt + 3)&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>

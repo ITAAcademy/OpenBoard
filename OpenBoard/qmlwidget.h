@@ -87,7 +87,7 @@ public:
     void drawAnimationFigure (int x, int y, int width, int height, FigureType type, bool fill);
     void nextRow(int n   = -1, int Row = -1);
     Q_INVOKABLE void crossOutLastSymbol();
-    void crossOutWithAnimation();
+    void crossOutWithAnimation(int n);
     void clearSymbol(int index);
     QPoint drawWrapText( QString str ); // main draw function
     void setFillColor( QColor col);

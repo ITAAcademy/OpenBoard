@@ -59,10 +59,10 @@ void UnitCommand::deleteRight(QmlWidget* canvas, int n){
 }
 
 
-void UnitCommand::erasePreChar(QmlWidget *canvas)
+void UnitCommand::erasePreChar(QmlWidget *canvas,int n)
 {
     //canvas->crossOutLastSymbol();
-    canvas->crossOutWithAnimation();
+    canvas->crossOutWithAnimation(n);
 }
 void UnitCommand::clearPreChar(QmlWidget *canvas)
 {
@@ -121,7 +121,7 @@ void UnitCommand::draw(QmlWidget *canvas)
     }
     if (Type == "ErasePreChar")
     {
-        erasePreChar(canvas);
+        erasePreChar(canvas,unit_data.toInt());
         return;
     }
     if (Type == "Pause")

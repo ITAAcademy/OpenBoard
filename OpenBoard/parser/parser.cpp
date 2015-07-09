@@ -99,13 +99,38 @@ int Parser::ParsingLine(QList<Unit*> &list, QString& str)
                 continue;
             }
             if(pars_line == (QString)"\\<")
-            {
-                UnitCommand* command = new UnitCommand();
+            {               
+                    UnitCommand* command = new UnitCommand();
+                    command->setUnitCommandType("ErasePreChar");
+
+                    QRegExp exp("[0-9]");
+                    pars_line.clear();
+                    int count = 0;
+                    if(exp.exactMatch((QString)str[i+3]))
+                    {
+                        while(exp.exactMatch((QString)str[i+3]) && count++ < 3)
+                        {
+                            pars_line += str[i+3];
+                            i++;
+                        }
+                    }
+                    else
+                    {
+                        state = i;
+                        break;
+                    }
+                    command->setUnitData(pars_line);
+                    list.push_back(command);
+                    state = -1;
+                    i += 2;
+                    continue;
+
+               /* UnitCommand* command = new UnitCommand();
                 command->setUnitCommandType("ErasePreChar");
                 list.push_back(command);
                 state = -1;
                 i++;
-                continue;
+                continue;*/
             }
             if (pars_line == (QString)"\\#")
             {
