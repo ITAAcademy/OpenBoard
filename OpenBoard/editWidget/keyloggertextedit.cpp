@@ -3,6 +3,7 @@
 #include <QKeyEvent>
 #include <QTextEdit>
 #include <qmath.h>
+#include "parser\parser.h"
 KeyloggerTE::KeyloggerTE(MyTextEdit *destination,QWidget* parent){
 this->destination=destination;
     this->setParent(parent);
@@ -22,9 +23,17 @@ void KeyloggerTE::keyPressEvent(QKeyEvent *event){
            int localCursorSelectionEnd=textCursor().selectionEnd();
     QTextEdit::keyPressEvent(event);
 
+
+
             QString textInField = destination->toPlainText();
              QStringList stringsInCommandTextEdit = toPlainText().split('\n');
     //Якщо буква то просто вставляєм її в текст
+             if(event->modifiers() & Qt::ControlModifier)
+             {
+                 if (event->matches(QKeySequence::Paste))
+                     textInField += QApplication::clipboard()->text();
+             }
+    else
     switch(keyCode){
     case Qt::Key_Up:
         qDebug() << "on_Key_UP";
@@ -104,14 +113,43 @@ else {
         qDebug() << "on_KEY_ENTER";
         textInField +="\\n";
         break;
+     case Qt::Key_Backslash:
+        lastSlashPosInDestination = textInField.length();
+        qDebug() << "Last slash pos:"<<lastSlashPosInDestination;
+        textInField +="\\\\";
+        break;
     default:
+
         if(keyChar.length()>0) {
             textInField +=keyChar;
         }
         break;
     }
+     //if (!(event->matches(QKeySequence::Copy)))//|| event->matches(QKeySequence::Paste)))
 
-     destination->setPlainText(textInField);
+
+     if (lastSlashPosInDestination!=-1){
+         textAfterBackSlash= textInField.mid(lastSlashPosInDestination+1);
+         if (textAfterBackSlash.length()<=Parser::MAX_COMMAND_LENGTH){
+        bool isCommandAfterSlash=false;
+         qDebug() << "TEXT AFTER SLASH:"<<textAfterBackSlash;
+        for (int i =0;i<Parser::COMMANDS_COUNT;i++)
+         if (textAfterBackSlash==Parser::commands[i]){
+              qDebug() << "Command "<<Parser::commands[i] << "after slash detected";
+                 isCommandAfterSlash=true;
+         }
+
+        if (isCommandAfterSlash){
+           textInField = textInField.remove(lastSlashPosInDestination,1);
+
+        qDebug() << "SLASH:"<<textAfterBackSlash;
+        qDebug() << "SLASH POS:"<<lastSlashPosInDestination;
+        lastSlashPosInDestination=-1;
+        textAfterBackSlash.clear();
+        }
+         }
+     }
+      destination->setPlainText(textInField);
      previousCursorPosition=textCursor().position();
 }
 void KeyloggerTE::mousePressEvent(QMouseEvent *eventPress){

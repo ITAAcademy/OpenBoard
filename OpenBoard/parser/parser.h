@@ -12,6 +12,10 @@
 class Parser
 {
 public:
+    static QString commands [];
+      static int  COMMANDS_COUNT;
+    static int MAX_COMMAND_LENGTH;
+
     Parser();
     virtual ~Parser();
 

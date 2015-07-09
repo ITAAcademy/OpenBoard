@@ -10,7 +10,22 @@ Parser::~Parser()
 {
 
 }
-
+QString Parser::commands[]   ={
+    "\\n",
+    "\\a",
+    "\\-",
+    "\\<",
+    "\\>",
+    "\\ml",
+    "\\mr",
+    "\\dl",
+    "\\dr",
+    "\\#",
+     "\\p",
+    "\\c"
+};
+int Parser::COMMANDS_COUNT = 12;
+int Parser::MAX_COMMAND_LENGTH = 3;
 int Parser::ParsingLine(QList<Unit*> &list, QString& str)
 {
     list.clear();

@@ -13,6 +13,8 @@ class KeyloggerTE : public QTextEdit
     Q_OBJECT
 private:
 int previousCursorPosition = 0;
+int lastSlashPosInDestination = -1;
+QString textAfterBackSlash="";
 MyTextEdit *destination;
 public slots:
 
