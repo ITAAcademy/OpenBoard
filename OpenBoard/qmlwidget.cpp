@@ -75,6 +75,7 @@ QmlWidget::QmlWidget(QWidget *parent) :
 
     connect(&tickTimer, SIGNAL(timeout()), this, SLOT(drawBuffer()));
     stringList.append("");
+    //stringList.reserve(600000);
     indexRowInList = 0;
     cursorIndex = 0;
 
@@ -359,7 +360,7 @@ void QmlWidget::crossOutLastSymbol()
 
 }
 
-void QmlWidget::crossOutWithAnimation(int n)
+void QmlWidget::crossOutWithAnimation()
 {
   //  qDebug() << "URAAAA!!!  " << deleteWT;
     crossOutLastSymbol();
@@ -738,7 +739,7 @@ void QmlWidget::drawBuffer()
     //if(!crossTextV2())
      //   return QPoint(0, 0);
     //int width = fMetrics->width(str)*1.125 ;//+ fMetrics->leftBearing(str.at(0)) + fMetrics->rightBearing(str.at(0));
-    qDebug() << "DRAW";
+    //qDebug() << "DRAW";
     clearCanvas();
     int maxElm = (height()/(lineHeight + pt)) - 1;
     int CurRow = convertTextBoxToBufferIndex(cursorIndex).y();
@@ -754,8 +755,14 @@ void QmlWidget::drawBuffer()
     int i = indexRowInList;
     while( i < stringList.length() && i < indexRowInList + maxElm)
     {
-        qDebug() << stringList[i] << "@";
-        fillText(stringList[i],x, y);
+        //qDebug() << stringList[i] << "@";
+        QStringList tabulationStr = stringList[i].split("\t");
+        for(int j = 0; j < tabulationStr.size(); j++)
+        {
+            fillText(tabulationStr[j], x, y);
+            x += fMetrics->width(tabulationStr[j] + "\t");
+        }
+
         /*
          * next row
          */
@@ -919,9 +926,9 @@ void QmlWidget::testWrap(int kIndexOfRow)
     while(stringList.length() > i)
     {
         QString &str =  stringList[i];
-        qDebug() <<"str:"<<stringList[i];
+        //qDebug() <<"str:"<<stringList[i];
         int width = fMetrics->width(stringList[i]) ;//+ fMetrics->leftBearing(str.at(0)) + fMetrics->rightBearing(str.at(0));
-        qDebug() <<"str:"<< maxWidth;
+        //qDebug() <<"str:"<< maxWidth;
         if(width > maxWidth)
         {
             int j = 0;
@@ -956,7 +963,7 @@ void QmlWidget::nextRow( int n, int Row)
     int i = convertedIndex.y() + 1;
     QString lastStr = stringList[i - 1].right(stringList[i - 1].length() - convertedIndex.x());
 
-    qDebug() << "           LASTSTR    " << lastStr << "         " << convertedIndex.x();
+    //qDebug() << "           LASTSTR    " << lastStr << "         " << convertedIndex.x();
     if(i >= stringList.length())
         stringList.append(lastStr);
     else
@@ -1039,12 +1046,12 @@ bool QmlWidget::crossText()
     int row = convertTextBoxToBufferIndex(cursorIndex).y();
     while(deleteWT > 0)
     {
-        qDebug() << "DW " << deleteWT << convertTextBoxToBufferIndex(cursorIndex);
+        //qDebug() << "DW " << deleteWT << convertTextBoxToBufferIndex(cursorIndex);
         int cursor = cursorIndex - row;
         while( cursor - spacePaid >= 0)
         {
             QPoint convert = convertTextBoxToBufferIndex(cursor - spacePaid, true);
-            qDebug() << "\nSYMBOL                 :::" << cursor  - spacePaid <<"         " << stringList[convert.y()][convert.x()];
+            //qDebug() << "\nSYMBOL                 :::" << cursor  - spacePaid <<"         " << stringList[convert.y()][convert.x()];
             if(stringList[convert.y()][convert.x()] <= 0x20)
                 spacePaid++;
             else

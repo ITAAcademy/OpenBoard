@@ -87,7 +87,7 @@ public:
     void drawAnimationFigure (int x, int y, int width, int height, FigureType type, bool fill);
     void nextRow(int n   = -1, int Row = -1);
     Q_INVOKABLE void crossOutLastSymbol();
-    void crossOutWithAnimation(int n);
+    void crossOutWithAnimation();
     void clearSymbol(int index);
     QPoint drawWrapText( QString str ); // main draw function
     void setFillColor( QColor col);
@@ -209,7 +209,7 @@ private:
      * |new property
      */
 
-    QStringList stringList;
+    QList<QString> stringList;
     QList<short int> cross;
     int indexRowInList;
     int cursorIndex;
