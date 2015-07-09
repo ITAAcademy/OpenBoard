@@ -30,6 +30,7 @@ MainWindow::MainWindow(QWidget *parent) :
 //    connect(&drawThread, SIGNAL(started()), this, SLOT(myfunction())); //cant have parameter sorry, when using connect
 
     mpQmlWidget = new QmlWidget(this);
+    mpQmlWidget->setVisible(false);
    // mpQmlWidget->moveToThread(&drawThread);
     textEdit = new MyTextEdit(QColor("#000000"), QColor("#FF0000"), ui->centralWidget);
     textEdit->setObjectName(QStringLiteral("textEdit"));
@@ -204,8 +205,8 @@ MainWindow::~MainWindow()
     //drawThread.quit();
     if(toolBar != NULL)
         delete toolBar;
-
     delete ui;
+    delete mpQmlWidget;
 }
 
 void MainWindow::closeEvent(QCloseEvent*)
@@ -213,9 +214,6 @@ void MainWindow::closeEvent(QCloseEvent*)
     if(mpQmlWidget != NULL)
     {
         on_action_Hide_triggered();
-        while( mpQmlWidget->status() != QmlWidget::STOP && mpQmlWidget->isHidden())
-            qApp->processEvents();
-        delete mpQmlWidget;
     }
     qDebug() << "Close drawWidget";
 }
@@ -275,12 +273,9 @@ void MainWindow::on_action_Show_triggered()
 
 void MainWindow::on_action_Hide_triggered()
 {
-    if(mpQmlWidget->getStatus() == mpQmlWidget->PLAY || mpQmlWidget->getStatus() == mpQmlWidget->PAUSE)
+   // if(mpQmlWidget->getStatus() == mpQmlWidget->PLAY || mpQmlWidget->getStatus() == mpQmlWidget->PAUSE)
       //  mpQmlWidget->stopAnimated();
     on_action_Stop_triggered();
-    while(mpQmlWidget->getBusy()){
-        qApp->processEvents(QEventLoop::AllEvents, 200);
-    };
     mpQmlWidget->hide();
     /*mpQmlWidget->close();*/
     // delete mpQmlWidget;
@@ -819,7 +814,7 @@ void MainWindow::onTextChanged()
     }
     */
     textEdit->textColorSet(status);
-    if(mpQmlWidget->isVisible() && textEdit->toPlainText().length() != 0)
+    if(mpQmlWidget->isVisible() && textEdit->toPlainText().size() != 0)
     {
         if(status != -1)
         {
@@ -917,11 +912,11 @@ void MainWindow::on_action_Play_triggered()
         mpQmlWidget->drawBuffer();
     }
     on_action_Stop_triggered();
+    play = false;
 }
 
 void MainWindow::on_action_Stop_triggered()
 {
-    play = false;
     mpQmlWidget->stopAnimated();
     textEdit->setEnabled(true);
     ui->action_Undo->setEnabled(true);
