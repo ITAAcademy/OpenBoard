@@ -57,7 +57,8 @@ QmlWidget::QmlWidget(QWidget *parent) :
     deleteWT = 0;
     fMetrics = new QFontMetrics(QFont(font));
     curStatus = STOP;
-    tickTimer.setSingleShot(true);
+    tickTimer.setSingleShot(false);
+    tickTimer.setInterval(1000/30);
     fps_timer = new QTimer();
     //fps_timer->setInterval(1000/32);
     fps_timer->setInterval(25);
@@ -72,7 +73,7 @@ QmlWidget::QmlWidget(QWidget *parent) :
     QMetaObject::invokeMethod(canvas, "init");
 
 
-    connect(this, SIGNAL(drawTextChanged()), this, SLOT(drawBuffer()));
+    connect(&tickTimer, SIGNAL(timeout()), this, SLOT(drawBuffer()));
     stringList.append("");
     indexRowInList = 0;
     cursorIndex = 0;
@@ -96,18 +97,7 @@ QmlWidget::QmlWidget(QWidget *parent) :
 
 QmlWidget::~QmlWidget()
 {
-    if(m_encoder != NULL)
-        delete m_encoder;
-    if(audioRecorder != NULL)
-        delete audioRecorder;
-    if(probe != NULL)
-        delete probe;
-    if(canvas != NULL)
-        delete canvas;
-    if(fps_timer != NULL)
-        delete fps_timer;
-    if(fMetrics != NULL)
-        delete fMetrics;
+
 }
 
 void QmlWidget::moveEvent(QMoveEvent *event)
@@ -138,7 +128,20 @@ void QmlWidget::resizeEvent(QResizeEvent *envent)
 void QmlWidget::closeEvent(QCloseEvent *event)
 {
     stopAnimated();
-    pause(200);
+    pause(500);
+    if(m_encoder != NULL)
+        delete m_encoder;
+    if(audioRecorder != NULL)
+        delete audioRecorder;
+    if(probe != NULL)
+        delete probe;
+    if(canvas != NULL)
+        delete canvas;
+    if(fps_timer != NULL)
+        delete fps_timer;
+    if(fMetrics != NULL)
+        delete fMetrics;
+    isClose = true;
 }
 
 void QmlWidget::mousePressEvent(QMouseEvent *event)
@@ -226,11 +229,13 @@ void QmlWidget::drawAnimated(bool record)
     }
     curStatus = PLAY;
     bRecord = record;
+    tickTimer.start();
     qDebug() << "Start play";
 }
 
 void QmlWidget::stopAnimated()
 {
+    tickTimer.stop();
     m_encoder->stop();
     audioRecorder->stop();
     fps_timer->stop();
@@ -278,8 +283,6 @@ void QmlWidget::clearCanvas()
     scroll = 0;
     //listStr[0] = 0;
     indexInList = 1;
-    deleteWT = 0;
-    crossWithAnimation = false;
     indexRowInList = 0;
 
 
@@ -287,9 +290,12 @@ void QmlWidget::clearCanvas()
 void QmlWidget::clearBuffer()
 {
     cross.clear();
+    cross.append(2); // для визова зачеркування якщо стрічка зацінчується
     stringList.clear();
     stringList.append("");
     cursorIndex = 0;
+    deleteWT = 0;
+    crossWithAnimation = false;
 }
 
 void QmlWidget::clearSymbol(int index){
@@ -353,7 +359,7 @@ void QmlWidget::crossOutLastSymbol()
 
 void QmlWidget::crossOutWithAnimation()
 {
-    qDebug() << "URAAAA!!!  " << deleteWT;
+  //  qDebug() << "URAAAA!!!  " << deleteWT;
     crossOutLastSymbol();
     crossWithAnimation = true;
 }
@@ -379,6 +385,11 @@ void QmlWidget::generateFrames()
     m_encoder->stop();
 
 }
+bool QmlWidget::getBusy() const
+{
+    return busy;
+}
+
 
 void QmlWidget::processBuffer(const QAudioBuffer& buffer)
 {
@@ -435,6 +446,7 @@ void QmlWidget::pause(int ms)
 void QmlWidget::update()
 {
     crossText();
+    drawBuffer();
 }
 
 QColor QmlWidget::getMainFillColor() const
@@ -735,7 +747,7 @@ void QmlWidget::drawBuffer()
     {
         indexRowInList = CurRow;
     }
-    qDebug() << "START draw with indexRowInList " << indexRowInList << "MAX elm " << maxElm << "CUR " << CurRow;
+ //   qDebug() << "START draw with indexRowInList " << indexRowInList << "MAX elm " << maxElm << "CUR " << CurRow;
     int i = indexRowInList;
     while( i < stringList.length() && i < indexRowInList + maxElm)
     {
@@ -761,7 +773,7 @@ void QmlWidget::insertToBuffer(const QChar ch)
         str.append(ch);
     else
     str.insert(convertedIndex.x(), ch);
-    cross.insert(cursorIndex, 0);
+    cross.insert(cursorIndex - convertedIndex.y(), 0);
 
     testWrap(convertedIndex.y());
     listChars.append(ch);
@@ -848,20 +860,23 @@ void QmlWidget::moveCursor(int n)
 
 }
 
-QPoint QmlWidget::convertTextBoxToBufferIndex(int index)
+QPoint QmlWidget::convertTextBoxToBufferIndex(int index, bool symbol)
 {
     int i = 0;
     int sumLength = 0;
     int numParagraph = 0;
     while( i < stringList.length())
     {
-        qDebug() <<"stringList:"<<stringList.length();
-
-        int lenNext = stringList[i].length() + 1;
+      //  qDebug() <<"stringList:"<<stringList.length();
+        int lenNext;
+        if(symbol)
+            lenNext = stringList[i].length();
+        else
+            lenNext = stringList[i].length() + 1;
         sumLength += lenNext;
-        qDebug() <<"sumLength:"<<sumLength;
-        qDebug() <<"index:"<<index;
-        qDebug() <<"I:"<<i;
+     //   qDebug() <<"sumLength:"<<sumLength;
+//        qDebug() <<"index:"<<index;
+//        qDebug() <<"I:"<<i;
 
         if(sumLength > index)
         {
@@ -872,6 +887,26 @@ QPoint QmlWidget::convertTextBoxToBufferIndex(int index)
         i++;
     }
     return QPoint(stringList[i - 1].length(), i - 1);
+}
+
+int QmlWidget::getRowFromTextBoxIndex(int index, bool symbol)
+{
+    int i = 0;
+    int sumLength = 0;
+    while( i < stringList.length())
+    {
+        int lenNext;
+        if(symbol)
+            lenNext = stringList[i].length();
+        else
+            lenNext = stringList[i].length() + 1;
+        sumLength += lenNext;
+        if(sumLength > index)
+        {
+           return i;
+        }
+        i++;
+    }
 }
 
 void QmlWidget::testWrap(int kIndexOfRow)
@@ -942,71 +977,86 @@ void QmlWidget::isLastRow()
 bool QmlWidget::crossTextDraw()
 {
     int y;
-    int x1, x2;
+    int x1, x2, x;
     bool lastGood = false;
+    bool needNextRow = false;
     for(int i = 0; i < cross.length(); i++)
     {
-        qDebug() << "CROSS\n" << cross;
+     //   qDebug() << "CROSS\n" << cross;
         if(cross[i] != 0)
         {
-            QPoint conv = convertTextBoxToBufferIndex(i);
+            QPoint conv = convertTextBoxToBufferIndex(i, true);
+        //    conv = convertTextBoxToBufferIndex(i + conv.y());
             if(!lastGood)
             {
-                x1 = fMetrics->width(stringList[conv.y()].left(conv.x()));
+                x1 = marginLeft + fMetrics->width(stringList[conv.y()].left(conv.x()));
+                x = i;
                 y = /*(lineHeight + pt)* */ conv.y();
                 lastGood = true;
                 continue;
             }
             if(conv.y() == y)
             {
-                continue;
+                if(i != cross.length() - 1)
+                    continue;
+            }
+            {
+                needNextRow = true;
             }
         }
         if(lastGood)
         {
-            QPoint conv = convertTextBoxToBufferIndex(i - 1);
-            y *= lineHeight + pt;
+            QPoint conv = convertTextBoxToBufferIndex(i - 1, true);
+        //    conv = convertTextBoxToBufferIndex(i + conv.y() + 1);
+            ++y *= lineHeight + pt;
+            y -= 0.25f * fMetrics->height();// first paid + midle
 
-            x2 = fMetrics->width(stringList[conv.y()].left(conv.x()));
+            x2 = marginLeft + fMetrics->width(stringList[conv.y()].left(conv.x() + 1));
             if( cross[i - 1] == -1)
             {
                 qDebug() << "set animation speed";
                 drawAnimationFigure(x1, y, x2, y, LINE, 0);
+
+                for( int j = x; j < i; j++) // convert to cross without animation
+                    cross[j] = 1;
             }
             else
                 drawFigure(x1, y, x2, y, LINE, 0);
+            lastGood = false;
+            if(needNextRow)
+                i--;
         }
-        /*
-        delPos = symbolPositionList.at(m); // -2 is popravka
-        int x2 = delPos.x() + fMetrics->width(listWords[m]);;
-        int y2 = delPos.y() - fMetrics->height()/4;
-        if( n == 0 )
-            delPos = symbolPositionList.at(n); // -2 is popravka
-        else
-            delPos = symbolPositionList.at(n + 1); // -2 is popravka
-        int x1 = delPos.x();
-        int y1 = delPos.y() - fMetrics->height()/4;
-        if(crossWithAnimation)
-        {
-            qDebug() << "set animation speed";
-            drawAnimationFigure(x1, y1, x2, y2, LINE, 0);
-        }
-        else
-            drawFigure(x1, y1, x2, y2, LINE, 0);
-        */
     }
 }
 
 bool QmlWidget::crossText()
 {
-   // qDebug() << "www " << deleteWT << cross;
-
-        while(deleteWT >= 0)
+  //  qDebug() << "www " << deleteWT << cross;
+    int spacePaid = 1;
+    int row = convertTextBoxToBufferIndex(cursorIndex).y();
+    while(deleteWT > 0)
+    {
+        qDebug() << "DW " << deleteWT << convertTextBoxToBufferIndex(cursorIndex);
+        int cursor = cursorIndex - row;
+        while( cursor - spacePaid >= 0)
         {
-            qDebug() << "DW " << deleteWT;
-            if(crossWithAnimation)
-                cross[cursorIndex - deleteWT--] = -1;
+            QPoint convert = convertTextBoxToBufferIndex(cursor - spacePaid, true);
+            qDebug() << "\nSYMBOL                 :::" << cursor  - spacePaid <<"         " << stringList[convert.y()][convert.x()];
+            if(stringList[convert.y()][convert.x()] <= 0x20)
+                spacePaid++;
             else
-                cross[cursorIndex - deleteWT--] = 1;
+                break;
         }
+        cursor -= spacePaid;
+        if(cursor >= 0 && cursor < cross.length())
+        {
+            if(crossWithAnimation)
+                cross[cursor] = -1;
+            else
+                cross[cursor] = 1;
+        }
+
+        deleteWT--;
+        spacePaid++;
+    }
 }

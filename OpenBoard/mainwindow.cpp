@@ -29,7 +29,7 @@ MainWindow::MainWindow(QWidget *parent) :
 //qDebug() <<directory;
 //    connect(&drawThread, SIGNAL(started()), this, SLOT(myfunction())); //cant have parameter sorry, when using connect
 
-    mpQmlWidget = new QmlWidget();
+    mpQmlWidget = new QmlWidget(this);
    // mpQmlWidget->moveToThread(&drawThread);
     textEdit = new MyTextEdit(QColor("#000000"), QColor("#FF0000"), ui->centralWidget);
     textEdit->setObjectName(QStringLiteral("textEdit"));
@@ -37,9 +37,9 @@ MainWindow::MainWindow(QWidget *parent) :
      connect(textEdit,SIGNAL(setFocus()),this,SLOT(onCommandFocusLost()));
 
 
-    commandTextEdit = new KeyloggerTE(textEdit);
+    commandTextEdit = new KeyloggerTE(textEdit, this);
     commandTextEdit->setObjectName(QStringLiteral("commandTextEdit"));
-    connect(commandTextEdit,SIGNAL(textChanged()),this,SLOT(key));
+   // connect(commandTextEdit,SIGNAL(textChanged()),this,SLOT(key()));
     commandTextEdit->setEnabled(true);
     connect(commandTextEdit,SIGNAL(setFocus()),this,SLOT(onCommandFocusSet()));
 
@@ -210,10 +210,10 @@ MainWindow::~MainWindow()
 
 void MainWindow::closeEvent(QCloseEvent*)
 {
-    on_action_Hide_triggered();
     if(mpQmlWidget != NULL)
     {
-        while( mpQmlWidget->status() != QmlWidget::STOP )
+        on_action_Hide_triggered();
+        while( mpQmlWidget->status() != QmlWidget::STOP && mpQmlWidget->isHidden())
             qApp->processEvents();
         delete mpQmlWidget;
     }
@@ -231,8 +231,12 @@ void MainWindow::on_action_Show_triggered()
 /*
  * QML
 */
-    if(mpQmlWidget != 0)
+    if(mpQmlWidget != NULL)
+    {
+        mpQmlWidget->close();
         delete mpQmlWidget;
+        mpQmlWidget = NULL;
+    }
     mpQmlWidget = new QmlWidget();
     mpQmlWidget->show();
     mpQmlWidget->setDelay(1000/lastInpuDelay);
@@ -273,9 +277,12 @@ void MainWindow::on_action_Hide_triggered()
 {
     if(mpQmlWidget->getStatus() == mpQmlWidget->PLAY || mpQmlWidget->getStatus() == mpQmlWidget->PAUSE)
       //  mpQmlWidget->stopAnimated();
-    emit   on_action_Stop_triggered();
+    on_action_Stop_triggered();
+    while(mpQmlWidget->getBusy()){
+        qApp->processEvents(QEventLoop::AllEvents, 200);
+    };
     mpQmlWidget->hide();
-    mpQmlWidget->close();
+    /*mpQmlWidget->close();*/
     // delete mpQmlWidget;
     ui->action_Pause->setEnabled(false);
     ui->action_Play->setEnabled(false);
@@ -298,12 +305,14 @@ void MainWindow::on_action_Hide_triggered()
 
 void MainWindow::moveEvent(QMoveEvent *event)
 {
-    mpQmlWidget->move(pos().x() + width() + WINDOW_MARGING, pos().y());
+    if(mpQmlWidget != NULL)
+        mpQmlWidget->move(pos().x() + width() + WINDOW_MARGING, pos().y());
 }
 
 void MainWindow::resizeEvent(QResizeEvent *event)
 {
-    mpQmlWidget->move(pos().x() + width() + WINDOW_MARGING, pos().y());
+    if(mpQmlWidget != NULL)
+        mpQmlWidget->move(pos().x() + width() + WINDOW_MARGING, pos().y());
 }
 
 void MainWindow::on_action_Font_triggered()
@@ -864,7 +873,8 @@ void MainWindow::on_action_Play_triggered()
     onTextChanged();
   //  qDebug() << mUnitList.size();
    // QString name = this->windowTitle();
-    while( drawCounter < mUnitList.size() && mpQmlWidget != 0 && mpQmlWidget->getStatus() != QmlWidget::STOP)
+    play = true;
+    while( play &&  drawCounter < mUnitList.size() && mpQmlWidget != 0 && mpQmlWidget->getStatus() != QmlWidget::STOP)
     {
         //while(mpQmlWidget->getStatus() == QmlWidget::PAUSE)
         if( mpQmlWidget->getStatus() != QmlWidget::PAUSE )
@@ -878,12 +888,16 @@ void MainWindow::on_action_Play_triggered()
     }
  //   setWindowTitle(name);
     if(mpQmlWidget != NULL)
+    {
         mpQmlWidget->update();
+        mpQmlWidget->drawBuffer();
+    }
     on_action_Stop_triggered();
 }
 
 void MainWindow::on_action_Stop_triggered()
 {
+    play = false;
     mpQmlWidget->stopAnimated();
     textEdit->setEnabled(true);
     ui->action_Undo->setEnabled(true);
