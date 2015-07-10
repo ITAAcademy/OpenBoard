@@ -58,10 +58,10 @@ QmlWidget::QmlWidget(QWidget *parent) :
     fMetrics = new QFontMetrics(QFont(font));
     curStatus = STOP;
     tickTimer.setSingleShot(false);
-    tickTimer.setInterval(1000/30);
+    tickTimer.setInterval(1000/25);
     fps_timer = new QTimer();
     //fps_timer->setInterval(1000/32);
-    fps_timer->setInterval(25);
+    fps_timer->setInterval(1);
     connect(fps_timer, SIGNAL(timeout()), this, SLOT ( fps_control() ));
     fps_stabilitron = 0;
     /*
@@ -416,7 +416,7 @@ void QmlWidget::fps_control()
 
         {
           //  qDebug() << "Draw";
-            pause(40 - fps_stabilitiTimer.elapsed());
+            pause(30 - fps_stabilitiTimer.elapsed());
             fps_stabilitiTimer.restart();
             m_encoder->encodeVideoFrame(this->grabFramebuffer());
 
@@ -795,20 +795,21 @@ void QmlWidget::insertToBuffer(const QChar ch)
 
 void QmlWidget::deleteFromBuffer(int n)
 {
+    update();
     int mustDell = qAbs(n);
     int crossCursor = cursorIndex - convertTextBoxToBufferIndex(cursorIndex).y();
     int i = n;
     while( i != 0)
     {
+        cross.removeAt(crossCursor  + i);
         if(i > 0)
             i--;
         else
             i++;
-        cross.removeAt(crossCursor  + i);
+        qDebug() << "QQQ" << crossCursor + i << "   " << " ::  " << cross;
     }
     while(mustDell > 0)
     {
-
         QPoint convertedIndex = convertTextBoxToBufferIndex(cursorIndex);
         cross.insert(cursorIndex - convertedIndex.y(), 0);
         qDebug() << convertedIndex << "DELL   " << mustDell;
@@ -1058,7 +1059,9 @@ bool QmlWidget::crossText()
     {
         //qDebug() << "DW " << deleteWT << convertTextBoxToBufferIndex(cursorIndex);
         int cursor = cursorIndex - row;
-        while( cursor - spacePaid >= 0)
+       /*   space paid
+        *
+        *  while( cursor - spacePaid >= 0)
         {
             QPoint convert = convertTextBoxToBufferIndex(cursor - spacePaid, true);
             //qDebug() << "\nSYMBOL                 :::" << cursor  - spacePaid <<"         " << stringList[convert.y()][convert.x()];
@@ -1066,7 +1069,7 @@ bool QmlWidget::crossText()
                 spacePaid++;
             else
                 break;
-        }
+        }*/
         cursor -= spacePaid;
         if(cursor >= 0 && cursor < cross.length())
         {
