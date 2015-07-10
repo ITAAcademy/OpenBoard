@@ -197,8 +197,6 @@ MainWindow::MainWindow(QWidget *parent) :
         addToolBar(Qt::TopToolBarArea, toolBar);
      // toolBar->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
       //  openFile("E:/Documento/Новый текстовый документ — копия.txt");
-
-
 }
 
 MainWindow::~MainWindow()
@@ -373,14 +371,14 @@ void MainWindow::on_action_Color_triggered()
 {   //call QtColorDialog
     QColor colorm;
     colorm = QColorDialog::getColor(textEdit->getColOrigin());
+    //!!!!!!!!!!!
     if(colorm.isValid())
     {
         QString col = colorm.name();
-          qDebug() << col;
-        QString temp = textEdit->toPlainText();
-        textEdit->clear();
         textEdit->setTextColor(col);
         textEdit->setColOrigin(colorm);
+        QString temp = textEdit->toPlainText();
+        textEdit->clear();
         textEdit->insertPlainText(temp);
 
         mSettings.setMainWindowColor(colorm);
@@ -425,8 +423,6 @@ void MainWindow::on_action_Cut_triggered()
 void MainWindow::on_action_Copy_triggered()
 {
     textEdit->copy();
-
-    qDebug() << textEdit->textColor().name();
 }
 
 void MainWindow::on_action_Paste_triggered()
@@ -826,8 +822,6 @@ void MainWindow::doUndoRedoEnd()
 void MainWindow::onTextChanged()
 {
     disconnect(textEdit, SIGNAL(textChanged()), this, SLOT(onTextChanged()));
-    {
-
    // qDebug() << "onTextChanged";
     QString str = textEdit->toPlainText();
     /*
@@ -850,39 +844,39 @@ void MainWindow::onTextChanged()
     }
     */
     textEdit->textColorSet(status);
-    if(mpQmlWidget->isVisible() && textEdit->toPlainText().size() != 0)
-    {
-        if(status != -1)
+    if(textEdit->toPlainText().size() != 0)
+        if(mpQmlWidget->isVisible())
         {
-            ui->action_Play->setEnabled(false);
-            a_play->setEnabled(false);
-            ui->action_Stop->setEnabled(false);
-            a_stop->setEnabled(false);
-            ui->statusBar->showMessage("Misstake in input data, you cannot play on board", 5000);
+            if(status != -1)
+            {
+                ui->action_Play->setEnabled(false);
+                a_play->setEnabled(false);
+                ui->action_Stop->setEnabled(false);
+                a_stop->setEnabled(false);
+                ui->statusBar->showMessage("Misstake in input data, you cannot play on board", 5000);
+            }
+            else
+            {
+                ui->action_Play->setEnabled(true);
+                a_play->setEnabled(true);
+                ui->action_Stop->setEnabled(true);
+                a_stop->setEnabled(true);
+            }
         }
         else
         {
-            ui->action_Play->setEnabled(true);
-            a_play->setEnabled(true);
-            ui->action_Stop->setEnabled(true);
-            a_stop->setEnabled(true);
+            if(status != -1)
+            {
+                ui->action_Show->setEnabled(false);
+                a_show->setEnabled(false);
+                ui->statusBar->showMessage("Misstake in input data, you cannot create board", 5000);
+            }
+            else
+            {
+                ui->action_Show->setEnabled(true);
+                a_show->setEnabled(true);
+            }
         }
-    }
-    else
-    {
-        if(status != -1)
-        {
-            ui->action_Show->setEnabled(false);
-            a_show->setEnabled(false);
-            ui->statusBar->showMessage("Misstake in input data, you cannot create board", 5000);
-        }
-        else
-        {
-            ui->action_Show->setEnabled(true);
-            a_show->setEnabled(true);
-        }
-    }
-    }
     textEdit->saveChanges();
     connect(textEdit, SIGNAL(textChanged()), this, SLOT(onTextChanged()));
 
