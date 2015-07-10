@@ -24,7 +24,7 @@
 #include "parser/parser.h"
 #include "editWidget/mytextedit.h"
 #include "youtube/youtubewrapper.h"
-
+#include "editWidget/keyloggertextedit.h"
 namespace Ui {
 class MainWindow;
 }
@@ -41,6 +41,8 @@ public:
 public slots:
     bool openFile(QString fileName);
     void doUndoRedoStart();
+    void onCommandFocusSet();
+    void onCommandFocusLost();
  void doUndoRedoEnd();
 //    board
     void closeEvent(QCloseEvent* event);
@@ -116,6 +118,8 @@ QMessageBox messAbout;
     QmlWidget       *mpQmlWidget;
     int drawCounter;
     MyTextEdit       *textEdit;
+    KeyloggerTE *commandTextEdit;
+    bool isCommandTextEditFocused = false;
     QString         curFile;
     pSettings       mSettings;
     QTimer          *mTimer;
@@ -131,6 +135,8 @@ QMessageBox messAbout;
     bool maybeSave();
     YouTubeWrapper *youtube;
     QToolBar *toolBar;
+    bool play = false;
+
 
 };
 

@@ -29,7 +29,11 @@ MyTextEdit::MyTextEdit(QColor originalColor,QColor specifiedColor,QWidget *paren
  newText();\
 
 }
-
+void MyTextEdit::focusInEvent( QFocusEvent * ev )
+{
+    emit MyTextEdit::setFocus() ;
+    QTextEdit::focusInEvent(ev);
+}
  void MyTextEdit::mergeFormatOnWordOrSelection(int position)
  {
     if (charCount==document()->characterCount()) return;
@@ -132,6 +136,14 @@ this->setTextCursor(t_cursor);
 
     emit doUndoRedoEnd();
  }
+ }
+
+ void MyTextEdit::appendNoNL( QString text )
+ {
+     QTextCursor prev_cursor = textCursor();
+     moveCursor (QTextCursor::End);
+     insertPlainText (text);
+     setTextCursor(prev_cursor);
  }
 
  void MyTextEdit::saveChanges()

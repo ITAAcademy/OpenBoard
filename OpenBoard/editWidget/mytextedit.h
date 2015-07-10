@@ -41,6 +41,7 @@ public:
     void newText();
     void undom();
     void rendom();
+    void appendNoNL(QString text);
     void keyPressEvent(QKeyEvent *e);
     explicit MyTextEdit(QColor originalColor, QColor specifiedColor, QWidget *parent = 0);
     void textColorSet(int position);
@@ -48,10 +49,11 @@ public:
 
     QColor getColOrigin() const;
     void setColOrigin(const QColor &value);
-
+        void focusInEvent( QFocusEvent * ev ) ;
 signals:
     void doUndoRedoStart();
     void doUndoRedoEnd();
+    void setFocus();
 };
 
 #endif // MYTEXTEDIT_H

@@ -10,7 +10,22 @@ Parser::~Parser()
 {
 
 }
-
+QString Parser::commands[]   ={
+    "\\n",
+    "\\a",
+    "\\-",
+    "\\<",
+    "\\>",
+    "\\ml",
+    "\\mr",
+    "\\dl",
+    "\\dr",
+    "\\#",
+     "\\p",
+    "\\c"
+};
+int Parser::COMMANDS_COUNT = 12;
+int Parser::MAX_COMMAND_LENGTH = 3;
 int Parser::ParsingLine(QList<Unit*> &list, QString& str)
 {
     list.clear();
@@ -77,21 +92,64 @@ int Parser::ParsingLine(QList<Unit*> &list, QString& str)
             if(pars_line == (QString)"\\-")
             {
                 UnitCommand* command = new UnitCommand();
-                command->setUnitCommandType("DeletePreChar");
+                command->setUnitCommandType("ClearPreChar");
+                QRegExp exp("[0-9]");
+                pars_line.clear();
+                int count = 0;
+                if(exp.exactMatch((QString)str[i+3]))
+                {
+                    while(exp.exactMatch((QString)str[i+3]) && count++ < 3)
+                    {
+                        pars_line += str[i+3];
+                        i++;
+                    }
+                }
+                else
+                {
+                    state = i;
+                    break;
+                }
+                command->setUnitData(pars_line);
                 list.push_back(command);
                 state = -1;
-                i++;
+                i += 2;
                 continue;
             }
             if(pars_line == (QString)"\\<")
-            {
-                UnitCommand* command = new UnitCommand();
+            {               
+                    UnitCommand* command = new UnitCommand();
+                    command->setUnitCommandType("ErasePreChar");
+
+                    QRegExp exp("[0-9]");
+                    pars_line.clear();
+                    int count = 0;
+                    if(exp.exactMatch((QString)str[i+3]))
+                    {
+                        while(exp.exactMatch((QString)str[i+3]) && count++ < 3)
+                        {
+                            pars_line += str[i+3];
+                            i++;
+                        }
+                    }
+                    else
+                    {
+                        state = i;
+                        break;
+                    }
+                    command->setUnitData(pars_line);
+                    list.push_back(command);
+                    state = -1;
+                    i += 2;
+                    continue;
+
+               /* UnitCommand* command = new UnitCommand();
                 command->setUnitCommandType("ErasePreChar");
                 list.push_back(command);
                 state = -1;
                 i++;
-                continue;
+                continue;*/
             }
+
             if(pars_line == (QString)"\\\\")
             {
                 UnitCommand* command = new UnitCommand();
@@ -156,11 +214,131 @@ int Parser::ParsingLine(QList<Unit*> &list, QString& str)
                 i++;
                 continue;
             }
-            else
+            /*else
             {
                 state = i;
                 break;
-            }
+            }*/
+              pars_line += str[i+2];
+              if (pars_line == (QString)"\\dl")
+              {
+                  UnitCommand* command = new UnitCommand();
+                  command->setUnitCommandType("DeleteLeft");
+
+                  QRegExp exp("[0-9]");
+                  pars_line.clear();
+                  int count = 0;
+                  if(exp.exactMatch((QString)str[i+3]))
+                  {
+                      while(exp.exactMatch((QString)str[i+3]) && count++ < 3)
+                      {
+                          pars_line += str[i+3];
+                          i++;
+                      }
+                  }
+                  else
+                  {
+                      state = i;
+                      break;
+                  }
+                  command->setUnitData(pars_line);
+                  list.push_back(command);
+                  state = -1;
+                  i += 2;
+                  continue;
+
+              }
+             // pars_line += str[i+2];
+              if (pars_line == (QString)"\\dr")
+              {
+                  UnitCommand* command = new UnitCommand();
+                  command->setUnitCommandType("DeleteRight");
+
+                  QRegExp exp("[0-9]");
+                  pars_line.clear();
+                  int count = 0;
+                  if(exp.exactMatch((QString)str[i+3]))
+                  {
+                      while(exp.exactMatch((QString)str[i+3]) && count++ < 3)
+                      {
+                          pars_line += str[i+3];
+                          i++;
+                      }
+                  }
+                  else
+                  {
+                      state = i;
+                      break;
+                  }
+                  command->setUnitData(pars_line);
+                  list.push_back(command);
+                  state = -1;
+                  i += 2;
+
+                  continue;
+
+              }
+
+              if (pars_line == (QString)"\\ml")
+              {
+                  UnitCommand* command = new UnitCommand();
+                  command->setUnitCommandType("MoveLeft");
+
+                  QRegExp exp("[0-9]");
+                  pars_line.clear();
+                  int count = 0;
+                  if(exp.exactMatch((QString)str[i+3]))
+                  {
+                      while(exp.exactMatch((QString)str[i+3]) && count++ < 3)
+                      {
+                          pars_line += str[i+3];
+                          i++;
+                      }
+                  }
+                  else
+                  {
+                      state = i;
+                      break;
+                  }
+                  command->setUnitData(pars_line);
+                  list.push_back(command);
+                  state = -1;
+                  i += 2;
+                  continue;
+
+              }
+              if (pars_line == (QString)"\\mr")
+              {
+                  UnitCommand* command = new UnitCommand();
+                  command->setUnitCommandType("MoveRight");
+
+                  QRegExp exp("[0-9]");
+                  pars_line.clear();
+                  int count = 0;
+                  if(exp.exactMatch((QString)str[i+3]))
+                  {
+                      while(exp.exactMatch((QString)str[i+3]) && count++ < 3)
+                      {
+                          pars_line += str[i+3];
+                          i++;
+                      }
+                  }
+                  else
+                  {
+                      state = i;
+                      break;
+                  }
+                  command->setUnitData(pars_line);
+                  list.push_back(command);
+                  state = -1;
+                  i += 2;
+                  continue;
+              }
+              else
+              {
+                  state = i;
+                  break;
+              }
         }
         else
         {

@@ -51,7 +51,7 @@ class QmlWidget : public QQuickWidget
 
 public:
     /*
-     * Структурка для градіента
+     * |Future gradient
      */
     struct GradientSetting{
         QStringList list;
@@ -61,7 +61,7 @@ public:
             list.push_back(QString("rgba(%1, %2, %3, %4)").arg(r).arg(g).arg(b).arg(a));
         }
     };
-    // status state
+    // |status state
     enum StatusDraw{
      PLAY , STOP, PAUSE
     };
@@ -70,7 +70,7 @@ public:
     };
 
     /*
-     * Events
+     * |Events
      */
     explicit QmlWidget(QWidget *parent = 0);
     ~QmlWidget();
@@ -80,14 +80,15 @@ public:
     void closeEvent(QCloseEvent *event);
     void mousePressEvent ( QMouseEvent * event );
     /*
-     * Canvas control
+     * |Canvas control
      */
     void clearCanvas();
     void drawFigure (int x, int y, int width, int height, FigureType type, bool fill, QColor col, float size);
     void drawAnimationFigure (int x, int y, int width, int height, FigureType type, bool fill);
-    void nextRow();
-    Q_INVOKABLE void crossOutLastSymbol();
-    void crossOutWithAnimation();
+    void nextRow(int n   = -1, int Row = -1);
+    Q_INVOKABLE void crossOutLastSymbol(int n = 1);
+    void crossOutWithAnimation(int n = 1);
+    void clearSymbol(int index);
     QPoint drawWrapText( QString str ); // main draw function
     void setFillColor( QColor col);
     void setFillGradient( int x , int y, int width, int height, GradientSetting color);
@@ -97,7 +98,7 @@ public:
     void pause(int ms);
     void update();
     /*
-     * G/S
+     * |G/S
      */
     StatusDraw getStatus() const;
     QFont getTextFont() const;
@@ -106,15 +107,17 @@ public:
     QString getDrawText();
     void recreate();
     /*
-     * encoder
+     * |encoder
     */
     VideoCodecSettings videoCodecSettings() const;
     AudioCodecSettings audioCodecSettings() const;
+    bool getBusy() const;
+
 public slots:
     void drawAnimated( bool record );
     void stopAnimated();
     void pauseAnimated();
-public:
+public slots:
     bool isRecord() const;
     int getCountDeleteWT() const;
     int getDelay() const;
@@ -123,10 +126,26 @@ public:
     void setMainFillColor(const QColor &value);
     void clear(int x,int y,int width,int height);
 
+    /*
+     * | new method reDraw
+     *
+     */
+    void insertToBuffer(const QChar ch);
+    QPoint convertTextBoxToBufferIndex(int index, bool symbol = false);
+    void drawBuffer();
+    void moveCursor(int n = 1);
+    void clearBuffer();
+    void testWrap(int kIndexOfRow);
+    void deleteFromBuffer(int n);
+    bool crossTextDraw();
+    /*
+     *
+     *
+    */
+
+    int getRowFromTextBoxIndex(int index, bool symbol);
 signals:
     void drawTextChanged();
-public slots:
-
 private slots:
     void processBuffer(const QAudioBuffer &buffer);
     void displayErrorMessage();
@@ -135,9 +154,9 @@ private slots:
     bool crossTextV2();
 private:
     QString drawText;
-    Encoder *m_encoder;
-    QAudioRecorder *audioRecorder;
-    QAudioProbe *probe;
+    Encoder *m_encoder = NULL;
+    QAudioRecorder *audioRecorder = NULL;
+    QAudioProbe *probe = NULL;
     bool bRecord;
     void generateFrames();
     StatusDraw curStatus; // 0 - stop; 1 - play; -1 - pause
@@ -145,7 +164,7 @@ private:
     QThread drawThread;
     QThread encoderThread;
     /*
-     * Сavas property
+     * |Сavas property
     */
     int lineHeight;
     int marginLeft;
@@ -162,20 +181,40 @@ private:
     int widthToClean=0;
     QColor fillColor;
     QColor mainFillColor;
+    /*
+     * |not use
+     */
     QList <QPoint> symbolPositionList;
     QString listWords; // вся стрічка
     QString listChars; // останнє введене слово
     QList<int> listStr; // номер з якої починається і-та стрічка
+    /*
+     * |not use
+    */
     QFont textFont;
-    QFontMetrics *fMetrics;
+    QFontMetrics *fMetrics = NULL;
     int indexInList;
     int deleteWT;
     QTimer tickTimer;
     int delay;
     int fps_stabilitron;
-    QTimer *fps_timer;
+    QTimer *fps_timer = NULL;
+    QElapsedTimer fps_stabilitiTimer;
+    double timer_test;
     double animationSpeed = 0.01;
     bool busy = false;
+
+
+    /*
+     * |new property
+     */
+
+    QList<QString> stringList;
+    QList<short int> cross;
+    int indexRowInList;
+    int cursorIndex;
+    bool isClose = false;
+
 
 };
 

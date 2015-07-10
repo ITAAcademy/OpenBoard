@@ -29,13 +29,23 @@ MainWindow::MainWindow(QWidget *parent) :
 //qDebug() <<directory;
 //    connect(&drawThread, SIGNAL(started()), this, SLOT(myfunction())); //cant have parameter sorry, when using connect
 
-    mpQmlWidget = new QmlWidget();
+    mpQmlWidget = new QmlWidget(this);
+    mpQmlWidget->setVisible(false);
    // mpQmlWidget->moveToThread(&drawThread);
     textEdit = new MyTextEdit(QColor("#000000"), QColor("#FF0000"), ui->centralWidget);
     textEdit->setObjectName(QStringLiteral("textEdit"));
     textEdit->setEnabled(true);
+     connect(textEdit,SIGNAL(setFocus()),this,SLOT(onCommandFocusLost()));
+
+
+    commandTextEdit = new KeyloggerTE(textEdit, this);
+    commandTextEdit->setObjectName(QStringLiteral("commandTextEdit"));
+   // connect(commandTextEdit,SIGNAL(textChanged()),this,SLOT(key()));
+    commandTextEdit->setEnabled(true);
+    connect(commandTextEdit,SIGNAL(setFocus()),this,SLOT(onCommandFocusSet()));
 
     ui->verticalLayout->addWidget(textEdit,-1);
+    ui->verticalLayout->addWidget(commandTextEdit,-1);
     connect(ui->button_Delay, SIGNAL(pressed()), this, SLOT(delay_released()));
     //connect(QColorDialog, SIGNAL(finished()), this, SLOT(on_colorBtn_released()));
     connect(ui->button_Find, SIGNAL(pressed()), this, SLOT(search()));
@@ -197,18 +207,15 @@ MainWindow::~MainWindow()
     //drawThread.quit();
     if(toolBar != NULL)
         delete toolBar;
-
     delete ui;
+    delete mpQmlWidget;
 }
 
 void MainWindow::closeEvent(QCloseEvent*)
 {
-    on_action_Hide_triggered();
     if(mpQmlWidget != NULL)
     {
-        while( mpQmlWidget->status() != QmlWidget::STOP )
-            qApp->processEvents();
-        delete mpQmlWidget;
+        on_action_Hide_triggered();
     }
     qDebug() << "Close drawWidget";
 }
@@ -224,8 +231,12 @@ void MainWindow::on_action_Show_triggered()
 /*
  * QML
 */
-    if(mpQmlWidget != 0)
+    if(mpQmlWidget != NULL)
+    {
+        mpQmlWidget->close();
         delete mpQmlWidget;
+        mpQmlWidget = NULL;
+    }
     mpQmlWidget = new QmlWidget();
     mpQmlWidget->show();
     mpQmlWidget->setDelay(1000/lastInpuDelay);
@@ -243,7 +254,6 @@ void MainWindow::on_action_Show_triggered()
     mpQmlWidget->setTextFont(mSettings.getBoardFont());
     mpQmlWidget->setMainFillColor(mSettings.getBoardFontColor());
 
-    emit mpQmlWidget->drawTextChanged();
 
 /*
     mpGLWidget->setFixedSize(GLWIDGET_SIZE);
@@ -265,11 +275,11 @@ void MainWindow::on_action_Show_triggered()
 
 void MainWindow::on_action_Hide_triggered()
 {
-    if(mpQmlWidget->getStatus() == mpQmlWidget->PLAY || mpQmlWidget->getStatus() == mpQmlWidget->PAUSE)
+   // if(mpQmlWidget->getStatus() == mpQmlWidget->PLAY || mpQmlWidget->getStatus() == mpQmlWidget->PAUSE)
       //  mpQmlWidget->stopAnimated();
-    emit   on_action_Stop_triggered();
+    on_action_Stop_triggered();
     mpQmlWidget->hide();
-    mpQmlWidget->close();
+    /*mpQmlWidget->close();*/
     // delete mpQmlWidget;
     ui->action_Pause->setEnabled(false);
     ui->action_Play->setEnabled(false);
@@ -292,12 +302,14 @@ void MainWindow::on_action_Hide_triggered()
 
 void MainWindow::moveEvent(QMoveEvent *event)
 {
-    mpQmlWidget->move(pos().x() + width() + WINDOW_MARGING, pos().y());
+    if(mpQmlWidget != NULL)
+        mpQmlWidget->move(pos().x() + width() + WINDOW_MARGING, pos().y());
 }
 
 void MainWindow::resizeEvent(QResizeEvent *event)
 {
-    mpQmlWidget->move(pos().x() + width() + WINDOW_MARGING, pos().y());
+    if(mpQmlWidget != NULL)
+        mpQmlWidget->move(pos().x() + width() + WINDOW_MARGING, pos().y());
 }
 
 void MainWindow::on_action_Font_triggered()
@@ -655,8 +667,8 @@ void MainWindow::delay_released()
 {
     QString text = ui->action_delayTB->text();
     text += QString::number(ui->spinBox_delayTB->value());
-
-    textEdit->insertPlainText(text);
+    emit textEdit->setFocus();
+    textEdit->appendNoNL(text);
 }
 
 void MainWindow::show_pause_menu()
@@ -667,23 +679,88 @@ void MainWindow::show_pause_menu()
 void MainWindow::on_backBtn_clicked()
 {
     QString text = ui->action_backTB->text();
-    textEdit->insertPlainText(text);
-    textEdit->setFocus();
+   // textEdit->insertPlainText(text);
+   // textEdit->setFocus();
+    if (isCommandTextEditFocused){
+    commandTextEdit->insertPlainText("\n");
+    textEdit->appendNoNL(text);
+    }
+    else{
+     textEdit->insertPlainText(text);
+    }
+     commandTextEdit->previousCursorPosition=commandTextEdit->textCursor().position();
+}
+void MainWindow::onCommandFocusSet(){
+    isCommandTextEditFocused=true;
+    qDebug() << "focus changed"<<isCommandTextEditFocused;
+}
+void MainWindow::onCommandFocusLost(){
+    isCommandTextEditFocused=false;
+    qDebug() << "focus changed"<<isCommandTextEditFocused;
 }
 
 void MainWindow::on_animationBtn_clicked()
 {
+    QString textInField="";
+    textEdit->toPlainText();
     QString text = ui->action_animatedTB->text();
+   // textEdit->insertPlainText(text);
+    if (isCommandTextEditFocused){
+    //commandTextEdit->insertPlainText(text);
+    textInField = textEdit->toPlainText();
+    if (commandTextEdit->toPlainText().isEmpty())return;
+    if (commandTextEdit->textCursor().selectionEnd()-commandTextEdit->textCursor().selectionStart()==0)
+    {
+            textInField +=text;
+            textEdit->setPlainText(textInField);
+    }
+    else {
+        int delta = commandTextEdit->textCursor().selectionEnd()-commandTextEdit->textCursor().selectionStart();
+        if (commandTextEdit->textCursor().position()!=commandTextEdit->textCursor().selectionEnd())
+        { textInField.chop(6);//Видаляємо перехід вліво КОСТИЛЯКА НА ЛОМАЦІ ))
+            QTextCursor tCursor = commandTextEdit->textCursor();
+            tCursor.clearSelection();
+           commandTextEdit->setTextCursor(tCursor);
+        }
+        textInField +=QString("\\<%1").arg(delta, 3, 10, QChar('0'));
+         textEdit->setPlainText(textInField);
+    }
+    }
+    else
     textEdit->insertPlainText(text);
 
-    textEdit->setFocus();
+
 }
 
 void MainWindow::on_crossBtn_clicked()
 {
-    QString text = ui->action_crossTB->text();
+    QString textInField="";
+    textEdit->toPlainText();
+    QString text = "\\-001";
+   // textEdit->insertPlainText(text);
+    if (isCommandTextEditFocused){
+    //commandTextEdit->insertPlainText(text);
+    textInField = textEdit->toPlainText();
+    if (commandTextEdit->toPlainText().isEmpty())return;
+    if (commandTextEdit->textCursor().selectionEnd()-commandTextEdit->textCursor().selectionStart()==0)
+    {
+            textInField +=text;
+            textEdit->setPlainText(textInField);
+    }
+    else {
+        int delta = commandTextEdit->textCursor().selectionEnd()-commandTextEdit->textCursor().selectionStart();
+        if (commandTextEdit->textCursor().position()!=commandTextEdit->textCursor().selectionEnd())
+        { textInField.chop(6);//Видаляємо перехід вліво КОСТИЛЯКА НА ЛОМАЦІ ))
+            QTextCursor tCursor = commandTextEdit->textCursor();
+            tCursor.clearSelection();
+           commandTextEdit->setTextCursor(tCursor);
+        }
+        textInField +=QString("\\-%1").arg(delta, 3, 10, QChar('0'));
+         textEdit->setPlainText(textInField);
+    }
+    }
+    else
     textEdit->insertPlainText(text);
-    textEdit->setFocus();
 }
 
 void MainWindow::on_colorBtn_pressed()
@@ -698,7 +775,7 @@ void MainWindow::on_colorBtn_released()
     textColorName = colorPkr.name();
     text += textColorName;
     text.remove(2,1);
-    textEdit->insertPlainText(text);
+    textEdit->appendNoNL(text);
 }
 
 void MainWindow::show_color_dialog()
@@ -718,20 +795,20 @@ void MainWindow::on_colorBtn_clicked()
             textColorName = colorPkr.name();
             text += textColorName;
             text.remove(2,1);
-            textEdit->insertPlainText(text);
+            textEdit->appendNoNL(text);
         }
 //    QString text = ui->action_colorTB->text();
 //    text += textColorName;
 //    text.remove(2,1);
 //    textEdit->insertPlainText(text);
-    textEdit->setFocus();
+  //  textEdit->setFocus();
 }
 
 void MainWindow::on_clearBtn_clicked()
 {
     QString text = ui->action_clearTB->text();
-    textEdit->insertPlainText(text);
-    textEdit->setFocus();
+    textEdit->appendNoNL(text);
+    emit textEdit->setFocus();
 }
 
 void MainWindow::doUndoRedoStart()
@@ -773,7 +850,7 @@ void MainWindow::onTextChanged()
     }
     */
     textEdit->textColorSet(status);
-    if(mpQmlWidget->isVisible() && textEdit->toPlainText().length() != 0)
+    if(mpQmlWidget->isVisible() && textEdit->toPlainText().size() != 0)
     {
         if(status != -1)
         {
@@ -841,6 +918,7 @@ void MainWindow::on_action_Play_triggered()
     else
     {
         mpQmlWidget->clearCanvas();
+        mpQmlWidget->clearBuffer();
         mpQmlWidget->setFillColor(mpQmlWidget->getMainFillColor());
         drawCounter = 0;
     }
@@ -850,7 +928,8 @@ void MainWindow::on_action_Play_triggered()
     onTextChanged();
   //  qDebug() << mUnitList.size();
    // QString name = this->windowTitle();
-    while( drawCounter < mUnitList.size() && mpQmlWidget != 0 && mpQmlWidget->getStatus() != QmlWidget::STOP)
+    play = true;
+    while( play &&  drawCounter < mUnitList.size() && mpQmlWidget != 0 && mpQmlWidget->getStatus() != QmlWidget::STOP)
     {
         //while(mpQmlWidget->getStatus() == QmlWidget::PAUSE)
         if( mpQmlWidget->getStatus() != QmlWidget::PAUSE )
@@ -864,8 +943,12 @@ void MainWindow::on_action_Play_triggered()
     }
  //   setWindowTitle(name);
     if(mpQmlWidget != NULL)
+    {
         mpQmlWidget->update();
+        mpQmlWidget->drawBuffer();
+    }
     on_action_Stop_triggered();
+    play = false;
 }
 
 void MainWindow::on_action_Stop_triggered()

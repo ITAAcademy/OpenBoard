@@ -1,6 +1,7 @@
 QT -= declarative sensors multimedia multimediawidgets printsupport opengl
 
 QT       += widgets multimedia quick quickwidgets network webkitwidgets concurrent
+CONFIG += c++11
 
 SOURCES += main.cpp\
     mainwindow.cpp \
@@ -13,7 +14,8 @@ SOURCES += main.cpp\
     editWidget/mytextedit.cpp \
     youtube/logindialog.cpp \
     youtube/oauth2.cpp \
-    youtube/youtubewrapper.cpp
+    youtube/youtubewrapper.cpp \
+    editWidget/keyloggertextedit.cpp
 
 
 HEADERS  += mainwindow.h \
@@ -26,7 +28,8 @@ HEADERS  += mainwindow.h \
     editWidget/mytextedit.h \
     youtube/logindialog.h \
     youtube/oauth2.h \
-    youtube/youtubewrapper.h
+    youtube/youtubewrapper.h \
+    editWidget/keyloggertextedit.h
 
 FORMS    += mainwindow.ui \
     youtube/logindialog.ui
