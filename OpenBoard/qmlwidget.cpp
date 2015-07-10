@@ -796,11 +796,21 @@ void QmlWidget::insertToBuffer(const QChar ch)
 void QmlWidget::deleteFromBuffer(int n)
 {
     int mustDell = qAbs(n);
-
+    int crossCursor = cursorIndex - convertTextBoxToBufferIndex(cursorIndex).y();
+    int i = n;
+    while( i != 0)
+    {
+        if(i > 0)
+            i--;
+        else
+            i++;
+        cross.removeAt(crossCursor  + i);
+    }
     while(mustDell > 0)
     {
 
         QPoint convertedIndex = convertTextBoxToBufferIndex(cursorIndex);
+        cross.insert(cursorIndex - convertedIndex.y(), 0);
         qDebug() << convertedIndex << "DELL   " << mustDell;
         QString &str =  stringList[convertedIndex.y()];
         int realDell;

@@ -664,7 +664,7 @@ void MainWindow::delay_released()
     QString text = ui->action_delayTB->text();
     text += QString::number(ui->spinBox_delayTB->value());
     emit textEdit->setFocus();
-    textEdit->append(text);
+    textEdit->appendNoNL(text);
 }
 
 void MainWindow::show_pause_menu()
@@ -771,7 +771,7 @@ void MainWindow::on_colorBtn_released()
     textColorName = colorPkr.name();
     text += textColorName;
     text.remove(2,1);
-    textEdit->insertPlainText(text);
+    textEdit->appendNoNL(text);
 }
 
 void MainWindow::show_color_dialog()
@@ -791,7 +791,7 @@ void MainWindow::on_colorBtn_clicked()
             textColorName = colorPkr.name();
             text += textColorName;
             text.remove(2,1);
-            textEdit->setPlainText(text);
+            textEdit->appendNoNL(text);
         }
 //    QString text = ui->action_colorTB->text();
 //    text += textColorName;
