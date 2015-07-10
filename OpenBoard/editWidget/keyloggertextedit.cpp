@@ -32,6 +32,14 @@ void KeyloggerTE::keyPressEvent(QKeyEvent *event){
              {
                  if (event->matches(QKeySequence::Paste))
                      textInField += QApplication::clipboard()->text();
+                 if (event->matches(QKeySequence::Cut))
+                 {
+                     int delta = localCursorSelectionEnd-localCursorSelectionStart;
+                     if (localCursorPosition==localCursorSelectionEnd)
+                     textInField +=QString("\\dl%1").arg(delta, 3, 10, QChar('0'));
+                     else textInField +=QString("\\dr%1").arg(delta, 3, 10, QChar('0'));
+                 }
+
              }
     else
     switch(keyCode){
@@ -111,7 +119,7 @@ else {
     case Qt::Key_Enter:
     case Qt::Key_Return:
         qDebug() << "on_KEY_ENTER";
-        textInField +="\\n";
+        textInField +="\n";
         break;
      case Qt::Key_Backslash:
         lastSlashPosInDestination = textInField.length();

@@ -675,8 +675,16 @@ void MainWindow::show_pause_menu()
 void MainWindow::on_backBtn_clicked()
 {
     QString text = ui->action_backTB->text();
-    textEdit->insertPlainText(text);
-    textEdit->setFocus();
+   // textEdit->insertPlainText(text);
+   // textEdit->setFocus();
+    if (isCommandTextEditFocused){
+    commandTextEdit->insertPlainText("\n");
+    textEdit->appendNoNL(text);
+    }
+    else{
+     textEdit->insertPlainText(text);
+    }
+     commandTextEdit->previousCursorPosition=commandTextEdit->textCursor().position();
 }
 void MainWindow::onCommandFocusSet(){
     isCommandTextEditFocused=true;
