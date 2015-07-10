@@ -335,7 +335,7 @@ void QmlWidget::drawAnimationFigure(int x, int y, int width, int height, QmlWidg
     drawFigure(x, y, width, height, type, fill);
 }
 
-void QmlWidget::crossOutLastSymbol()
+void QmlWidget::crossOutLastSymbol( int n)
 {
    // QPoint delPos = symbolPositionList.at(symbolPositionList.length() - 1 - deleteWT);
     //int k = 0;
@@ -356,14 +356,14 @@ void QmlWidget::crossOutLastSymbol()
     fillText("/", delPos.x(), delPos.y());
     fillText("\\", delPos.x(), delPos.y());*/
     //if()
-    deleteWT++;
+    deleteWT += n;
 
 }
 
-void QmlWidget::crossOutWithAnimation()
+void QmlWidget::crossOutWithAnimation(int n)
 {
   //  qDebug() << "URAAAA!!!  " << deleteWT;
-    crossOutLastSymbol();
+    crossOutLastSymbol(n);
     crossWithAnimation = true;
 }
 

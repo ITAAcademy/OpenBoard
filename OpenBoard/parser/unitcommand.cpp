@@ -30,6 +30,7 @@ void UnitCommand::nextLine(QmlWidget *canvas)
 
 void UnitCommand::boardClean(QmlWidget *canvas)
 {
+    canvas->clearBuffer();
     canvas->clearCanvas();
 }
 
@@ -64,10 +65,11 @@ void UnitCommand::erasePreChar(QmlWidget *canvas,int n)
     //canvas->crossOutLastSymbol();
     canvas->crossOutWithAnimation(n);
 }
-void UnitCommand::clearPreChar(QmlWidget *canvas)
+void UnitCommand::clearPreChar(QmlWidget *canvas, int n)
 {
     //canvas->crossOutLastSymbol();
-   canvas->crossOutLastSymbol();
+   canvas->crossOutLastSymbol(n);
+   qDebug() << "cross" << n;
 }
 
 void UnitCommand::pause(QmlWidget *canvas)
@@ -103,21 +105,18 @@ void UnitCommand::draw(QmlWidget *canvas)
     }
     if (Type == "ClearPreChar")
     {
-        clearPreChar(canvas);
+        clearPreChar(canvas, unit_data.toInt());
+        return;
     }
     if (Type == "MoveLeft")
     {
         moveLeft(canvas, unit_data.toInt());
+        return;
     }
     if (Type == "MoveRight")
     {
          moveRight(canvas, unit_data.toInt());
-
-    }
-    if (Type == "DeletePreChar")
-    {
-        deletePreChar(canvas);
-        return;
+         return;
     }
     if (Type == "ErasePreChar")
     {

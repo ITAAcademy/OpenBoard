@@ -663,8 +663,8 @@ void MainWindow::delay_released()
 {
     QString text = ui->action_delayTB->text();
     text += QString::number(ui->spinBox_delayTB->value());
-
-    textEdit->insertPlainText(text);
+    emit textEdit->setFocus();
+    textEdit->append(text);
 }
 
 void MainWindow::show_pause_menu()
@@ -705,7 +705,7 @@ void MainWindow::on_animationBtn_clicked()
     else {
         int delta = commandTextEdit->textCursor().selectionEnd()-commandTextEdit->textCursor().selectionStart();
         if (commandTextEdit->textCursor().position()!=commandTextEdit->textCursor().selectionEnd())
-        { textInField.chop(6);//Видаляємо перехід вліво КОСТИЛЯКА НА ЛОМАЦІ
+        { textInField.chop(6);//Видаляємо перехід вліво КОСТИЛЯКА НА ЛОМАЦІ ))
             QTextCursor tCursor = commandTextEdit->textCursor();
             tCursor.clearSelection();
            commandTextEdit->setTextCursor(tCursor);
@@ -722,9 +722,33 @@ void MainWindow::on_animationBtn_clicked()
 
 void MainWindow::on_crossBtn_clicked()
 {
-    QString text = ui->action_crossTB->text();
+    QString textInField="";
+    textEdit->toPlainText();
+    QString text = "\\-001";
+   // textEdit->insertPlainText(text);
+    if (isCommandTextEditFocused){
+    //commandTextEdit->insertPlainText(text);
+    textInField = textEdit->toPlainText();
+    if (commandTextEdit->toPlainText().isEmpty())return;
+    if (commandTextEdit->textCursor().selectionEnd()-commandTextEdit->textCursor().selectionStart()==0)
+    {
+            textInField +=text;
+            textEdit->setPlainText(textInField);
+    }
+    else {
+        int delta = commandTextEdit->textCursor().selectionEnd()-commandTextEdit->textCursor().selectionStart();
+        if (commandTextEdit->textCursor().position()!=commandTextEdit->textCursor().selectionEnd())
+        { textInField.chop(6);//Видаляємо перехід вліво КОСТИЛЯКА НА ЛОМАЦІ ))
+            QTextCursor tCursor = commandTextEdit->textCursor();
+            tCursor.clearSelection();
+           commandTextEdit->setTextCursor(tCursor);
+        }
+        textInField +=QString("\\-%1").arg(delta, 3, 10, QChar('0'));
+         textEdit->setPlainText(textInField);
+    }
+    }
+    else
     textEdit->insertPlainText(text);
-    textEdit->setFocus();
 }
 
 void MainWindow::on_colorBtn_pressed()
@@ -759,20 +783,20 @@ void MainWindow::on_colorBtn_clicked()
             textColorName = colorPkr.name();
             text += textColorName;
             text.remove(2,1);
-            textEdit->insertPlainText(text);
+            textEdit->setPlainText(text);
         }
 //    QString text = ui->action_colorTB->text();
 //    text += textColorName;
 //    text.remove(2,1);
 //    textEdit->insertPlainText(text);
-    textEdit->setFocus();
+  //  textEdit->setFocus();
 }
 
 void MainWindow::on_clearBtn_clicked()
 {
     QString text = ui->action_clearTB->text();
-    textEdit->insertPlainText(text);
-    textEdit->setFocus();
+    textEdit->appendNoNL(text);
+    emit textEdit->setFocus();
 }
 
 void MainWindow::doUndoRedoStart()

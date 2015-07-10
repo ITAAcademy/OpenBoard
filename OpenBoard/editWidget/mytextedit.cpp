@@ -138,6 +138,14 @@ this->setTextCursor(t_cursor);
  }
  }
 
+ void MyTextEdit::appendNoNL( QString text )
+ {
+     QTextCursor prev_cursor = textCursor();
+     moveCursor (QTextCursor::End);
+     insertPlainText (text);
+     setTextCursor(prev_cursor);
+ }
+
  void MyTextEdit::saveChanges()
  {
 

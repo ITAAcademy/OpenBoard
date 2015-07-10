@@ -41,6 +41,7 @@ public:
     void newText();
     void undom();
     void rendom();
+    void appendNoNL(QString text);
     void keyPressEvent(QKeyEvent *e);
     explicit MyTextEdit(QColor originalColor, QColor specifiedColor, QWidget *parent = 0);
     void textColorSet(int position);
