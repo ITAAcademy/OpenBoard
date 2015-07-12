@@ -16,11 +16,20 @@ void UnitCommand::setUnitCommandType(QString str)
 {
     Type = str;
 }
+bool isLower(const ColorMarker &c1,const ColorMarker &c2)
+{
+    return c1.startIndex < c2.startIndex;
+}
 
 void UnitCommand::changeColor(QmlWidget *canvas)
 {
-    canvas->setFillColor(QColor(unit_data));
+   // canvas->setFillColor(QColor(unit_data));
     qDebug() << "void UnitCommand::changeColor(QmlWidget *canvas)";
+    ColorMarker marker;
+    marker.startIndex=canvas->cursorIndex;
+    marker.value=unit_data;
+    canvas->colors.push_back(marker);
+    qSort(canvas->colors.begin(),canvas->colors.end(),isLower);
 }
 
 void UnitCommand::nextLine(QmlWidget *canvas)

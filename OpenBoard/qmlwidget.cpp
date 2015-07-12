@@ -292,6 +292,7 @@ void QmlWidget::clearCanvas()
 }
 void QmlWidget::clearBuffer()
 {
+     colors.clear();
     cross.clear();
     cross.append(2); // для визова зачеркування якщо стрічка зацінчується
     stringList.clear();
@@ -756,20 +757,79 @@ void QmlWidget::drawBuffer()
     while( i < stringList.length() && i < indexRowInList + maxElm)
     {
         //qDebug() << stringList[i] << "@";
+        int localX=x;
         QStringList tabulationStr = stringList[i].split("\t");
+        //TODO SET TEXT COLOR TO CANVAS COLOR
+        setFillColor(getMainFillColor());
         for(int j = 0; j < tabulationStr.size(); j++)
         {
             fillText(tabulationStr[j], x, y);
             x += fMetrics->width(tabulationStr[j] + "\t");
         }
+    for (int k = 0 ; k< colors.length();k++)
+    {
+        int columnOfColorStrBegin;
+        int columnOfColorStrEnd;
 
+           int rowOfColorStrBegin =  convertTextBoxToBufferIndex(colors[k].startIndex).y();//Рядок в якому починається стрічка з кольором
+           int rowOfColorStrEnd = 0;
+           //Якщо не дійшли до останнього кольору, то встановл. рядок кінця стрічи з початку наступної кольорової
+           if (k<colors.length()-1)rowOfColorStrEnd=convertTextBoxToBufferIndex(colors[k+1].startIndex ).y();
+           //Якщо останній колір, то така стрічка закінчується в останньому рядку
+           else rowOfColorStrEnd=stringList.length()-1;
+           //Якщо ColorIndex в цій стрічці відсутній, то переходим на інший ColorIndex
+             if (!(i>=rowOfColorStrBegin && i<=rowOfColorStrEnd))
+                 continue;
+           //Якщо на рядку, в якому починається кольорова стрічка — то стовпчик початку берем одразу з QList<ColorIndex> colors
+           if (i==rowOfColorStrBegin)
+               columnOfColorStrBegin =  convertTextBoxToBufferIndex(colors[k].startIndex ).x();
+           //Інакше стовпчик початку - нульовий стовпчик . Інфа 100%
+           else columnOfColorStrBegin = 0;
+           //Якщо на останньому кольорі, то стовпчик кінця — індекс останнього символу стрічки.
+             if (k==colors.length()-1) columnOfColorStrEnd =  stringList[i].length();
+             else
+                 //якщо не останній колір і на останній стрічці, то стовпчик кінця — стовпчик початку наступної стрічки з кольором
+           if (i==stringList.length()-1)  columnOfColorStrEnd =  convertTextBoxToBufferIndex(colors[k+1].startIndex ).x();
+            //Якщо не останній колір і не остання стрічка, то стовпчик кінця —
+           else
+           {
+               //Якщо в цій самій стрічці починається інша кольорова стрічка то кінцевий стовпчик поточної
+               //Кольорової стрічки - це почато наступної
+               if (convertTextBoxToBufferIndex(colors[k+1].startIndex ).y()==rowOfColorStrEnd)
+               columnOfColorStrEnd =  convertTextBoxToBufferIndex(colors[k+1].startIndex ).x();
+               //Інакше КС(кінцевий стовпчик) — це кінець стрічки
+               else columnOfColorStrEnd =  stringList[i].length()-1;
+           }
+             QString textToWarp;
+            //Якщо перша кольорова стрічка, то додаєм до локального Х ширину стрічки, що йшла до кольорової стрічки
+            if (k==0)
+           textToWarp= stringList[i].mid(0,columnOfColorStrBegin);
+           else  {
+                int  columnOfColorStrBeginPrev=0;
+                if (convertTextBoxToBufferIndex(colors[k-1].startIndex ).y()==i)
+                    columnOfColorStrBeginPrev=convertTextBoxToBufferIndex(colors[k-1].startIndex ).x();
+                textToWarp= stringList[i].mid(columnOfColorStrBeginPrev,columnOfColorStrBegin-columnOfColorStrBeginPrev);
+            }
+            localX+=fMetrics->width(textToWarp);
+            setFillColor(colors[k].value);
+            QString textToFill = stringList[i].mid(columnOfColorStrBegin,columnOfColorStrEnd-columnOfColorStrBegin);
+            fillText(textToFill,localX,y);
+           // localX+=fMetrics->width(textToFill);
+            //setFillColor(QColor(255,255,255));//Костиль, удалити, вистачить верхнього setColor, добавити на початок colors колір канви
+             qDebug() << "columnOfColorStrEnd:" << columnOfColorStrEnd;
+             qDebug() << "columnOfColorStrBegin:" << columnOfColorStrBegin;
+            qDebug()<<"textToFill:"<<textToFill;
+              qDebug()<< "textToWarp:" << textToWarp;
+              qDebug()<<"rowOfColorStrBegin:"<<rowOfColorStrBegin;
+    }
         /*
          * next row
          */
         y += lineHeight + pt;
         x = marginLeft;
+        localX=marginLeft;
         i++;
-    }
+    } 
     crossTextDraw();
     busy = false;
 }

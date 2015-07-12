@@ -33,7 +33,10 @@ using namespace QtAV;
 #define STREAM_FRAME_RATE 10
 #define STREAM_DURATION 60
 
-
+struct ColorMarker{
+    int startIndex;
+    QColor value;
+};
 
 class Encoder;
 
@@ -53,6 +56,7 @@ public:
     /*
      * |Future gradient
      */
+    QList<ColorMarker> colors;
     struct GradientSetting{
         QStringList list;
         void addColorStop( float range, int r, int g, int b, int a = 255)
@@ -212,9 +216,10 @@ private:
     QList<QString> stringList;
     QList<short int> cross;
     int indexRowInList;
-    int cursorIndex;
-    bool isClose = false;
 
+    bool isClose = false;
+public:
+     int cursorIndex;
 
 };
 

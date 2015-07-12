@@ -53,8 +53,8 @@ OTHER_FILES += \
     draw.qml \
     icons/12video icon.png
 
-win32:CONFIG(release, debug|release): LIBS += -LF:/QA/QtMEL-master/libsQt5/ -lqtmel1
-else:win32:CONFIG(debug, debug|release): LIBS += -LF:/QA/QtMEL-master/libsQt5/ -lqtmeld1
+win32:CONFIG(release, debug|release): LIBS += -LC:/Users/roma/Downloads/OpenDeploy_v0.26/OpenDeploy_v0.26/ -lqtmel1
+else:win32:CONFIG(debug, debug|release): LIBS += -LC:/Users/roma/Downloads/OpenDeploy_v0.26/OpenDeploy_v0.26/ -lqtmel1
 
 
 VERSION = 0.4.0.0
