@@ -41,6 +41,7 @@ QmlWidget::QmlWidget(QWidget *parent) :
     curStatus = STOP;
     tickTimer.setSingleShot(false);
     tickTimer.setInterval(1000/25);
+    realDelay = 0;
     /*
      * canvas set
     */
@@ -50,7 +51,7 @@ QmlWidget::QmlWidget(QWidget *parent) :
     QMetaObject::invokeMethod(canvas, "init");
 
 
-    connect(&tickTimer, SIGNAL(timeout()), this, SLOT(drawBuffer()));
+   // connect(&tickTimer, SIGNAL(timeout()), this, SLOT(drawBuffer()));
     stringList.append("");
     //stringList.reserve(600000);
     indexRowInList = 0;
@@ -297,6 +298,16 @@ void QmlWidget::crossOutWithAnimation(int n)
 void QmlWidget::generateFrames()
 {
 }
+int QmlWidget::getCursorIndex() const
+{
+    return cursorIndex;
+}
+
+void QmlWidget::setCursorIndex(int value)
+{
+    cursorIndex = value;
+}
+
 
 bool QmlWidget::getBusy() const
 {
@@ -607,6 +618,7 @@ QPoint QmlWidget::drawWrapText(QString str)
 void QmlWidget::drawBuffer()
 {
     busy = true;
+    framDelayTimer.restart();
     //if(!crossTextV2())
      //   return QPoint(0, 0);
     //int width = fMetrics->width(str)*1.125 ;//+ fMetrics->leftBearing(str.at(0)) + fMetrics->rightBearing(str.at(0));
@@ -701,6 +713,10 @@ void QmlWidget::drawBuffer()
         i++;
     } 
     crossTextDraw();
+    if((delay - framDelayTimer.elapsed()) > 0)
+        realDelay = (delay - framDelayTimer.elapsed());
+    else
+        realDelay = 0;
     busy = false;
 }
 
@@ -719,7 +735,7 @@ void QmlWidget::insertToBuffer(const QChar ch)
     listChars.append(ch);
 
     emit drawTextChanged();
-    pause(delay);
+    pause(realDelay);
 
 }
 
@@ -804,6 +820,7 @@ void QmlWidget::deleteFromBuffer(int n)
 
 void QmlWidget::moveCursor(int n)
 {
+    update();
     cursorIndex += n;
     if(cursorIndex < 0)
         cursorIndex = 0;

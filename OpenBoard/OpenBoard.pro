@@ -1,8 +1,7 @@
 QT -= declarative sensors multimedia multimediawidgets printsupport opengl
 
 QT       += widgets multimedia quick quickwidgets network webkitwidgets concurrent
-CONFIG += c++11
-
+CONFIG(release, debug|release):DEFINES += QT_NO_DEBUG_OUTPUT
 SOURCES += main.cpp\
     mainwindow.cpp \
     settings.cpp \
@@ -15,8 +14,8 @@ SOURCES += main.cpp\
     youtube/logindialog.cpp \
     youtube/oauth2.cpp \
     youtube/youtubewrapper.cpp \
-    editWidget/keyloggertextedit.cpp \
-    encoder/videorencoder.cpp
+    encoder/videorencoder.cpp \
+    editWidget/keyloggertextedit.cpp
 
 
 HEADERS  += mainwindow.h \
@@ -30,8 +29,8 @@ HEADERS  += mainwindow.h \
     youtube/logindialog.h \
     youtube/oauth2.h \
     youtube/youtubewrapper.h \
-    editWidget/keyloggertextedit.h \
-    encoder/videorencoder.h
+    encoder/videorencoder.h \
+    editWidget/keyloggertextedit.h
 
 FORMS    += mainwindow.ui \
     youtube/logindialog.ui
@@ -55,8 +54,8 @@ OTHER_FILES += \
     draw.qml \
     icons/12video icon.png
 
-win32:CONFIG(release, debug|release): LIBS += -LC:/Users/roma/Downloads/OpenDeploy_v0.26/OpenDeploy_v0.26/ -lqtmel1
-else:win32:CONFIG(debug, debug|release): LIBS += -LC:/Users/roma/Downloads/OpenDeploy_v0.26/OpenDeploy_v0.26/ -lqtmel1
+win32:CONFIG(release, debug|release): LIBS += -LF:/QA/QtMEL-master/libsQt5/ -lqtmel1
+else:win32:CONFIG(debug, debug|release): LIBS += -LF:/QA/QtMEL-master/libsQt5/ -lqtmeld1
 
 
 VERSION = 0.4.0.0

@@ -94,14 +94,14 @@ Item{
             JS.context.kerning = 10;
             mainDrawElm.cross = crossOut;
             mainDrawElm.underline = underLine;
-            console.debug(mainDrawElm.cross +  " " + mainDrawElm.underline);
+       //     console.debug(mainDrawElm.cross +  " " + mainDrawElm.underline);
         }
 
         function setColor( col )
         {
             JS.context.fillStyle = col;
             mainDrawElm.color = col;
-            console.debug("color set" + mainDrawElm.color);
+          //  console.debug("color set" + mainDrawElm.color);
         }
 
         function drawFigure(x, y, w, h, type, fill, size, color)
@@ -164,7 +164,7 @@ Item{
 
         Connections {
             target: forma
-            onDrawTextChanged: console.log("The application data changed!")
+         //   onDrawTextChanged: console.log("The application data changed!")
         }
 
         onPaint: {

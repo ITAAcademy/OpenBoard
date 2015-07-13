@@ -26,7 +26,7 @@ void UnitCommand::changeColor(QmlWidget *canvas)
    // canvas->setFillColor(QColor(unit_data));
     qDebug() << "void UnitCommand::changeColor(QmlWidget *canvas)";
     ColorMarker marker;
-    marker.startIndex=canvas->cursorIndex;
+    marker.startIndex=canvas->getCursorIndex();
     marker.value=unit_data;
     canvas->colors.push_back(marker);
     qSort(canvas->colors.begin(),canvas->colors.end(),isLower);

@@ -112,6 +112,9 @@ public:
     QImage getBackBuffer() const;
     void setBackBuffer(const QImage &value);
 
+    int getCursorIndex() const;
+    void setCursorIndex(int value);
+
 public slots:
     void drawAnimated( bool record );
     void stopAnimated();
@@ -191,6 +194,7 @@ private:
     int deleteWT;
     QTimer tickTimer;
     int delay;
+    int realDelay;
     double timer_test;
     double animationSpeed = 0.01;
     bool busy = false;
@@ -203,10 +207,9 @@ private:
     QList<QString> stringList;
     QList<short int> cross;
     int indexRowInList;
-
+    QElapsedTimer framDelayTimer;
     bool isClose = false;
-public:
-     int cursorIndex;
+    int cursorIndex;
 
 };
 
