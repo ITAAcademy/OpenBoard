@@ -15,7 +15,8 @@ SOURCES += main.cpp\
     youtube/logindialog.cpp \
     youtube/oauth2.cpp \
     youtube/youtubewrapper.cpp \
-    editWidget/keyloggertextedit.cpp
+    editWidget/keyloggertextedit.cpp \
+    encoder/videorencoder.cpp
 
 
 HEADERS  += mainwindow.h \
@@ -29,7 +30,8 @@ HEADERS  += mainwindow.h \
     youtube/logindialog.h \
     youtube/oauth2.h \
     youtube/youtubewrapper.h \
-    editWidget/keyloggertextedit.h
+    editWidget/keyloggertextedit.h \
+    encoder/videorencoder.h
 
 FORMS    += mainwindow.ui \
     youtube/logindialog.ui

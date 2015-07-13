@@ -9,29 +9,11 @@ QmlWidget::QmlWidget(QWidget *parent) :
     QQuickWidget(parent)
 {
     //qRegisterMetaType<DrawData>("DrawData");
-     engine()->rootContext()->setContextProperty(QLatin1String("forma"), this);
+    engine()->rootContext()->setContextProperty(QLatin1String("forma"), this);
    // setSource(QUrl("draw.qml"));
     setSource(QUrl("qrc:/draw.qml"));
-    m_encoder = new Encoder(this);
 
-    audioRecorder = new QAudioRecorder(this);
-    QAudioEncoderSettings audioSettings;
-    audioSettings.setCodec("audio/pcm");
-    audioSettings.setQuality(QMultimedia::HighQuality);
-    audioSettings.setChannelCount(2);
-    audioSettings.setSampleRate(44100);
-    audioSettings.setEncodingMode(QMultimedia::ConstantQualityEncoding );
-
-    audioRecorder->setOutputLocation(QUrl::fromLocalFile("test"));
-    QString container = "audio/x-wav";
-    audioRecorder->setEncodingSettings(audioSettings, QVideoEncoderSettings(), container);
-    audioRecorder->setAudioInput(audioRecorder->audioInputs().at(0));
-    probe = new QAudioProbe;
-    connect(probe, SIGNAL(audioBufferProbed(QAudioBuffer)),
-            this, SLOT(processBuffer(QAudioBuffer)));
-    connect(audioRecorder, SIGNAL(error(QMediaRecorder::Error)), this,
-            SLOT(displayErrorMessage()));
-    probe->setSource(audioRecorder);
+    m_encoder = new AV_REncoder(this);
 
     bRecord = false;
     this->setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint | Qt::WindowTitleHint);
@@ -59,11 +41,6 @@ QmlWidget::QmlWidget(QWidget *parent) :
     curStatus = STOP;
     tickTimer.setSingleShot(false);
     tickTimer.setInterval(1000/25);
-    fps_timer = new QTimer();
-    //fps_timer->setInterval(1000/32);
-    fps_timer->setInterval(1);
-    connect(fps_timer, SIGNAL(timeout()), this, SLOT ( fps_control() ));
-    fps_stabilitron = 0;
     /*
      * canvas set
     */
@@ -108,6 +85,12 @@ void QmlWidget::moveEvent(QMoveEvent *event)
 
 void QmlWidget::paintEvent(QPaintEvent *event)
 {
+    if(bRecord)
+    {
+       // m_encoder->mutex.lock();
+        m_encoder->setFrame(grabFramebuffer());
+        //m_encoder->mutex.unlock();
+    }
  //   if(curStatus == PLAY && bRecord)
     {
     //    m_encoder->encodeVideoFrame(this->grabFramebuffer());
@@ -130,16 +113,8 @@ void QmlWidget::closeEvent(QCloseEvent *event)
 {
     stopAnimated();
     pause(500);
-    if(m_encoder != NULL)
-        delete m_encoder;
-    if(audioRecorder != NULL)
-        delete audioRecorder;
-    if(probe != NULL)
-        delete probe;
     if(canvas != NULL)
         delete canvas;
-    if(fps_timer != NULL)
-        delete fps_timer;
     if(fMetrics != NULL)
         delete fMetrics;
     isClose = true;
@@ -160,43 +135,7 @@ void QmlWidget::setDrawText(QString data)
     drawText = data;
 }
 
-VideoCodecSettings QmlWidget::videoCodecSettings() const
-{
-    //x264 loseless fast preset
-    VideoCodecSettings settings;
-    settings.setCoderType(EncoderGlobal::Vlc);
-    settings.setFlags(EncoderGlobal::LoopFilter);
-    settings.setMotionEstimationComparison(1);
-    settings.setPartitions(EncoderGlobal::I4x4 | EncoderGlobal::P8x8);
-    settings.setMotionEstimationMethod(EncoderGlobal::Hex);
-    settings.setSubpixelMotionEstimationQuality(3);
-    settings.setMotionEstimationRange(16);
-    settings.setGopSize(250);
-    settings.setMinimumKeyframeInterval(2);
-    settings.setSceneChangeThreshold(40);
-    settings.setIQuantFactor(0.71f);
-    settings.setBFrameStrategy(1);
-    settings.setQuantizerCurveCompressionFactor(0.6f);
-    settings.setMinimumQuantizer(0);
-    settings.setMaximumQuantizer(69);
-    settings.setMaximumQuantizerDifference(4);
-    settings.setDirectMvPredictionMode(EncoderGlobal::SpatialMode);
-    settings.setFlags2(EncoderGlobal::FastPSkip);
-    settings.setConstantQuantizerMode(0);
-    settings.setPFramePredictionAnalysisMethod(EncoderGlobal::NoWpm);
 
-    return settings;
-}
-
-AudioCodecSettings QmlWidget::audioCodecSettings() const
-{
-    // audio, possible future adventures
-    AudioCodecSettings settings;
-    settings.setSampleRate( 44100);
-    settings.setChannelCount(2);
-    settings.setSampleFormat(EncoderGlobal::Signed16);
-    return settings;
-}
 
 void QmlWidget::drawAnimated(bool record)
 {
@@ -204,6 +143,7 @@ void QmlWidget::drawAnimated(bool record)
     {
         //m_recorder->resume();
         curStatus = PLAY;
+        m_encoder->pause();
         return;
     }
     if(record)
@@ -211,21 +151,9 @@ void QmlWidget::drawAnimated(bool record)
         QString fileName = QFileDialog::getSaveFileName(this, tr("Choose file..."), qApp->applicationDirPath(), tr("Videos (*.avi *.mp4)"));
         if(!fileName.size())
             return;
-
-        m_encoder->setVideoCodecSettings(videoCodecSettings());
-        m_encoder->setAudioCodecSettings(audioCodecSettings());
-        m_encoder->setEncodingMode(Encoder::VideoAudioMode);
-       // m_encoder->setEncodingMode(Encoder::VideoMode);
-        m_encoder->setVideoCodec(EncoderGlobal::H264);
-        m_encoder->setAudioCodec(EncoderGlobal::MP3);
-        m_encoder->setOutputPixelFormat(EncoderGlobal::YUV420P);
-        m_encoder->setFilePath( fileName );
-        m_encoder->setVideoSize(this->size());
-        m_encoder->setFixedFrameRate(25);
-        fps_timer->start();
-        fps_stabilitiTimer.start();
-        m_encoder->start();
-        audioRecorder->record();
+        m_encoder->setFileName(fileName);
+        m_encoder->setGrabWidget(this);
+        m_encoder->startRecord();
         qDebug() << "Start record into file";
     }
     curStatus = PLAY;
@@ -239,9 +167,6 @@ void QmlWidget::stopAnimated()
     curStatus = STOP;
     tickTimer.stop();
     m_encoder->stop();
-    audioRecorder->stop();
-    fps_timer->stop();
-
     // max speed // stop draw function
     double t_animationSpeed = animationSpeed;
 /*    int t_delay = delay;
@@ -265,6 +190,7 @@ void QmlWidget::pauseAnimated()
 {
     curStatus = PAUSE;
     qDebug() << "Pause play";
+    m_encoder->pause();
     //m_recorder->pause();
 }
 bool QmlWidget::isRecord() const
@@ -370,67 +296,11 @@ void QmlWidget::crossOutWithAnimation(int n)
 
 void QmlWidget::generateFrames()
 {
-    //generate 500 frames for test
-    for (int i = 0; i < 500; ++i) {
-        QImage frame(QSize(1024, 768), QImage::Format_RGB16);
-        frame.fill(Qt::yellow);
-        QPainter painter(&frame);
-        painter.setPen(QPen(Qt::red, 3));
-        painter.drawRect(i, i, 30, 30);
-        m_encoder->encodeVideoFrame(frame);
-        //this is needed to prevent RAM overflow on some computers
-        if (i % 20 == 0) {
-            while (m_encoder->encodedFrameCount() != i) { qApp->processEvents(); }
-        }
-
-        qApp->processEvents();
-    }
-
-    m_encoder->stop();
-
 }
+
 bool QmlWidget::getBusy() const
 {
     return busy;
-}
-
-
-void QmlWidget::processBuffer(const QAudioBuffer& buffer)
-{
-    if(curStatus == PLAY && bRecord)
-    {
-        m_encoder->encodeAudioData(QByteArray(buffer.constData<char>(), buffer.byteCount()));
-      //  qDebug() << "AUDIO";
-    }
-   // qDebug() << "AUDIO";
-}
-
-void QmlWidget::displayErrorMessage()
-{
-    qDebug() << (audioRecorder->errorString());
-}
-
-void QmlWidget::fps_control()
-{
-    if(curStatus == PLAY && bRecord)
-    {
-
-        {
-          //  qDebug() << "Draw";
-            pause(30 - fps_stabilitiTimer.elapsed());
-            fps_stabilitiTimer.restart();
-            m_encoder->encodeVideoFrame(this->grabFramebuffer());
-
-
-        }
-        /*if (fps_stabilitron % 25 == 0) {
-            while (m_encoder->encodedFrameCount() != fps_stabilitron) { qApp->processEvents(); }
-            m_encoder->encodeVideoFrame(this->grabFramebuffer());
-
-        }
-            fps_stabilitron++;*/
-    }
-
 }
 
 void QmlWidget::pause(int ms)
@@ -441,7 +311,7 @@ void QmlWidget::pause(int ms)
     tickTimer.setSingleShot(true);
     tickTimer.start(ms);
     while (tickTimer.isActive()) {
-      qApp->processEvents();
+      qApp->processEvents(QEventLoop::EventLoopExec);
       if(curStatus == STOP)
         break;
     }

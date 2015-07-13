@@ -14,15 +14,9 @@
 #include <QPainter>
 #include <QMetaObject>
 #include <QFontMetrics>
-#include <QtMultimedia/QAudioRecorder>
-#include <QtMultimedia/QAudioProbe>
-#include <QtConcurrent>
 
-#include <Encoder>
-#include <ScreenGrabber>
-#include <VideoCodecSettings>
-#include <AudioCodecSettings>
 
+#include "encoder/videorencoder.h"
 /*
 #include <QtAV/QtAV>
 #include <QtAVWidgets/QtAVWidgets>
@@ -113,9 +107,10 @@ public:
     /*
      * |encoder
     */
-    VideoCodecSettings videoCodecSettings() const;
-    AudioCodecSettings audioCodecSettings() const;
     bool getBusy() const;
+
+    QImage getBackBuffer() const;
+    void setBackBuffer(const QImage &value);
 
 public slots:
     void drawAnimated( bool record );
@@ -151,22 +146,17 @@ public slots:
 signals:
     void drawTextChanged();
 private slots:
-    void processBuffer(const QAudioBuffer &buffer);
-    void displayErrorMessage();
-    void fps_control();
     bool crossText();
     bool crossTextV2();
 private:
     QString drawText;
-    Encoder *m_encoder = NULL;
-    QAudioRecorder *audioRecorder = NULL;
-    QAudioProbe *probe = NULL;
     bool bRecord;
     void generateFrames();
     StatusDraw curStatus; // 0 - stop; 1 - play; -1 - pause
     QObject *canvas;
     QThread drawThread;
-    QThread encoderThread;
+    AV_REncoder *m_encoder = NULL;
+
     /*
      * |Сavas property
     */
@@ -201,9 +191,6 @@ private:
     int deleteWT;
     QTimer tickTimer;
     int delay;
-    int fps_stabilitron;
-    QTimer *fps_timer = NULL;
-    QElapsedTimer fps_stabilitiTimer;
     double timer_test;
     double animationSpeed = 0.01;
     bool busy = false;
