@@ -14,7 +14,7 @@
 #include <QPainter>
 #include <QMetaObject>
 #include <QFontMetrics>
-
+#include <QThread>
 
 #include "encoder/videorencoder.h"
 /*
@@ -83,7 +83,7 @@ public:
     void clearCanvas();
     void drawFigure (int x, int y, int width, int height, FigureType type, bool fill, QColor col, float size);
     void drawAnimationFigure (int x, int y, int width, int height, FigureType type, bool fill);
-    void nextRow(int n   = -1, int Row = -1);
+    void nextRow(int n   = -1, int Row = -1, bool wrap = true);
     Q_INVOKABLE void crossOutLastSymbol(int n = 1);
     void crossOutWithAnimation(int n = 1);
     void clearSymbol(int index);

@@ -10,7 +10,7 @@ Item{
         objectName: "mcanvas"
         anchors.fill: parent
         antialiasing: true
-        //renderStrategy: Canvas.Threaded
+        renderStrategy: Canvas.Threaded
         renderTarget: Canvas.Image
         property int index: 0
         property bool cross: false
