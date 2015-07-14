@@ -648,6 +648,7 @@ void QmlWidget::drawBuffer()
             fillText(tabulationStr[j], x, y);
             x += fMetrics->width(tabulationStr[j] + "\t");
         }
+        qDebug() << "C:"<<colors.length();
     for (int k = 0 ; k< colors.length();k++)
     {
         int columnOfColorStrBegin;
@@ -677,10 +678,10 @@ void QmlWidget::drawBuffer()
            {
                //Якщо в цій самій стрічці починається інша кольорова стрічка то кінцевий стовпчик поточної
                //Кольорової стрічки - це почато наступної
-               if (convertTextBoxToBufferIndex(colors[k+1].startIndex ).y()==rowOfColorStrEnd)
+               if (convertTextBoxToBufferIndex(colors[k+1].startIndex ).y()==i)
                columnOfColorStrEnd =  convertTextBoxToBufferIndex(colors[k+1].startIndex ).x();
                //Інакше КС(кінцевий стовпчик) — це кінець стрічки
-               else columnOfColorStrEnd =  stringList[i].length()-1;
+               else columnOfColorStrEnd =  stringList[i].length();
            }
              QString textToWarp;
             //Якщо перша кольорова стрічка, то додаєм до локального Х ширину стрічки, що йшла до кольорової стрічки
