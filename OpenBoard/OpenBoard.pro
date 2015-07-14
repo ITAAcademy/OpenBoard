@@ -1,11 +1,10 @@
-QT -= declarative sensors multimedia multimediawidgets printsupport opengl
+QT -= declarative sensors multimedia multimediawidgets printsupport
 
-QT       += widgets multimedia quick quickwidgets network webkitwidgets concurrent
+QT       += widgets multimedia quick quickwidgets network webkitwidgets concurrent opengl
 CONFIG(release, debug|release):DEFINES += QT_NO_DEBUG_OUTPUT
 SOURCES += main.cpp\
     mainwindow.cpp \
     settings.cpp \
-    qmlwidget.cpp \
     parser\unit.cpp \
     parser\unitsumbol.cpp \
     parser\unitcommand.cpp \
@@ -15,12 +14,12 @@ SOURCES += main.cpp\
     youtube/oauth2.cpp \
     youtube/youtubewrapper.cpp \
     encoder/videorencoder.cpp \
-    editWidget/keyloggertextedit.cpp
+    editWidget/keyloggertextedit.cpp \
+    openglwidget.cpp
 
 
 HEADERS  += mainwindow.h \
     settings.h \
-    qmlwidget.h \
     parser\unit.h \
     parser\unitsumbol.h \
     parser\unitcommand.h \
@@ -30,7 +29,8 @@ HEADERS  += mainwindow.h \
     youtube/oauth2.h \
     youtube/youtubewrapper.h \
     encoder/videorencoder.h \
-    editWidget/keyloggertextedit.h
+    editWidget/keyloggertextedit.h \
+    openglwidget.h
 
 FORMS    += mainwindow.ui \
     youtube/logindialog.ui

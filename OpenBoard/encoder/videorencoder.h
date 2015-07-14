@@ -3,12 +3,10 @@
 
 #include <QObject>
 #include <QWidget>
-#include <QQuickWidget>
 #include <QString>
 #include <QThread>
 #include <QDebug>
 #include <QPainter>
-
 #include <QMutex>
 #include <QMutexLocker>
 
@@ -20,7 +18,7 @@
 
 #include <QtMultimedia/QAudioRecorder>
 #include <QtMultimedia/QAudioProbe>
-
+#include <QGLWidget>
 class AV_REncoder : public QThread
 {
     Q_OBJECT
@@ -46,10 +44,9 @@ public:
 
     VideoCodecSettings videoCodecSettings() const;
     AudioCodecSettings audioCodecSettings() const;
-
-    QQuickWidget *grabWidget;
+    QGLWidget *grabWidget;
     void setFileName( QString path);
-    void setGrabWidget( QQuickWidget *widget);
+    void setGrabWidget( QGLWidget *widget);
     void startRecord();
     void pause();
     void stop();

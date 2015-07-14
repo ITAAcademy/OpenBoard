@@ -21,10 +21,10 @@ bool isLower(const ColorMarker &c1,const ColorMarker &c2)
     return c1.startIndex < c2.startIndex;
 }
 
-void UnitCommand::changeColor(QmlWidget *canvas)
+void UnitCommand::changeColor(OGLWidget *canvas)
 {
    // canvas->setFillColor(QColor(unit_data));
-    qDebug() << "void UnitCommand::changeColor(QmlWidget *canvas)";
+    qDebug() << "void UnitCommand::changeColor(OGLWidget *canvas)";
     ColorMarker marker;
     marker.startIndex=canvas->getCursorIndex();
     marker.value=unit_data;
@@ -32,70 +32,70 @@ void UnitCommand::changeColor(QmlWidget *canvas)
     qSort(canvas->colors.begin(),canvas->colors.end(),isLower);
 }
 
-void UnitCommand::nextLine(QmlWidget *canvas)
+void UnitCommand::nextLine(OGLWidget *canvas)
 {
     canvas->nextRow();
 }
 
-void UnitCommand::boardClean(QmlWidget *canvas)
+void UnitCommand::boardClean(OGLWidget *canvas)
 {
     canvas->clearBuffer();
     canvas->clearCanvas();
 }
 
-void UnitCommand::moveLeft(QmlWidget *canvas, int n){
+void UnitCommand::moveLeft(OGLWidget *canvas, int n){
     canvas->moveCursor(-n);
 qDebug() <<"Moved left";
 
 //INSERT CODE
 }
-void UnitCommand::moveRight(QmlWidget* canvas, int n){
+void UnitCommand::moveRight(OGLWidget* canvas, int n){
 qDebug() <<"Moved right " << n;
 canvas->moveCursor(n);
 //INSERT CODE
 }
 
-void UnitCommand::deletePreChar(QmlWidget *canvas)
+void UnitCommand::deletePreChar(OGLWidget *canvas)
 {
     canvas->crossOutLastSymbol();
 }
-void UnitCommand::deleteLeft(QmlWidget *canvas, int n){
+void UnitCommand::deleteLeft(OGLWidget *canvas, int n){
 //INSERT CODE
     canvas->deleteFromBuffer(-n);
 }
-void UnitCommand::deleteRight(QmlWidget* canvas, int n){
+void UnitCommand::deleteRight(OGLWidget* canvas, int n){
 //INSERT CODE
     canvas->deleteFromBuffer(n);
 }
 
 
-void UnitCommand::erasePreChar(QmlWidget *canvas,int n)
+void UnitCommand::erasePreChar(OGLWidget *canvas,int n)
 {
     //canvas->crossOutLastSymbol();
     canvas->crossOutWithAnimation(n);
 }
-void UnitCommand::clearPreChar(QmlWidget *canvas, int n)
+void UnitCommand::clearPreChar(OGLWidget *canvas, int n)
 {
     //canvas->crossOutLastSymbol();
    canvas->crossOutLastSymbol(n);
    qDebug() << "cross" << n;
 }
 
-void UnitCommand::pause(QmlWidget *canvas)
+void UnitCommand::pause(OGLWidget *canvas)
 {
     //QThread::msleep(unit_data.toULong()*100);
     canvas->update();
     canvas->pause(unit_data.toULong()*100);
 }
 
-void UnitCommand::backSlash(QmlWidget *canvas)
+void UnitCommand::backSlash(OGLWidget *canvas)
 {
     canvas->insertToBuffer('\\');
     canvas->moveCursor();
     canvas->update();
 }
 
-void UnitCommand::draw(QmlWidget *canvas)
+void UnitCommand::draw(OGLWidget *canvas)
 {
     if (Type == "ChangeColor")
     {

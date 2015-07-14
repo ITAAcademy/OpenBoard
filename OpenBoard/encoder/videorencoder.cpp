@@ -81,7 +81,7 @@ void AV_REncoder::setFileName(QString path)
     qDebug() << "Set path   " << path;
 }
 
-void AV_REncoder::setGrabWidget(QQuickWidget *widget)
+void AV_REncoder::setGrabWidget(QGLWidget *widget)
 {
     grabWidget = widget;
     m_encoder->setVideoSize(grabWidget->size());
@@ -113,7 +113,7 @@ void AV_REncoder::initAudio()
     audioSettings.setSampleRate(44100);
     audioSettings.setEncodingMode(QMultimedia::ConstantQualityEncoding );
 
-    audioRecorder->setOutputLocation(QUrl::fromLocalFile("test"));
+    //audioRecorder->setOutputLocation(QUrl::fromLocalFile("test"));
     QString container = "audio/x-wav";
     audioRecorder->setEncodingSettings(audioSettings, QVideoEncoderSettings(), container);
     audioRecorder->setAudioInput(audioRecorder->audioInputs().at(0));

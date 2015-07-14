@@ -15,11 +15,9 @@
 #include <QElapsedTimer>
 #include <QMenu>
 #include <QAction>
-
+#include "openglwidget.h"
 
 #include <QDebug>
-
-#include "qmlwidget.h"
 #include "settings.h"
 #include "parser/parser.h"
 #include "editWidget/mytextedit.h"
@@ -115,7 +113,7 @@ QAction *a_play,*a_pause,*a_stop,*a_font_canvas,*a_color_canvas,*a_record_to_fil
     Ui::MainWindow  *ui;
 QMessageBox messAbout;
  //   GLWidget        *mpGLWidget;
-    QmlWidget       *mpQmlWidget;
+    OGLWidget       *mpOGLWidget;
     int drawCounter;
     MyTextEdit       *textEdit;
     KeyloggerTE *commandTextEdit;

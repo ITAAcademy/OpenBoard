@@ -12,7 +12,7 @@ UnitSumbol::~UnitSumbol()
 
 }
 
-void UnitSumbol::draw(QmlWidget *canvas)
+void UnitSumbol::draw(OGLWidget *canvas)
 {
     canvas->update();
     canvas->insertToBuffer(unit_data[0]);
