@@ -664,7 +664,10 @@ void MainWindow::delay_released()
     QString text = ui->action_delayTB->text();
     text += QString::number(ui->spinBox_delayTB->value());
     emit textEdit->setFocus();
-    textEdit->appendNoNL(text);
+    if( isCommandTextEditFocused )
+        textEdit->appendNoNL(text);
+    else
+        textEdit->insertPlainText(text);
 }
 
 void MainWindow::show_pause_menu()
@@ -761,17 +764,27 @@ void MainWindow::on_crossBtn_clicked()
 
 void MainWindow::on_colorBtn_pressed()
 {
-    show_color_dialog();
-    textEdit->setFocus();
+    QTextCursor prev_cursor = textEdit->textCursor();
+    colorPkr = QColorDialog::getColor();
+    textEdit->setTextCursor(prev_cursor);
+    if(colorPkr.isValid())
+    {
+        QString text = ui->action_colorTB->text();
+        textColorName = colorPkr.name();
+        text += textColorName;
+        text.remove(2,1);
+        if( isCommandTextEditFocused )
+            textEdit->appendNoNL(text);
+        else
+            textEdit->insertPlainText(text);
+    }
+
+ //   textEdit->setFocus();
 }
 
 void MainWindow::on_colorBtn_released()
 {
-    QString text = ui->action_colorTB->text();
-    textColorName = colorPkr.name();
-    text += textColorName;
-    text.remove(2,1);
-    textEdit->appendNoNL(text);
+
 }
 
 void MainWindow::show_color_dialog()
@@ -784,15 +797,7 @@ void MainWindow::show_color_dialog()
 
 void MainWindow::on_colorBtn_clicked()
 {  //!!!!!!!!!!!!!!!!
-    if(mTimerClr->isActive()) {
-            mTimerClr->stop();
 
-            QString text = ui->action_colorTB->text();
-            textColorName = colorPkr.name();
-            text += textColorName;
-            text.remove(2,1);
-            textEdit->appendNoNL(text);
-        }
 //    QString text = ui->action_colorTB->text();
 //    text += textColorName;
 //    text.remove(2,1);
@@ -803,8 +808,10 @@ void MainWindow::on_colorBtn_clicked()
 void MainWindow::on_clearBtn_clicked()
 {
     QString text = ui->action_clearTB->text();
-    textEdit->appendNoNL(text);
-    emit textEdit->setFocus();
+    if( isCommandTextEditFocused )
+        textEdit->appendNoNL(text);
+    else
+        textEdit->insertPlainText(text);
 }
 
 void MainWindow::doUndoRedoStart()

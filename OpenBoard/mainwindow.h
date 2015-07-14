@@ -136,6 +136,7 @@ QMessageBox messAbout;
     YouTubeWrapper *youtube;
     QToolBar *toolBar;
     bool play = false;
+    QTextCursor textEditLastCursor;
 
 
 };

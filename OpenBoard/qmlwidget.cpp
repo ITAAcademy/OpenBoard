@@ -735,7 +735,7 @@ void QmlWidget::insertToBuffer(const QChar ch)
         realDelay = (delay - framDelayTimer.elapsed());
     else
         realDelay = 0;
-    qDebug() << "REALDELAY =    " << realDelay;
+   // qDebug() << "REALDELAY =    " << realDelay;
     pause(realDelay);
     framDelayTimer.restart();
 
