@@ -631,7 +631,7 @@ bool MainWindow::openFile(QString fileName)
         if(file.open(QFile::ReadOnly))
         {
             curFile = fileName;
-             textEdit->setText(QString::fromUtf8((file.readAll())));
+             textEdit->setText(QString::fromLocal8Bit((file.readAll())));
             return true;
         }
         else

@@ -51,7 +51,7 @@ QmlWidget::QmlWidget(QWidget *parent) :
     QMetaObject::invokeMethod(canvas, "init");
 
 
-   // connect(&tickTimer, SIGNAL(timeout()), this, SLOT(drawBuffer()));
+    connect(&tickTimer, SIGNAL(timeout()), this, SLOT(drawBuffer()));
     stringList.append("");
     //stringList.reserve(600000);
     indexRowInList = 0;
@@ -716,7 +716,7 @@ void QmlWidget::drawBuffer()
     if((delay - framDelayTimer.elapsed()) > 0)
         realDelay = (delay - framDelayTimer.elapsed());
     else
-        realDelay = 0;
+        realDelay = 1;
     busy = false;
 }
 
@@ -734,7 +734,7 @@ void QmlWidget::insertToBuffer(const QChar ch)
     testWrap(convertedIndex.y());
     listChars.append(ch);
 
-    emit drawTextChanged();
+   // emit drawTextChanged();
     pause(realDelay);
 
 }

@@ -14,8 +14,8 @@ UnitSumbol::~UnitSumbol()
 
 void UnitSumbol::draw(QmlWidget *canvas)
 {
-    canvas->update();
     canvas->insertToBuffer(unit_data[0]);
+    canvas->update();
     canvas->moveCursor();
 
 }
