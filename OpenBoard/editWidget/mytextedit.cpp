@@ -149,7 +149,6 @@ this->setTextCursor(t_cursor);
  void MyTextEdit::saveChanges()
  {
 
-
      {
       undo_changes.push(changebuf);
      changebuf.cursor = this->textCursor().position();
