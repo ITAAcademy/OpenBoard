@@ -8,10 +8,90 @@ KeyloggerTE::KeyloggerTE(MyTextEdit *destination,QWidget* parent){
 this->destination=destination;
     this->setParent(parent);
          //connect(this,SIGNAL(cursorPositionChanged()),this,SLOT(onCursorChanged()));
+     t_cursor = this->textCursor();
+    changebuf.cursor = 0;
+    changebuf.cymbol = "";
+    changebuf.changeSize =0;
 }
-void KeyloggerTE::keyPressEvent(QKeyEvent *event){
-    event->accept();
+void KeyloggerTE::saveChanges(int sizeOfChange){
 
+   changebuf.cursor = this->textCursor().position();
+   changebuf.cymbol = this->toPlainText();
+   changebuf.changeSize = 0;
+    if (undo_changes.length()>0){
+        CursorSymbolExtended prevChange =   undo_changes.pop();
+      prevChange.changeSize=sizeOfChange;
+      undo_changes.push(prevChange);
+    }
+   undo_changes.push(changebuf);
+}
+
+void KeyloggerTE::undo()
+{
+    if (undo_changes.size() >0)
+    {
+        CursorSymbolExtended backup;
+        backup.cursor = this->textCursor().position();
+        backup.cymbol = this->toPlainText();
+        redo_changes.push_back(backup);
+
+       CursorSymbolExtended change ;
+
+       int changesSizePrev = -1;
+ if (changesDetected && undo_changes.size()>0){
+
+   changesSizePrev = undo_changes.pop().changeSize;
+     changesDetected=false;
+ }
+      change = undo_changes.pop();
+     // curs.setPosition(change.cursor);
+      this->clear();
+
+       this->setPlainText(change.cymbol);
+      t_cursor.setPosition(change.cursor);
+        this->setTextCursor(t_cursor);
+      //My code
+      QString destText = destination->toPlainText();
+             destText.chop(change.changeSize);
+             destination->setPlainText(destText);
+             QTextCursor tc = destination->textCursor();
+             tc.setPosition(destText.length());
+             destination->setTextCursor(tc);
+    }
+    else {
+        this->clear();
+        destination->clear();
+    }
+}
+
+void KeyloggerTE::redo()
+{
+
+if (redo_changes.size() >0)
+{
+
+   CursorSymbolExtended backup;
+   backup.cursor = this->textCursor().position();
+   backup.cymbol = this->toPlainText();
+   undo_changes.push_back(backup);
+
+   CursorSymbolExtended change ;
+   change = redo_changes.pop();
+   this->setText(change.cymbol);
+   t_cursor.setPosition(change.cursor);
+   this->setTextCursor(t_cursor);
+
+}
+}
+
+void KeyloggerTE::keyPressEvent(QKeyEvent *event){
+    bool needToSaveForUndo = true;
+    event->accept();
+    if (redo_changes.size()>0)
+    {
+    CursorSymbolExtended change = redo_changes.pop();
+    redo_changes.push(change);
+    }
     int keyCode = event->key();
     QString keyChar(event->text());
    // QTextCursor
@@ -21,17 +101,31 @@ void KeyloggerTE::keyPressEvent(QKeyEvent *event){
            int localCursorBlockNumber = textCursor().blockNumber();
            int localCursorSelectionStart=textCursor().selectionStart();
            int localCursorSelectionEnd=textCursor().selectionEnd();
+
+            QString textInFieldBeforePress=destination->toPlainText();
+
+            if (event->modifiers() & Qt::ControlModifier && keyCode==Qt::Key_Z)
+            {
+
+                undo();
+                changesDetected=false;
+                return;
+               //if (!changesSize.empty())textInFieldBeforePress.chop(changesSize.pop());
+                //if(undo_changes.size()>0) setPlainText(undo_changes.pop().cymbol);
+
+            }
+        //    else
     QTextEdit::keyPressEvent(event);
 
-
-
             QString textInField = destination->toPlainText();
+
              QStringList stringsInCommandTextEdit = toPlainText().split('\n');
-    //Якщо буква то просто вставляєм її в текст
              if(event->modifiers() & Qt::ControlModifier)
              {
+
                  if (event->matches(QKeySequence::Paste))
                      textInField += QApplication::clipboard()->text();
+                 else
                  if (event->matches(QKeySequence::Cut))
                  {
                      int delta = localCursorSelectionEnd-localCursorSelectionStart;
@@ -39,6 +133,9 @@ void KeyloggerTE::keyPressEvent(QKeyEvent *event){
                      textInField +=QString("\\dl%1").arg(delta, 3, 10, QChar('0'));
                      else textInField +=QString("\\dr%1").arg(delta, 3, 10, QChar('0'));
                  }
+                 else //if (event->matches(QKeySequence::Undo))
+                     needToSaveForUndo=false;
+                // return;
 
              }
     else
@@ -157,8 +254,19 @@ else {
         }
          }
      }
+     int destinationLen = destination->toPlainText().length();
+     int textInFieldLen = textInField.length();
       destination->setPlainText(textInField);
+      //changesSize.push(textInField.length());
      previousCursorPosition=textCursor().position();
+
+     if (needToSaveForUndo){
+         changesDetected=true;
+
+         int sizeOfChanges = textInFieldLen-destinationLen;
+         qDebug() << "Save changes ,size:"<<sizeOfChanges;
+         saveChanges(sizeOfChanges);
+     }
 }
 void KeyloggerTE::focusInEvent( QFocusEvent * ev )
 {
@@ -176,7 +284,15 @@ void KeyloggerTE::mousePressEvent(QMouseEvent *eventPress){
       textInField +=QString("\\mr%1").arg(delta, 3, 10, QChar('0'));
       else if (delta<0)
       textInField +=QString("\\ml%1").arg(-delta, 3, 10, QChar('0'));
+      int destinationLen = destination->toPlainText().length();
+      int textInFieldLen = textInField.length();
      destination->setPlainText(textInField);
+     int sizeOfChanges = textInFieldLen-destinationLen;
+     if (toPlainText().length()>0)
+     {
+     saveChanges(sizeOfChanges);//TODO
+              changesDetected=true;
+     }
 //qDebug() << "cursor changed";
 }
 void KeyloggerTE::mouseReleaseEvent(QMouseEvent *eventPress){
