@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>Block/Block.qml</file>
+        <file>Block/file.png</file>
+        <file>ToolBar/ToolBar.qml</file>
+        <file>ToolBar/Button.qml</file>
+    </qresource>
+</RCC>
