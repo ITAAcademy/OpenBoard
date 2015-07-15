@@ -14,12 +14,16 @@ OGLWidget::OGLWidget(QWidget *parent) :
     m_encoder = new AV_REncoder(this);
 
     bRecord = false;
-    //this->setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint | Qt::WindowTitleHint);
+    this->setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint | Qt::WindowTitleHint);
 
     //this->setResizeMode(QQuickWidget::SizeRootObjectToView ); //TODO
     /*
      * init
     */
+    ColorMarker startMarker;
+    startMarker.startIndex=0;
+    startMarker.value=getMainFillColor();
+
     lineHeight = 25;
     marginLeft = 20;
     marginTop = 40;
@@ -77,7 +81,7 @@ OGLWidget::OGLWidget(QWidget *parent) :
        glDepthFunc(GL_LEQUAL); // Буфер глубины
        QTimer *timer = new QTimer(this);
        connect(timer, SIGNAL(timeout()), this, SLOT(updateWindow()));
-       timer->start(750);
+       timer->start(25);
 
 }
 
@@ -244,7 +248,7 @@ bool OGLWidget::isRecord() const
 
 void OGLWidget::clearCanvas()
 {
-    QMetaObject::invokeMethod(canvas, "clear");
+    //QMetaObject::invokeMethod(canvas, "clear");
     symbolPositionList.clear();
     listWords.clear();
     listStr.clear();
@@ -262,6 +266,10 @@ void OGLWidget::clearCanvas()
 void OGLWidget::clearBuffer()
 {
      colors.clear();
+     ColorMarker startMarker;
+     startMarker.startIndex=0;
+     startMarker.value=getMainFillColor();
+     colors.append(startMarker);
     cross.clear();
     cross.append(2); // для визова зачеркування якщо стрічка зацінчується
     stringList.clear();
@@ -473,7 +481,7 @@ void OGLWidget::clear(int x,int y,int width,int height){
             Q_ARG(QVariant, QVariant(height))
                   );
 }
-void OGLWidget::fillText( QString str, int x, int y)
+void OGLWidget::fillText( QString str,QColor color, int x, int y)
 {
 
    /* qDebug() << "ARG1:  " << str.size();
@@ -482,6 +490,7 @@ void OGLWidget::fillText( QString str, int x, int y)
     if(arg1.isValid() && arg2.isValid() && arg3.isValid())
        if(canvas != NULL)
    */
+    qglColor(color);
     renderText(x, y , str,textFont);
      //renderText(x, y , QString::fromUtf8("Вы набрали %1 очков:").arg(17),textFont);
     /*if(textFont.strikeOut())
@@ -513,7 +522,7 @@ void OGLWidget::fillAnimationText(QString str, int x, int y, float time)
     while(nx <= widthX)
     {
         setFillGradient(x - widthT, y, 250, heightT, color);
-        fillText(str, x, y);
+        fillText(str,fillColor,x, y);
    //     this->update();
         qApp->processEvents(QEventLoop::ExcludeUserInputEvents);
         nx += widthT/time;
@@ -626,7 +635,7 @@ QPoint OGLWidget::drawWrapText(QString str)
           //indexInList+=listChars.length();
              nextRow();
              isLastRow();
-            fillText(listChars,x,y);
+            fillText(listChars,fillColor,x,y);
            // listWords += listChars.trimmed();
            // listWords +=listChars;
             //listStr.push_back( listWords.length() );
@@ -637,7 +646,7 @@ QPoint OGLWidget::drawWrapText(QString str)
         }
     isLastRow();
     //fillAnimationText(str, x, y, 6);
-    fillText(str, x, y);
+    fillText(str,fillColor,x, y);
     QPoint res(x,y);
     listWords += str;
     listChars += str.trimmed();
@@ -681,12 +690,12 @@ void OGLWidget::drawBuffer()
         int localX=x;
         QStringList tabulationStr = stringList[i].split("\t");
         //TODO SET TEXT COLOR TO CANVAS COLOR
-        setFillColor(getMainFillColor());
-        for(int j = 0; j < tabulationStr.size(); j++)
-        {
-            fillText(tabulationStr[j], x, y);
-            x += fMetrics->width(tabulationStr[j] + "\t");
-        }
+        setFillColor(fillColor);
+       // for(int j = 0; j < tabulationStr.size(); j++)
+       // {
+        //    fillText(tabulationStr[j], x, y);
+       //     x += fMetrics->width(tabulationStr[j] + "\t");
+      //  }
         qDebug() << "C:"<<colors.length();
     for (int k = 0 ; k< colors.length();k++)
     {
@@ -735,7 +744,7 @@ void OGLWidget::drawBuffer()
             localX+=fMetrics->width(textToWarp);
             setFillColor(colors[k].value);
             QString textToFill = stringList[i].mid(columnOfColorStrBegin,columnOfColorStrEnd-columnOfColorStrBegin);
-            fillText(textToFill,localX,y);
+            fillText(textToFill,fillColor,localX,y);
            // localX+=fMetrics->width(textToFill);
             //setFillColor(QColor(255,255,255));//Костиль, удалити, вистачить верхнього setColor, добавити на початок colors колір канви
              qDebug() << "columnOfColorStrEnd:" << columnOfColorStrEnd;

@@ -53,6 +53,7 @@ public:
      * |Future gradient
      */
     QList<ColorMarker> colors;
+
     struct GradientSetting{
         QStringList list;
         void addColorStop( float range, int r, int g, int b, int a = 255)
@@ -92,7 +93,7 @@ public:
     QPoint drawWrapText( QString str ); // main draw function
     void setFillColor( QColor col);
     void setFillGradient( int x , int y, int width, int height, GradientSetting color);
-    void fillText( QString str, int x, int y);
+    void fillText( QString str,QColor color, int x, int y);
     void fillAnimationText(QString str, int x, int y, float time);
     void isLastRow();
     void pause(int ms);
