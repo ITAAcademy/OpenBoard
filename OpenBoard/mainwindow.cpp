@@ -939,7 +939,7 @@ void MainWindow::on_action_Play_triggered()
     if(mpOGLWidget != NULL)
     {
         mpOGLWidget->update();
-        mpOGLWidget->drawBuffer();
+       // mpOGLWidget->drawBuffer();
     }
     on_action_Stop_triggered();
     play = false;

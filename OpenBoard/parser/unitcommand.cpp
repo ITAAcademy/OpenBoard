@@ -84,7 +84,7 @@ void UnitCommand::clearPreChar(OGLWidget *canvas, int n)
 void UnitCommand::pause(OGLWidget *canvas)
 {
     //QThread::msleep(unit_data.toULong()*100);
-    canvas->update();
+   // canvas->update();
     canvas->pause(unit_data.toULong()*100);
 }
 
@@ -92,7 +92,7 @@ void UnitCommand::backSlash(OGLWidget *canvas)
 {
     canvas->insertToBuffer('\\');
     canvas->moveCursor();
-    canvas->update();
+  //  canvas->update();
 }
 
 void UnitCommand::draw(OGLWidget *canvas)

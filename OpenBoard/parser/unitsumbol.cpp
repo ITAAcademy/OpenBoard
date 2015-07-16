@@ -14,7 +14,8 @@ UnitSumbol::~UnitSumbol()
 
 void UnitSumbol::draw(OGLWidget *canvas)
 {
-    canvas->update();
+   // canvas->update();
+
     canvas->insertToBuffer(unit_data[0]);
     canvas->moveCursor();
 

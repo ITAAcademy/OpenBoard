@@ -6,6 +6,57 @@
 int k = canvas->property("scroll").toInt() - 10;
 canvas->setProperty("scroll", k);
 */
+
+OGLWidget::loadTextures(){
+
+    if(!img.load(QCoreApplication::applicationDirPath()+"/star.png"))
+    {
+        //loads correctly
+        qWarning("ERROR LOADING IMAGE");
+    }
+    GL_formatted_image = QGLWidget::convertToGLFormat(img);
+    if(GL_formatted_image.isNull())
+        qWarning("IMAGE IS NULL");
+    else
+        qWarning("IMAGE NOT NULL");
+    //generate the texture name
+    glEnable(GL_TEXTURE_2D); // Enable texturing
+
+       glGenTextures(1, &texture); // Obtain an id for the texture
+       glBindTexture(GL_TEXTURE_2D, texture); // Set as the current texture
+
+       //glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+      // glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+
+
+       glTexImage2D(GL_TEXTURE_2D, 0, 4, GL_formatted_image.width(), GL_formatted_image.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, GL_formatted_image.bits());
+       glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+
+
+
+       glDisable(GL_TEXTURE_2D);
+
+    //bind the texture ID
+}
+OGLWidget::drawImage(){
+//loadTextures();
+  // glLoadIdentity();
+     qglColor(Qt::white);
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D,texture);
+    glBegin(GL_QUADS);
+            //Draw Picture
+    glTexCoord2i(0,0); glVertex2i(0,way);
+    glTexCoord2i(0,1); glVertex2i(0,0);
+    glTexCoord2i(1,1); glVertex2i(wax,0);
+    glTexCoord2i(1,0); glVertex2i(wax,way);
+
+    glEnd();
+    glDisable(GL_TEXTURE_2D);
+
+}
+
 OGLWidget::OGLWidget(QWidget *parent) :
     QGLWidget(parent)
 {
@@ -20,6 +71,8 @@ OGLWidget::OGLWidget(QWidget *parent) :
     /*
      * init
     */
+
+    //
     ColorMarker startMarker;
     startMarker.startIndex=0;
     startMarker.value=getMainFillColor();
@@ -60,6 +113,7 @@ OGLWidget::OGLWidget(QWidget *parent) :
     //stringList.reserve(600000);
     indexRowInList = 0;
     cursorIndex = 0;
+    isCrossingNow = false;
 
     /*
      *cursor ALPHA
@@ -81,7 +135,7 @@ OGLWidget::OGLWidget(QWidget *parent) :
        glDepthFunc(GL_LEQUAL); // Буфер глубины
        QTimer *timer = new QTimer(this);
        connect(timer, SIGNAL(timeout()), this, SLOT(updateWindow()));
-       timer->start(25);
+       timer->start(5);
 
 }
 
@@ -101,6 +155,8 @@ void OGLWidget::resizeGL(int nWidth, int nHeight)
 void OGLWidget::initializeGL()
 {
     qglClearColor(Qt::black); // Черный цвет фона
+     //glEnable(GL_TEXTURE_2D);
+     loadTextures();
 }
 
 void OGLWidget::moveEvent(QMoveEvent *event)
@@ -117,9 +173,12 @@ void OGLWidget::paintGL()
        glEnable(GL_BLEND);
        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
-       qglColor(Qt::white);
-
+      // qglColor(Qt::white);
+        drawImage();
         drawBuffer();
+
+        //busy = true;
+
         // glBegin и glEnd - обозначают блок для рисования объекта(начало и конец), glBegin принимает параметр того, что нужно рисовать.
        // qglColor(Qt::green);
 
@@ -283,9 +342,27 @@ void OGLWidget::clearSymbol(int index){
 QMetaObject::invokeMethod(canvas, "clearSymbol",  Q_ARG(QVariant, QVariant(index)));
 }
 
-void OGLWidget::drawFigure(int x, int y, int width, int height, OGLWidget::FigureType type, bool fill = true, QColor col = "#FF0000", float size = 2)
+void OGLWidget::drawFigure(int x, int y, int x2, int y2, OGLWidget::FigureType type, bool fill = true, QColor col = "#FF0000", float size = 2)
 {
-    QString sColor = QString("rgba(%1, %2, %3, %4)").arg(col.red()).arg(col.green()).arg(col.blue()).arg(col.alpha());
+    //qDebug()<<"void OGLWidget::drawFigure";
+    glDisable(GL_BLEND);
+    glEnable(GL_LINE_SMOOTH);
+    glHint(GL_LINE_SMOOTH_HINT,  GL_NICEST);
+    qglColor(QColor(Qt::red));
+    glBegin(GL_LINES);
+     glLineWidth(3.0f);
+       glVertex2i( x,y);
+       glVertex2i( x2,y);
+       qDebug()<<"x:"<<x;
+        qDebug()<<"y:"<<y;
+         qDebug()<<"x2:"<<x2;
+     //glVertex3f( 0,0,0);
+    // glVertex3f( 100,100,0);
+       glEnd();
+    glDisable(GL_LINE_SMOOTH);
+      glEnable(GL_BLEND);
+
+    /*QString sColor = QString("rgba(%1, %2, %3, %4)").arg(col.red()).arg(col.green()).arg(col.blue()).arg(col.alpha());
     QMetaObject::invokeMethod(canvas, "drawFigure",
             Q_ARG(QVariant, QVariant(x)),
             Q_ARG(QVariant, QVariant(y)),
@@ -294,23 +371,43 @@ void OGLWidget::drawFigure(int x, int y, int width, int height, OGLWidget::Figur
             Q_ARG(QVariant, QVariant(type)),
             Q_ARG(QVariant, QVariant(fill)),
                               Q_ARG(QVariant, QVariant(size)),
-                              Q_ARG(QVariant, QVariant(sColor)));
+                              Q_ARG(QVariant, QVariant(sColor)));*/
+    /*switch (type){
+    case LINE:
+
+
+        glEnable(GL_LINE_SMOOTH);
+        glHint(GL_LINE_SMOOTH_HINT,  GL_NICEST);
+
+        glBegin(GL_LINES);
+           glVertex3f( x,y,0);
+           glVertex3f( x+width,y+height,0);
+         //glVertex3f( 0,0,0);
+        // glVertex3f( 100,100,0);
+           glEnd();
+        glDisable(GL_LINE_SMOOTH);
+        break;
+    }*/
+
 }
 
 void OGLWidget::drawAnimationFigure(int x, int y, int width, int height, OGLWidget::FigureType type, bool fill)
 {
+    isCrossingNow=true;
     float persent;
     while(persent < 1)
     {
         drawFigure(x, y, x + (width - x)*persent, height, type, fill);
      //   qDebug() << delPos.x() << "             " << delPos.x() + (maxWidth - delPos.x())*persent;
         persent += animationSpeed;
-        this->repaint();
-        pause(10);
+        swapBuffers();
+         QThread::currentThread()->msleep(10);
+     //   pause(10);
         if(curStatus == STOP )
             return;
     }
     drawFigure(x, y, width, height, type, fill);
+    isCrossingNow=false;
 }
 
 void OGLWidget::crossOutLastSymbol( int n)
@@ -378,13 +475,9 @@ void OGLWidget::pause(int ms)
     }
 }
 
-void OGLWidget::update()
-{
-    busy = true;
-    crossText();
-    drawBuffer();
-}
+
 void  OGLWidget::updateWindow(){
+    //isCrossingNow=true;
     updateGL();
 }
 
@@ -523,7 +616,7 @@ void OGLWidget::fillAnimationText(QString str, int x, int y, float time)
     {
         setFillGradient(x - widthT, y, 250, heightT, color);
         fillText(str,fillColor,x, y);
-   //     this->update();
+        this->update();
         qApp->processEvents(QEventLoop::ExcludeUserInputEvents);
         nx += widthT/time;
        // Sleep(time);
@@ -687,7 +780,6 @@ void OGLWidget::drawBuffer()
     while( i < stringList.length() && i < indexRowInList + maxElm)
     {
        //qDebug() << stringList[i] << "@";
-        int localX=x;
         QStringList tabulationStr = stringList[i].split("\t");
         //TODO SET TEXT COLOR TO CANVAS COLOR
         setFillColor(fillColor);
@@ -696,7 +788,7 @@ void OGLWidget::drawBuffer()
         //    fillText(tabulationStr[j], x, y);
        //     x += fMetrics->width(tabulationStr[j] + "\t");
       //  }
-        qDebug() << "C:"<<colors.length();
+      //  qDebug() << "C:"<<colors.length();
     for (int k = 0 ; k< colors.length();k++)
     {
         int columnOfColorStrBegin;
@@ -741,29 +833,25 @@ void OGLWidget::drawBuffer()
                     columnOfColorStrBeginPrev=convertTextBoxToBufferIndex(colors[k-1].startIndex ).x();
                 textToWarp= stringList[i].mid(columnOfColorStrBeginPrev,columnOfColorStrBegin-columnOfColorStrBeginPrev);
             }
-            localX+=fMetrics->width(textToWarp);
+            x+=fMetrics->width(textToWarp);
             setFillColor(colors[k].value);
             QString textToFill = stringList[i].mid(columnOfColorStrBegin,columnOfColorStrEnd-columnOfColorStrBegin);
-            fillText(textToFill,fillColor,localX,y);
+            fillText(textToFill,fillColor,x,y);
            // localX+=fMetrics->width(textToFill);
             //setFillColor(QColor(255,255,255));//Костиль, удалити, вистачить верхнього setColor, добавити на початок colors колір канви
-             qDebug() << "columnOfColorStrEnd:" << columnOfColorStrEnd;
+           /*  qDebug() << "columnOfColorStrEnd:" << columnOfColorStrEnd;
              qDebug() << "columnOfColorStrBegin:" << columnOfColorStrBegin;
             qDebug()<<"textToFill:"<<textToFill;
               qDebug()<< "textToWarp:" << textToWarp;
-              qDebug()<<"rowOfColorStrBegin:"<<rowOfColorStrBegin;
+              qDebug()<<"rowOfColorStrBegin:"<<rowOfColorStrBegin;*/
     }
 
         y += lineHeight + pt;
         x = marginLeft;
-        localX=marginLeft;
+       // localX=marginLeft;
         i++;
     }
     crossTextDraw();
-    if((delay - framDelayTimer.elapsed()) > 0)
-        realDelay = (delay - framDelayTimer.elapsed());
-    else
-        realDelay = 0;
     busy = false;
 
    // updateGL();
@@ -772,6 +860,9 @@ void OGLWidget::drawBuffer()
 
 void OGLWidget::insertToBuffer(const QChar ch)
 {
+    crossText();
+    crossTextDraw();
+    while (isCrossingNow);
     QPoint convertedIndex = convertTextBoxToBufferIndex(cursorIndex);
     qDebug() << convertedIndex << " " << stringList.size() << " " << ch;
     QString &str =  stringList[convertedIndex.y()];
@@ -785,12 +876,14 @@ void OGLWidget::insertToBuffer(const QChar ch)
     listChars.append(ch);
 
     emit drawTextChanged();
-    pause(realDelay);
+
+    pause(delay);
 
 }
 
 void OGLWidget::deleteFromBuffer(int n)
 {
+
     update();
     int mustDell = qAbs(n);
     int crossCursor = cursorIndex - convertTextBoxToBufferIndex(cursorIndex).y();
@@ -991,6 +1084,11 @@ void OGLWidget::isLastRow()
     int maxElm = (height()/lineHeight + pt);
 
 }
+void OGLWidget::update(){
+    busy = true;
+        crossText();
+       // busy = false;
+}
 
 bool OGLWidget::crossTextDraw()
 {
@@ -1000,7 +1098,7 @@ bool OGLWidget::crossTextDraw()
     bool needNextRow = false;
     for(int i = 0; i < cross.length(); i++)
     {
-     //   qDebug() << "CROSS\n" << cross;
+        //qDebug() << "CROSS [i]:" << cross[i];
         if(cross[i] != 0)
         {
             QPoint conv = convertTextBoxToBufferIndex(i, true);
@@ -1032,14 +1130,18 @@ bool OGLWidget::crossTextDraw()
             x2 = marginLeft + fMetrics->width(stringList[conv.y()].left(conv.x() + 1));
             if( cross[i - 1] == -1)
             {
-                qDebug() << "set animation speed";
+                qDebug() << "FIRST";
+               // drawAnimationFigure(x1, y, x2, y, LINE, 0);
                 drawAnimationFigure(x1, y, x2, y, LINE, 0);
 
                 for( int j = x; j < i; j++) // convert to cross without animation
                     cross[j] = 1;
             }
-            else
-                drawFigure(x1, y, x2, y, LINE, 0);
+            else{
+                //drawFigure(x1, y, x2, y, LINE, 0);
+                drawFigure(x1,y, x2, y, LINE, 0);
+                 qDebug() << "SECOND";
+            }
             lastGood = false;
             if(needNextRow)
                 i--;
@@ -1079,4 +1181,5 @@ bool OGLWidget::crossText()
         deleteWT--;
         spacePaid++;
     }
+
 }

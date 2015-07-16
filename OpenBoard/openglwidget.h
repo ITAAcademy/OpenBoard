@@ -52,6 +52,7 @@ public:
     /*
      * |Future gradient
      */
+   volatile bool isCrossingNow;
     QList<ColorMarker> colors;
 
     struct GradientSetting{
@@ -118,11 +119,14 @@ public:
     int getCursorIndex() const;
     void setCursorIndex(int value);
 
+
+    drawImage();
+    void update();
 public slots:
     void drawAnimated( bool record );
     void stopAnimated();
     void pauseAnimated();
-    void update();
+
     void updateWindow();
 public slots:
     bool isRecord() const;
@@ -157,9 +161,13 @@ private slots:
     bool crossText();
     bool crossTextV2();
 private:
+    QImage img;
+     QImage GL_formatted_image;
+    GLuint texture;
     QString drawText;
     bool bRecord;
     void generateFrames();
+       loadTextures();
     StatusDraw curStatus; // 0 - stop; 1 - play; -1 - pause
     QObject *canvas;
     QThread drawThread;
@@ -181,6 +189,7 @@ private:
     int indexRow;
     int scroll;
     int widthToClean=0;
+
     QColor fillColor;
     QColor mainFillColor;
     /*
