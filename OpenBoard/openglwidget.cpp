@@ -12,7 +12,7 @@ OGLWidget::loadTextures(){
     if(!img.load(QCoreApplication::applicationDirPath()+"/star.png"))
     {
         //loads correctly
-        qWarning("ERROR LOADING IMAGE");
+        qWarning() << "ERROR LOADING IMAGE" + QCoreApplication::applicationDirPath()+"/star.png";
     }
     GL_formatted_image = QGLWidget::convertToGLFormat(img);
     if(GL_formatted_image.isNull())
@@ -99,36 +99,13 @@ OGLWidget::OGLWidget(QWidget *parent) :
     tickTimer.setSingleShot(false);
     tickTimer.setInterval(1000/25);
     realDelay = 0;
-    /*
-     * canvas set
-    */
 
-    //canvas = rootObject()->findChild<QObject *>("mcanvas");
     maxWidth = width() - marginLeft;
-    QMetaObject::invokeMethod(canvas, "init");
-
-
-   // connect(&tickTimer, SIGNAL(timeout()), this, SLOT(drawBuffer()));
     stringList.append("");
     //stringList.reserve(600000);
     indexRowInList = 0;
     cursorIndex = 0;
     isCrossingNow = false;
-
-    /*
-     *cursor ALPHA
-     *
-    */
-    //setCursor(Qt::NoArrow);
-    /*QPixmap pix(1,1);
-    QColor color(0,0,0,0);
-    pix.fill(color);
-    QCursor mCursor(pix);
-    setCursor(mCursor);*/
-    /*QString fileName = QFileDialog::getSaveFileName();
-    qDebug() << "qweqw";
-    audioRecorder->setOutputLocation(QUrl::fromLocalFile(fileName));*/
-   // audioRecorder->record();
 
     //OPENGL
     setFormat(QGLFormat(QGL::DoubleBuffer)); // Двойная буферизация
@@ -166,6 +143,7 @@ void OGLWidget::moveEvent(QMoveEvent *event)
 
 void OGLWidget::paintGL()
 {
+    m_encoder->setFrame(grabFrameBuffer());
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // чистим буфер изображения и буфер глубины
        glMatrixMode(GL_PROJECTION); // устанавливаем матрицу
        glLoadIdentity(); // загружаем матрицу
@@ -219,8 +197,6 @@ void OGLWidget::closeEvent(QCloseEvent *event)
 {
     stopAnimated();
     pause(500);
-    if(canvas != NULL)
-        delete canvas;
     if(fMetrics != NULL)
         delete fMetrics;
     isClose = true;
@@ -270,6 +246,7 @@ void OGLWidget::drawAnimated(bool record)
 
 void OGLWidget::stopAnimated()
 {
+    pause(100);
     curStatus = STOP;
     tickTimer.stop();
     m_encoder->stop();
@@ -521,40 +498,18 @@ void OGLWidget::setTextFont(const QFont &value)
         delete fMetrics;
     fMetrics = new QFontMetrics(value);
     pt = value.pointSize();
-    QVariant a = QVariant(value.family());
-    QVariant b = QVariant(value.pointSize());
-    QString style = " ";
-    if(value.italic())
-        style.append("italic ");
 
-    if(value.bold())
-        style.append("bold ");
-
-    QVariant c = QVariant(style); //style
-
-    QMetaObject::invokeMethod(canvas, "initFont",
-            Q_ARG(QVariant, b),
-            Q_ARG(QVariant, a),
-            Q_ARG(QVariant, c),
-            Q_ARG(QVariant, value.underline()),
-            Q_ARG(QVariant, value.strikeOut()));
 }
 
 void OGLWidget::setFillColor(QColor col)
 {
     QString sColor = QString("rgba(%1, %2, %3, %4)").arg(col.red()).arg(col.green()).arg(col.blue()).arg(col.alpha());
     fillColor = col;
-    QMetaObject::invokeMethod(canvas, "setColor",Q_ARG(QVariant, QVariant(sColor)));
 }
 
 void OGLWidget::setFillGradient(int x, int y, int width, int height, GradientSetting color)
 {
-    QMetaObject::invokeMethod(canvas, "setGradientStyle",
-            Q_ARG(QVariant, QVariant(x)),
-            Q_ARG(QVariant, QVariant(y)),
-            Q_ARG(QVariant, QVariant(width)),
-            Q_ARG(QVariant, QVariant(height)),
-            Q_ARG(QVariant, QVariant(color.list)));
+
 }
 
 OGLWidget::StatusDraw OGLWidget::getStatus() const
@@ -567,12 +522,7 @@ void OGLWidget::recreate()
     this->create();
 }
 void OGLWidget::clear(int x,int y,int width,int height){
-    QMetaObject::invokeMethod(canvas, "clearRectangle",
-            Q_ARG(QVariant, QVariant(x)),
-            Q_ARG(QVariant, QVariant(y)),
-            Q_ARG(QVariant, QVariant(width)),
-            Q_ARG(QVariant, QVariant(height))
-                  );
+
 }
 void OGLWidget::fillText( QString str,QColor color, int x, int y)
 {

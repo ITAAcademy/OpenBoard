@@ -27,10 +27,8 @@ void AV_REncoder::setFrame(const QImage &value)
 {
     //qDebug() << "NEW IMAGE";
     // value.save("we.jpg");
-    //if(!newImage)
+    if(newImage)
     {
-        newImage = true;
-
         //memcpy(data, value.bits(), value.byteCount());
         frame = value;
         newImage = false;
@@ -161,16 +159,25 @@ void AV_REncoder::encodeAudioData(QByteArray array)
 void AV_REncoder::run()
 {
     int i = 0;
+    int delta = 0;
     QElapsedTimer timer;
     timer.start();
     while(bRun)
     {
-        if(timer.elapsed() >= 40 && !bPause)
+        if(timer.elapsed() >= 40 - delta && !bPause)
         {
       //      qDebug() << "SHOW";
             if(!newImage)
+            {
                 m_encoder->encodeVideoFrame(frame);
+                newImage = true;
+            }
+            int k = timer.elapsed() - (40 - delta);
+            if(k > 0)
+                delta = k;
             timer.restart();
+
+
         }
     }
 }
