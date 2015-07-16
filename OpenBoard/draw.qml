@@ -151,12 +151,12 @@ Item{
        // Text { text: cFontLoader.status == FontLoader.Ready ? 'Loaded' : 'Not loaded' }
         Timer{
             id: fps
-            interval: 1000/120
+            interval: 40
 
             onTriggered: {
-                mainDrawElm.requestPaint()
+                mainDrawElm.requestPaint();
             }
-            running: true
+            running: false
             repeat: true
             Component.onCompleted: fps.start()
 

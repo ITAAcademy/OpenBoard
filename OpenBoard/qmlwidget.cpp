@@ -322,7 +322,7 @@ void QmlWidget::pause(int ms)
     tickTimer.setSingleShot(true);
     tickTimer.start(ms);
     while (tickTimer.isActive()) {
-      qApp->processEvents(QEventLoop::EventLoopExec);
+      qApp->processEvents(QEventLoop::EventLoopExec, 2000);
       if(curStatus == STOP)
         break;
     }
@@ -736,7 +736,7 @@ void QmlWidget::insertToBuffer(const QChar ch)
     else
         realDelay = 0;
    // qDebug() << "REALDELAY =    " << realDelay;
-    pause(realDelay);
+    //pause(delay);
     framDelayTimer.restart();
 
 

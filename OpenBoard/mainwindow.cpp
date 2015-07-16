@@ -930,6 +930,8 @@ void MainWindow::on_action_Play_triggered()
   //  qDebug() << mUnitList.size();
    // QString name = this->windowTitle();
     play = true;
+    QTimer tickTimer;
+    tickTimer.setSingleShot(true);
     while( play &&  drawCounter < mUnitList.size() && mpQmlWidget != 0 && mpQmlWidget->getStatus() != QmlWidget::STOP)
     {
         //while(mpQmlWidget->getStatus() == QmlWidget::PAUSE)
@@ -938,6 +940,12 @@ void MainWindow::on_action_Play_triggered()
             mUnitList.at(drawCounter++)->draw(mpQmlWidget);
             int temp = (int)((float)((float)drawCounter/mUnitList.size()*100));
             ui->statusBar->showMessage("Progress status:    " + QString::number(temp) + "%");
+            tickTimer.start(mpQmlWidget->getDelay());
+            while (tickTimer.isActive()) {
+              qApp->processEvents(QEventLoop::AllEvents);
+              if(mpQmlWidget->getStatus() == QmlWidget::STOP)
+                break;
+            }
         }
         else
             qApp->processEvents();
