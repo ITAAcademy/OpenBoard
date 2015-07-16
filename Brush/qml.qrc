@@ -1,0 +1,15 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>Preset/Brushes/standart.PNG</file>
+        <file>Content/Separator.qml</file>
+        <file>Content/brush_skeen.png</file>
+        <file>Content/Button.qml</file>
+        <file>Content/BrushSettingPages/Body.qml</file>
+        <file>Content/BrushSettingPages/Color.qml</file>
+        <file>Content/BrushSettingPages/Deform.qml</file>
+        <file>Content/BrushSettingPages/Dispers.qml</file>
+        <file>Content/BrushSettingPages/Image.qml</file>
+        <file>Content/BrushSettingPages/FullSlider.qml</file>
+    </qresource>
+</RCC>
