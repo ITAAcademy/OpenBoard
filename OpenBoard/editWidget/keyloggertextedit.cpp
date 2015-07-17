@@ -305,6 +305,7 @@ else {
      }
      int destinationLen = destination->toPlainText().length();
      int textInFieldLen = textInField.length();
+     if(textInField.length() != 0)
       destination->setPlainText(textInField);
       //changesSize.push(textInField.length());
      previousCursorPosition=textCursor().position();
@@ -335,6 +336,7 @@ void KeyloggerTE::mousePressEvent(QMouseEvent *eventPress){
       textInField +=QString("\\ml%1").arg(-delta, 3, 10, QChar('0'));
       int destinationLen = destination->toPlainText().length();
       int textInFieldLen = textInField.length();
+      if(textInField.length() != 0)
      destination->setPlainText(textInField);
      int sizeOfChanges = textInFieldLen-destinationLen;
      if (toPlainText().length()>0)
@@ -354,6 +356,7 @@ void KeyloggerTE::mouseReleaseEvent(QMouseEvent *eventPress){
       textInField +=QString("\\mr%1").arg(delta, 3, 10, QChar('0'));
       else if (delta<0)
       textInField +=QString("\\ml%1").arg(-delta, 3, 10, QChar('0'));
+      if(textInField.length() != 0)
      destination->setPlainText(textInField);
 //qDebug() << "cursor changed";
 }

@@ -197,12 +197,16 @@ this->setTextCursor(t_cursor);
 
  void MyTextEdit::appendNoNL( QString text )
  {
-     QTextCursor cursor(textCursor());
+     /*QTextCursor cursor(textCursor());
      cursor.setPosition(QTextCursor::End, QTextCursor::MoveAnchor);
      //I have to do this too. - I was forgetting this!!!!
      moveCursor (QTextCursor::End);
      setTextCursor(cursor);
-     insertPlainText (text);
+     insertPlainText (text);*/
+     emit doUndoRedoStart();
+     setPlainText(toPlainText() + text);
+     emit doUndoRedoEnd();
+
  }
 
  void MyTextEdit::saveChanges()

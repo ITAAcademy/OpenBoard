@@ -828,7 +828,7 @@ void MainWindow::doUndoRedoEnd()
 void MainWindow::onTextChanged()
 {
     disconnect(textEdit, SIGNAL(textChanged()), this, SLOT(onTextChanged()));
-   // qDebug() << "onTextChanged";
+    qDebug() << "onTextChanged";
     QString str = textEdit->toPlainText();
     /*
      * bida z cursorom
