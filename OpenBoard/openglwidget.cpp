@@ -146,6 +146,18 @@ void OGLWidget::paintGL()
     m_encoder->setFrame(grabFrameBuffer());
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // чистим буфер изображения и буфер глубины
        glMatrixMode(GL_PROJECTION); // устанавливаем матрицу
+     //  glShadeModel(GL_SMOOTH);
+       // Сглаживание точек
+      // glEnable(GL_POINT_SMOOTH);
+      // glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
+       // Сглаживание линий
+       //glEnable(GL_LINE_SMOOTH);
+       //glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+
+      // glEnable(GL_POLYGON_SMOOTH);
+      // glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+      // glEnable(GL_MULTISAMPLE);
+
        glLoadIdentity(); // загружаем матрицу
        glOrtho(0,wax,way,0,1,0); // подготавливаем плоскости для матрицы
        glEnable(GL_BLEND);
@@ -533,6 +545,7 @@ void OGLWidget::fillText( QString str,QColor color, int x, int y)
     if(arg1.isValid() && arg2.isValid() && arg3.isValid())
        if(canvas != NULL)
    */
+
     qglColor(color);
     renderText(x, y , str,textFont);
      //renderText(x, y , QString::fromUtf8("Вы набрали %1 очков:").arg(17),textFont);

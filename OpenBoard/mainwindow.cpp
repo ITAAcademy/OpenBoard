@@ -407,6 +407,9 @@ void MainWindow::on_action_Color_triggered()
 void MainWindow::on_action_Undo_triggered()
 {
     textEdit->undom();
+   // commandTextEdit->undo();
+    //qDebug() <<"UNDO";
+   // commandTextEdit->changesDetected=false;
 }
 
 void MainWindow::on_action_Redo_triggered()
