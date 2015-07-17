@@ -87,7 +87,7 @@ public:
     void clearCanvas();
     void drawFigure (int x, int y, int width, int height, FigureType type, bool fill, QColor col, float size);
     void drawAnimationFigure (int x, int y, int width, int height, FigureType type, bool fill);
-    void nextRow(int n   = -1, int Row = -1);
+    void nextRow(int n   = -1, int Row = -1, bool wrap = true);
     Q_INVOKABLE void crossOutLastSymbol(int n = 1);
     void crossOutWithAnimation(int n = 1);
     void clearSymbol(int index);
@@ -161,6 +161,7 @@ private slots:
     bool crossText();
     bool crossTextV2();
     int getFirstSymbolOfString(int index, bool symbol = false);
+    int getCountNullString(int index);
 private:
     QImage img;
      QImage GL_formatted_image;

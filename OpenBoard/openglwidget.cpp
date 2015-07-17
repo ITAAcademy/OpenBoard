@@ -935,6 +935,20 @@ void OGLWidget::moveCursor(int n)
  //   qDebug() << "Cursor move to n " << n <<"=== cur state " << cursorIndex << "QPOINT  " << convertTextBoxToBufferIndex(cursorIndex);
 
 }
+int OGLWidget::getCountNullString(int index)
+{
+    int i = 0;
+    int sumLength = 0;
+    while( i <= index)
+    {
+        int nextLen = stringList[i].length();
+        if(nextLen == 0)
+            sumLength++;
+        i++;
+    }
+    return sumLength;
+}
+
 int OGLWidget::getFirstSymbolOfString(int index, bool symbol)
 {
     int i = 0;
@@ -1008,27 +1022,30 @@ void OGLWidget::testWrap(int kIndexOfRow)
     while(stringList.length() > i)
     {
         QString &str =  stringList[i];
-        //qDebug() <<"str:"<<stringList[i];
         int width = fMetrics->width(stringList[i]) ;//+ fMetrics->leftBearing(str.at(0)) + fMetrics->rightBearing(str.at(0));
-        //qDebug() <<"str:"<< maxWidth;
+        ////qDebug() <<"str:"<< maxWidth;
         if(width > maxWidth)
         {
-            int j = 0;
-            while( j < stringList[i].length() && str[stringList[i].length() - j - 1] > 0x20){j++;};
-                if(stringList.length() - 1 <= i)
-                {};
+            int j = stringList[i].size() - 1;
+            while( j >= 0 && str[j] > ' ')
+            {
+             //   qDebug() << str[j];
+                j--;
+            }
 
-            if(j >= stringList[i].length() - 1)
-                j = stringList[i].length()/1.5f;
 
-            nextRow(j, i);
+            if(j < 0)
+                j = stringList[i].length() - 1;
+
+         //   qDebug() <<"strSize:    " << stringList.size() << "    SIZE_i    " << stringList[i] << "     " << j;
+            nextRow(j, i, false);
 
         }
         i++;
     }
 }
 
-void OGLWidget::nextRow( int n, int Row)
+void OGLWidget::nextRow( int n, int Row, bool wrap)
 {
     //isLastRow();
     QPoint convertedIndex;
@@ -1045,7 +1062,7 @@ void OGLWidget::nextRow( int n, int Row)
     int i = convertedIndex.y() + 1;
     QString lastStr = stringList[i - 1].right(stringList[i - 1].length() - convertedIndex.x());
 
-    //qDebug() << "           LASTSTR    " << lastStr << "         " << convertedIndex.x();
+ //   qDebug() << "           LASTSTR    " << lastStr << "         " << convertedIndex.x();
     if(i >= stringList.length())
         stringList.append(lastStr);
     else
@@ -1055,7 +1072,8 @@ void OGLWidget::nextRow( int n, int Row)
     /* last work
     moveCursor(lastStr.length() + 1);
     */
-    testWrap(i);
+    if(wrap)
+        testWrap(i);
     emit drawTextChanged();
 
 }
@@ -1088,7 +1106,7 @@ bool OGLWidget::crossTextDraw()
             {
                 x1 = marginLeft + fMetrics->width(stringList[conv.y()].left(conv.x()));
                 x = i;
-                y = /*(lineHeight + pt)* */ conv.y();
+                y = /*(lineHeight + pt)* */  convertTextBoxToBufferIndex(i, true).y();
                 lastGood = true;
                 continue;
             }
@@ -1103,9 +1121,12 @@ bool OGLWidget::crossTextDraw()
         }
         if(lastGood)
         {
+
             QPoint conv = convertTextBoxToBufferIndex(i - 1, true);
         //    conv = convertTextBoxToBufferIndex(i + conv.y() + 1);
-            y -= indexFirstDrawSymbol;
+            qDebug() << "YYYYYYYYYYYYYYYYYYYYYYY" << y;
+            y -=   indexRowInList;
+            qDebug() << "YYYYYYYYYYYYYYYYYYYYYYY2" << y;
             ++y *= lineHeight + pt;
             y -= 0.25f * fMetrics->height();// first paid + midle
 

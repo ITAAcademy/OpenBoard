@@ -53,11 +53,15 @@ OTHER_FILES += \
     boarFunc.js \
     draw.qml \
     icons/12video icon.png
-
-win32:CONFIG(release, debug|release): LIBS += -LC:/Users/roma\Downloads/OpenDeploy_v0.26/OpenDeploy_v0.26/ -lqtmel1
-else:win32:CONFIG(debug, debug|release): LIBS += -LC:/Users/roma\Downloads/OpenDeploy_v0.26/OpenDeploy_v0.26/ -lqtmel1
-
-
+#   @ROMA
+#
+#win32:CONFIG(release, debug|release): LIBS += -LC:/Users/roma\Downloads/OpenDeploy_v0.26/OpenDeploy_v0.26/ -lqtmel1
+#else:win32:CONFIG(debug, debug|release): LIBS += -LC:/Users/roma\Downloads/OpenDeploy_v0.26/OpenDeploy_v0.26/ -lqtmel1
+#
+#   @NICO
+win32:CONFIG(release, debug|release): LIBS += -LF:/QA/QtMEL-master/libsQt5/ -lqtmel1
+else:win32:CONFIG(debug, debug|release): LIBS += -LF:/QA/QtMEL-master/libsQt5/ -lqtmeld1
+#
 VERSION = 0.4.0.0
 QMAKE_TARGET_COMPANY = ITA
 QMAKE_TARGET_PRODUCT = OpenBoard
