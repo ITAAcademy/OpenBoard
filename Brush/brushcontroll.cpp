@@ -17,6 +17,8 @@ BrushMeneger::BrushMeneger(QObject *parent) : QObject(parent), QQuickImageProvid
     QTime midnight(0,0,0);
     qsrand(midnight.secsTo(QTime::currentTime()));
 
+    mask = QImage(":/Content/brush_skeen.png");
+
     // open file
     openBrushLibrary();
 

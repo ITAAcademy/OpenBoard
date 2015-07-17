@@ -33,6 +33,7 @@ Rectangle{
         width: parent.width - root.border.width*2
         height: parent.height * 0.2
         source: "qrc:/Content/brush_skeen.png"
+        visible: false
         //fillMode: Image.PreserveAspectCrop
         x: root.border.width
         y: root.border.width + 3

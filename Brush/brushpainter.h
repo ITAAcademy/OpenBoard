@@ -11,8 +11,8 @@
 
 using namespace std;
 struct Brush{
-    QImage img = QImage(1,1,QImage::Format_ARGB32);
-    float size = 100;
+    QImage img = QImage(10,10,QImage::Format_RGB888);
+    float size = 50;
     float opacity = 100;
     float blur = 0;
 
@@ -34,8 +34,9 @@ public:
     explicit BrushPainter(QObject *parent);
     ~BrushPainter();
 
-    static QImage drawBrush(Brush &brush, QSize size = QSize(600,230));
+    static QImage drawBrush(Brush &brush, QSize size = QSize(800,230));
     static QImage applyEffectToImage(QImage src, QGraphicsEffect *effect, int extent = 0);
+    static QImage applyMask(QImage src, QImage mask);
 };
 
 #endif // BRUSHPAINTER_H

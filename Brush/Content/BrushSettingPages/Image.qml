@@ -13,6 +13,10 @@ Rectangle {
         show_brush_image.update();
         console.log("update brush");
     }
+    Component.onCompleted: {
+        root.update();
+    }
+
     ScrollView
     {
         id: scroll

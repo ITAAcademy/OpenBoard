@@ -23,8 +23,8 @@ Rectangle {
             height: parent.fix_height
             name: "SIZE"
             minimum: 1
-            maximum : 1000
-            value: 100
+            maximum : 500
+            value: 50
             onValueChanged:
             {
                 brushControll.setSize(value);
@@ -52,7 +52,7 @@ Rectangle {
             value: 100
             onValueChanged:
             {
-                show_brush_image.opacity = value/100;
+               // show_brush_image.opacity = value/100;
                 brushControll.setOpacity(value);
                 show_brush_image.update();
             }

@@ -24,6 +24,7 @@ class BrushMeneger : public QObject, public QQuickImageProvider
     QList <int> testWight;
     QDir brushDir;
     QStack <QImage> imageStack;
+    QImage mask;
     int curentBrush;
     Brush createdBrush;
     /*

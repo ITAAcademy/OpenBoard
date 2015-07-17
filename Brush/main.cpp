@@ -1,4 +1,4 @@
-#include "listcontroll.h"
+#include "brushcontroll.h"
 
 int main(int argc, char *argv[])
 {
