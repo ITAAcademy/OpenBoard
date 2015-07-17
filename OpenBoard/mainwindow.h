@@ -84,7 +84,6 @@ public slots:
     void on_backBtn_clicked();
     void on_animationBtn_clicked();
     void on_crossBtn_clicked();
-    void on_colorBtn_clicked();
     void on_clearBtn_clicked();
 
 //    press on button delay
@@ -95,6 +94,7 @@ public slots:
 //    press on button color
     void on_colorBtn_pressed();
     void on_colorBtn_released();
+    void on_colorBtn_clicked();
     void show_color_dialog();
 
 private slots:

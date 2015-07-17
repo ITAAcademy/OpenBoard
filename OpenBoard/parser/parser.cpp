@@ -98,7 +98,7 @@ int Parser::ParsingLine(QList<Unit*> &list, QString& str)
                 int count = 0;
                 if(exp.exactMatch((QString)str[i+3]))
                 {
-                    while(exp.exactMatch((QString)str[i+3]) && count++ < 3)
+                    while(exp.exactMatch((QString)str[i+3]) && ++count < 3)
                     {
                         pars_line += str[i+3];
                         i++;
@@ -125,7 +125,7 @@ int Parser::ParsingLine(QList<Unit*> &list, QString& str)
                     int count = 0;
                     if(exp.exactMatch((QString)str[i+3]))
                     {
-                        while(exp.exactMatch((QString)str[i+3]) && count++ < 3)
+                        while(exp.exactMatch((QString)str[i+3]) && ++count < 3)
                         {
                             pars_line += str[i+3];
                             i++;
