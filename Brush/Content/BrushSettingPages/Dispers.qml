@@ -33,7 +33,7 @@ Rectangle {
             width: parent.width
             height: parent.fix_height
             name: "COUNT"
-            maximum: 100
+            maximum: 10
             value: 0
             onValueChanged:
             {
@@ -48,6 +48,7 @@ Rectangle {
             name: "DELTA"
             maximum: 100
             value: 0
+            checkable: true
             onValueChanged:
             {
                 brushControll.setSizeMax(value);

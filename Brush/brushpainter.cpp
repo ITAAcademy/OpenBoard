@@ -26,18 +26,20 @@ QImage BrushPainter::drawBrush(Brush &brush, QSize size)
     QPainter paint(&img);
     paint.setBrush(qBrush);
     QImage resultImg;
+    QTransform transformation;
     int n = (size.width() - 100 ) / (width/4);
     n--;
-    for(int i = 0; i < n; i++)
-    {
-
-        int b = brush.size_delta/2 - rand() % ((int)brush.size_delta + 1);
-        int m = brush.dispers/2 - rand() % ((int)brush.dispers + 1);
-       // qDebug() << "QWE    " << b;
-        resultImg = drawImg.scaled(brush.size +  b, brush.size + b, Qt::KeepAspectRatio);
-        qBrush.setTextureImage(resultImg);
-        paint.drawImage(i*resultImg.width()/4,size.height()/2 - resultImg.height()/2 + m,resultImg);
-    }
+    for(int j = 0; j <= brush.count; j++)
+        for(int i = 0; i < n; i++)
+        {
+            int b = brush.size_delta/2 - rand() % ((int)brush.size_delta + 1);
+            int m = brush.dispers/2 - rand() % ((int)brush.dispers + 1);
+         //   transformation.rotate(brush.angle_delta/2 - rand() % ((int)brush.angle_delta + 1));
+            resultImg = drawImg.scaled(brush.size +  b, brush.size + b, Qt::KeepAspectRatio).transformed(transformation);
+            paint.setOpacity((double)brush.opacity/100);
+            qBrush.setTextureImage(resultImg);
+            paint.drawImage(i*resultImg.width()/4,size.height()/2 - resultImg.height()/2 + m,resultImg);
+        }
    // paint.fillRect(0,0,200,200,QBrush(brush.color_main, Qt::SolidPattern));
 
     bool bEnd = paint.end();
@@ -57,6 +59,17 @@ QImage BrushPainter::applyEffectToImage(QImage src, QGraphicsEffect *effect, int
     res.fill(Qt::transparent);
     QPainter ptr(&res);
     scene.render(&ptr, QRectF(), QRectF( -extent, -extent, src.width()+extent*2, src.height()+extent*2 ) );
+    return res;
+}
+
+QImage BrushPainter::applyMask(QImage src, QImage mask)
+{
+    QImage res(src.size(), src.format());
+    QPixmap pix_mask = QPixmap::fromImage(mask.createAlphaMask());
+    QPainter ptr(&res);
+    ptr.setClipRegion(QRegion(pix_mask));
+    ptr.drawImage(0, 0, src);
+    ptr.end();
     return res;
 }
 

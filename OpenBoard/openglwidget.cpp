@@ -9,7 +9,7 @@ canvas->setProperty("scroll", k);
 
 OGLWidget::loadTextures(){
 
-    if(!img.load(QCoreApplication::applicationDirPath()+"/star.png"))
+    if(!img.load(":/ThirdPart/images/start.png")) // QCoreApplication::applicationDirPath()+"/star.png"
     {
         //loads correctly
         qWarning() << "ERROR LOADING IMAGE" + QCoreApplication::applicationDirPath()+"/star.png";
@@ -319,7 +319,7 @@ void OGLWidget::clearBuffer()
      startMarker.value=getMainFillColor();
      colors.append(startMarker);
     cross.clear();
-    cross.append(2); // для визова зачеркування якщо стрічка зацінчується
+    cross.append(0); // для визова зачеркування якщо стрічка зацінчується
     stringList.clear();
     stringList.append("");
     cursorIndex = 0;
@@ -728,19 +728,21 @@ void OGLWidget::drawBuffer()
     //int width = fMetrics->width(str)*1.125 ;//+ fMetrics->leftBearing(str.at(0)) + fMetrics->rightBearing(str.at(0));
     //qDebug() << "DRAW";
     clearCanvas();
-    int maxElm = (height()/(lineHeight + pt)) - 1;
+    int maxDrawElm = (height()/(lineHeight + pt)) - 1;
     int CurRow = convertTextBoxToBufferIndex(cursorIndex).y();
-    if(CurRow >= indexRowInList + maxElm)
+    if(CurRow >= indexRowInList + maxDrawElm)
     {
-        indexRowInList += CurRow - (indexRowInList + maxElm) + 1;
+        indexRowInList += CurRow - (indexRowInList + maxDrawElm) + 1;
     }
     if(CurRow < indexRowInList)
     {
         indexRowInList = CurRow;
     }
+    indexFirstDrawSymbol = getFirstSymbolOfString(indexRowInList, true);
+    qDebug() << indexRowInList << "   indexFirstDrawSymbol   :           " << indexFirstDrawSymbol << cross;
  //   qDebug() << "START draw with indexRowInList " << indexRowInList << "MAX elm " << maxElm << "CUR " << CurRow;
     int i = indexRowInList;
-    while( i < stringList.length() && i < indexRowInList + maxElm)
+    while( i < stringList.length() && i < indexRowInList + maxDrawElm)
     {
        //qDebug() << stringList[i] << "@";
         QStringList tabulationStr = stringList[i].split("\t");
@@ -933,6 +935,22 @@ void OGLWidget::moveCursor(int n)
  //   qDebug() << "Cursor move to n " << n <<"=== cur state " << cursorIndex << "QPOINT  " << convertTextBoxToBufferIndex(cursorIndex);
 
 }
+int OGLWidget::getFirstSymbolOfString(int index, bool symbol)
+{
+    int i = 0;
+    int sumLength = 0;
+    while( i < index)
+    {
+        int nextLen = stringList[i].length();
+        if(!symbol)
+            nextLen++;
+        sumLength +=  nextLen;
+        i++;
+    }
+    //if(sumLength != 0)
+      //  sumLength++;
+                return sumLength;
+}
 
 QPoint OGLWidget::convertTextBoxToBufferIndex(int index, bool symbol)
 {
@@ -1059,7 +1077,7 @@ bool OGLWidget::crossTextDraw()
     int x1, x2, x;
     bool lastGood = false;
     bool needNextRow = false;
-    for(int i = 0; i < cross.length(); i++)
+    for(int i = indexFirstDrawSymbol; i < cross.length(); i++)
     {
         //qDebug() << "CROSS [i]:" << cross[i];
         if(cross[i] != 0)
@@ -1087,6 +1105,7 @@ bool OGLWidget::crossTextDraw()
         {
             QPoint conv = convertTextBoxToBufferIndex(i - 1, true);
         //    conv = convertTextBoxToBufferIndex(i + conv.y() + 1);
+            y -= indexFirstDrawSymbol;
             ++y *= lineHeight + pt;
             y -= 0.25f * fMetrics->height();// first paid + midle
 

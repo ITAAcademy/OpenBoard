@@ -33,7 +33,7 @@ Rectangle {
             width: parent.width
             height: parent.fix_height
             name: "Ѧ ANGLE"
-            maximum: 100
+            maximum: 360
             value: 0
             onValueChanged:
             {

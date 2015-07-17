@@ -160,6 +160,7 @@ signals:
 private slots:
     bool crossText();
     bool crossTextV2();
+    int getFirstSymbolOfString(int index, bool symbol = false);
 private:
     QImage img;
      QImage GL_formatted_image;
@@ -220,7 +221,9 @@ private:
 
     QList<QString> stringList;
     QList<short int> cross;
-    int indexRowInList;
+    int indexRowInList; // first str for draw
+    int indexFirstDrawSymbol = 0;
+    int maxDrawElm = 0;
     QElapsedTimer framDelayTimer;
     bool isClose = false;
     int cursorIndex;

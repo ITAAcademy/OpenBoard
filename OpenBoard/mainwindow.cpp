@@ -767,7 +767,7 @@ void MainWindow::on_crossBtn_clicked()
 void MainWindow::on_colorBtn_pressed()
 {
     QTextCursor prev_cursor = textEdit->textCursor();
-    colorPkr = QColorDialog::getColor();
+    colorPkr = QColorDialog::getColor(mpOGLWidget->getMainFillColor());
     textEdit->setTextCursor(prev_cursor);
     if(colorPkr.isValid())
     {
@@ -791,10 +791,7 @@ void MainWindow::on_colorBtn_released()
 
 void MainWindow::show_color_dialog()
 {
-    colorPkr = QColorDialog::getColor();
 
-    if(colorPkr.isValid())
-        on_colorBtn_released();
 }
 
 void MainWindow::on_colorBtn_clicked()
