@@ -43,7 +43,7 @@ struct DrawData{
 };
 
 
-class OGLWidget : public QGLWidget
+class OGLWidget : public QGLWidget, protected QGLFunctions
 {
     Q_OBJECT
     Q_PROPERTY(QString  drawText READ getDrawText WRITE setDrawText NOTIFY drawTextChanged)
@@ -54,7 +54,8 @@ public:
      */
    volatile bool isCrossingNow;
     QList<ColorMarker> colors;
-
+    QImage brushBuffer;
+    GLuint fbo, render_buf;
     struct GradientSetting{
         QStringList list;
         void addColorStop( float range, int r, int g, int b, int a = 255)
@@ -229,6 +230,7 @@ private:
     bool isClose = false;
     int cursorIndex;
 protected:
+    void destroy(bool destroyWindow, bool destroySubWindow);
     void initializeGL(); // Метод для инициализирования opengl
        void resizeGL(int nWidth, int nHeight); // Метод вызываемый после каждого изменения размера окна
        void paintGL(); // Метод для вывода изображения на экран
