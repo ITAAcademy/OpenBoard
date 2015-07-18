@@ -52,6 +52,7 @@ public:
     /*
      * |Future gradient
      */
+   bool isMousePress = false;
    volatile bool isCrossingNow;
     QList<ColorMarker> colors;
     QImage brushBuffer;
@@ -82,6 +83,7 @@ public:
     void resizeEvent(QResizeEvent *event);
     void closeEvent(QCloseEvent *event);
     void mousePressEvent ( QMouseEvent * event );
+    void mouseReleaseEvent ( QMouseEvent * event );
     /*
      * |Canvas control
      */

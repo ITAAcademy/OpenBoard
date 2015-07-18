@@ -174,7 +174,7 @@ void OGLWidget::initializeGL()
     initializeGLFunctions();
     qglClearColor(Qt::black); // Черный цвет фона
      //glEnable(GL_TEXTURE_2D);
-     loadTextures();
+     //loadTextures();
     glGenFramebuffers(1,&fbo);
     glGenRenderbuffers(1,&render_buf);
    glBindRenderbuffer(1,render_buf);
@@ -224,6 +224,7 @@ void OGLWidget::paintGL()
 
 
     //FRAMEBUFFER PART
+        if (isMousePress){
         glBindFramebuffer(GL_DRAW_FRAMEBUFFER,fbo);
       uchar* data = new uchar[wax*way*4];
 
@@ -238,10 +239,10 @@ void OGLWidget::paintGL()
          //  qi = qi.rgbSwapped();
 
        GL_formatted_image = QGLWidget::convertToGLFormat(qi);
-       if(GL_formatted_image.isNull())
+      /* if(GL_formatted_image.isNull())
            qWarning("IMAGE IS NULL");
        else
-           qWarning("IMAGE NOT NULL");
+           qWarning("IMAGE NOT NULL");*/
        //generate the texture name
        glEnable(GL_TEXTURE_2D); // Enable texturing
 
@@ -271,8 +272,12 @@ void OGLWidget::paintGL()
           glTexCoord2i(1,0); glVertex2i(wax,way);
 
           glEnd();
+          glDeleteTextures(1, &texture);
           glDisable(GL_TEXTURE_2D);
 
+
+          if (data!=NULL)delete[] data;
+}
         //busy = true;
 
         // glBegin и glEnd - обозначают блок для рисования объекта(начало и конец), glBegin принимает параметр того, что нужно рисовать.
@@ -325,6 +330,14 @@ void OGLWidget::mousePressEvent(QMouseEvent *event)
     //int x = event->x();
     //int y = event->y();
     //drawImage();
+    isMousePress=true;
+}
+void OGLWidget::mouseReleaseEvent(QMouseEvent *event)
+{
+    //int x = event->x();
+    //int y = event->y();
+    //drawImage();
+    isMousePress=false;
 }
 
 QString OGLWidget::getDrawText()
