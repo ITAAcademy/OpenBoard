@@ -96,11 +96,11 @@ int Parser::ParsingLine(QList<Unit*> &list, QString& str)
                 QRegExp exp("[0-9]");
                 pars_line.clear();
                 int count = 0;
-                if(exp.exactMatch((QString)str[i+3]))
+                if(exp.exactMatch((QString)str[i+2]))
                 {
-                    while(exp.exactMatch((QString)str[i+3]) && ++count < 3)
+                    while(exp.exactMatch((QString)str[i+2]) && ++count < 4)
                     {
-                        pars_line += str[i+3];
+                        pars_line += str[i+2];
                         i++;
                     }
                 }
@@ -123,11 +123,11 @@ int Parser::ParsingLine(QList<Unit*> &list, QString& str)
                     QRegExp exp("[0-9]");
                     pars_line.clear();
                     int count = 0;
-                    if(exp.exactMatch((QString)str[i+3]))
+                    if(exp.exactMatch((QString)str[i+2]))
                     {
-                        while(exp.exactMatch((QString)str[i+3]) && ++count < 3)
+                        while(exp.exactMatch((QString)str[i+2]) && ++count < 4)
                         {
-                            pars_line += str[i+3];
+                            pars_line += str[i+2];
                             i++;
                         }
                     }
@@ -137,6 +137,7 @@ int Parser::ParsingLine(QList<Unit*> &list, QString& str)
                         break;
                     }
                     command->setUnitData(pars_line);
+                    qDebug()<<"Pars line:"<<pars_line;
                     list.push_back(command);
                     state = -1;
                     i += 2;
