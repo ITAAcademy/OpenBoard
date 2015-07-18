@@ -98,7 +98,7 @@ int Parser::ParsingLine(QList<Unit*> &list, QString& str)
                 int count = 0;
                 if(exp.exactMatch((QString)str[i+2]))
                 {
-                    while(exp.exactMatch((QString)str[i+2]) && count++ < 3)
+                    while(exp.exactMatch((QString)str[i+2]) && ++count < 4)
                     {
                         pars_line += str[i+2];
                         i++;
@@ -112,11 +112,11 @@ int Parser::ParsingLine(QList<Unit*> &list, QString& str)
                 command->setUnitData(pars_line);
                 list.push_back(command);
                 state = -1;
-                i += 2;
+                i += 1;
                 continue;
             }
             if(pars_line == (QString)"\\<")
-            {               
+            {
                     UnitCommand* command = new UnitCommand();
                     command->setUnitCommandType("ErasePreChar");
 
@@ -125,7 +125,7 @@ int Parser::ParsingLine(QList<Unit*> &list, QString& str)
                     int count = 0;
                     if(exp.exactMatch((QString)str[i+2]))
                     {
-                        while(exp.exactMatch((QString)str[i+2]) && count++ < 3)
+                        while(exp.exactMatch((QString)str[i+2]) && ++count < 4)
                         {
                             pars_line += str[i+2];
                             i++;
@@ -137,9 +137,10 @@ int Parser::ParsingLine(QList<Unit*> &list, QString& str)
                         break;
                     }
                     command->setUnitData(pars_line);
+                    qDebug()<<"Pars line:"<<pars_line;
                     list.push_back(command);
                     state = -1;
-                    i += 2;
+                    i += 1;
                     continue;
 
                /* UnitCommand* command = new UnitCommand();

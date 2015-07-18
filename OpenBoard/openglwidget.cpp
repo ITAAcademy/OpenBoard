@@ -7,20 +7,22 @@ int k = canvas->property("scroll").toInt() - 10;
 canvas->setProperty("scroll", k);
 */
 
-OGLWidget::loadTextures(){
+int OGLWidget::loadTexture(QImage img, int index, bool modify){
 
-    if(!img.load(":/ThirdPart/images/start.png")) // QCoreApplication::applicationDirPath()+"/star.png"
+    if(img.isNull()) // QCoreApplication::applicationDirPath()+"/star.png"
     {
         //loads correctly
-        qWarning() << "ERROR LOADING IMAGE" + QCoreApplication::applicationDirPath()+"/star.png";
+        qWarning() << "ERROR LOADING IMAGE";// + QCoreApplication::applicationDirPath()+"/star.png";
+        return 0;
     }
-    GL_formatted_image = QGLWidget::convertToGLFormat(img);
+    QImage GL_formatted_image = QGLWidget::convertToGLFormat(img);
     if(GL_formatted_image.isNull())
         qWarning("IMAGE IS NULL");
     else
         qWarning("IMAGE NOT NULL");
     //generate the texture name
     glEnable(GL_TEXTURE_2D); // Enable texturing
+    GLuint texture;
 
        glGenTextures(1, &texture); // Obtain an id for the texture
        glBindTexture(GL_TEXTURE_2D, texture); // Set as the current texture
@@ -31,26 +33,63 @@ OGLWidget::loadTextures(){
 
        glTexImage2D(GL_TEXTURE_2D, 0, 4, GL_formatted_image.width(), GL_formatted_image.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, GL_formatted_image.bits());
        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-
-
-
+       glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
        glDisable(GL_TEXTURE_2D);
 
+       int realIndex = index;
+       if(modify)
+       {
+           textureList[index] = texture;
+           return index;
+       }
+       if(index >= 0 && index < imgList.length())
+       {
+           realIndex = imgList.length();
+           imgList.insert(index, img);
+           textureList.insert(index, texture);
+       }
+       else
+       {
+           imgList.append(img);
+           textureList.append(texture);
+       }
+
+       return realIndex;
     //bind the texture ID
 }
-OGLWidget::drawImage(){
+
+int OGLWidget::loadTextureFromFile(QString path, int index)
+{
+    QImage img(path);
+    if(img.isNull()) // QCoreApplication::applicationDirPath()+"/star.png"
+    {
+        //loads correctly
+        qWarning() << "ERROR LOADING IMAGE  " + path;
+        return 0;
+    }
+    return loadTexture(img, index);
+
+}
+
+bool OGLWidget::reloadTexture(int index)
+{
+    if(index >= imgList.length())
+        return false;
+    loadTexture(imgList[index], index);
+
+}
+void OGLWidget::drawTexture( int x, int y, int width, int height, GLuint texture){
 //loadTextures();
   // glLoadIdentity();
-     qglColor(Qt::white);
+    qglColor(Qt::white);
     glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D,texture);
+    glBindTexture(GL_TEXTURE_2D, texture);
     glBegin(GL_QUADS);
             //Draw Picture
-    glTexCoord2i(0,0); glVertex2i(0,way);
-    glTexCoord2i(0,1); glVertex2i(0,0);
-    glTexCoord2i(1,1); glVertex2i(wax,0);
-    glTexCoord2i(1,0); glVertex2i(wax,way);
+    glTexCoord2i(0,0); glVertex2i(x, height);
+    glTexCoord2i(0,1); glVertex2i(x,y);
+    glTexCoord2i(1,1); glVertex2i(width,y);
+    glTexCoord2i(1,0); glVertex2i(width, height);
 
     glEnd();
     glDisable(GL_TEXTURE_2D);
@@ -133,7 +172,7 @@ void OGLWidget::initializeGL()
 {
     qglClearColor(Qt::black); // Черный цвет фона
      //glEnable(GL_TEXTURE_2D);
-     loadTextures();
+    loadTextureFromFile(":/ThirdPart/images/start.png");
 }
 
 void OGLWidget::moveEvent(QMoveEvent *event)
@@ -164,7 +203,7 @@ void OGLWidget::paintGL()
        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
       // qglColor(Qt::white);
-        drawImage();
+        drawTexture(0, 0, wax, way, textureList[0]);
         drawBuffer();
 
         //busy = true;
@@ -434,6 +473,7 @@ void OGLWidget::crossOutWithAnimation(int n)
 void OGLWidget::generateFrames()
 {
 }
+
 int OGLWidget::getCursorIndex() const
 {
     return cursorIndex;

@@ -120,7 +120,7 @@ public:
     void setCursorIndex(int value);
 
 
-    drawImage();
+    void drawTexture(int x, int y, int width, int height, GLuint texture);
     void update();
 public slots:
     void drawAnimated( bool record );
@@ -164,12 +164,14 @@ private slots:
     int getCountNullString(int index);
 private:
     QImage img;
-     QImage GL_formatted_image;
+    QImage GL_formatted_image;
     GLuint texture;
     QString drawText;
     bool bRecord;
     void generateFrames();
-       loadTextures();
+    int loadTexture(QImage img, int index = -1, bool modify = false);
+    int loadTextureFromFile(QString path, int index = -1); // return index for reload + texture indefication
+    bool reloadTexture( int index);
     StatusDraw curStatus; // 0 - stop; 1 - play; -1 - pause
     QObject *canvas;
     QThread drawThread;
@@ -228,6 +230,9 @@ private:
     QElapsedTimer framDelayTimer;
     bool isClose = false;
     int cursorIndex;
+    QVector <QImage> imgList;
+    QVector <GLuint> textureList;
+
 protected:
     void initializeGL(); // Метод для инициализирования opengl
        void resizeGL(int nWidth, int nHeight); // Метод вызываемый после каждого изменения размера окна
