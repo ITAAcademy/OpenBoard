@@ -3,7 +3,7 @@
 
 #include <QString>
 #include <QtConcurrent/QtConcurrent>
-#include "qmlwidget.h"
+#include "openglwidget.h"
 
 class Unit
 {
@@ -17,7 +17,7 @@ public:
 public:
     Unit();
     virtual ~Unit();
-    virtual void draw(QmlWidget* canvas);
+    virtual void draw(OGLWidget* canvas);
 
     void setUnitData(QString str);
     void setPosition(int x, int y);

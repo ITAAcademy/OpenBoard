@@ -10,7 +10,7 @@ Item{
         objectName: "mcanvas"
         anchors.fill: parent
         antialiasing: true
-        renderStrategy: Canvas.Threaded
+        //renderStrategy: Canvas.Threaded
         renderTarget: Canvas.Image
         property int index: 0
         property bool cross: false
@@ -151,12 +151,12 @@ Item{
        // Text { text: cFontLoader.status == FontLoader.Ready ? 'Loaded' : 'Not loaded' }
         Timer{
             id: fps
-            interval: 40
+            interval: 1000/120
 
             onTriggered: {
-                mainDrawElm.requestPaint();
+                mainDrawElm.requestPaint()
             }
-            running: false
+            running: true
             repeat: true
             Component.onCompleted: fps.start()
 

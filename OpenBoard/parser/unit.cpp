@@ -12,7 +12,7 @@ Unit::~Unit()
 
 }
 
-void Unit::draw(QmlWidget *canvas)
+void Unit::draw(OGLWidget *canvas)
 {
 }
 

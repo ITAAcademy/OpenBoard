@@ -36,5 +36,6 @@
         <file>icons/stop_icon.png</file>
         <file>icons/info.png</file>
         <file>icons/speed-icon.png</file>
+        <file>ThirdPart/images/start.png</file>
     </qresource>
 </RCC>

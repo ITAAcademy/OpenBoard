@@ -57,12 +57,12 @@ charCount=document()->characterCount();
  {
      mergeFormatOnWordOrSelection(position);
  }
- 
+
  QColor MyTextEdit::getColOrigin() const
  {
      return colOrigin;
  }
- 
+
  void MyTextEdit::setColOrigin(const QColor &value)
  {
       colOrigin = value;
@@ -77,6 +77,8 @@ charCount=document()->characterCount();
 
 
  void MyTextEdit::keyPressEvent(QKeyEvent *e) {
+        quint32 scanCode = e->nativeScanCode();
+         int keyCode = e->key();
  if(e->type() == QKeyEvent::KeyPress) {
  if(e->matches(QKeySequence::Undo))
  undom();
@@ -85,6 +87,61 @@ charCount=document()->characterCount();
      rendom();
      else
  QTextEdit::keyPressEvent(e);
+ if(e->modifiers() & Qt::ControlModifier)
+ {
+
+     if (scanCode==SCAN_KEY_V)
+     {
+         if (keyCode!=Qt::Key_V){
+             QKeyEvent *event = new QKeyEvent ( QEvent::KeyPress, Qt::Key_V,Qt::ControlModifier);
+             QCoreApplication::postEvent (this, event);
+         }
+     }
+     else
+     if (scanCode==SCAN_KEY_X)
+     {
+         if (keyCode!=Qt::Key_X)
+         {
+             QKeyEvent *event = new QKeyEvent ( QEvent::KeyPress, Qt::Key_X,Qt::ControlModifier);
+             QCoreApplication::postEvent (this, event);
+         }
+     }
+    else
+         if (scanCode==SCAN_KEY_A)
+         {
+             if (keyCode!=Qt::Key_A)
+             {
+                 QKeyEvent *e1 = new QKeyEvent ( QEvent::KeyRelease, Qt::Key_A,Qt::ControlModifier);
+                 QCoreApplication::postEvent (this, e1);
+
+                 QKeyEvent *e = new QKeyEvent ( QEvent::KeyPress, Qt::Key_A,Qt::ControlModifier);
+                 QCoreApplication::postEvent (this, e);
+             }
+
+         }
+         else
+         if (scanCode==SCAN_KEY_C)
+         {
+             if (keyCode!=Qt::Key_C)
+             {
+                 QKeyEvent *e = new QKeyEvent ( QEvent::KeyPress, Qt::Key_C,Qt::ControlModifier);
+                 QCoreApplication::postEvent (this, e);
+             }
+
+         }
+         else
+         if (scanCode==SCAN_KEY_Z)
+         {
+             if (keyCode!=Qt::Key_Z)
+             {
+                 QKeyEvent *e = new QKeyEvent ( QEvent::KeyPress, Qt::Key_Z,Qt::ControlModifier);
+                 QCoreApplication::postEvent (this, e);
+             }
+
+         }
+
+ }
+
  }
  }
 
@@ -140,12 +197,16 @@ this->setTextCursor(t_cursor);
 
  void MyTextEdit::appendNoNL( QString text )
  {
-     QTextCursor cursor(textCursor());
+     /*QTextCursor cursor(textCursor());
      cursor.setPosition(QTextCursor::End, QTextCursor::MoveAnchor);
      //I have to do this too. - I was forgetting this!!!!
      moveCursor (QTextCursor::End);
      setTextCursor(cursor);
-     insertPlainText (text);
+     insertPlainText (text);*/
+     emit doUndoRedoStart();
+     setPlainText(toPlainText() + text);
+     emit doUndoRedoEnd();
+
  }
 
  void MyTextEdit::saveChanges()

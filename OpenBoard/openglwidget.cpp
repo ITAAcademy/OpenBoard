@@ -1,26 +1,82 @@
-#include "qmlwidget.h"
+
+#include "openglwidget.h"
 /*
  *scroll
  *
 int k = canvas->property("scroll").toInt() - 10;
 canvas->setProperty("scroll", k);
 */
-QmlWidget::QmlWidget(QWidget *parent) :
-    QQuickWidget(parent)
+
+OGLWidget::loadTextures(){
+
+    if(!img.load(":/ThirdPart/images/start.png")) // QCoreApplication::applicationDirPath()+"/star.png"
+    {
+        //loads correctly
+        qWarning() << "ERROR LOADING IMAGE" + QCoreApplication::applicationDirPath()+"/star.png";
+    }
+    GL_formatted_image = QGLWidget::convertToGLFormat(img);
+    if(GL_formatted_image.isNull())
+        qWarning("IMAGE IS NULL");
+    else
+        qWarning("IMAGE NOT NULL");
+    //generate the texture name
+    glEnable(GL_TEXTURE_2D); // Enable texturing
+
+       glGenTextures(1, &texture); // Obtain an id for the texture
+       glBindTexture(GL_TEXTURE_2D, texture); // Set as the current texture
+
+       //glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+      // glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+
+
+       glTexImage2D(GL_TEXTURE_2D, 0, 4, GL_formatted_image.width(), GL_formatted_image.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, GL_formatted_image.bits());
+       glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+
+
+
+       glDisable(GL_TEXTURE_2D);
+
+    //bind the texture ID
+}
+OGLWidget::drawImage(){
+//loadTextures();
+  // glLoadIdentity();
+     qglColor(Qt::white);
+    glEnable(GL_TEXTURE_2D);
+    glBindTexture(GL_TEXTURE_2D,texture);
+    glBegin(GL_QUADS);
+            //Draw Picture
+    glTexCoord2i(0,0); glVertex2i(0,way);
+    glTexCoord2i(0,1); glVertex2i(0,0);
+    glTexCoord2i(1,1); glVertex2i(wax,0);
+    glTexCoord2i(1,0); glVertex2i(wax,way);
+
+    glEnd();
+    glDisable(GL_TEXTURE_2D);
+
+}
+
+OGLWidget::OGLWidget(QWidget *parent) :
+    QGLWidget(parent)
 {
     //qRegisterMetaType<DrawData>("DrawData");
-    engine()->rootContext()->setContextProperty(QLatin1String("forma"), this);
-   // setSource(QUrl("draw.qml"));
-    setSource(QUrl("qrc:/draw.qml"));
-
+   // engine()->rootContext()->setContextProperty(QLatin1String("forma"), this);
     m_encoder = new AV_REncoder(this);
 
     bRecord = false;
     this->setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint | Qt::WindowTitleHint);
-    this->setResizeMode(QQuickWidget::SizeRootObjectToView );
+
+    //this->setResizeMode(QQuickWidget::SizeRootObjectToView ); //TODO
     /*
      * init
     */
+
+    //
+    ColorMarker startMarker;
+    startMarker.startIndex=0;
+    startMarker.value=getMainFillColor();
+
     lineHeight = 25;
     marginLeft = 20;
     marginTop = 40;
@@ -28,6 +84,7 @@ QmlWidget::QmlWidget(QWidget *parent) :
     pt = 36;
     font = "LC Chalk";
     isWord  =  true;
+     wax=500; way=500; // начальный размер окна
     x = marginLeft;
     y = lineHeight + pt;
     indexW = 1;
@@ -42,54 +99,92 @@ QmlWidget::QmlWidget(QWidget *parent) :
     tickTimer.setSingleShot(false);
     tickTimer.setInterval(1000/25);
     realDelay = 0;
-    /*
-     * canvas set
-    */
 
-    canvas = rootObject()->findChild<QObject *>("mcanvas");
     maxWidth = width() - marginLeft;
-    QMetaObject::invokeMethod(canvas, "init");
-
-
-   // connect(&tickTimer, SIGNAL(timeout()), this, SLOT(drawBuffer()));
     stringList.append("");
     //stringList.reserve(600000);
     indexRowInList = 0;
     cursorIndex = 0;
+    isCrossingNow = false;
 
-    /*
-     *cursor ALPHA
-     *
-    */
-    //setCursor(Qt::NoArrow);
-    /*QPixmap pix(1,1);
-    QColor color(0,0,0,0);
-    pix.fill(color);
-    QCursor mCursor(pix);
-    setCursor(mCursor);*/
-    /*QString fileName = QFileDialog::getSaveFileName();
-    qDebug() << "qweqw";
-    audioRecorder->setOutputLocation(QUrl::fromLocalFile(fileName));*/
-   // audioRecorder->record();
+    //OPENGL
+    setFormat(QGLFormat(QGL::DoubleBuffer)); // Двойная буферизация
+       glDepthFunc(GL_LEQUAL); // Буфер глубины
+       QTimer *timer = new QTimer(this);
+       connect(timer, SIGNAL(timeout()), this, SLOT(updateWindow()));
+       timer->start(5);
 
 }
 
-QmlWidget::~QmlWidget()
+OGLWidget::~OGLWidget()
 {
 
 }
 
-void QmlWidget::moveEvent(QMoveEvent *event)
+void OGLWidget::resizeGL(int nWidth, int nHeight)
+{
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    glViewport(0, 0, (GLint)nWidth, (GLint)nHeight);
+    wax=nWidth;
+    way=nHeight;
+}
+void OGLWidget::initializeGL()
+{
+    qglClearColor(Qt::black); // Черный цвет фона
+     //glEnable(GL_TEXTURE_2D);
+     loadTextures();
+}
+
+void OGLWidget::moveEvent(QMoveEvent *event)
 {
 
 }
 
-void QmlWidget::paintEvent(QPaintEvent *event)
+void OGLWidget::paintGL()
+{
+    m_encoder->setFrame(grabFrameBuffer());
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // чистим буфер изображения и буфер глубины
+       glMatrixMode(GL_PROJECTION); // устанавливаем матрицу
+     //  glShadeModel(GL_SMOOTH);
+       // Сглаживание точек
+      // glEnable(GL_POINT_SMOOTH);
+      // glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
+       // Сглаживание линий
+       //glEnable(GL_LINE_SMOOTH);
+       //glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+
+      // glEnable(GL_POLYGON_SMOOTH);
+      // glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+      // glEnable(GL_MULTISAMPLE);
+
+       glLoadIdentity(); // загружаем матрицу
+       glOrtho(0,wax,way,0,1,0); // подготавливаем плоскости для матрицы
+       glEnable(GL_BLEND);
+       glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+      // qglColor(Qt::white);
+        drawImage();
+        drawBuffer();
+
+        //busy = true;
+
+        // glBegin и glEnd - обозначают блок для рисования объекта(начало и конец), glBegin принимает параметр того, что нужно рисовать.
+       // qglColor(Qt::green);
+
+         //Начинаем отрисовку, аргумент означает отрисовку прямоугольника.
+         //Каждый вызов glVertex3f задает одну вершину прямоугольника
+       // swapBuffers();
+
+
+}
+
+void OGLWidget::paintEvent(QPaintEvent *event)
 {
     if(bRecord)
     {
        // m_encoder->mutex.lock();
-        m_encoder->setFrame(grabFramebuffer());
+        m_encoder->setFrame(grabFrameBuffer());
         //m_encoder->mutex.unlock();
     }
  //   if(curStatus == PLAY && bRecord)
@@ -104,41 +199,39 @@ void QmlWidget::paintEvent(QPaintEvent *event)
     }
 }
 
-void QmlWidget::resizeEvent(QResizeEvent *envent)
+void OGLWidget::resizeEvent(QResizeEvent *envent)
 {
-    QQuickWidget::resizeEvent(envent);
+    QGLWidget::resizeEvent(envent);
     maxWidth = width() - marginLeft;
 }
 
-void QmlWidget::closeEvent(QCloseEvent *event)
+void OGLWidget::closeEvent(QCloseEvent *event)
 {
     stopAnimated();
     pause(500);
-    if(canvas != NULL)
-        delete canvas;
     if(fMetrics != NULL)
         delete fMetrics;
     isClose = true;
 }
 
-void QmlWidget::mousePressEvent(QMouseEvent *event)
+void OGLWidget::mousePressEvent(QMouseEvent *event)
 {
     //crossOutLastSymbol();
 }
 
-QString QmlWidget::getDrawText()
+QString OGLWidget::getDrawText()
 {
     return drawText;
 }
 
-void QmlWidget::setDrawText(QString data)
+void OGLWidget::setDrawText(QString data)
 {
     drawText = data;
 }
 
 
 
-void QmlWidget::drawAnimated(bool record)
+void OGLWidget::drawAnimated(bool record)
 {
     if(curStatus == this->PAUSE)
     {
@@ -163,8 +256,9 @@ void QmlWidget::drawAnimated(bool record)
     qDebug() << "Start play";
 }
 
-void QmlWidget::stopAnimated()
+void OGLWidget::stopAnimated()
 {
+    pause(100);
     curStatus = STOP;
     tickTimer.stop();
     m_encoder->stop();
@@ -187,22 +281,22 @@ void QmlWidget::stopAnimated()
 
 }
 
-void QmlWidget::pauseAnimated()
+void OGLWidget::pauseAnimated()
 {
     curStatus = PAUSE;
     qDebug() << "Pause play";
     m_encoder->pause();
     //m_recorder->pause();
 }
-bool QmlWidget::isRecord() const
+bool OGLWidget::isRecord() const
 {
     return bRecord;
 }
 
 
-void QmlWidget::clearCanvas()
+void OGLWidget::clearCanvas()
 {
-    QMetaObject::invokeMethod(canvas, "clear");
+    //QMetaObject::invokeMethod(canvas, "clear");
     symbolPositionList.clear();
     listWords.clear();
     listStr.clear();
@@ -217,11 +311,15 @@ void QmlWidget::clearCanvas()
 
 
 }
-void QmlWidget::clearBuffer()
+void OGLWidget::clearBuffer()
 {
      colors.clear();
+     ColorMarker startMarker;
+     startMarker.startIndex=0;
+     startMarker.value=getMainFillColor();
+     colors.append(startMarker);
     cross.clear();
-    cross.append(2); // для визова зачеркування якщо стрічка зацінчується
+    cross.append(0); // для визова зачеркування якщо стрічка зацінчується
     stringList.clear();
     stringList.append("");
     cursorIndex = 0;
@@ -229,13 +327,31 @@ void QmlWidget::clearBuffer()
     crossWithAnimation = false;
 }
 
-void QmlWidget::clearSymbol(int index){
+void OGLWidget::clearSymbol(int index){
 QMetaObject::invokeMethod(canvas, "clearSymbol",  Q_ARG(QVariant, QVariant(index)));
 }
 
-void QmlWidget::drawFigure(int x, int y, int width, int height, QmlWidget::FigureType type, bool fill = true, QColor col = "#FF0000", float size = 2)
+void OGLWidget::drawFigure(int x, int y, int x2, int y2, OGLWidget::FigureType type, bool fill = true, QColor col = "#FF0000", float size = 2)
 {
-    QString sColor = QString("rgba(%1, %2, %3, %4)").arg(col.red()).arg(col.green()).arg(col.blue()).arg(col.alpha());
+    //qDebug()<<"void OGLWidget::drawFigure";
+    glDisable(GL_BLEND);
+    glEnable(GL_LINE_SMOOTH);
+    glHint(GL_LINE_SMOOTH_HINT,  GL_NICEST);
+    qglColor(QColor(Qt::red));
+    glBegin(GL_LINES);
+     glLineWidth(3.0f);
+       glVertex2i( x,y);
+       glVertex2i( x2,y);
+       qDebug()<<"x:"<<x;
+        qDebug()<<"y:"<<y;
+         qDebug()<<"x2:"<<x2;
+     //glVertex3f( 0,0,0);
+    // glVertex3f( 100,100,0);
+       glEnd();
+    glDisable(GL_LINE_SMOOTH);
+      glEnable(GL_BLEND);
+
+    /*QString sColor = QString("rgba(%1, %2, %3, %4)").arg(col.red()).arg(col.green()).arg(col.blue()).arg(col.alpha());
     QMetaObject::invokeMethod(canvas, "drawFigure",
             Q_ARG(QVariant, QVariant(x)),
             Q_ARG(QVariant, QVariant(y)),
@@ -244,26 +360,46 @@ void QmlWidget::drawFigure(int x, int y, int width, int height, QmlWidget::Figur
             Q_ARG(QVariant, QVariant(type)),
             Q_ARG(QVariant, QVariant(fill)),
                               Q_ARG(QVariant, QVariant(size)),
-                              Q_ARG(QVariant, QVariant(sColor)));
+                              Q_ARG(QVariant, QVariant(sColor)));*/
+    /*switch (type){
+    case LINE:
+
+
+        glEnable(GL_LINE_SMOOTH);
+        glHint(GL_LINE_SMOOTH_HINT,  GL_NICEST);
+
+        glBegin(GL_LINES);
+           glVertex3f( x,y,0);
+           glVertex3f( x+width,y+height,0);
+         //glVertex3f( 0,0,0);
+        // glVertex3f( 100,100,0);
+           glEnd();
+        glDisable(GL_LINE_SMOOTH);
+        break;
+    }*/
+
 }
 
-void QmlWidget::drawAnimationFigure(int x, int y, int width, int height, QmlWidget::FigureType type, bool fill)
+void OGLWidget::drawAnimationFigure(int x, int y, int width, int height, OGLWidget::FigureType type, bool fill)
 {
+    isCrossingNow=true;
     float persent;
     while(persent < 1)
     {
         drawFigure(x, y, x + (width - x)*persent, height, type, fill);
      //   qDebug() << delPos.x() << "             " << delPos.x() + (maxWidth - delPos.x())*persent;
         persent += animationSpeed;
-        this->repaint();
-        pause(10);
+        swapBuffers();
+         QThread::currentThread()->msleep(10);
+     //   pause(10);
         if(curStatus == STOP )
             return;
     }
     drawFigure(x, y, width, height, type, fill);
+    isCrossingNow=false;
 }
 
-void QmlWidget::crossOutLastSymbol( int n)
+void OGLWidget::crossOutLastSymbol( int n)
 {
    // QPoint delPos = symbolPositionList.at(symbolPositionList.length() - 1 - deleteWT);
     //int k = 0;
@@ -288,33 +424,33 @@ void QmlWidget::crossOutLastSymbol( int n)
 
 }
 
-void QmlWidget::crossOutWithAnimation(int n)
+void OGLWidget::crossOutWithAnimation(int n)
 {
   //  qDebug() << "URAAAA!!!  " << deleteWT;
     crossOutLastSymbol(n);
     crossWithAnimation = true;
 }
 
-void QmlWidget::generateFrames()
+void OGLWidget::generateFrames()
 {
 }
-int QmlWidget::getCursorIndex() const
+int OGLWidget::getCursorIndex() const
 {
     return cursorIndex;
 }
 
-void QmlWidget::setCursorIndex(int value)
+void OGLWidget::setCursorIndex(int value)
 {
     cursorIndex = value;
 }
 
 
-bool QmlWidget::getBusy() const
+bool OGLWidget::getBusy() const
 {
     return busy;
 }
 
-void QmlWidget::pause(int ms)
+void OGLWidget::pause(int ms)
 {
     if( ms < 1)
         return;
@@ -328,124 +464,92 @@ void QmlWidget::pause(int ms)
     }
 }
 
-void QmlWidget::update()
-{
-    busy = true;
-    crossText();
-    drawBuffer();
+
+void  OGLWidget::updateWindow(){
+    //isCrossingNow=true;
+    updateGL();
 }
 
-QColor QmlWidget::getMainFillColor() const
+QColor OGLWidget::getMainFillColor() const
 {
     return mainFillColor;
 }
 
-void QmlWidget::setMainFillColor(const QColor &value)
+void OGLWidget::setMainFillColor(const QColor &value)
 {
     mainFillColor = value;
     setFillColor(value);
 }
 
-int QmlWidget::getDelay() const
+int OGLWidget::getDelay() const
 {
     return delay;
 }
 
-void QmlWidget::setDelay(int value)
+void OGLWidget::setDelay(int value)
 {
     delay = value;
     animationSpeed = (double)1/(value*0.6);
     qDebug() << animationSpeed;
 }
 
-int QmlWidget::getCountDeleteWT() const
+int OGLWidget::getCountDeleteWT() const
 {
     return deleteWT;
 }
 
-QFont QmlWidget::getTextFont() const
+QFont OGLWidget::getTextFont() const
 {
     return textFont;
 }
 
-void QmlWidget::setTextFont(const QFont &value)
+void OGLWidget::setTextFont(const QFont &value)
 {
     textFont = value;
     if(fMetrics != NULL)
         delete fMetrics;
     fMetrics = new QFontMetrics(value);
     pt = value.pointSize();
-    QVariant a = QVariant(value.family());
-    QVariant b = QVariant(value.pointSize());
-    QString style = " ";
-    if(value.italic())
-        style.append("italic ");
 
-    if(value.bold())
-        style.append("bold ");
-
-    QVariant c = QVariant(style); //style
-
-    QMetaObject::invokeMethod(canvas, "initFont",
-            Q_ARG(QVariant, b),
-            Q_ARG(QVariant, a),
-            Q_ARG(QVariant, c),
-            Q_ARG(QVariant, value.underline()),
-            Q_ARG(QVariant, value.strikeOut()));
 }
 
-void QmlWidget::setFillColor(QColor col)
+void OGLWidget::setFillColor(QColor col)
 {
     QString sColor = QString("rgba(%1, %2, %3, %4)").arg(col.red()).arg(col.green()).arg(col.blue()).arg(col.alpha());
     fillColor = col;
-    QMetaObject::invokeMethod(canvas, "setColor",Q_ARG(QVariant, QVariant(sColor)));
 }
 
-void QmlWidget::setFillGradient(int x, int y, int width, int height, GradientSetting color)
+void OGLWidget::setFillGradient(int x, int y, int width, int height, GradientSetting color)
 {
-    QMetaObject::invokeMethod(canvas, "setGradientStyle",
-            Q_ARG(QVariant, QVariant(x)),
-            Q_ARG(QVariant, QVariant(y)),
-            Q_ARG(QVariant, QVariant(width)),
-            Q_ARG(QVariant, QVariant(height)),
-            Q_ARG(QVariant, QVariant(color.list)));
+
 }
 
-QmlWidget::StatusDraw QmlWidget::getStatus() const
+OGLWidget::StatusDraw OGLWidget::getStatus() const
 {
     return curStatus;
 }
 
-void QmlWidget::recreate()
+void OGLWidget::recreate()
 {
     this->create();
 }
-void QmlWidget::clear(int x,int y,int width,int height){
-    QMetaObject::invokeMethod(canvas, "clearRectangle",
-            Q_ARG(QVariant, QVariant(x)),
-            Q_ARG(QVariant, QVariant(y)),
-            Q_ARG(QVariant, QVariant(width)),
-            Q_ARG(QVariant, QVariant(height))
-                  );
+void OGLWidget::clear(int x,int y,int width,int height){
+
 }
-void QmlWidget::fillText( QString str, int x, int y)
+void OGLWidget::fillText( QString str,QColor color, int x, int y)
 {
-    QVariant arg1 = str;
-    QVariant arg2 = x;
-    QVariant arg3 = y;
+
    /* qDebug() << "ARG1:  " << str.size();
     qDebug() << "ARG2:  " << arg2;
     qDebug() << "ARG3:  " << arg3;
     if(arg1.isValid() && arg2.isValid() && arg3.isValid())
        if(canvas != NULL)
    */
-    QMetaObject::invokeMethod(canvas, "fillText",
-        Q_ARG(QVariant, arg1),
-        Q_ARG(QVariant, arg2),
-        Q_ARG(QVariant, arg3));
 
-
-    if(textFont.strikeOut())
+    qglColor(color);
+    renderText(x, y , str,textFont);
+     //renderText(x, y , QString::fromUtf8("Вы набрали %1 очков:").arg(17),textFont);
+    /*if(textFont.strikeOut())
     {
         float x2 = x + fMetrics->width(str);
         float y2 = y - fMetrics->height()/4;
@@ -457,10 +561,10 @@ void QmlWidget::fillText( QString str, int x, int y)
         float x2 = x + fMetrics->width(str) ;
         float y2 = y + fMetrics->height()*0.15;
         drawFigure(x ,y2 ,x2 , y2,LINE, false, fillColor);
-    }
+    }*/
 }
 
-void QmlWidget::fillAnimationText(QString str, int x, int y, float time)
+void OGLWidget::fillAnimationText(QString str, int x, int y, float time)
 {
     /*QTimer timer;
     timer.setInterval(time);*/
@@ -474,8 +578,8 @@ void QmlWidget::fillAnimationText(QString str, int x, int y, float time)
     while(nx <= widthX)
     {
         setFillGradient(x - widthT, y, 250, heightT, color);
-        fillText(str, x, y);
-   //     this->update();
+        fillText(str,fillColor,x, y);
+        this->update();
         qApp->processEvents(QEventLoop::ExcludeUserInputEvents);
         nx += widthT/time;
        // Sleep(time);
@@ -484,7 +588,7 @@ void QmlWidget::fillAnimationText(QString str, int x, int y, float time)
 
 
 
-bool QmlWidget::crossTextV2()
+bool OGLWidget::crossTextV2()
 {
     /*
     if(deleteWT != 0 && !symbolPositionList.isEmpty())
@@ -558,7 +662,7 @@ bool QmlWidget::crossTextV2()
     crossWithAnimation = false;*/
 }
 
-QPoint QmlWidget::drawWrapText(QString str)
+QPoint OGLWidget::drawWrapText(QString str)
 {
     busy = true;
     //if(!crossTextV2())
@@ -587,7 +691,7 @@ QPoint QmlWidget::drawWrapText(QString str)
           //indexInList+=listChars.length();
              nextRow();
              isLastRow();
-            fillText(listChars,x,y);
+            fillText(listChars,fillColor,x,y);
            // listWords += listChars.trimmed();
            // listWords +=listChars;
             //listStr.push_back( listWords.length() );
@@ -598,7 +702,7 @@ QPoint QmlWidget::drawWrapText(QString str)
         }
     isLastRow();
     //fillAnimationText(str, x, y, 6);
-    fillText(str, x, y);
+    fillText(str,fillColor,x, y);
     QPoint res(x,y);
     listWords += str;
     listChars += str.trimmed();
@@ -615,40 +719,41 @@ QPoint QmlWidget::drawWrapText(QString str)
     return res;
 }
 
-void QmlWidget::drawBuffer()
+void OGLWidget::drawBuffer()
 {
-    busy = true;
+     busy = true;
     framDelayTimer.restart();
     //if(!crossTextV2())
      //   return QPoint(0, 0);
     //int width = fMetrics->width(str)*1.125 ;//+ fMetrics->leftBearing(str.at(0)) + fMetrics->rightBearing(str.at(0));
     //qDebug() << "DRAW";
     clearCanvas();
-    int maxElm = (height()/(lineHeight + pt)) - 1;
+    int maxDrawElm = (height()/(lineHeight + pt)) - 1;
     int CurRow = convertTextBoxToBufferIndex(cursorIndex).y();
-    if(CurRow >= indexRowInList + maxElm)
+    if(CurRow >= indexRowInList + maxDrawElm)
     {
-        indexRowInList += CurRow - (indexRowInList + maxElm) + 1;
+        indexRowInList += CurRow - (indexRowInList + maxDrawElm) + 1;
     }
     if(CurRow < indexRowInList)
     {
         indexRowInList = CurRow;
     }
+    indexFirstDrawSymbol = getFirstSymbolOfString(indexRowInList, true);
+  //  qDebug() << indexRowInList << "   indexFirstDrawSymbol   :           " << indexFirstDrawSymbol << cross;
  //   qDebug() << "START draw with indexRowInList " << indexRowInList << "MAX elm " << maxElm << "CUR " << CurRow;
     int i = indexRowInList;
-    while( i < stringList.length() && i < indexRowInList + maxElm)
+    while( i < stringList.length() && i < indexRowInList + maxDrawElm)
     {
-        //qDebug() << stringList[i] << "@";
-        int localX=x;
+       //qDebug() << stringList[i] << "@";
         QStringList tabulationStr = stringList[i].split("\t");
         //TODO SET TEXT COLOR TO CANVAS COLOR
-        setFillColor(getMainFillColor());
-        for(int j = 0; j < tabulationStr.size(); j++)
-        {
-            fillText(tabulationStr[j], x, y);
-            x += fMetrics->width(tabulationStr[j] + "\t");
-        }
-        qDebug() << "C:"<<colors.length();
+        setFillColor(fillColor);
+       // for(int j = 0; j < tabulationStr.size(); j++)
+       // {
+        //    fillText(tabulationStr[j], x, y);
+       //     x += fMetrics->width(tabulationStr[j] + "\t");
+      //  }
+      //  qDebug() << "C:"<<colors.length();
     for (int k = 0 ; k< colors.length();k++)
     {
         int columnOfColorStrBegin;
@@ -693,38 +798,38 @@ void QmlWidget::drawBuffer()
                     columnOfColorStrBeginPrev=convertTextBoxToBufferIndex(colors[k-1].startIndex ).x();
                 textToWarp= stringList[i].mid(columnOfColorStrBeginPrev,columnOfColorStrBegin-columnOfColorStrBeginPrev);
             }
-            localX+=fMetrics->width(textToWarp);
+            x+=fMetrics->width(textToWarp);
             setFillColor(colors[k].value);
             QString textToFill = stringList[i].mid(columnOfColorStrBegin,columnOfColorStrEnd-columnOfColorStrBegin);
-            fillText(textToFill,localX,y);
+            fillText(textToFill,fillColor,x,y);
            // localX+=fMetrics->width(textToFill);
             //setFillColor(QColor(255,255,255));//Костиль, удалити, вистачить верхнього setColor, добавити на початок colors колір канви
-             qDebug() << "columnOfColorStrEnd:" << columnOfColorStrEnd;
+           /*  qDebug() << "columnOfColorStrEnd:" << columnOfColorStrEnd;
              qDebug() << "columnOfColorStrBegin:" << columnOfColorStrBegin;
             qDebug()<<"textToFill:"<<textToFill;
               qDebug()<< "textToWarp:" << textToWarp;
-              qDebug()<<"rowOfColorStrBegin:"<<rowOfColorStrBegin;
+              qDebug()<<"rowOfColorStrBegin:"<<rowOfColorStrBegin;*/
     }
-        /*
-         * next row
-         */
+
         y += lineHeight + pt;
         x = marginLeft;
-        localX=marginLeft;
+       // localX=marginLeft;
         i++;
-    } 
+    }
     crossTextDraw();
-    if((delay - framDelayTimer.elapsed()) > 0)
-        realDelay = (delay - framDelayTimer.elapsed());
-    else
-        realDelay = 0;
     busy = false;
+
+   // updateGL();
+
 }
 
-void QmlWidget::insertToBuffer(const QChar ch)
+void OGLWidget::insertToBuffer(const QChar ch)
 {
+    crossText();
+    crossTextDraw();
+    while (isCrossingNow);
     QPoint convertedIndex = convertTextBoxToBufferIndex(cursorIndex);
-    qDebug() << convertedIndex << " " << stringList.size() << " " << ch;
+   // qDebug() << convertedIndex << " " << stringList.size() << " " << ch;
     QString &str =  stringList[convertedIndex.y()];
     if (convertedIndex.x()>=str.length())
         str.append(ch);
@@ -736,12 +841,14 @@ void QmlWidget::insertToBuffer(const QChar ch)
     listChars.append(ch);
 
     emit drawTextChanged();
-    pause(realDelay);
+
+    pause(delay);
 
 }
 
-void QmlWidget::deleteFromBuffer(int n)
+void OGLWidget::deleteFromBuffer(int n)
 {
+
     update();
     int mustDell = qAbs(n);
     int crossCursor = cursorIndex - convertTextBoxToBufferIndex(cursorIndex).y();
@@ -819,7 +926,7 @@ void QmlWidget::deleteFromBuffer(int n)
     pause(delay);
 }
 
-void QmlWidget::moveCursor(int n)
+void OGLWidget::moveCursor(int n)
 {
     update();
     cursorIndex += n;
@@ -828,8 +935,38 @@ void QmlWidget::moveCursor(int n)
  //   qDebug() << "Cursor move to n " << n <<"=== cur state " << cursorIndex << "QPOINT  " << convertTextBoxToBufferIndex(cursorIndex);
 
 }
+int OGLWidget::getCountNullString(int index)
+{
+    int i = 0;
+    int sumLength = 0;
+    while( i <= index)
+    {
+        int nextLen = stringList[i].length();
+        if(nextLen == 0)
+            sumLength++;
+        i++;
+    }
+    return sumLength;
+}
 
-QPoint QmlWidget::convertTextBoxToBufferIndex(int index, bool symbol)
+int OGLWidget::getFirstSymbolOfString(int index, bool symbol)
+{
+    int i = 0;
+    int sumLength = 0;
+    while( i < index)
+    {
+        int nextLen = stringList[i].length();
+        if(!symbol)
+            nextLen++;
+        sumLength +=  nextLen;
+        i++;
+    }
+    //if(sumLength != 0)
+      //  sumLength++;
+                return sumLength;
+}
+
+QPoint OGLWidget::convertTextBoxToBufferIndex(int index, bool symbol)
 {
     int i = 0;
     int sumLength = 0;
@@ -858,7 +995,7 @@ QPoint QmlWidget::convertTextBoxToBufferIndex(int index, bool symbol)
     return QPoint(stringList[i - 1].length(), i - 1);
 }
 
-int QmlWidget::getRowFromTextBoxIndex(int index, bool symbol)
+int OGLWidget::getRowFromTextBoxIndex(int index, bool symbol)
 {
     int i = 0;
     int sumLength = 0;
@@ -878,34 +1015,37 @@ int QmlWidget::getRowFromTextBoxIndex(int index, bool symbol)
     }
 }
 
-void QmlWidget::testWrap(int kIndexOfRow)
+void OGLWidget::testWrap(int kIndexOfRow)
 {
     int i = kIndexOfRow;
     int length = stringList.length();
     while(stringList.length() > i)
     {
         QString &str =  stringList[i];
-        //qDebug() <<"str:"<<stringList[i];
         int width = fMetrics->width(stringList[i]) ;//+ fMetrics->leftBearing(str.at(0)) + fMetrics->rightBearing(str.at(0));
-        //qDebug() <<"str:"<< maxWidth;
+        ////qDebug() <<"str:"<< maxWidth;
         if(width > maxWidth)
         {
-            int j = 0;
-            while( j < stringList[i].length() && str[stringList[i].length() - j - 1] > 0x20){j++;};
-                if(stringList.length() - 1 <= i)
-                {};
+            int j = stringList[i].size() - 1;
+            while( j >= 0 && str[j] > ' ')
+            {
+             //   qDebug() << str[j];
+                j--;
+            }
 
-            if(j >= stringList[i].length() - 1)
-                j = stringList[i].length()/1.5f;
 
-            nextRow(j, i);
+            if(j < 0)
+                j = stringList[i].length() - 1;
+
+         //   qDebug() <<"strSize:    " << stringList.size() << "    SIZE_i    " << stringList[i] << "     " << j;
+            nextRow(j, i, false);
 
         }
         i++;
     }
 }
 
-void QmlWidget::nextRow( int n, int Row)
+void OGLWidget::nextRow( int n, int Row, bool wrap)
 {
     //isLastRow();
     QPoint convertedIndex;
@@ -922,7 +1062,7 @@ void QmlWidget::nextRow( int n, int Row)
     int i = convertedIndex.y() + 1;
     QString lastStr = stringList[i - 1].right(stringList[i - 1].length() - convertedIndex.x());
 
-    //qDebug() << "           LASTSTR    " << lastStr << "         " << convertedIndex.x();
+ //   qDebug() << "           LASTSTR    " << lastStr << "         " << convertedIndex.x();
     if(i >= stringList.length())
         stringList.append(lastStr);
     else
@@ -932,26 +1072,32 @@ void QmlWidget::nextRow( int n, int Row)
     /* last work
     moveCursor(lastStr.length() + 1);
     */
-    testWrap(i);
+    if(wrap)
+        testWrap(i);
     emit drawTextChanged();
 
 }
 
-void QmlWidget::isLastRow()
+void OGLWidget::isLastRow()
 {
     int maxElm = (height()/lineHeight + pt);
 
 }
+void OGLWidget::update(){
+    busy = true;
+        crossText();
+       // busy = false;
+}
 
-bool QmlWidget::crossTextDraw()
+bool OGLWidget::crossTextDraw()
 {
     int y;
     int x1, x2, x;
     bool lastGood = false;
     bool needNextRow = false;
-    for(int i = 0; i < cross.length(); i++)
+    for(int i = indexFirstDrawSymbol; i < cross.length(); i++)
     {
-     //   qDebug() << "CROSS\n" << cross;
+        //qDebug() << "CROSS [i]:" << cross[i];
         if(cross[i] != 0)
         {
             QPoint conv = convertTextBoxToBufferIndex(i, true);
@@ -960,7 +1106,7 @@ bool QmlWidget::crossTextDraw()
             {
                 x1 = marginLeft + fMetrics->width(stringList[conv.y()].left(conv.x()));
                 x = i;
-                y = /*(lineHeight + pt)* */ conv.y();
+                y = /*(lineHeight + pt)* */  convertTextBoxToBufferIndex(i, true).y();
                 lastGood = true;
                 continue;
             }
@@ -975,22 +1121,30 @@ bool QmlWidget::crossTextDraw()
         }
         if(lastGood)
         {
+
             QPoint conv = convertTextBoxToBufferIndex(i - 1, true);
         //    conv = convertTextBoxToBufferIndex(i + conv.y() + 1);
+            qDebug() << "YYYYYYYYYYYYYYYYYYYYYYY" << y;
+            y -=   indexRowInList;
+            qDebug() << "YYYYYYYYYYYYYYYYYYYYYYY2" << y;
             ++y *= lineHeight + pt;
             y -= 0.25f * fMetrics->height();// first paid + midle
 
             x2 = marginLeft + fMetrics->width(stringList[conv.y()].left(conv.x() + 1));
             if( cross[i - 1] == -1)
             {
-                qDebug() << "set animation speed";
+                qDebug() << "FIRST";
+               // drawAnimationFigure(x1, y, x2, y, LINE, 0);
                 drawAnimationFigure(x1, y, x2, y, LINE, 0);
 
                 for( int j = x; j < i; j++) // convert to cross without animation
                     cross[j] = 1;
             }
-            else
-                drawFigure(x1, y, x2, y, LINE, 0);
+            else{
+                //drawFigure(x1, y, x2, y, LINE, 0);
+                drawFigure(x1,y, x2, y, LINE, 0);
+                 qDebug() << "SECOND";
+            }
             lastGood = false;
             if(needNextRow)
                 i--;
@@ -998,7 +1152,7 @@ bool QmlWidget::crossTextDraw()
     }
 }
 
-bool QmlWidget::crossText()
+bool OGLWidget::crossText()
 {
   //  qDebug() << "www " << deleteWT << cross;
     int spacePaid = 1;
@@ -1030,4 +1184,5 @@ bool QmlWidget::crossText()
         deleteWT--;
         spacePaid++;
     }
+
 }

@@ -62,6 +62,7 @@ void KeyloggerTE::undo()
         this->clear();
         destination->clear();
     }
+
 }
 
 void KeyloggerTE::redo()
@@ -93,6 +94,7 @@ void KeyloggerTE::keyPressEvent(QKeyEvent *event){
     redo_changes.push(change);
     }
     int keyCode = event->key();
+    quint32 scanCode = event->nativeScanCode();
     QString keyChar(event->text());
    // QTextCursor
            int localCursorPosition = textCursor().position();
@@ -103,13 +105,20 @@ void KeyloggerTE::keyPressEvent(QKeyEvent *event){
            int localCursorSelectionEnd=textCursor().selectionEnd();
 
             QString textInFieldBeforePress=destination->toPlainText();
-
-            if (event->modifiers() & Qt::ControlModifier && keyCode==Qt::Key_Z)
+            qDebug() << "nativeScanCode:"<<scanCode;
+            if (event->modifiers() & Qt::ControlModifier && scanCode==SCAN_KEY_Z )
             {
-
+                  if (keyCode==Qt::Key_Z){
+               qDebug() <<"UNDO";
                 undo();
                 changesDetected=false;
                 return;
+                  }
+                  else
+                  {
+                      QKeyEvent *event = new QKeyEvent ( QEvent::KeyPress, Qt::Key_Z,Qt::ControlModifier);
+                      QCoreApplication::postEvent (this, event);
+                  }
                //if (!changesSize.empty())textInFieldBeforePress.chop(changesSize.pop());
                 //if(undo_changes.size()>0) setPlainText(undo_changes.pop().cymbol);
 
@@ -123,15 +132,55 @@ void KeyloggerTE::keyPressEvent(QKeyEvent *event){
              if(event->modifiers() & Qt::ControlModifier)
              {
 
-                 if (event->matches(QKeySequence::Paste))
-                     textInField += QApplication::clipboard()->text();
-                 else
-                 if (event->matches(QKeySequence::Cut))
+                 if (scanCode==SCAN_KEY_V)
                  {
+                     if (keyCode!=Qt::Key_V){
+                         QKeyEvent *event = new QKeyEvent ( QEvent::KeyPress, Qt::Key_V,Qt::ControlModifier);
+                         QCoreApplication::postEvent (this, event);
+                     }
+                     textInField += QApplication::clipboard()->text();
+                    // insertPlainText(QApplication::clipboard()->text());
+
+
+
+
+                 }
+                 else
+                 if (scanCode==SCAN_KEY_X)
+                 {
+                     if (keyCode!=Qt::Key_X)
+                     {
+                         QKeyEvent *e = new QKeyEvent ( QEvent::KeyPress, Qt::Key_X,Qt::ControlModifier);
+                         QCoreApplication::postEvent (this, e);
+                     }
                      int delta = localCursorSelectionEnd-localCursorSelectionStart;
                      if (localCursorPosition==localCursorSelectionEnd)
                      textInField +=QString("\\dl%1").arg(delta, 3, 10, QChar('0'));
                      else textInField +=QString("\\dr%1").arg(delta, 3, 10, QChar('0'));
+
+                 }
+                 else
+                 if (scanCode==SCAN_KEY_A)
+                 {
+                     if (keyCode!=Qt::Key_A)
+                     {
+                         QKeyEvent *e1 = new QKeyEvent ( QEvent::KeyRelease, Qt::Key_A,Qt::ControlModifier);
+                         QCoreApplication::postEvent (this, e1);
+
+                         QKeyEvent *e = new QKeyEvent ( QEvent::KeyPress, Qt::Key_A,Qt::ControlModifier);
+                         QCoreApplication::postEvent (this, e);
+                     }
+
+                 }
+                 else
+                 if (scanCode==SCAN_KEY_C)
+                 {
+                     if (keyCode!=Qt::Key_C)
+                     {
+                         QKeyEvent *e = new QKeyEvent ( QEvent::KeyPress, Qt::Key_C,Qt::ControlModifier);
+                         QCoreApplication::postEvent (this, e);
+                     }
+
                  }
                  else //if (event->matches(QKeySequence::Undo))
                      needToSaveForUndo=false;
@@ -256,6 +305,7 @@ else {
      }
      int destinationLen = destination->toPlainText().length();
      int textInFieldLen = textInField.length();
+     if(textInField.length() != 0)
       destination->setPlainText(textInField);
       //changesSize.push(textInField.length());
      previousCursorPosition=textCursor().position();
@@ -286,6 +336,7 @@ void KeyloggerTE::mousePressEvent(QMouseEvent *eventPress){
       textInField +=QString("\\ml%1").arg(-delta, 3, 10, QChar('0'));
       int destinationLen = destination->toPlainText().length();
       int textInFieldLen = textInField.length();
+      if(textInField.length() != 0)
      destination->setPlainText(textInField);
      int sizeOfChanges = textInFieldLen-destinationLen;
      if (toPlainText().length()>0)
@@ -305,6 +356,7 @@ void KeyloggerTE::mouseReleaseEvent(QMouseEvent *eventPress){
       textInField +=QString("\\mr%1").arg(delta, 3, 10, QChar('0'));
       else if (delta<0)
       textInField +=QString("\\ml%1").arg(-delta, 3, 10, QChar('0'));
+      if(textInField.length() != 0)
      destination->setPlainText(textInField);
 //qDebug() << "cursor changed";
 }

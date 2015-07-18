@@ -1,11 +1,10 @@
-QT -= declarative sensors multimedia multimediawidgets printsupport opengl
+QT -= declarative sensors multimedia multimediawidgets printsupport
 
-QT       += widgets multimedia quick quickwidgets network webkitwidgets concurrent
-#CONFIG(release, debug|release):DEFINES += QT_NO_DEBUG_OUTPUT
+QT       += widgets multimedia quick quickwidgets network webkitwidgets concurrent opengl
+CONFIG(release, debug|release):DEFINES += QT_NO_DEBUG_OUTPUT
 SOURCES += main.cpp\
     mainwindow.cpp \
     settings.cpp \
-    qmlwidget.cpp \
     parser\unit.cpp \
     parser\unitsumbol.cpp \
     parser\unitcommand.cpp \
@@ -15,12 +14,12 @@ SOURCES += main.cpp\
     youtube/oauth2.cpp \
     youtube/youtubewrapper.cpp \
     encoder/videorencoder.cpp \
-    editWidget/keyloggertextedit.cpp
+    editWidget/keyloggertextedit.cpp \
+    openglwidget.cpp
 
 
 HEADERS  += mainwindow.h \
     settings.h \
-    qmlwidget.h \
     parser\unit.h \
     parser\unitsumbol.h \
     parser\unitcommand.h \
@@ -30,7 +29,8 @@ HEADERS  += mainwindow.h \
     youtube/oauth2.h \
     youtube/youtubewrapper.h \
     encoder/videorencoder.h \
-    editWidget/keyloggertextedit.h
+    editWidget/keyloggertextedit.h \
+    openglwidget.h
 
 FORMS    += mainwindow.ui \
     youtube/logindialog.ui
@@ -53,11 +53,15 @@ OTHER_FILES += \
     boarFunc.js \
     draw.qml \
     icons/12video icon.png
-
+#   @ROMA
+#
+#win32:CONFIG(release, debug|release): LIBS += -LC:/Users/roma\Downloads/OpenDeploy_v0.26/OpenDeploy_v0.26/ -lqtmel1
+#else:win32:CONFIG(debug, debug|release): LIBS += -LC:/Users/roma\Downloads/OpenDeploy_v0.26/OpenDeploy_v0.26/ -lqtmel1
+#
+#   @NICO
 win32:CONFIG(release, debug|release): LIBS += -LF:/QA/QtMEL-master/libsQt5/ -lqtmel1
 else:win32:CONFIG(debug, debug|release): LIBS += -LF:/QA/QtMEL-master/libsQt5/ -lqtmeld1
-
-
+#
 VERSION = 0.4.0.0
 QMAKE_TARGET_COMPANY = ITA
 QMAKE_TARGET_PRODUCT = OpenBoard

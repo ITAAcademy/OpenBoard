@@ -1,10 +1,10 @@
-#ifndef QMLWIDGET_H
-#define QMLWIDGET_H
+#ifndef OPENGLWIDGET
+#define OPENGLWIDGET
 
 #include <QObject>
 #include <QtCore>
-#include <QtQml>
-#include <QtQuickWidgets>
+//#include <QtQml>
+//#include <QtQuickWidgets>
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QDesktopWidget>
@@ -14,7 +14,9 @@
 #include <QPainter>
 #include <QMetaObject>
 #include <QFontMetrics>
-
+#include <QGLWidget>
+#include <QtOpenGL>
+#include <QTimer>
 
 #include "encoder/videorencoder.h"
 /*
@@ -41,7 +43,7 @@ struct DrawData{
 };
 
 
-class QmlWidget : public QQuickWidget
+class OGLWidget : public QGLWidget
 {
     Q_OBJECT
     Q_PROPERTY(QString  drawText READ getDrawText WRITE setDrawText NOTIFY drawTextChanged)
@@ -50,7 +52,9 @@ public:
     /*
      * |Future gradient
      */
+   volatile bool isCrossingNow;
     QList<ColorMarker> colors;
+
     struct GradientSetting{
         QStringList list;
         void addColorStop( float range, int r, int g, int b, int a = 255)
@@ -70,8 +74,8 @@ public:
     /*
      * |Events
      */
-    explicit QmlWidget(QWidget *parent = 0);
-    ~QmlWidget();
+    explicit OGLWidget(QWidget *parent = 0);
+    ~OGLWidget();
     void moveEvent(QMoveEvent *event);
     void paintEvent(QPaintEvent * event);
     void resizeEvent(QResizeEvent *event);
@@ -83,18 +87,18 @@ public:
     void clearCanvas();
     void drawFigure (int x, int y, int width, int height, FigureType type, bool fill, QColor col, float size);
     void drawAnimationFigure (int x, int y, int width, int height, FigureType type, bool fill);
-    void nextRow(int n   = -1, int Row = -1);
+    void nextRow(int n   = -1, int Row = -1, bool wrap = true);
     Q_INVOKABLE void crossOutLastSymbol(int n = 1);
     void crossOutWithAnimation(int n = 1);
     void clearSymbol(int index);
     QPoint drawWrapText( QString str ); // main draw function
     void setFillColor( QColor col);
     void setFillGradient( int x , int y, int width, int height, GradientSetting color);
-    void fillText( QString str, int x, int y);
+    void fillText( QString str,QColor color, int x, int y);
     void fillAnimationText(QString str, int x, int y, float time);
     void isLastRow();
     void pause(int ms);
-    void update();
+
     /*
      * |G/S
      */
@@ -115,10 +119,15 @@ public:
     int getCursorIndex() const;
     void setCursorIndex(int value);
 
+
+    drawImage();
+    void update();
 public slots:
     void drawAnimated( bool record );
     void stopAnimated();
     void pauseAnimated();
+
+    void updateWindow();
 public slots:
     bool isRecord() const;
     int getCountDeleteWT() const;
@@ -151,10 +160,16 @@ signals:
 private slots:
     bool crossText();
     bool crossTextV2();
+    int getFirstSymbolOfString(int index, bool symbol = false);
+    int getCountNullString(int index);
 private:
+    QImage img;
+     QImage GL_formatted_image;
+    GLuint texture;
     QString drawText;
     bool bRecord;
     void generateFrames();
+       loadTextures();
     StatusDraw curStatus; // 0 - stop; 1 - play; -1 - pause
     QObject *canvas;
     QThread drawThread;
@@ -176,6 +191,7 @@ private:
     int indexRow;
     int scroll;
     int widthToClean=0;
+
     QColor fillColor;
     QColor mainFillColor;
     /*
@@ -206,14 +222,19 @@ private:
 
     QList<QString> stringList;
     QList<short int> cross;
-    int indexRowInList;
+    int indexRowInList; // first str for draw
+    int indexFirstDrawSymbol = 0;
+    int maxDrawElm = 0;
     QElapsedTimer framDelayTimer;
     bool isClose = false;
     int cursorIndex;
-
+protected:
+    void initializeGL(); // Метод для инициализирования opengl
+       void resizeGL(int nWidth, int nHeight); // Метод вызываемый после каждого изменения размера окна
+       void paintGL(); // Метод для вывода изображения на экран
+        int wax ,way; // Размеры окна нашей программы
 };
 
 
+#endif // OPENGLWIDGET
 
-
-#endif // QMLWIDGET_H

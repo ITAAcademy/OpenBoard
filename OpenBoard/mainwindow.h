@@ -15,11 +15,9 @@
 #include <QElapsedTimer>
 #include <QMenu>
 #include <QAction>
-
+#include "openglwidget.h"
 
 #include <QDebug>
-
-#include "qmlwidget.h"
 #include "settings.h"
 #include "parser/parser.h"
 #include "editWidget/mytextedit.h"
@@ -86,7 +84,6 @@ public slots:
     void on_backBtn_clicked();
     void on_animationBtn_clicked();
     void on_crossBtn_clicked();
-    void on_colorBtn_clicked();
     void on_clearBtn_clicked();
 
 //    press on button delay
@@ -97,6 +94,7 @@ public slots:
 //    press on button color
     void on_colorBtn_pressed();
     void on_colorBtn_released();
+    void on_colorBtn_clicked();
     void show_color_dialog();
 
 private slots:
@@ -115,7 +113,7 @@ QAction *a_play,*a_pause,*a_stop,*a_font_canvas,*a_color_canvas,*a_record_to_fil
     Ui::MainWindow  *ui;
 QMessageBox messAbout;
  //   GLWidget        *mpGLWidget;
-    QmlWidget       *mpQmlWidget;
+    OGLWidget       *mpOGLWidget;
     int drawCounter;
     MyTextEdit       *textEdit;
     KeyloggerTE *commandTextEdit;
@@ -136,7 +134,6 @@ QMessageBox messAbout;
     YouTubeWrapper *youtube;
     QToolBar *toolBar;
     bool play = false;
-    QTextCursor textEditLastCursor;
 
 
 };

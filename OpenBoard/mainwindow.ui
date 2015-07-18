@@ -166,11 +166,8 @@
           <property name="minimum">
            <number>1</number>
           </property>
-          <property name="maximum">
-           <number>25</number>
-          </property>
           <property name="value">
-           <number>8</number>
+           <number>3</number>
           </property>
           <property name="orientation">
            <enum>Qt::Horizontal</enum>
@@ -194,11 +191,8 @@
           <property name="minimum">
            <number>1</number>
           </property>
-          <property name="maximum">
-           <number>25</number>
-          </property>
           <property name="value">
-           <number>8</number>
+           <number>3</number>
           </property>
          </widget>
         </item>
@@ -778,6 +772,9 @@
    </property>
   </action>
   <action name="action_Undo">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
    <property name="icon">
     <iconset resource="icons.qrc">
      <normaloff>:/icons/undo-icon.png</normaloff>:/icons/undo-icon.png</iconset>
@@ -785,20 +782,17 @@
    <property name="text">
     <string>&amp;Undo</string>
    </property>
-   <property name="shortcut">
-    <string>Ctrl+Z</string>
-   </property>
   </action>
   <action name="action_Redo">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
    <property name="icon">
     <iconset resource="icons.qrc">
      <normaloff>:/icons/redo-icon.png</normaloff>:/icons/redo-icon.png</iconset>
    </property>
    <property name="text">
     <string>&amp;Redo</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+Shift+Z</string>
    </property>
   </action>
   <action name="action_Cut">
@@ -809,8 +803,8 @@
    <property name="text">
     <string>&amp;Cut</string>
    </property>
-   <property name="shortcut">
-    <string>Ctrl+X</string>
+   <property name="toolTip">
+    <string>Cut</string>
    </property>
   </action>
   <action name="action_Copy">
@@ -821,9 +815,6 @@
    <property name="text">
     <string>&amp;Copy</string>
    </property>
-   <property name="shortcut">
-    <string>Ctrl+C</string>
-   </property>
   </action>
   <action name="action_Paste">
    <property name="icon">
@@ -833,8 +824,8 @@
    <property name="text">
     <string>&amp;Paste</string>
    </property>
-   <property name="shortcut">
-    <string>Ctrl+V</string>
+   <property name="autoRepeat">
+    <bool>true</bool>
    </property>
   </action>
   <action name="action_Find">
@@ -844,9 +835,6 @@
    </property>
    <property name="text">
     <string>&amp;Find</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+F</string>
    </property>
   </action>
   <action name="action_Font">
@@ -1042,15 +1030,15 @@
    </property>
   </action>
   <action name="action_Select_all">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
    <property name="icon">
     <iconset resource="icons.qrc">
      <normaloff>:/icons/select_all.png</normaloff>:/icons/select_all.png</iconset>
    </property>
    <property name="text">
     <string>Select all</string>
-   </property>
-   <property name="shortcut">
-    <string>Ctrl+A</string>
    </property>
   </action>
   <action name="action_delay_menuTB">

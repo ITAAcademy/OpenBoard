@@ -29,9 +29,9 @@ MainWindow::MainWindow(QWidget *parent) :
 //qDebug() <<directory;
 //    connect(&drawThread, SIGNAL(started()), this, SLOT(myfunction())); //cant have parameter sorry, when using connect
 
-    mpQmlWidget = new QmlWidget(this);
-    mpQmlWidget->setVisible(false);
-   // mpQmlWidget->moveToThread(&drawThread);
+    mpOGLWidget = new OGLWidget(this);
+    mpOGLWidget->setVisible(false);
+   // mpOGLWidget->moveToThread(&drawThread);
     textEdit = new MyTextEdit(QColor("#000000"), QColor("#FF0000"), ui->centralWidget);
     textEdit->setObjectName(QStringLiteral("textEdit"));
     textEdit->setEnabled(true);
@@ -206,12 +206,12 @@ MainWindow::~MainWindow()
     if(toolBar != NULL)
         delete toolBar;
     delete ui;
-    delete mpQmlWidget;
+    delete mpOGLWidget;
 }
 
 void MainWindow::closeEvent(QCloseEvent*)
 {
-    if(mpQmlWidget != NULL)
+    if(mpOGLWidget != NULL)
     {
         on_action_Hide_triggered();
     }
@@ -229,28 +229,28 @@ void MainWindow::on_action_Show_triggered()
 /*
  * QML
 */
-    if(mpQmlWidget != NULL)
+    if(mpOGLWidget != NULL)
     {
-        mpQmlWidget->close();
-        delete mpQmlWidget;
-        mpQmlWidget = NULL;
+        mpOGLWidget->close();
+        delete mpOGLWidget;
+        mpOGLWidget = NULL;
     }
-    mpQmlWidget = new QmlWidget();
-    mpQmlWidget->show();
-    mpQmlWidget->setDelay(1000/lastInpuDelay);
-    mpQmlWidget->setFixedSize(GLWIDGET_SIZE);
-    mpQmlWidget->move(pos().x() + width() + WINDOW_MARGING, pos().y());
+    mpOGLWidget = new OGLWidget();
+    mpOGLWidget->show();
+    mpOGLWidget->setDelay(1000/lastInpuDelay);
+    mpOGLWidget->setFixedSize(GLWIDGET_SIZE);
+    mpOGLWidget->move(pos().x() + width() + WINDOW_MARGING, pos().y());
     ui->action_Pause->setEnabled(true);
     ui->action_Play->setEnabled(true);
     ui->action_Stop->setEnabled(true);
-    //mpQmlWidget.create();
-    mpQmlWidget->setDrawText(textEdit->toPlainText());
+    //mpOGLWidget.create();
+    mpOGLWidget->setDrawText(textEdit->toPlainText());
     /*
      * init
      */
 
-    mpQmlWidget->setTextFont(mSettings.getBoardFont());
-    mpQmlWidget->setMainFillColor(mSettings.getBoardFontColor());
+    mpOGLWidget->setTextFont(mSettings.getBoardFont());
+    mpOGLWidget->setMainFillColor(mSettings.getBoardFontColor());
 
 
 /*
@@ -273,12 +273,12 @@ void MainWindow::on_action_Show_triggered()
 
 void MainWindow::on_action_Hide_triggered()
 {
-   // if(mpQmlWidget->getStatus() == mpQmlWidget->PLAY || mpQmlWidget->getStatus() == mpQmlWidget->PAUSE)
-      //  mpQmlWidget->stopAnimated();
+   // if(mpOGLWidget->getStatus() == mpOGLWidget->PLAY || mpOGLWidget->getStatus() == mpOGLWidget->PAUSE)
+      //  mpOGLWidget->stopAnimated();
     on_action_Stop_triggered();
-    mpQmlWidget->hide();
-    /*mpQmlWidget->close();*/
-    // delete mpQmlWidget;
+    mpOGLWidget->hide();
+    /*mpOGLWidget->close();*/
+    // delete mpOGLWidget;
     ui->action_Pause->setEnabled(false);
     ui->action_Play->setEnabled(false);
     ui->action_Stop->setEnabled(false);
@@ -300,14 +300,14 @@ void MainWindow::on_action_Hide_triggered()
 
 void MainWindow::moveEvent(QMoveEvent *event)
 {
-    if(mpQmlWidget != NULL)
-        mpQmlWidget->move(pos().x() + width() + WINDOW_MARGING, pos().y());
+    if(mpOGLWidget != NULL)
+        mpOGLWidget->move(pos().x() + width() + WINDOW_MARGING, pos().y());
 }
 
 void MainWindow::resizeEvent(QResizeEvent *event)
 {
-    if(mpQmlWidget != NULL)
-        mpQmlWidget->move(pos().x() + width() + WINDOW_MARGING, pos().y());
+    if(mpOGLWidget != NULL)
+        mpOGLWidget->move(pos().x() + width() + WINDOW_MARGING, pos().y());
 }
 
 void MainWindow::on_action_Font_triggered()
@@ -331,7 +331,7 @@ void MainWindow::on_action_Font_triggered()
     QString qmlFont;
     QFontInfo fontInf(font);
     qmlFont = QString::number(fontInf.pointSize()) + "pt \"" + font.family() + "\"";
-    mpQmlWidget.setFont(qmlFont);   */
+    mpOGLWidget.setFont(qmlFont);   */
 }
 
 //!!!!!!!!!!!!!!!!!!
@@ -340,14 +340,14 @@ void MainWindow::on_action_Board_Font_triggered()
 {
     bool ok;
     QFont font;
-    font = QFontDialog::getFont(&ok, mpQmlWidget->getTextFont(), this);
+    font = QFontDialog::getFont(&ok, mpOGLWidget->getTextFont(), this);
     if (!ok)
         return;
 
  /*   QString qmlFont;
     QFontInfo fontInf(font);
     qmlFont = QString::number(fontInf.pointSize()) + "pt \"" + font.family() + "\"";*/
-    mpQmlWidget->setTextFont(font);
+    mpOGLWidget->setTextFont(font);
    // mSettings.setBoardFont(font);
    mSettings.setBoardFont(font);
 }
@@ -366,7 +366,6 @@ void MainWindow::on_action_Reset_default_triggered()
         a_show->setEnabled(false);
        // setFont(font);
 }
-
 void MainWindow::on_action_Color_triggered()
 {   //call QtColorDialog
     QColor colorm;
@@ -392,12 +391,12 @@ void MainWindow::on_action_Color_triggered()
  void MainWindow::on_action_Board_Color_triggered()
 {
     QColor colorm;
-    colorm = QColorDialog::getColor(mpQmlWidget->getMainFillColor());
+    colorm = QColorDialog::getColor(mpOGLWidget->getMainFillColor());
 
    // QString col = colorm.name();
     if(colorm.isValid())
     {
-        mpQmlWidget->setMainFillColor(colorm);
+        mpOGLWidget->setMainFillColor(colorm);
         mSettings.setBoardFontColor(colorm);
     }
 
@@ -408,6 +407,9 @@ void MainWindow::on_action_Color_triggered()
 void MainWindow::on_action_Undo_triggered()
 {
     textEdit->undom();
+   // commandTextEdit->undo();
+    //qDebug() <<"UNDO";
+   // commandTextEdit->changesDetected=false;
 }
 
 void MainWindow::on_action_Redo_triggered()
@@ -765,7 +767,7 @@ void MainWindow::on_crossBtn_clicked()
 void MainWindow::on_colorBtn_pressed()
 {
     QTextCursor prev_cursor = textEdit->textCursor();
-    colorPkr = QColorDialog::getColor();
+    colorPkr = QColorDialog::getColor(mpOGLWidget->getMainFillColor());
     textEdit->setTextCursor(prev_cursor);
     if(colorPkr.isValid())
     {
@@ -789,10 +791,7 @@ void MainWindow::on_colorBtn_released()
 
 void MainWindow::show_color_dialog()
 {
-    colorPkr = QColorDialog::getColor();
 
-    if(colorPkr.isValid())
-        on_colorBtn_released();
 }
 
 void MainWindow::on_colorBtn_clicked()
@@ -822,14 +821,14 @@ void MainWindow::doUndoRedoStart()
 void MainWindow::doUndoRedoEnd()
 {
     textEdit->textColorSet(-1);
-    connect(textEdit, SIGNAL(textChanged()), this, SLOT(onTextChanged()));    
+    connect(textEdit, SIGNAL(textChanged()), this, SLOT(onTextChanged()));
     textEdit->document()->setModified(true);
 }
 
 void MainWindow::onTextChanged()
 {
     disconnect(textEdit, SIGNAL(textChanged()), this, SLOT(onTextChanged()));
-   // qDebug() << "onTextChanged";
+    qDebug() << "onTextChanged";
     QString str = textEdit->toPlainText();
     /*
      * bida z cursorom
@@ -852,7 +851,7 @@ void MainWindow::onTextChanged()
     */
     textEdit->textColorSet(status);
     if(textEdit->toPlainText().size() != 0)
-        if(mpQmlWidget->isVisible())
+        if(mpOGLWidget->isVisible())
         {
             if(status != -1)
             {
@@ -888,13 +887,13 @@ void MainWindow::onTextChanged()
     connect(textEdit, SIGNAL(textChanged()), this, SLOT(onTextChanged()));
 
     /*
-    // DrawData temp = mpQmlWidget.getDrawData();
+    // DrawData temp = mpOGLWidget.getDrawData();
      /*if(!textEdit->toPlainText().isEmpty())
          this->inputText += textEdit->toPlainText().at(textEdit->toPlainText().size() - 1);
-     mpQmlWidget.setDrawText(inputText);*/
-     /*mpQmlWidget->setDrawText(textEdit->toPlainText());
-     emit mpQmlWidget->drawTextChanged();*/
-    //mpQmlWidget.Encode(mpQmlWidget.grabFramebuffer());
+     mpOGLWidget.setDrawText(inputText);*/
+     /*mpOGLWidget->setDrawText(textEdit->toPlainText());
+     emit mpOGLWidget->drawTextChanged();*/
+    //mpOGLWidget.Encode(mpOGLWidget.grabFramebuffer());
     /*mpGLWidget->textArray.clear();
     mpGLWidget->textArray.append(str);
     mpGLWidget->updateGL();
@@ -914,47 +913,39 @@ void MainWindow::on_action_Play_triggered()
     ui->action_Redo->setEnabled(false);
     a_undo->setEnabled(false);
     a_redo->setEnabled(false);
-    if(mpQmlWidget->getStatus() == QmlWidget::PAUSE)
+    if(mpOGLWidget->getStatus() == OGLWidget::PAUSE)
         ui->action_Play->setText("Play");
     else
     {
-        mpQmlWidget->clearCanvas();
-        mpQmlWidget->clearBuffer();
-        mpQmlWidget->setFillColor(mpQmlWidget->getMainFillColor());
+        mpOGLWidget->clearCanvas();
+        mpOGLWidget->clearBuffer();
+        mpOGLWidget->setFillColor(mpOGLWidget->getMainFillColor());
         drawCounter = 0;
     }
-    mpQmlWidget->drawAnimated(ui->actionRecord_to_file->isChecked());
+    mpOGLWidget->drawAnimated(ui->actionRecord_to_file->isChecked());
     textEdit->setEnabled(false);
 
     onTextChanged();
   //  qDebug() << mUnitList.size();
    // QString name = this->windowTitle();
     play = true;
-    QTimer tickTimer;
-    tickTimer.setSingleShot(true);
-    while( play &&  drawCounter < mUnitList.size() && mpQmlWidget != 0 && mpQmlWidget->getStatus() != QmlWidget::STOP)
+    while( play &&  drawCounter < mUnitList.size() && mpOGLWidget != 0 && mpOGLWidget->getStatus() != OGLWidget::STOP)
     {
-        //while(mpQmlWidget->getStatus() == QmlWidget::PAUSE)
-        if( mpQmlWidget->getStatus() != QmlWidget::PAUSE )
+        //while(mpOGLWidget->getStatus() == OGLWidget::PAUSE)
+        if( mpOGLWidget->getStatus() != OGLWidget::PAUSE )
         {
-            mUnitList.at(drawCounter++)->draw(mpQmlWidget);
+            mUnitList.at(drawCounter++)->draw(mpOGLWidget);
             int temp = (int)((float)((float)drawCounter/mUnitList.size()*100));
             ui->statusBar->showMessage("Progress status:    " + QString::number(temp) + "%");
-            tickTimer.start(mpQmlWidget->getDelay());
-            while (tickTimer.isActive()) {
-              qApp->processEvents(QEventLoop::AllEvents);
-              if(mpQmlWidget->getStatus() == QmlWidget::STOP)
-                break;
-            }
         }
         else
             qApp->processEvents();
     }
  //   setWindowTitle(name);
-    if(mpQmlWidget != NULL)
+    if(mpOGLWidget != NULL)
     {
-        mpQmlWidget->update();
-        mpQmlWidget->drawBuffer();
+        mpOGLWidget->update();
+        mpOGLWidget->drawBuffer();
     }
     on_action_Stop_triggered();
     play = false;
@@ -962,14 +953,14 @@ void MainWindow::on_action_Play_triggered()
 
 void MainWindow::on_action_Stop_triggered()
 {
-    mpQmlWidget->stopAnimated();
+    mpOGLWidget->stopAnimated();
     textEdit->setEnabled(true);
     ui->action_Undo->setEnabled(true);
     ui->action_Redo->setEnabled(true);
     a_undo->setEnabled(true);
     a_redo->setEnabled(true);
 
-    if(mpQmlWidget->isVisible())
+    if(mpOGLWidget->isVisible())
     {
         ui->action_Play->setText("Play");
         ui->action_Play->setEnabled(true);
@@ -996,7 +987,7 @@ void MainWindow::on_action_youTube_triggered()
 void MainWindow::on_action_Pause_triggered()
 {
     ui->action_Play->setText("Resume");
-    mpQmlWidget->pauseAnimated();
+    mpOGLWidget->pauseAnimated();
     //mpGLWidget->pauseAnimated();
     ui->action_Play->setEnabled(true);
     a_play->setEnabled(true);
@@ -1034,8 +1025,8 @@ void MainWindow::on_speedBtn_pressed()
 void MainWindow::on_slider_speedTB_valueChanged(int value)
 {
     lastInpuDelay = value;
-    if(mpQmlWidget != NULL)
-        mpQmlWidget->setDelay(1000/value);
+    if(mpOGLWidget != NULL)
+        mpOGLWidget->setDelay(1000/value);
 }
 
 void MainWindow::hideBoardSettings()
