@@ -9,6 +9,5 @@ int main(int argc, char *argv[])
 
     ListControll timeLine;
     timeLine.show();
-
     return app.exec();\
 }

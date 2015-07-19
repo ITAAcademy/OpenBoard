@@ -1,9 +1,15 @@
 <RCC>
     <qresource prefix="/">
-        <file>main.qml</file>
         <file>Block/Block.qml</file>
         <file>Block/file.png</file>
         <file>ToolBar/ToolBar.qml</file>
-        <file>ToolBar/Button.qml</file>
+        <file>ToolBar/TrackToolBar.qml</file>
+        <file>ToolBar/Buutton.qml</file>
+        <file>TrackBarWithItem.qml</file>
+        <file>TimeBlocks.qml</file>
+        <file>main.qml</file>
+        <file>Block/ContextButton.qml</file>
+        <file>Block/ContextMenu.qml</file>
+        <file>Block/EditBlock.qml</file>
     </qresource>
 </RCC>
