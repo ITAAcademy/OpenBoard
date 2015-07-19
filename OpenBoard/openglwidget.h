@@ -125,6 +125,7 @@ public:
 
     void drawTexture(int x, int y, int width, int height, GLuint texture);
     void update();
+    void saveFrameBufferToTexture();
 public slots:
     void drawAnimated( bool record );
     void stopAnimated();
@@ -167,7 +168,7 @@ private slots:
     int getCountNullString(int index);
 private:
     QImage img;
-    QImage GL_formatted_image;
+
     GLuint texture;
     QString drawText;
     bool bRecord;

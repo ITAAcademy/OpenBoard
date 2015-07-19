@@ -175,12 +175,27 @@ void OGLWidget::initializeGL()
     qglClearColor(Qt::black); // Черный цвет фона
      //glEnable(GL_TEXTURE_2D);
      //loadTextures();
-    glGenFramebuffers(1,&fbo);
-    glGenRenderbuffers(1,&render_buf);
-   glBindRenderbuffer(1,render_buf);
-    glRenderbufferStorage(GL_RENDERBUFFER, GL_BGRA, wax, way);
-  // glBindFramebuffer(GL_DRAW_FRAMEBUFFER,fbo);
-  // glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, render_buf);
+
+    GLuint fbo, rboColor, rboDepth;
+
+        // Color renderbuffer.
+        glGenRenderbuffers(1,&rboColor);
+        glBindRenderbuffer(1,rboColor);
+        // Set storage for currently bound renderbuffer.
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_BGRA, wax, way);
+
+        // Depth renderbuffer
+        glGenRenderbuffers(1,&rboDepth);
+        glBindRenderbuffer(1,rboDepth);
+        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, wax, way);
+
+        // Framebuffer
+        glGenFramebuffers(1, &fbo);
+        glBindFramebuffer(GL_FRAMEBUFFER,fbo);
+        glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, rboColor);
+        // Set renderbuffers for currently bound framebuffer
+        glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rboDepth);
+
 
 }
 
@@ -193,10 +208,46 @@ void OGLWidget::destroy(bool destroyWindow, bool destroySubWindow){
     glDeleteFramebuffers(1,&fbo);
     glDeleteRenderbuffers(1,&render_buf);
 }
+void OGLWidget::saveFrameBufferToTexture(){
+    uchar* data = new uchar[wax*way*4];
+
+
+
+     glReadPixels(0,0,wax,way,GL_BGRA,GL_UNSIGNED_BYTE,data);
+             // Return to onscreen rendering:
+     glBindFramebuffer(GL_DRAW_FRAMEBUFFER,0);
+
+
+    QImage qi = QImage(data, wax, way, QImage::Format_ARGB32);
+       //  qi = qi.rgbSwapped();
+
+      QImage GL_formatted_image = QGLWidget::convertToGLFormat(qi);
+    /* if(GL_formatted_image.isNull())
+         qWarning("IMAGE IS NULL");
+     else
+         qWarning("IMAGE NOT NULL");*/
+     //generate the texture name
+     glEnable(GL_TEXTURE_2D); // Enable texturing
+
+        glGenTextures(1, &texture); // Obtain an id for the texture
+        glBindTexture(GL_TEXTURE_2D, texture); // Set as the current texture
+
+        //glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+       // glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+
+
+        glTexImage2D(GL_TEXTURE_2D, 0, 4, GL_formatted_image.width(), GL_formatted_image.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, GL_formatted_image.bits());
+        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
+         glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+
+        glDisable(GL_TEXTURE_2D);
+        if (data!=NULL)delete[] data;
+}
 
 void OGLWidget::paintGL()
 {
     m_encoder->setFrame(grabFrameBuffer());
+
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // чистим буфер изображения и буфер глубины
        glMatrixMode(GL_PROJECTION); // устанавливаем матрицу
      //  glShadeModel(GL_SMOOTH);
@@ -216,77 +267,48 @@ void OGLWidget::paintGL()
        glEnable(GL_BLEND);
        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+
       // qglColor(Qt::white);
 
 //        drawTexture(0, 0, wax, way, textureList[0]);
+//WRITE TO FRAME BUFER FROM HERE
+ glBindFramebuffer(GL_DRAW_FRAMEBUFFER,fbo);
 
-        drawBuffer();
-
+ fillText("DEBUG TEXT TO BUFER",QColor(Qt::white),40,40);
 
     //FRAMEBUFFER PART
-        if (isMousePress){
-        glBindFramebuffer(GL_DRAW_FRAMEBUFFER,fbo);
-      uchar* data = new uchar[wax*way*4];
-
-       glReadBuffer(GL_COLOR_ATTACHMENT0);
-
-       glReadPixels(0,0,wax,way,GL_BGRA,GL_UNSIGNED_BYTE,data);
-               // Return to onscreen rendering:
-       glBindFramebuffer(GL_DRAW_FRAMEBUFFER,0);
-
-
-      QImage qi = QImage(data, wax, way, QImage::Format_ARGB32);
-         //  qi = qi.rgbSwapped();
-
-       GL_formatted_image = QGLWidget::convertToGLFormat(qi);
-      /* if(GL_formatted_image.isNull())
-           qWarning("IMAGE IS NULL");
-       else
-           qWarning("IMAGE NOT NULL");*/
-       //generate the texture name
-       glEnable(GL_TEXTURE_2D); // Enable texturing
-
-          glGenTextures(1, &texture); // Obtain an id for the texture
-          glBindTexture(GL_TEXTURE_2D, texture); // Set as the current texture
-
-          //glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-         // glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
-
-
-          glTexImage2D(GL_TEXTURE_2D, 0, 4, GL_formatted_image.width(), GL_formatted_image.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, GL_formatted_image.bits());
-          glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-           glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-
-          glDisable(GL_TEXTURE_2D);
+       // if (isMousePress){
 
 
 
+
+saveFrameBufferToTexture();
 
           glEnable(GL_TEXTURE_2D);
           glBindTexture(GL_TEXTURE_2D,texture);
+          qglColor(Qt::green);//TO SEE TEXTURE
           glBegin(GL_QUADS);
-                  //Draw Picture
+                 /*Draw Picture DEBUG INVERTED BY VERTICAL
           glTexCoord2i(0,0); glVertex2i(0,way);
           glTexCoord2i(0,1); glVertex2i(0,0);
           glTexCoord2i(1,1); glVertex2i(wax,0);
-          glTexCoord2i(1,0); glVertex2i(wax,way);
+          glTexCoord2i(1,0); glVertex2i(wax,way);*/
+        //WORKING DRAW PICTURE
+          glTexCoord2i(0,0); glVertex2i(0,0);
+          glTexCoord2i(0,1); glVertex2i(0,way);
+          glTexCoord2i(1,1); glVertex2i(wax,way);
+          glTexCoord2i(1,0); glVertex2i(wax,0);
 
           glEnd();
           glDeleteTextures(1, &texture);
           glDisable(GL_TEXTURE_2D);
 
 
-          if (data!=NULL)delete[] data;
-}
-        //busy = true;
 
-        // glBegin и glEnd - обозначают блок для рисования объекта(начало и конец), glBegin принимает параметр того, что нужно рисовать.
-       // qglColor(Qt::green);
-
-         //Начинаем отрисовку, аргумент означает отрисовку прямоугольника.
-         //Каждый вызов glVertex3f задает одну вершину прямоугольника
-       // swapBuffers();
-
+//}
+glBindFramebuffer(GL_DRAW_FRAMEBUFFER,0);
+//WRITE TO SCREEN FROM HERE
+ drawBuffer();
 
 }
 
