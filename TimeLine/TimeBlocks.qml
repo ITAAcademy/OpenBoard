@@ -24,11 +24,11 @@ import "ToolBar" as ContentToolBar
       Repeater {
           id: repka
           property bool isDrag : false
-          model: timeControll.getTestSize()
+          model: timeControll.getTrackSize()
           function updateModel()      {
               model = model - 1;
               console.log("function updateModel()      {")
-                   model =  timeControll.getTestSize()
+                   model =  timeControll.getTrackSize()
 
               }
           delegate:
@@ -36,9 +36,9 @@ import "ToolBar" as ContentToolBar
               id: cool
               globalRep : repka
               height: 200
-              width: timeControll.getTestWidth(index)
+              width: timeControll.getBlockTime(index)
               mIndex: index
-              title: timeControll.getTest(index)
+              title: timeControll.getBlockKey(index)
           }
           Component.onCompleted: {
              //trackbar.globalRep = repka

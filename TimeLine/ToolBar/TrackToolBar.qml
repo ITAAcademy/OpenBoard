@@ -22,7 +22,7 @@ Rectangle {
           icon_source : "qrc:/iphone_toolbar_icons/plus.png"
             onClicked: {
                 var ss = num
-               timeControll.addNewTest(bar_track.mIndex,"vasia" + ss);
+               timeControll.addNewBlock(bar_track.mIndex,"vasia" + ss);
                 num +=1
                 // item_col.globalRep.updateModel() ;
                 globalRep.updateModel()
@@ -47,7 +47,7 @@ Rectangle {
             width: parent.width
           icon_source : "qrc:/iphone_toolbar_icons/delete.png"
             onClicked: {
-                if ( timeControll.removeLastTest(trackbar.mIndex))
+                if ( timeControll.removeLastBlock(trackbar.mIndex))
                 {
                     globalRep.updateModel()
 

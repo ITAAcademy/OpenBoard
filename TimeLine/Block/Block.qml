@@ -14,6 +14,8 @@ Rectangle{
     property Repeater globalRep
     property string colorKey : "green"
     property int minWidth : 20
+ //   property int time_scale_valueRecX
+   // property int time_scale_valueRecY
     /*radius: 0
     border.width: 0
     border.color: "green"
@@ -60,6 +62,8 @@ onYChanged: y=0;
         enabled: !globalRep.isDrag
         hoverEnabled: true
         onMouseXChanged: {
+         //  root.time_scale_valueRecX = mouseX + root.x
+         //  root.time_scale_valueRecY = mouseY + root.y
             if (context_menu.visible === false)
             {
             if(globalRep.isDrag === false &&  mouseX > root.width * 0.9) //mouseX < root.width * 0.1 ||/
@@ -132,7 +136,7 @@ onYChanged: y=0;
             if(bChangeSize)
             {
                 mouseArea.drag.target = root;
-                 timeControll.setTestWidth(bar_track.index, mIndex,root.width);
+                 timeControll.setBlockTime(bar_track.index, mIndex,root.width);
             }
              bChangeSize = false;
 
@@ -163,7 +167,6 @@ console.log(" reles  root.z= " +   root.z)
         onEntered: {
             console.log(mouseX + " YY " + mouseY)
         }
-
     }
     Image {
         id: icon
@@ -197,7 +200,7 @@ console.log(" reles  root.z= " +   root.z)
         icon_coloroverlay.color = "#00000000"
          main222.dropEntered = 0
         if (main222.maIsPressed === 0)        {
-            timeControll.reverseTests(bar_track.index,root.mIndex,clicked_blockId)
+            timeControll.reverseBlocks(bar_track.index,root.mIndex,clicked_blockId)
            /* repka.itemAt(clicked_blockId).x = root.x
             repka.itemAt(clicked_blockId).y = root.y
             root.x = clicked_blockX

@@ -55,7 +55,7 @@ property Repeater globalRep
             onButtonClicked: {
                 var col= contextMenuItem.columnIndex;
                 var id = contextMenuItem.blockIndex;
-                timeControll.removeTest(col,id)
+                timeControll.removeBlock(col,id)
                 globalRep.updateModel()
             }
         }

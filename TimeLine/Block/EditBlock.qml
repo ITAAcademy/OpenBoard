@@ -45,7 +45,7 @@ ApplicationWindow  {
                      anchors.verticalCenter: block_width.verticalCenter
                      maximumValue : 999999
                     // minimumValue : minBlockWidth
-                    value: timeControll.getTestWidth(mainwindow.columnIndex,mainwindow.blockIndex)
+                    value: timeControll.getBlockTime(mainwindow.columnIndex,mainwindow.blockIndex)
                     onFocusChanged:  {
                         if (value < minBlockWidth)
                             value = minBlockWidth;
@@ -74,7 +74,7 @@ ApplicationWindow  {
                      font { pixelSize: 14 }
                      y: 7
                     // minimumValue : minBlockWidth
-                     property string initText : timeControll.getTest(mainwindow.columnIndex,mainwindow.blockIndex)
+                     property string initText : timeControll.getBlockKey(mainwindow.columnIndex,mainwindow.blockIndex)
                     text: initText
                    // color: text_color
                     onFocusChanged:  {
@@ -94,8 +94,8 @@ ApplicationWindow  {
             x: 10
              text: "OK"
              onClicked: {
-                 timeControll.setTestWidth(mainwindow.columnIndex,mainwindow.blockIndex,block_width_value.value)
-                 timeControll.setTestName(mainwindow.columnIndex,mainwindow.blockIndex,block_name_value.text)
+                 timeControll.setBlockTime(mainwindow.columnIndex,mainwindow.blockIndex,block_width_value.value)
+                 timeControll.setBlockKey(mainwindow.columnIndex,mainwindow.blockIndex,block_name_value.text)
                  globalRep.updateModel()
                  close();
              }

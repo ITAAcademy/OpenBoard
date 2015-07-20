@@ -21,12 +21,12 @@ Rectangle
 
     function addTrack()     {
         console.log("  33333333333333333333333333333333333333333333333")
-        timeControll.addNewColumn( )
+        timeControll.addNewTrack( )
     rep_columns.model +=1
     }
 
     function removeTrack()    {
-        timeControll.removeLastColumn()
+        timeControll.removeLastTrack()
     rep_columns.model -=1
     }
 
@@ -51,12 +51,111 @@ Rectangle
                   height: 4000
                   source: "qrc:/E:/Users/Юрий/Desktop/--pNfOnpygs.png"
               }*/
+            /*  Rectangle {
+               id: time_scale_value
+               property int mX: -30
+               property int mY: -30
+               x: mX
+               y: mY
+               z: 50
+               visible: false
+               width: 80
+               height: 30
+               color: "black"
+               border {color: "white"; width: 2}
+               Text {
+                   anchors.verticalCenter:  time_scale_value.verticalCenter
+                   anchors.horizontalCenter: time_scale_value.horizontalCenter
+                   text: scrollMA.mouseX + " ms"
+                    font { pixelSize: 14 }
+                    color: "white"
+               }
+               Timer {
+                   id: timer
+                      interval: 500; running: true; //repeat: true
+                      onTriggered: {
+                          time_scale_value.visible = true;
+                      }
+                  }
+               onMXChanged: {
+                   timer.restart();
+                   time_scale_value.visible = false;
+               }
+               onMYChanged: {
+                   timer.restart();
+                   time_scale_value.visible = false;
+               }
+              }
+              MouseArea {
+                  id: scrollMA
+                  anchors.fill : parent
+                  hoverEnabled: true
+                  z: 20
+
+
+                  onPositionChanged: {
+                     time_scale_value.mX = scrollMA.mouseX
+                       time_scale_value.mY = scrollMA.mouseY
+                  }
+
+              }*/
+            on__HorizontalScrollBarChanged:   {
+             console.log("333333333333333333333wqfqwegrfwfewq")
+            }
+            Component.onCompleted: {
+                flickableItem.contentY = flickableItem.contentHeight / 2 - height / 2
+                            flickableItem.contentX = flickableItem.contentWidth / 2 - width / 2
+                //flickableItem.
+                   }
+              Rectangle {
+                  id: time_scale
+                  property int division : 50
+                  width: 2000//item_col.width
+                  height: item_col.height/10
+                  color: "gray"
+
+                  x: 0
+                  y: main222.height -height - 20
+                  z: 200
+                  Rectangle {
+                      id: hor_line
+                  width: time_scale.width
+                  height: time_scale.height/10
+                  color: "blue"
+                  y: time_scale.height/2
+                  x:0
+                  }
+                  Repeater {
+                      id: time_scale_rep
+                      model: time_scale.width/ time_scale.division
+                      delegate:
+                      Rectangle{
+                          width: time_scale.division
+
+                          Rectangle {
+                          id: ver_line
+                          height: time_scale.height
+                          width: hor_line.height
+                          x: time_scale.division - width
+                          color: "blue"
+                          }
+                      }
+                  }
+
+              }
               Rectangle {
                     id: item_col
                     property Item p_columns
                     property Item p_trackbar
                     width: childrenRect.width
                     height: childrenRect.height
+                    onWidthChanged: {
+                        if (width >  time_scale.width)
+                        {
+                            time_scale.width = width  ;
+                            time_scale_rep.model = time_scale.width/ time_scale.division
+                        }
+                    }
                     Column {
                           id: columns
                           width:  timeControll.getMaxTestWidth()
@@ -90,11 +189,11 @@ Rectangle
                                        Repeater {
                                            id: repka
                                            property bool isDrag : false
-                                           model:  timeControll.getColumnSize(trackbar.mIndex)//     bar_track.mIndex)
+                                           model:  timeControll.getTrackSize(trackbar.mIndex)//     bar_track.mIndex)
                                            function updateModel()      {
                                                model = model - 1;
                                                console.log("function updateModel()   ")
-                                                    model =  timeControll.getColumnSize(bar_track.mIndex)
+                                                    model =  timeControll.getTrackSize(bar_track.mIndex)
 
                                                }
                                            delegate:
@@ -104,12 +203,20 @@ Rectangle
                                                height: 200
                                                mIndex: index
                                                 colIndex:  bar_track.mIndex
-                                               width:  timeControll.getTestWidth(colIndex, mIndex)
+                                               width:  timeControll.getBlockTime(colIndex, mIndex)
 
-                                               title: timeControll.getTest(colIndex,mIndex)
+                                               title: timeControll.getBlockKey(colIndex,mIndex)
+
+                                              /* time_scale_valueRecX : time_scale_value.mX
+                                               time_scale_valueRecY : time_scale_value.mY*/
+
+                                              /* p_mouse_area.onPositionChanged: {
+                                                  time_scale_value.mX = scrollMA.mouseX
+                                                    time_scale_value.mY = scrollMA.mouseY
+                                               }*/
                                            }
                                            onModelChanged: {                                              
-                                                  columns.width =  timeControll.getMaxTestWidth()
+                                                  columns.width =  timeControll.getMaxTrackTime()
                                            }
 
                                        }
@@ -134,13 +241,10 @@ Rectangle
                                  }    //
                             }
                    onChildrenRectChanged:  {
-                   width =  timeControll.getMaxTestWidth()
-                    console.log(" timeControll.getMaxTestWidth() = " +  width)
+                   width =  timeControll.getMaxTrackTime()
+                   // console.log(" timeControll.getMaxTestWidth() = " +  width)
                    }
                     } /* rep_columns end */
-              }
-              Component.onCompleted: {
-
               }
            }
          ContentToolBar.ToolBar{
