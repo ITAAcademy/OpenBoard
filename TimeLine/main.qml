@@ -6,8 +6,9 @@ import QtGraphicalEffects 1.0
 import "Block" as ContentBlock
 import "ToolBar" as ContentToolBar
 
-Item
+Rectangle
 {
+    color: "gray"
     id:main222
     property int clicked_blockId : -1
     property int clicked_blockX : -1
@@ -68,13 +69,6 @@ Item
                                Row {
                                id: bar_track
                                property int mIndex: index
-                               /*onIndexChanged: {
-                                   console.log("ETO INDEX = " + index)
-                               }
-                               onMIndexChanged:  {
-                                   console.log("ETO MINDEX = " + mIndex)
-                                   console.log("ETO INDEX = " + index)
-                               }*/
                                  ContentToolBar.TrackToolBar {
                                         id: trackbar
                                         width: 30
@@ -89,6 +83,7 @@ Item
                                      x: 30
                                      width: 4000
                                      height: 200
+                                     color: "gray"
                                      Row {
                                        id: blocks
                                        height: 220
@@ -106,13 +101,14 @@ Item
                                            ContentBlock.Block{
                                                id: cool
                                                globalRep : repka
-                                               colIndex: trackbar.mIndex
                                                height: 200
-                                               width: timeControll.getTestWidth(bar_track.mIndex, index)
                                                mIndex: index
-                                               title: timeControll.getTest(trackbar.mIndex,index)
+                                                colIndex:  bar_track.mIndex
+                                               width:  timeControll.getTestWidth(colIndex, mIndex)
+
+                                               title: timeControll.getTest(colIndex,mIndex)
                                            }
-                                           onModelChanged: {
+                                           onModelChanged: {                                              
                                                   columns.width =  timeControll.getMaxTestWidth()
                                            }
 

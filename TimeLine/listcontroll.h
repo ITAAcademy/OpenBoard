@@ -33,7 +33,8 @@ public:
      Q_INVOKABLE bool removeLastColumn();
     Q_INVOKABLE void reverseTests(int col, int init_pos, int end_pos);
     void setTest(int col,const QList<QString> &value);
-
+Q_INVOKABLE   void setTestName(int col, int i, QString name);
+    Q_INVOKABLE   void removeTest(int col, int i);
     Q_INVOKABLE int getTestWidth(int col, int i) const;
     Q_INVOKABLE int getColumnWidth(int col) const;
     Q_INVOKABLE int getMaxTestWidth( ) const;

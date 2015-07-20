@@ -10,7 +10,36 @@ void ListControll::recountMaxColumnWidth()
 
 QString ListControll::getTest(int col, int i) const
 {
-    return "test[col][i]";
+    return test[col][i];
+}
+
+void ListControll::setTestName(int col, int i, QString name)
+{
+    test[col][i] = name;
+}
+
+void ListControll::removeTest(int col, int i)
+{
+    qDebug() << "col =" << col <<" i =" << i;
+    if (test[col].size() > i)
+    {
+    test[col].removeAt(i);
+
+   if (maxwidth == testColumnWidth[col])
+   {
+       int temp = testWidth[col][i];
+       testWidth[col].removeAt(i);
+    testColumnWidth[col] -= temp;
+    recountMaxColumnWidth();
+
+   }
+   else
+   {
+       int temp = testWidth[col][i];
+       testWidth[col].removeAt(i);
+    testColumnWidth[col] -= temp;
+   }
+    }
 }
 
 void ListControll::addNewTest(int col, QString str)

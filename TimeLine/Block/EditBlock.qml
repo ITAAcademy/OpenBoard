@@ -15,8 +15,8 @@ ApplicationWindow  {
     signal menuSelected(int index) // index{1: Select All, 2: Remove Selected}
     property bool isOpen: false
 
-    width: block_width.width + 1
-    height: 200
+    width: 400
+    height: 400
      color: "gray"
      property color text_color: "white"
      Column {
@@ -29,7 +29,7 @@ ApplicationWindow  {
             Rectangle {
                 id: block_width
                 color: "black"
-                width: 200 // block_width_text + 10 + block_width_value.width
+                width: contextMenuItem.width // block_width_text + 10 + block_width_value.width
                 height: 40
                 border  { width: 2; color: "white" }
                 Text {
@@ -54,6 +54,37 @@ ApplicationWindow  {
                 }
             }
 
+            Rectangle {
+                id: block_name
+                color: "black"
+                width: contextMenuItem.width // block_width_text + 10 + block_width_value.width
+                height: 40
+                border  { width: 2; color: "white" }
+                Text {
+                    id: block_name_text
+                    text: "Block\'s name"
+                    color: "white"
+                    anchors { verticalCenter: parent.verticalCenter; left: parent.left; leftMargin: 10 }
+                    font { pixelSize: 14 }
+                }
+                TextField   {
+                     id: block_name_value
+                     x: block_width.width - width - 10
+                     width: 200
+                     font { pixelSize: 14 }
+                     y: 7
+                    // minimumValue : minBlockWidth
+                     property string initText : timeControll.getTest(mainwindow.columnIndex,mainwindow.blockIndex)
+                    text: initText
+                   // color: text_color
+                    onFocusChanged:  {
+                        if (text.length ==0)
+                            text = initText;
+                    }
+
+                }
+            }
+
 
 
      }
@@ -64,6 +95,7 @@ ApplicationWindow  {
              text: "OK"
              onClicked: {
                  timeControll.setTestWidth(mainwindow.columnIndex,mainwindow.blockIndex,block_width_value.value)
+                 timeControll.setTestName(mainwindow.columnIndex,mainwindow.blockIndex,block_name_value.text)
                  globalRep.updateModel()
                  close();
              }

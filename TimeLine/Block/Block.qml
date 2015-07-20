@@ -6,6 +6,11 @@ import QtGraphicalEffects 1.0
 Rectangle{
     id: root
     color: "#343434"
+    property int mIndex
+    property int colIndex
+    property int xChange: 0
+    property bool bChangeSize: false
+    property string title: "value"
     property Repeater globalRep
     property string colorKey : "green"
     property int minWidth : 20
@@ -16,6 +21,8 @@ Rectangle{
     anchors.leftMargin: 0*/
 z: 0
     onWidthChanged: {
+        console.log("root: columnIndex=" + root.columnIndex +
+                    " blockIndext=" + root.blockIndext)
         if (width < minWidth)
             width = minWidth
     }
@@ -38,11 +45,7 @@ z: 0
         minBlockWidth : root.minWidth
     }
 
-    property int mIndex: 0
-    property int colIndex: 0
-    property int xChange: 0
-    property bool bChangeSize: false
-    property string title: "value"
+
     Drag.active: mouseArea.drag.active
     Drag.hotSpot.x: 10
     Drag.hotSpot.y: 10
