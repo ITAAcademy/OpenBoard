@@ -178,7 +178,7 @@ glBindFramebuffer(GL_FRAMEBUFFER_EXT, fbo); // Bind our frame buffer for renderi
 //glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear the depth and colour buffers
 //glLoadIdentity();  // Reset the modelview matrix
 
-fillText("DEBUG TEXT TO BUFER",QColor(Qt::white),40,40);
+//fillText("DEBUG TEXT TO BUFER",QColor(Qt::white),40,40);
   if (isMousePress){
 glPointSize(10.0);
  glBegin (GL_POINTS);
