@@ -169,33 +169,120 @@ void OGLWidget::resizeGL(int nWidth, int nHeight)
     wax=nWidth;
     way=nHeight;
 }
+void OGLWidget::renderMouseCursor(void) {
+glBindFramebuffer(GL_FRAMEBUFFER_EXT, fbo); // Bind our frame buffer for rendering
+//glPushAttrib(GL_VIEWPORT_BIT | GL_ENABLE_BIT); // Push our glEnable and glViewport states
+//glViewport(0, 0, window_width, window_height); // Set the size of the frame buffer view port
+
+//glClearColor (0.0f, 0.0f, 1.0f, 1.0f); // Set the clear colour
+//glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // Clear the depth and colour buffers
+//glLoadIdentity();  // Reset the modelview matrix
+
+fillText("DEBUG TEXT TO BUFER",QColor(Qt::white),40,40);
+  if (isMousePress){
+glPointSize(10.0);
+ glBegin (GL_POINTS);
+ glColor3f (1.0, 0.4, 0.4);
+ glVertex3f (clickX, clickY,0.0);
+ glEnd();
+  }
+
+glBindFramebuffer(GL_FRAMEBUFFER_EXT, 0); // Unbind our texture
+   //FRAMEBUFFER PART
+
+
+
+//saveFrameBufferToTexture();
+
+         glEnable(GL_TEXTURE_2D);
+         glBindTexture(GL_TEXTURE_2D,fbo_texture);
+        // qglColor(Qt::green);//TO SEE TEXTURE
+         glBegin(GL_QUADS);
+              //  Draw Picture DEBUG INVERTED BY VERTICAL
+         glTexCoord2i(0,0); glVertex2i(0,way);
+         glTexCoord2i(0,1); glVertex2i(0,0);
+         glTexCoord2i(1,1); glVertex2i(wax,0);
+         glTexCoord2i(1,0); glVertex2i(wax,way);
+
+        /*
+         glTexCoord2i(0,0); glVertex2i(0,0);
+         glTexCoord2i(0,1); glVertex2i(0,way);
+         glTexCoord2i(1,1); glVertex2i(wax,way);
+         glTexCoord2i(1,0); glVertex2i(wax,0);*/
+
+         glEnd();
+        // glDeleteTextures(1, &texture);
+         glBindTexture(GL_TEXTURE_2D, 0);
+         glDisable(GL_TEXTURE_2D);
+
+
+
+//glPopAttrib(); // Restore our glEnable and glViewport states
+
+
+}
+
+
+void OGLWidget::initFrameBufferDepthBuffer() {
+glGenRenderbuffers(1, &fbo_depth); // Generate one render buffer and store the ID in fbo_depth
+glBindRenderbuffer(GL_RENDERBUFFER_EXT, fbo_depth); // Bind the fbo_depth render buffer
+
+glRenderbufferStorage(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT, wax, way); // Set the render buffer storage to be a depth component, with a width and height of the window
+
+glFramebufferRenderbuffer(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, fbo_depth); // Set the render buffer of this buffer to the depth buffer
+
+glBindRenderbuffer(GL_RENDERBUFFER_EXT, 0); // Unbind the render buffer
+}
+
+void OGLWidget::initFrameBufferTexture() {
+    glEnable(GL_TEXTURE_2D);
+    //glDeleteTextures(1,&fbo_texture);
+glGenTextures(1, &fbo_texture); // Generate one texture
+glBindTexture(GL_TEXTURE_2D, fbo_texture); // Bind the texture fbo_texture
+
+glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, wax, way, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL); // Create a standard texture with the width and height of our window
+
+// Setup the basic texture parameters
+glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+
+// Unbind the texture
+glBindTexture(GL_TEXTURE_2D, 0);
+glDisable(GL_TEXTURE_2D);
+}
+
+void OGLWidget::initFrameBuffer() {
+initFrameBufferDepthBuffer(); // Initialize our frame buffer depth buffer
+
+initFrameBufferTexture(); // Initialize our frame buffer texture
+
+glGenFramebuffers(1, &fbo); // Generate one frame buffer and store the ID in fbo
+glBindFramebuffer(GL_FRAMEBUFFER_EXT, fbo); // Bind our frame buffer
+
+glFramebufferTexture2D(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, fbo_texture, 0); // Attach the texture fbo_texture to the color buffer in our frame buffer
+
+glFramebufferRenderbuffer(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, fbo_depth); // Attach the depth buffer fbo_depth to our frame buffer
+
+GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER_EXT); // Check that status of our generated frame buffer
+
+if (status != GL_FRAMEBUFFER_COMPLETE_EXT) // If the frame buffer does not report back as complete
+{
+qDebug() << "Couldn't create frame buffer\n" ; // Output an error to the console
+exit(0); // Exit the application
+}
+
+glBindFramebuffer(GL_FRAMEBUFFER_EXT, 0); // Unbind our frame buffer
+}
+
 void OGLWidget::initializeGL()
 {
     initializeGLFunctions();
     qglClearColor(Qt::black); // Черный цвет фона
      //glEnable(GL_TEXTURE_2D);
      //loadTextures();
-
-    GLuint fbo, rboColor, rboDepth;
-
-        // Color renderbuffer.
-        glGenRenderbuffers(1,&rboColor);
-        glBindRenderbuffer(1,rboColor);
-        // Set storage for currently bound renderbuffer.
-        glRenderbufferStorage(GL_RENDERBUFFER, GL_BGRA, wax, way);
-
-        // Depth renderbuffer
-        glGenRenderbuffers(1,&rboDepth);
-        glBindRenderbuffer(1,rboDepth);
-        glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH_COMPONENT24, wax, way);
-
-        // Framebuffer
-        glGenFramebuffers(1, &fbo);
-        glBindFramebuffer(GL_FRAMEBUFFER,fbo);
-        glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_RENDERBUFFER, rboColor);
-        // Set renderbuffers for currently bound framebuffer
-        glFramebufferRenderbuffer(GL_DRAW_FRAMEBUFFER, GL_DEPTH_ATTACHMENT, GL_RENDERBUFFER, rboDepth);
-
+initFrameBuffer(); // Create our frame buffer object
 
 }
 
@@ -206,50 +293,20 @@ void OGLWidget::moveEvent(QMoveEvent *event)
 
 void OGLWidget::destroy(bool destroyWindow, bool destroySubWindow){
     glDeleteFramebuffers(1,&fbo);
-    glDeleteRenderbuffers(1,&render_buf);
+    //glDeleteRenderbuffers(1,&render_buf);
 }
-void OGLWidget::saveFrameBufferToTexture(){
-    uchar* data = new uchar[wax*way*4];
 
-
-
-     glReadPixels(0,0,wax,way,GL_BGRA,GL_UNSIGNED_BYTE,data);
-             // Return to onscreen rendering:
-     glBindFramebuffer(GL_DRAW_FRAMEBUFFER,0);
-
-
-    QImage qi = QImage(data, wax, way, QImage::Format_ARGB32);
-       //  qi = qi.rgbSwapped();
-
-      QImage GL_formatted_image = QGLWidget::convertToGLFormat(qi);
-    /* if(GL_formatted_image.isNull())
-         qWarning("IMAGE IS NULL");
-     else
-         qWarning("IMAGE NOT NULL");*/
-     //generate the texture name
-     glEnable(GL_TEXTURE_2D); // Enable texturing
-
-        glGenTextures(1, &texture); // Obtain an id for the texture
-        glBindTexture(GL_TEXTURE_2D, texture); // Set as the current texture
-
-        //glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
-       // glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
-
-
-        glTexImage2D(GL_TEXTURE_2D, 0, 4, GL_formatted_image.width(), GL_formatted_image.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, GL_formatted_image.bits());
-        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-         glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
-
-        glDisable(GL_TEXTURE_2D);
-        if (data!=NULL)delete[] data;
-}
 
 void OGLWidget::paintGL()
 {
     m_encoder->setFrame(grabFrameBuffer());
+//Розібратись чому GlClear очищує FrameBuffer
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // чистим буфер изображения и буфер глубины
-       glMatrixMode(GL_PROJECTION); // устанавливаем матрицу
+    //glClearStencil(0);
+//
+
+    glMatrixMode(GL_PROJECTION); // устанавливаем матрицу
      //  glShadeModel(GL_SMOOTH);
        // Сглаживание точек
       // glEnable(GL_POINT_SMOOTH);
@@ -272,42 +329,16 @@ void OGLWidget::paintGL()
 
 //        drawTexture(0, 0, wax, way, textureList[0]);
 //WRITE TO FRAME BUFER FROM HERE
- glBindFramebuffer(GL_DRAW_FRAMEBUFFER,fbo);
 
- fillText("DEBUG TEXT TO BUFER",QColor(Qt::white),40,40);
-
-    //FRAMEBUFFER PART
-       // if (isMousePress){
-
-
-
-
-saveFrameBufferToTexture();
-
-          glEnable(GL_TEXTURE_2D);
-          glBindTexture(GL_TEXTURE_2D,texture);
-          qglColor(Qt::green);//TO SEE TEXTURE
-          glBegin(GL_QUADS);
-                 /*Draw Picture DEBUG INVERTED BY VERTICAL
-          glTexCoord2i(0,0); glVertex2i(0,way);
-          glTexCoord2i(0,1); glVertex2i(0,0);
-          glTexCoord2i(1,1); glVertex2i(wax,0);
-          glTexCoord2i(1,0); glVertex2i(wax,way);*/
-        //WORKING DRAW PICTURE
-          glTexCoord2i(0,0); glVertex2i(0,0);
-          glTexCoord2i(0,1); glVertex2i(0,way);
-          glTexCoord2i(1,1); glVertex2i(wax,way);
-          glTexCoord2i(1,0); glVertex2i(wax,0);
-
-          glEnd();
-          glDeleteTextures(1, &texture);
-          glDisable(GL_TEXTURE_2D);
-
+renderMouseCursor();
 
 
 //}
-glBindFramebuffer(GL_DRAW_FRAMEBUFFER,0);
+glBindFramebuffer(GL_FRAMEBUFFER,0);
 //WRITE TO SCREEN FROM HERE
+
+
+
  drawBuffer();
 
 }
@@ -353,6 +384,8 @@ void OGLWidget::mousePressEvent(QMouseEvent *event)
     //int y = event->y();
     //drawImage();
     isMousePress=true;
+    clickX=event->x();
+    clickY=event->y();
 }
 void OGLWidget::mouseReleaseEvent(QMouseEvent *event)
 {
@@ -360,6 +393,15 @@ void OGLWidget::mouseReleaseEvent(QMouseEvent *event)
     //int y = event->y();
     //drawImage();
     isMousePress=false;
+}
+
+void OGLWidget::mouseMoveEvent ( QMouseEvent * event ){
+
+    //mouseDrag
+if (event->buttons() & Qt::LeftButton) {
+clickX=event->x();
+clickY=event->y();
+}
 }
 
 QString OGLWidget::getDrawText()

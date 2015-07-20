@@ -17,7 +17,6 @@
 #include <QGLWidget>
 #include <QtOpenGL>
 #include <QTimer>
-
 #include "encoder/videorencoder.h"
 /*
 #include <QtAV/QtAV>
@@ -56,7 +55,6 @@ public:
    volatile bool isCrossingNow;
     QList<ColorMarker> colors;
     QImage brushBuffer;
-    GLuint fbo, render_buf;
     struct GradientSetting{
         QStringList list;
         void addColorStop( float range, int r, int g, int b, int a = 255)
@@ -66,6 +64,8 @@ public:
         }
     };
     // |status state
+    int clickX;
+    int clickY;
     enum StatusDraw{
      PLAY , STOP, PAUSE
     };
@@ -84,6 +84,7 @@ public:
     void closeEvent(QCloseEvent *event);
     void mousePressEvent ( QMouseEvent * event );
     void mouseReleaseEvent ( QMouseEvent * event );
+    void mouseMoveEvent ( QMouseEvent * event );
     /*
      * |Canvas control
      */
@@ -125,7 +126,10 @@ public:
 
     void drawTexture(int x, int y, int width, int height, GLuint texture);
     void update();
-    void saveFrameBufferToTexture();
+    void initFrameBufferTexture();
+    void initFrameBufferDepthBuffer();
+    void renderMouseCursor();
+    void initFrameBuffer();
 public slots:
     void drawAnimated( bool record );
     void stopAnimated();
@@ -169,7 +173,9 @@ private slots:
 private:
     QImage img;
 
-    GLuint texture;
+    unsigned int fbo; // The frame buffer object
+    unsigned int fbo_depth; // The depth buffer for the frame buffer object
+    unsigned int fbo_texture; // The texture object to write our frame buffer object to
     QString drawText;
     bool bRecord;
     void generateFrames();
