@@ -23,8 +23,6 @@ Rectangle{
     anchors.leftMargin: 0*/
 z: 0
     onWidthChanged: {
-        console.log("root: columnIndex=" + root.columnIndex +
-                    " blockIndext=" + root.blockIndext)
         if (width < minWidth)
             width = minWidth
     }
