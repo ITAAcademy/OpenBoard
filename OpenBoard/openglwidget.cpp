@@ -103,6 +103,7 @@ OGLWidget::OGLWidget(QWidget *parent) :
     //qRegisterMetaType<DrawData>("DrawData");
    // engine()->rootContext()->setContextProperty(QLatin1String("forma"), this);
     m_encoder = new AV_REncoder(this);
+    fMetrics = NULL;
 
     bRecord = false;
     this->setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint | Qt::WindowTitleHint);
@@ -124,7 +125,7 @@ OGLWidget::OGLWidget(QWidget *parent) :
     pt = 36;
     font = "LC Chalk";
     isWord  =  true;
-     wax=500; way=500; // начальный размер окна
+    wax=500; way=500; // начальный размер окна
     x = marginLeft;
     y = lineHeight + pt;
     indexW = 1;
@@ -149,16 +150,18 @@ OGLWidget::OGLWidget(QWidget *parent) :
 
     //OPENGL
     setFormat(QGLFormat(QGL::DoubleBuffer)); // Двойная буферизация
-       glDepthFunc(GL_LEQUAL); // Буфер глубины
-       QTimer *timer = new QTimer(this);
-       connect(timer, SIGNAL(timeout()), this, SLOT(updateWindow()));
-       timer->start(5);
+   glDepthFunc(GL_LEQUAL); // Буфер глубины
+   QTimer *timer = new QTimer(this);
+   connect(timer, SIGNAL(timeout()), this, SLOT(updateWindow()));
+   timer->start(5);
 
 }
 
+
 OGLWidget::~OGLWidget()
 {
-
+      if(m_encoder != NULL);
+        delete m_encoder;
 }
 
 void OGLWidget::resizeGL(int nWidth, int nHeight)
@@ -168,6 +171,7 @@ void OGLWidget::resizeGL(int nWidth, int nHeight)
     glViewport(0, 0, (GLint)nWidth, (GLint)nHeight);
     wax=nWidth;
     way=nHeight;
+    qDebug() << "CALL RESIZE";
 }
 void OGLWidget::renderMouseCursor(void) {
 glBindFramebuffer(GL_FRAMEBUFFER_EXT, fbo); // Bind our frame buffer for rendering
@@ -179,11 +183,13 @@ glBindFramebuffer(GL_FRAMEBUFFER_EXT, fbo); // Bind our frame buffer for renderi
 //glLoadIdentity();  // Reset the modelview matrix
 
 //fillText("DEBUG TEXT TO BUFER",QColor(Qt::white),40,40);
+int PointSize = 10;
   if (isMousePress){
-glPointSize(10.0);
+glPointSize(PointSize);
  glBegin (GL_POINTS);
  glColor3f (1.0, 0.4, 0.4);
  glVertex3f (clickX, clickY,0.0);
+ qDebug() << clickX;
  glEnd();
   }
 
@@ -282,7 +288,7 @@ void OGLWidget::initializeGL()
     qglClearColor(Qt::black); // Черный цвет фона
      //glEnable(GL_TEXTURE_2D);
      //loadTextures();
-initFrameBuffer(); // Create our frame buffer object
+    initFrameBuffer(); // Create our frame buffer object
 
 }
 
@@ -331,9 +337,6 @@ void OGLWidget::paintGL()
 //WRITE TO FRAME BUFER FROM HERE
 
 renderMouseCursor();
-
-
-//}
 glBindFramebuffer(GL_FRAMEBUFFER,0);
 //WRITE TO SCREEN FROM HERE
 
@@ -365,16 +368,16 @@ void OGLWidget::paintEvent(QPaintEvent *event)
 
 void OGLWidget::resizeEvent(QResizeEvent *envent)
 {
-    QGLWidget::resizeEvent(envent);
+    resizeGL(envent->size().width(), envent->size().height());
     maxWidth = width() - marginLeft;
 }
 
 void OGLWidget::closeEvent(QCloseEvent *event)
 {
     stopAnimated();
-    pause(500);
     if(fMetrics != NULL)
-        delete fMetrics;
+      delete fMetrics;
+    pause(500);
     isClose = true;
 }
 
@@ -508,12 +511,9 @@ void OGLWidget::clearBuffer()
     stringList.clear();
     stringList.append("");
     cursorIndex = 0;
+    wrapShift;
     deleteWT = 0;
     crossWithAnimation = false;
-}
-
-void OGLWidget::clearSymbol(int index){
-QMetaObject::invokeMethod(canvas, "clearSymbol",  Q_ARG(QVariant, QVariant(index)));
 }
 
 void OGLWidget::drawFigure(int x, int y, int x2, int y2, OGLWidget::FigureType type, bool fill = true, QColor col = "#FF0000", float size = 2)
@@ -1023,7 +1023,7 @@ void OGLWidget::insertToBuffer(const QChar ch)
     str.insert(convertedIndex.x(), ch);
     cross.insert(cursorIndex - convertedIndex.y(), 0);
 
-    testWrap(convertedIndex.y());
+    //testWrap(convertedIndex.y());
     listChars.append(ch);
 
     emit drawTextChanged();
@@ -1112,10 +1112,24 @@ void OGLWidget::deleteFromBuffer(int n)
     pause(delay);
 }
 
-void OGLWidget::moveCursor(int n)
+void OGLWidget::moveCursor(int n, bool withWrapShift)
 {
     update();
-    cursorIndex += n;
+    int j = 0;
+    int shift = 0;
+    /*if(withWrapShift)
+    {
+        int max = qAbs (convertTextBoxToBufferIndex(cursorIndex).y() - convertTextBoxToBufferIndex(cursorIndex + n).y());
+        while( j < wrapShift.size() && j < max) //bhfhfghfghfghfghfghfghfghfghfghfghgf\ml0011
+            if(wrapShift[j++] <= cursorIndex)
+                shift = j;
+    }
+    */
+    if(n > 0)
+        cursorIndex += n + shift;
+    else
+        cursorIndex += n -  shift;
+    //cursorIndex += n;
     if(cursorIndex < 0)
         cursorIndex = 0;
  //   qDebug() << "Cursor move to n " << n <<"=== cur state " << cursorIndex << "QPOINT  " << convertTextBoxToBufferIndex(cursorIndex);
@@ -1212,6 +1226,7 @@ void OGLWidget::testWrap(int kIndexOfRow)
         ////qDebug() <<"str:"<< maxWidth;
         if(width > maxWidth)
         {
+
             int j = stringList[i].size() - 1;
             while( j >= 0 && str[j] > ' ')
             {
@@ -1225,6 +1240,8 @@ void OGLWidget::testWrap(int kIndexOfRow)
 
          //   qDebug() <<"strSize:    " << stringList.size() << "    SIZE_i    " << stringList[i] << "     " << j;
             nextRow(j, i, false);
+            wrapShift.append(getFirstSymbolOfString(i + 1));
+                qDebug() << "WRAPSHIFT"<< wrapShift;
 
         }
         i++;
@@ -1254,12 +1271,12 @@ void OGLWidget::nextRow( int n, int Row, bool wrap)
     else
         stringList.insert(i, lastStr);
     stringList[i - 1].resize(convertedIndex.x());
-    moveCursor();
+    moveCursor(1, false );
     /* last work
     moveCursor(lastStr.length() + 1);
     */
-    if(wrap)
-        testWrap(i);
+  /*  if(wrap)
+        testWrap(i);*/
     emit drawTextChanged();
 
 }

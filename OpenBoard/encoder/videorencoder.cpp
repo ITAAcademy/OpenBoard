@@ -76,6 +76,7 @@ AudioCodecSettings AV_REncoder::audioCodecSettings() const
 void AV_REncoder::setFileName(QString path)
 {
     m_encoder->setFilePath( path );
+    fileName = path;
     qDebug() << "Set path   " << path;
 }
 
@@ -143,11 +144,13 @@ void AV_REncoder::pause()
 
 void AV_REncoder::stop()
 {
-    audioRecorder->stop();
-    m_encoder->stop();
-
-    bRun = false;
-    qDebug() << "STOPPPP";
+    if(bRun)
+    {
+        audioRecorder->stop();
+        m_encoder->stop();
+        bRun = false;
+        qDebug() << "STOPPPP";
+    }
  //   exit();
 }
 

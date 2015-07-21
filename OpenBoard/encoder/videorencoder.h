@@ -9,6 +9,7 @@
 #include <QPainter>
 #include <QMutex>
 #include <QMutexLocker>
+#include <QLockFile>
 
 #include <Encoder>
 #include <ScreenGrabber>
@@ -38,6 +39,7 @@ class AV_REncoder : public QThread
     bool bRun;
     bool bPause;
     bool newImage = false;
+    QString fileName;
 public:
     explicit AV_REncoder(QObject *parent = 0);
     ~AV_REncoder();

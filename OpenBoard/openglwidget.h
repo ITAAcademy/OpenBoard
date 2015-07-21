@@ -94,7 +94,6 @@ public:
     void nextRow(int n   = -1, int Row = -1, bool wrap = true);
     Q_INVOKABLE void crossOutLastSymbol(int n = 1);
     void crossOutWithAnimation(int n = 1);
-    void clearSymbol(int index);
     QPoint drawWrapText( QString str ); // main draw function
     void setFillColor( QColor col);
     void setFillGradient( int x , int y, int width, int height, GradientSetting color);
@@ -152,7 +151,7 @@ public slots:
     void insertToBuffer(const QChar ch);
     QPoint convertTextBoxToBufferIndex(int index, bool symbol = false);
     void drawBuffer();
-    void moveCursor(int n = 1);
+    void moveCursor(int n = 1, bool withWrapShift = true);
     void clearBuffer();
     void testWrap(int kIndexOfRow);
     void deleteFromBuffer(int n);
@@ -183,7 +182,6 @@ private:
     int loadTextureFromFile(QString path, int index = -1); // return index for reload + texture indefication
     bool reloadTexture( int index);
     StatusDraw curStatus; // 0 - stop; 1 - play; -1 - pause
-    QObject *canvas;
     QThread drawThread;
     AV_REncoder *m_encoder = NULL;
 
@@ -217,7 +215,7 @@ private:
      * |not use
     */
     QFont textFont;
-    QFontMetrics *fMetrics = NULL;
+    QFontMetrics *fMetrics;
     int indexInList;
     int deleteWT;
     QTimer tickTimer;
@@ -235,6 +233,7 @@ private:
     QList<QString> stringList;
     QList<short int> cross;
     int indexRowInList; // first str for draw
+    QVector<int> wrapShift;
     int indexFirstDrawSymbol = 0;
     int maxDrawElm = 0;
     QElapsedTimer framDelayTimer;

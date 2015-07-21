@@ -30,7 +30,7 @@ MainWindow::MainWindow(QWidget *parent) :
 //    connect(&drawThread, SIGNAL(started()), this, SLOT(myfunction())); //cant have parameter sorry, when using connect
 
     mpOGLWidget = new OGLWidget(this);
-    mpOGLWidget->setVisible(false);
+    mpOGLWidget->hide();
    // mpOGLWidget->moveToThread(&drawThread);
     textEdit = new MyTextEdit(QColor("#000000"), QColor("#FF0000"), ui->centralWidget);
     textEdit->setObjectName(QStringLiteral("textEdit"));
@@ -277,7 +277,7 @@ void MainWindow::on_action_Hide_triggered()
       //  mpOGLWidget->stopAnimated();
     on_action_Stop_triggered();
     mpOGLWidget->hide();
-    /*mpOGLWidget->close();*/
+    mpOGLWidget->close();
     // delete mpOGLWidget;
     ui->action_Pause->setEnabled(false);
     ui->action_Play->setEnabled(false);
