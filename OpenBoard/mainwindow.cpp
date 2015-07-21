@@ -763,6 +763,7 @@ void MainWindow::on_crossBtn_clicked()
     }
     else
     textEdit->insertPlainText(text);
+      commandTextEdit->saveChanges(text.length());
 }
 
 void MainWindow::on_colorBtn_pressed()
