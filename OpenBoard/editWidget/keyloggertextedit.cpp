@@ -17,7 +17,7 @@ void KeyloggerTE::saveChanges(int sizeOfChange){
 
    changebuf.cursor = this->textCursor().position();
    changebuf.cymbol = this->toPlainText();
-   changebuf.changeSize = 0;
+   changebuf.changeSize = sizeOfChange;
     if (undo_changes.length()>0){
         CursorSymbolExtended prevChange =   undo_changes.pop();
       prevChange.changeSize=sizeOfChange;
@@ -28,6 +28,7 @@ void KeyloggerTE::saveChanges(int sizeOfChange){
 
 void KeyloggerTE::undo()
 {
+    qDebug() <<"changes before:"<<undo_changes.length();
     if (undo_changes.size() >0)
     {
         CursorSymbolExtended backup;
@@ -38,7 +39,7 @@ void KeyloggerTE::undo()
        CursorSymbolExtended change ;
 
        int changesSizePrev = -1;
- if (changesDetected && undo_changes.size()>0){
+ if (changesDetected && undo_changes.size()>1){
 
    changesSizePrev = undo_changes.pop().changeSize;
      changesDetected=false;
@@ -57,11 +58,14 @@ void KeyloggerTE::undo()
              QTextCursor tc = destination->textCursor();
              tc.setPosition(destText.length());
              destination->setTextCursor(tc);
+             if (changesDetected && undo_changes.length()==0)this->clear();
     }
     else {
+
         this->clear();
         destination->clear();
     }
+    qDebug() <<"changes after:"<<undo_changes.length();
 
 }
 
@@ -339,7 +343,7 @@ void KeyloggerTE::mousePressEvent(QMouseEvent *eventPress){
       if(textInField.length() != 0)
      destination->setPlainText(textInField);
      int sizeOfChanges = textInFieldLen-destinationLen;
-     if (toPlainText().length()>0)
+     if (sizeOfChanges>0)
      {
      saveChanges(sizeOfChanges);//TODO
               changesDetected=true;
@@ -356,8 +360,17 @@ void KeyloggerTE::mouseReleaseEvent(QMouseEvent *eventPress){
       textInField +=QString("\\mr%1").arg(delta, 3, 10, QChar('0'));
       else if (delta<0)
       textInField +=QString("\\ml%1").arg(-delta, 3, 10, QChar('0'));
+      int destinationLen = destination->toPlainText().length();
+      int textInFieldLen = textInField.length();
       if(textInField.length() != 0)
      destination->setPlainText(textInField);
+
+      int sizeOfChanges = textInFieldLen-destinationLen;
+      if (sizeOfChanges>0)
+      {
+      saveChanges(sizeOfChanges);//TODO
+               changesDetected=true;
+      }
 //qDebug() << "cursor changed";
 }
 
