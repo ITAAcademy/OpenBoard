@@ -730,6 +730,7 @@ void MainWindow::on_animationBtn_clicked()
     else
     textEdit->insertPlainText(text);
 
+    commandTextEdit->saveChanges(text.length());
 
 }
 
