@@ -52,6 +52,7 @@ public:
      * |Future gradient
      */
    bool isMousePress = false;
+   bool ismouseWasPressedBeforeDrag = false;
    volatile bool isCrossingNow;
     QList<ColorMarker> colors;
     QImage brushBuffer;
@@ -64,8 +65,8 @@ public:
         }
     };
     // |status state
-    int clickX;
-    int clickY;
+    QPoint mousePos;
+    QPoint prevMousePos;
     enum StatusDraw{
      PLAY , STOP, PAUSE
     };

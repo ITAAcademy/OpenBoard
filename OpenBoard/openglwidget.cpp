@@ -186,11 +186,24 @@ glBindFramebuffer(GL_FRAMEBUFFER_EXT, fbo); // Bind our frame buffer for renderi
 int PointSize = 10;
   if (isMousePress){
 glPointSize(PointSize);
+glLineWidth(PointSize);
+if (!ismouseWasPressedBeforeDrag){
  glBegin (GL_POINTS);
  glColor3f (1.0, 0.4, 0.4);
- glVertex3f (clickX, clickY,0.0);
- qDebug() << clickX;
+ glVertex3f (mousePos.x(), mousePos.y(),0.0);
+ qDebug() << mousePos.x();
  glEnd();
+}
+else{
+    glBegin (GL_LINES);
+    glColor3f (1.0, 0.4, 0.4);
+    glVertex3f (prevMousePos.x(), prevMousePos.y(),0.0);
+    glVertex3f (mousePos.x(), mousePos.y(),0.0);
+    qDebug() << mousePos.x();
+    glEnd();
+}
+
+
   }
 
 glBindFramebuffer(GL_FRAMEBUFFER_EXT, 0); // Unbind our texture
@@ -199,7 +212,7 @@ glBindFramebuffer(GL_FRAMEBUFFER_EXT, 0); // Unbind our texture
 
 
 //saveFrameBufferToTexture();
-
+ glColor3f (1.0, 0.4, 0.4);
          glEnable(GL_TEXTURE_2D);
          glBindTexture(GL_TEXTURE_2D,fbo_texture);
         // qglColor(Qt::green);//TO SEE TEXTURE
@@ -387,8 +400,11 @@ void OGLWidget::mousePressEvent(QMouseEvent *event)
     //int y = event->y();
     //drawImage();
     isMousePress=true;
-    clickX=event->x();
-    clickY=event->y();
+    prevMousePos.setX(mousePos.x());
+    prevMousePos.setY(mousePos.y());
+    mousePos.setX(event->x());
+   mousePos.setY(event->y());
+   ismouseWasPressedBeforeDrag=false;
 }
 void OGLWidget::mouseReleaseEvent(QMouseEvent *event)
 {
@@ -402,8 +418,11 @@ void OGLWidget::mouseMoveEvent ( QMouseEvent * event ){
 
     //mouseDrag
 if (event->buttons() & Qt::LeftButton) {
-clickX=event->x();
-clickY=event->y();
+    prevMousePos.setX(mousePos.x());
+    prevMousePos.setY(mousePos.y());
+    mousePos.setX(event->x());
+   mousePos.setY(event->y());
+   ismouseWasPressedBeforeDrag=true;
 }
 }
 
