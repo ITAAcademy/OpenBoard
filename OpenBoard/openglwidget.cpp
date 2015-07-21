@@ -183,25 +183,28 @@ glBindFramebuffer(GL_FRAMEBUFFER_EXT, fbo); // Bind our frame buffer for renderi
 //glLoadIdentity();  // Reset the modelview matrix
 
 //fillText("DEBUG TEXT TO BUFER",QColor(Qt::white),40,40);
-int PointSize = 10;
-  if (isMousePress){
-glPointSize(PointSize);
-glLineWidth(PointSize);
-if (!ismouseWasPressedBeforeDrag){
- glBegin (GL_POINTS);
- glColor3f (1.0, 0.4, 0.4);
- glVertex3f (mousePos.x(), mousePos.y(),0.0);
- qDebug() << mousePos.x();
- glEnd();
-}
-else{
-    glBegin (GL_LINES);
-    glColor3f (1.0, 0.4, 0.4);
-    glVertex3f (prevMousePos.x(), prevMousePos.y(),0.0);
-    glVertex3f (mousePos.x(), mousePos.y(),0.0);
-    qDebug() << mousePos.x();
-    glEnd();
-}
+    int PointSize = 10;
+    if (isMousePress){
+        glPointSize(PointSize);
+    glLineWidth(PointSize);
+    if (!ismouseWasPressedBeforeDrag)
+    {
+        glBegin (GL_POINTS);
+        glColor3f (1.0, 0.4, 0.4);
+        glVertex3f (mousePos.x(), mousePos.y(),0.0);
+        qDebug() << mousePos.x();
+        glEnd();
+    }
+    else{
+        glBegin (GL_LINES);
+        glColor3f (1.0, 0.4, 0.4);
+        glVertex3f (prevMousePos.x(), prevMousePos.y(),0.0);
+        glVertex3f (mousePos.x(), mousePos.y(),0.0);
+        qDebug() << mousePos.x();
+        glEnd();
+        prevMousePos.setX(mousePos.x());
+        prevMousePos.setY(mousePos.y());
+    }
 
 
   }
@@ -300,7 +303,7 @@ void OGLWidget::initializeGL()
     initializeGLFunctions();
     qglClearColor(Qt::black); // Черный цвет фона
      //glEnable(GL_TEXTURE_2D);
-     //loadTextures();
+    loadTextureFromFile(":/ThirdPart/images/start.png");
     initFrameBuffer(); // Create our frame buffer object
 
 }
@@ -346,16 +349,15 @@ void OGLWidget::paintGL()
 
       // qglColor(Qt::white);
 
-//        drawTexture(0, 0, wax, way, textureList[0]);
-//WRITE TO FRAME BUFER FROM HERE
 
+//WRITE TO FRAME BUFER FROM HERE
+drawTexture(0, 0, wax, way, textureList[0]);
 renderMouseCursor();
 glBindFramebuffer(GL_FRAMEBUFFER,0);
 //WRITE TO SCREEN FROM HERE
 
-
-
  drawBuffer();
+
 
 }
 
@@ -400,10 +402,10 @@ void OGLWidget::mousePressEvent(QMouseEvent *event)
     //int y = event->y();
     //drawImage();
     isMousePress=true;
-    prevMousePos.setX(mousePos.x());
-    prevMousePos.setY(mousePos.y());
     mousePos.setX(event->x());
    mousePos.setY(event->y());
+   prevMousePos.setX(mousePos.x());
+   prevMousePos.setY(mousePos.y());
    ismouseWasPressedBeforeDrag=false;
 }
 void OGLWidget::mouseReleaseEvent(QMouseEvent *event)
@@ -418,10 +420,9 @@ void OGLWidget::mouseMoveEvent ( QMouseEvent * event ){
 
     //mouseDrag
 if (event->buttons() & Qt::LeftButton) {
-    prevMousePos.setX(mousePos.x());
-    prevMousePos.setY(mousePos.y());
     mousePos.setX(event->x());
    mousePos.setY(event->y());
+
    ismouseWasPressedBeforeDrag=true;
 }
 }
@@ -1042,7 +1043,7 @@ void OGLWidget::insertToBuffer(const QChar ch)
     str.insert(convertedIndex.x(), ch);
     cross.insert(cursorIndex - convertedIndex.y(), 0);
 
-    //testWrap(convertedIndex.y());
+    testWrap(convertedIndex.y());
     listChars.append(ch);
 
     emit drawTextChanged();
@@ -1294,8 +1295,8 @@ void OGLWidget::nextRow( int n, int Row, bool wrap)
     /* last work
     moveCursor(lastStr.length() + 1);
     */
-  /*  if(wrap)
-        testWrap(i);*/
+    if(wrap)
+        testWrap(i);
     emit drawTextChanged();
 
 }
