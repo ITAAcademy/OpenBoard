@@ -37,5 +37,6 @@
         <file>icons/info.png</file>
         <file>icons/speed-icon.png</file>
         <file>ThirdPart/images/start.png</file>
+        <file>ThirdPart/images/brush.png</file>
     </qresource>
 </RCC>
