@@ -14,6 +14,7 @@ Rectangle{
     property Repeater globalRep
     property string colorKey : "green"
     property int minWidth : 20
+    property ColorOverlay p_color_overlay
  //   property int time_scale_valueRecX
    // property int time_scale_valueRecY
     /*radius: 0
@@ -25,6 +26,9 @@ z: 0
     onWidthChanged: {
         if (width < minWidth)
             width = minWidth
+       // timeControll.setBlockTime(colIndex,mIndex,width)
+        console.log("333 timeControll.setBlockTime " + colIndex + " " + mIndex + " " + width)
+         //timeControll.setBlockTime(mainwindow.columnIndex,mainwindow.blockIndex,block_width_value.value)
     }
 
     ContextMenu {
@@ -60,8 +64,6 @@ onYChanged: y=0;
         enabled: !globalRep.isDrag
         hoverEnabled: true
         onMouseXChanged: {
-         //  root.time_scale_valueRecX = mouseX + root.x
-         //  root.time_scale_valueRecY = mouseY + root.y
             if (context_menu.visible === false)
             {
             if(globalRep.isDrag === false &&  mouseX > root.width * 0.9) //mouseX < root.width * 0.1 ||/
@@ -92,6 +94,16 @@ onYChanged: y=0;
             }
         }
         onPressed: {
+         timeControll.setSelectedBlock(colIndex,mIndex);
+main222.needToLightSelected = true
+            for (var y=0; y< rep_columns.model; y++)
+                 rep_columns.itemAt(y).abortColorize()
+            main222.selectedBlockCol = colIndex
+            main222.selectedBlockIndex = mIndex
+            icon_coloroverlay.color = "#8000FF00"  //1234
+           // blocks.itemAt(i).icon_coloroverlay.color = "#00000000"
+            //columns.childAt()
+            console.log("onPressed: mIndex="+mIndex+" colIndex="+ colIndex + " time = " + timeControll.getBlockTime(colIndex,mIndex))
             if (mouse.button == Qt.RightButton)
             {
                 context_menu.visible = true
@@ -117,7 +129,6 @@ onYChanged: y=0;
                 main222.clicked_blockId = root.mIndex
                 main222.clicked_blockX = root.x
                 main222.clicked_blockY = root.y
-
                 root.z += 200
             }
 
@@ -130,17 +141,19 @@ onYChanged: y=0;
             console.log("RELEASE");
             if (globalRep.isDrag)
                        root.z -= 200
-             globalRep.isDrag = false
+ globalRep.isDrag = false
             if(bChangeSize)
             {
                 mouseArea.drag.target = root;
-                 timeControll.setBlockTime(bar_track.index, mIndex,root.width);
+                 timeControll.setBlockTime(colIndex, mIndex,root.width);
             }
              bChangeSize = false;
 
             if (main222.maIsPressed && main222.dropEntered === 0) {
                 root.x = main222.clicked_blockX
                 root.y = main222.clicked_blockY
+        // if (globalRep.isDrag)
+            //   rep_columns.itemAt(main222.selectedBlockCol).setColorize(main222.selectedBlockIndex,"#8000FF00")
 
             }
          main222.maIsPressed = 0
@@ -176,7 +189,12 @@ console.log(" reles  root.z= " +   root.z)
            anchors.fill: icon
            source: icon
            color: "#00000000"
+
+           Component.onCompleted: {
+               root.p_color_overlay = icon_coloroverlay
+           }
        }
+
     Text {
         id: name
         color: "#FFFF00"
@@ -196,18 +214,13 @@ console.log(" reles  root.z= " +   root.z)
     onExited: {
          console.log( " DropArea onExited main_root.maIsPressed="+main222.maIsPressed)
         icon_coloroverlay.color = "#00000000"
-         main222.dropEntered = 0
+ main222.dropEntered = 0
         if (main222.maIsPressed === 0)        {
-            timeControll.reverseBlocks(bar_track.index,root.mIndex,clicked_blockId)
-           /* repka.itemAt(clicked_blockId).x = root.x
-            repka.itemAt(clicked_blockId).y = root.y
-            root.x = clicked_blockX
-            root.y = clicked_blockY*/
-            globalRep.updateModel();
-
-              console.log( "reverseTests")
+            timeControll.reverseBlocks(root.colIndex,root.mIndex,main222.clicked_blockId)
+            main222.selectedBlockCol = root.colIndex
+            main222.selectedBlockIndex = root.mIndex
+              globalRep.updateModel();
         }
-
             }
     }
 }
