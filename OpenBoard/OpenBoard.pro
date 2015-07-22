@@ -1,6 +1,9 @@
 QT -= declarative sensors multimedia multimediawidgets printsupport
 
-QT       += widgets multimedia quick quickwidgets network webkitwidgets concurrent opengl
+QT       += qml widgets multimedia quick quickwidgets network webkitwidgets concurrent opengl
+
+CONFIG += c++11
+QMAKE_CXXFLAGS += "-std=c++11"
 #CONFIG(release, debug|release):DEFINES += QT_NO_DEBUG_OUTPUT
 SOURCES += main.cpp\
     mainwindow.cpp \
@@ -16,7 +19,11 @@ SOURCES += main.cpp\
     encoder/videorencoder.cpp \
     editWidget/keyloggertextedit.cpp \
     openglwidget.cpp \
-    ../TimeLine/listcontroll.cpp
+    ../TimeLine/listcontroll.cpp \
+    drawSystem/drawelement.cpp \
+    drawSystem/drawtext.cpp \
+    ../Brush/brushcontroll.cpp \
+    ../Brush/brushpainter.cpp
 
 
 HEADERS  += mainwindow.h \
@@ -32,7 +39,12 @@ HEADERS  += mainwindow.h \
     encoder/videorencoder.h \
     editWidget/keyloggertextedit.h \
     openglwidget.h \
-    ../TimeLine/listcontroll.h
+    ../TimeLine/listcontroll.h \
+    drawSystem/drawelement.h \
+    drawSystem/drawtext.h \
+    drawSystem/drawsystem.h \
+    ../Brush/brushcontroll.h \
+    ../Brush/brushpainter.h
 
 FORMS    += mainwindow.ui \
     youtube/logindialog.ui
@@ -40,7 +52,8 @@ FORMS    += mainwindow.ui \
 RESOURCES += \
     icons.qrc \
     ../TimeLine/icons_timeLine.qrc \
-    ../TimeLine/qml_timeLine.qrc
+    ../TimeLine/qml_timeLine.qrc \
+    ../Brush/qml_brush.qrc
     RC_FILE = myapp.rc
 
 #unix {

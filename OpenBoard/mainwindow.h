@@ -24,10 +24,11 @@
 #include "editWidget/mytextedit.h"
 #include "youtube/youtubewrapper.h"
 #include "editWidget/keyloggertextedit.h"
+#include "drawSystem/drawsystem.h"
+
 namespace Ui {
 class MainWindow;
 }
-
 
 class MainWindow : public QMainWindow
 {
@@ -121,6 +122,7 @@ QMessageBox messAbout;
     MyTextEdit       *textEdit;
     KeyloggerTE *commandTextEdit;
     ListControll timeLine;
+    QList <DrawElement*> drawElements;
 
     int drawCounter;
     bool isCommandTextEditFocused = false;

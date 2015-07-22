@@ -1,6 +1,6 @@
 #ifndef UNIT
 #define UNIT
-
+#pragma once
 #include <QString>
 #include <QtConcurrent/QtConcurrent>
 #include "openglwidget.h"

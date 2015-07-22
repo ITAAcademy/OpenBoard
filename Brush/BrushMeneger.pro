@@ -8,7 +8,7 @@ SOURCES += main.cpp \
     brushpainter.cpp \
     brushcontroll.cpp
 
-RESOURCES += qml.qrc
+RESOURCES += qml_brush.qrc
 
 DISTFILES += \
     Block/Block.qml\
