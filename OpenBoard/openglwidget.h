@@ -30,7 +30,7 @@ using namespace QtAV;
 
 #define STREAM_FRAME_RATE 10
 #define STREAM_DURATION 60
-
+#define TEXTURE_INDEX_BRUSH 1
 struct ColorMarker{
     int startIndex;
     QColor value;
@@ -89,6 +89,7 @@ public:
     void mousePressEvent ( QMouseEvent * event );
     void mouseReleaseEvent ( QMouseEvent * event );
     void mouseMoveEvent ( QMouseEvent * event );
+    QSize getTextureSize();
     /*
      * |Canvas control
      */

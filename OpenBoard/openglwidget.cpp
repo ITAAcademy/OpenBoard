@@ -84,17 +84,16 @@ void OGLWidget::drawTexture( int x, int y, int width, int height, GLuint texture
 //loadTextures();
   // glLoadIdentity();
     qglColor(Qt::white);
-    glEnable(GL_TEXTURE_2D);
+
     glBindTexture(GL_TEXTURE_2D, texture);
     glBegin(GL_QUADS);
             //Draw Picture
-    glTexCoord2i(0,0); glVertex2i(x, height);
+    glTexCoord2i(0,0); glVertex2i(x, y+height);
     glTexCoord2i(0,1); glVertex2i(x,y);
-    glTexCoord2i(1,1); glVertex2i(width,y);
-    glTexCoord2i(1,0); glVertex2i(width, height);
-
+    glTexCoord2i(1,1); glVertex2i(x+width,y);
+    glTexCoord2i(1,0); glVertex2i(x+width, y+height);
     glEnd();
-    glDisable(GL_TEXTURE_2D);
+
 
 }
 
@@ -205,24 +204,50 @@ glBindFramebuffer(GL_FRAMEBUFFER_EXT, fbo); // Bind our frame buffer for renderi
     if (isMousePress){
         glPointSize(PointSize);
     glLineWidth(PointSize);
-    if (!ismouseWasPressedBeforeDrag)
-    {
-        glBegin (GL_POINTS);
+   // glEnable(GL_TEXTURE_2D);
+    GLuint texture = textureList.at(TEXTURE_INDEX_BRUSH);
+  // if (!ismouseWasPressedBeforeDrag)
+
+       /* glBegin (GL_POINTS);
         glColor3f (1.0, 0.4, 0.4);
         glVertex3f (mousePos.x(), mousePos.y(),0.0);
         qDebug() << mousePos.x();
-        glEnd();
-    }
+        glEnd();*/
+         glEnable(GL_TEXTURE_2D);
+         glBindTexture(GL_TEXTURE_2D,texture);
+        QSize brushTextureSize = getTextureSize();
+        int BRUSH_SIZE=30;
+        qDebug() << "brushSize.width():"<<brushTextureSize.width();
+        qDebug() << "brushSize.height():"<<brushTextureSize.height();
+        double koff = brushTextureSize.width()/brushTextureSize.height();
+        drawTexture(mousePos.x()-BRUSH_SIZE/2 ,mousePos.y()-BRUSH_SIZE/koff/2,BRUSH_SIZE,BRUSH_SIZE/koff,texture);
+         glDisable(GL_TEXTURE_2D);
+   /*
     else{
-        glBegin (GL_LINES);
-        glColor3f (1.0, 0.4, 0.4);
-        glVertex3f (prevMousePos.x(), prevMousePos.y(),0.0);
-        glVertex3f (mousePos.x(), mousePos.y(),0.0);
-        qDebug() << mousePos.x();
-        glEnd();
-        prevMousePos.setX(mousePos.x());
-        prevMousePos.setY(mousePos.y());
-    }
+      glEnable(GL_TEXTURE_2D);
+       glBindTexture(GL_TEXTURE_2D,texture);
+      QSize brushTextureSize = getTextureSize();
+      int BRUSH_SIZE=30;
+      qDebug() << "brushSize.width():"<<brushTextureSize.width();
+      qDebug() << "brushSize.height():"<<brushTextureSize.height();
+      double koff = brushTextureSize.width()/brushTextureSize.height();
+
+      QPainterPath path;
+          path.moveTo(prevMousePos);
+          path.lineTo(mousePos);
+          QPointF from = prevMousePos;
+      for (int i=0;i<100;i+=20 )
+      {
+        QPointF to = path.pointAtPercent(i);
+      drawTexture(from.x()-BRUSH_SIZE/2 ,from.y()-BRUSH_SIZE/koff/2,BRUSH_SIZE,BRUSH_SIZE/koff,texture);
+      drawTexture(to.x()-BRUSH_SIZE/2 ,to.y()-BRUSH_SIZE/koff/2,BRUSH_SIZE,BRUSH_SIZE/koff,texture);
+      from=to;
+      }
+      glDisable(GL_TEXTURE_2D);
+       prevMousePos.setX(mousePos.x());
+       prevMousePos.setY(mousePos.y());
+    }*/
+    // glDisable(GL_TEXTURE_2D);
 
 
   }
@@ -322,6 +347,7 @@ void OGLWidget::initializeGL()
     qglClearColor(Qt::black); // Черный цвет фона
      //glEnable(GL_TEXTURE_2D);
     loadTextureFromFile(":/ThirdPart/images/start.png");
+    loadTextureFromFile(":/ThirdPart/images/brush.png");
     initFrameBuffer(); // Create our frame buffer object
 
 }
@@ -341,7 +367,6 @@ void OGLWidget::paintGL()
 {
     if(m_encoder->newImage)
         m_encoder->setFrame(grabFrameBuffer());
-//Розібратись чому GlClear очищує FrameBuffer
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // чистим буфер изображения и буфер глубины
     //glClearStencil(0);
@@ -370,7 +395,9 @@ void OGLWidget::paintGL()
 
 
 //WRITE TO FRAME BUFER FROM HERE
+       glEnable(GL_TEXTURE_2D);
 drawTexture(0, 0, wax, way, textureList[0]);
+ glDisable(GL_TEXTURE_2D);
 renderMouseCursor();
 glBindFramebuffer(GL_FRAMEBUFFER,0);
 //WRITE TO SCREEN FROM HERE
@@ -458,6 +485,18 @@ if (event->buttons() & Qt::LeftButton) {
 
    ismouseWasPressedBeforeDrag=true;
 }
+}
+
+QSize OGLWidget::getTextureSize()
+{
+    QSize textureSize;
+    GLint width;
+    GLint height;
+    glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &width);
+      glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &height);
+   textureSize.setWidth(width);
+    textureSize.setHeight(height);
+    return textureSize;
 }
 
 QString OGLWidget::getDrawText()
