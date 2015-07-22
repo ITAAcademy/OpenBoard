@@ -158,6 +158,12 @@ int ListControll::getBlockTime(int col, int i ) const
     return tracks[col].block[i].time;
 }
 
+Element ListControll::getBlock(int col, int i) const
+{
+    qDebug() << "getBlock(int col, int i)" << col << " " << i;
+     return tracks[col].block[i];
+}
+
 int ListControll::getTrackTime( int col) const
 {
 
@@ -198,6 +204,7 @@ ListControll::ListControll(QObject *parent) : QObject(parent)
         testWidth.append(temp_int);
 */
 addNewTrack( );
+selectedBlock  = getBlock(0,0);
 recountMaxTrackTime();
     if (qgetenv("QT_QUICK_CORE_PROFILE").toInt()) {\
         QSurfaceFormat f = view.format();\
@@ -212,6 +219,7 @@ recountMaxTrackTime();
     view.setSource(QUrl("qrc:/main.qml")); \
     view.setResizeMode(QQuickView::SizeRootObjectToView);
     view.setPersistentOpenGLContext(true);
+    view.setColor("transparent");
 view.setMinimumHeight(235);
 view.setWidth(800);
 
@@ -234,6 +242,16 @@ view.setWidth(800);
  {
      prevMousePosition.setX(x);
      prevMousePosition.setY(y);
+ }
+
+void ListControll::setSelectedBlock(int col, int i)
+{
+      selectedBlock = getBlock(col,i);
+}
+
+ Element ListControll::getSelectedBlock()
+ {
+    return selectedBlock;
  }
 
 

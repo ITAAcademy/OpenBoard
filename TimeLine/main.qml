@@ -13,6 +13,7 @@ Rectangle {
    height: 500 //main222.height + 20
     //anchors.margins : 20
 z: -150
+radius: 10
 MouseAreaForWindowDraging{
 anchors.left:   frama.left
 width: 20
@@ -29,16 +30,19 @@ MouseAreaForWindowDraging{
  anchors.bottom:   frama.bottom
  height : 20
 }
-
+property Rectangle p_main222
 
 Rectangle
 {
 anchors.fill: parent
 anchors.margins:  20
 radius: 10
-
     color: "gray"
     id:main222
+
+    Component.onCompleted: {
+    frama.p_main222 = main222
+    }
     width: childrenRect.width ///main222.width + 20
    height: childrenRect.height //main222.height + 20
     property int clicked_blockId : -1
@@ -48,6 +52,10 @@ radius: 10
     property int drop_blockY : -1
     property int maIsPressed: 0
     property int dropEntered: 0
+   property int selectedBlockCol : 0
+   property int selectedBlockIndex : 0
+   property  bool needToLightSelected : false
+  property Repeater p_rep_columns
     property Item p_item_col
 
     property real scaling : 1
@@ -192,9 +200,22 @@ radius: 10
                           Repeater {
                           id: rep_columns
                           model: 1
+                          Component.onCompleted: {
+                          main222.p_rep_columns = rep_columns
+                          }
                           delegate:
                                Row {
                                id: bar_track
+                               function abortColorize()
+                               {
+                                   for (var i=0; i< repka.model; i++)
+                                        repka.itemAt(i).p_color_overlay.color = "#00000000"
+                                  // blocks.itemAt(i).icon_coloroverlay.color = "#00000000"
+                               }
+                               function setColorize(indexa, color)
+                               {
+                                        repka.itemAt(indexa).p_color_overlay.color = color
+                               }
                                property int mIndex: index
                                  ContentToolBar.TrackToolBar {
                                         id: trackbar
@@ -214,14 +235,18 @@ radius: 10
                                      //  height: 220
                                        Repeater {
                                            id: repka
+
+
+
                                            property bool isDrag : false
                                            model:  timeControll.getTrackSize(trackbar.mIndex)//     bar_track.mIndex)
                                            function updateModel()      {
                                                model = model - 1;
-                                               console.log("function updateModel()   ")
                                                     model =  timeControll.getTrackSize(bar_track.mIndex)
-
-                                               }
+                                               if (main222.needToLightSelected)
+                   rep_columns.itemAt(main222.selectedBlockCol).setColorize(main222.selectedBlockIndex,"#8000FF00")
+                                           main222.needToLightSelected = false
+                                           }
                                            delegate:
                                            ContentBlock.Block{
                                                id: cool
