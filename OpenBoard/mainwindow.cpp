@@ -237,6 +237,7 @@ void MainWindow::on_action_Show_triggered()
     }
     mpOGLWidget = new OGLWidget();
     mpOGLWidget->show();
+    timeLine.show();
     mpOGLWidget->setDelay(1000/lastInpuDelay);
     mpOGLWidget->setFixedSize(GLWIDGET_SIZE);
     mpOGLWidget->move(pos().x() + width() + WINDOW_MARGING, pos().y());

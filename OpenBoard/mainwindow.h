@@ -16,6 +16,7 @@
 #include <QMenu>
 #include <QAction>
 #include "openglwidget.h"
+#include "../TimeLine/listcontroll.h"
 
 #include <QDebug>
 #include "settings.h"
@@ -114,9 +115,14 @@ QAction *a_play,*a_pause,*a_stop,*a_font_canvas,*a_color_canvas,*a_record_to_fil
 QMessageBox messAbout;
  //   GLWidget        *mpGLWidget;
     OGLWidget       *mpOGLWidget;
-    int drawCounter;
+    YouTubeWrapper *youtube;
+    QToolBar *toolBar;
+    Parser          mParser;
     MyTextEdit       *textEdit;
     KeyloggerTE *commandTextEdit;
+    ListControll timeLine;
+
+    int drawCounter;
     bool isCommandTextEditFocused = false;
     QString         curFile;
     pSettings       mSettings;
@@ -127,12 +133,10 @@ QMessageBox messAbout;
     QString         inputText;
     int lastInpuDelay;
     QList <Unit*>mUnitList;
-    Parser          mParser;
 //    QThread drawThread;
     bool saveFile();
     bool maybeSave();
-    YouTubeWrapper *youtube;
-    QToolBar *toolBar;
+
     bool play = false;
 
 

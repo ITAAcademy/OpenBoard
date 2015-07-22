@@ -15,7 +15,8 @@ SOURCES += main.cpp\
     youtube/youtubewrapper.cpp \
     encoder/videorencoder.cpp \
     editWidget/keyloggertextedit.cpp \
-    openglwidget.cpp
+    openglwidget.cpp \
+    ../TimeLine/listcontroll.cpp
 
 
 HEADERS  += mainwindow.h \
@@ -30,13 +31,16 @@ HEADERS  += mainwindow.h \
     youtube/youtubewrapper.h \
     encoder/videorencoder.h \
     editWidget/keyloggertextedit.h \
-    openglwidget.h
+    openglwidget.h \
+    ../TimeLine/listcontroll.h
 
 FORMS    += mainwindow.ui \
     youtube/logindialog.ui
 
 RESOURCES += \
-    icons.qrc
+    icons.qrc \
+    ../TimeLine/icons_timeLine.qrc \
+    ../TimeLine/qml_timeLine.qrc
     RC_FILE = myapp.rc
 
 #unix {

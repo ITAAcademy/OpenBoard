@@ -201,7 +201,7 @@ recountMaxTrackTime();
   //  view.connect(view.engine(), SIGNAL(quit()), &app, SLOT(quit()));
     new QQmlFileSelector(view.engine(), &view);\
     view.engine()->rootContext()->setContextProperty("timeControll", this);
-    view.setSource(QUrl("qrc:///main.qml")); \
+    view.setSource(QUrl("qrc:/main.qml")); \
     view.setResizeMode(QQuickView::SizeRootObjectToView);
 view.setMinimumHeight(415);
 view.setWidth(800);
