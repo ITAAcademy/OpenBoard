@@ -26,6 +26,7 @@ Rectangle {
                 num +=1
                 // item_col.globalRep.updateModel() ;
                 globalRep.updateModel()
+
                /* item_col.p_columns.columns.globalRep.updateModel();
                  item_col.p_columns.rep_columns.globalRep.updateModel();*/
                // main222.p_item_col.p
