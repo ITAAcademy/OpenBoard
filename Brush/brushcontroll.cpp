@@ -2,17 +2,17 @@
 
 
 
-int BrushMeneger::getCurentBrush() const
+int BrushManager::getCurentBrush() const
 {
     return curentBrush;
 }
 
-void BrushMeneger::setCurentBrush(int value)
+void BrushManager::setCurentBrush(int value)
 {
     curentBrush = value;
     createdBrush.img = imageStack[value];
 }
-BrushMeneger::BrushMeneger(QObject *parent) : QObject(parent), QQuickImageProvider(QQuickImageProvider::Image)
+BrushManager::BrushManager(QObject *parent) : QObject(parent), QQuickImageProvider(QQuickImageProvider::Image)
 {
     QTime midnight(0,0,0);
     qsrand(midnight.secsTo(QTime::currentTime()));
@@ -32,24 +32,24 @@ BrushMeneger::BrushMeneger(QObject *parent) : QObject(parent), QQuickImageProvid
     new QQmlFileSelector(view.engine(), &view);\
     view.engine()->rootContext()->setContextProperty("brushControll", this);
     view.engine()->addImageProvider("loader", this);
-    view.setSource(QUrl("qrc:///main.qml")); \
+    view.setSource(QUrl("qrc:/main_brush.qml")); \
     view.setResizeMode(QQuickView::SizeRootObjectToView);
     view.setPersistentOpenGLContext(true);
     //viewsetFont(QFont("Segoe Script"));
 
 }
 
-BrushMeneger::~BrushMeneger()
+BrushManager::~BrushManager()
 {
 
 }
 
-int BrushMeneger::getBrushCount()
+int BrushManager::getBrushCount()
 {
     return imageStack.size();
 }
 
-void BrushMeneger::show()
+void BrushManager::show()
 {
     view.setFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint | Qt::WindowTitleHint);
 
@@ -61,7 +61,12 @@ void BrushMeneger::show()
     }\
 }
 
-QImage BrushMeneger::requestImage(const QString &id, QSize *size, const QSize& requestedSize)
+void BrushManager::hide()
+{
+    view.hide();
+}
+
+QImage BrushManager::requestImage(const QString &id, QSize *size, const QSize& requestedSize)
 {
  //   qDebug() << "REQUEST IMAGE" << id;
     if(id[0] == 'a')
@@ -77,7 +82,7 @@ QImage BrushMeneger::requestImage(const QString &id, QSize *size, const QSize& r
     }
 }
 
-bool BrushMeneger::openBrushLibrary(QString path)
+bool BrushManager::openBrushLibrary(QString path)
 {
     QString new_path = brushDir.currentPath()+path;
     QDir dir(new_path);
@@ -93,52 +98,52 @@ bool BrushMeneger::openBrushLibrary(QString path)
 }
 
 
-void BrushMeneger::setSize(float value)
+void BrushManager::setSize(float value)
 {
     createdBrush.size = value;
 }
 
-void BrushMeneger::setOpacity(float value)
+void BrushManager::setOpacity(float value)
 {
     createdBrush.opacity = value;
 }
 
-void BrushMeneger::setBlur(float value)
+void BrushManager::setBlur(float value)
 {
     createdBrush.blur = value;
 }
 
-void BrushMeneger::setDisepers(float value)
+void BrushManager::setDisepers(float value)
 {
     createdBrush.dispers = value;
 }
 
-void BrushMeneger::setSizeMax(float value)
+void BrushManager::setSizeMax(float value)
 {
     createdBrush.delta_count = value;
 }
 
-void BrushMeneger::setCount(float value)
+void BrushManager::setCount(float value)
 {
     createdBrush.count = value;
 }
 
-void BrushMeneger::setSizeDelta(float value)
+void BrushManager::setSizeDelta(float value)
 {
     createdBrush.size_delta = value;
 }
 
-void BrushMeneger::setAngleDelta(float value)
+void BrushManager::setAngleDelta(float value)
 {
     createdBrush.angle_delta = value;
 }
 
-void BrushMeneger::setAffine(float value)
+void BrushManager::setAffine(float value)
 {
     createdBrush.afinn = value;
 }
 
-void BrushMeneger::setColor(QColor value)
+void BrushManager::setColor(QColor value)
 {
     //qDebug() << value;
     createdBrush.color_main = value;

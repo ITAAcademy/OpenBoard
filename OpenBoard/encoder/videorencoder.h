@@ -38,9 +38,9 @@ class AV_REncoder : public QThread
     unsigned char *data;
     bool bRun;
     bool bPause;
-    bool newImage = false;
     QString fileName;
 public:
+    bool newImage = false;
     explicit AV_REncoder(QObject *parent = 0);
     ~AV_REncoder();
 

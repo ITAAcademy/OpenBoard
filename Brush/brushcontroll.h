@@ -1,6 +1,5 @@
-#ifndef LISTCONTROLL_H
-#define LISTCONTROLL_H
-
+#ifndef BRUSHCONTROL_H
+#define BRUSHCONTROL_H
 #include <QObject>
 #include <QQuickImageProvider>
 #include <QDir>
@@ -15,7 +14,7 @@
 #include <QFont>
 #include "brushpainter.h"
 
-class BrushMeneger : public QObject, public QQuickImageProvider
+class BrushManager : public QObject, public QQuickImageProvider
 {
     Q_OBJECT
 
@@ -32,10 +31,11 @@ class BrushMeneger : public QObject, public QQuickImageProvider
  */
     int size;
 public:
-    explicit BrushMeneger(QObject *parent = 0);
-    ~BrushMeneger();
+    explicit BrushManager(QObject *parent = 0);
+    ~BrushManager();
     Q_INVOKABLE int getBrushCount();
     void show();
+    void hide();
 
     Q_INVOKABLE int getCurentBrush() const;
     Q_INVOKABLE void setCurentBrush(int value);

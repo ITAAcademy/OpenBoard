@@ -29,13 +29,15 @@ MainWindow::MainWindow(QWidget *parent) :
 //qDebug() <<directory;
 //    connect(&drawThread, SIGNAL(started()), this, SLOT(myfunction())); //cant have parameter sorry, when using connect
 
-    mpOGLWidget = new OGLWidget(this);
+    mpOGLWidget = new OGLWidget();
+    mpOGLWidget->setFixedSize(GLWIDGET_SIZE);
+    mpOGLWidget->move(pos().x() + width() + WINDOW_MARGING, pos().y());
     mpOGLWidget->hide();
    // mpOGLWidget->moveToThread(&drawThread);
     textEdit = new MyTextEdit(QColor("#000000"), QColor("#FF0000"), ui->centralWidget);
     textEdit->setObjectName(QStringLiteral("textEdit"));
     textEdit->setEnabled(true);
-     connect(textEdit,SIGNAL(setFocus()),this,SLOT(onCommandFocusLost()));
+    connect(textEdit,SIGNAL(setFocus()),this,SLOT(onCommandFocusLost()));
 
 
     commandTextEdit = new KeyloggerTE(textEdit, this);
@@ -188,15 +190,16 @@ MainWindow::MainWindow(QWidget *parent) :
        connect(a_record_to_file,SIGNAL(triggered()),this,  SLOT(a_record_to_file_triggered()));
        toolBar->addAction(a_record_to_file);
 
-      // toolBar->addAction(QPixmap(":/icons/12video icon.png").scaled(QSize(16, 16)), "Record in file", this, SLOT(on_actionRecord_to_file_triggered()));  //yvguj vgju ftu
        toolBar->addAction(QPixmap(":/icons/youtube_icon.png").scaled(QSize(16, 16)), "Send to YouTube", this, SLOT(on_action_youTube_triggered()));
        toolBar->addAction(QPixmap(":/icons/info.png").scaled(QSize(16, 16)), "About", this, SLOT(on_action_About_triggered()));
        toolBar->setMovable(false);
-//toolBar->setAllowedAreas(Qt::BottomToolBarArea);
 
-        addToolBar(Qt::TopToolBarArea, toolBar);
-     // toolBar->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
-      //  openFile("E:/Documento/Новый текстовый документ — копия.txt");
+       addToolBar(Qt::TopToolBarArea, toolBar);
+
+       drawElements.append(new DrawTextElm(mpOGLWidget));
+       ((DrawTextElm*)drawElements[0])->setLifeTime(6000);
+       ((DrawTextElm*)drawElements[0])->setRect(180,180,200,200);
+
 }
 
 MainWindow::~MainWindow()
@@ -229,17 +232,21 @@ void MainWindow::on_action_Show_triggered()
 /*
  * QML
 */
-    if(mpOGLWidget != NULL)
+    /*if(mpOGLWidget != NULL)
     {
         mpOGLWidget->close();
         delete mpOGLWidget;
         mpOGLWidget = NULL;
-    }
-    mpOGLWidget = new OGLWidget();
+    }*/
+    //mpOGLWidget = new OGLWidget();
+
     mpOGLWidget->show();
+    mpOGLWidget->pause(1);// wait for show window
     mpOGLWidget->setDelay(1000/lastInpuDelay);
     mpOGLWidget->setFixedSize(GLWIDGET_SIZE);
     mpOGLWidget->move(pos().x() + width() + WINDOW_MARGING, pos().y());
+
+    //timeLine.show();
     ui->action_Pause->setEnabled(true);
     ui->action_Play->setEnabled(true);
     ui->action_Stop->setEnabled(true);
@@ -251,8 +258,6 @@ void MainWindow::on_action_Show_triggered()
 
     mpOGLWidget->setTextFont(mSettings.getBoardFont());
     mpOGLWidget->setMainFillColor(mSettings.getBoardFontColor());
-
-
 /*
     mpGLWidget->setFixedSize(GLWIDGET_SIZE);
     mpGLWidget->move(pos().x() + width(), pos().y());
@@ -277,7 +282,7 @@ void MainWindow::on_action_Hide_triggered()
       //  mpOGLWidget->stopAnimated();
     on_action_Stop_triggered();
     mpOGLWidget->hide();
-    mpOGLWidget->close();
+  //  mpOGLWidget->close();*/
     // delete mpOGLWidget;
     ui->action_Pause->setEnabled(false);
     ui->action_Play->setEnabled(false);
@@ -928,9 +933,11 @@ void MainWindow::on_action_Play_triggered()
     textEdit->setEnabled(false);
 
     onTextChanged();
+    ((DrawTextElm*)drawElements[0])->setUnitList(mUnitList);
+    mpOGLWidget->setList(drawElements);
   //  qDebug() << mUnitList.size();
    // QString name = this->windowTitle();
-    play = true;
+    /*play = true;
     while( play &&  drawCounter < mUnitList.size() && mpOGLWidget != 0 && mpOGLWidget->getStatus() != OGLWidget::STOP)
     {
         //while(mpOGLWidget->getStatus() == OGLWidget::PAUSE)
@@ -951,6 +958,7 @@ void MainWindow::on_action_Play_triggered()
     }
     on_action_Stop_triggered();
     play = false;
+    */
 }
 
 void MainWindow::on_action_Stop_triggered()

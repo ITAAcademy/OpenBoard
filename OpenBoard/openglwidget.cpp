@@ -1,6 +1,7 @@
 
 #include "openglwidget.h"
 #include <qglfunctions.h>
+#include "drawSystem/drawsystem.h"
 /*
  *scroll
  *
@@ -97,11 +98,28 @@ void OGLWidget::drawTexture( int x, int y, int width, int height, GLuint texture
 
 }
 
+
+QList<DrawElement *> &OGLWidget::getList()
+{
+    if(!curentList)
+        return list_1;
+    else
+        return list_2;
+}
+
+void OGLWidget::setList(const QList<DrawElement *> &value)
+{
+    if(curentList)
+        list_1 = value;
+    else
+        list_2 = value;
+    curentList = !curentList;
+}
 OGLWidget::OGLWidget(QWidget *parent) :
     QGLWidget(parent)
 {
     //qRegisterMetaType<DrawData>("DrawData");
-   // engine()->rootContext()->setContextProperty(QLatin1String("forma"), this);
+    // engine()->rootContext()->setContextProperty(QLatin1String("forma"), this);
     m_encoder = new AV_REncoder(this);
     fMetrics = NULL;
 
@@ -321,7 +339,8 @@ void OGLWidget::destroy(bool destroyWindow, bool destroySubWindow){
 
 void OGLWidget::paintGL()
 {
-    m_encoder->setFrame(grabFrameBuffer());
+    if(m_encoder->newImage)
+        m_encoder->setFrame(grabFrameBuffer());
 //Розібратись чому GlClear очищує FrameBuffer
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // чистим буфер изображения и буфер глубины
@@ -356,7 +375,12 @@ renderMouseCursor();
 glBindFramebuffer(GL_FRAMEBUFFER,0);
 //WRITE TO SCREEN FROM HERE
 
- drawBuffer();
+//drawBuffer();
+    for(int i = 0; i < getList().size(); i++)
+    {
+      //  qDebug() << "draw   " << i;
+        getList()[i]->draw();
+    }
 
 
 }
@@ -414,6 +438,15 @@ void OGLWidget::mouseReleaseEvent(QMouseEvent *event)
     //int y = event->y();
     //drawImage();
     isMousePress=false;
+    if(event->button() == Qt::RightButton)
+    {
+        m_manager.show();
+    }
+    if(event->button() == Qt::LeftButton)
+    {
+        m_manager.hide();
+    }
+
 }
 
 void OGLWidget::mouseMoveEvent ( QMouseEvent * event ){
@@ -462,6 +495,7 @@ void OGLWidget::drawAnimated(bool record)
     bRecord = record;
     tickTimer.start();
     qDebug() << "Start play";
+    emit startSignal();
 }
 
 void OGLWidget::stopAnimated()
@@ -486,6 +520,7 @@ void OGLWidget::stopAnimated()
     bRecord = false;
  //   pause(200);
     qDebug() << "Stop play";
+    emit stopSignal();
 
 }
 
@@ -494,6 +529,7 @@ void OGLWidget::pauseAnimated()
     curStatus = PAUSE;
     qDebug() << "Pause play";
     m_encoder->pause();
+    emit pauseSignal();
     //m_recorder->pause();
 }
 bool OGLWidget::isRecord() const
@@ -502,7 +538,7 @@ bool OGLWidget::isRecord() const
 }
 
 
-void OGLWidget::clearCanvas()
+void OGLWidget::clearCanvas(int m_x, int m_y)
 {
     //QMetaObject::invokeMethod(canvas, "clear");
     symbolPositionList.clear();
@@ -510,8 +546,10 @@ void OGLWidget::clearCanvas()
     listStr.clear();
     indexRow = 0;
     indexW = 1;
-    x = marginLeft;
-    y = lineHeight + pt;
+    marginLeft = m_x;
+    marginTop = m_y;
+    x = m_x;
+    y = m_y + lineHeight + pt;
     scroll = 0;
     //listStr[0] = 0;
     indexInList = 1;
@@ -925,16 +963,15 @@ QPoint OGLWidget::drawWrapText(QString str)
     return res;
 }
 
-void OGLWidget::drawBuffer()
+void OGLWidget::drawTextBuffer( int m_x, int m_y, int m_width, int m_height)
 {
      busy = true;
-    framDelayTimer.restart();
     //if(!crossTextV2())
      //   return QPoint(0, 0);
     //int width = fMetrics->width(str)*1.125 ;//+ fMetrics->leftBearing(str.at(0)) + fMetrics->rightBearing(str.at(0));
     //qDebug() << "DRAW";
-    clearCanvas();
-    int maxDrawElm = (height()/(lineHeight + pt)) - 1;
+    clearCanvas(m_x, m_y);
+    int maxDrawElm = (m_height/(lineHeight + pt)) - 1;
     int CurRow = convertTextBoxToBufferIndex(cursorIndex).y();
     if(CurRow >= indexRowInList + maxDrawElm)
     {
@@ -1018,7 +1055,7 @@ void OGLWidget::drawBuffer()
     }
 
         y += lineHeight + pt;
-        x = marginLeft;
+        x = m_x;
        // localX=marginLeft;
         i++;
     }
@@ -1043,12 +1080,12 @@ void OGLWidget::insertToBuffer(const QChar ch)
     str.insert(convertedIndex.x(), ch);
     cross.insert(cursorIndex - convertedIndex.y(), 0);
 
-    testWrap(convertedIndex.y());
+  //  DrawTextElm(convertedIndex.y());
     listChars.append(ch);
 
     emit drawTextChanged();
 
-    pause(delay);
+   // pause(delay);
 
 }
 
@@ -1125,7 +1162,7 @@ void OGLWidget::deleteFromBuffer(int n)
         str.append(ch);
     else
 
-    testWrap(convertedIndex.y());
+    DrawTextElm(convertedIndex.y());
     listChars.append(ch);
 */
     emit drawTextChanged();
@@ -1295,8 +1332,8 @@ void OGLWidget::nextRow( int n, int Row, bool wrap)
     /* last work
     moveCursor(lastStr.length() + 1);
     */
-    if(wrap)
-        testWrap(i);
+   /* if(wrap)
+        testWrap(i);*/
     emit drawTextChanged();
 
 }
@@ -1354,6 +1391,7 @@ bool OGLWidget::crossTextDraw()
             y -= 0.25f * fMetrics->height();// first paid + midle
 
             x2 = marginLeft + fMetrics->width(stringList[conv.y()].left(conv.x() + 1));
+            y += marginTop;
             if( cross[i - 1] == -1)
             {
                 qDebug() << "FIRST";

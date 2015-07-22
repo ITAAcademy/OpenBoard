@@ -1,6 +1,6 @@
 #ifndef OPENGLWIDGET
 #define OPENGLWIDGET
-
+#pragma once
 #include <QObject>
 #include <QtCore>
 //#include <QtQml>
@@ -18,6 +18,9 @@
 #include <QtOpenGL>
 #include <QTimer>
 #include "encoder/videorencoder.h"
+#include "../Brush/brushcontroll.h"
+class DrawTextElm;
+class DrawElement;
 /*
 #include <QtAV/QtAV>
 #include <QtAVWidgets/QtAVWidgets>
@@ -89,7 +92,7 @@ public:
     /*
      * |Canvas control
      */
-    void clearCanvas();
+    void clearCanvas(int m_x = 0, int m_y = 0);
     void drawFigure (int x, int y, int width, int height, FigureType type, bool fill, QColor col, float size);
     void drawAnimationFigure (int x, int y, int width, int height, FigureType type, bool fill);
     void nextRow(int n   = -1, int Row = -1, bool wrap = true);
@@ -130,6 +133,9 @@ public:
     void initFrameBufferDepthBuffer();
     void renderMouseCursor();
     void initFrameBuffer();
+    QList<DrawElement *> &getList();
+    void setList(const QList<DrawElement *> &value);
+
 public slots:
     void drawAnimated( bool record );
     void stopAnimated();
@@ -151,7 +157,7 @@ public slots:
      */
     void insertToBuffer(const QChar ch);
     QPoint convertTextBoxToBufferIndex(int index, bool symbol = false);
-    void drawBuffer();
+    void drawTextBuffer(int m_x, int m_y, int m_width, int m_height);
     void moveCursor(int n = 1, bool withWrapShift = true);
     void clearBuffer();
     void testWrap(int kIndexOfRow);
@@ -165,6 +171,9 @@ public slots:
     int getRowFromTextBoxIndex(int index, bool symbol);
 signals:
     void drawTextChanged();
+    void pauseSignal();
+    void stopSignal();
+    void startSignal();
 private slots:
     bool crossText();
     bool crossTextV2();
@@ -242,7 +251,10 @@ private:
     int cursorIndex;
     QVector <QImage> imgList;
     QVector <GLuint> textureList;
-
+    QList<DrawElement *> list_1;
+    QList<DrawElement *> list_2;
+    bool curentList = false;
+    BrushManager m_manager;
 protected:
     void destroy(bool destroyWindow, bool destroySubWindow);
     void initializeGL(); // Метод для инициализирования opengl
