@@ -1,5 +1,6 @@
 #include "listcontroll.h"
 
+
 void ListControll::recountMaxTrackTime()
 {
     maxTrackTime = 0;
@@ -121,10 +122,16 @@ bool ListControll::removeLastTrack()
  void ListControll::reverseBlocks(int col, int init_pos, int end_pos)
  {
    Element temp = tracks[col].block[init_pos];
+   qDebug() << "1 reverseBlocks:\n" <<  "tracks[col].block[init_pos].time = " << temp.time <<
+   "\ntracks[col].block[end_pos].time = " <<  tracks[col].block[end_pos].time;
      //      testWidth[col][init_pos] ;
    tracks[col].block[init_pos] = tracks[col].block[end_pos];
   //   testWidth[col][init_pos] = testWidth[col][end_pos];
      tracks[col].block[end_pos] = temp;
+
+     qDebug() << "2 reverseBlocks:\n" <<
+    "tracks[col].block[init_pos].time = " << temp.time <<
+     "\ntracks[col].block[end_pos].time = " <<  tracks[col].block[end_pos].time ;
  }
 
 void ListControll::setBlocks(int col,const QList <Element> &value)
@@ -201,13 +208,39 @@ recountMaxTrackTime();
   //  view.connect(view.engine(), SIGNAL(quit()), &app, SLOT(quit()));
     new QQmlFileSelector(view.engine(), &view);\
     view.engine()->rootContext()->setContextProperty("timeControll", this);
+   view.engine()->rootContext()->setContextProperty("viewerWidget", &view);
     view.setSource(QUrl("qrc:/main.qml")); \
     view.setResizeMode(QQuickView::SizeRootObjectToView);
-view.setMinimumHeight(415);
+    view.setPersistentOpenGLContext(true);
+view.setMinimumHeight(235);
 view.setWidth(800);
+
 //view.setMaximumHeight(215);
 
 }
+
+ void ListControll::moveWindow(const int x,const int y)
+ {
+     QPoint pos = view.position();
+    QPoint posMouse = QCursor::pos();
+   // view.setPosition(  pos.x() + x , pos.y()  + y);
+    view.setPosition( posMouse-prevMousePosition);
+   // setPrevMousePosition(x,y);
+    qDebug()<< "tayo " << tayo++;
+   // qApp->processEvents(QEventLoop::AllEvents, 1000);
+ }
+
+ void  ListControll::setPrevMousePosition( const int x,const int y)
+ {
+     prevMousePosition.setX(x);
+     prevMousePosition.setY(y);
+ }
+
+
+ void  ListControll::setPrevMousePosition( const QPoint x)
+ {
+     prevMousePosition = x;
+ }
 
 ListControll::~ListControll()
 {
@@ -216,6 +249,7 @@ ListControll::~ListControll()
 
 void ListControll::show()
 {
+    view.setFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint | Qt::WindowTitleHint);
 
     if (QGuiApplication::platformName() == QLatin1String("qnx") || \
           QGuiApplication::platformName() == QLatin1String("eglfs")) {\

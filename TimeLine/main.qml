@@ -6,10 +6,41 @@ import QtGraphicalEffects 1.0
 import "Block" as ContentBlock
 import "ToolBar" as ContentToolBar
 
+Rectangle {
+    id: frama
+    color: "dimgrey"
+    width: 1000 ///main222.width + 20
+   height: 500 //main222.height + 20
+    //anchors.margins : 20
+z: -150
+MouseAreaForWindowDraging{
+anchors.left:   frama.left
+width: 20
+}
+MouseAreaForWindowDraging{
+ anchors.right:   frama.right
+ width: 20
+}
+MouseAreaForWindowDraging{
+ anchors.top:   frama.top
+ height: 20
+}
+MouseAreaForWindowDraging{
+ anchors.bottom:   frama.bottom
+ height : 20
+}
+
+
 Rectangle
 {
+anchors.fill: parent
+anchors.margins:  20
+radius: 10
+
     color: "gray"
     id:main222
+    width: childrenRect.width ///main222.width + 20
+   height: childrenRect.height //main222.height + 20
     property int clicked_blockId : -1
     property int clicked_blockX : -1
     property int clicked_blockY : -1
@@ -18,6 +49,12 @@ Rectangle
     property int maIsPressed: 0
     property int dropEntered: 0
     property Item p_item_col
+
+    property real scaling : 1
+    onScalingChanged: {
+        if (scaling <= 0.02)
+            scaling = 0.02
+    }
 
     function addTrack()     {
         console.log(" addTrack()")
@@ -107,6 +144,7 @@ Rectangle
             */
          ScrollView {
               id: scroll
+
               property int bla: flickableItem.contentX
               onBlaChanged:  {console.log("bla changed")
                time_scale.x = -bla + 30
@@ -131,61 +169,10 @@ Rectangle
                     }
                }*/
 
-             /* Image {
-                  width: 4000
-                  height: 4000
-                  source: "qrc:/E:/Users/Юрий/Desktop/--pNfOnpygs.png"
-              }*/
-            /*  Rectangle {
-               id: time_scale_value
-               property int mX: -30
-               property int mY: -30
-               x: mX
-               y: mY
-               z: 50
-               visible: false
-               width: 80
-               height: 30
-               color: "black"
-               border {color: "white"; width: 2}
-               Text {
-                   anchors.verticalCenter:  time_scale_value.verticalCenter
-                   anchors.horizontalCenter: time_scale_value.horizontalCenter
-                   text: scrollMA.mouseX + " ms"
-                    font { pixelSize: 14 }
-                    color: "white"
-               }
-               Timer {
-                   id: timer
-                      interval: 500; running: true; //repeat: true
-                      onTriggered: {
-                          time_scale_value.visible = true;
-                      }
-                  }
-               onMXChanged: {
-                   timer.restart();
-                   time_scale_value.visible = false;
-               }
-               onMYChanged: {
-                   timer.restart();
-                   time_scale_value.visible = false;
-               }
-              }
-              MouseArea {
-                  id: scrollMA
-                  anchors.fill : parent
-                  hoverEnabled: true
-                  z: 20
 
-
-                  onPositionChanged: {
-                     time_scale_value.mX = scrollMA.mouseX
-                       time_scale_value.mY = scrollMA.mouseY
-                  }
-
-              }*/
               Rectangle {
                     id: item_col
+                    scale: 1
                     property Item p_columns
                     property Item p_trackbar
                     width: childrenRect.width
@@ -224,7 +211,7 @@ Rectangle
                                      color: "gray"
                                      Row {
                                        id: blocks
-                                       height: 220
+                                     //  height: 220
                                        Repeater {
                                            id: repka
                                            property bool isDrag : false
@@ -239,10 +226,10 @@ Rectangle
                                            ContentBlock.Block{
                                                id: cool
                                                globalRep : repka
-                                               height: 200
+                                               height:  200 //* main222.scaling
                                                mIndex: index
                                                 colIndex:  bar_track.mIndex
-                                               width:  timeControll.getBlockTime(colIndex, mIndex)
+                                   width:  timeControll.getBlockTime(colIndex, mIndex) //* main222.scaling
 
                                                title: timeControll.getBlockKey(colIndex,mIndex)
 
@@ -255,7 +242,7 @@ Rectangle
                                                }*/
                                            }
                                            onModelChanged: {
-                                                  columns.width =  timeControll.getMaxTrackTime()
+                columns.width =  timeControll.getMaxTrackTime() //* main222.scaling
                                            }
 
                                        }
@@ -281,7 +268,7 @@ Rectangle
                                  }    //
                             }
                    onChildrenRectChanged:  {
-                   width =  timeControll.getMaxTrackTime()
+                   width =  timeControll.getMaxTrackTime()/// * main222.scaling
                    // console.log(" timeControll.getMaxTestWidth() = " +  width)
                    }
                     } /* rep_columns end */
@@ -297,10 +284,51 @@ Rectangle
 
        ////////////////////////tuta
         }
+    MouseArea {
+        id: for_scrollview_zoom
+        anchors.fill: parent
+        visible: false
+        onWheel: {
 
+            if (wheel.angleDelta.y > 0)
+            main222.scaling += 0.02
+            else if (wheel.angleDelta.y < 0)
+                main222.scaling -= 0.02
+ console.log("wheel.angleDelta.y = " + wheel.angleDelta.y + " main222.scaling=" + main222.scaling)
+
+   /*       item_col.scale +=  scaling
+            time_scale.scale  +=scaling
+
+            item_col.x+= scaling *300
+            time_scale.x += scaling *1030
+
+            toolbar_scroll.y += scaling *10// time_scale.height
+             item_col.y+= scaling *100
+
+*/
+
+
+/*
+            var temp = scaling * 1000
+           // item_col.width += temp//
+            item_col. childrenRect.width  += temp
+           // item_col.height += temp //
+            item_col. childrenRect.height += temp*/
+        }
     }
 
+ focus: true
+    Keys.onPressed: {
+        if (event.key === Qt.Key_Control) {
+            console.log("ctrl pressed") }
+     for_scrollview_zoom.visible = true;
+    }
+    Keys.onReleased: {
+         for_scrollview_zoom.visible = false;
+    }
+    }
 
+}
 
   /*
 

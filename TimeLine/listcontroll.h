@@ -10,6 +10,7 @@
 #include <QQmlContext>
 #include <QList>
 #include <QDebug>
+//#include <QDeclarativeContext>
 
 struct Element {
     QString key;
@@ -43,6 +44,8 @@ class ListControll : public QObject
     Q_OBJECT
  int maxTrackTime ;
     QQuickView view;
+    QPoint prevMousePosition;
+    int tayo = 0;
   // QVector< QList <QString> > test;
   //  QVector< QList <int> > testWidth;
 
@@ -69,8 +72,9 @@ Q_INVOKABLE   void setBlockKey(int col, int i, QString name);\
     Q_INVOKABLE int getBlockTime(int col, int i) const;
     Q_INVOKABLE int getTrackTime(int col) const;
     Q_INVOKABLE int getMaxTrackTime( ) const;
-
-
+  Q_INVOKABLE void moveWindow( const int x,const int y) ;
+   Q_INVOKABLE void  setPrevMousePosition( const int x,const int y) ;
+   Q_INVOKABLE void setPrevMousePosition( const QPoint x);
 
 
 signals:

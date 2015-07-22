@@ -25,6 +25,7 @@ z: 0
     onWidthChanged: {
         if (width < minWidth)
             width = minWidth
+        timeControll.setBlockTime(colIndex,mIndex,width)
     }
 
     ContextMenu {
@@ -60,8 +61,6 @@ onYChanged: y=0;
         enabled: !globalRep.isDrag
         hoverEnabled: true
         onMouseXChanged: {
-         //  root.time_scale_valueRecX = mouseX + root.x
-         //  root.time_scale_valueRecY = mouseY + root.y
             if (context_menu.visible === false)
             {
             if(globalRep.isDrag === false &&  mouseX > root.width * 0.9) //mouseX < root.width * 0.1 ||/
@@ -92,6 +91,7 @@ onYChanged: y=0;
             }
         }
         onPressed: {
+            console.log("onPressed: mIndex="+mIndex+" colIndex="+ colIndex + " time = " + timeControll.getBlockTime(colIndex,mIndex))
             if (mouse.button == Qt.RightButton)
             {
                 context_menu.visible = true
@@ -117,7 +117,7 @@ onYChanged: y=0;
                 main222.clicked_blockId = root.mIndex
                 main222.clicked_blockX = root.x
                 main222.clicked_blockY = root.y
-
+console.log("EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE")
                 root.z += 200
             }
 
@@ -198,7 +198,9 @@ console.log(" reles  root.z= " +   root.z)
         icon_coloroverlay.color = "#00000000"
          main222.dropEntered = 0
         if (main222.maIsPressed === 0)        {
-            timeControll.reverseBlocks(bar_track.index,root.mIndex,clicked_blockId)
+            timeControll.reverseBlocks(root.colIndex,root.mIndex,main222.clicked_blockId)
+            //timeControll.reverseBlocks(bar_track.index,root.mIndex,clicked_blockId)
+            //console.log("clicked_blockId = " + clicked_blockId)
            /* repka.itemAt(clicked_blockId).x = root.x
             repka.itemAt(clicked_blockId).y = root.y
             root.x = clicked_blockX
