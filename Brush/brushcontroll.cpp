@@ -12,6 +12,17 @@ void BrushManager::setCurentBrush(int value)
     curentBrush = value;
     createdBrush.img = imageStack[value];
 }
+
+Brush BrushManager::getCreatedBrush()
+{
+
+    return createdBrush;
+}
+
+void BrushManager::setCreatedBrush(const Brush &value)
+{
+    createdBrush = value;
+}
 BrushManager::BrushManager(QObject *parent) : QObject(parent), QQuickImageProvider(QQuickImageProvider::Image)
 {
     QTime midnight(0,0,0);
@@ -64,6 +75,11 @@ void BrushManager::show()
 void BrushManager::hide()
 {
     view.hide();
+}
+
+void BrushManager::setPosition(QPoint pos)
+{
+    view.setPosition(pos);
 }
 
 QImage BrushManager::requestImage(const QString &id, QSize *size, const QSize& requestedSize)
@@ -147,4 +163,56 @@ void BrushManager::setColor(QColor value)
 {
     //qDebug() << value;
     createdBrush.color_main = value;
+    //createdBrush.img = BrushPainter::applyColor(createdBrush);
 }
+
+float BrushManager::getSize()
+{
+    return createdBrush.size;
+}
+
+float BrushManager::getOpacity()
+{
+    return createdBrush.opacity;
+}
+
+float BrushManager::getBlur()
+{
+    return createdBrush.blur;
+}
+
+float BrushManager::getDisepers()
+{
+    return createdBrush.dispers;
+}
+
+float BrushManager::getSizeMax()
+{
+    return createdBrush.delta_count;
+}
+
+float BrushManager::getCount()
+{
+return createdBrush.count;
+}
+
+float BrushManager::getSizeDelta()
+{
+return createdBrush.size_delta;
+}
+
+float BrushManager::getAngleDelta()
+{
+return createdBrush.angle_delta;
+}
+
+float BrushManager::getAffine()
+{
+return createdBrush.afinn;
+}
+
+QColor BrushManager::getColor()
+{
+return createdBrush.color_main;
+}
+

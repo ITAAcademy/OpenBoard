@@ -33,7 +33,7 @@ class BrushPainter : public QObject
 public:
     explicit BrushPainter(QObject *parent);
     ~BrushPainter();
-
+    static const QImage& applyColor(Brush brush);
     static QImage drawBrush(Brush &brush, QSize size = QSize(800,230));
     static QImage applyEffectToImage(QImage src, QGraphicsEffect *effect, int extent = 0);
     static QImage applyMask(QImage src, QImage mask);

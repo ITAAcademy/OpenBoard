@@ -36,6 +36,7 @@ public:
     Q_INVOKABLE int getBrushCount();
     void show();
     void hide();
+    void setPosition(QPoint pos);
 
     Q_INVOKABLE int getCurentBrush() const;
     Q_INVOKABLE void setCurentBrush(int value);
@@ -55,6 +56,21 @@ public:
     Q_INVOKABLE void setAngleDelta(float value);
     Q_INVOKABLE void setAffine(float value);
     Q_INVOKABLE void setColor(QColor value);
+
+    Q_INVOKABLE float getSize();
+    Q_INVOKABLE float getOpacity();
+    Q_INVOKABLE float getBlur();
+    Q_INVOKABLE float getDisepers();
+    Q_INVOKABLE float getSizeMax();
+    Q_INVOKABLE float getCount();
+    Q_INVOKABLE float getSizeDelta();
+    Q_INVOKABLE float getAngleDelta();
+    Q_INVOKABLE float getAffine();
+    Q_INVOKABLE QColor getColor();
+
+    Brush getCreatedBrush();
+    void setCreatedBrush(const Brush &value);
+
 signals:
 
 public slots:

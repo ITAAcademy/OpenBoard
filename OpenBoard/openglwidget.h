@@ -137,6 +137,9 @@ public:
     QList<DrawElement *> &getList();
     void setList(const QList<DrawElement *> &value);
 
+    bool getIsBrushWindowOpened() const;
+    void setIsBrushWindowOpened(bool value);
+
 public slots:
     void drawAnimated( bool record );
     void stopAnimated();
@@ -188,6 +191,7 @@ private:
     unsigned int fbo_texture; // The texture object to write our frame buffer object to
     QString drawText;
     bool bRecord;
+    bool isBrushWindowOpened=false;
     void generateFrames();
     int loadTexture(QImage img, int index = -1, bool modify = false);
     int loadTextureFromFile(QString path, int index = -1); // return index for reload + texture indefication

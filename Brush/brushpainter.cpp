@@ -10,6 +10,15 @@ BrushPainter::~BrushPainter()
 
 }
 
+const QImage &BrushPainter::applyColor(Brush brush)
+{
+    QImage img;
+    QGraphicsColorizeEffect *effect = new QGraphicsColorizeEffect();
+    effect->setColor(brush.color_main);
+    img = applyEffectToImage(brush.img,effect);
+    return img;
+}
+
 QImage BrushPainter::drawBrush(Brush &brush, QSize size)
 {
     QImage img(size, QImage::Format_RGBA8888);
