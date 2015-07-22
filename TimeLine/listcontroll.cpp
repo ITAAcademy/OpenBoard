@@ -49,9 +49,9 @@ void ListControll::addNewBlock(int col, QString str)
 {
     Element temp;
     temp.key = str;
-    temp.time = 200;
-    tracks[col].block.append(Element(str,200));
-    tracks[col].time += 200;
+    temp.time = def_min_block_width;
+    tracks[col].block.append(Element(str,def_min_block_width));
+    tracks[col].time += def_min_block_width;
    // testWidth[col].append(200);
     //testColumnWidth[col]+=200;
   //  qDebug() << "SIZE   " << test.size();
@@ -63,22 +63,15 @@ void ListControll::addNewBlock(int col, QString str)
 void ListControll::addNewTrack( )
 {
     QList <Element>  temp;
-        temp.append(Element("1",200));
-       temp.append(Element("2",200));
-       temp.append(Element("3",200));
-       Track trak(600,temp);
+        temp.append(Element("1",def_min_block_width));
+       temp.append(Element("2",def_min_block_width));
+       temp.append(Element("3",def_min_block_width));
+       int  temp_traclwidth =   def_min_block_width*temp.size();
+       Track trak(temp_traclwidth,temp);
         tracks.append(trak);
 
-   /* Element temp("1",200);
-         tracks[0].block.append(temp);
-         temp.key = "2";
-          tracks[0].block.append(temp);
-          temp.key = "3";
-          tracks[0].block.append(temp);
-*/
-     //   test.append(temp);
-   if (maxTrackTime < 600)
-       maxTrackTime = 600;
+   if (maxTrackTime < temp_traclwidth)
+       maxTrackTime = temp_traclwidth; //1234
 }
 
 bool ListControll::removeLastBlock(int col)
@@ -233,8 +226,6 @@ view.setWidth(800);
     QPoint posMouse = QCursor::pos();
    // view.setPosition(  pos.x() + x , pos.y()  + y);
     view.setPosition( posMouse-prevMousePosition);
-   // setPrevMousePosition(x,y);
-    qDebug()<< "tayo " << tayo++;
    // qApp->processEvents(QEventLoop::AllEvents, 1000);
  }
 
@@ -278,3 +269,38 @@ void ListControll::show()
 }
 
 
+ void ListControll::setScalePointerPos( int x)
+ {
+     scale_pointer_pos = x + 10;
+    // qDebug() << "RRRRRRRRRRRRRRR =" << scale_pointer_pos;
+ }
+
+ int ListControll::getScalePointerPos( )
+ {
+     return scale_pointer_pos;
+ }
+
+ QList <Element> ListControll::getPointedBlocks( )
+ {
+     return pointed_block;
+ }
+
+ void ListControll::calcPointedBlocks( )
+ {
+     pointed_block.clear();
+     for (int i=0; i<tracks.size(); i++)
+     {
+         int blockXstart = 0;
+         for (int y=0; y<tracks[i].block.size(); y++ )
+         {
+             int blockXend =blockXstart + tracks[i].block[y].time;
+             if (scale_pointer_pos <= blockXend)
+             {
+                 pointed_block.append(tracks[i].block[y]);
+                 //qDebug() << "POP: " << i<< " "<<y;
+             break;
+             }
+              blockXstart = blockXend;
+         }
+     }
+ }

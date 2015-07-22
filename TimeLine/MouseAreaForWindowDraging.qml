@@ -5,6 +5,8 @@ MouseArea
     z: -149
     anchors.fill: parent
     property bool isMoved :false
+     height : 5
+     width: 5
     onPressed: {
      isMoved =true
         timeControll.setPrevMousePosition(mouseX, mouseY)

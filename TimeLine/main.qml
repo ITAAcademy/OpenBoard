@@ -57,6 +57,7 @@ radius: 10
    property  bool needToLightSelected : false
   property Repeater p_rep_columns
     property Item p_item_col
+  property Item  p_trackbar
 
     property real scaling : 1
     onScalingChanged: {
@@ -118,15 +119,19 @@ radius: 10
                 color: "white"
                 }
                 Text {
-                    text: "11111" // time_scale.division * index + " ms"
-                    x: 2
-                    y: 0// time_scale.ud_down == true ? 0: hor_line.x
-                    width:  time_scale.division
-                    height: time_scale.height/2
-                     font { pixelSize: 10 }
-                     Component.onCompleted: {
-                         time_scale.ud_down = !time_scale.ud_down
-                     }
+                text:  time_scale.division * index + " ms"
+
+                y:  time_scale.ud_down === true ? 0: hor_line.y
+                width:  time_scale.division
+                height: time_scale.height/2
+                 color: "white"
+                 anchors.right: ver_line.left
+
+
+                 //font { pixelSize: 10 }
+                 Component.onCompleted: {
+                     time_scale.ud_down = !time_scale.ud_down
+                 }
                 }
 
                 Component.onCompleted: {
@@ -136,6 +141,40 @@ radius: 10
             }
         }
         }
+        Image{
+            id: scale_pointer
+            source: "qrc:/iphone_toolbar_icons/arrow.png"
+            height: time_scale.height
+            width: height
+            scale: 1.5
+            x: 50
+            onYChanged: y = 0
+            onXChanged: {
+                var half_scale_pointer_width = -scale_pointer.width/2
+                if (x<half_scale_pointer_width)
+                   x = half_scale_pointer_width
+                else
+                {
+                    var temp = scroll.x + scroll.width - main222.p_trackbar.width*1.4
+                    if (x> temp)
+                    x = temp
+                }
+                timeControll.setScalePointerPos(x)
+                timeControll.calcPointedBlocks()
+            }
+            Rectangle{
+                height:  frama.height - 190
+                width: 1
+                color: "#6E0000"
+                x: scale_pointer.width/2
+
+            }
+            MouseArea {
+                anchors.fill: parent
+                drag.target : scale_pointer
+            }
+        }
+
 
     }
 
@@ -146,10 +185,6 @@ radius: 10
  y : time_scale.height
 
 
-      /*  ContentToolBar.MyScrollView{
-            id: scroll
-            width: toolbar_scroll.width - tollbar.width
-            */
          ScrollView {
               id: scroll
 
@@ -164,19 +199,6 @@ radius: 10
               verticalScrollBarPolicy  :Qt.ScrollBarAlwaysOn
                 clip: true
                 __wheelAreaScrollSpeed: 50
-
-               /* MouseArea {
-                    id: scrollMA
-                    hoverEnabled: true
-                  //  anchors.fill: item_col
-                    width: scroll.width
-                    height: scroll.height
-                    //Flickable: false
-                    onWheel: { console.log("scrollMA onWheel")
-           //          scroll.
-                    }
-               }*/
-
 
               Rectangle {
                     id: item_col
@@ -228,7 +250,7 @@ radius: 10
                                      id:main_root
                                      x: 30
                                      width: 4000
-                                     height: 200
+                                     height: 100
                                      color: "gray"
                                      Row {
                                        id: blocks
@@ -251,7 +273,7 @@ radius: 10
                                            ContentBlock.Block{
                                                id: cool
                                                globalRep : repka
-                                               height:  200 //* main222.scaling
+                                               height:  100 //* main222.scaling
                                                mIndex: index
                                                 colIndex:  bar_track.mIndex
                                    width:  timeControll.getBlockTime(colIndex, mIndex) //* main222.scaling
@@ -280,13 +302,11 @@ radius: 10
                                            //item_col.main_root = main_root
                                        }
                                      }
-                                     Component.onCompleted: {
-                                     /*    main_root.width = 4000// blocks.childrenRect.width
-                                         main_root.height = 200// blocks.childrenRect.height*/
-                                     }
+
                                           }
                                      Component.onCompleted: {
                                     trackbar.globalRep = repka
+                                         main222.p_trackbar = trackbar
                                           time_scale.x = trackbar.width + trackbar.x
                                      }
                                  }
