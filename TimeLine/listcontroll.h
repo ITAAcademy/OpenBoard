@@ -70,6 +70,8 @@ public:
     ~ListControll();
 
     void show();
+    void close();
+    void hide();
     Q_INVOKABLE int getTrackSize(int col) const;
     Q_INVOKABLE QString getBlockKey(int col, int i) const;
     Q_INVOKABLE void addNewBlock(int col, QString str );

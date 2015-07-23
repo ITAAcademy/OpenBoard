@@ -15,7 +15,6 @@ Rectangle{
     property string colorKey : "green"
     property int minWidth : 20
     property ColorOverlay p_color_overlay
-    property int mX : x
 
  //   property int time_scale_valueRecX
    // property int time_scale_valueRecY
@@ -33,11 +32,9 @@ z: 0
          //timeControll.setBlockTime(mainwindow.columnIndex,mainwindow.blockIndex,block_width_value.value)
     }
     onXChanged: {
-        root.mX = x
+        main222.mX = x
     }
-    onMXChanged: {
-        console.log("333  onMXChanged " +  root.mX)
-    }
+
 
     ContextMenu {
         id: context_menu

@@ -268,6 +268,17 @@ void ListControll::show()
     }\
 }
 
+void ListControll::close()
+{
+        view.close();
+}
+
+void ListControll::hide()
+{
+        view.hide();
+}
+
+
 
  void ListControll::setScalePointerPos( int x)
  {
