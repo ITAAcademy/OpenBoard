@@ -14,22 +14,33 @@
 
 struct Element {
     QString key;
-    int time;
-    Element( QString key, int time) {
+    int lifeTime;
+
+    QImage icon;
+    int startDrawTime;
+    int x, y, z, width, height; //on canva
+
+    Element( QString key, int time,int x = 0, int y = 0, int z = 0, int width = 100, int height = 100) {
         this->key = key;
-         this->time = time;
+         this->lifeTime = time;
+        this->x=x;
+         this->y = y;
+         this->z = z;
+         this->width = width;
+         this->height = height;
+
     }
     Element() {
         this->key = "key";
-         this->time = 100;
+         this->lifeTime = 100;
+         x= y= z=0;  width=height=100;
     }
 };
 
 struct Track {
     int time;
     QList <Element> block;
-    Track() {
-    };
+    Track() { };
     Track( int time ,QList <Element> block ) {
         this-> time = time;
         this-> block = block;

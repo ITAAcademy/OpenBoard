@@ -9,11 +9,15 @@ import "ToolBar" as ContentToolBar
 Rectangle {
     id: frama
     color: "dimgrey"
-    width: 1000 ///main222.width + 20
-   height: 500 //main222.height + 20
+  //  width: 1000 ///main222.width + 20
+  // height: 500 //main222.height + 20
     //anchors.margins : 20
 z: -150
 radius: 10
+MouseAreaForWindowDraging{
+anchors.fill:   frama
+}
+/*
 MouseAreaForWindowDraging{
 anchors.left:   frama.left
 width: 20
@@ -29,7 +33,7 @@ MouseAreaForWindowDraging{
 MouseAreaForWindowDraging{
  anchors.bottom:   frama.bottom
  height : 20
-}
+}*/
 property Rectangle p_main222
 
 Rectangle
@@ -58,6 +62,7 @@ radius: 10
   property Repeater p_rep_columns
     property Item p_item_col
   property Item  p_trackbar
+   property Item  p_scale_pointer
 
     property real scaling : 1
     onScalingChanged: {
@@ -148,6 +153,10 @@ radius: 10
             width: height
             scale: 1.5
             x: 50
+            Component.onCompleted: {
+                main222.p_scale_pointer = scale_pointer
+            }
+
             onYChanged: y = 0
             onXChanged: {
                 var half_scale_pointer_width = -scale_pointer.width/2
@@ -236,8 +245,18 @@ radius: 10
                                }
                                function setColorize(indexa, color)
                                {
-                                        repka.itemAt(indexa).p_color_overlay.color = color
+                                       repka.itemAt(indexa).p_color_overlay.color = color
+                                    console.log("GGGGGGGGGG " + repka.itemAt(indexa).mX)
+                                  // console.log("GGGGGGGGGG " + repka.itemAt(indexa).x)
+                                   //main222.p_scale_pointer.x = repka.itemAt(indexa).x
                                }
+                               function getBlockX (indexa)
+                               {
+
+                                     return repka.itemAt(indexa).mX
+                               }
+
+
                                property int mIndex: index
                                  ContentToolBar.TrackToolBar {
                                         id: trackbar
@@ -266,8 +285,13 @@ radius: 10
                                                model = model - 1;
                                                     model =  timeControll.getTrackSize(bar_track.mIndex)
                                                if (main222.needToLightSelected)
+                                               {
+
                    rep_columns.itemAt(main222.selectedBlockCol).setColorize(main222.selectedBlockIndex,"#8000FF00")
-                                           main222.needToLightSelected = false
+                     main222.p_scale_pointer.x = rep_columns.itemAt(main222.selectedBlockCol).getBlockX(2)//main222.selectedBlockIndex)
+
+                                               }
+                                                   main222.needToLightSelected = false
                                            }
                                            delegate:
                                            ContentBlock.Block{

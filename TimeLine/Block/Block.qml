@@ -15,6 +15,8 @@ Rectangle{
     property string colorKey : "green"
     property int minWidth : 20
     property ColorOverlay p_color_overlay
+    property int mX : x
+
  //   property int time_scale_valueRecX
    // property int time_scale_valueRecY
     /*radius: 0
@@ -30,6 +32,12 @@ z: 0
         //console.log("333 timeControll.setBlockTime " + colIndex + " " + mIndex + " " + width)
          //timeControll.setBlockTime(mainwindow.columnIndex,mainwindow.blockIndex,block_width_value.value)
     }
+    onXChanged: {
+        root.mX = x
+    }
+    onMXChanged: {
+        console.log("333  onMXChanged " +  root.mX)
+    }
 
     ContextMenu {
         id: context_menu
@@ -44,6 +52,8 @@ z: 0
                 x = root.width - width;
             else if (x < 0 )
                 x = 0;
+
+
         }
         globalRep: root.globalRep
         minBlockWidth : root.minWidth
@@ -95,6 +105,7 @@ onYChanged: y=0;
         }
         onPressed: {
          timeControll.setSelectedBlock(colIndex,mIndex);
+            main222.p_scale_pointer.x = mouseX + root.x
 main222.needToLightSelected = true
             for (var y=0; y< rep_columns.model; y++)
                  rep_columns.itemAt(y).abortColorize()
@@ -136,6 +147,7 @@ main222.needToLightSelected = true
         }
         }
         onReleased: {
+           // main222.p_scale_pointer.x = mouseX + root.x
             if (context_menu.visible === false)
             {
             console.log("RELEASE");
