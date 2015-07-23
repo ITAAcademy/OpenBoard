@@ -376,8 +376,8 @@ void OGLWidget::initializeGL()
    loadTexture(m_manager.getCreatedBrush().color_img, TEXTURE_INDEX_BRUSH);
     //loadTextureFromFile(":/ThirdPart/images/brush.png");
     initFrameBuffer(); // Create our frame buffer object
-    list_1.append(GenerationDrawElement("kaka.text", this, 0));
-    list_1.append(GenerationDrawElement("brush.png", this, 0));
+  /*  list_1.append(GenerationDrawElement("kaka.text", this, 0));
+    list_1.append(GenerationDrawElement("brush.png", this, 0));*/
 
 }
 
@@ -430,8 +430,8 @@ drawTexture(0, 0, wax, way, textureList[0]);
 renderMouseCursor();
 glBindFramebuffer(GL_FRAMEBUFFER,0);
 //WRITE TO SCREEN FROM HERE
+//drawTextBuffer(10,10,400,400);
 
-//drawBuffer();
     for(int i = 0; i < getList().size(); i++)
     {
       //  qDebug() << "draw   " << i;
@@ -1196,6 +1196,30 @@ void OGLWidget::deleteFromBuffer(int n)
     int mustDell = qAbs(n);
     int crossCursor = cursorIndex - convertTextBoxToBufferIndex(cursorIndex).y();
     int i = n;
+    int deletePositionBegin = cursorIndex;
+    QStack<int> colorsToDelete;
+    for (int numOfColor = 0; numOfColor < colors.length();numOfColor++){
+        ColorMarker& colorMarker = colors[numOfColor];
+        bool isLast = numOfColor==colors.length()-1;
+        int& startIndex = colorMarker.startIndex;
+        if (deletePositionBegin+n<startIndex)startIndex-=n-deletePositionBegin;
+        else if (!isLast)
+        {
+            int nextColorStartIndex = colors[numOfColor+1].startIndex;
+            if ( deletePositionBegin+n < nextColorStartIndex )
+            {
+                startIndex -=n-deletePositionBegin;
+            }
+            else colorsToDelete.push(numOfColor);
+        }
+       // {
+       // colorsToDelete.push(startIndex);
+       // }
+    }
+    while (!colorsToDelete.isEmpty()){
+        colors.removeAt(colorsToDelete.pop());
+    }
+
     while( i != 0)
     {
         cross.removeAt(crossCursor  + i);

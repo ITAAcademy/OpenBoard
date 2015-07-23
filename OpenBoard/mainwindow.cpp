@@ -196,9 +196,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
        addToolBar(Qt::TopToolBarArea, toolBar);
 
-       /*drawElements.append(new DrawTextElm(mpOGLWidget));
+       drawElements.append(new DrawTextElm(mpOGLWidget));
        ((DrawTextElm*)drawElements[0])->setLifeTime(6000);
-       ((DrawTextElm*)drawElements[0])->setRect(180,180,200,200);*/
+       ((DrawTextElm*)drawElements[0])->setRect(180,180,200,200);
 
 /*
  //load new style
@@ -944,13 +944,12 @@ void MainWindow::on_action_Play_triggered()
     textEdit->setEnabled(false);
 
     onTextChanged();
-  /*  ((DrawTextElm*)drawElements[0])->setUnitList(mUnitList);
+    ((DrawTextElm*)drawElements[0])->setUnitList(mUnitList);
     ((DrawTextElm*)drawElements[0])->setUnParsestring(textEdit->toPlainText());
-    QImage t(":/ThirdPart/images/brush.png");
-    ((DrawTextElm*)drawElements[0])->setIcon(t);
-    drawElements[0]->save("kaka");*/
+
+    //drawElements[0]->save("kaka");
  //   drawElements[0]->load("kaka");
-   // mpOGLWidget->setList(drawElements);
+    mpOGLWidget->setList(drawElements);
   //  qDebug() << mUnitList.size();
    // QString name = this->windowTitle();
     /*play = true;
