@@ -23,7 +23,8 @@ SOURCES += main.cpp\
     drawSystem/drawelement.cpp \
     drawSystem/drawtext.cpp \
     ../Brush/brushcontroll.cpp \
-    ../Brush/brushpainter.cpp
+    ../Brush/brushpainter.cpp \
+    drawSystem/drawimage.cpp
 
 
 HEADERS  += mainwindow.h \
@@ -44,7 +45,8 @@ HEADERS  += mainwindow.h \
     drawSystem/drawtext.h \
     drawSystem/drawsystem.h \
     ../Brush/brushcontroll.h \
-    ../Brush/brushpainter.h
+    ../Brush/brushpainter.h \
+    drawSystem/drawimage.h
 
 FORMS    += mainwindow.ui \
     youtube/logindialog.ui

@@ -33,6 +33,7 @@ int OGLWidget::loadTexture(QImage img, int index, bool modify){
           qDebug()<<"index:"<<index;
        glDeleteTextures(1,&textureList[index]);
      }
+
        glGenTextures(1, &texture); // Obtain an id for the texture
        glBindTexture(GL_TEXTURE_2D, texture); // Set as the current texture
  qDebug(" after  glBindTexture(GL_TEXTURE_2D, texture);");
@@ -56,13 +57,13 @@ qDebug("before int realIndex = index; ");
        if(index >= 0 && index < imgList.length())
        {
            qDebug(" if(index >= 0 && index < imgList.length())");
-           realIndex = imgList.length();
            imgList.insert(index, img);
            textureList.insert(index, texture);
        }
        else
        {
             qDebug("else");
+           realIndex = imgList.length();
            imgList.append(img);
            textureList.append(texture);
        }
@@ -105,6 +106,10 @@ void OGLWidget::drawTexture( int x, int y, int width, int height, GLuint texture
     glEnd();
 
 
+}
+void OGLWidget::drawTexture(int x, int y, int width, int height, int index)
+{
+    drawTexture(x, y, width, height, textureList[index]);
 }
 
 
@@ -425,7 +430,8 @@ glBindFramebuffer(GL_FRAMEBUFFER,0);
     for(int i = 0; i < getList().size(); i++)
     {
       //  qDebug() << "draw   " << i;
-        getList()[i]->draw();
+        if(getList()[i] != NULL)
+            getList()[i]->draw();
     }
 
 
@@ -464,6 +470,7 @@ void OGLWidget::closeEvent(QCloseEvent *event)
       delete fMetrics;
     pause(500);
     isClose = true;
+    m_manager.close();
 }
 
 void OGLWidget::mousePressEvent(QMouseEvent *event)
@@ -767,6 +774,8 @@ void OGLWidget::setCursorIndex(int value)
 {
     cursorIndex = value;
 }
+
+
 
 
 bool OGLWidget::getBusy() const
@@ -1246,7 +1255,7 @@ void OGLWidget::deleteFromBuffer(int n)
     listChars.append(ch);
 */
     emit drawTextChanged();
-    pause(delay);
+   // pause(delay);
 }
 
 void OGLWidget::moveCursor(int n, bool withWrapShift)

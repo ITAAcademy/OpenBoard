@@ -16,9 +16,15 @@ public:
     void draw();
     void setLifeTime(int value);
     QList<Unit *> unitList() const;
+    QString unParsestring;
     void setUnitList(const QList<Unit *> &unitList);
+    QString getUnParsestring() const;
+    void setUnParsestring(const QString &value);
+
 private:
     void setTickTime(int value);
+    bool load_add(QDataStream &stream);
+    bool save_add(QDataStream &stream);
 };
 
 #endif // DrawTextElm_H

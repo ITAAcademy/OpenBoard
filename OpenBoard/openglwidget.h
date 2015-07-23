@@ -127,7 +127,7 @@ public:
     int getCursorIndex() const;
     void setCursorIndex(int value);
 
-
+    void drawTexture(int x, int y, int width, int height, int index);
     void drawTexture(int x, int y, int width, int height, GLuint texture);
     void update();
     void initFrameBufferTexture();
@@ -167,6 +167,9 @@ public slots:
     void testWrap(int kIndexOfRow);
     void deleteFromBuffer(int n);
     bool crossTextDraw();
+    int loadTexture(QImage img, int index = -1, bool modify = false);
+    int loadTextureFromFile(QString path, int index = -1); // return index for reload + texture indefication
+    bool reloadTexture( int index);
     /*
      *
      *
@@ -193,9 +196,6 @@ private:
     bool bRecord;
     bool isBrushWindowOpened=false;
     void generateFrames();
-    int loadTexture(QImage img, int index = -1, bool modify = false);
-    int loadTextureFromFile(QString path, int index = -1); // return index for reload + texture indefication
-    bool reloadTexture( int index);
     StatusDraw curStatus; // 0 - stop; 1 - play; -1 - pause
     QThread drawThread;
     AV_REncoder *m_encoder = NULL;

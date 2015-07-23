@@ -2,7 +2,7 @@
 
 DrawTextElm::DrawTextElm(OGLWidget *drawWidget, QObject *parent) : DrawElement(drawWidget, parent)
 {
-
+    setType("text");
 }
 
 DrawTextElm::~DrawTextElm()
@@ -31,14 +31,47 @@ QList<Unit *> DrawTextElm::unitList() const
 {
     return mUnitList;
 }
+QString DrawTextElm::getUnParsestring() const
+{
+    return unParsestring;
+}
+
+void DrawTextElm::setUnParsestring(const QString &value)
+{
+    unParsestring = value;
+}
+
 
 void DrawTextElm::setUnitList(const QList<Unit *> &unitList)
 {
     mUnitList = unitList;
-    tickTime = lifeTime/unitList.size();
+    if(unitList.size() != 0)
+        tickTime = lifeTime/unitList.size();
 }
 
 void DrawTextElm::setTickTime(int value)
 {
 
+}
+
+bool DrawTextElm::load_add(QDataStream &stream)
+{
+    stream >> unParsestring;
+    /*int sizeOfString = 0;
+    stream >> sizeOfString;
+    QByteArray data;
+    data.resize(sizeOfString);
+    qDebug() << "OUT " << sizeOfString;
+    stream.readRawData(data.data(), sizeOfString);
+    unParsestring = data;
+    qDebug() << data;*/
+    Parser::ParsingLine(mUnitList, unParsestring);
+}
+
+bool DrawTextElm::save_add(QDataStream &stream)
+{
+ /*   stream << unParsestring.length();
+    qDebug() << "IN " << unParsestring.length();
+    stream.writeRawData(unParsestring.toLatin1().data(), unParsestring.length());*/
+    stream << unParsestring;
 }

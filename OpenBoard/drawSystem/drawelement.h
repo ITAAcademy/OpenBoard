@@ -26,14 +26,28 @@ protected:
     int keyCouter;
     QTimer lifeTimer;
     QElapsedTimer tickTimer;
-
+    char type[50];
     OGLWidget *pDrawWidget;
     bool bPause;
 public:
     explicit DrawElement( OGLWidget *drawWidget, QObject *parent = 0);
-    ~DrawElement();
+    virtual ~DrawElement();
 
     virtual void draw();
+    bool load(QString path);
+    bool save(QString path);
+
+
+
+
+
+
+
+
+
+
+
+
 
     void setPosition(QPoint pos);
     void setPosition( int x, int y);
@@ -43,7 +57,6 @@ public:
 
     void setRect (QRect rect);
     void setRect ( int x, int y, int width, int height);
-
 
     int getX() const;
     void setX(int value);
@@ -66,6 +79,9 @@ public:
     bool getPause() const;
     void setPause(bool value);
 
+    void setType( const char name[]);
+    QString getType();
+
     virtual int getTickTime() const;
     virtual void setTickTime(int value);
 
@@ -73,10 +89,19 @@ signals:
 
 public slots:
 
+
 private slots:
     void pause();
     void stop();
     void start();
+
+    bool save_image(QDataStream &stream, QImage img);
+    QImage load_image(QDataStream &stream);
+
+protected:
+    virtual bool load_add(QDataStream &stream);
+    virtual bool save_add(QDataStream &stream);
+
 
 };
 

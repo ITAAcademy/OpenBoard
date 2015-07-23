@@ -36,6 +36,7 @@ public:
     Q_INVOKABLE int getBrushCount();
     void show();
     void hide();
+    void close();
     void setPosition(QPoint pos);
 
     Q_INVOKABLE int getCurentBrush() const;

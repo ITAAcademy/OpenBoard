@@ -142,6 +142,7 @@ QMessageBox messAbout;
     bool play = false;
 
 
+
 };
 
 #endif // MAINWINDOW_H

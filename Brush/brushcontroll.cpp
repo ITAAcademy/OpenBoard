@@ -78,6 +78,11 @@ void BrushManager::hide()
     view.hide();
 }
 
+void BrushManager::close()
+{
+    view.close();
+}
+
 void BrushManager::setPosition(QPoint pos)
 {
     view.setPosition(pos);

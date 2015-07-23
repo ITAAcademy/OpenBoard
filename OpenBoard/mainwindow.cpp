@@ -196,9 +196,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
        addToolBar(Qt::TopToolBarArea, toolBar);
 
-       drawElements.append(new DrawTextElm(mpOGLWidget));
+       /*drawElements.append(new DrawTextElm(mpOGLWidget));
        ((DrawTextElm*)drawElements[0])->setLifeTime(6000);
-       ((DrawTextElm*)drawElements[0])->setRect(180,180,200,200);
+       ((DrawTextElm*)drawElements[0])->setRect(180,180,200,200);*/
+
 /*
  //load new style
         QFile file(":/style.txt");
@@ -254,7 +255,7 @@ void MainWindow::on_action_Show_triggered()
     mpOGLWidget->setFixedSize(GLWIDGET_SIZE);
     mpOGLWidget->move(pos().x() + width() + WINDOW_MARGING, pos().y());
 
-    //timeLine.show();
+    timeLine.show();
     ui->action_Pause->setEnabled(true);
     ui->action_Play->setEnabled(true);
     ui->action_Stop->setEnabled(true);
@@ -282,6 +283,10 @@ void MainWindow::on_action_Show_triggered()
 
     ui->action_Pause->setEnabled(false);
     a_pause->setEnabled(false);
+
+    drawElements.append(GenerationDrawElement("kaka.text", mpOGLWidget, 0));
+    drawElements.append(GenerationDrawElement("brush.png", mpOGLWidget, 0));
+
 }
 
 void MainWindow::on_action_Hide_triggered()
@@ -941,7 +946,12 @@ void MainWindow::on_action_Play_triggered()
     textEdit->setEnabled(false);
 
     onTextChanged();
-    ((DrawTextElm*)drawElements[0])->setUnitList(mUnitList);
+  /*  ((DrawTextElm*)drawElements[0])->setUnitList(mUnitList);
+    ((DrawTextElm*)drawElements[0])->setUnParsestring(textEdit->toPlainText());
+    QImage t(":/ThirdPart/images/brush.png");
+    ((DrawTextElm*)drawElements[0])->setIcon(t);
+    drawElements[0]->save("kaka");*/
+ //   drawElements[0]->load("kaka");
     mpOGLWidget->setList(drawElements);
   //  qDebug() << mUnitList.size();
    // QString name = this->windowTitle();
