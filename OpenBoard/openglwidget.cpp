@@ -181,6 +181,8 @@ OGLWidget::OGLWidget(QWidget *parent) :
    QTimer *timer = new QTimer(this);
    connect(timer, SIGNAL(timeout()), this, SLOT(updateWindow()));
    timer->start(5);
+   connect(&m_manager,SIGNAL(colorChanged()),this,SLOT(brushParamsChanged()));
+   connect(&m_manager,SIGNAL(currentBrushChanged()),this,SLOT(brushParamsChanged()));
 
 }
 
@@ -215,11 +217,10 @@ glBindFramebuffer(GL_FRAMEBUFFER_EXT, fbo); // Bind our frame buffer for renderi
        // glPointSize(PointSize);
     //glLineWidth(PointSize);
    // glEnable(GL_TEXTURE_2D);
-        qDebug() << "before index";
- int index = loadTexture(m_manager.getCreatedBrush().img, TEXTURE_INDEX_BRUSH) ;
-qDebug() << "index:"<<index;
-    GLuint texture = textureList[index];
-    qDebug()<<"texture:"<<texture;
+        //qDebug() << "before index";
+
+    GLuint texture = textureList[TEXTURE_INDEX_BRUSH];
+    //qDebug()<<"texture:"<<texture;
   // if (!ismouseWasPressedBeforeDrag)
 
        /* glBegin (GL_POINTS);
@@ -365,6 +366,7 @@ void OGLWidget::initializeGL()
     qglClearColor(Qt::black); // Черный цвет фона
      //glEnable(GL_TEXTURE_2D);
     loadTextureFromFile(":/ThirdPart/images/start.png");
+   loadTexture(m_manager.getCreatedBrush().color_img, TEXTURE_INDEX_BRUSH);
     //loadTextureFromFile(":/ThirdPart/images/brush.png");
     initFrameBuffer(); // Create our frame buffer object
 
@@ -611,6 +613,12 @@ void OGLWidget::pauseAnimated()
     m_encoder->pause();
     emit pauseSignal();
     //m_recorder->pause();
+}
+
+void OGLWidget::brushParamsChanged()
+{
+    int index = loadTexture(m_manager.getCreatedBrush().color_img, TEXTURE_INDEX_BRUSH);
+    qDebug() << "brushParamsChanged";
 }
 bool OGLWidget::isRecord() const
 {

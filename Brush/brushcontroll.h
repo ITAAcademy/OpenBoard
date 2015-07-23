@@ -13,7 +13,7 @@
 #include <QDebug>
 #include <QFont>
 #include "brushpainter.h"
-
+#define TEXTURE_INDEX_BRUSH 1
 class BrushManager : public QObject, public QQuickImageProvider
 {
     Q_OBJECT
@@ -72,7 +72,8 @@ public:
     void setCreatedBrush(const Brush &value);
 
 signals:
-
+void colorChanged();
+void currentBrushChanged();
 public slots:
     QImage requestImage(const QString &id, QSize *size, const QSize &requestedSize);
 private:
