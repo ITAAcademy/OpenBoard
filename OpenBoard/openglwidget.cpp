@@ -17,9 +17,7 @@ int OGLWidget::loadTexture(QImage img, int index, bool modify){
         qWarning() << "ERROR LOADING IMAGE";// + QCoreApplication::applicationDirPath()+"/star.png";
         return 0;
     }
-    else qDebug() << "image successfully loaded";
     QImage GL_formatted_image = QGLWidget::convertToGLFormat(img);
-    qDebug() << "image converted to GL format";
     if(GL_formatted_image.isNull())
         qWarning("IMAGE IS NULL");
     else
@@ -28,41 +26,32 @@ int OGLWidget::loadTexture(QImage img, int index, bool modify){
     glEnable(GL_TEXTURE_2D); // Enable texturing
     GLuint texture;
 
-     if(index >= 0 && index < imgList.length()){
-         qDebug()<<"textureListLen:"<<textureList.length();
-          qDebug()<<"index:"<<index;
-       glDeleteTextures(1,&textureList[index]);
-     }
        glGenTextures(1, &texture); // Obtain an id for the texture
        glBindTexture(GL_TEXTURE_2D, texture); // Set as the current texture
- qDebug(" after  glBindTexture(GL_TEXTURE_2D, texture);");
+
        //glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
       // glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
 
 
        glTexImage2D(GL_TEXTURE_2D, 0, 4, GL_formatted_image.width(), GL_formatted_image.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, GL_formatted_image.bits());
-      //qDebug() <<
        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
        glDisable(GL_TEXTURE_2D);
-qDebug("before int realIndex = index; ");
+
        int realIndex = index;
        if(modify)
        {
-           qDebug(" if(modify)");
            textureList[index] = texture;
            return index;
        }
        if(index >= 0 && index < imgList.length())
        {
-           qDebug(" if(index >= 0 && index < imgList.length())");
            realIndex = imgList.length();
            imgList.insert(index, img);
            textureList.insert(index, texture);
        }
        else
        {
-            qDebug("else");
            imgList.append(img);
            textureList.append(texture);
        }
@@ -94,6 +83,7 @@ bool OGLWidget::reloadTexture(int index)
 void OGLWidget::drawTexture( int x, int y, int width, int height, GLuint texture){
 //loadTextures();
   // glLoadIdentity();
+    qglColor(Qt::white);
 
     glBindTexture(GL_TEXTURE_2D, texture);
     glBegin(GL_QUADS);
@@ -210,16 +200,12 @@ glBindFramebuffer(GL_FRAMEBUFFER_EXT, fbo); // Bind our frame buffer for renderi
 //glLoadIdentity();  // Reset the modelview matrix
 
 //fillText("DEBUG TEXT TO BUFER",QColor(Qt::white),40,40);
-   // int PointSize = 10;
+    int PointSize = 10;
     if (isMousePress){
-       // glPointSize(PointSize);
-    //glLineWidth(PointSize);
+        glPointSize(PointSize);
+    glLineWidth(PointSize);
    // glEnable(GL_TEXTURE_2D);
-        qDebug() << "before index";
- int index = loadTexture(m_manager.getCreatedBrush().img, TEXTURE_INDEX_BRUSH) ;
-qDebug() << "index:"<<index;
-    GLuint texture = textureList[index];
-    qDebug()<<"texture:"<<texture;
+    GLuint texture = textureList.at(TEXTURE_INDEX_BRUSH);
   // if (!ismouseWasPressedBeforeDrag)
 
        /* glBegin (GL_POINTS);
@@ -227,15 +213,12 @@ qDebug() << "index:"<<index;
         glVertex3f (mousePos.x(), mousePos.y(),0.0);
         qDebug() << mousePos.x();
         glEnd();*/
-    //qglColor(m_manager.getColor());
-
-         glEnable(GL_TEXTURE_2D); 
-
+         glEnable(GL_TEXTURE_2D);
          glBindTexture(GL_TEXTURE_2D,texture);
         QSize brushTextureSize = getTextureSize();
-        int BRUSH_SIZE=m_manager.getSize();
-        //qDebug() << "brushSize.width():"<<brushTextureSize.width();
-        //qDebug() << "brushSize.height():"<<brushTextureSize.height();
+        int BRUSH_SIZE=30;
+        qDebug() << "brushSize.width():"<<brushTextureSize.width();
+        qDebug() << "brushSize.height():"<<brushTextureSize.height();
         double koff = brushTextureSize.width()/brushTextureSize.height();
         drawTexture(mousePos.x()-BRUSH_SIZE/2 ,mousePos.y()-BRUSH_SIZE/koff/2,BRUSH_SIZE,BRUSH_SIZE/koff,texture);
          glDisable(GL_TEXTURE_2D);
@@ -275,9 +258,8 @@ glBindFramebuffer(GL_FRAMEBUFFER_EXT, 0); // Unbind our texture
 
 
 //saveFrameBufferToTexture();
-
+ glColor3f (1.0, 0.4, 0.4);
          glEnable(GL_TEXTURE_2D);
-
          glBindTexture(GL_TEXTURE_2D,fbo_texture);
         // qglColor(Qt::green);//TO SEE TEXTURE
          glBegin(GL_QUADS);
@@ -365,7 +347,7 @@ void OGLWidget::initializeGL()
     qglClearColor(Qt::black); // Черный цвет фона
      //glEnable(GL_TEXTURE_2D);
     loadTextureFromFile(":/ThirdPart/images/start.png");
-    //loadTextureFromFile(":/ThirdPart/images/brush.png");
+    loadTextureFromFile(":/ThirdPart/images/brush.png");
     initFrameBuffer(); // Create our frame buffer object
 
 }
@@ -414,7 +396,6 @@ void OGLWidget::paintGL()
 
 //WRITE TO FRAME BUFER FROM HERE
        glEnable(GL_TEXTURE_2D);
-       qglColor(Qt::white);
 drawTexture(0, 0, wax, way, textureList[0]);
  glDisable(GL_TEXTURE_2D);
 renderMouseCursor();
@@ -468,44 +449,15 @@ void OGLWidget::closeEvent(QCloseEvent *event)
 
 void OGLWidget::mousePressEvent(QMouseEvent *event)
 {
-
-    if(event->button() == Qt::RightButton)
-    {
-        if (getIsBrushWindowOpened()){
-            m_manager.hide();
-            setIsBrushWindowOpened(false);
-        }
-        else
-        {
-        m_manager.setPosition(QCursor::pos());
-
-        m_manager.show();
-        setIsBrushWindowOpened(true);
-        }
-    }
-    if(event->button() == Qt::LeftButton)
-    {
-        if (getIsBrushWindowOpened())
-        {
-        m_manager.hide();
-        setIsBrushWindowOpened(false);
-        }
-        else{
-        isMousePress=true;
-        mousePos.setX(event->x());
-       mousePos.setY(event->y());
-       prevMousePos.setX(mousePos.x());
-       prevMousePos.setY(mousePos.y());
-       ismouseWasPressedBeforeDrag=false;
-        }
-    }
-
     //int x = event->x();
     //int y = event->y();
     //drawImage();
-
-
-
+    isMousePress=true;
+    mousePos.setX(event->x());
+   mousePos.setY(event->y());
+   prevMousePos.setX(mousePos.x());
+   prevMousePos.setY(mousePos.y());
+   ismouseWasPressedBeforeDrag=false;
 }
 void OGLWidget::mouseReleaseEvent(QMouseEvent *event)
 {
@@ -513,7 +465,14 @@ void OGLWidget::mouseReleaseEvent(QMouseEvent *event)
     //int y = event->y();
     //drawImage();
     isMousePress=false;
-
+    if(event->button() == Qt::RightButton)
+    {
+        m_manager.show();
+    }
+    if(event->button() == Qt::LeftButton)
+    {
+        m_manager.hide();
+    }
 
 }
 
@@ -1285,16 +1244,6 @@ int OGLWidget::getCountNullString(int index)
     }
     return sumLength;
 }
-bool OGLWidget::getIsBrushWindowOpened() const
-{
-    return isBrushWindowOpened;
-}
-
-void OGLWidget::setIsBrushWindowOpened(bool value)
-{
-    isBrushWindowOpened = value;
-}
-
 
 int OGLWidget::getFirstSymbolOfString(int index, bool symbol)
 {

@@ -5,7 +5,7 @@ import QtGraphicalEffects 1.0
 
 Rectangle{
     id: root
-    color: "#343434"
+    color: "red"// "#343434"
     property int mIndex
     property int colIndex
     property int xChange: 0
@@ -33,6 +33,7 @@ z: 0
     }
     onXChanged: {
         main222.mX = x
+        timeControll.setBlockStartTime(root.colIndex,root.mIndex, x)
     }
 
 
@@ -192,6 +193,9 @@ console.log(" reles  root.z= " +   root.z)
         id: icon
         anchors.fill: parent
         source: "qrc:/Block/file.png"
+       // source:  "image://imageProvider/" + id
+            // timeControll.getBlockIcon(colIndex,mIndex)
+        cache: false
     }
     ColorOverlay {
         id: icon_coloroverlay

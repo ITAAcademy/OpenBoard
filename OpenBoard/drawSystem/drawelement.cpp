@@ -142,6 +142,11 @@ void DrawElement::setSize(QSize pos)
     height = pos.height();
 }
 
+QSize  DrawElement::getSize()
+{
+    return QSize(width,height);
+}
+
 void DrawElement::setSize(int width, int height)
 {
     this->width = width;

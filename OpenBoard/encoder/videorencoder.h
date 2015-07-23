@@ -11,15 +11,19 @@
 #include <QMutexLocker>
 #include <QLockFile>
 
-#include <Encoder>
-#include <ScreenGrabber>
-#include <VideoCodecSettings>
-#include <AudioCodecSettings>
-#include <QMutex>
-
 #include <QtMultimedia/QAudioRecorder>
 #include <QtMultimedia/QAudioProbe>
 #include <QGLWidget>
+
+
+#include <Encoder>
+#include <VideoCodecSettings>
+
+#include <QMutex>
+#include <ScreenGrabber>
+#include <AudioCodecSettings>
+
+
 class AV_REncoder : public QThread
 {
     Q_OBJECT

@@ -28,7 +28,7 @@ void ListControll::removeBlock(int col, int i)
 
    if (maxTrackTime == tracks[col].time)
    {
-       int temp = tracks[col].block[i].lifeTime;
+       int temp = tracks[col].block[i].draw_element->getLifeTime();
              //  testWidth[col][i];
        tracks[col].block.removeAt(i);
         tracks[col].time -= temp;
@@ -38,7 +38,7 @@ void ListControll::removeBlock(int col, int i)
    }
    else
    {
-       int temp = tracks[col].block[i].lifeTime;
+       int temp = tracks[col].block[i].draw_element->getLifeTime();
        tracks[col].block.removeAt(i);
         tracks[col].time -= temp;
    }
@@ -49,7 +49,7 @@ void ListControll::addNewBlock(int col, QString str)
 {
     Element temp;
     temp.key = str;
-    temp.lifeTime = def_min_block_width;
+    temp.draw_element->setLifeTime(def_min_block_width);
     tracks[col].block.append(Element(str,def_min_block_width));
     tracks[col].time += def_min_block_width;
    // testWidth[col].append(200);
@@ -82,7 +82,7 @@ bool ListControll::removeLastBlock(int col)
 
    if (maxTrackTime == tracks[col].time)
    {
-       int temp = tracks[col].block.last().lifeTime;
+       int temp = tracks[col].block.last().draw_element->getLifeTime();
       tracks[col].block.pop_back();
     tracks[col].time -= temp;
     recountMaxTrackTime();
@@ -90,7 +90,7 @@ bool ListControll::removeLastBlock(int col)
    }
    else
    {
-       int temp = tracks[col].block.last().lifeTime;
+       int temp = tracks[col].block.last().draw_element->getLifeTime();
       tracks[col].block.pop_back();
     tracks[col].time -= temp;
    }
@@ -115,16 +115,9 @@ bool ListControll::removeLastTrack()
  void ListControll::reverseBlocks(int col, int init_pos, int end_pos)
  {
    Element temp = tracks[col].block[init_pos];
-   qDebug() << "1 reverseBlocks:\n" <<  "tracks[col].block[init_pos].time = " << temp.lifeTime <<
-   "\ntracks[col].block[end_pos].time = " <<  tracks[col].block[end_pos].lifeTime;
-     //      testWidth[col][init_pos] ;
    tracks[col].block[init_pos] = tracks[col].block[end_pos];
   //   testWidth[col][init_pos] = testWidth[col][end_pos];
      tracks[col].block[end_pos] = temp;
-
-     qDebug() << "2 reverseBlocks:\n" <<
-    "tracks[col].block[init_pos].time = " << temp.lifeTime <<
-     "\ntracks[col].block[end_pos].time = " <<  tracks[col].block[end_pos].lifeTime ;
  }
 
 void ListControll::setBlocks(int col,const QList <Element> &value)
@@ -137,18 +130,83 @@ void ListControll::setBlockTime(int col, int i,int value)
   //   = value;
     if (maxTrackTime == tracks[col].time)
     {
-        tracks[col].time += value - tracks[col].block[i].lifeTime  ;
-      tracks[col].block[i].lifeTime = value;
+        tracks[col].time += value - tracks[col].block[i].draw_element->getLifeTime();  ;
+      tracks[col].block[i].draw_element->setLifeTime(value);
         if (maxTrackTime < tracks[col].time)
             maxTrackTime = tracks[col].time;
     }
     else
-         tracks[col].block[i].lifeTime = value;
+         tracks[col].block[i].draw_element->setLifeTime(value);
 }
+
+void ListControll::setBlockStartTime(int col, int i,int value)
+{
+    tracks[col].block[i].draw_element->setStartDraw(value);
+}
+
+int ListControll::getBlockStartTime(int col, int i)
+{
+    return tracks[col].block[i].draw_element->getStartDrawTime();
+}
+
+void ListControll::setBlockIcon(int col, int i, QImage icon)
+{
+     tracks[col].block[i].draw_element->setIcon(icon);
+}
+
+QImage ListControll::getBlockIcon(int col, int i)
+{
+    return   tracks[col].block[i].draw_element->getIcon();
+}
+
+
+
+ void ListControll::setDrawX(int col, int i, int value)
+ {
+     tracks[col].block[i].draw_element->setX(value);
+ }
+
+ int ListControll::getDrawX(int col, int i)
+ {
+     return tracks[col].block[i].draw_element->getX() ;
+ }
+
+ void ListControll::setDrawY(int col, int i, int value)
+ {
+    tracks[col].block[i].draw_element->setY (value);
+ }
+
+ int ListControll::getDrawY(int col, int i)
+ {
+     return tracks[col].block[i].draw_element->getY();
+ }
+
+ void ListControll::setDrawZ(int col, int i, int value)
+ {
+     tracks[col].block[i].draw_element->setZ(value);
+ }
+
+ int ListControll::getDrawZ(int col, int i)
+ {
+     return tracks[col].block[i].draw_element->getZ() ;
+ }
+
+ void ListControll::setDrawSize(int col, int i, int width, int height)
+ {
+     tracks[col].block[i].draw_element->setSize(width,height);
+ }
+
+ QSize ListControll::getDrawSize(int col, int i)
+ {
+     return tracks[col].block[i].draw_element->getSize() ;
+ }
+
+
+
 
 int ListControll::getBlockTime(int col, int i ) const
 {
-    return tracks[col].block[i].lifeTime;
+    return tracks[col].block[i].draw_element->getLifeTime();
 }
 
 Element ListControll::getBlock(int col, int i) const
@@ -210,11 +268,14 @@ recountMaxTrackTime();
     view.engine()->rootContext()->setContextProperty("timeControll", this);
    view.engine()->rootContext()->setContextProperty("viewerWidget", &view);
     view.setSource(QUrl("qrc:/main.qml")); \
+    //view.engine()->addImageProvider("imageProvider",&imageProvider);
     view.setResizeMode(QQuickView::SizeRootObjectToView);
     view.setPersistentOpenGLContext(true);
     view.setColor("transparent");
 view.setMinimumHeight(235);
 view.setWidth(800);
+
+
 
 //view.setMaximumHeight(215);
 
@@ -304,7 +365,7 @@ void ListControll::hide()
          int blockXstart = 0;
          for (int y=0; y<tracks[i].block.size(); y++ )
          {
-             int blockXend =blockXstart + tracks[i].block[y].lifeTime;
+             int blockXend =blockXstart + tracks[i].block[y].draw_element->getLifeTime();
              if (scale_pointer_pos <= blockXend)
              {
                  pointed_block.append(tracks[i].block[y]);

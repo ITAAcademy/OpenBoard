@@ -31,7 +31,7 @@ protected:
     bool bPause;
 public:
     explicit DrawElement( OGLWidget *drawWidget, QObject *parent = 0);
-    ~DrawElement();
+   virtual ~DrawElement();
 
     virtual void draw();
 
@@ -40,6 +40,7 @@ public:
 
     void setSize( QSize pos );
     void setSize( int width, int height);
+    QSize getSize();
 
     void setRect (QRect rect);
     void setRect ( int x, int y, int width, int height);
