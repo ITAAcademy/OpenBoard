@@ -15,16 +15,13 @@
 struct Element {
     QString key;
     int time;
-    bool isSelected;
     Element( QString key, int time) {
         this->key = key;
          this->time = time;
-        isSelected = false;
     }
     Element() {
         this->key = "key";
-         this->time = 200;
-        isSelected = false;
+         this->time = 100;
     }
 };
 
@@ -36,8 +33,7 @@ struct Track {
     Track( int time ,QList <Element> block ) {
         this-> time = time;
         this-> block = block;
-
-    };
+    }
 };
 
 
@@ -48,13 +44,14 @@ class ListControll : public QObject
  int maxTrackTime ;
     QQuickView view;
     QPoint prevMousePosition;
-    int tayo = 0;
   // QVector< QList <QString> > test;
   //  QVector< QList <int> > testWidth;
 
      QVector< Track > tracks;
      Element selectedBlock;
-
+int def_min_block_width = 100;
+int scale_pointer_pos = 0;
+QList <Element> pointed_block;
    //  QVector< int > testColumnWidth;
      void recountMaxTrackTime();
 public:
@@ -84,6 +81,11 @@ Q_INVOKABLE   void setBlockKey(int col, int i, QString name);\
     Q_INVOKABLE void setSelectedBlock(int col, int i);
     Q_INVOKABLE Element getSelectedBlock() ;
 
+     Q_INVOKABLE void setScalePointerPos( int x);
+Q_INVOKABLE int getScalePointerPos( );
+
+    Q_INVOKABLE void calcPointedBlocks( );
+    Q_INVOKABLE QList <Element> getPointedBlocks( );
 
 signals:
 

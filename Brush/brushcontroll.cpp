@@ -46,6 +46,7 @@ BrushManager::BrushManager(QObject *parent) : QObject(parent), QQuickImageProvid
     view.setSource(QUrl("qrc:/main_brush.qml")); \
     view.setResizeMode(QQuickView::SizeRootObjectToView);
     view.setPersistentOpenGLContext(true);
+    view.setColor("transparent");
     //viewsetFont(QFont("Segoe Script"));
 
 }

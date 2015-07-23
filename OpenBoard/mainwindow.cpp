@@ -199,6 +199,14 @@ MainWindow::MainWindow(QWidget *parent) :
        drawElements.append(new DrawTextElm(mpOGLWidget));
        ((DrawTextElm*)drawElements[0])->setLifeTime(6000);
        ((DrawTextElm*)drawElements[0])->setRect(180,180,200,200);
+/*
+ //load new style
+        QFile file(":/style.txt");
+        file.open(QFile::ReadOnly);
+        QString styleSheet = QLatin1String(file.readAll());
+        setStyleSheet(styleSheet);
+        file.close();
+        */
 
 }
 

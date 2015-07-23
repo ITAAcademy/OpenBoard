@@ -66,6 +66,5 @@
         <file>iphone_toolbar_icons/world.png</file>
         <file>blockBlack.png</file>
         <file>blockGray.png</file>
-        <file>iphone_toolbar_icons/arrow.png</file>
     </qresource>
 </RCC>

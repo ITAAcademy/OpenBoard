@@ -27,7 +27,7 @@ z: 0
         if (width < minWidth)
             width = minWidth
        // timeControll.setBlockTime(colIndex,mIndex,width)
-        console.log("333 timeControll.setBlockTime " + colIndex + " " + mIndex + " " + width)
+        //console.log("333 timeControll.setBlockTime " + colIndex + " " + mIndex + " " + width)
          //timeControll.setBlockTime(mainwindow.columnIndex,mainwindow.blockIndex,block_width_value.value)
     }
 
