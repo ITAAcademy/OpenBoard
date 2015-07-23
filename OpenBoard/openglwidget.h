@@ -144,7 +144,7 @@ public slots:
     void drawAnimated( bool record );
     void stopAnimated();
     void pauseAnimated();
-
+    void brushParamsChanged();
     void updateWindow();
 public slots:
     bool isRecord() const;

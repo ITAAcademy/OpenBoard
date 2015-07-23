@@ -11,6 +11,9 @@ void BrushManager::setCurentBrush(int value)
 {
     curentBrush = value;
     createdBrush.img = imageStack[value];
+   createdBrush.color_img = BrushPainter::applyColor(createdBrush);
+    emit currentBrushChanged();
+    qDebug()<<"emit currentBrushChanged();";
 }
 
 Brush BrushManager::getCreatedBrush()
@@ -169,7 +172,9 @@ void BrushManager::setColor(QColor value)
 {
     //qDebug() << value;
     createdBrush.color_main = value;
-    //createdBrush.img = BrushPainter::applyColor(createdBrush);
+    createdBrush.color_img = BrushPainter::applyColor(createdBrush);
+    emit colorChanged();
+  //    ;
 }
 
 float BrushManager::getSize()
