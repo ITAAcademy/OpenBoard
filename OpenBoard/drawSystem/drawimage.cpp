@@ -12,6 +12,7 @@ DrawImageElm::~DrawImageElm()
 
 void DrawImageElm::draw()
 {
+
     pDrawWidget->drawTexture(x, y, width, height, textureIndex);
 }
 
@@ -27,8 +28,9 @@ bool DrawImageElm::save_add(QDataStream &stream)
 
 void DrawImageElm::setDrawImage(QImage img)
 {
-    image = img;
+    image = img.convertToFormat(QImage::Format_RGBA8888);
     icon = img;
-    textureIndex = pDrawWidget->loadTexture(img);
+    textureIndex = pDrawWidget->loadTexture(image);
+  //  qDebug() << "QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQWWWWWWWWWWWWWWWWW     " << textureIndex;
 }
 

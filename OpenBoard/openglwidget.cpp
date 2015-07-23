@@ -10,7 +10,6 @@ canvas->setProperty("scroll", k);
 */
 
 int OGLWidget::loadTexture(QImage img, int index, bool modify){
-
     if(img.isNull()) // QCoreApplication::applicationDirPath()+"/star.png"
     {
         //loads correctly
@@ -95,6 +94,8 @@ bool OGLWidget::reloadTexture(int index)
 void OGLWidget::drawTexture( int x, int y, int width, int height, GLuint texture){
 //loadTextures();
   // glLoadIdentity();
+    glEnable(GL_TEXTURE_2D);
+    qglColor(Qt::white);
 
     glBindTexture(GL_TEXTURE_2D, texture);
     glBegin(GL_QUADS);
@@ -104,12 +105,14 @@ void OGLWidget::drawTexture( int x, int y, int width, int height, GLuint texture
     glTexCoord2i(1,1); glVertex2i(x+width,y);
     glTexCoord2i(1,0); glVertex2i(x+width, y+height);
     glEnd();
+     glDisable(GL_TEXTURE_2D);
 
 
 }
 void OGLWidget::drawTexture(int x, int y, int width, int height, int index)
 {
     drawTexture(x, y, width, height, textureList[index]);
+    qDebug() << "void OGLWidget::drawTexture(int x, int y, int width, int height, int index)";
 }
 
 
@@ -235,7 +238,6 @@ glBindFramebuffer(GL_FRAMEBUFFER_EXT, fbo); // Bind our frame buffer for renderi
         glEnd();*/
     //qglColor(m_manager.getColor());
 
-         glEnable(GL_TEXTURE_2D); 
 
          glBindTexture(GL_TEXTURE_2D,texture);
         QSize brushTextureSize = getTextureSize();
@@ -244,7 +246,7 @@ glBindFramebuffer(GL_FRAMEBUFFER_EXT, fbo); // Bind our frame buffer for renderi
         //qDebug() << "brushSize.height():"<<brushTextureSize.height();
         double koff = brushTextureSize.width()/brushTextureSize.height();
         drawTexture(mousePos.x()-BRUSH_SIZE/2 ,mousePos.y()-BRUSH_SIZE/koff/2,BRUSH_SIZE,BRUSH_SIZE/koff,texture);
-         glDisable(GL_TEXTURE_2D);
+
    /*
     else{
       glEnable(GL_TEXTURE_2D);
@@ -374,6 +376,8 @@ void OGLWidget::initializeGL()
    loadTexture(m_manager.getCreatedBrush().color_img, TEXTURE_INDEX_BRUSH);
     //loadTextureFromFile(":/ThirdPart/images/brush.png");
     initFrameBuffer(); // Create our frame buffer object
+    list_1.append(GenerationDrawElement("kaka.text", this, 0));
+    list_1.append(GenerationDrawElement("brush.png", this, 0));
 
 }
 
@@ -420,10 +424,9 @@ void OGLWidget::paintGL()
 
 
 //WRITE TO FRAME BUFER FROM HERE
-       glEnable(GL_TEXTURE_2D);
-       qglColor(Qt::white);
+
 drawTexture(0, 0, wax, way, textureList[0]);
- glDisable(GL_TEXTURE_2D);
+
 renderMouseCursor();
 glBindFramebuffer(GL_FRAMEBUFFER,0);
 //WRITE TO SCREEN FROM HERE

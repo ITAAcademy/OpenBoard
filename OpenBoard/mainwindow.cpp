@@ -250,7 +250,7 @@ void MainWindow::on_action_Show_triggered()
     //mpOGLWidget = new OGLWidget();
 
     mpOGLWidget->show();
-    mpOGLWidget->pause(1);// wait for show window
+    mpOGLWidget->pause(100);// wait for show window
     mpOGLWidget->setDelay(1000/lastInpuDelay);
     mpOGLWidget->setFixedSize(GLWIDGET_SIZE);
     mpOGLWidget->move(pos().x() + width() + WINDOW_MARGING, pos().y());
@@ -284,8 +284,6 @@ void MainWindow::on_action_Show_triggered()
     ui->action_Pause->setEnabled(false);
     a_pause->setEnabled(false);
 
-    drawElements.append(GenerationDrawElement("kaka.text", mpOGLWidget, 0));
-    drawElements.append(GenerationDrawElement("brush.png", mpOGLWidget, 0));
 
 }
 
@@ -952,7 +950,7 @@ void MainWindow::on_action_Play_triggered()
     ((DrawTextElm*)drawElements[0])->setIcon(t);
     drawElements[0]->save("kaka");*/
  //   drawElements[0]->load("kaka");
-    mpOGLWidget->setList(drawElements);
+   // mpOGLWidget->setList(drawElements);
   //  qDebug() << mUnitList.size();
    // QString name = this->windowTitle();
     /*play = true;
