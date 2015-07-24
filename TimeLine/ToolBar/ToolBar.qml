@@ -49,7 +49,7 @@ Rectangle {
             width: parent.width
           icon_source : "qrc:/iphone_toolbar_icons/playG.png"
             onClicked: {
-                    main222.play()
+                    timeControll.play()
             }
         }
         Buutton{
@@ -59,7 +59,7 @@ Rectangle {
             width: parent.width
           icon_source : "qrc:/iphone_toolbar_icons/pauseG.png"
             onClicked: {
-                    main222.pause()
+                    timeControll.pause()
             }
         }
         Buutton{
@@ -69,7 +69,7 @@ Rectangle {
             width: parent.width
           icon_source : "qrc:/iphone_toolbar_icons/stopG.png"
             onClicked: {
-                    main222.stop()
+                    timeControll.stop()
             }
         }
 

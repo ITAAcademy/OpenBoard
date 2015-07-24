@@ -22,7 +22,7 @@ struct Element {
 //    int startDrawTime;
 //    int x, y, z, width, height; //on canva
 
-    DrawElement *draw_element = NULL;
+    DrawElement *draw_element;
 
     Element( QString key, int time,int x = 0, int y = 0, int z = 0, int width = 100, int height = 100) {
         this->key = key;
@@ -47,8 +47,7 @@ struct Element {
 
     }
     ~Element() {
-     /*   if(draw_element != NULL)
-            delete draw_element;*/
+        //delete draw_element;
     }
 
 };
@@ -119,7 +118,6 @@ Q_INVOKABLE int getScalePointerPos( );
 
     Q_INVOKABLE void calcPointedBlocks( );
     Q_INVOKABLE QList <Element> getPointedBlocks( );
-    QList <DrawElement*> getPointedBlocksDE( );
 
     Q_INVOKABLE void setBlockIcon(int col, int i, QImage icon);
     Q_INVOKABLE QImage getBlockIcon(int col, int i);
@@ -139,6 +137,9 @@ Q_INVOKABLE int getScalePointerPos( );
 
 
 signals:
+    void playSignal();
+    void pauseSignal();
+    void stopSignal();
 
 public slots:
 };

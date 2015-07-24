@@ -104,6 +104,22 @@ radius: 10
 
     }
 
+     Connections {
+       target: timeControll
+
+      onPlaySignal: {
+       main222.play()
+       }
+      onPauseSignal: {
+       main222.pause()
+       }
+       onStopSignal: {
+       main222.stop()
+       }
+       }
+
+
+
     Timer {
         id: playTimer
         property bool stopped : false
@@ -218,7 +234,10 @@ radius: 10
                     scroll.flickableItem.contentX += x - temp
                     var sad = timeControll.getMaxTrackTime() - scroll.width + 17  // scroll.flickableItem.contentWidth - scroll.width + 10
                     if (scroll.flickableItem.contentX  >  sad)
+                    {
                             scroll.flickableItem.contentX = sad;
+                        timeControll.stop();
+                    }
                 x = temp
                 }
             }
