@@ -173,8 +173,10 @@ void BrushManager::setColor(QColor value)
 {
     //qDebug() << value;
     createdBrush.color_main = value;
+    qApp->processEvents(QEventLoop::ExcludeUserInputEvents, 200);
     createdBrush.color_img = painter.applyColor(createdBrush);
     qApp->processEvents(QEventLoop::ExcludeUserInputEvents, 200);
+
     emit colorChanged();
   //    ;
 }

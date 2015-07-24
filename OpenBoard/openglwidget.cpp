@@ -284,8 +284,13 @@ qDebug() << "paint brush in buffer";
         QSize brushTextureSize = getTextureSize();
         int BRUSH_SIZE=m_manager.getSize();
         float scaleX=1,scaleY=1;
-        float randScalePtX = rand() % (m_manager.getAffine()*2);
-        float randScalePtY = rand() % (m_manager.getAffine()*2);
+        float randScalePtX = 0;
+        float randScalePtY = 0;
+        if(m_manager.getAffine() != 0)
+        {
+            randScalePtX = rand() % (m_manager.getAffine()*2);
+            randScalePtY = rand() % (m_manager.getAffine()*2);
+        }
         if (randScalePtX>m_manager.getAffine())
             randScalePtX = 1/((int)randScalePtX %m_manager.getAffine());
         if (randScalePtY>m_manager.getAffine())
@@ -295,9 +300,9 @@ qDebug() << "paint brush in buffer";
         //1 - x
         //x = 2/100=0.02
         if(randScalePtX!=0)
-        scaleX=MAX_SCALE/randScalePtX;
+            scaleX=MAX_SCALE/randScalePtX;
         if(randScalePtY!=0)
-        scaleY=MAX_SCALE/randScalePtY;
+            scaleY=MAX_SCALE/randScalePtY;
        // qDebug() <<"scaleX:"<<scaleX;
        // qDebug() <<"scaleY:"<<scaleY;
         //qDebug() << "brushSize.width():"<<brushTextureSize.width();
@@ -309,15 +314,15 @@ qDebug() << "paint brush in buffer";
             if (maxDispers>0 && m_manager.getCount()>0) i=m_manager.getCount();
             for (;i>0;i--)
             {
-         int dispersX = 0;
-         int dispersY = 0;
-         if ((int)m_manager.getDisepers()>0){
-             dispersX = rand() % (maxDispers*2);
-             dispersY = rand() % (maxDispers*2);
-             if (dispersX > maxDispers)dispersX = -(dispersX % maxDispers);
-             if (dispersY > maxDispers)dispersX = -(dispersY % maxDispers);
-         }
-        drawTexture(mousePos.x()-BRUSH_SIZE/2 + dispersX ,mousePos.y()-BRUSH_SIZE/koff/2 + dispersY,BRUSH_SIZE,BRUSH_SIZE/koff,
+                 int dispersX = 0;
+                 int dispersY = 0;
+                 if ((int)m_manager.getDisepers()>0){
+                     dispersX = rand() % (maxDispers*2);
+                     dispersY = rand() % (maxDispers*2);
+                     if (dispersX > maxDispers)dispersX = -(dispersX % maxDispers);
+                     if (dispersY > maxDispers)dispersX = -(dispersY % maxDispers);
+            }
+            drawTexture(mousePos.x()-BRUSH_SIZE/2 + dispersX ,mousePos.y()-BRUSH_SIZE/koff/2 + dispersY,BRUSH_SIZE,BRUSH_SIZE/koff,
                     texture,m_manager.getAngleDelta(),scaleX,scaleY);
             }
         /*

@@ -89,6 +89,11 @@ bool DrawElement::save(QString path)
 
 }
 
+QRect DrawElement::getRect()
+{
+    return QRect(x, y, width, height);
+}
+
 void DrawElement::setPosition(QPoint pos)
 {
     x = pos.x();

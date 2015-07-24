@@ -40,8 +40,9 @@ enum EditingRectangleBindMode {EDIT_RECTANGLE_UNBINDED =0,EDIT_RECTANGLE_MOVE=1,
 struct RectangleEditor {
     QRect rect;
     int leftCornerSize;
-    bool isEditingRectangleVisible = true;
+    bool isEditingRectangleVisible = false;
     int editingRectangleMode = EDIT_RECTANGLE_UNBINDED;
+
 };
 class Encoder;
 
@@ -69,7 +70,7 @@ public:
 
 
 //bool isEditingRectangleBindedToCursor = false;
-RectangleEditor editingRectangle;
+   RectangleEditor editingRectangle;
    volatile bool isCrossingNow;
     QList<ColorMarker> colors;
     QImage brushBuffer;

@@ -65,7 +65,7 @@ z: 0
     ContextMenu {
         id: context_menu
         x: 20
-        y: 30
+        y: 0
         z: 500
         visible: false
         parent: root.parent

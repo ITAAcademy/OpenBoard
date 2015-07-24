@@ -132,6 +132,7 @@ public:
 
     Q_INVOKABLE void calcPointedBlocks( );
     Q_INVOKABLE QList <Element> getPointedBlocks( );
+    QList <DrawElement*> getPointedBlocksDE( );
 
     Q_INVOKABLE void setBlockIcon(int col, int i, QImage icon);
     Q_INVOKABLE QImage getBlockIcon(int col, int i);

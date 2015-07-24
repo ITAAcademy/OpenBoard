@@ -250,14 +250,13 @@ void MainWindow::on_action_Show_triggered()
         mpOGLWidget = NULL;
     }*/
     //mpOGLWidget = new OGLWidget();
-
+    timeLine.show();
     mpOGLWidget->show();
     mpOGLWidget->pause(100);// wait for show window
     mpOGLWidget->setDelay(1000/lastInpuDelay);
     mpOGLWidget->setFixedSize(GLWIDGET_SIZE);
     mpOGLWidget->move(pos().x() + width() + WINDOW_MARGING, pos().y());
 
-    //timeLine.show();
     ui->action_Pause->setEnabled(true);
     ui->action_Play->setEnabled(true);
     ui->action_Stop->setEnabled(true);
@@ -969,18 +968,42 @@ void MainWindow::on_action_Play_triggered()
   //  qDebug() << mUnitList.size();
    // QString name = this->windowTitle();
     play = true;
+    QPoint selElm;
+    Element elm;
+    mpOGLWidget->editingRectangle.isEditingRectangleVisible = true;
     while( play && mpOGLWidget != 0 && mpOGLWidget->getStatus() != OGLWidget::STOP)
     {
         //while(mpOGLWidget->getStatus() == OGLWidget::PAUSE)
         if( mpOGLWidget->getStatus() != OGLWidget::PAUSE )
         {
             mpOGLWidget->setList(timeLine.getPointedBlocksDE());
+            /*
+             * test
+             */
+            QPoint t = timeLine.getSelectedBlockPoint();
+            if(t != selElm)
+            {
+                selElm = t;
+                elm = timeLine.getSelectedBlock();
+                mpOGLWidget->editingRectangle.rect = elm.draw_element->getRect();
+            }
+            else
+            {
+                QRect t = mpOGLWidget->editingRectangle.rect;
+                timeLine.setDrawX(selElm.x(), selElm.y(), t.x());
+                timeLine.setDrawY(selElm.x(), selElm.y(), t.y());
+                timeLine.setDrawSize(selElm.x(), selElm.y(), t.width(), t.height());
+
+            }
+
+
             qApp->processEvents();
         }
         else
             qApp->processEvents();
     }
     on_action_Stop_triggered();
+    mpOGLWidget->editingRectangle.isEditingRectangleVisible = false;
     play = false;
 
 }

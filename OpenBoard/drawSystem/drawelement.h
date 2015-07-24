@@ -37,7 +37,7 @@ public:
     bool load(QString path);
     bool save(QString path);
 
-
+    QRect getRect();
 
 
 
