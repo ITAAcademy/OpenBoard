@@ -267,8 +267,9 @@ recountMaxTrackTime();
     new QQmlFileSelector(view.engine(), &view);\
     view.engine()->rootContext()->setContextProperty("timeControll", this);
    view.engine()->rootContext()->setContextProperty("viewerWidget", &view);
-    view.setSource(QUrl("qrc:/main.qml")); \
-    //view.engine()->addImageProvider("imageProvider",&imageProvider);
+
+     view.engine()->addImageProvider("imageProvider",&image_provider);//&image_provider);
+       view.setSource(QUrl("qrc:/main.qml")); \
     view.setResizeMode(QQuickView::SizeRootObjectToView);
     view.setPersistentOpenGLContext(true);
     view.setColor("transparent");
@@ -354,6 +355,7 @@ void ListControll::hide()
 
  QList <Element> ListControll::getPointedBlocks( )
  {
+
      return pointed_block;
  }
 
@@ -375,4 +377,20 @@ void ListControll::hide()
               blockXstart = blockXend;
          }
      }
+      qDebug() << "FFFFFFFFFFFFFFF getPointedBlocks size" << pointed_block.size();
  }
+
+ void  ListControll::play()
+ {
+
+ }
+ void  ListControll::pause()
+ {
+
+ }
+
+void  ListControll::stop()
+{
+
+}
+

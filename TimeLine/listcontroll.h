@@ -67,6 +67,7 @@ struct Track {
 class ListControll : public QObject
 {
     Q_OBJECT
+    ImageProvider image_provider;
    // ImageProvider imageProvider;
  int maxTrackTime ;
     QQuickView view;
@@ -129,6 +130,11 @@ Q_INVOKABLE int getScalePointerPos( );
     Q_INVOKABLE int getDrawZ(int col, int i);
     Q_INVOKABLE void setDrawSize(int col, int i, int width, int height);
     Q_INVOKABLE QSize getDrawSize(int col, int i);
+
+    Q_INVOKABLE void  play();
+    Q_INVOKABLE void  pause();
+    Q_INVOKABLE void  stop();
+
 
 signals:
 
