@@ -51,6 +51,7 @@ qDebug("before int realIndex = index; ");
        {
            qDebug(" if(modify)");
            textureList[index] = texture;
+           imgList[index] = img;
            return index;
        }
        if(index >= 0 && index < imgList.length())
@@ -126,6 +127,10 @@ QList<DrawElement *> &OGLWidget::getList()
 
 void OGLWidget::setList(const QList<DrawElement *> &value)
 {
+    for( DrawElement* elm : value)
+    {
+        elm->setDrawWidget(this);
+    }
     if(curentList)
         list_1 = value;
     else
@@ -627,7 +632,7 @@ void OGLWidget::pauseAnimated()
 
 void OGLWidget::brushParamsChanged()
 {
-    int index = loadTexture(m_manager.getCreatedBrush().color_img, TEXTURE_INDEX_BRUSH);
+    int index = loadTexture(m_manager.getCreatedBrush().color_img, TEXTURE_INDEX_BRUSH, true);
     qDebug() << "brushParamsChanged";
 }
 bool OGLWidget::isRecord() const

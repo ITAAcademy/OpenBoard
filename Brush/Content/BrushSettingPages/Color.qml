@@ -8,12 +8,11 @@ Rectangle {
     //anchors.fill: parent
     color: "transparent"
     property string cLoaderName: "loader"
-    property color mColor: "black"
     signal update
     onUpdate: {
         brushControll.setColor(Qt.hsla(h.value, u.value, e.value));
         show_brush_image.update();
-        console.log("update color");
+    //    console.log("update color");
     }
 
     Column{
@@ -30,7 +29,7 @@ Rectangle {
             value: 0.5
             small: true
             mColor: Qt.hsla(h.value, u.value, e.value)
-            onMColorChanged: root.update();
+            onValueChanged: root.update();
         }
         FullSlider{
             id: u
@@ -40,7 +39,8 @@ Rectangle {
             maximum: 1
             small: true
             value: 1
-            mColor: Qt.hsla(h.value, u.value, e.value)
+            mColor: h.mColor
+            onValueChanged: root.update();
 
         }
         FullSlider{
@@ -51,7 +51,8 @@ Rectangle {
             maximum: 1
             small: true
             value: 0.5
-            mColor: Qt.hsla(h.value, u.value, e.value)
+            mColor: h.mColor
+            onValueChanged: root.update();
         }
     }
     Component.onCompleted:

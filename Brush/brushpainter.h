@@ -31,13 +31,17 @@ struct Brush{
 
 class BrushPainter : public QObject
 {
+    Q_OBJECT
+
+    QGraphicsScene scene;
 public:
-    explicit BrushPainter(QObject *parent);
+    explicit BrushPainter(QObject *parent = 0);
     ~BrushPainter();
-    static QImage applyColor(Brush brush);
-    static QImage drawBrush(Brush &brush, QSize size = QSize(800,230));
-    static QImage applyEffectToImage(QImage src, QGraphicsEffect *effect, int extent = 0);
-    static QImage applyMask(QImage src, QImage mask);
+    void close();
+    QImage applyColor(Brush brush);
+    QImage drawBrush(Brush &brush, QSize size = QSize(800,230));
+    QImage applyEffectToImage(QImage src, QGraphicsEffect *effect, int extent = 0);
+    QImage applyMask(QImage src, QImage mask);
 };
 
 #endif // BRUSHPAINTER_H

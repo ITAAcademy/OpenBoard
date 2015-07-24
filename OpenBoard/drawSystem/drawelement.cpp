@@ -1,5 +1,15 @@
 #include "drawElement.h"
 
+
+OGLWidget *DrawElement::getDrawWidget() const
+{
+    return pDrawWidget;
+}
+
+void DrawElement::setDrawWidget(OGLWidget *value)
+{
+    pDrawWidget = value;
+}
 DrawElement::DrawElement(OGLWidget *drawWidget, QObject *parent) : QObject(parent)
 {
     pDrawWidget = drawWidget;

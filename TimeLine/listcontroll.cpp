@@ -356,6 +356,14 @@ void ListControll::hide()
  {
      return pointed_block;
  }
+ QList <DrawElement*> ListControll::getPointedBlocksDE( )
+ {
+     QList <DrawElement*> res;
+     for(auto elm : pointed_block)
+         res.append(elm.draw_element);
+     qDebug() << "Curent            count of element in scene   =   " << pointed_block.size();
+     return res;
+ }
 
  void ListControll::calcPointedBlocks( )
  {

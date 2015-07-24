@@ -9,19 +9,31 @@ BrushPainter::~BrushPainter()
 {
 
 }
+
+void BrushPainter::close()
+{
+
+}
  QImage BrushPainter::applyColor(Brush brush)
 {
-    QGraphicsColorizeEffect *effect = new QGraphicsColorizeEffect();
-    effect->setColor(brush.color_main);
-    return applyEffectToImage(brush.img, effect).convertToFormat(QImage::Format_RGBA8888);
+     QGraphicsColorizeEffect *effect;
+     effect = new QGraphicsColorizeEffect();
+     effect->setColor(brush.color_main);
+     QImage res = applyEffectToImage(brush.img, effect).convertToFormat(QImage::Format_RGBA8888);
+     return res;
+
 }
 
 QImage BrushPainter::drawBrush(Brush &brush, QSize size)
 {
     QImage img(size, QImage::Format_RGBA8888);
-    QGraphicsColorizeEffect *effect = new QGraphicsColorizeEffect();
+
+    QGraphicsColorizeEffect *effect;
+    QGraphicsBlurEffect *blur;
+    effect = new QGraphicsColorizeEffect();
+    blur = new QGraphicsBlurEffect();
+
     effect->setColor(brush.color_main);
-    QGraphicsBlurEffect *blur = new QGraphicsBlurEffect();
     blur->setBlurRadius(brush.blur);
     QImage drawImg = applyEffectToImage(brush.img,effect);
     int width = drawImg.scaled(brush.size, brush.size, Qt::KeepAspectRatio).width();
@@ -50,22 +62,26 @@ QImage BrushPainter::drawBrush(Brush &brush, QSize size)
 
     bool bEnd = paint.end();
     return applyEffectToImage(img, blur);
-}
+    }
 
 QImage BrushPainter::applyEffectToImage(QImage src, QGraphicsEffect *effect, int extent)
 {
     if(src.isNull()) return QImage();   //No need to do anything else!
     if(!effect) return src;             //No need to do anything else!
-    QGraphicsScene scene;
-    QGraphicsPixmapItem item;
-    item.setPixmap(QPixmap::fromImage(src));
-    item.setGraphicsEffect(effect);
-    scene.addItem(&item);
+
+    QList<QGraphicsItem*> itemsList = scene.items();
+    QList<QGraphicsItem*>::iterator iter = itemsList.begin();
+    QList<QGraphicsItem*>::iterator end = itemsList.end();
+    while(iter != end)
+    { QGraphicsItem* item = (*iter); scene.removeItem(item); iter++; }
+
+    QGraphicsPixmapItem *item = scene.addPixmap(QPixmap::fromImage(src));
+    item->setGraphicsEffect(effect);
     QImage res(src.size()+QSize(extent*2, extent*2), QImage::Format_RGBA8888);
     res.fill(Qt::transparent);
     QPainter ptr(&res);
     scene.render(&ptr, QRectF(), QRectF( -extent, -extent, src.width()+extent*2, src.height()+extent*2 ) );
-    qApp->processEvents();
+    ptr.end();
     return res;
 }
 
