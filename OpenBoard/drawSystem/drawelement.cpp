@@ -33,7 +33,7 @@ bool DrawElement::load(QString path)
     appFile.open(QFile::ReadOnly);
     QDataStream stream(&appFile);
     icon = load_image(stream);
-    stream >> lifeTime >> tickTime >> startDrawTime >> x >> y >> z >> width >> height >> keyCouter;
+    stream >> key >> lifeTime >> tickTime >> startDrawTime >> x >> y >> z >> width >> height >> keyCouter;
     load_add(stream);
     appFile.close();
 }
@@ -44,7 +44,7 @@ bool DrawElement::save(QString path)
     appFile.open(QFile::WriteOnly);
     QDataStream stream(&appFile);
     save_image(stream, icon);
-    stream << lifeTime << tickTime << startDrawTime << x << y << z << width << height << keyCouter;
+    stream << key << lifeTime << tickTime << startDrawTime << x << y << z << width << height << keyCouter;
     save_add(stream);
     appFile.close();
     /*QImage icon;

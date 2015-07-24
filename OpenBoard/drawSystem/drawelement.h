@@ -19,6 +19,7 @@ class DrawElement : public QObject
 
 protected:
     QImage icon;
+    QString key;
     int lifeTime;
     int tickTime;
     int startDrawTime;

@@ -425,10 +425,10 @@ void OGLWidget::paintGL()
 
 //WRITE TO FRAME BUFER FROM HERE
 
-drawTexture(0, 0, wax, way, textureList[0]);
+    drawTexture(0, 0, wax, way, textureList[0]);
 
-renderMouseCursor();
-glBindFramebuffer(GL_FRAMEBUFFER,0);
+    renderMouseCursor();
+    glBindFramebuffer(GL_FRAMEBUFFER,0);
 //WRITE TO SCREEN FROM HERE
 //drawTextBuffer(10,10,400,400);
 
@@ -775,6 +775,16 @@ void OGLWidget::crossOutWithAnimation(int n)
 void OGLWidget::generateFrames()
 {
 }
+bool OGLWidget::getIsBrushWindowOpened() const
+{
+    return isBrushWindowOpened;
+}
+
+void OGLWidget::setIsBrushWindowOpened(bool value)
+{
+    isBrushWindowOpened = value;
+}
+
 
 int OGLWidget::getCursorIndex() const
 {
@@ -1329,16 +1339,6 @@ int OGLWidget::getCountNullString(int index)
     }
     return sumLength;
 }
-bool OGLWidget::getIsBrushWindowOpened() const
-{
-    return isBrushWindowOpened;
-}
-
-void OGLWidget::setIsBrushWindowOpened(bool value)
-{
-    isBrushWindowOpened = value;
-}
-
 
 int OGLWidget::getFirstSymbolOfString(int index, bool symbol)
 {

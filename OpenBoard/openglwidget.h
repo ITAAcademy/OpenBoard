@@ -137,6 +137,9 @@ public:
     QList<DrawElement *> &getList();
     void setList(const QList<DrawElement *> &value);
 
+    bool getIsBrushWindowOpened() const;
+    void setIsBrushWindowOpened(bool value);
+
 public slots:
     void drawAnimated( bool record );
     void stopAnimated();
@@ -256,6 +259,7 @@ private:
     QList<DrawElement *> list_2;
     bool curentList = false;
     BrushManager m_manager;
+    bool isBrushWindowOpened = false;
 protected:
     void destroy(bool destroyWindow, bool destroySubWindow);
     void initializeGL(); // Метод для инициализирования opengl
