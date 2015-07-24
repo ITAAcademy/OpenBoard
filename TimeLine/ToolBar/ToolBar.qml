@@ -42,6 +42,36 @@ Rectangle {
                     main222.addTrack() ;
             }
         }
+        Buutton{
+            id: butPlay
+            title_text: ""
+            height: parent.width
+            width: parent.width
+          icon_source : "qrc:/iphone_toolbar_icons/playG.png"
+            onClicked: {
+                    main222.play()
+            }
+        }
+        Buutton{
+            id: butPause
+            title_text: ""
+            height: parent.width
+            width: parent.width
+          icon_source : "qrc:/iphone_toolbar_icons/pauseG.png"
+            onClicked: {
+                    main222.pause()
+            }
+        }
+        Buutton{
+            id: butStop
+            title_text: ""
+            height: parent.width
+            width: parent.width
+          icon_source : "qrc:/iphone_toolbar_icons/stopG.png"
+            onClicked: {
+                    main222.stop()
+            }
+        }
 
     }
 }

@@ -67,5 +67,9 @@
         <file>blockBlack.png</file>
         <file>blockGray.png</file>
         <file>iphone_toolbar_icons/arrow.png</file>
+        <file>iphone_toolbar_icons/black_tree.png</file>
+        <file>iphone_toolbar_icons/pauseG.png</file>
+        <file>iphone_toolbar_icons/playG.png</file>
+        <file>iphone_toolbar_icons/stopG.png</file>
     </qresource>
 </RCC>

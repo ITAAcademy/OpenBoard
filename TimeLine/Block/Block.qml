@@ -5,7 +5,7 @@ import QtGraphicalEffects 1.0
 
 Rectangle{
     id: root
-    color: "red"// "#343434"
+   //; color: "red"// "#343434"
     property int mIndex
     property int colIndex
     property int xChange: 0
@@ -15,6 +15,8 @@ Rectangle{
     property string colorKey : "green"
     property int minWidth : 20
     property ColorOverlay p_color_overlay
+     radius: 15
+     border { color: "white" ; width: 2 }
 
  //   property int time_scale_valueRecX
    // property int time_scale_valueRecY
@@ -27,6 +29,15 @@ z: 0
     onWidthChanged: {
         if (width < minWidth)
             width = minWidth
+        if (width < height)
+                icon.width = width;
+        else
+            icon.width = icon.height;
+
+       /* var temp = width + timeControll.getBlockStartTime(colIndex,mIndex) > scroll.width
+        if (temp)
+           scroll.flickableItem.y = temp */
+
        // timeControll.setBlockTime(colIndex,mIndex,width)
         //console.log("333 timeControll.setBlockTime " + colIndex + " " + mIndex + " " + width)
          //timeControll.setBlockTime(mainwindow.columnIndex,mainwindow.blockIndex,block_width_value.value)
@@ -191,12 +202,31 @@ console.log(" reles  root.z= " +   root.z)
     }
     Image {
         id: icon
-        anchors.fill: parent
-        source: "qrc:/Block/file.png"
-       // source:  "image://imageProvider/" + id
+        //anchors.fill: parent
+      //  source: "qrc:/Block/file.png"
+        source:  "image://imageProvider/0"
+        height: root.height
+        width: height
+        x:0
             // timeControll.getBlockIcon(colIndex,mIndex)
         cache: false
     }
+
+        Image {
+             parent : root
+            id: background
+            anchors.fill: parent
+           source: "qrc:/iphone_toolbar_icons/black_tree.png"
+           visible: false
+
+        }
+        OpacityMask {
+            anchors.fill: root
+            source: background
+            maskSource: root
+        }
+
+
     ColorOverlay {
         id: icon_coloroverlay
            anchors.fill: icon
