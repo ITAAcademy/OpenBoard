@@ -139,7 +139,11 @@ OGLWidget::OGLWidget(QWidget *parent) :
     // engine()->rootContext()->setContextProperty(QLatin1String("forma"), this);
     m_encoder = new AV_REncoder(this);
     fMetrics = NULL;
-
+editingRectangle.rect.setWidth(100);
+editingRectangle.rect.setHeight(100);
+editingRectangle.rect.setX(50);
+editingRectangle.rect.setY(50);
+editingRectangle.leftCornerSize=5;
     bRecord = false;
     this->setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint | Qt::WindowTitleHint);
 
@@ -210,7 +214,31 @@ void OGLWidget::resizeGL(int nWidth, int nHeight)
     way=nHeight;
     qDebug() << "CALL RESIZE";
 }
-void OGLWidget::renderMouseCursor(void) {
+void OGLWidget::paintBufferOnScreen(){
+    glEnable(GL_TEXTURE_2D);
+
+    glBindTexture(GL_TEXTURE_2D,fbo_texture);
+   // qglColor(Qt::green);//TO SEE TEXTURE
+    glBegin(GL_QUADS);
+         //  Draw Picture DEBUG INVERTED BY VERTICAL
+    glTexCoord2i(0,0); glVertex2i(0,way);
+    glTexCoord2i(0,1); glVertex2i(0,0);
+    glTexCoord2i(1,1); glVertex2i(wax,0);
+    glTexCoord2i(1,0); glVertex2i(wax,way);
+
+   /*
+    glTexCoord2i(0,0); glVertex2i(0,0);
+    glTexCoord2i(0,1); glVertex2i(0,way);
+    glTexCoord2i(1,1); glVertex2i(wax,way);
+    glTexCoord2i(1,0); glVertex2i(wax,0);*/
+
+    glEnd();
+   // glDeleteTextures(1, &texture);
+    glBindTexture(GL_TEXTURE_2D, 0);
+    glDisable(GL_TEXTURE_2D);
+}
+
+void OGLWidget::paintBrushInBuffer(void) {
 glBindFramebuffer(GL_FRAMEBUFFER_EXT, fbo); // Bind our frame buffer for rendering
 //glPushAttrib(GL_VIEWPORT_BIT | GL_ENABLE_BIT); // Push our glEnable and glViewport states
 //glViewport(0, 0, window_width, window_height); // Set the size of the frame buffer view port
@@ -284,27 +312,7 @@ glBindFramebuffer(GL_FRAMEBUFFER_EXT, 0); // Unbind our texture
 
 //saveFrameBufferToTexture();
 
-         glEnable(GL_TEXTURE_2D);
 
-         glBindTexture(GL_TEXTURE_2D,fbo_texture);
-        // qglColor(Qt::green);//TO SEE TEXTURE
-         glBegin(GL_QUADS);
-              //  Draw Picture DEBUG INVERTED BY VERTICAL
-         glTexCoord2i(0,0); glVertex2i(0,way);
-         glTexCoord2i(0,1); glVertex2i(0,0);
-         glTexCoord2i(1,1); glVertex2i(wax,0);
-         glTexCoord2i(1,0); glVertex2i(wax,way);
-
-        /*
-         glTexCoord2i(0,0); glVertex2i(0,0);
-         glTexCoord2i(0,1); glVertex2i(0,way);
-         glTexCoord2i(1,1); glVertex2i(wax,way);
-         glTexCoord2i(1,0); glVertex2i(wax,0);*/
-
-         glEnd();
-        // glDeleteTextures(1, &texture);
-         glBindTexture(GL_TEXTURE_2D, 0);
-         glDisable(GL_TEXTURE_2D);
 
 
 
@@ -427,7 +435,7 @@ void OGLWidget::paintGL()
 
     drawTexture(0, 0, wax, way, textureList[0]);
 
-    renderMouseCursor();
+
     glBindFramebuffer(GL_FRAMEBUFFER,0);
 //WRITE TO SCREEN FROM HERE
 //drawTextBuffer(10,10,400,400);
@@ -438,6 +446,88 @@ void OGLWidget::paintGL()
         if(getList()[i] != NULL)
             getList()[i]->draw();
     }
+    GLint x1 = editingRectangle.rect.x();
+      GLint y1 = editingRectangle.rect.y();
+        GLint x2 = editingRectangle.rect.x()+editingRectangle.rect.width();
+        GLint y2 = editingRectangle.rect.y()+editingRectangle.rect.height();
+        bool canDrawByMouse = true;
+
+        int leftCornerX1=x1-editingRectangle.leftCornerSize;
+         int leftCornerY1=y1-editingRectangle.leftCornerSize;
+                 int leftCornerX2=x1;
+                  int leftCornerY2=y1;
+
+
+if(isMousePress){
+
+    //editingRectangle.setX(0);
+   // editingRectangle.setY(0);
+
+        if (editingRectangle.editingRectangleMode==EDIT_RECTANGLE_UNBINDED)
+ if ((mousePos.x() >= leftCornerX1 && mousePos.x() <= leftCornerX2) && (mousePos.y() >= leftCornerY1 && mousePos.y() <= leftCornerY2))
+ {
+     editingRectangle.editingRectangleMode=EDIT_RECTANGLE_RESIZE;
+ }
+ else if ((mousePos.x() >= x1) && (mousePos.x() <= x2) &&
+          (mousePos.y() >= y1) && (mousePos.y() <= y2))
+ {
+     editingRectangle.editingRectangleMode=EDIT_RECTANGLE_MOVE;
+ }
+
+ switch(editingRectangle.editingRectangleMode){
+case EDIT_RECTANGLE_MOVE:
+     canDrawByMouse=false;
+    // qDebug()<<"EDIT_RECTANGLE_MOVE width"<<editingRectangle.rect.width();
+     editingRectangle.rect.moveTo(mousePos.x()-editingRectangle.rect.width()/2,
+                            mousePos.y()-editingRectangle.rect.height()/2 );
+     //editingRectangle.setX(mousePos.x()-editingRectangle.width()/2);
+     //editingRectangle.setY(mousePos.y()-editingRectangle.height()/2);
+     qDebug()<< "leftCornerX1:"<<leftCornerX1;
+     qDebug()<< "leftCornerY1:"<<leftCornerY1;
+      qDebug()<< "leftCornerX2:"<<leftCornerX2;
+      qDebug()<< "leftCornerY2:"<<leftCornerY2;
+ break;
+ case EDIT_RECTANGLE_RESIZE:
+     canDrawByMouse=false;
+     qDebug()<<"EDIT_RECTANGLE_RESIZE";
+     editingRectangle.rect.setX(mousePos.x());
+     editingRectangle.rect.setY(mousePos.y());
+    break;
+ }
+
+}
+if (canDrawByMouse)paintBrushInBuffer();
+paintBufferOnScreen();
+if (editingRectangle.isEditingRectangleVisible)
+{
+    //rectangle
+    glLineWidth(1);
+    glColor3f(1.0f, 0.0f, 0.0f);
+    glBegin(GL_LINES);
+    glVertex2i(x1,y1);
+    glVertex2i(x2,y1);
+
+    glVertex2i(x2,y1);
+    glVertex2i(x2,y2);
+
+    glVertex2i(x2,y2);
+    glVertex2i(x1,y2);
+
+    glVertex2i(x1,y2);
+    glVertex2i(x1,y1);
+    glEnd();
+
+    //left corner
+     glColor3f(0.0f, 1.0f, 0.0f);
+     glLineWidth(1);
+     glBegin(GL_QUADS);   //We want to draw a quad, i.e. shape with four sides
+          // glColor3i(1, 0, 0); //Set the colour to red
+           glVertex2i(leftCornerX1, leftCornerY1);            //Draw the four corners of the rectangle
+           glVertex2i(leftCornerX2, leftCornerY1);
+           glVertex2i(leftCornerX2, leftCornerY2);
+           glVertex2i(leftCornerX1, leftCornerY2);
+         glEnd();
+}
 
 
 }
@@ -525,7 +615,9 @@ void OGLWidget::mouseReleaseEvent(QMouseEvent *event)
     //int y = event->y();
     //drawImage();
     isMousePress=false;
-
+    if (editingRectangle.editingRectangleMode==EDIT_RECTANGLE_RESIZE)
+        editingRectangle.rect=editingRectangle.rect.normalized();
+    editingRectangle.editingRectangleMode=EDIT_RECTANGLE_UNBINDED;
 
 }
 
