@@ -26,6 +26,7 @@ class BrushManager : public QObject, public QQuickImageProvider
     QImage mask;
     int curentBrush;
     Brush createdBrush;
+    BrushPainter painter;
     /*
      *
  */

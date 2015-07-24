@@ -947,36 +947,30 @@ void MainWindow::on_action_Play_triggered()
     textEdit->setEnabled(false);
 
     onTextChanged();
+    // curent
     ((DrawTextElm*)drawElements[0])->setUnitList(mUnitList);
     ((DrawTextElm*)drawElements[0])->setUnParsestring(textEdit->toPlainText());
 
     //drawElements[0]->save("kaka");
  //   drawElements[0]->load("kaka");
-    mpOGLWidget->setList(drawElements);
+
   //  qDebug() << mUnitList.size();
    // QString name = this->windowTitle();
-    /*play = true;
-    while( play &&  drawCounter < mUnitList.size() && mpOGLWidget != 0 && mpOGLWidget->getStatus() != OGLWidget::STOP)
+    play = true;
+    while( play && mpOGLWidget != 0 && mpOGLWidget->getStatus() != OGLWidget::STOP)
     {
         //while(mpOGLWidget->getStatus() == OGLWidget::PAUSE)
         if( mpOGLWidget->getStatus() != OGLWidget::PAUSE )
         {
-            mUnitList.at(drawCounter++)->draw(mpOGLWidget);
-            int temp = (int)((float)((float)drawCounter/mUnitList.size()*100));
-            ui->statusBar->showMessage("Progress status:    " + QString::number(temp) + "%");
+            mpOGLWidget->setList(timeLine.getPointedBlocksDE());
+            qApp->processEvents();
         }
         else
             qApp->processEvents();
     }
- //   setWindowTitle(name);
-    if(mpOGLWidget != NULL)
-    {
-        mpOGLWidget->update();
-        mpOGLWidget->drawBuffer();
-    }
     on_action_Stop_triggered();
     play = false;
-    */
+
 }
 
 void MainWindow::on_action_Stop_triggered()

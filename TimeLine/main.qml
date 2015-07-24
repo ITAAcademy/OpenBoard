@@ -65,9 +65,7 @@ radius: 10
    property Item  p_scale_pointer
 
    property int mX : 0
-   onMXChanged: {
-       console.log("333  onMXChanged " +  mX)
-   }
+
 
     property real scaling : 1
     onScalingChanged: {
@@ -76,7 +74,6 @@ radius: 10
     }
 
     function addTrack()     {
-        console.log(" addTrack()")
         timeControll.addNewTrack( )
     rep_columns.model +=1
     }
@@ -85,6 +82,38 @@ radius: 10
         timeControll.removeLastTrack()
     rep_columns.model -=1
     }
+
+    function play()    {
+        if (playTimer.stopped)
+             playTimer.restart();
+        else
+         playTimer.start();
+        playTimer.stopped = false;
+
+
+    }
+    function pause()    {
+     playTimer.stop()
+
+
+    }
+    function stop()    {
+     playTimer.running = false
+        playTimer.stopped = true;
+
+
+    }
+
+    Timer {
+        id: playTimer
+        property bool stopped : false
+          interval: 1; running: false; repeat: true
+          onTriggered: {
+              scale_pointer.x +=1
+          }
+      }
+
+
 
     Rectangle {
         id: time_scale
@@ -151,45 +180,63 @@ radius: 10
             }
         }
         }
-        Image{
-            id: scale_pointer
-            source: "qrc:/iphone_toolbar_icons/arrow.png"
-            height: time_scale.height
-            width: height
-            scale: 1.5
-            x: 50
-            Component.onCompleted: {
-                main222.p_scale_pointer = scale_pointer
-            }
-
-            onYChanged: y = 0
-            onXChanged: {
-                var half_scale_pointer_width = -scale_pointer.width/2
-                if (x<half_scale_pointer_width)
-                   x = half_scale_pointer_width
-                else
-                {
-                    var temp = scroll.x + scroll.width - main222.p_trackbar.width*1.4
-                    if (x> temp)
-                    x = temp
-                }
-                timeControll.setScalePointerPos(x)
-                timeControll.calcPointedBlocks()
-            }
-            Rectangle{
-                height:  frama.height - 190
-                width: 1
-                color: "#6E0000"
-                x: scale_pointer.width/2
-
-            }
-            MouseArea {
-                anchors.fill: parent
-                drag.target : scale_pointer
-            }
+    }
+    Image{
+        id: scale_pointer
+        source: "qrc:/iphone_toolbar_icons/arrow.png"
+        height: time_scale.height
+        width: height
+        scale: 1.5
+        x: 20 //absolute zdvig 20
+        z: time_scale.z +1
+        //property int trackbar_right
+        Component.onCompleted: {
+            main222.p_scale_pointer = scale_pointer
         }
 
+        onYChanged: y = 0
+        onXChanged: {
+           // console.log("XXXXXXXXXXXXXXXscroll.flickableItem.contentX " +scroll.flickableItem.contentX)
+            var half_scale_pointer_width = -scale_pointer.width/2
+            var zdvig = 20 - scroll.flickableItem.contentX
+                if (zdvig < 0)
+                 zdvig = -width/2//   zdvig = 0;
 
+
+            if (x<zdvig)
+            {
+                scroll.flickableItem.contentX -= zdvig -x
+                if (scroll.flickableItem.contentX < 0)
+                        scroll.flickableItem.contentX = 0;
+               x = zdvig
+            }
+            else
+            {
+                var temp = scroll.width -width/2  /// scroll.x + scroll.width - main222.p_trackbar.width*1.4
+                if (x> temp)
+                {
+                    scroll.flickableItem.contentX += x - temp
+                    var sad = timeControll.getMaxTrackTime() - scroll.width + 17  // scroll.flickableItem.contentWidth - scroll.width + 10
+                    if (scroll.flickableItem.contentX  >  sad)
+                            scroll.flickableItem.contentX = sad;
+                x = temp
+                }
+            }
+            timeControll.setScalePointerPos(x)
+            timeControll.calcPointedBlocks()
+        }
+        Rectangle{
+            height:  frama.height - 190
+            width: 1
+            color: "#6E0000"
+            x: scale_pointer.width/2
+
+        }
+        MouseArea {
+            id: spMA
+            anchors.fill: parent
+            drag.target : scale_pointer
+        }
     }
 
     Row { //scroll + toolbar
@@ -201,14 +248,14 @@ radius: 10
 
          ScrollView {
               id: scroll
-
-              property int bla: flickableItem.contentX
-              onBlaChanged:  {console.log("bla changed")
-               time_scale.x = -bla + 30
-              }
-
               width: parent.width - tollbar.width
               height: parent.height
+              property int horizontalX: flickableItem.contentX
+             property int baba: scroll.flickableItem.contentWidth
+              onHorizontalXChanged:  {
+               time_scale.x = -horizontalX + 30
+              }
+
               horizontalScrollBarPolicy :Qt.ScrollBarAlwaysOn
               verticalScrollBarPolicy  :Qt.ScrollBarAlwaysOn
                 clip: true

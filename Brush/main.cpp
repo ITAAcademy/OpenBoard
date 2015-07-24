@@ -7,7 +7,7 @@ int main(int argc, char *argv[])
     app.setOrganizationDomain("qt-project.org");\
     app.setApplicationName(QFileInfo(app.applicationFilePath()).baseName());\
 
-    BrushMeneger timeLine;
+    BrushManager timeLine;
     timeLine.show();
 
     return app.exec();\

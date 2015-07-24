@@ -86,6 +86,9 @@ public:
     virtual int getTickTime() const;
     virtual void setTickTime(int value);
 
+    OGLWidget *getDrawWidget() const;
+    void setDrawWidget(OGLWidget *value);
+
 signals:
 
 public slots:

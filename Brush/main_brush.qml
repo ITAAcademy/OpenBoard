@@ -45,6 +45,7 @@ Rectangle{
         height: parent.height * 0.2
         source: "image://loader/head"
         fillMode: Image.PreserveAspectFit
+        antialiasing: true
         x: root.border.width
         y: root.border.width + 3
         function update()

@@ -11,7 +11,7 @@ void BrushManager::setCurentBrush(int value)
 {
     curentBrush = value;
     createdBrush.img = imageStack[value];
-   createdBrush.color_img = BrushPainter::applyColor(createdBrush);
+   createdBrush.color_img = painter.applyColor(createdBrush);
     emit currentBrushChanged();
     qDebug()<<"emit currentBrushChanged();";
 }
@@ -84,6 +84,7 @@ void BrushManager::hide()
 void BrushManager::close()
 {
     view.close();
+        painter.close();
 }
 
 void BrushManager::setPosition(QPoint pos)
@@ -103,7 +104,7 @@ QImage BrushManager::requestImage(const QString &id, QSize *size, const QSize& r
 
     if(id[0] == 'h')
     {
-       return BrushPainter::drawBrush(createdBrush);
+       return painter.drawBrush(createdBrush);
     }
 }
 
@@ -172,7 +173,8 @@ void BrushManager::setColor(QColor value)
 {
     //qDebug() << value;
     createdBrush.color_main = value;
-    createdBrush.color_img = BrushPainter::applyColor(createdBrush);
+    createdBrush.color_img = painter.applyColor(createdBrush);
+    qApp->processEvents(QEventLoop::ExcludeUserInputEvents, 200);
     emit colorChanged();
   //    ;
 }
