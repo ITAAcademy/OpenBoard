@@ -127,16 +127,12 @@ void ListControll::setBlocks(int col,const QList <Element> &value)
 
 void ListControll::setBlockTime(int col, int i,int value)
 {
-  //   = value;
-    if (maxTrackTime == tracks[col].time)
-    {
+  //   = value;    
         tracks[col].time += value - tracks[col].block[i].draw_element->getLifeTime();  ;
       tracks[col].block[i].draw_element->setLifeTime(value);
-        if (maxTrackTime < tracks[col].time)
-            maxTrackTime = tracks[col].time;
-    }
-    else
-         tracks[col].block[i].draw_element->setLifeTime(value);
+
+    recountMaxTrackTime();
+    qDebug() << "DDDDD  tracks[col].block[i].draw_element->getLifeTime()=" <<   tracks[col].block[i].draw_element->getLifeTime();
 }
 
 void ListControll::setBlockStartTime(int col, int i,int value)
@@ -229,6 +225,7 @@ int ListControll::getMaxTrackTime( ) const
 int ListControll::getTrackSize(int col) const
 {
     int temp = tracks[col].block.size();
+    qDebug()  << "FHFHHFHFHFHFH getTrackSize = " << temp;
     return temp;
 }
 
@@ -345,7 +342,7 @@ void ListControll::hide()
  void ListControll::setScalePointerPos( int x)
  {
      scale_pointer_pos = x + 10;
-    // qDebug() << "RRRRRRRRRRRRRRR =" << scale_pointer_pos;
+ // qDebug() << "RRRRRRRRRRRRRRR scale_pointer_pos=" << scale_pointer_pos;
  }
 
  int ListControll::getScalePointerPos( )

@@ -266,6 +266,8 @@ ApplicationWindow  {
                  timeControll.setDrawY(mainwindow.columnIndex,mainwindow.blockIndex,block_Y_value.value)
                  timeControll.setDrawZ(mainwindow.columnIndex,mainwindow.blockIndex,block_Z_value.value)
                  timeControll.setDrawSize(mainwindow.columnIndex,mainwindow.blockIndex,block_Width_value.text,block_Height_value.text)
+
+
                  globalRep.updateModel()
                  close();
              }

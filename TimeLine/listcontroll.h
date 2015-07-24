@@ -16,7 +16,7 @@
 
 struct Element {
     QString key;
-    int lifeTime;
+   // int lifeTime;
 
     //QImage icon;
 //    int startDrawTime;

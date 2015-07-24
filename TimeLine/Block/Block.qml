@@ -15,6 +15,7 @@ Rectangle{
     property string colorKey : "green"
     property int minWidth : 20
     property ColorOverlay p_color_overlay
+     property Item  p_main222
      radius: 15
      border { color: "white" ; width: 2 }
 
@@ -29,6 +30,7 @@ z: 0
     onWidthChanged: {
         if (width < minWidth)
             width = minWidth
+
         if (width < height)
                 icon.width = width;
         else
@@ -39,6 +41,7 @@ z: 0
            scroll.flickableItem.y = temp */
 
        // timeControll.setBlockTime(colIndex,mIndex,width)
+
         //console.log("333 timeControll.setBlockTime " + colIndex + " " + mIndex + " " + width)
          //timeControll.setBlockTime(mainwindow.columnIndex,mainwindow.blockIndex,block_width_value.value)
     }
@@ -57,8 +60,9 @@ z: 0
         columnIndex : root.colIndex
         blockIndex: root.mIndex
         onXChanged: {
-            if (x > root.width - width)
-                x = root.width - width;
+            var temp = root.width - width
+            if (x > temp)
+                x = temp;
             else if (x < 0 )
                 x = 0;
 
@@ -167,29 +171,24 @@ main222.needToLightSelected = true
             {
                 mouseArea.drag.target = root;
                  timeControll.setBlockTime(colIndex, mIndex,root.width);
+
+                // item_col.width = timeControll.getMaxTrackTime()// item_col.childrenRect.width
+                console.log("118 item_col.width="+  item_col.width )
+                console.log("119 timeControll.getMaxTrackTime="+  timeControll.getMaxTrackTime() )
+                 globalRep.updateModel();
+
             }
              bChangeSize = false;
 
-            if (main222.maIsPressed && main222.dropEntered === 0) {
+            if (root.p_main222.maIsPressed && root.p_main222.dropEntered === 0) {
                 root.x = main222.clicked_blockX
                 root.y = main222.clicked_blockY
         // if (globalRep.isDrag)
             //   rep_columns.itemAt(main222.selectedBlockCol).setColorize(main222.selectedBlockIndex,"#8000FF00")
 
             }
-         main222.maIsPressed = 0
-           /* if(bChangeSize)
-            {
-                timeControll.addNewTest("vasia");
-               globalRep.updateModel();
-               timeControll.removeLastTest();
-              globalRep.updateModel();
-
-            }*/
-
-
-
-           drop.visible = true;
+         root.p_main222.maIsPressed = 0
+             drop.visible = true;
              drop.enabled = true;
 //globalRep.updateModel()
 
@@ -197,7 +196,7 @@ console.log(" reles  root.z= " +   root.z)
         }
         }
         onEntered: {
-            console.log(mouseX + " YY " + mouseY)
+           // console.log(mouseX + " YY " + mouseY)
         }
     }
     Image {
