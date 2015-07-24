@@ -376,7 +376,7 @@ void OGLWidget::initializeGL()
    loadTexture(m_manager.getCreatedBrush().color_img, TEXTURE_INDEX_BRUSH);
     //loadTextureFromFile(":/ThirdPart/images/brush.png");
     initFrameBuffer(); // Create our frame buffer object
-  /*  list_1.append(GenerationDrawElement("kaka.text", this, 0));
+   /* list_1.append(GenerationDrawElement("kaka.text", this, 0));
     list_1.append(GenerationDrawElement("brush.png", this, 0));*/
 
 }
@@ -417,12 +417,12 @@ void OGLWidget::paintGL()
        glLoadIdentity(); // загружаем матрицу
        glOrtho(0,wax,way,0,1,0); // подготавливаем плоскости для матрицы
        glEnable(GL_BLEND);
-       glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    //   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+       //glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE);
+       glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
 
-      // qglColor(Qt::white);
-
-
+       qglColor(Qt::white);
 //WRITE TO FRAME BUFER FROM HERE
 
     drawTexture(0, 0, wax, way, textureList[0]);

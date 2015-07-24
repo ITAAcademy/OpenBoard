@@ -22,7 +22,7 @@ struct Element {
 //    int startDrawTime;
 //    int x, y, z, width, height; //on canva
 
-    DrawElement *draw_element;
+    DrawElement *draw_element = NULL;
 
     Element( QString key, int time,int x = 0, int y = 0, int z = 0, int width = 100, int height = 100) {
         this->key = key;
@@ -47,7 +47,8 @@ struct Element {
 
     }
     ~Element() {
-        //delete draw_element;
+     /*   if(draw_element != NULL)
+            delete draw_element;*/
     }
 
 };

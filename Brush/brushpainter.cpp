@@ -13,8 +13,7 @@ BrushPainter::~BrushPainter()
 {
     QGraphicsColorizeEffect *effect = new QGraphicsColorizeEffect();
     effect->setColor(brush.color_main);
-    return applyEffectToImage(brush.img, effect);
-
+    return applyEffectToImage(brush.img, effect).convertToFormat(QImage::Format_RGBA8888);
 }
 
 QImage BrushPainter::drawBrush(Brush &brush, QSize size)
@@ -66,6 +65,7 @@ QImage BrushPainter::applyEffectToImage(QImage src, QGraphicsEffect *effect, int
     res.fill(Qt::transparent);
     QPainter ptr(&res);
     scene.render(&ptr, QRectF(), QRectF( -extent, -extent, src.width()+extent*2, src.height()+extent*2 ) );
+    qApp->processEvents();
     return res;
 }
 

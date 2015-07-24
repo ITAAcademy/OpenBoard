@@ -227,6 +227,7 @@ void MainWindow::closeEvent(QCloseEvent*)
     if(mpOGLWidget != NULL)
     {
         on_action_Hide_triggered();
+        mpOGLWidget->close();
     }
     qDebug() << "Close drawWidget";
 }
