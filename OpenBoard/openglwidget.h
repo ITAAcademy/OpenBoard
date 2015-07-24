@@ -142,7 +142,7 @@ RectangleEditor editingRectangle;
     void setCursorIndex(int value);
 
     void drawTexture(int x, int y, int width, int height, int index);
-    void drawTexture(int x, int y, int width, int height, GLuint texture);
+    void drawTexture(int x, int y, int width, int height, GLuint texture,int angle=0,float scaleX = 1,float scaleY = 1);
     void update();
     void initFrameBufferTexture();
     void initFrameBufferDepthBuffer();

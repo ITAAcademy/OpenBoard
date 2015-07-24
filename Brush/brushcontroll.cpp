@@ -219,7 +219,7 @@ float BrushManager::getAngleDelta()
 return createdBrush.angle_delta;
 }
 
-float BrushManager::getAffine()
+int BrushManager::getAffine()
 {
 return createdBrush.afinn;
 }

@@ -67,7 +67,7 @@ public:
     Q_INVOKABLE float getCount();
     Q_INVOKABLE float getSizeDelta();
     Q_INVOKABLE float getAngleDelta();
-    Q_INVOKABLE float getAffine();
+    Q_INVOKABLE int getAffine();
     Q_INVOKABLE QColor getColor();
 
     Brush getCreatedBrush();
