@@ -48,6 +48,7 @@ public slots:
     void closeEvent(QCloseEvent* event);
     void moveEvent(QMoveEvent *event);
     void resizeEvent(QResizeEvent *event);
+    void focusInEvent(QFocusEvent * event);
     void on_action_Show_triggered();
     void on_action_Hide_triggered();
     void on_action_Play_triggered();

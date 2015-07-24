@@ -10,9 +10,11 @@
 #include <QQmlContext>
 #include <QList>
 #include <QDebug>
+#include <QFileDialog>
+
 //#include <QDeclarativeContext>
 #include <../OpenBoard/drawSystem/drawsystem.h>
-#include "imageprovider.h"
+
 
 struct Element {
     QString key;
@@ -46,6 +48,16 @@ struct Element {
           draw_element->setSize(100, 100);
 
     }
+    Element(DrawElement *element) {
+        this->key = element->getKey();
+        draw_element = element;
+          draw_element->setLifeTime(100);
+         draw_element->setX(0);
+          draw_element->setY(0);
+          draw_element->setZ(0);
+          draw_element->setSize(100, 100);
+
+    }
     ~Element() {
      /*   if(draw_element != NULL)
             delete draw_element;*/
@@ -65,24 +77,24 @@ struct Track {
 
 
 
-class ListControll : public QObject
+class ListControll : public QObject, public QQuickImageProvider
 {
     Q_OBJECT
-    ImageProvider image_provider;
-   // ImageProvider imageProvider;
- int maxTrackTime ;
+
+    int maxTrackTime ;
     QQuickView view;
     QPoint prevMousePosition;
-  // QVector< QList <QString> > test;
-  //  QVector< QList <int> > testWidth;
+    // QVector< QList <QString> > test;
+    //  QVector< QList <int> > testWidth;
 
-     QVector< Track > tracks;
-     Element selectedBlock;
-int def_min_block_width = 100;
-int scale_pointer_pos = 0;
-QList <Element> pointed_block;
-   //  QVector< int > testColumnWidth;
-     void recountMaxTrackTime();
+    QVector< Track > tracks;
+    Element selectedBlock;
+    QPoint selectedBlockPoint;
+    int def_min_block_width = 100;
+    int scale_pointer_pos = 0;
+    QList <Element> pointed_block;
+    //  QVector< int > testColumnWidth;
+    void recountMaxTrackTime();
 public:
     explicit ListControll(QObject *parent = 0);
     ~ListControll();
@@ -90,32 +102,34 @@ public:
     void show();
     void close();
     void hide();
+    void setFocus();
     Q_INVOKABLE int getTrackSize(int col) const;
     Q_INVOKABLE QString getBlockKey(int col, int i) const;
     Q_INVOKABLE void addNewBlock(int col, QString str );
     Q_INVOKABLE void addNewTrack( );
+    Q_INVOKABLE void loadFromFile( );
     Q_INVOKABLE bool removeLastBlock(int col);
-     Q_INVOKABLE bool removeLastTrack();
+    Q_INVOKABLE bool removeLastTrack();
     Q_INVOKABLE void reverseBlocks(int col, int init_pos, int end_pos);
     void setBlocks(int col,const  QList <Element> &value);
-Q_INVOKABLE   void setBlockKey(int col, int i, QString name);\
-     Q_INVOKABLE void setBlockTime(int col, int i, int value);
+    Q_INVOKABLE   void setBlockKey(int col, int i, QString name);\
+    Q_INVOKABLE void setBlockTime(int col, int i, int value);
     Q_INVOKABLE void setBlockStartTime(int col, int i, int value);
     Q_INVOKABLE int getBlockStartTime(int col, int i);
     Q_INVOKABLE   void removeBlock(int col, int i);
     Q_INVOKABLE int getBlockTime(int col, int i) const;
-     Q_INVOKABLE Element getBlock(int col, int i) const;
+    Q_INVOKABLE Element getBlock(int col, int i) const;
     Q_INVOKABLE int getTrackTime(int col) const;
     Q_INVOKABLE int getMaxTrackTime( ) const;
-  Q_INVOKABLE void moveWindow( const int x,const int y) ;
-   Q_INVOKABLE void  setPrevMousePosition( const int x,const int y) ;
-   Q_INVOKABLE void setPrevMousePosition( const QPoint x);
+    Q_INVOKABLE void moveWindow( const int x,const int y) ;
+    Q_INVOKABLE void  setPrevMousePosition( const int x,const int y) ;
+    Q_INVOKABLE void setPrevMousePosition( const QPoint x);
 
     Q_INVOKABLE void setSelectedBlock(int col, int i);
     Q_INVOKABLE Element getSelectedBlock() ;
 
-     Q_INVOKABLE void setScalePointerPos( int x);
-Q_INVOKABLE int getScalePointerPos( );
+    Q_INVOKABLE void setScalePointerPos( int x);
+    Q_INVOKABLE int getScalePointerPos( );
 
     Q_INVOKABLE void calcPointedBlocks( );
     Q_INVOKABLE QList <Element> getPointedBlocks( );
@@ -124,8 +138,8 @@ Q_INVOKABLE int getScalePointerPos( );
     Q_INVOKABLE void setBlockIcon(int col, int i, QImage icon);
     Q_INVOKABLE QImage getBlockIcon(int col, int i);
 
-     Q_INVOKABLE void setDrawX(int col, int i, int value);
-     Q_INVOKABLE int getDrawX(int col, int i);
+    Q_INVOKABLE void setDrawX(int col, int i, int value);
+    Q_INVOKABLE int getDrawX(int col, int i);
     Q_INVOKABLE void setDrawY(int col, int i, int value);
     Q_INVOKABLE int getDrawY(int col, int i);
     Q_INVOKABLE void setDrawZ(int col, int i, int value);
@@ -137,6 +151,11 @@ Q_INVOKABLE int getScalePointerPos( );
     Q_INVOKABLE void  pause();
     Q_INVOKABLE void  stop();
 
+    QImage requestImage(const QString & id, QSize * size, const QSize & requestedSize);
+
+
+    QPoint getSelectedBlockPoint() const;
+    void setSelectedBlockPoint(const QPoint &value);
 
 signals:
 

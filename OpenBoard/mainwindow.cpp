@@ -196,9 +196,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
        addToolBar(Qt::TopToolBarArea, toolBar);
 
-       drawElements.append(new DrawTextElm(mpOGLWidget));
+      /* drawElements.append(new DrawTextElm(mpOGLWidget));
        ((DrawTextElm*)drawElements[0])->setLifeTime(6000);
-       ((DrawTextElm*)drawElements[0])->setRect(180,180,200,200);
+       ((DrawTextElm*)drawElements[0])->setRect(180,180,200,200);*/
 
 /*
  //load new style
@@ -319,6 +319,8 @@ void MainWindow::on_action_Hide_triggered()
 
 void MainWindow::moveEvent(QMoveEvent *event)
 {
+    timeLine.setFocus();
+
     if(mpOGLWidget != NULL)
         mpOGLWidget->move(pos().x() + width() + WINDOW_MARGING, pos().y());
 }
@@ -327,6 +329,11 @@ void MainWindow::resizeEvent(QResizeEvent *event)
 {
     if(mpOGLWidget != NULL)
         mpOGLWidget->move(pos().x() + width() + WINDOW_MARGING, pos().y());
+}
+
+void MainWindow::focusInEvent(QFocusEvent * event)
+{
+
 }
 
 void MainWindow::on_action_Font_triggered()
@@ -948,10 +955,15 @@ void MainWindow::on_action_Play_triggered()
 
     onTextChanged();
     // curent
-    ((DrawTextElm*)drawElements[0])->setUnitList(mUnitList);
-    ((DrawTextElm*)drawElements[0])->setUnParsestring(textEdit->toPlainText());
+    //((DrawTextElm*)drawElements[0])->setUnitList(mUnitList);
+    //((DrawTextElm*)drawElements[0])->setUnParsestring(textEdit->toPlainText());
 
-    //drawElements[0]->save("kaka");
+     DrawTextElm drawTTElements(mpOGLWidget);
+     drawTTElements.setUnitList(mUnitList);
+     drawTTElements.setUnParsestring(textEdit->toPlainText());
+     drawTTElements.save("kaka");
+     drawTTElements.load("kaka.txt");
+     qDebug() << "                                                          qqqqqqqq" << drawTTElements.getType();
  //   drawElements[0]->load("kaka");
 
   //  qDebug() << mUnitList.size();

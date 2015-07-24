@@ -15,8 +15,17 @@ Rectangle{
     property string colorKey : "green"
     property int minWidth : 20
     property ColorOverlay p_color_overlay
-     radius: 15
-     border { color: "white" ; width: 2 }
+    radius: 15
+    border { color: "white" ; width: 2 }
+
+    function hideMenu()
+    {
+        context_menu.visible = false;
+    }
+    function showMenu()
+    {
+        context_menu.visible = true;
+    }
 
  //   property int time_scale_valueRecX
    // property int time_scale_valueRecY
@@ -54,14 +63,12 @@ z: 0
         y: 30
         z: 500
         visible: false
+        parent: root.parent
         columnIndex : root.colIndex
         blockIndex: root.mIndex
         onXChanged: {
-            if (x > root.width - width)
-                x = root.width - width;
-            else if (x < 0 )
-                x = 0;
-
+                x = root.x + root.width/2;
+            z:500
 
         }
         globalRep: root.globalRep
@@ -113,9 +120,12 @@ onYChanged: y=0;
             }
         }
         onPressed: {
-         timeControll.setSelectedBlock(colIndex,mIndex);
+            if(main222.selectedBlock != null)
+                main222.selectedBlock.hideMenu();
+            timeControll.setSelectedBlock(colIndex,mIndex);
+            main222.selectedBlock = root;
             main222.p_scale_pointer.x = mouseX + root.x
-main222.needToLightSelected = true
+            main222.needToLightSelected = true
             for (var y=0; y< rep_columns.model; y++)
                  rep_columns.itemAt(y).abortColorize()
             main222.selectedBlockCol = colIndex
@@ -127,7 +137,7 @@ main222.needToLightSelected = true
             if (mouse.button == Qt.RightButton)
             {
                 context_menu.visible = true
-                context_menu.x = mouseX
+                context_menu.x = root.height
                 drag.target = null
             }
         else
@@ -204,7 +214,7 @@ console.log(" reles  root.z= " +   root.z)
         id: icon
         //anchors.fill: parent
       //  source: "qrc:/Block/file.png"
-        source:  "image://imageProvider/0"
+        source:  "image://imageProvider/" + colIndex + "R" + mIndex
         height: root.height
         width: height
         x:0
@@ -224,6 +234,7 @@ console.log(" reles  root.z= " +   root.z)
             anchors.fill: root
             source: background
             maskSource: root
+
         }
 
 

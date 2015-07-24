@@ -1,6 +1,16 @@
 #include "listcontroll.h"
 
 
+
+QPoint ListControll::getSelectedBlockPoint() const
+{
+    return selectedBlockPoint;
+}
+
+void ListControll::setSelectedBlockPoint(const QPoint &value)
+{
+    selectedBlockPoint = value;
+}
 void ListControll::recountMaxTrackTime()
 {
     maxTrackTime = 0;
@@ -47,10 +57,15 @@ void ListControll::removeBlock(int col, int i)
 
 void ListControll::addNewBlock(int col, QString str)
 {
+  /*  QString open = QFileDialog::getOpenFileName();
+    DrawElement *elm = GenerationDrawElement(open);
+    if(elm == NULL)
+        return;
+    qDebug() << "9999999999999999999999999999999999999999999999" << elm->getType();*/
     Element temp;
     temp.key = str;
     temp.draw_element->setLifeTime(def_min_block_width);
-    tracks[col].block.append(Element(str,def_min_block_width));
+    tracks[col].block.append(temp);
     tracks[col].time += def_min_block_width;
    // testWidth[col].append(200);
     //testColumnWidth[col]+=200;
@@ -72,6 +87,20 @@ void ListControll::addNewTrack( )
 
    if (maxTrackTime < temp_traclwidth)
        maxTrackTime = temp_traclwidth; //1234
+}
+
+void ListControll::loadFromFile()
+{
+    QString open = QFileDialog::getOpenFileName();
+    DrawElement *elm = GenerationDrawElement(open);
+    if(elm == NULL)
+        return;
+    qDebug() << "9999999999999999999999999999999999999999999999" << elm->getType();
+    QPoint p = getSelectedBlockPoint();
+    Element &temp = tracks[p.x()].block[p.y()];
+    temp.key = elm->getKey();
+    temp.draw_element = elm;
+    temp.draw_element->setLifeTime(def_min_block_width);
 }
 
 bool ListControll::removeLastBlock(int col)
@@ -233,7 +262,7 @@ int ListControll::getTrackSize(int col) const
 }
 
 
-ListControll::ListControll(QObject *parent) : QObject(parent)
+ListControll::ListControll(QObject *parent) : QObject(parent), QQuickImageProvider(QQuickImageProvider::Image)
 {
     maxTrackTime = 0;
    /* QList <QString>  temp;
@@ -254,27 +283,27 @@ ListControll::ListControll(QObject *parent) : QObject(parent)
         temp_int.append(200);
         testWidth.append(temp_int);
 */
-addNewTrack( );
-selectedBlock  = getBlock(0,0);
-recountMaxTrackTime();
+    addNewTrack( );
+    selectedBlock  = getBlock(0,0);
+    recountMaxTrackTime();
     if (qgetenv("QT_QUICK_CORE_PROFILE").toInt()) {\
         QSurfaceFormat f = view.format();\
         f.setProfile(QSurfaceFormat::CoreProfile);\
         f.setVersion(4, 4);\
         view.setFormat(f);\
     }\
-  //  view.connect(view.engine(), SIGNAL(quit()), &app, SLOT(quit()));
+    //  view.connect(view.engine(), SIGNAL(quit()), &app, SLOT(quit()));
     new QQmlFileSelector(view.engine(), &view);\
     view.engine()->rootContext()->setContextProperty("timeControll", this);
-   view.engine()->rootContext()->setContextProperty("viewerWidget", &view);
+    view.engine()->rootContext()->setContextProperty("viewerWidget", &view);
 
-     view.engine()->addImageProvider("imageProvider",&image_provider);//&image_provider);
-       view.setSource(QUrl("qrc:/main.qml")); \
+    view.engine()->addImageProvider("imageProvider", this);//&image_provider);
+    view.setSource(QUrl("qrc:/main.qml")); \
     view.setResizeMode(QQuickView::SizeRootObjectToView);
     view.setPersistentOpenGLContext(true);
     view.setColor("transparent");
-view.setMinimumHeight(235);
-view.setWidth(800);
+    view.setMinimumHeight(235);
+    view.setWidth(800);
 
 
 
@@ -300,6 +329,7 @@ view.setWidth(800);
 void ListControll::setSelectedBlock(int col, int i)
 {
       selectedBlock = getBlock(col,i);
+      selectedBlockPoint = QPoint(col, i);
 }
 
  Element ListControll::getSelectedBlock()
@@ -337,7 +367,19 @@ void ListControll::close()
 
 void ListControll::hide()
 {
-        view.hide();
+    view.hide();
+}
+
+void ListControll::setFocus()
+{
+   // view.setPosition(view.position());
+    if(view.isVisible())
+    {
+        view.setVisible(false);
+        view.setWindowState(Qt::WindowNoState);
+        view.setVisible(true);
+    }
+
 }
 
 
@@ -363,7 +405,7 @@ void ListControll::hide()
      QList <DrawElement*> res;
      for(auto elm : pointed_block)
          res.append(elm.draw_element);
-     qDebug() << "Curent            count of element in scene   =   " << pointed_block.size();
+   //  qDebug() << "Curent            count of element in scene   =   " << pointed_block.size();
      return res;
  }
 
@@ -386,6 +428,10 @@ void ListControll::hide()
          }
      }
       qDebug() << "FFFFFFFFFFFFFFF getPointedBlocks size" << pointed_block.size();
+      for(int i = 0; i <pointed_block.size(); i++)
+      {
+          qDebug() << i <<  "   " << pointed_block[i].draw_element->getType();
+      }
  }
 
  void  ListControll::play()
@@ -401,4 +447,34 @@ void  ListControll::stop()
 {
 
 }
+
+QImage ListControll::requestImage(const QString &id, QSize *size, const QSize &requestedSize)
+{
+
+   // QUrl url("http://lorempixel.com/" + id);
+    //QNetworkReply* reply = manager->get(QNetworkRequest(url));
+   // QEventLoop eventLoop;
+   // QObject::connect(reply, SIGNAL(finished()), &eventLoop, SLOT(quit()));
+   // eventLoop.exec();
+ //   if (reply->error() != QNetworkReply::NoError)
+ //       return QImage();
+    /*if(getSelectedBlock().draw_element->getIcon().isNull())
+        return QImage(":/0.png");
+
+    return getSelectedBlock().draw_element->getIcon();*/
+
+            //= QImage::fromData(reply->readAll());
+    /*size->setWidth(image.width());
+    size->setHeight(image.height());*/
+
+    QVector <QStringRef> argv = id.splitRef('R');
+    QImage img = getBlock(argv[0].toInt(), argv[1].toInt()).draw_element->getIcon();
+    if(img.isNull())
+            return QImage(":/0.png");
+
+    return img;
+
+
+}
+
 

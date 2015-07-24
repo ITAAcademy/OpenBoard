@@ -8,7 +8,23 @@ OGLWidget *DrawElement::getDrawWidget() const
 
 void DrawElement::setDrawWidget(OGLWidget *value)
 {
+    disconnect(pDrawWidget, SIGNAL(startSignal()), this, SLOT(start()));
+    disconnect(pDrawWidget, SIGNAL(stopSignal()), this, SLOT(stop()));
+    disconnect(pDrawWidget, SIGNAL(pauseSignal()), this, SLOT(pause()));
     pDrawWidget = value;
+    connect(pDrawWidget, SIGNAL(startSignal()), this, SLOT(start()));
+    connect(pDrawWidget, SIGNAL(stopSignal()), this, SLOT(stop()));
+    connect(pDrawWidget, SIGNAL(pauseSignal()), this, SLOT(pause()));
+}
+
+QString DrawElement::getKey() const
+{
+    return key;
+}
+
+void DrawElement::setKey(const QString &value)
+{
+    key = value;
 }
 DrawElement::DrawElement(OGLWidget *drawWidget, QObject *parent) : QObject(parent)
 {
@@ -21,6 +37,7 @@ DrawElement::DrawElement(OGLWidget *drawWidget, QObject *parent) : QObject(paren
     height = 100;
     keyCouter = 0;
     lifeTime = 10;
+    icon = QImage();
 
     connect(pDrawWidget, SIGNAL(startSignal()), this, SLOT(start()));
     connect(pDrawWidget, SIGNAL(stopSignal()), this, SLOT(stop()));
@@ -206,6 +223,12 @@ void DrawElement::start()
     keyCouter = 0;
     tickTimer.start();
     bPause = false;
+}
+
+void DrawElement::restart()
+{
+    keyCouter = 0;
+    tickTimer.restart();
 }
 
 bool DrawElement::load_add(QDataStream &stream)

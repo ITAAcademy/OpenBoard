@@ -49,6 +49,7 @@ public:
 
 
 
+
     void setPosition(QPoint pos);
     void setPosition( int x, int y);
 
@@ -87,7 +88,10 @@ public:
     virtual void setTickTime(int value);
 
     OGLWidget *getDrawWidget() const;
-    void setDrawWidget(OGLWidget *value);
+    virtual void setDrawWidget(OGLWidget *value);
+
+    QString getKey() const;
+    void setKey(const QString &value);
 
 signals:
 
@@ -98,6 +102,7 @@ private slots:
     void pause();
     void stop();
     void start();
+    void restart();
 
     bool save_image(QDataStream &stream, QImage img);
     QImage load_image(QDataStream &stream);

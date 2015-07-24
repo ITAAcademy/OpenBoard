@@ -71,5 +71,6 @@
         <file>iphone_toolbar_icons/pauseG.png</file>
         <file>iphone_toolbar_icons/playG.png</file>
         <file>iphone_toolbar_icons/stopG.png</file>
+        <file>0.png</file>
     </qresource>
 </RCC>

@@ -5,7 +5,7 @@
 #include "drawimage.h"
 
 
-static DrawElement *GenerationDrawElement( QString path, OGLWidget *drawWidget, QObject *parent )
+static DrawElement *GenerationDrawElement( QString path, OGLWidget *drawWidget = NULL, QObject *parent = NULL )
 {
     QFileInfo target(path);
     if(!target.exists())

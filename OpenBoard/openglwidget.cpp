@@ -67,7 +67,7 @@ qDebug("before int realIndex = index; ");
            imgList.append(img);
            textureList.append(texture);
        }
-
+        qDebug("TEXTURE_FINAL");
        return realIndex;
     //bind the texture ID
 }
@@ -113,7 +113,7 @@ void OGLWidget::drawTexture( int x, int y, int width, int height, GLuint texture
 void OGLWidget::drawTexture(int x, int y, int width, int height, int index)
 {
     drawTexture(x, y, width, height, textureList[index]);
-    qDebug() << "void OGLWidget::drawTexture(int x, int y, int width, int height, int index)";
+    //qDebug() << "void OGLWidget::drawTexture(int x, int y, int width, int height, int index)";
 }
 
 

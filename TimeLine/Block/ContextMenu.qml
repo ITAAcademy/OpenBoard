@@ -55,8 +55,23 @@ property Repeater globalRep
             onButtonClicked: {
                 var col= contextMenuItem.columnIndex;
                 var id = contextMenuItem.blockIndex;
-                timeControll.removeBlock(col,id)
-                globalRep.updateModel()
+                timeControll.removeBlock(col,id);
+                globalRep.updateModel();
+                contextMenuItem.visible = false;
+            }
+        }
+        ContextButton {
+            text_color: contextMenuItem.text_color
+            color: contextMenuItem.color
+            id: but_loadFile
+            button_text: "Load from file"
+            index: 3
+            onButtonClicked: {
+                /*var col= contextMenuItem.columnIndex;
+                var id = contextMenuItem.blockIndex;*/
+                timeControll.loadFromFile();//removeBlock(col,id)
+                globalRep.updateModel();
+                contextMenuItem.visible = false;
             }
         }
     }

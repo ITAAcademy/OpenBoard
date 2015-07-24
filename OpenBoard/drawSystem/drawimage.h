@@ -14,6 +14,8 @@ public:
     bool load_add(QDataStream &stream);
     bool save_add(QDataStream &stream);
     void setDrawImage(QImage img);
+
+    void setDrawWidget(OGLWidget *value);
 };
 
 #endif // _H

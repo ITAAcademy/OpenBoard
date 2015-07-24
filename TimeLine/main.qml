@@ -56,6 +56,7 @@ radius: 10
     property int drop_blockY : -1
     property int maIsPressed: 0
     property int dropEntered: 0
+   property Item selectedBlock
    property int selectedBlockCol : 0
    property int selectedBlockIndex : 0
    property  bool needToLightSelected : false

@@ -28,9 +28,19 @@ bool DrawImageElm::save_add(QDataStream &stream)
 
 void DrawImageElm::setDrawImage(QImage img)
 {
-    image = img.convertToFormat(QImage::Format_RGBA8888);
+    image = img;
     icon = img;
-    textureIndex = pDrawWidget->loadTexture(image);
-  //  qDebug() << "QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQWWWWWWWWWWWWWWWWW     " << textureIndex;
+    //image.save("12334243534534534.png");
+    if(pDrawWidget != NULL)
+        textureIndex = pDrawWidget->loadTexture(image);
+
+}
+
+void DrawImageElm::setDrawWidget(OGLWidget *value)
+{
+    DrawElement::setDrawWidget(value);
+    if(textureIndex == 0)
+        textureIndex = pDrawWidget->loadTexture(image);
+    //qDebug() << "QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQWWWWWWWWWWWWWWWWW     " << textureIndex;
 }
 
