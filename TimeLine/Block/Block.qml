@@ -5,7 +5,7 @@ import QtGraphicalEffects 1.0
 
 Rectangle{
     id: root
-    color: "#343434"
+    color: "red"// "#343434"
     property int mIndex
     property int colIndex
     property int xChange: 0
@@ -15,7 +15,6 @@ Rectangle{
     property string colorKey : "green"
     property int minWidth : 20
     property ColorOverlay p_color_overlay
-    property int mX : x
 
  //   property int time_scale_valueRecX
    // property int time_scale_valueRecY
@@ -33,11 +32,10 @@ z: 0
          //timeControll.setBlockTime(mainwindow.columnIndex,mainwindow.blockIndex,block_width_value.value)
     }
     onXChanged: {
-        root.mX = x
+        main222.mX = x
+        timeControll.setBlockStartTime(root.colIndex,root.mIndex, x)
     }
-    onMXChanged: {
-        console.log("333  onMXChanged " +  root.mX)
-    }
+
 
     ContextMenu {
         id: context_menu
@@ -195,6 +193,9 @@ console.log(" reles  root.z= " +   root.z)
         id: icon
         anchors.fill: parent
         source: "qrc:/Block/file.png"
+       // source:  "image://imageProvider/" + id
+            // timeControll.getBlockIcon(colIndex,mIndex)
+        cache: false
     }
     ColorOverlay {
         id: icon_coloroverlay

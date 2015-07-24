@@ -64,6 +64,11 @@ radius: 10
   property Item  p_trackbar
    property Item  p_scale_pointer
 
+   property int mX : 0
+   onMXChanged: {
+       console.log("333  onMXChanged " +  mX)
+   }
+
     property real scaling : 1
     onScalingChanged: {
         if (scaling <= 0.02)
@@ -288,7 +293,7 @@ radius: 10
                                                {
 
                    rep_columns.itemAt(main222.selectedBlockCol).setColorize(main222.selectedBlockIndex,"#8000FF00")
-                     main222.p_scale_pointer.x = rep_columns.itemAt(main222.selectedBlockCol).getBlockX(2)//main222.selectedBlockIndex)
+                     main222.p_scale_pointer.x =main222.mX// rep_columns.itemAt(main222.selectedBlockCol).getBlockX(2)//main222.selectedBlockIndex)
 
                                                }
                                                    main222.needToLightSelected = false

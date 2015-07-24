@@ -234,4 +234,9 @@ void DrawElement::setTickTime(int value)
     tickTime = value;
 }
 
+QSize  DrawElement::getSize()
+{
+    return QSize(width,height);
+}
+
 

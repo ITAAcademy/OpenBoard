@@ -214,6 +214,7 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     mSettings.setMainWindowRect(geometry());
+    timeLine.close();
     //drawThread.quit();
     if(toolBar != NULL)
         delete toolBar;
@@ -293,6 +294,7 @@ void MainWindow::on_action_Hide_triggered()
       //  mpOGLWidget->stopAnimated();
     on_action_Stop_triggered();
     mpOGLWidget->hide();
+    timeLine.hide();
   //  mpOGLWidget->close();*/
     // delete mpOGLWidget;
     ui->action_Pause->setEnabled(false);

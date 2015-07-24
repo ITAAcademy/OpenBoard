@@ -137,9 +137,6 @@ public:
     QList<DrawElement *> &getList();
     void setList(const QList<DrawElement *> &value);
 
-    bool getIsBrushWindowOpened() const;
-    void setIsBrushWindowOpened(bool value);
-
 public slots:
     void drawAnimated( bool record );
     void stopAnimated();
@@ -194,7 +191,6 @@ private:
     unsigned int fbo_texture; // The texture object to write our frame buffer object to
     QString drawText;
     bool bRecord;
-    bool isBrushWindowOpened=false;
     void generateFrames();
     StatusDraw curStatus; // 0 - stop; 1 - play; -1 - pause
     QThread drawThread;

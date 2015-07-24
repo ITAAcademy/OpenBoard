@@ -32,7 +32,6 @@ protected:
 public:
     explicit DrawElement( OGLWidget *drawWidget, QObject *parent = 0);
     virtual ~DrawElement();
-
     virtual void draw();
     bool load(QString path);
     bool save(QString path);
@@ -54,6 +53,7 @@ public:
 
     void setSize( QSize pos );
     void setSize( int width, int height);
+    QSize getSize();
 
     void setRect (QRect rect);
     void setRect ( int x, int y, int width, int height);
