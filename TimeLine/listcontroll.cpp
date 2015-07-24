@@ -156,16 +156,12 @@ void ListControll::setBlocks(int col,const QList <Element> &value)
 
 void ListControll::setBlockTime(int col, int i,int value)
 {
-  //   = value;
-    if (maxTrackTime == tracks[col].time)
-    {
+  //   = value;    
         tracks[col].time += value - tracks[col].block[i].draw_element->getLifeTime();  ;
       tracks[col].block[i].draw_element->setLifeTime(value);
-        if (maxTrackTime < tracks[col].time)
-            maxTrackTime = tracks[col].time;
-    }
-    else
-         tracks[col].block[i].draw_element->setLifeTime(value);
+
+    recountMaxTrackTime();
+    qDebug() << "DDDDD  tracks[col].block[i].draw_element->getLifeTime()=" <<   tracks[col].block[i].draw_element->getLifeTime();
 }
 
 void ListControll::setBlockStartTime(int col, int i,int value)
@@ -258,6 +254,7 @@ int ListControll::getMaxTrackTime( ) const
 int ListControll::getTrackSize(int col) const
 {
     int temp = tracks[col].block.size();
+    qDebug()  << "FHFHHFHFHFHFH getTrackSize = " << temp;
     return temp;
 }
 
@@ -387,7 +384,7 @@ void ListControll::setFocus()
  void ListControll::setScalePointerPos( int x)
  {
      scale_pointer_pos = x + 10;
-    // qDebug() << "RRRRRRRRRRRRRRR =" << scale_pointer_pos;
+ // qDebug() << "RRRRRRRRRRRRRRR scale_pointer_pos=" << scale_pointer_pos;
  }
 
  int ListControll::getScalePointerPos( )
@@ -427,25 +424,29 @@ void ListControll::setFocus()
               blockXstart = blockXend;
          }
      }
+/*
+	*		show curent play element
+*/
       qDebug() << "FFFFFFFFFFFFFFF getPointedBlocks size" << pointed_block.size();
       for(int i = 0; i <pointed_block.size(); i++)
       {
           qDebug() << i <<  "   " << pointed_block[i].draw_element->getType();
       }
+
  }
 
  void  ListControll::play()
  {
-
+    emit playSignal();
  }
  void  ListControll::pause()
  {
-
+    emit pauseSignal();
  }
 
 void  ListControll::stop()
 {
-
+    emit stopSignal();
 }
 
 QImage ListControll::requestImage(const QString &id, QSize *size, const QSize &requestedSize)

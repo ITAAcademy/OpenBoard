@@ -105,6 +105,22 @@ radius: 10
 
     }
 
+     Connections {
+       target: timeControll
+
+      onPlaySignal: {
+       main222.play()
+       }
+      onPauseSignal: {
+       main222.pause()
+       }
+       onStopSignal: {
+       main222.stop()
+       }
+       }
+
+
+
     Timer {
         id: playTimer
         property bool stopped : false
@@ -219,11 +235,14 @@ radius: 10
                     scroll.flickableItem.contentX += x - temp
                     var sad = timeControll.getMaxTrackTime() - scroll.width + 17  // scroll.flickableItem.contentWidth - scroll.width + 10
                     if (scroll.flickableItem.contentX  >  sad)
+                    {
                             scroll.flickableItem.contentX = sad;
+                        timeControll.stop();
+                    }
                 x = temp
                 }
             }
-            timeControll.setScalePointerPos(x)
+            timeControll.setScalePointerPos(x-30)
             timeControll.calcPointedBlocks()
         }
         Rectangle{
@@ -267,14 +286,15 @@ radius: 10
                     scale: 1
                     property Item p_columns
                     property Item p_trackbar
-                    width: childrenRect.width
+                   // width: childrenRect.width
                     height: childrenRect.height
                     onWidthChanged: {
-                        if (width >  time_scale.width)
+                        if (time_scale.width < width  )
                         {
                             time_scale.width = width  ;
                             time_scale_rep.model = time_scale.width/ time_scale.division
                         }
+                        console.log("122  item_col.width=" + item_col.width)
                     }
                     Column {
                           id: columns
@@ -299,7 +319,7 @@ radius: 10
                                function setColorize(indexa, color)
                                {
                                        repka.itemAt(indexa).p_color_overlay.color = color
-                                    console.log("GGGGGGGGGG " + repka.itemAt(indexa).mX)
+                                  //  console.log("GGGGGGGGGG " + repka.itemAt(indexa).mX)
                                   // console.log("GGGGGGGGGG " + repka.itemAt(indexa).x)
                                    //main222.p_scale_pointer.x = repka.itemAt(indexa).x
                                }
@@ -336,15 +356,15 @@ radius: 10
                                            model:  timeControll.getTrackSize(trackbar.mIndex)//     bar_track.mIndex)
                                            function updateModel()      {
                                                model = model - 1;
+                                               item_col.width = timeControll.getMaxTrackTime()
                                                     model =  timeControll.getTrackSize(bar_track.mIndex)
                                                if (main222.needToLightSelected)
                                                {
-
                    rep_columns.itemAt(main222.selectedBlockCol).setColorize(main222.selectedBlockIndex,"#8000FF00")
                      main222.p_scale_pointer.x =main222.mX// rep_columns.itemAt(main222.selectedBlockCol).getBlockX(2)//main222.selectedBlockIndex)
-
                                                }
                                                    main222.needToLightSelected = false
+                                               console.log("FFFFFFFFFFFFFF updateModel")
                                            }
                                            delegate:
                                            ContentBlock.Block{
@@ -354,6 +374,7 @@ radius: 10
                                                mIndex: index
                                                 colIndex:  bar_track.mIndex
                                    width:  timeControll.getBlockTime(colIndex, mIndex) //* main222.scaling
+                                    p_main222: main222
 
                                                title: timeControll.getBlockKey(colIndex,mIndex)
 

@@ -27,6 +27,9 @@ Rectangle{
         context_menu.visible = true;
     }
 
+     property Item  p_main222
+
+
  //   property int time_scale_valueRecX
    // property int time_scale_valueRecY
     /*radius: 0
@@ -38,6 +41,7 @@ z: 0
     onWidthChanged: {
         if (width < minWidth)
             width = minWidth
+
         if (width < height)
                 icon.width = width;
         else
@@ -48,6 +52,7 @@ z: 0
            scroll.flickableItem.y = temp */
 
        // timeControll.setBlockTime(colIndex,mIndex,width)
+
         //console.log("333 timeControll.setBlockTime " + colIndex + " " + mIndex + " " + width)
          //timeControll.setBlockTime(mainwindow.columnIndex,mainwindow.blockIndex,block_width_value.value)
     }
@@ -177,29 +182,24 @@ onYChanged: y=0;
             {
                 mouseArea.drag.target = root;
                  timeControll.setBlockTime(colIndex, mIndex,root.width);
+
+                // item_col.width = timeControll.getMaxTrackTime()// item_col.childrenRect.width
+                console.log("118 item_col.width="+  item_col.width )
+                console.log("119 timeControll.getMaxTrackTime="+  timeControll.getMaxTrackTime() )
+                 globalRep.updateModel();
+
             }
              bChangeSize = false;
 
-            if (main222.maIsPressed && main222.dropEntered === 0) {
+            if (root.p_main222.maIsPressed && root.p_main222.dropEntered === 0) {
                 root.x = main222.clicked_blockX
                 root.y = main222.clicked_blockY
         // if (globalRep.isDrag)
             //   rep_columns.itemAt(main222.selectedBlockCol).setColorize(main222.selectedBlockIndex,"#8000FF00")
 
             }
-         main222.maIsPressed = 0
-           /* if(bChangeSize)
-            {
-                timeControll.addNewTest("vasia");
-               globalRep.updateModel();
-               timeControll.removeLastTest();
-              globalRep.updateModel();
-
-            }*/
-
-
-
-           drop.visible = true;
+         root.p_main222.maIsPressed = 0
+             drop.visible = true;
              drop.enabled = true;
 //globalRep.updateModel()
 
@@ -207,7 +207,7 @@ console.log(" reles  root.z= " +   root.z)
         }
         }
         onEntered: {
-            console.log(mouseX + " YY " + mouseY)
+           // console.log(mouseX + " YY " + mouseY)
         }
     }
     Image {
