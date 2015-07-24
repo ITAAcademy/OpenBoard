@@ -92,13 +92,21 @@ bool OGLWidget::reloadTexture(int index)
     loadTexture(imgList[index], index);
 
 }
-void OGLWidget::drawTexture( int x, int y, int width, int height, GLuint texture){
+void OGLWidget::drawTexture( int x, int y, int width, int height, GLuint texture,int angle,float scaleX,float scaleY){
 //loadTextures();
   // glLoadIdentity();
     glEnable(GL_TEXTURE_2D);
     qglColor(Qt::white);
-
     glBindTexture(GL_TEXTURE_2D, texture);
+    int cx=x+width/2,cy=y+height/2;
+
+    glPushMatrix();
+
+    glTranslatef(cx, cy, 0);
+        glScalef(scaleX, scaleY, 1.f);
+    glRotatef(angle, 0, 0, 1);
+    glTranslatef(-cx, -cy, 0);
+
     glBegin(GL_QUADS);
             //Draw Picture
     glTexCoord2i(0,0); glVertex2i(x, y+height);
@@ -107,7 +115,7 @@ void OGLWidget::drawTexture( int x, int y, int width, int height, GLuint texture
     glTexCoord2i(1,0); glVertex2i(x+width, y+height);
     glEnd();
      glDisable(GL_TEXTURE_2D);
-
+    glPopMatrix();
 
 }
 void OGLWidget::drawTexture(int x, int y, int width, int height, int index)
@@ -254,12 +262,12 @@ glBindFramebuffer(GL_FRAMEBUFFER_EXT, fbo); // Bind our frame buffer for renderi
 
 //fillText("DEBUG TEXT TO BUFER",QColor(Qt::white),40,40);
    // int PointSize = 10;
-    if (isMousePress){
+
        // glPointSize(PointSize);
     //glLineWidth(PointSize);
    // glEnable(GL_TEXTURE_2D);
         //qDebug() << "before index";
-
+qDebug() << "paint brush in buffer";
     GLuint texture = textureList[TEXTURE_INDEX_BRUSH];
     //qDebug()<<"texture:"<<texture;
   // if (!ismouseWasPressedBeforeDrag)
@@ -275,12 +283,44 @@ glBindFramebuffer(GL_FRAMEBUFFER_EXT, fbo); // Bind our frame buffer for renderi
          glBindTexture(GL_TEXTURE_2D,texture);
         QSize brushTextureSize = getTextureSize();
         int BRUSH_SIZE=m_manager.getSize();
+        float scaleX=1,scaleY=1;
+        float randScalePtX = rand() % (m_manager.getAffine()*2);
+        float randScalePtY = rand() % (m_manager.getAffine()*2);
+        if (randScalePtX>m_manager.getAffine())
+            randScalePtX = 1/((int)randScalePtX %m_manager.getAffine());
+        if (randScalePtY>m_manager.getAffine())
+            randScalePtY = 1/((int)randScalePtY %m_manager.getAffine());
+        float MAX_SCALE = 2;
+        //100 - 2 (MAX_SCALE)
+        //1 - x
+        //x = 2/100=0.02
+        if(randScalePtX!=0)
+        scaleX=MAX_SCALE/randScalePtX;
+        if(randScalePtY!=0)
+        scaleY=MAX_SCALE/randScalePtY;
+       // qDebug() <<"scaleX:"<<scaleX;
+       // qDebug() <<"scaleY:"<<scaleY;
         //qDebug() << "brushSize.width():"<<brushTextureSize.width();
         //qDebug() << "brushSize.height():"<<brushTextureSize.height();
         double koff = brushTextureSize.width()/brushTextureSize.height();
-        drawTexture(mousePos.x()-BRUSH_SIZE/2 ,mousePos.y()-BRUSH_SIZE/koff/2,BRUSH_SIZE,BRUSH_SIZE/koff,texture);
-
-   /*
+         int angle = m_manager.getAngleDelta();
+            int maxDispers = (int)m_manager.getDisepers();
+            int i=1;
+            if (maxDispers>0 && m_manager.getCount()>0) i=m_manager.getCount();
+            for (;i>0;i--)
+            {
+         int dispersX = 0;
+         int dispersY = 0;
+         if ((int)m_manager.getDisepers()>0){
+             dispersX = rand() % (maxDispers*2);
+             dispersY = rand() % (maxDispers*2);
+             if (dispersX > maxDispers)dispersX = -(dispersX % maxDispers);
+             if (dispersY > maxDispers)dispersX = -(dispersY % maxDispers);
+         }
+        drawTexture(mousePos.x()-BRUSH_SIZE/2 + dispersX ,mousePos.y()-BRUSH_SIZE/koff/2 + dispersY,BRUSH_SIZE,BRUSH_SIZE/koff,
+                    texture,m_manager.getAngleDelta(),scaleX,scaleY);
+            }
+        /*
     else{
       glEnable(GL_TEXTURE_2D);
        glBindTexture(GL_TEXTURE_2D,texture);
@@ -308,7 +348,7 @@ glBindFramebuffer(GL_FRAMEBUFFER_EXT, fbo); // Bind our frame buffer for renderi
     // glDisable(GL_TEXTURE_2D);
 
 
-  }
+
 
 glBindFramebuffer(GL_FRAMEBUFFER_EXT, 0); // Unbind our texture
    //FRAMEBUFFER PART
@@ -499,9 +539,9 @@ case EDIT_RECTANGLE_MOVE:
      editingRectangle.rect.setY(mousePos.y());
     break;
  }
-
-}
 if (canDrawByMouse)paintBrushInBuffer();
+}
+
 paintBufferOnScreen();
 if (editingRectangle.isEditingRectangleVisible)
 {

@@ -24,6 +24,7 @@ SOURCES += main.cpp\
     drawSystem/drawtext.cpp \
     ../Brush/brushcontroll.cpp \
     ../Brush/brushpainter.cpp \
+    ../TimeLine/imageprovider.cpp \
     drawSystem/drawimage.cpp
 
 
@@ -46,6 +47,7 @@ HEADERS  += mainwindow.h \
     drawSystem/drawsystem.h \
     ../Brush/brushcontroll.h \
     ../Brush/brushpainter.h \
+    ../TimeLine/imageprovider.h \
     drawSystem/drawimage.h
 
 FORMS    += mainwindow.ui \
