@@ -17,6 +17,7 @@
 #include <QGLWidget>
 #include <QtOpenGL>
 #include <QTimer>
+#include <QRect>
 #include "encoder/videorencoder.h"
 #include "../Brush/brushcontroll.h"
 class DrawTextElm;
@@ -35,7 +36,13 @@ struct ColorMarker{
     int startIndex;
     QColor value;
 };
-
+enum EditingRectangleBindMode {EDIT_RECTANGLE_UNBINDED =0,EDIT_RECTANGLE_MOVE=1,EDIT_RECTANGLE_RESIZE=2};
+struct RectangleEditor {
+    QRect rect;
+    int leftCornerSize;
+    bool isEditingRectangleVisible = true;
+    int editingRectangleMode = EDIT_RECTANGLE_UNBINDED;
+};
 class Encoder;
 
 struct DrawData{
@@ -56,6 +63,13 @@ public:
      */
    bool isMousePress = false;
    bool ismouseWasPressedBeforeDrag = false;
+
+
+
+
+
+//bool isEditingRectangleBindedToCursor = false;
+RectangleEditor editingRectangle;
    volatile bool isCrossingNow;
     QList<ColorMarker> colors;
     QImage brushBuffer;
@@ -132,7 +146,7 @@ public:
     void update();
     void initFrameBufferTexture();
     void initFrameBufferDepthBuffer();
-    void renderMouseCursor();
+    void paintBrushInBuffer();
     void initFrameBuffer();
     QList<DrawElement *> &getList();
     void setList(const QList<DrawElement *> &value);
@@ -140,6 +154,7 @@ public:
     bool getIsBrushWindowOpened() const;
     void setIsBrushWindowOpened(bool value);
 
+    void paintBufferOnScreen();
 public slots:
     void drawAnimated( bool record );
     void stopAnimated();

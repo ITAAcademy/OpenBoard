@@ -257,7 +257,7 @@ void MainWindow::on_action_Show_triggered()
     mpOGLWidget->setFixedSize(GLWIDGET_SIZE);
     mpOGLWidget->move(pos().x() + width() + WINDOW_MARGING, pos().y());
 
-    timeLine.show();
+    //timeLine.show();
     ui->action_Pause->setEnabled(true);
     ui->action_Play->setEnabled(true);
     ui->action_Stop->setEnabled(true);
