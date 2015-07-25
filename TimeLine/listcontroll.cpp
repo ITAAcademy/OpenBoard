@@ -189,6 +189,7 @@ QImage ListControll::getBlockIcon(int col, int i)
  void ListControll::setDrawX(int col, int i, int value)
  {
      tracks[col].block[i].draw_element->setX(value);
+
  }
 
  int ListControll::getDrawX(int col, int i)

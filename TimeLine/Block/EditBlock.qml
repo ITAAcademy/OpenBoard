@@ -262,9 +262,9 @@ ApplicationWindow  {
                  timeControll.setBlockTime(mainwindow.columnIndex,mainwindow.blockIndex,block_time_value.text)
                  timeControll.setBlockKey(mainwindow.columnIndex,mainwindow.blockIndex,block_name_value.text)
 
-                 timeControll.setDrawX(mainwindow.columnIndex,mainwindow.blockIndex,block_X_value.value)
-                 timeControll.setDrawY(mainwindow.columnIndex,mainwindow.blockIndex,block_Y_value.value)
-                 timeControll.setDrawZ(mainwindow.columnIndex,mainwindow.blockIndex,block_Z_value.value)
+                 timeControll.setDrawX(mainwindow.columnIndex,mainwindow.blockIndex,block_X_value.text)
+                 timeControll.setDrawY(mainwindow.columnIndex,mainwindow.blockIndex,block_Y_value.text)
+                 timeControll.setDrawZ(mainwindow.columnIndex,mainwindow.blockIndex,block_Z_value.text)
                  timeControll.setDrawSize(mainwindow.columnIndex,mainwindow.blockIndex,block_Width_value.text,block_Height_value.text)
 
 
