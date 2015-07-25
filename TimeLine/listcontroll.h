@@ -111,6 +111,7 @@ public:
     Q_INVOKABLE void loadFromFile( );
     Q_INVOKABLE bool removeLastBlock(int col);
     Q_INVOKABLE bool removeLastTrack();
+    Q_INVOKABLE bool removeTrack(int col);
     Q_INVOKABLE void reverseBlocks(int col, int init_pos, int end_pos);
     void setBlocks(int col,const  QList <Element> &value);
     Q_INVOKABLE   void setBlockKey(int col, int i, QString name);\

@@ -54,6 +54,8 @@ void ListControll::removeBlock(int col, int i)
         tracks[col].time -= temp;
         tracks[col].track_cnahged = true;
    }
+   if (selectedBlockPoint == QPoint(col,i))
+       selectedBlock = NULL;
     }
 }
 
@@ -128,6 +130,8 @@ bool ListControll::removeLastBlock(int col)
     tracks[col].time -= temp;
     tracks[col].track_cnahged = true;
    }
+   if (selectedBlockPoint.x() == col)
+       selectedBlock = NULL;
     return true;
     }
     return false;
@@ -141,6 +145,25 @@ bool ListControll::removeLastTrack()
     tracks.pop_back();
     if (maxTrackTime == lastColTime)
         recountMaxTrackTime();
+
+    if (selectedBlockPoint.x() == tracks.size() - 1)
+        selectedBlock = NULL;
+    return true;
+    }
+    return false;
+}
+
+bool ListControll::removeTrack(int col)
+{
+    if (tracks.size()>col)
+    {
+    int lastColTime = tracks[col].time;
+    tracks.removeAt(col);
+    if (maxTrackTime == lastColTime)
+        recountMaxTrackTime();
+
+    if (selectedBlockPoint.x() == tracks.size() - 1)
+        selectedBlock = NULL;
     return true;
     }
     return false;

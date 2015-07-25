@@ -59,6 +59,13 @@ radius: 10
    property Item selectedBlock
    property int selectedBlockCol : 0
    property int selectedBlockIndex : 0
+   onSelectedBlockColChanged: {
+
+   }
+   onSelectedBlockIndexChanged: {
+
+   }
+
    property  bool needToLightSelected : false
   property Repeater p_rep_columns
     property Item p_item_col
@@ -206,6 +213,7 @@ radius: 10
         //property int trackbar_right
         Component.onCompleted: {
             main222.p_scale_pointer = scale_pointer
+          //  x = 40
         }
 
         onYChanged: y = 0
