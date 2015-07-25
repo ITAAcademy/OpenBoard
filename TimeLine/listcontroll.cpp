@@ -428,7 +428,7 @@ void ListControll::setFocus()
 /*
 	*		show curent play element
 */
-      qDebug() << "FFFFFFFFFFFFFFF getPointedBlocks size" << pointed_block.size();
+     // qDebug() << "FFFFFFFFFFFFFFF getPointedBlocks size" << pointed_block.size();
       for(int i = 0; i <pointed_block.size(); i++)
       {
           qDebug() << i <<  "   " << pointed_block[i].draw_element->getType();
@@ -438,6 +438,7 @@ void ListControll::setFocus()
 
  void  ListControll::play()
  {
+    // qDebug() << "FFFFFFFFFFFFFFF  emit playSignal();";
     emit playSignal();
  }
  void  ListControll::pause()

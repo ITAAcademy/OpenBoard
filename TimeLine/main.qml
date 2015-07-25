@@ -85,11 +85,9 @@ radius: 10
     }
 
     function play()    {
-        if (playTimer.stopped)
-             playTimer.restart();
-        else
+        playTimer.running = true;
+
          playTimer.start();
-        playTimer.stopped = false;
 
 
     }
@@ -100,7 +98,7 @@ radius: 10
     }
     function stop()    {
      playTimer.running = false
-        playTimer.stopped = true;
+        scale_pointer.x = 0
 
 
     }
@@ -123,7 +121,6 @@ radius: 10
 
     Timer {
         id: playTimer
-        property bool stopped : false
           interval: 1; running: false; repeat: true
           onTriggered: {
               scale_pointer.x +=1
@@ -232,12 +229,15 @@ radius: 10
                 var temp = scroll.width -width/2  /// scroll.x + scroll.width - main222.p_trackbar.width*1.4
                 if (x> temp)
                 {
+                    if (timeControll.getMaxTrackTime()  >= scroll.width)
+                    {
                     scroll.flickableItem.contentX += x - temp
                     var sad = timeControll.getMaxTrackTime() - scroll.width + 17  // scroll.flickableItem.contentWidth - scroll.width + 10
                     if (scroll.flickableItem.contentX  >  sad)
                     {
                             scroll.flickableItem.contentX = sad;
                         timeControll.stop();
+                    }
                     }
                 x = temp
                 }
