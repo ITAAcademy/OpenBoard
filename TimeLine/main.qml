@@ -238,7 +238,12 @@ radius: 10
                             scroll.flickableItem.contentX = sad;
                         timeControll.stop();
                     }
+
+
                     }
+                    else
+                        if (timeControll.getMaxTrackTime() <= scroll.width )
+                        timeControll.stop();
                 x = temp
                 }
             }

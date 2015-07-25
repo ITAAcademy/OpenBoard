@@ -42,6 +42,7 @@ void ListControll::removeBlock(int col, int i)
              //  testWidth[col][i];
        tracks[col].block.removeAt(i);
         tracks[col].time -= temp;
+         tracks[col].track_cnahged = true;
    // testColumnWidth[col] -= temp;
     recountMaxTrackTime();
 
@@ -51,6 +52,7 @@ void ListControll::removeBlock(int col, int i)
        int temp = tracks[col].block[i].draw_element->getLifeTime();
        tracks[col].block.removeAt(i);
         tracks[col].time -= temp;
+        tracks[col].track_cnahged = true;
    }
     }
 }
@@ -67,6 +69,7 @@ void ListControll::addNewBlock(int col, QString str)
     temp.draw_element->setLifeTime(def_min_block_width);
     tracks[col].block.append(temp);
     tracks[col].time += def_min_block_width;
+    tracks[col].track_cnahged = true;
    // testWidth[col].append(200);
     //testColumnWidth[col]+=200;
   //  qDebug() << "SIZE   " << test.size();
@@ -114,6 +117,7 @@ bool ListControll::removeLastBlock(int col)
        int temp = tracks[col].block.last().draw_element->getLifeTime();
       tracks[col].block.pop_back();
     tracks[col].time -= temp;
+    tracks[col].track_cnahged = true;
     recountMaxTrackTime();
 
    }
@@ -122,6 +126,7 @@ bool ListControll::removeLastBlock(int col)
        int temp = tracks[col].block.last().draw_element->getLifeTime();
       tracks[col].block.pop_back();
     tracks[col].time -= temp;
+    tracks[col].track_cnahged = true;
    }
     return true;
     }
@@ -147,11 +152,13 @@ bool ListControll::removeLastTrack()
    tracks[col].block[init_pos] = tracks[col].block[end_pos];
   //   testWidth[col][init_pos] = testWidth[col][end_pos];
      tracks[col].block[end_pos] = temp;
+     tracks[col].track_cnahged = true;
  }
 
 void ListControll::setBlocks(int col,const QList <Element> &value)
 {
     tracks[col].block = value;
+    tracks[col].track_cnahged = true;
 }
 
 void ListControll::setBlockTime(int col, int i,int value)
@@ -159,6 +166,7 @@ void ListControll::setBlockTime(int col, int i,int value)
   //   = value;    
         tracks[col].time += value - tracks[col].block[i].draw_element->getLifeTime();  ;
       tracks[col].block[i].draw_element->setLifeTime(value);
+      tracks[col].track_cnahged = true;
 
     recountMaxTrackTime();
     qDebug() << "DDDDD  tracks[col].block[i].draw_element->getLifeTime()=" <<   tracks[col].block[i].draw_element->getLifeTime();
@@ -412,6 +420,9 @@ void ListControll::setFocus()
      pointed_block.clear();
      for (int i=0; i<tracks.size(); i++)
      {
+         if (tracks[i].track_cnahged)
+         {
+             tracks[i].track_cnahged = false;
          int blockXstart = 0;
          for (int y=0; y<tracks[i].block.size(); y++ )
          {
@@ -424,6 +435,7 @@ void ListControll::setFocus()
              }
               blockXstart = blockXend;
          }
+        }
      }
 /*
 	*		show curent play element
