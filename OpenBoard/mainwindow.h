@@ -43,6 +43,8 @@ public slots:
     void doUndoRedoStart();
     void onCommandFocusSet();
     void onCommandFocusLost();
+    void on_actionClear_drawing_triggered();
+
  void doUndoRedoEnd();
 //    board
     void closeEvent(QCloseEvent* event);
@@ -100,8 +102,9 @@ public slots:
     void on_colorBtn_clicked();
     void show_color_dialog();
 
+
 private slots:
-    void on_actionRecord_to_file_triggered();
+    void on_action_Record_to_file_triggered();
     void on_action_About_triggered();
 
     void on_speedBtn_pressed();
@@ -109,10 +112,13 @@ private slots:
     void hideBoardSettings();
     void showBoardSettings();
     void setEnabledToolBar( bool status );
+    void on_actionShow_last_drawing_triggered();
+
 private:
     bool changeone;
    QString directory;
-QAction *a_play,*a_pause,*a_stop,*a_font_canvas,*a_color_canvas,*a_record_to_file,*a_undo,*a_redo,*a_show,*a_hide;
+QAction *a_play,*a_pause,*a_stop,*a_font_canvas,*a_color_canvas,
+*a_record_to_file,*a_undo,*a_redo,*a_show,*a_hide,*a_clear_drawing,*a_show_last_drawing;
     Ui::MainWindow  *ui;
 QMessageBox messAbout;
  //   GLWidget        *mpGLWidget;

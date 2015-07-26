@@ -56,6 +56,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(textEdit,SIGNAL(doUndoRedoStart()),this,SLOT(doUndoRedoStart()));
     connect(textEdit,SIGNAL(doUndoRedoEnd()),this,SLOT(doUndoRedoEnd()));
 
+
+
     ui->widget_Find->setVisible(false);
     ui->widget_delayTB->setVisible(false);
     lastInpuDelay = ui->slider_speedTB->value();
@@ -113,6 +115,19 @@ MainWindow::MainWindow(QWidget *parent) :
        toolBar->addAction(a_redo);
    //    toolBar->addAction(QPixmap(":/icons/redo-icon.png").scaled(QSize(16, 16)), "Redo", this, SLOT(on_action_Redo_triggered()));
 
+       a_clear_drawing = new QAction(this);
+       a_clear_drawing->setEnabled(true);
+       //a_clear_drawing->setIcon(QPixmap(":/icons/redo-icon.png").scaled(QSize(16, 16)));
+       a_clear_drawing->setToolTip(tr("Clear drawing"));
+       connect(a_clear_drawing,SIGNAL(triggered()),this,  SLOT(on_actionClear_drawing_triggered()));
+       toolBar->addAction(a_clear_drawing);
+
+       a_show_last_drawing = new QAction(this);
+       a_show_last_drawing->setEnabled(true);
+       //a_show_last_drawing->setIcon(QPixmap(":/icons/redo-icon.png").scaled(QSize(16, 16)));
+       a_show_last_drawing->setToolTip(tr("Show last drawing"));
+       connect(a_show_last_drawing,SIGNAL(triggered()),this,  SLOT(on_actionShow_last_drawing_triggered()));
+       toolBar->addAction(a_show_last_drawing);
 
 
 
@@ -725,6 +740,13 @@ void MainWindow::onCommandFocusLost(){
     qDebug() << "focus changed"<<isCommandTextEditFocused;
 }
 
+void MainWindow::on_actionClear_drawing_triggered()
+{
+qDebug() << "on_actionClear_drawing_triggered()";
+mpOGLWidget->isClearFrameBuffer=true;
+//qDebug() << mpOGLWidget->isClearFrameBuffer;
+}
+
 void MainWindow::on_animationBtn_clicked()
 {
     QString textInField="";
@@ -1061,7 +1083,7 @@ void MainWindow::a_record_to_file_triggered()
     ui->actionRecord_to_file->setChecked(!(ui->actionRecord_to_file->isChecked()));
 }
 
-void MainWindow::on_actionRecord_to_file_triggered()
+void MainWindow::on_action_Record_to_file_triggered()
 {
    // ui->actionRecord_to_file->setChecked((ui->actionRecord_to_file->isChecked()));
     a_record_to_file->setChecked(!(a_record_to_file->isChecked()));
@@ -1119,4 +1141,10 @@ void MainWindow::setEnabledToolBar(bool status)
     ui->colorBtn->setEnabled(status);
     ui->animationBtn->setEnabled(status);
 
+}
+
+void MainWindow::on_actionShow_last_drawing_triggered()
+{
+    qDebug() << "show_last_drawing";
+    mpOGLWidget->isMousePlay=true;
 }
