@@ -54,8 +54,7 @@ void ListControll::removeBlock(int col, int i)
         tracks[col].time -= temp;
         tracks[col].track_cnahged = true;
    }
-   if (selectedBlockPoint == QPoint(col,i))
-       selectedBlock = NULL;
+  // if (selectedBlockPoint == QPoint(col,i))       selectedBlock = NULL;
     }
 }
 
@@ -130,8 +129,7 @@ bool ListControll::removeLastBlock(int col)
     tracks[col].time -= temp;
     tracks[col].track_cnahged = true;
    }
-   if (selectedBlockPoint.x() == col)
-       selectedBlock = NULL;
+  // if (selectedBlockPoint.x() == col)       selectedBlock = NULL;
     return true;
     }
     return false;
@@ -146,8 +144,7 @@ bool ListControll::removeLastTrack()
     if (maxTrackTime == lastColTime)
         recountMaxTrackTime();
 
-    if (selectedBlockPoint.x() == tracks.size() - 1)
-        selectedBlock = NULL;
+    //if (selectedBlockPoint.x() == tracks.size() - 1)        selectedBlock = NULL;
     return true;
     }
     return false;
@@ -162,8 +159,7 @@ bool ListControll::removeTrack(int col)
     if (maxTrackTime == lastColTime)
         recountMaxTrackTime();
 
-    if (selectedBlockPoint.x() == tracks.size() - 1)
-        selectedBlock = NULL;
+  //  if (selectedBlockPoint.x() == tracks.size() - 1)     selectedBlock = NULL;
     return true;
     }
     return false;
@@ -340,13 +336,14 @@ ListControll::ListControll(QObject *parent) : QObject(parent), QQuickImageProvid
 
 }
 
- void ListControll::moveWindow(const int x,const int y)
+ void ListControll::moveWindow()
  {
-     QPoint pos = view.position();
     QPoint posMouse = QCursor::pos();
    // view.setPosition(  pos.x() + x , pos.y()  + y);
-    view.setPosition( posMouse-prevMousePosition);
+    view.setPosition( posMouse - prevMousePosition);
+  //  setPrevMousePosition(posMouse);
    // qApp->processEvents(QEventLoop::AllEvents, 1000);
+
  }
 
  void  ListControll::setPrevMousePosition( const int x,const int y)

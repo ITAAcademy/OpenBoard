@@ -123,7 +123,7 @@ public:
     Q_INVOKABLE Element getBlock(int col, int i) const;
     Q_INVOKABLE int getTrackTime(int col) const;
     Q_INVOKABLE int getMaxTrackTime( ) const;
-    Q_INVOKABLE void moveWindow( const int x,const int y) ;
+    Q_INVOKABLE void moveWindow( ) ;
     Q_INVOKABLE void  setPrevMousePosition( const int x,const int y) ;
     Q_INVOKABLE void setPrevMousePosition( const QPoint x);
 

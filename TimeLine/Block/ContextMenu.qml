@@ -34,8 +34,8 @@ property Repeater globalRep
             index: 1
             onButtonClicked: {
 
-                var component = Qt.createComponent("EditBlock.qml")
-                var window    = component.createObject(root)
+                //var component = Qt.createComponent("EditBlock.qml")
+                var window    = Qt.createComponent("EditBlock.qml").createObject(contextMenuItem)
                 window.modality = Qt.WindowModal
                 window.blockIndex = contextMenuItem.blockIndex
                 window.columnIndex = contextMenuItem.columnIndex
@@ -56,8 +56,11 @@ property Repeater globalRep
                 var col= contextMenuItem.columnIndex;
                 var id = contextMenuItem.blockIndex;
                 timeControll.removeBlock(col,id);
+                main222.needToLightSelected = false
                 globalRep.updateModel();
                 contextMenuItem.visible = false;
+
+                console.log(" contextMenuItem.visible = false;")
             }
         }
         ContextButton {
@@ -69,10 +72,18 @@ property Repeater globalRep
             onButtonClicked: {
                 /*var col= contextMenuItem.columnIndex;
                 var id = contextMenuItem.blockIndex;*/
+                contextMenuItem.visible = false;
                 timeControll.loadFromFile();//removeBlock(col,id)
                 globalRep.updateModel();
-                contextMenuItem.visible = false;
+
             }
         }
     }
+    function show(a,b)
+    {
+        x = a
+      y = b
+        context_menu.visible = true
+    }
+
 }

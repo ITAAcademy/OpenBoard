@@ -931,6 +931,7 @@ void MainWindow::onTextChanged()
 
 void MainWindow::on_action_Play_triggered()
 {
+    timeLine.play();
     hideBoardSettings();
     ui->action_Play->setEnabled(false);
     a_play->setEnabled(false);
@@ -1026,9 +1027,7 @@ void MainWindow::on_action_Stop_triggered()
         a_play->setEnabled(true);
         showBoardSettings();
     }
-
-
-
+timeLine.stop();
 }
 
 void MainWindow::on_action_youTube_triggered()
@@ -1052,6 +1051,7 @@ void MainWindow::on_action_Pause_triggered()
     ui->action_Redo->setEnabled(true);
     a_undo->setEnabled(true);
     a_redo->setEnabled(true);
+    timeLine.pause();
 }
 
 
