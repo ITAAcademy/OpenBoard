@@ -18,6 +18,7 @@
 #include <QtOpenGL>
 #include <QTimer>
 #include <QRect>
+#include "mouserecorder.h"
 #include "encoder/videorencoder.h"
 #include "../Brush/brushcontroll.h"
 class DrawTextElm;
@@ -62,16 +63,18 @@ public:
     /*
      * |Future gradient
      */
+   bool isMousePlay = false;//play recorded mouse movement
    bool isMousePress = false;
-   bool ismouseWasPressedBeforeDrag = false;
-
-
+   bool ismouseWasPressedBeforeDrag = false;  
+    bool isClearFrameBuffer = false;//clear frame buffer
+   volatile bool isCrossingNow;
+   MouseRecorder mouseRecorder;//record mouse movement
 
 
 
 //bool isEditingRectangleBindedToCursor = false;
-   RectangleEditor editingRectangle;
-   volatile bool isCrossingNow;
+   RectangleEditor editingRectangle;//Draw element layout manager
+
     QList<ColorMarker> colors;
     QImage brushBuffer;
     struct GradientSetting{
@@ -147,7 +150,7 @@ public:
     void update();
     void initFrameBufferTexture();
     void initFrameBufferDepthBuffer();
-    void paintBrushInBuffer();
+    void paintBrushInBuffer(bool fromRecordedMousePoints);
     void initFrameBuffer();
     QList<DrawElement *> &getList();
     void setList(const QList<DrawElement *> &value);
@@ -156,6 +159,8 @@ public:
     void setIsBrushWindowOpened(bool value);
 
     void paintBufferOnScreen();
+    void clearFrameBuffer();
+
 public slots:
     void drawAnimated( bool record );
     void stopAnimated();
@@ -202,12 +207,14 @@ private slots:
     bool crossTextV2();
     int getFirstSymbolOfString(int index, bool symbol = false);
     int getCountNullString(int index);
+    void storeMousePos();
+
 private:
     QImage img;
 
-    unsigned int fbo; // The frame buffer object
-    unsigned int fbo_depth; // The depth buffer for the frame buffer object
-    unsigned int fbo_texture; // The texture object to write our frame buffer object to
+    unsigned int    fbo, // The frame buffer object
+                    fbo_depth, // The depth buffer for the frame buffer object
+                    fbo_texture; // The texture object to write our frame buffer object to
     QString drawText;
     bool bRecord;
     void generateFrames();
@@ -218,19 +225,10 @@ private:
     /*
      * |Сavas property
     */
-    int lineHeight;
-    int marginLeft;
-    int marginTop;
-    int maxWidth; //размер поле, где виводится текст
-    int pt;
+
     bool crossWithAnimation = false;
     QString font;
     bool isWord  ;
-    int x ,y ;
-    int indexW ;
-    int indexRow;
-    int scroll;
-    int widthToClean=0;
 
     QColor fillColor;
     QColor mainFillColor;
@@ -248,40 +246,54 @@ private:
     QFontMetrics *fMetrics;
     int indexInList;
     int deleteWT;
-    QTimer tickTimer;
-    int delay;
-    int realDelay;
-    double timer_test;
-    double animationSpeed = 0.01;
-    bool busy = false;
-
 
     /*
      * |new property
      */
-
-    QList<QString> stringList;
-    QList<short int> cross;
-    int indexRowInList; // first str for draw
     QVector<int> wrapShift;
-    int indexFirstDrawSymbol = 0;
-    int maxDrawElm = 0;
-    QElapsedTimer framDelayTimer;
-    bool isClose = false;
-    int cursorIndex;
     QVector <QImage> imgList;
     QVector <GLuint> textureList;
+    QList<QString> stringList;
+    QList<short int> cross;
     QList<DrawElement *> list_1;
     QList<DrawElement *> list_2;
+    int indexRowInList; // first str for draw
+    int cursorIndex;
+    int indexFirstDrawSymbol = 0;
+    int maxDrawElm = 0;
+    int delay;
+    int lineHeight;
+    int marginLeft;
+    int marginTop;
+    int maxWidth; //размер поле, где виводится текст
+    int pt;
+    int realDelay;
+    int mousePlayIndex = 0;//current point of stored points arr
+    int x ,y ;
+    int indexW ;
+    int indexRow;
+    int scroll;
+    int widthToClean=0;
+
+    double timer_test;
+    double animationSpeed = 0.01;
+    QTimer tickTimer;
+    QTimer mouseTimer;
+
+    bool busy = false;
+    bool isClose = false;
     bool curentList = false;
     BrushManager m_manager;
-    bool isBrushWindowOpened = false;
+
+
+
+    bool isBrushWindowOpened = false;//set in true state when brush window opened
 protected:
     void destroy(bool destroyWindow, bool destroySubWindow);
     void initializeGL(); // Метод для инициализирования opengl
-       void resizeGL(int nWidth, int nHeight); // Метод вызываемый после каждого изменения размера окна
-       void paintGL(); // Метод для вывода изображения на экран
-        int wax ,way; // Размеры окна нашей программы
+       void resizeGL(int nWidth, int nHeight);
+       void paintGL(); // Output generated Image to screen
+        int wax ,way; // Window size
 };
 
 

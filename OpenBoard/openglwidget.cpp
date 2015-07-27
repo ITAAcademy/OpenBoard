@@ -191,6 +191,8 @@ editingRectangle.leftCornerSize=5;
     curStatus = STOP;
     tickTimer.setSingleShot(false);
     tickTimer.setInterval(1000/25);
+    mouseTimer.setInterval(mouseRecorder.SPEED_OF_RECORDING_MS);
+    mouseTimer.setSingleShot(false);
     realDelay = 0;
 
     maxWidth = width() - marginLeft;
@@ -206,6 +208,8 @@ editingRectangle.leftCornerSize=5;
    QTimer *timer = new QTimer(this);
    connect(timer, SIGNAL(timeout()), this, SLOT(updateWindow()));
    timer->start(5);
+   connect(&mouseTimer, SIGNAL(timeout()), this, SLOT(storeMousePos()));
+   mouseTimer.start();
    connect(&m_manager,SIGNAL(colorChanged()),this,SLOT(brushParamsChanged()));
    connect(&m_manager,SIGNAL(currentBrushChanged()),this,SLOT(brushParamsChanged()));
 
@@ -251,7 +255,7 @@ void OGLWidget::paintBufferOnScreen(){
     glDisable(GL_TEXTURE_2D);
 }
 
-void OGLWidget::paintBrushInBuffer(void) {
+void OGLWidget::paintBrushInBuffer(bool fromRecordedMousePoints) {
 glBindFramebuffer(GL_FRAMEBUFFER_EXT, fbo); // Bind our frame buffer for rendering
 //glPushAttrib(GL_VIEWPORT_BIT | GL_ENABLE_BIT); // Push our glEnable and glViewport states
 //glViewport(0, 0, window_width, window_height); // Set the size of the frame buffer view port
@@ -267,7 +271,7 @@ glBindFramebuffer(GL_FRAMEBUFFER_EXT, fbo); // Bind our frame buffer for renderi
     //glLineWidth(PointSize);
    // glEnable(GL_TEXTURE_2D);
         //qDebug() << "before index";
-qDebug() << "paint brush in buffer";
+//qDebug() << "paint brush in buffer";
     GLuint texture = textureList[TEXTURE_INDEX_BRUSH];
     //qDebug()<<"texture:"<<texture;
   // if (!ismouseWasPressedBeforeDrag)
@@ -308,7 +312,13 @@ qDebug() << "paint brush in buffer";
         //qDebug() << "brushSize.width():"<<brushTextureSize.width();
         //qDebug() << "brushSize.height():"<<brushTextureSize.height();
         double koff = brushTextureSize.width()/brushTextureSize.height();
-         int angle = m_manager.getAngleDelta();
+         int maxAngle = m_manager.getAngleDelta();
+
+         int angle = 0;
+         if (maxAngle > 0){
+         angle=rand() % (maxAngle*2);
+            if (angle>maxAngle)angle=-(angle % maxAngle);
+        }
             int maxDispers = (int)m_manager.getDisepers();
             int i=1;
             if (maxDispers>0 && m_manager.getCount()>0) i=m_manager.getCount();
@@ -322,8 +332,28 @@ qDebug() << "paint brush in buffer";
                      if (dispersX > maxDispers)dispersX = -(dispersX % maxDispers);
                      if (dispersY > maxDispers)dispersX = -(dispersY % maxDispers);
             }
-            drawTexture(mousePos.x()-BRUSH_SIZE/2 + dispersX ,mousePos.y()-BRUSH_SIZE/koff/2 + dispersY,BRUSH_SIZE,BRUSH_SIZE/koff,
-                    texture,m_manager.getAngleDelta(),scaleX,scaleY);
+                 int xPos = 0;
+                 int yPos = 0;
+                 if (!fromRecordedMousePoints){
+                  xPos = mousePos.x();
+                  yPos = mousePos.y();
+                }
+                 else
+                 {
+                     xPos=mouseRecorder.getMouseCoord()[mousePlayIndex].x();
+                     yPos=mouseRecorder.getMouseCoord()[mousePlayIndex].y();
+
+                         if (mousePlayIndex >= mouseRecorder.getMouseCoord().length()-1)
+                         {
+                         isMousePlay=false;
+                         mousePlayIndex=0;
+                         }
+                         else
+                          mousePlayIndex++;
+                 }
+
+            drawTexture(xPos-BRUSH_SIZE/2 + dispersX ,yPos-BRUSH_SIZE/koff/2 + dispersY,BRUSH_SIZE,BRUSH_SIZE/koff,
+                    texture,angle,scaleX,scaleY);
             }
         /*
     else{
@@ -354,7 +384,7 @@ qDebug() << "paint brush in buffer";
 
 
 
-
+glBindTexture(GL_TEXTURE_2D,0);
 glBindFramebuffer(GL_FRAMEBUFFER_EXT, 0); // Unbind our texture
    //FRAMEBUFFER PART
 
@@ -370,6 +400,11 @@ glBindFramebuffer(GL_FRAMEBUFFER_EXT, 0); // Unbind our texture
 
 
 }
+
+
+
+
+
 
 
 void OGLWidget::initFrameBufferDepthBuffer() {
@@ -449,11 +484,27 @@ void OGLWidget::destroy(bool destroyWindow, bool destroySubWindow){
     //glDeleteRenderbuffers(1,&render_buf);
 }
 
+void OGLWidget::clearFrameBuffer(){
+
+    glBindFramebuffer(GL_FRAMEBUFFER_EXT, fbo); // Bind our frame buffer for rendering
+   std::vector<GLubyte> emptyData(wax * way * 4, 0);
+   glBindTexture(GL_TEXTURE_2D, fbo_texture);
+     glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, wax, way, GL_RGBA, GL_UNSIGNED_BYTE, &emptyData[0]);
+      glBindTexture(GL_TEXTURE_2D,0);
+    //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        isClearFrameBuffer=false;
+      glBindFramebuffer(GL_FRAMEBUFFER_EXT, 0);
+      qDebug()<<"clearFrameBuffer";
+
+}
 
 void OGLWidget::paintGL()
 {
+     glBindFramebuffer(GL_FRAMEBUFFER_EXT, 0);
     if(m_encoder->newImage)
         m_encoder->setFrame(grabFrameBuffer());
+    //qDebug() << "isClearFrameBuffer:"<<isClearFrameBuffer;
+    if(isClearFrameBuffer)clearFrameBuffer();
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // чистим буфер изображения и буфер глубины
     //glClearStencil(0);
@@ -479,14 +530,10 @@ void OGLWidget::paintGL()
        //glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE);
        glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
-
-       qglColor(Qt::white);
 //WRITE TO FRAME BUFER FROM HERE
-
+   // glBindFramebuffer(GL_FRAMEBUFFER,0);
+    qglColor(Qt::white);
     drawTexture(0, 0, wax, way, textureList[0]);
-
-
-    glBindFramebuffer(GL_FRAMEBUFFER,0);
 //WRITE TO SCREEN FROM HERE
 //drawTextBuffer(10,10,400,400);
 
@@ -513,7 +560,7 @@ if(isMousePress){
     //editingRectangle.setX(0);
    // editingRectangle.setY(0);
 
-        if (editingRectangle.editingRectangleMode==EDIT_RECTANGLE_UNBINDED)
+        if (editingRectangle.editingRectangleMode==EDIT_RECTANGLE_UNBINDED && editingRectangle.isEditingRectangleVisible)
  if ((mousePos.x() >= leftCornerX1 && mousePos.x() <= leftCornerX2) && (mousePos.y() >= leftCornerY1 && mousePos.y() <= leftCornerY2))
  {
      editingRectangle.editingRectangleMode=EDIT_RECTANGLE_RESIZE;
@@ -532,10 +579,10 @@ case EDIT_RECTANGLE_MOVE:
                             mousePos.y()-editingRectangle.rect.height()/2 );
      //editingRectangle.setX(mousePos.x()-editingRectangle.width()/2);
      //editingRectangle.setY(mousePos.y()-editingRectangle.height()/2);
-     qDebug()<< "leftCornerX1:"<<leftCornerX1;
-     qDebug()<< "leftCornerY1:"<<leftCornerY1;
-      qDebug()<< "leftCornerX2:"<<leftCornerX2;
-      qDebug()<< "leftCornerY2:"<<leftCornerY2;
+    // qDebug()<< "leftCornerX1:"<<leftCornerX1;
+     //qDebug()<< "leftCornerY1:"<<leftCornerY1;
+     // qDebug()<< "leftCornerX2:"<<leftCornerX2;
+     // qDebug()<< "leftCornerY2:"<<leftCornerY2;
  break;
  case EDIT_RECTANGLE_RESIZE:
      canDrawByMouse=false;
@@ -544,8 +591,9 @@ case EDIT_RECTANGLE_MOVE:
      editingRectangle.rect.setY(mousePos.y());
     break;
  }
-if (canDrawByMouse)paintBrushInBuffer();
+if (canDrawByMouse && !isMousePlay)paintBrushInBuffer(false);
 }
+if (isMousePlay)paintBrushInBuffer(true);
 
 paintBufferOnScreen();
 if (editingRectangle.isEditingRectangleVisible)
@@ -637,6 +685,7 @@ void OGLWidget::mousePressEvent(QMouseEvent *event)
     }
     if(event->button() == Qt::LeftButton)
     {
+        isMousePlay = false;
         if (getIsBrushWindowOpened())
         {
         m_manager.hide();
@@ -679,6 +728,8 @@ if (event->buttons() & Qt::LeftButton) {
    mousePos.setY(event->y());
 
    ismouseWasPressedBeforeDrag=true;
+   //qDebug()<<"mouseRecorderTimer.elapsed():"<<mouseRecorderTimer.elapsed();
+
 }
 }
 
@@ -1480,6 +1531,14 @@ int OGLWidget::getCountNullString(int index)
         i++;
     }
     return sumLength;
+}
+
+void OGLWidget::storeMousePos()
+{
+    if (isMousePress){
+    mouseRecorder.addCoord(QPoint(mousePos.x(),mousePos.y()));
+   // qDebug()<<"position stored:"<<QCursor::pos();
+    }
 }
 
 int OGLWidget::getFirstSymbolOfString(int index, bool symbol)

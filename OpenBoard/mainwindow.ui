@@ -693,6 +693,8 @@
     <addaction name="action_Stop"/>
     <addaction name="actionRecord_to_file"/>
     <addaction name="actionSend_to_youTube"/>
+    <addaction name="actionClear_drawing"/>
+    <addaction name="actionShow_last_drawing"/>
    </widget>
    <widget class="QMenu" name="menu_Help">
     <property name="title">
@@ -1096,6 +1098,16 @@
    </property>
    <property name="text">
     <string>Send to youTube</string>
+   </property>
+  </action>
+  <action name="actionClear_drawing">
+   <property name="text">
+    <string>Clear drawing</string>
+   </property>
+  </action>
+  <action name="actionShow_last_drawing">
+   <property name="text">
+    <string>Show last drawing</string>
    </property>
   </action>
  </widget>

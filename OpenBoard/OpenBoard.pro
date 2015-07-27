@@ -25,7 +25,8 @@ SOURCES += main.cpp\
     ../Brush/brushcontroll.cpp \
     ../Brush/brushpainter.cpp \
     ../TimeLine/imageprovider.cpp \
-    drawSystem/drawimage.cpp
+    drawSystem/drawimage.cpp \
+    mouserecorder.cpp
 
 
 HEADERS  += mainwindow.h \
@@ -48,7 +49,8 @@ HEADERS  += mainwindow.h \
     ../Brush/brushcontroll.h \
     ../Brush/brushpainter.h \
     ../TimeLine/imageprovider.h \
-    drawSystem/drawimage.h
+    drawSystem/drawimage.h \
+    mouserecorder.h
 
 FORMS    += mainwindow.ui \
     youtube/logindialog.ui
@@ -76,10 +78,10 @@ OTHER_FILES += \
     icons/12video icon.png
 #   @ROMA
 #
-# LIBS += -lopengl32
-#win32:CONFIG(release, debug|release): LIBS += -LC:/Users/roma/Documents/OpenBoad/OpenBoard/ThirdPart/lib/lib/ -lqtmel1
-#else:win32:CONFIG(debug, debug|release): LIBS += -LC:/Users/roma/Documents/OpenBoad/OpenBoard/ThirdPart/lib/lib/ -lqtmel1
-#win32:CONFIG(release, debug|release): LIBS += -LC:/Qt/Qt5.5.0/5.5/mingw492_32/bin/
+ LIBS += -lopengl32
+win32:CONFIG(release, debug|release): LIBS += -LC:/Users/roma/Documents/OpenBoad/OpenBoard/ThirdPart/lib/lib/ -lqtmel1
+else:win32:CONFIG(debug, debug|release): LIBS += -LC:/Users/roma/Documents/OpenBoad/OpenBoard/ThirdPart/lib/lib/ -lqtmel1
+win32:CONFIG(release, debug|release): LIBS += -LC:/Qt/Qt5.5.0/5.5/mingw492_32/bin/
 #
 #   @NICO
 #win32:CONFIG(release, debug|release): LIBS += -LF:/QA/QtMEL-master/libsQt5/ -lqtmel1
