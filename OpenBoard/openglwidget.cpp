@@ -255,7 +255,7 @@ void OGLWidget::paintBufferOnScreen(){
     glDisable(GL_TEXTURE_2D);
 }
 
-void OGLWidget::paintBrushInBuffer(void) {
+void OGLWidget::paintBrushInBuffer(bool fromRecordedMousePoints) {
 glBindFramebuffer(GL_FRAMEBUFFER_EXT, fbo); // Bind our frame buffer for rendering
 //glPushAttrib(GL_VIEWPORT_BIT | GL_ENABLE_BIT); // Push our glEnable and glViewport states
 //glViewport(0, 0, window_width, window_height); // Set the size of the frame buffer view port
@@ -312,7 +312,13 @@ glBindFramebuffer(GL_FRAMEBUFFER_EXT, fbo); // Bind our frame buffer for renderi
         //qDebug() << "brushSize.width():"<<brushTextureSize.width();
         //qDebug() << "brushSize.height():"<<brushTextureSize.height();
         double koff = brushTextureSize.width()/brushTextureSize.height();
-         int angle = m_manager.getAngleDelta();
+         int maxAngle = m_manager.getAngleDelta();
+
+         int angle = 0;
+         if (maxAngle > 0){
+         angle=rand() % (maxAngle*2);
+            if (angle>maxAngle)angle=-(angle % maxAngle);
+        }
             int maxDispers = (int)m_manager.getDisepers();
             int i=1;
             if (maxDispers>0 && m_manager.getCount()>0) i=m_manager.getCount();
@@ -326,12 +332,28 @@ glBindFramebuffer(GL_FRAMEBUFFER_EXT, fbo); // Bind our frame buffer for renderi
                      if (dispersX > maxDispers)dispersX = -(dispersX % maxDispers);
                      if (dispersY > maxDispers)dispersX = -(dispersY % maxDispers);
             }
-                 int xPos = mousePos.x();
-                 int yPos = mousePos.y();
+                 int xPos = 0;
+                 int yPos = 0;
+                 if (!fromRecordedMousePoints){
+                  xPos = mousePos.x();
+                  yPos = mousePos.y();
+                }
+                 else
+                 {
+                     xPos=mouseRecorder.getMouseCoord()[mousePlayIndex].x();
+                     yPos=mouseRecorder.getMouseCoord()[mousePlayIndex].y();
 
+                         if (mousePlayIndex >= mouseRecorder.getMouseCoord().length()-1)
+                         {
+                         isMousePlay=false;
+                         mousePlayIndex=0;
+                         }
+                         else
+                          mousePlayIndex++;
+                 }
 
             drawTexture(xPos-BRUSH_SIZE/2 + dispersX ,yPos-BRUSH_SIZE/koff/2 + dispersY,BRUSH_SIZE,BRUSH_SIZE/koff,
-                    texture,m_manager.getAngleDelta(),scaleX,scaleY);
+                    texture,angle,scaleX,scaleY);
             }
         /*
     else{
@@ -378,67 +400,7 @@ glBindFramebuffer(GL_FRAMEBUFFER_EXT, 0); // Unbind our texture
 
 
 }
-void OGLWidget::paintBrushFromRecordInBuffer(void) {
-glBindFramebuffer(GL_FRAMEBUFFER_EXT, fbo); // Bind our frame buffer for rendering
 
-    GLuint texture = textureList[TEXTURE_INDEX_BRUSH];
-
-         glBindTexture(GL_TEXTURE_2D,texture);
-        QSize brushTextureSize = getTextureSize();
-        int BRUSH_SIZE=m_manager.getSize();
-        float scaleX=1,scaleY=1;
-        float randScalePtX = 0;
-        float randScalePtY = 0;
-        if(m_manager.getAffine() != 0)
-        {
-            randScalePtX = rand() % (m_manager.getAffine()*2);
-            randScalePtY = rand() % (m_manager.getAffine()*2);
-        }
-        if (randScalePtX>m_manager.getAffine())
-            randScalePtX = 1/((int)randScalePtX %m_manager.getAffine());
-        if (randScalePtY>m_manager.getAffine())
-            randScalePtY = 1/((int)randScalePtY %m_manager.getAffine());
-        float MAX_SCALE = 2;
-
-        if(randScalePtX!=0)
-            scaleX=MAX_SCALE/randScalePtX;
-        if(randScalePtY!=0)
-            scaleY=MAX_SCALE/randScalePtY;
-        double koff = brushTextureSize.width()/brushTextureSize.height();
-         int angle = m_manager.getAngleDelta();
-            int maxDispers = (int)m_manager.getDisepers();
-            int i=1;
-            if (maxDispers>0 && m_manager.getCount()>0) i=m_manager.getCount();
-            for (;i>0;i--)
-            {
-                 int dispersX = 0;
-                 int dispersY = 0;
-                 if ((int)m_manager.getDisepers()>0){
-                     dispersX = rand() % (maxDispers*2);
-                     dispersY = rand() % (maxDispers*2);
-                     if (dispersX > maxDispers)dispersX = -(dispersX % maxDispers);
-                     if (dispersY > maxDispers)dispersX = -(dispersY % maxDispers);
-            }
-                  qDebug() << "mousePlayIndex:"<<mousePlayIndex;
-                 qDebug() << "MC_length:"<<mouseRecorder.getMouseCoord().length();
-                 int xPos=mouseRecorder.getMouseCoord()[mousePlayIndex].x();
-                 int yPos=mouseRecorder.getMouseCoord()[mousePlayIndex].y();
-
-                     if (mousePlayIndex >= mouseRecorder.getMouseCoord().length()-1)
-                     {
-                     isMousePlay=false;
-                     mousePlayIndex=0;
-                     }
-                     else
-                      mousePlayIndex++;
-            drawTexture(xPos-BRUSH_SIZE/2 + dispersX ,yPos-BRUSH_SIZE/koff/2 + dispersY,BRUSH_SIZE,BRUSH_SIZE/koff,
-                    texture,m_manager.getAngleDelta(),scaleX,scaleY);
-            qDebug()<<"drawed xPos:"<<xPos<<" yPos:"<<yPos;
-            }
-
-glBindTexture(GL_TEXTURE_2D,0);
-glBindFramebuffer(GL_FRAMEBUFFER_EXT, 0); // Unbind our texture
-}
 
 
 
@@ -541,7 +503,7 @@ void OGLWidget::paintGL()
      glBindFramebuffer(GL_FRAMEBUFFER_EXT, 0);
     if(m_encoder->newImage)
         m_encoder->setFrame(grabFrameBuffer());
-    qDebug() << "isClearFrameBuffer:"<<isClearFrameBuffer;
+    //qDebug() << "isClearFrameBuffer:"<<isClearFrameBuffer;
     if(isClearFrameBuffer)clearFrameBuffer();
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // чистим буфер изображения и буфер глубины
@@ -598,7 +560,7 @@ if(isMousePress){
     //editingRectangle.setX(0);
    // editingRectangle.setY(0);
 
-        if (editingRectangle.editingRectangleMode==EDIT_RECTANGLE_UNBINDED)
+        if (editingRectangle.editingRectangleMode==EDIT_RECTANGLE_UNBINDED && editingRectangle.isEditingRectangleVisible)
  if ((mousePos.x() >= leftCornerX1 && mousePos.x() <= leftCornerX2) && (mousePos.y() >= leftCornerY1 && mousePos.y() <= leftCornerY2))
  {
      editingRectangle.editingRectangleMode=EDIT_RECTANGLE_RESIZE;
@@ -629,9 +591,9 @@ case EDIT_RECTANGLE_MOVE:
      editingRectangle.rect.setY(mousePos.y());
     break;
  }
-if (canDrawByMouse && !isMousePlay)paintBrushInBuffer();
+if (canDrawByMouse && !isMousePlay)paintBrushInBuffer(false);
 }
-if (isMousePlay)paintBrushFromRecordInBuffer();
+if (isMousePlay)paintBrushInBuffer(true);
 
 paintBufferOnScreen();
 if (editingRectangle.isEditingRectangleVisible)

@@ -150,7 +150,7 @@ public:
     void update();
     void initFrameBufferTexture();
     void initFrameBufferDepthBuffer();
-    void paintBrushInBuffer();
+    void paintBrushInBuffer(bool fromRecordedMousePoints);
     void initFrameBuffer();
     QList<DrawElement *> &getList();
     void setList(const QList<DrawElement *> &value);
@@ -160,7 +160,7 @@ public:
 
     void paintBufferOnScreen();
     void clearFrameBuffer();
-    void paintBrushFromRecordInBuffer();
+
 public slots:
     void drawAnimated( bool record );
     void stopAnimated();
