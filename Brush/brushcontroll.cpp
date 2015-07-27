@@ -26,6 +26,38 @@ void BrushManager::setCreatedBrush(const Brush &value)
 {
     createdBrush = value;
 }
+
+QString BrushManager::toHex(QColor col)
+{
+    return col.name();
+}
+
+float BrushManager::getHue(QString col)
+{
+    return (float)QColor(col).toHsl().hue()/255;
+}
+
+float BrushManager::getSaturation(QString col)
+{
+    return (float)QColor(col).toHsl().saturation()/255;
+}
+
+float BrushManager::getLightness(QString col)
+{
+    return (float)QColor(col).toHsl().lightness()/255;
+}
+
+bool BrushManager::isColorValid(QString value)
+{
+    return QColor::isValidColor(value);
+}
+
+void BrushManager::update()
+{
+    qApp->processEvents(QEventLoop::ExcludeUserInputEvents, 200);
+    createdBrush.color_img = painter.applyColor(createdBrush);
+    emit colorChanged();
+}
 BrushManager::BrushManager(QObject *parent) : QObject(parent), QQuickImageProvider(QQuickImageProvider::Image)
 {
     QTime midnight(0,0,0);
@@ -174,11 +206,7 @@ void BrushManager::setColor(QColor value)
 {
     //qDebug() << value;
     createdBrush.color_main = value;
-    qApp->processEvents(QEventLoop::ExcludeUserInputEvents, 200);
-    createdBrush.color_img = painter.applyColor(createdBrush);
-    qApp->processEvents(QEventLoop::ExcludeUserInputEvents, 200);
 
-    emit colorChanged();
   //    ;
 }
 

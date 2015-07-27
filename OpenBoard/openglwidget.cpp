@@ -42,8 +42,12 @@ int OGLWidget::loadTexture(QImage img, int index, bool modify){
 
        glTexImage2D(GL_TEXTURE_2D, 0, 4, GL_formatted_image.width(), GL_formatted_image.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, GL_formatted_image.bits());
       //qDebug() <<
-       glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_LINEAR);
-       glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_LINEAR);
+       glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
+       glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
+       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
+       glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
+       glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+
        glDisable(GL_TEXTURE_2D);
 qDebug("before int realIndex = index; ");
        int realIndex = index;
@@ -286,19 +290,16 @@ glBindFramebuffer(GL_FRAMEBUFFER_EXT, fbo); // Bind our frame buffer for renderi
 
          glBindTexture(GL_TEXTURE_2D,texture);
         QSize brushTextureSize = getTextureSize();
-        int BRUSH_SIZE=m_manager.getSize();
+        int BRUSH_SIZE=m_manager.getSize() + m_manager.getSizeDelta()/2 - rand()%(int)(m_manager.getSizeDelta() + 1);
         float scaleX=1,scaleY=1;
         float randScalePtX = 0;
         float randScalePtY = 0;
         if(m_manager.getAffine() != 0)
         {
-            randScalePtX = rand() % (m_manager.getAffine()*2);
-            randScalePtY = rand() % (m_manager.getAffine()*2);
+            randScalePtX = m_manager.getAffine()/2 - rand() % (m_manager.getAffine());
+            randScalePtY = m_manager.getAffine()/2 - rand() % (m_manager.getAffine());
         }
-        if (randScalePtX>m_manager.getAffine())
-            randScalePtX = 1/((int)randScalePtX %m_manager.getAffine());
-        if (randScalePtY>m_manager.getAffine())
-            randScalePtY = 1/((int)randScalePtY %m_manager.getAffine());
+
         float MAX_SCALE = 2;
         //100 - 2 (MAX_SCALE)
         //1 - x
@@ -316,8 +317,7 @@ glBindFramebuffer(GL_FRAMEBUFFER_EXT, fbo); // Bind our frame buffer for renderi
 
          int angle = 0;
          if (maxAngle > 0){
-         angle=rand() % (maxAngle*2);
-            if (angle>maxAngle)angle=-(angle % maxAngle);
+         angle=maxAngle/2 - rand() % (maxAngle);
         }
             int maxDispers = (int)m_manager.getDisepers();
             int i=1;
@@ -327,10 +327,8 @@ glBindFramebuffer(GL_FRAMEBUFFER_EXT, fbo); // Bind our frame buffer for renderi
                  int dispersX = 0;
                  int dispersY = 0;
                  if ((int)m_manager.getDisepers()>0){
-                     dispersX = rand() % (maxDispers*2);
-                     dispersY = rand() % (maxDispers*2);
-                     if (dispersX > maxDispers)dispersX = -(dispersX % maxDispers);
-                     if (dispersY > maxDispers)dispersX = -(dispersY % maxDispers);
+                     dispersX = maxDispers/2 - rand() % (maxDispers);
+                     dispersY = maxDispers/2 - rand() % (maxDispers);
             }
                  int xPos = 0;
                  int yPos = 0;
@@ -429,8 +427,8 @@ glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, wax, way, 0, GL_RGBA, GL_UNSIGNED_BYTE, 
 // Setup the basic texture parameters
 glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
 glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 
 // Unbind the texture
 glBindTexture(GL_TEXTURE_2D, 0);
@@ -507,6 +505,7 @@ void OGLWidget::paintGL()
     if(isClearFrameBuffer)clearFrameBuffer();
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // чистим буфер изображения и буфер глубины
+    glClearColor(0.0,0.0,0.0,0.0);
     //glClearStencil(0);
 //
 
@@ -526,9 +525,14 @@ void OGLWidget::paintGL()
        glLoadIdentity(); // загружаем матрицу
        glOrtho(0,wax,way,0,1,0); // подготавливаем плоскости для матрицы
        glEnable(GL_BLEND);
-    //   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-       //glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE);
-       glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+       glEnable(GL_ALPHA_TEST);
+       glAlphaFunc(GL_GREATER,0);
+       glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE);
+       //glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+       //glBlendEquation ( GL_FUNC_ADD ) ;
+     // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+
 
 //WRITE TO FRAME BUFER FROM HERE
    // glBindFramebuffer(GL_FRAMEBUFFER,0);
@@ -537,12 +541,8 @@ void OGLWidget::paintGL()
 //WRITE TO SCREEN FROM HERE
 //drawTextBuffer(10,10,400,400);
 
-    for(int i = 0; i < getList().size(); i++)
-    {
-      //  qDebug() << "draw   " << i;
-        if(getList()[i] != NULL)
-            getList()[i]->draw();
-    }
+
+
     GLint x1 = editingRectangle.rect.x();
       GLint y1 = editingRectangle.rect.y();
         GLint x2 = editingRectangle.rect.x()+editingRectangle.rect.width();
@@ -626,8 +626,13 @@ if (editingRectangle.isEditingRectangleVisible)
            glVertex2i(leftCornerX1, leftCornerY2);
          glEnd();
 }
-
-
+for(int i = 0; i < getList().size(); i++)
+{
+    qDebug() << "draw   " << i;
+    if(getList()[i] != NULL)
+        getList()[i]->draw();
+}
+glDisable(GL_BLEND);
 }
 
 void OGLWidget::paintEvent(QPaintEvent *event)

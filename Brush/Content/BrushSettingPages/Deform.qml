@@ -45,8 +45,8 @@ Rectangle {
         FullSlider{
             width: parent.width
             height: parent.fix_height
-            name: "AFFINE??"
-            maximum: 100
+            name: "AFFINE"
+            maximum: 10
             value: 0
             onValueChanged:
             {

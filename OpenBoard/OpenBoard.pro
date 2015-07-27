@@ -68,10 +68,6 @@ RESOURCES += \
 #    QMAKE_CXXFLAGS += -std=c++0x
 #}
 
-INCLUDEPATH += ThirdPart/include
-#LIBS += "F:/QA/QtMEL-master/libsQt5/*.dll"
-
-
 OTHER_FILES += \
     boarFunc.js \
     draw.qml \
@@ -79,9 +75,9 @@ OTHER_FILES += \
 #   @ROMA
 #
  LIBS += -lopengl32
-win32:CONFIG(release, debug|release): LIBS += -LC:/Users/roma/Documents/OpenBoad/OpenBoard/ThirdPart/lib/lib/ -lqtmel1
-else:win32:CONFIG(debug, debug|release): LIBS += -LC:/Users/roma/Documents/OpenBoad/OpenBoard/ThirdPart/lib/lib/ -lqtmel1
-win32:CONFIG(release, debug|release): LIBS += -LC:/Qt/Qt5.5.0/5.5/mingw492_32/bin/
+#win32:CONFIG(release, debug|release): LIBS += -LC:/Users/roma/Documents/OpenBoad/OpenBoard/ThirdPart/lib/lib/ -lqtmel1
+#else:win32:CONFIG(debug, debug|release): LIBS += -LC:/Users/roma/Documents/OpenBoad/OpenBoard/ThirdPart/lib/lib/ -lqtmel1
+#win32:CONFIG(release, debug|release): LIBS += -LC:/Qt/Qt5.5.0/5.5/mingw492_32/bin/
 #
 #   @NICO
 #win32:CONFIG(release, debug|release): LIBS += -LF:/QA/QtMEL-master/libsQt5/ -lqtmel1

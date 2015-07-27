@@ -208,6 +208,7 @@ console.log(" reles  root.z= " +   root.z)
              parent : root
             id: background
             anchors.fill: parent
+            fillMode: Image.TileHorizontally
            source: "qrc:/iphone_toolbar_icons/black_tree.png"
            visible: false
 

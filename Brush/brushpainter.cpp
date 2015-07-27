@@ -16,10 +16,20 @@ void BrushPainter::close()
 }
  QImage BrushPainter::applyColor(Brush brush)
 {
+     QImage res(brush.img.size()*2, QImage::Format_RGBA8888_Premultiplied);
+     res.fill(Qt::transparent);
+     QPainter paint;
+     paint.begin(&res);
+          paint.setOpacity((double)brush.opacity/100);
+     paint.drawImage(brush.img.width()/2,brush.img.height()/2, brush.img);
+     paint.end();
      QGraphicsColorizeEffect *effect;
      effect = new QGraphicsColorizeEffect();
      effect->setColor(brush.color_main);
-     QImage res = applyEffectToImage(brush.img, effect).convertToFormat(QImage::Format_RGBA8888);
+     QGraphicsBlurEffect *blur;
+     blur = new QGraphicsBlurEffect();
+     blur->setBlurRadius(brush.blur);
+     res = applyEffectToImage(applyEffectToImage(res, effect).scaled(brush.img.size()), blur);
      return res;
 
 }
@@ -45,6 +55,7 @@ QImage BrushPainter::drawBrush(Brush &brush, QSize size)
     paint.setBrush(qBrush);
     QImage resultImg;
     QTransform transformation;
+    paint.setOpacity((double)brush.opacity/100);
     int n = (size.width() - 100 ) / (width/4);
     n--;
     for(int j = 0; j <= brush.count; j++)
@@ -54,7 +65,6 @@ QImage BrushPainter::drawBrush(Brush &brush, QSize size)
             int m = brush.dispers/2 - rand() % ((int)brush.dispers + 1);
          //   transformation.rotate(brush.angle_delta/2 - rand() % ((int)brush.angle_delta + 1));
             resultImg = drawImg.scaled(brush.size +  b, brush.size + b, Qt::KeepAspectRatio).transformed(transformation);
-            paint.setOpacity((double)brush.opacity/100);
             qBrush.setTextureImage(resultImg);
             paint.drawImage(i*resultImg.width()/4,size.height()/2 - resultImg.height()/2 + m,resultImg);
         }
@@ -77,11 +87,12 @@ QImage BrushPainter::applyEffectToImage(QImage src, QGraphicsEffect *effect, int
 
     QGraphicsPixmapItem *item = scene.addPixmap(QPixmap::fromImage(src));
     item->setGraphicsEffect(effect);
-    QImage res(src.size()+QSize(extent*2, extent*2), QImage::Format_RGBA8888);
+    QImage res(src.size()+QSize(extent*2, extent*2), QImage::Format_RGBA8888_Premultiplied);
     res.fill(Qt::transparent);
     QPainter ptr(&res);
     scene.render(&ptr, QRectF(), QRectF( -extent, -extent, src.width()+extent*2, src.height()+extent*2 ) );
     ptr.end();
+    scene.clear();
     return res;
 }
 

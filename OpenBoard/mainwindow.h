@@ -44,6 +44,7 @@ public slots:
     void onCommandFocusSet();
     void onCommandFocusLost();
     void on_actionClear_drawing_triggered();
+    void on_actionClear_drawingBuffer_triggered();
 
  void doUndoRedoEnd();
 //    board
@@ -118,7 +119,7 @@ private:
     bool changeone;
    QString directory;
 QAction *a_play,*a_pause,*a_stop,*a_font_canvas,*a_color_canvas,
-*a_record_to_file,*a_undo,*a_redo,*a_show,*a_hide,*a_clear_drawing,*a_show_last_drawing;
+*a_record_to_file,*a_undo,*a_redo,*a_show,*a_hide,*a_clear_drawing,*a_clear_drawingBuffer,*a_show_last_drawing;
     Ui::MainWindow  *ui;
 QMessageBox messAbout;
  //   GLWidget        *mpGLWidget;

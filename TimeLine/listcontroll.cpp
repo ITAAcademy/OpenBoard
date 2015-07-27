@@ -423,7 +423,6 @@ void ListControll::setFocus()
 
  QList <Element> ListControll::getPointedBlocks( )
  {
-
      return pointed_block;
  }
  QList <DrawElement*> ListControll::getPointedBlocksDE( )
@@ -440,7 +439,7 @@ void ListControll::setFocus()
      pointed_block.clear();
      for (int i=0; i<tracks.size(); i++)
      {
-         if (tracks[i].track_cnahged)
+        // if (tracks[i].track_cnahged)
          {
              tracks[i].track_cnahged = false;
          int blockXstart = 0;
@@ -460,7 +459,7 @@ void ListControll::setFocus()
 /*
 	*		show curent play element
 */
-     // qDebug() << "FFFFFFFFFFFFFFF getPointedBlocks size" << pointed_block.size();
+      qDebug() << "FFFFFFFFFFFFFFF getPointedBlocks size" << pointed_block.size();
       for(int i = 0; i <pointed_block.size(); i++)
       {
           qDebug() << i <<  "   " << pointed_block[i].draw_element->getType();

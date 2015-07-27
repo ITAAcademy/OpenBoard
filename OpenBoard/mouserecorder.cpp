@@ -39,10 +39,10 @@ int MouseRecorder::SPEED_OF_RECORDING_MS = 5;
 
 void MouseRecorder::addCoord(int x, int y,int group)
 {
- QPoint pt;
- pt.setX(x);
- pt.setY(y);
- coordGroup[group].append(pt);
+     QPoint pt;
+     pt.setX(x);
+     pt.setY(y);
+     coordGroup[group].append(pt);
 }
 
 void MouseRecorder::addCoord(int x, int y)

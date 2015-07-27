@@ -42,6 +42,10 @@ Rectangle {
                 brushControll.setBlur(value);
                 show_brush_image.update();
             }
+            onRelease:
+            {
+                brushControll.update();
+            }
 
         }
         FullSlider{
@@ -55,6 +59,10 @@ Rectangle {
                // show_brush_image.opacity = value/100;
                 brushControll.setOpacity(value);
                 show_brush_image.update();
+            }
+            onRelease:
+            {
+                brushControll.update();
             }
         }
     }

@@ -44,5 +44,8 @@
         <file>icons/colors-iconB.png</file>
         <file>icons/down_arrow.png</file>
         <file>icons/handle.png</file>
+        <file>icons/ip_icon_04_New.png</file>
+        <file>icons/new-icon.png</file>
+        <file>icons/Oxygen-Icons.org-Oxygen-Actions-edit-clear.ico</file>
     </qresource>
 </RCC>

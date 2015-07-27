@@ -17,6 +17,7 @@ Item{
     property int xMax: size.width - handle.width - 4
     property int  glowRadius: 3
     onValueChanged: { handle.x = 2 + (root.value - root.minimum) * root.xMax / (root.maximum - root.minimum);}
+    signal release;
  Row{
      width: parent.width
      height: parent.height
@@ -142,6 +143,8 @@ Item{
                  }
                  onReleased: {
                      from.start();
+                     root.release();
+                     console.log("LOGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG");
                  }
                  onDoubleClicked: {
                      if(checkable)

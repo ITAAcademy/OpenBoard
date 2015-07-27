@@ -21,7 +21,7 @@ Rectangle {
             width: parent.width
             height: parent.fix_height
             name: "DISPERS"
-            maximum : 20
+            maximum : 100
             value: 0
             onValueChanged:
             {

@@ -73,6 +73,14 @@ public:
     Brush getCreatedBrush();
     void setCreatedBrush(const Brush &value);
 
+    Q_INVOKABLE QString toHex(QColor col);
+    Q_INVOKABLE float getHue(QString col);
+    Q_INVOKABLE float getSaturation(QString col);
+    Q_INVOKABLE float getLightness(QString col);
+    Q_INVOKABLE bool isColorValid(QString value);
+    Q_INVOKABLE void update();
+
+
 signals:
 void colorChanged();
 void currentBrushChanged();

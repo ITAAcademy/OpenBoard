@@ -117,14 +117,21 @@ MainWindow::MainWindow(QWidget *parent) :
 
        a_clear_drawing = new QAction(this);
        a_clear_drawing->setEnabled(true);
-       //a_clear_drawing->setIcon(QPixmap(":/icons/redo-icon.png").scaled(QSize(16, 16)));
+       a_clear_drawing->setIcon(QPixmap(":/icons/Oxygen-Icons.org-Oxygen-Actions-edit-clear.ico").scaled(QSize(16, 16)));
        a_clear_drawing->setToolTip(tr("Clear drawing"));
        connect(a_clear_drawing,SIGNAL(triggered()),this,  SLOT(on_actionClear_drawing_triggered()));
        toolBar->addAction(a_clear_drawing);
 
+       a_clear_drawingBuffer = new QAction(this);
+       a_clear_drawingBuffer->setEnabled(true);
+       a_clear_drawingBuffer->setIcon(QPixmap(":/icons/Oxygen-Icons.org-Oxygen-Actions-edit-clear.ico").scaled(QSize(16, 16)));
+       a_clear_drawingBuffer->setToolTip(tr("Clear drawing BUFFER"));
+       connect(a_clear_drawingBuffer,SIGNAL(triggered()),this,  SLOT(on_actionClear_drawingBuffer_triggered()));
+       toolBar->addAction(a_clear_drawingBuffer);
+
        a_show_last_drawing = new QAction(this);
        a_show_last_drawing->setEnabled(true);
-       //a_show_last_drawing->setIcon(QPixmap(":/icons/redo-icon.png").scaled(QSize(16, 16)));
+       a_show_last_drawing->setIcon(QPixmap(":/icons/ip_icon_04_New.png").scaled(QSize(16, 16)));
        a_show_last_drawing->setToolTip(tr("Show last drawing"));
        connect(a_show_last_drawing,SIGNAL(triggered()),this,  SLOT(on_actionShow_last_drawing_triggered()));
        toolBar->addAction(a_show_last_drawing);
@@ -743,8 +750,13 @@ void MainWindow::onCommandFocusLost(){
 void MainWindow::on_actionClear_drawing_triggered()
 {
 qDebug() << "on_actionClear_drawing_triggered()";
-mpOGLWidget->isClearFrameBuffer=true;
+mpOGLWidget->clearFrameBuffer();
 //qDebug() << mpOGLWidget->isClearFrameBuffer;
+}
+
+void MainWindow::on_actionClear_drawingBuffer_triggered()
+{
+    mpOGLWidget->mouseRecorder.clear();
 }
 
 void MainWindow::on_animationBtn_clicked()
@@ -953,7 +965,7 @@ void MainWindow::onTextChanged()
 
 void MainWindow::on_action_Play_triggered()
 {
-    timeLine.play();
+    //timeLine.play(); //off for test
     hideBoardSettings();
     ui->action_Play->setEnabled(false);
     a_play->setEnabled(false);
