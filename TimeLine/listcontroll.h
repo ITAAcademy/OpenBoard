@@ -66,11 +66,9 @@ struct Element {
 
 struct Track {
     int time;
-    bool track_cnahged;
     QList <Element> block;
-    Track() { track_cnahged = false;}
+    Track() { }
     Track( int time ,QList <Element> block ) {
-        track_cnahged = false;
         this-> time = time;
         this-> block = block;
     }
