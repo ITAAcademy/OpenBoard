@@ -110,7 +110,7 @@ onYChanged: y=0;
         onPressed: {
             if(main222.selectedBlock != null)
                 main222.selectedBlock.hideMenu();
-            timeControll.setSelectedBlock(colIndex,mIndex);
+            timeControll.setSelectedBlockPoint(colIndex,mIndex);
             main222.selectedBlock = root;
             main222.p_scale_pointer.x = mouseX + root.x
             main222.needToLightSelected = true

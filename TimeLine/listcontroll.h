@@ -66,11 +66,9 @@ struct Element {
 
 struct Track {
     int time;
-    bool track_cnahged;
     QList <Element> block;
-    Track() { track_cnahged = false;}
+    Track() { }
     Track( int time ,QList <Element> block ) {
-        track_cnahged = false;
         this-> time = time;
         this-> block = block;
     }
@@ -84,12 +82,13 @@ class ListControll : public QObject, public QQuickImageProvider
 
     int maxTrackTime ;
     QQuickView view;
-    QPoint prevMousePosition;
+    QPoint framaMousePosition;
+     QPoint prevMousePosition;
     // QVector< QList <QString> > test;
     //  QVector< QList <int> > testWidth;
 
     QVector< Track > tracks;
-    Element selectedBlock;
+   // Element selectedBlock;
     QPoint selectedBlockPoint;
     int def_min_block_width = 100;
     int scale_pointer_pos = 0;
@@ -123,12 +122,16 @@ public:
     Q_INVOKABLE Element getBlock(int col, int i) const;
     Q_INVOKABLE int getTrackTime(int col) const;
     Q_INVOKABLE int getMaxTrackTime( ) const;
-    Q_INVOKABLE void moveWindow( ) ;
-    Q_INVOKABLE void  setPrevMousePosition( const int x,const int y) ;
-    Q_INVOKABLE void setPrevMousePosition( const QPoint x);
 
-    Q_INVOKABLE void setSelectedBlock(int col, int i);
-    Q_INVOKABLE Element getSelectedBlock() ;
+    Q_INVOKABLE void moveWindow( ) ;
+    Q_INVOKABLE void resizeWindowWidth(bool left) ;
+    Q_INVOKABLE void resizeWindowHeight(bool up) ;
+
+    Q_INVOKABLE void  setFramaMousePosition( const int x,const int y) ;
+    Q_INVOKABLE void setFramaMousePosition( const QPoint x);
+
+  //  Q_INVOKABLE void setSelectedBlock(int col, int i);
+   // Q_INVOKABLE Element getSelectedBlock() ;
 
     Q_INVOKABLE void setScalePointerPos( int x);
     Q_INVOKABLE int getScalePointerPos( );
@@ -156,8 +159,11 @@ public:
     QImage requestImage(const QString & id, QSize * size, const QSize & requestedSize);
 
 
-    QPoint getSelectedBlockPoint() const;
-    void setSelectedBlockPoint(const QPoint &value);
+   Q_INVOKABLE QPoint getSelectedBlockPoint() const;
+  Q_INVOKABLE  void setSelectedBlockPoint(const QPoint &value);
+
+    Q_INVOKABLE void  setPrevMousePosition();
+    Q_INVOKABLE QPoint  getPrevMousePosition();
 
 signals:
     void playSignal();

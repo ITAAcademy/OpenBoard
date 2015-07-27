@@ -441,48 +441,9 @@ radius: 10
 
        ////////////////////////tuta
         }
-    MouseArea {
-        id: for_scrollview_zoom
-        anchors.fill: parent
-        visible: false
-        onWheel: {
-
-            if (wheel.angleDelta.y > 0)
-            main222.scaling += 0.02
-            else if (wheel.angleDelta.y < 0)
-                main222.scaling -= 0.02
- console.log("wheel.angleDelta.y = " + wheel.angleDelta.y + " main222.scaling=" + main222.scaling)
-
-   /*       item_col.scale +=  scaling
-            time_scale.scale  +=scaling
-
-            item_col.x+= scaling *300
-            time_scale.x += scaling *1030
-
-            toolbar_scroll.y += scaling *10// time_scale.height
-             item_col.y+= scaling *100
-
-*/
 
 
-/*
-            var temp = scaling * 1000
-           // item_col.width += temp//
-            item_col. childrenRect.width  += temp
-           // item_col.height += temp //
-            item_col. childrenRect.height += temp*/
-        }
-    }
 
- focus: true
-    Keys.onPressed: {
-        if (event.key === Qt.Key_Control) {
-            console.log("ctrl pressed") }
-     for_scrollview_zoom.visible = true;
-    }
-    Keys.onReleased: {
-         for_scrollview_zoom.visible = false;
-    }
     }
 
 ContentBlock.ContextMenu {
