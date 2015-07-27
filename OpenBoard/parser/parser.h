@@ -19,7 +19,7 @@ public:
     Parser();
     virtual ~Parser();
 
-    static int ParsingLine(QList<Unit*>& list, QString& str);
+    static int ParsingLine(QList<Unit*>& list, const QString &str);
 };
 
 #endif // PARSER

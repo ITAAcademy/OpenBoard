@@ -52,6 +52,7 @@ BrushManager::BrushManager(QObject *parent) : QObject(parent), QQuickImageProvid
     view.setColor("transparent");
     //viewsetFont(QFont("Segoe Script"));
 
+
 }
 
 BrushManager::~BrushManager()

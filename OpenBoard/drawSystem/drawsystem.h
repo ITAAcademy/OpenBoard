@@ -38,7 +38,9 @@ static DrawElement *GenerationDrawElement( QString path, OGLWidget *drawWidget =
     {
         DrawTextElm *elm = new DrawTextElm(drawWidget, parent);
         QFile file(path);
-        elm->setUnParsestring(file.readAll());
+        file.open(QFile::ReadOnly);
+        QString data(file.readAll());
+        elm->setUnParsestring(data);
         return (DrawElement*) elm;
     }
     if(format == "text")

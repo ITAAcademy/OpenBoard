@@ -26,7 +26,7 @@ QString Parser::commands[]   ={
 };
 int Parser::COMMANDS_COUNT = 12;
 int Parser::MAX_COMMAND_LENGTH = 3;
-int Parser::ParsingLine(QList<Unit*> &list, QString& str)
+int Parser::ParsingLine(QList<Unit*> &list, const QString &str)
 {
     list.clear();
     QString pars_line;

@@ -39,8 +39,9 @@ QString DrawTextElm::getUnParsestring() const
 void DrawTextElm::setUnParsestring(const QString &value)
 {
     unParsestring = value;
+    qDebug() << value;
+    Parser::ParsingLine(mUnitList, value);
 }
-
 
 void DrawTextElm::setUnitList(const QList<Unit *> &unitList)
 {

@@ -33,7 +33,7 @@ class MainWindow;
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
-
+    QDebug *deb;
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();

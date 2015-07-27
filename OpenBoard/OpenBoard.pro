@@ -82,9 +82,13 @@ OTHER_FILES += \
 #win32:CONFIG(release, debug|release): LIBS += -LC:/Qt/Qt5.5.0/5.5/mingw492_32/bin/
 #
 #   @NICO
-win32:CONFIG(release, debug|release): LIBS += -LF:/QA/QtMEL-master/libsQt5/ -lqtmel1
-else:win32:CONFIG(debug, debug|release): LIBS += -LF:/QA/QtMEL-master/libsQt5/ -lqtmeld1
+#win32:CONFIG(release, debug|release): LIBS += -LF:/QA/QtMEL-master/libsQt5/ -lqtmel1
+#else:win32:CONFIG(debug, debug|release): LIBS += -LF:/QA/QtMEL-master/libsQt5/ -lqtmeld1
 #
+#   @GLOBAL
+win32:CONFIG(release, debug|release): LIBS += -L$$PWD/ThirdPart/lib/ -lqtmel1
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$PWD/ThirdPart/lib/ -lqtmeld1
+
 VERSION = 0.4.0.0
 QMAKE_TARGET_COMPANY = ITA
 QMAKE_TARGET_PRODUCT = OpenBoard
@@ -92,3 +96,6 @@ QMAKE_TARGET_DESCRIPTION = Good program
 QMAKE_TARGET_COPYRIGHT = @@@
 
 DISTFILES +=
+
+INCLUDEPATH += $$PWD/ThirdPart/include
+DEPENDPATH += $$PWD/ThirdPart/include
