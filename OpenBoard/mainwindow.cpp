@@ -985,7 +985,7 @@ void MainWindow::on_action_Play_triggered()
             if(t != selElm)
             {
                 selElm = t;
-                elm = timeLine.getSelectedBlock();
+                elm = timeLine.getBlock(selElm.x(),selElm.y());
                 mpOGLWidget->editingRectangle.rect = elm.draw_element->getRect();
             }
             else

@@ -2,10 +2,14 @@ import QtQuick 2.0
 
 MouseArea
 {
+    id: mainMA
     z: -149
     anchors.fill: parent
     property bool isMoved :false
-    property bool isChangingSize :false
+    property bool isChangingWidthLeft :false
+    property bool isChangingWidthRight :false
+    property bool isChangingHeightUp :false
+    property bool isChangingHeightDown :false
      height : 5
      width: 5
     hoverEnabled: true
@@ -15,10 +19,35 @@ MouseArea
         {
             main222.p_context_menu.visible = false
              //console.log("mouseX ="+mouseX+" mouseY ="+mouseY)
-     isMoved =true
-            timeControll.setPrevMousePosition(mouseX, mouseY)
+            timeControll.setFramaMousePosition(mouseX, mouseY)
+            timeControll.setPrevMousePosition()
+            var div=5
+            if (mouseX <=div )
+            {
+                isChangingWidthLeft = true
+                mainMA.z = 5000
+            }
+            else
+                if (mouseX >= parent.width - div)
+            {
+                isChangingWidthRight = true
+                     mainMA.z = 5000
+            }
 
-       // timeControll.setPrevMousePosition(mouseX, mouseY)
+
+           else
+                if (mouseY <=div )
+                {
+                    isChangingHeightUp  = true
+                     mainMA.z = 5000
+                }
+                else
+                     if ( mouseY >= parent.height - div )
+                     {
+                         isChangingHeightDown  = true
+                          mainMA.z = 5000
+                     }
+                else    isMoved =true
         }
         else
         {
@@ -38,7 +67,8 @@ MouseArea
         else
         {
             cursorShape = Qt.ArrowCursor;
-*/
+        }
+    }*/
 
     onPositionChanged : {
          if ( isMoved )
@@ -46,21 +76,50 @@ MouseArea
        timeControll.moveWindow()
          // console.log("mouseX ="+mouseX+" mouseY ="+mouseY)
          }
-
-       /* if (Math.abs(mouseX-5) <=5 || Math.abs(mouseX-parent.width) <=5 )
-            if(Math.abs(mouseY-5) <=5 || Math.abs(mouseY-parent.height) <=5 )
+       else
+         if (isChangingWidthLeft )
+         {
+             timeControll.resizeWindowWidth(true)
+         }
+         else
+           if (isChangingWidthRight )
+           {
+               timeControll.resizeWindowWidth(false)
+           }
+         else
+           if (isChangingHeightUp)
+         {
+            timeControll.resizeWindowHeight(true)
+         }
+           else
+             if (isChangingHeightDown)
+           {
+              timeControll.resizeWindowHeight(false)
+           }
+     else
+ {
+              var div=5
+        if (mouseX <=div || mouseX >= parent.width - div )
+        {
+            cursorShape = Qt.SizeHorCursor
+        }
+       else
+            if (mouseY <=div || mouseY >= parent.height - div )
             {
-                isChangingSize = true
-                cursorShape = Qt.SizeHorCursor
-            }*/
+                cursorShape = Qt.SizeVerCursor
+            }
+                else
+                {
+                  isChangingHeightUp = isChangingHeightDown  = isChangingWidthLeft  = isChangingWidthRight = false
+                   cursorShape = Qt.ArrowCursor
+                }
+ }
+
 
     }
-
-/*
-    onMouseXChanged: moving()
-    onMouseYChanged: moving()
-*/
     onReleased: {
         isMoved =false
+         isChangingHeightUp = isChangingHeightDown  = isChangingWidthLeft  = isChangingWidthRight = false
+         mainMA.z = -149
     }
 }

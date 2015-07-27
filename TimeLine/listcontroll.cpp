@@ -10,6 +10,7 @@ QPoint ListControll::getSelectedBlockPoint() const
 void ListControll::setSelectedBlockPoint(const QPoint &value)
 {
     selectedBlockPoint = value;
+    qDebug() <<"FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF";
 }
 void ListControll::recountMaxTrackTime()
 {
@@ -144,7 +145,7 @@ bool ListControll::removeLastTrack()
     if (maxTrackTime == lastColTime)
         recountMaxTrackTime();
 
-    //if (selectedBlockPoint.x() == tracks.size() - 1)        selectedBlock = NULL;
+  // if (selectedBlockPoint.x() == tracks.size() - 1)        selectedBlock = NULL;
     return true;
     }
     return false;
@@ -309,7 +310,7 @@ ListControll::ListControll(QObject *parent) : QObject(parent), QQuickImageProvid
         testWidth.append(temp_int);
 */
     addNewTrack( );
-    selectedBlock  = getBlock(0,0);
+   // selectedBlock  = getBlock(0,0);
     recountMaxTrackTime();
     if (qgetenv("QT_QUICK_CORE_PROFILE").toInt()) {\
         QSurfaceFormat f = view.format();\
@@ -327,7 +328,9 @@ ListControll::ListControll(QObject *parent) : QObject(parent), QQuickImageProvid
     view.setResizeMode(QQuickView::SizeRootObjectToView);
     view.setPersistentOpenGLContext(true);
     view.setColor("transparent");
-    view.setMinimumHeight(235);
+    view.setMinimumHeight(205);
+    view.setMinimumWidth(500);
+    view.setHeight(view.minimumHeight());
     view.setWidth(800);
 
 
@@ -340,18 +343,83 @@ ListControll::ListControll(QObject *parent) : QObject(parent), QQuickImageProvid
  {
     QPoint posMouse = QCursor::pos();
    // view.setPosition(  pos.x() + x , pos.y()  + y);
-    view.setPosition( posMouse - prevMousePosition);
+    view.setPosition( posMouse - framaMousePosition);
   //  setPrevMousePosition(posMouse);
    // qApp->processEvents(QEventLoop::AllEvents, 1000);
 
  }
 
- void  ListControll::setPrevMousePosition( const int x,const int y)
+ void ListControll::resizeWindowWidth(bool left)
  {
-     prevMousePosition.setX(x);
-     prevMousePosition.setY(y);
+     QPoint posMouse = QCursor::pos();
+     if (!left )
+     {
+         int tt = posMouse.x() - view.x();
+         if (tt < view.minimumWidth())
+             tt = view.minimumWidth();
+       view.setWidth(tt)  ;
+     }
+     else
+     {
+         int tt = view.x();
+       view.setX(posMouse.x());
+
+       tt = view.width() + tt - view.x();
+        if (tt < view.minimumWidth())
+        {
+            view.setX(view.x() + (tt - view.minimumWidth()));
+            tt = view.minimumWidth();
+        }
+
+       view.setWidth(tt);
+     }
  }
 
+ void ListControll::resizeWindowHeight(bool up)
+ {
+     QPoint posMouse = QCursor::pos();
+     if (!up )
+     {
+         int tt = posMouse.y() - view.y();
+         if (tt < view.minimumHeight())
+             tt = view.minimumHeight();
+       view.setHeight(tt)  ;
+     }
+     else
+     {
+         int tt = view.y();
+       view.setY(posMouse.y());
+
+       tt = view.height() + tt - view.y();
+        if (tt < view.minimumHeight())
+        {
+            view.setY(view.y() + (tt - view.minimumHeight()));
+            tt = view.minimumHeight();
+        }
+
+       view.setHeight(tt);
+     }
+ }
+
+ void  ListControll::setPrevMousePosition()
+ {
+     prevMousePosition = QCursor::pos();
+ }
+
+    QPoint  ListControll::getPrevMousePosition()
+    {
+    return prevMousePosition;
+    }
+
+
+
+ void  ListControll::setFramaMousePosition( const int x,const int y)
+ {
+     framaMousePosition.setX(x);
+     framaMousePosition.setY(y);
+ }
+
+/*
 void ListControll::setSelectedBlock(int col, int i)
 {
       selectedBlock = getBlock(col,i);
@@ -361,12 +429,12 @@ void ListControll::setSelectedBlock(int col, int i)
  Element ListControll::getSelectedBlock()
  {
     return selectedBlock;
- }
+ }*/
 
 
- void  ListControll::setPrevMousePosition( const QPoint x)
+ void  ListControll::setFramaMousePosition( const QPoint x)
  {
-     prevMousePosition = x;
+     framaMousePosition = x;
  }
 
 ListControll::~ListControll()
