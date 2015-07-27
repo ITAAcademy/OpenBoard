@@ -15,6 +15,7 @@ Rectangle {
 z: -150
 radius: 10
 MouseAreaForWindowDraging{
+    id: framaMA
 anchors.fill:   frama
 }
 /*
@@ -59,11 +60,15 @@ radius: 10
    property Item selectedBlock
    property int selectedBlockCol : 0
    property int selectedBlockIndex : 0
+   property int minBlockWidth : 0
+
+
    property  bool needToLightSelected : false
   property Repeater p_rep_columns
     property Item p_item_col
   property Item  p_trackbar
    property Item  p_scale_pointer
+   property Item  p_context_menu
 
    property int mX : 0
 
@@ -85,11 +90,9 @@ radius: 10
     }
 
     function play()    {
-        if (playTimer.stopped)
-             playTimer.restart();
-        else
+        playTimer.running = true;
+
          playTimer.start();
-        playTimer.stopped = false;
 
 
     }
@@ -100,7 +103,7 @@ radius: 10
     }
     function stop()    {
      playTimer.running = false
-        playTimer.stopped = true;
+        scale_pointer.x = 0
 
 
     }
@@ -123,7 +126,6 @@ radius: 10
 
     Timer {
         id: playTimer
-        property bool stopped : false
           interval: 1; running: false; repeat: true
           onTriggered: {
               scale_pointer.x +=1
@@ -209,6 +211,7 @@ radius: 10
         //property int trackbar_right
         Component.onCompleted: {
             main222.p_scale_pointer = scale_pointer
+          //  x = 40
         }
 
         onYChanged: y = 0
@@ -232,6 +235,8 @@ radius: 10
                 var temp = scroll.width -width/2  /// scroll.x + scroll.width - main222.p_trackbar.width*1.4
                 if (x> temp)
                 {
+                    if (timeControll.getMaxTrackTime()  >= scroll.width)
+                    {
                     scroll.flickableItem.contentX += x - temp
                     var sad = timeControll.getMaxTrackTime() - scroll.width + 17  // scroll.flickableItem.contentWidth - scroll.width + 10
                     if (scroll.flickableItem.contentX  >  sad)
@@ -239,6 +244,12 @@ radius: 10
                             scroll.flickableItem.contentX = sad;
                         timeControll.stop();
                     }
+
+
+                    }
+                    else
+                        if (timeControll.getMaxTrackTime() <= scroll.width )
+                        timeControll.stop();
                 x = temp
                 }
             }
@@ -325,8 +336,9 @@ radius: 10
                                }
                                function getBlockX (indexa)
                                {
+                                   console.log("repka.itemAt(indexa).x="+repka.itemAt(indexa).x)
 
-                                     return repka.itemAt(indexa).mX
+                                     return repka.itemAt(indexa).x
                                }
 
 
@@ -354,18 +366,20 @@ radius: 10
 
                                            property bool isDrag : false
                                            model:  timeControll.getTrackSize(trackbar.mIndex)//     bar_track.mIndex)
-                                           function updateModel()      {
-                                               model = model - 1;
-                                               item_col.width = timeControll.getMaxTrackTime()
-                                                    model =  timeControll.getTrackSize(bar_track.mIndex)
-                                               if (main222.needToLightSelected)
-                                               {
-                   rep_columns.itemAt(main222.selectedBlockCol).setColorize(main222.selectedBlockIndex,"#8000FF00")
-                     main222.p_scale_pointer.x =main222.mX// rep_columns.itemAt(main222.selectedBlockCol).getBlockX(2)//main222.selectedBlockIndex)
-                                               }
-                                                   main222.needToLightSelected = false
-                                               console.log("FFFFFFFFFFFFFF updateModel")
-                                           }
+    function updateModel()      {
+    model = model - 1;
+    item_col.width = timeControll.getMaxTrackTime()
+    model =  timeControll.getTrackSize(bar_track.mIndex)
+    if (main222.needToLightSelected)
+    {
+    rep_columns.itemAt(main222.selectedBlockCol).setColorize(main222.selectedBlockIndex,"#8000FF00")
+        console.log("selectedBlockIndex=" + main222.selectedBlockIndex)
+   // main222.p_scale_pointer.x =rep_columns.itemAt(main222.selectedBlockCol).getBlockX(main222.selectedBlockIndex)
+   //main222.mX//
+        main222.needToLightSelected = false
+    }
+
+    }
                                            delegate:
                                            ContentBlock.Block{
                                                id: cool
@@ -392,7 +406,7 @@ radius: 10
 
                                        }
                                        Component.onCompleted: {
-                                          //trackbar.globalRep = repka
+                                         main222.minBlockWidth = repka.itemAt(0).minWidth
                                          /*   console.log("item_col.p_columns.globalRep " + item_col.p_columns.globalRep)
                                            console.log("cool.repka " + cool.repka)
                                            item_col.p_columns.globalRep = cool.repka
@@ -471,6 +485,28 @@ radius: 10
     }
     }
 
+ContentBlock.ContextMenu {
+    id: context_menu
+    x: 20
+    y: 0
+    z: 500
+    visible: false
+    Component.onCompleted: {
+        main222.p_context_menu = context_menu
+    }
+
+    columnIndex : main222.selectedBlockCol
+    blockIndex: main222.selectedBlockIndex
+
+
+    /*onXChanged: {
+            x = root.x + root.width/2;
+        z:500
+
+    }*/
+    globalRep: main222.p_trackbar.globalRep
+    minBlockWidth : main222.minBlockWidth
+}
 }
 
   /*

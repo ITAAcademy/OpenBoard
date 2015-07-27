@@ -66,9 +66,11 @@ struct Element {
 
 struct Track {
     int time;
+    bool track_cnahged;
     QList <Element> block;
-    Track() { };
+    Track() { track_cnahged = false;}
     Track( int time ,QList <Element> block ) {
+        track_cnahged = false;
         this-> time = time;
         this-> block = block;
     }
@@ -109,6 +111,7 @@ public:
     Q_INVOKABLE void loadFromFile( );
     Q_INVOKABLE bool removeLastBlock(int col);
     Q_INVOKABLE bool removeLastTrack();
+    Q_INVOKABLE bool removeTrack(int col);
     Q_INVOKABLE void reverseBlocks(int col, int init_pos, int end_pos);
     void setBlocks(int col,const  QList <Element> &value);
     Q_INVOKABLE   void setBlockKey(int col, int i, QString name);\
@@ -120,7 +123,7 @@ public:
     Q_INVOKABLE Element getBlock(int col, int i) const;
     Q_INVOKABLE int getTrackTime(int col) const;
     Q_INVOKABLE int getMaxTrackTime( ) const;
-    Q_INVOKABLE void moveWindow( const int x,const int y) ;
+    Q_INVOKABLE void moveWindow( ) ;
     Q_INVOKABLE void  setPrevMousePosition( const int x,const int y) ;
     Q_INVOKABLE void setPrevMousePosition( const QPoint x);
 

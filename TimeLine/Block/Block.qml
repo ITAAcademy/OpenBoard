@@ -57,28 +57,11 @@ z: 0
          //timeControll.setBlockTime(mainwindow.columnIndex,mainwindow.blockIndex,block_width_value.value)
     }
     onXChanged: {
-        main222.mX = x
         timeControll.setBlockStartTime(root.colIndex,root.mIndex, x)
     }
 
 
-    ContextMenu {
-        id: context_menu
-        x: 20
-        y: 0
-        z: 500
-        visible: false
-        parent: root.parent
-        columnIndex : root.colIndex
-        blockIndex: root.mIndex
-        onXChanged: {
-                x = root.x + root.width/2;
-            z:500
 
-        }
-        globalRep: root.globalRep
-        minBlockWidth : root.minWidth
-    }
 
 
     Drag.active: mouseArea.drag.active
@@ -141,8 +124,7 @@ onYChanged: y=0;
             console.log("onPressed: mIndex="+mIndex+" colIndex="+ colIndex + " time = " + timeControll.getBlockTime(colIndex,mIndex))
             if (mouse.button == Qt.RightButton)
             {
-                context_menu.visible = true
-                context_menu.x = root.height
+               context_menu.show(mouseX + root.x, mouseY + root.y)
                 drag.target = null
             }
         else
