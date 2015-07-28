@@ -10,8 +10,15 @@ QPoint ListControll::getSelectedBlockPoint() const
 void ListControll::setSelectedBlockPoint(const QPoint &value)
 {
     selectedBlockPoint = value;
-    qDebug() <<"FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF";
+    qDebug() <<"FFFFFFFFFFFF: col = " << selectedBlockPoint.x() << " ind = " << selectedBlockPoint.y();
 }
+
+void ListControll::setSelectedBlockPoint(int col, int ind)
+{
+    selectedBlockPoint = QPoint(col,ind);
+    qDebug() <<"FFFFFFFFFFFF: col = " << selectedBlockPoint.x() << " ind = " << selectedBlockPoint.y();
+}
+
 void ListControll::recountMaxTrackTime()
 {
     maxTrackTime = 0;
