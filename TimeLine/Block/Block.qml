@@ -116,7 +116,7 @@ onYChanged: y=0;
                 main222.selectedBlock.hideMenu();
             timeControll.setSelectedBlockPoint(root.colIndex,root.mIndex);
             main222.selectedBlock = root;
-            main222.p_scale_pointer.x = mouseX + root.x
+            main222.p_scale_pointer.x = mouseX + root.x - scroll.flickableItem.contentX
             main222.needToLightSelected = true
             for (var y=0; y< rep_columns.model; y++)
                  rep_columns.itemAt(y).abortColorize()
@@ -128,7 +128,7 @@ onYChanged: y=0;
             console.log("onPressed: mIndex="+mIndex+" colIndex="+ colIndex + " time = " + timeControll.getBlockTime(colIndex,mIndex))
             if (mouse.button == Qt.RightButton)
             {
-               context_menu.show(mouseX + root.x, mouseY + root.colIndex * root.height ,root.globalRep)
+               context_menu.show(main222.p_scale_pointer.x, mouseY + root.colIndex * root.height ,root.globalRep)
                 drag.target = null
             }
         else
