@@ -1560,6 +1560,7 @@ int OGLWidget::getCountNullString(int index)
 void OGLWidget::storeMousePos()
 {
     if (isMousePress){
+        if (mouseRecorder.getMouseCoord().length()==0)mouseRecorder.addBrush(m_manager.getCreatedBrush());
     mouseRecorder.addCoord(QPoint(mousePos.x(),mousePos.y()));
    // qDebug()<<"position stored:"<<QCursor::pos();
     }
