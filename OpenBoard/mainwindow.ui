@@ -695,6 +695,8 @@
     <addaction name="actionSend_to_youTube"/>
     <addaction name="actionClear_drawing"/>
     <addaction name="actionShow_last_drawing"/>
+    <addaction name="actionSave_drawing"/>
+    <addaction name="actionLoad_drawing_temp"/>
    </widget>
    <widget class="QMenu" name="menu_Help">
     <property name="title">
@@ -1108,6 +1110,16 @@
   <action name="actionShow_last_drawing">
    <property name="text">
     <string>Show last drawing</string>
+   </property>
+  </action>
+  <action name="actionSave_drawing">
+   <property name="text">
+    <string>Save drawing</string>
+   </property>
+  </action>
+  <action name="actionLoad_drawing_temp">
+   <property name="text">
+    <string>Load drawing (temp)</string>
    </property>
   </action>
  </widget>

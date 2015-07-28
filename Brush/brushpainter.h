@@ -29,6 +29,8 @@ struct Brush{
 
 };
 
+
+
 class BrushPainter : public QObject
 {
     Q_OBJECT

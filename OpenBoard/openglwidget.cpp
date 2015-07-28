@@ -2,6 +2,8 @@
 #include "openglwidget.h"
 #include <qglfunctions.h>
 #include "drawSystem/drawsystem.h"
+
+
 /*
  *scroll
  *
@@ -149,6 +151,80 @@ void OGLWidget::setList(const QList<DrawElement *> &value)
         list_2 = value;
     curentList = !curentList;
 }
+void OGLWidget::paintBrushInBuffer(QVector<QPoint> coords,QVector<BrushBeginingIndex> brushes,int keyFrame){
+    glBindFramebuffer(GL_FRAMEBUFFER_EXT, fbo); // Bind our frame buffer for rendering
+    GLuint texture = textureList[TEXTURE_INDEX_BRUSH];
+    glBindTexture(GL_TEXTURE_2D,texture);
+    QSize brushTextureSize = getTextureSize();
+    int BRUSH_SIZE=m_manager.getSize() + m_manager.getSizeDelta()/2 - rand()%(int)(m_manager.getSizeDelta() + 1);
+    float scaleX=1,scaleY=1;
+    float randScalePtX = 0;
+    float randScalePtY = 0;
+    if(m_manager.getAffine() != 0)
+    {
+        randScalePtX = m_manager.getAffine()/2 - rand() % (m_manager.getAffine());
+        randScalePtY = m_manager.getAffine()/2 - rand() % (m_manager.getAffine());
+    }
+
+    float MAX_SCALE = 2;
+    //100 - 2 (MAX_SCALE)
+    //1 - x
+    //x = 2/100=0.02
+    if(randScalePtX!=0)
+        scaleX=MAX_SCALE/randScalePtX;
+    if(randScalePtY!=0)
+        scaleY=MAX_SCALE/randScalePtY;
+    double koff = brushTextureSize.width()/brushTextureSize.height();
+     int maxAngle = m_manager.getAngleDelta();
+
+     int angle = 0;
+     if (maxAngle > 0){
+     angle=maxAngle/2 - rand() % (maxAngle);
+    }
+        int maxDispers = (int)m_manager.getDisepers();
+        int i=1;
+        if (maxDispers>0 && m_manager.getCount()>0) i=m_manager.getCount();
+        for (;i>0;i--)
+        {
+             int dispersX = 0;
+             int dispersY = 0;
+             if ((int)m_manager.getDisepers()>0){
+                 dispersX = maxDispers/2 - rand() % (maxDispers);
+                 dispersY = maxDispers/2 - rand() % (maxDispers);
+        }
+             int xPos = 0;
+             int yPos = 0;
+                 qDebug()<<"mouseRecorder.getBrushBeginings().length():"<<brushes.length();
+                 for (int recordedBrushN = 0; recordedBrushN < brushes.length();recordedBrushN++ )
+                 if (brushes[recordedBrushN].pointIndex==
+                         mousePlayIndex){
+                  loadTexture(brushes[recordedBrushN].brush.color_img, TEXTURE_INDEX_BRUSH, true);
+                  //qDebug() << "recordedBrushN:"<<recordedBrushN;
+                 }
+                 xPos=coords[keyFrame].x();
+                 yPos=coords[keyFrame].y();
+                qDebug() << "x:"<<xPos;
+                qDebug() << "y:"<<yPos;
+                qDebug() << "keyFrame:"<<keyFrame;
+                     if (mousePlayIndex >= coords.length()-1)
+                     {
+                     isMousePlay=false;
+                     mousePlayIndex=0;
+                     }
+                     else
+                      mousePlayIndex++;
+
+
+        drawTexture(xPos-BRUSH_SIZE/2 + dispersX ,yPos-BRUSH_SIZE/koff/2 + dispersY,BRUSH_SIZE,BRUSH_SIZE/koff,
+                texture,angle,scaleX,scaleY);
+        }
+
+
+
+glBindTexture(GL_TEXTURE_2D,0);
+glBindFramebuffer(GL_FRAMEBUFFER_EXT, 0); // Unbind our texture
+}
+
 OGLWidget::OGLWidget(QWidget *parent) :
     QGLWidget(parent)
 {
@@ -195,7 +271,7 @@ editingRectangle.leftCornerSize=5;
     curStatus = STOP;
     tickTimer.setSingleShot(false);
     tickTimer.setInterval(1000/25);
-    mouseTimer.setInterval(mouseRecorder.SPEED_OF_RECORDING_MS);
+    mouseTimer.setInterval(drawBrushElm->SPEED_OF_RECORDING_MS);
     mouseTimer.setSingleShot(false);
     realDelay = 0;
 
@@ -205,7 +281,7 @@ editingRectangle.leftCornerSize=5;
     indexRowInList = 0;
     cursorIndex = 0;
     isCrossingNow = false;
-
+     drawBrushElm = new DrawBrushElm(this,this);//record mouse movement
     //OPENGL
     setFormat(QGLFormat(QGL::DoubleBuffer)); // Двойная буферизация
    glDepthFunc(GL_LEQUAL); // Буфер глубины
@@ -224,6 +300,8 @@ OGLWidget::~OGLWidget()
 {
       if(m_encoder != NULL);
         delete m_encoder;
+      if (drawBrushElm !=NULL)
+         delete drawBrushElm;
 }
 
 void OGLWidget::resizeGL(int nWidth, int nHeight)
@@ -259,7 +337,7 @@ void OGLWidget::paintBufferOnScreen(){
     glDisable(GL_TEXTURE_2D);
 }
 
-void OGLWidget::paintBrushInBuffer(bool fromRecordedMousePoints) {
+void OGLWidget::paintBrushInBuffer() {
 glBindFramebuffer(GL_FRAMEBUFFER_EXT, fbo); // Bind our frame buffer for rendering
 //glPushAttrib(GL_VIEWPORT_BIT | GL_ENABLE_BIT); // Push our glEnable and glViewport states
 //glViewport(0, 0, window_width, window_height); // Set the size of the frame buffer view port
@@ -332,30 +410,9 @@ glBindFramebuffer(GL_FRAMEBUFFER_EXT, fbo); // Bind our frame buffer for renderi
             }
                  int xPos = 0;
                  int yPos = 0;
-                 if (!fromRecordedMousePoints){
                   xPos = mousePos.x();
                   yPos = mousePos.y();
-                }
-                 else
-                 {
-                     qDebug()<<"mouseRecorder.getBrushBeginings().length():"<<mouseRecorder.getBrushBeginings().length();
-                     for (int recordedBrushN = 0; recordedBrushN < mouseRecorder.getBrushBeginings().length();recordedBrushN++ )
-                     if (mouseRecorder.getBrushBeginings()[recordedBrushN].pointIndex==
-                             mousePlayIndex){
-                      loadTexture(mouseRecorder.getBrushBeginings()[recordedBrushN].brush.color_img, TEXTURE_INDEX_BRUSH, true);
-                      qDebug() << "recordedBrushN:"<<recordedBrushN;
-                     }
-                     xPos=mouseRecorder.getMouseCoord()[mousePlayIndex].x();
-                     yPos=mouseRecorder.getMouseCoord()[mousePlayIndex].y();
 
-                         if (mousePlayIndex >= mouseRecorder.getMouseCoord().length()-1)
-                         {
-                         isMousePlay=false;
-                         mousePlayIndex=0;
-                         }
-                         else
-                          mousePlayIndex++;
-                 }
 
             drawTexture(xPos-BRUSH_SIZE/2 + dispersX ,yPos-BRUSH_SIZE/koff/2 + dispersY,BRUSH_SIZE,BRUSH_SIZE/koff,
                     texture,angle,scaleX,scaleY);
@@ -598,9 +655,9 @@ case EDIT_RECTANGLE_MOVE:
      editingRectangle.rect.setY(mousePos.y());
     break;
  }
-if (canDrawByMouse && !isMousePlay)paintBrushInBuffer(false);
+if (canDrawByMouse)paintBrushInBuffer();
 }
-if (isMousePlay)paintBrushInBuffer(true);
+//if (isMousePlay)paintBrushInBuffer(true);
 
 paintBufferOnScreen();
 if (editingRectangle.isEditingRectangleVisible)
@@ -635,7 +692,7 @@ if (editingRectangle.isEditingRectangleVisible)
 }
 for(int i = 0; i < getList().size(); i++)
 {
-    qDebug() << "draw   " << i;
+   // qDebug() << "draw   " << i;
     if(getList()[i] != NULL)
         getList()[i]->draw();
 }
@@ -833,7 +890,7 @@ void OGLWidget::pauseAnimated()
 void OGLWidget::brushParamsChanged()
 {
     int index = loadTexture(m_manager.getCreatedBrush().color_img, TEXTURE_INDEX_BRUSH, true);
-    mouseRecorder.addBrush(m_manager.getCreatedBrush());
+    drawBrushElm->addBrush(m_manager.getCreatedBrush());
     qDebug() << "brushParamsChanged";
 }
 bool OGLWidget::isRecord() const
@@ -1549,8 +1606,8 @@ int OGLWidget::getCountNullString(int index)
 void OGLWidget::storeMousePos()
 {
     if (isMousePress){
-        if (mouseRecorder.getMouseCoord().length()==0)mouseRecorder.addBrush(m_manager.getCreatedBrush());
-    mouseRecorder.addCoord(QPoint(mousePos.x(),mousePos.y()));
+        if (drawBrushElm->getCoords().length()==0)drawBrushElm->addBrush(m_manager.getCreatedBrush());
+    drawBrushElm->addCoord(QPoint(mousePos.x(),mousePos.y()));
    // qDebug()<<"position stored:"<<QCursor::pos();
     }
 }
