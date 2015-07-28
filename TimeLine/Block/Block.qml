@@ -1,4 +1,5 @@
 import QtQuick 2.4
+import QtQuick.Controls 1.2
 import QtGraphicalEffects 1.0
 
 
@@ -15,7 +16,10 @@ Rectangle{
     property string colorKey : "green"
     property int minWidth : 20
     property ColorOverlay p_color_overlay
-    radius: 15
+    radius: 3
+    clip: true
+    color: "transparent"
+    anchors.leftMargin: 15
     border { color: "white" ; width: 2 }
 
     function hideMenu()
@@ -201,25 +205,25 @@ console.log(" reles  root.z= " +   root.z)
         width: height
         x:0
             // timeControll.getBlockIcon(colIndex,mIndex)
-        cache: false
     }
 
         Image {
              parent : root
             id: background
-            anchors.fill: parent
-            fillMode: Image.TileHorizontally
+           anchors.fill: parent
+           anchors.margins: 3
+
+           fillMode: Image.TileHorizontally
            source: "qrc:/iphone_toolbar_icons/black_tree.png"
-           visible: false
+           visible: true
 
         }
-        OpacityMask {
-            anchors.fill: root
+       /* OpacityMask {
             source: background
             maskSource: root
+            anchors.fill: root
 
-        }
-
+        }*/
 
     ColorOverlay {
         id: icon_coloroverlay
