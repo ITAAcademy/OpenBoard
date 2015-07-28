@@ -3,18 +3,20 @@
 #include <qvector.h>
 #include <QPoint>
 #include "../Brush/brushpainter.h"
-
+struct BrushBeginingIndex{
+    Brush brush;
+    int pointIndex;
+};
 
 class MouseRecorder
 {
     int currentPointsGroup = 0;
 QVector< QVector<QPoint> > coordGroup;
 //QVector <QPoint> mouseCoord;
-Brush brush;
+QVector<QVector<BrushBeginingIndex> > brushBeginingIndexes;
 public:
  static int SPEED_OF_RECORDING_MS;
     MouseRecorder();
-    MouseRecorder(Brush brush);
    QVector <QPoint> getMouseCoord(int group);
    QVector <QPoint> getMouseCoord();
    void nextGroup();
@@ -25,8 +27,9 @@ public:
    void clear(int group);
    QVector< QVector<QPoint> > getCoordGroup();
    void clear();
-   void setBrush(Brush brush);
-   Brush getBrush();
+   void addBrush(Brush brush);
+   QVector<BrushBeginingIndex> getBrushBeginings(int group);
+   QVector<BrushBeginingIndex> getBrushBeginings();
 };
 
 #endif // MOUSERECORDER_H

@@ -338,6 +338,13 @@ glBindFramebuffer(GL_FRAMEBUFFER_EXT, fbo); // Bind our frame buffer for renderi
                 }
                  else
                  {
+                     qDebug()<<"mouseRecorder.getBrushBeginings().length():"<<mouseRecorder.getBrushBeginings().length();
+                     for (int recordedBrushN = 0; recordedBrushN < mouseRecorder.getBrushBeginings().length();recordedBrushN++ )
+                     if (mouseRecorder.getBrushBeginings()[recordedBrushN].pointIndex==
+                             mousePlayIndex){
+                      loadTexture(mouseRecorder.getBrushBeginings()[recordedBrushN].brush.color_img, TEXTURE_INDEX_BRUSH, true);
+                      qDebug() << "recordedBrushN:"<<recordedBrushN;
+                     }
                      xPos=mouseRecorder.getMouseCoord()[mousePlayIndex].x();
                      yPos=mouseRecorder.getMouseCoord()[mousePlayIndex].y();
 
@@ -826,6 +833,7 @@ void OGLWidget::pauseAnimated()
 void OGLWidget::brushParamsChanged()
 {
     int index = loadTexture(m_manager.getCreatedBrush().color_img, TEXTURE_INDEX_BRUSH, true);
+    mouseRecorder.addBrush(m_manager.getCreatedBrush());
     qDebug() << "brushParamsChanged";
 }
 bool OGLWidget::isRecord() const
