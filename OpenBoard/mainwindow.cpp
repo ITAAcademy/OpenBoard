@@ -1,5 +1,6 @@
 ﻿#include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "../TimeLine/listcontroll.h"
 
 #define TIMER_VALUE         300
 #define GLWIDGET_SIZE       640,480
@@ -236,7 +237,7 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     mSettings.setMainWindowRect(geometry());
-    timeLine.close();
+    mpOGLWidget->getTimeLine()->close();
     //drawThread.quit();
     if(toolBar != NULL)
         delete toolBar;
@@ -272,7 +273,7 @@ void MainWindow::on_action_Show_triggered()
         mpOGLWidget = NULL;
     }*/
     //mpOGLWidget = new OGLWidget();
-    timeLine.show();
+    mpOGLWidget->getTimeLine()->show();
     mpOGLWidget->show();
     mpOGLWidget->pause(100);// wait for show window
     mpOGLWidget->setDelay(1000/lastInpuDelay);
@@ -316,7 +317,7 @@ void MainWindow::on_action_Hide_triggered()
       //  mpOGLWidget->stopAnimated();
     on_action_Stop_triggered();
     mpOGLWidget->hide();
-    timeLine.hide();
+    mpOGLWidget->getTimeLine()->hide();
   //  mpOGLWidget->close();*/
     // delete mpOGLWidget;
     ui->action_Pause->setEnabled(false);
@@ -340,7 +341,7 @@ void MainWindow::on_action_Hide_triggered()
 
 void MainWindow::moveEvent(QMoveEvent *event)
 {
-    timeLine.setFocus();
+    mpOGLWidget->getTimeLine()->setFocus();
 
     if(mpOGLWidget != NULL)
         mpOGLWidget->move(pos().x() + width() + WINDOW_MARGING, pos().y());
@@ -965,7 +966,7 @@ void MainWindow::onTextChanged()
 
 void MainWindow::on_action_Play_triggered()
 {
-    //timeLine.play(); //off for test
+    mpOGLWidget->getTimeLine()->play(); //off for test
     hideBoardSettings();
     ui->action_Play->setEnabled(false);
     a_play->setEnabled(false);
@@ -1012,23 +1013,23 @@ void MainWindow::on_action_Play_triggered()
         //while(mpOGLWidget->getStatus() == OGLWidget::PAUSE)
         if( mpOGLWidget->getStatus() != OGLWidget::PAUSE )
         {
-            mpOGLWidget->setList(timeLine.getPointedBlocksDE());
+            mpOGLWidget->setList(mpOGLWidget->getTimeLine()->getPointedBlocksDE());
             /*
              * test
              */
-            QPoint t = timeLine.getSelectedBlockPoint();
+            QPoint t = mpOGLWidget->getTimeLine()->getSelectedBlockPoint();
             if(t != selElm)
             {
                 selElm = t;
-                elm = timeLine.getBlock(selElm.x(),selElm.y());
+                elm = mpOGLWidget->getTimeLine()->getBlock(selElm.x(),selElm.y());
                 mpOGLWidget->editingRectangle.rect = elm.draw_element->getRect();
             }
             else
             {
                 QRect t = mpOGLWidget->editingRectangle.rect;
-                timeLine.setDrawX(selElm.x(), selElm.y(), t.x());
-                timeLine.setDrawY(selElm.x(), selElm.y(), t.y());
-                timeLine.setDrawSize(selElm.x(), selElm.y(), t.width(), t.height());
+                mpOGLWidget->getTimeLine()->setDrawX(selElm.x(), selElm.y(), t.x());
+                mpOGLWidget->getTimeLine()->setDrawY(selElm.x(), selElm.y(), t.y());
+                mpOGLWidget->getTimeLine()->setDrawSize(selElm.x(), selElm.y(), t.width(), t.height());
 
             }
 
@@ -1062,7 +1063,7 @@ void MainWindow::on_action_Stop_triggered()
         a_play->setEnabled(true);
         showBoardSettings();
     }
-timeLine.stop();
+mpOGLWidget->getTimeLine()->stop();
 }
 
 void MainWindow::on_action_youTube_triggered()
@@ -1086,7 +1087,7 @@ void MainWindow::on_action_Pause_triggered()
     ui->action_Redo->setEnabled(true);
     a_undo->setEnabled(true);
     a_redo->setEnabled(true);
-    timeLine.pause();
+    mpOGLWidget->getTimeLine()->pause();
 }
 
 

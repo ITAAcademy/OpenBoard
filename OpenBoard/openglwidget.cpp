@@ -2,6 +2,7 @@
 #include "openglwidget.h"
 #include <qglfunctions.h>
 #include "drawSystem/drawsystem.h"
+#include "../TimeLine/listcontroll.h"
 /*
  *scroll
  *
@@ -152,6 +153,7 @@ void OGLWidget::setList(const QList<DrawElement *> &value)
 OGLWidget::OGLWidget(QWidget *parent) :
     QGLWidget(parent)
 {
+    timeLine = new ListControll;
     //qRegisterMetaType<DrawData>("DrawData");
     // engine()->rootContext()->setContextProperty(QLatin1String("forma"), this);
     m_encoder = new AV_REncoder(this);
@@ -222,9 +224,13 @@ editingRectangle.leftCornerSize=5;
 
 OGLWidget::~OGLWidget()
 {
+    delete timeLine;
       if(m_encoder != NULL);
         delete m_encoder;
+
 }
+
+
 
 void OGLWidget::resizeGL(int nWidth, int nHeight)
 {
@@ -1601,6 +1607,13 @@ QPoint OGLWidget::convertTextBoxToBufferIndex(int index, bool symbol)
     }
     return QPoint(stringList[i - 1].length(), i - 1);
 }
+
+ListControll* OGLWidget::getTimeLine()
+{
+    return timeLine;
+}
+
+
 
 int OGLWidget::getRowFromTextBoxIndex(int index, bool symbol)
 {

@@ -16,7 +16,6 @@
 #include <QMenu>
 #include <QAction>
 #include "openglwidget.h"
-#include "../TimeLine/listcontroll.h"
 
 #include <QDebug>
 #include "settings.h"
@@ -129,7 +128,7 @@ QMessageBox messAbout;
     Parser          mParser;
     MyTextEdit       *textEdit;
     KeyloggerTE *commandTextEdit;
-    ListControll timeLine;
+   // ListControll timeLine;
     QList <DrawElement*> drawElements;
 
     int drawCounter;

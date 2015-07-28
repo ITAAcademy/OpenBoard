@@ -3,6 +3,7 @@ import QtQuick 2.0
 Rectangle {
     id: root
     color: "gray"
+    onHeightChanged: console.log("HEIGHT  toolbar = " + height)
     property Repeater globalRep
     Column{
         width: parent.width

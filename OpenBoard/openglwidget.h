@@ -3,7 +3,6 @@
 #pragma once
 #include <QObject>
 #include <QtCore>
-//#include <QtQml>
 //#include <QtQuickWidgets>
 #include <QFileDialog>
 #include <QMessageBox>
@@ -21,8 +20,11 @@
 #include "mouserecorder.h"
 #include "encoder/videorencoder.h"
 #include "../Brush/brushcontroll.h"
+
+class ListControll;
 class DrawTextElm;
 class DrawElement;
+
 /*
 #include <QtAV/QtAV>
 #include <QtAVWidgets/QtAVWidgets>
@@ -60,6 +62,7 @@ class OGLWidget : public QGLWidget, protected QGLFunctions
     Q_PROPERTY(QString  drawText READ getDrawText WRITE setDrawText NOTIFY drawTextChanged)
 
 public:
+
     /*
      * |Future gradient
      */
@@ -69,7 +72,7 @@ public:
     bool isClearFrameBuffer = false;//clear frame buffer
    volatile bool isCrossingNow;
    MouseRecorder mouseRecorder;//record mouse movement
-
+//ListControll timeLine;
 
 
 //bool isEditingRectangleBindedToCursor = false;
@@ -99,7 +102,7 @@ public:
      * |Events
      */
     explicit OGLWidget(QWidget *parent = 0);
-    ~OGLWidget();
+   ~OGLWidget();
     void moveEvent(QMoveEvent *event);
     void paintEvent(QPaintEvent * event);
     void resizeEvent(QResizeEvent *event);
@@ -154,7 +157,6 @@ public:
     void initFrameBuffer();
     QList<DrawElement *> &getList();
     void setList(const QList<DrawElement *> &value);
-
     bool getIsBrushWindowOpened() const;
     void setIsBrushWindowOpened(bool value);
 
@@ -196,6 +198,7 @@ public slots:
     */
 
     int getRowFromTextBoxIndex(int index, bool symbol);
+    ListControll* getTimeLine();
 signals:
     void drawTextChanged();
     void pauseSignal();
@@ -211,6 +214,7 @@ private slots:
 private:
     QImage img;
 
+    ListControll *timeLine;
     unsigned int    fbo, // The frame buffer object
                     fbo_depth, // The depth buffer for the frame buffer object
                     fbo_texture; // The texture object to write our frame buffer object to
