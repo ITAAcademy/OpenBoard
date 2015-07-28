@@ -161,6 +161,7 @@ public:
 
    Q_INVOKABLE QPoint getSelectedBlockPoint() const;
   Q_INVOKABLE  void setSelectedBlockPoint(const QPoint &value);
+  Q_INVOKABLE  void setSelectedBlockPoint(int col, int ind);
 
     Q_INVOKABLE void  setPrevMousePosition();
     Q_INVOKABLE QPoint  getPrevMousePosition();
