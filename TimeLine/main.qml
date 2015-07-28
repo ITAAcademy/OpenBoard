@@ -103,7 +103,7 @@ main222.isPlay = false
 
     }
     function stop()    {
-        scale_pointer.x = 0
+      //  scale_pointer.x =
 main222.isPlay = false
 
     }
@@ -127,6 +127,12 @@ main222.isPlay = false
        }
        onSetScalePointerPosSignal: {
        main222.setScalePointerPos(value)
+       }
+
+       onUpdateSignal:  {
+           if (main222.isPlay )
+                scale_pointer.x = timeControll.getPlayTime();
+           timeControll.calcPointedBlocksAtTime()
        }
        }
 
@@ -216,8 +222,7 @@ main222.isPlay = false
 
         onYChanged: y = 0
         onXChanged: {
-            if (x===0)
-                x = scroll.flickableItem.width
+          //  if (x===0)     x = scroll.flickableItem.width
            // console.log("XXXXXXXXXXXXXXXscroll.flickableItem.contentX " +scroll.flickableItem.contentX)
            // var half_scale_pointer_width = -scale_pointer.width/2
             var zdvig = 20 - scroll.flickableItem.contentX
