@@ -966,7 +966,7 @@ void MainWindow::onTextChanged()
 
 void MainWindow::on_action_Play_triggered()
 {
-    mpOGLWidget->getTimeLine()->play(); //off for test
+   // mpOGLWidget->getTimeLine()->play(); //off for test
     hideBoardSettings();
     ui->action_Play->setEnabled(false);
     a_play->setEnabled(false);

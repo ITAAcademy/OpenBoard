@@ -94,10 +94,16 @@ class ListControll : public QObject, public QQuickImageProvider
     int def_min_block_width = 100;
     int scale_pointer_pos = 0;
     QList <Element> pointed_block;
+    QList <Element> pointed_time_blocks;
     //  QVector< int > testColumnWidth;
     void recountMaxTrackTime();
     ImageClone *cloneImg;
+
+    QTime timer;
+    qint64 time_sum;
+    int isPlayPauseStop = 3;
 public:
+
     explicit ListControll(QObject *parent = 0);
     ~ListControll();
 
@@ -139,7 +145,11 @@ public:
     Q_INVOKABLE int getScalePointerPos( );
 
     Q_INVOKABLE void calcPointedBlocks( );
-    Q_INVOKABLE QList <Element> getPointedBlocksAtTime(int ms );
+
+   Q_INVOKABLE  void calcPointedBlocksAtTime(int ms );
+    Q_INVOKABLE  void calcPointedBlocksAtTime( );
+
+  Q_INVOKABLE  QList <Element> getPointedBlocksAtTime( );
     Q_INVOKABLE QList <Element> getPointedBlocks( );
     QList <DrawElement*> getPointedBlocksDE( );
 
@@ -158,6 +168,7 @@ public:
     Q_INVOKABLE void  play();
     Q_INVOKABLE void  pause();
     Q_INVOKABLE void  stop();
+    Q_INVOKABLE qint64 getPlayTime();
 
     QImage requestImage(const QString & id, QSize * size, const QSize & requestedSize);
 
@@ -168,13 +179,13 @@ public:
 
     Q_INVOKABLE void  setPrevMousePosition();
     Q_INVOKABLE QPoint  getPrevMousePosition();
-
-    Q_INVOKABLE QPoint  update();
+    Q_INVOKABLE void  update();
 
 signals:
     void playSignal();
     void pauseSignal();
     void stopSignal();
+    void updateSignal();
 void setScalePointerPosSignal(int value);
 public slots:
 };

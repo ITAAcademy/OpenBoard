@@ -290,6 +290,7 @@ int ListControll::getTrackSize(int col) const
 ListControll::ListControll(QObject *parent) : QObject(parent), QQuickImageProvider(QQuickImageProvider::Image)
 {
     maxTrackTime = 0;
+    time_sum = 0;
    /* QList <QString>  temp;
         temp.append("1");
         temp.append("2");
@@ -409,12 +410,6 @@ ListControll::ListControll(QObject *parent) : QObject(parent), QQuickImageProvid
     {
         return prevMousePosition;
     }
-
-    QPoint ListControll::update()
-    {
-        qApp->processEvents();
-    }
-
 
 
  void  ListControll::setFramaMousePosition( const int x,const int y)
@@ -538,9 +533,9 @@ void ListControll::setFocus()
 
  }
 
- QList <Element> ListControll::getPointedBlocksAtTime(int ms )
+ void ListControll::calcPointedBlocksAtTime(int ms )
  {
-     QList <Element> pointed;
+     pointed_time_blocks.clear();
      for (int i=0; i<tracks.size(); i++)
      {
          int blockXstart = 0;
@@ -549,29 +544,73 @@ void ListControll::setFocus()
              int blockXend =blockXstart + tracks[i].block[y].draw_element->getLifeTime();
              if (ms <= blockXend)
              {
-                 pointed.append(tracks[i].block[y]);
+                 pointed_time_blocks.append(tracks[i].block[y]);
                  //qDebug() << "POP: " << i<< " "<<y;
              break;
              }
               blockXstart = blockXend;
          }
      }
-     return pointed;
+ }
+
+void ListControll::calcPointedBlocksAtTime( )
+ {
+     int ms = getPlayTime();
+     pointed_time_blocks.clear();
+     for (int i=0; i<tracks.size(); i++)
+     {
+         int blockXstart = 0;
+         for (int y=0; y<tracks[i].block.size(); y++ )
+         {
+             int blockXend =blockXstart + tracks[i].block[y].draw_element->getLifeTime();
+             if (ms <= blockXend)
+             {
+                 pointed_time_blocks.append(tracks[i].block[y]);
+                 //qDebug() << "POP: " << i<< " "<<y;
+             break;
+             }
+              blockXstart = blockXend;
+         }
+     }
+ }
+
+ QList <Element> ListControll::getPointedBlocksAtTime( )
+ {
+     return pointed_time_blocks;
  }
 
  void  ListControll::play()
  {
     // qDebug() << "FFFFFFFFFFFFFFF  emit playSignal();";
     emit playSignal();
+     timer.restart();
+     isPlayPauseStop = 1;
+
  }
  void  ListControll::pause()
  {
     emit pauseSignal();
+    time_sum += timer.elapsed();
+    isPlayPauseStop = 2;
  }
 
 void  ListControll::stop()
 {
     emit stopSignal();
+    time_sum = 0;
+    isPlayPauseStop = 3;
+
+}
+
+qint64 ListControll::getPlayTime()
+{
+    if (isPlayPauseStop ==1 )
+    return time_sum + timer.elapsed();
+    else
+        if (isPlayPauseStop ==2 )
+        return time_sum ;
+            else
+                return 0;
 }
 
 QImage ListControll::requestImage(const QString &id, QSize *size, const QSize &requestedSize)
@@ -603,5 +642,12 @@ QImage ListControll::requestImage(const QString &id, QSize *size, const QSize &r
 
 
 }
+
+ void ListControll::update()
+ {
+     emit updateSignal();
+     if (this->getMaxTrackTime() <= getPlayTime())
+         emit stopSignal();
+ }
 
 

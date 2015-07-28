@@ -154,6 +154,8 @@ OGLWidget::OGLWidget(QWidget *parent) :
     QGLWidget(parent)
 {
     timeLine = new ListControll;
+
+    connect(timeLine,SIGNAL(stopSignal()),this,SLOT(stopAnimated()));
     //qRegisterMetaType<DrawData>("DrawData");
     // engine()->rootContext()->setContextProperty(QLatin1String("forma"), this);
     m_encoder = new AV_REncoder(this);
@@ -520,6 +522,7 @@ void OGLWidget::paintGL()
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // чистим буфер изображения и буфер глубины
     glClearColor(0.0,0.0,0.0,0.0);
     //glClearStencil(0);
+    timeLine->update();
 //
 
     glMatrixMode(GL_PROJECTION); // устанавливаем матрицу
@@ -611,7 +614,7 @@ if (isMousePlay)paintBrushInBuffer(true);
 paintBufferOnScreen();
 for(int i = 0; i < getList().size(); i++)
 {
-    qDebug() << "draw   " << i;
+   // qDebug() << "draw   " << i;
     if(getList()[i] != NULL)
         getList()[i]->draw();
 }
