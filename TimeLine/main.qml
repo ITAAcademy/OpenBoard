@@ -386,6 +386,7 @@ main222.isPlay = false
     function updateModel()      {
     model = model - 1;
     item_col.width = timeControll.getMaxTrackTime()
+        timeControll.update();
     model =  timeControll.getTrackSize(bar_track.mIndex)
     if (main222.needToLightSelected)
     {

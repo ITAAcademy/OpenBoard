@@ -169,6 +169,8 @@ public:
     Q_INVOKABLE void  setPrevMousePosition();
     Q_INVOKABLE QPoint  getPrevMousePosition();
 
+    Q_INVOKABLE QPoint  update();
+
 signals:
     void playSignal();
     void pauseSignal();

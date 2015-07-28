@@ -407,7 +407,12 @@ ListControll::ListControll(QObject *parent) : QObject(parent), QQuickImageProvid
 
     QPoint  ListControll::getPrevMousePosition()
     {
-    return prevMousePosition;
+        return prevMousePosition;
+    }
+
+    QPoint ListControll::update()
+    {
+        qApp->processEvents();
     }
 
 
@@ -587,8 +592,8 @@ QImage ListControll::requestImage(const QString &id, QSize *size, const QSize &r
             //= QImage::fromData(reply->readAll());
     /*size->setWidth(image.width());
     size->setHeight(image.height());*/
-
-    QVector <QStringRef> argv = id.splitRef('R');
+    qDebug() << "                                                                           IMAGE ";
+    QVector <QStringRef> argv = id.splitRef('+');
     QImage img = getBlock(argv[0].toInt(), argv[1].toInt()).draw_element->getIcon();
     qDebug() << "IMAGE                                                          ppp " << getBlock(argv[0].toInt(), argv[1].toInt()).draw_element->getKey();
     if(img.isNull())

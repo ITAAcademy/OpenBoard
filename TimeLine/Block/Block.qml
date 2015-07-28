@@ -29,7 +29,14 @@ Rectangle{
     function showMenu()
     {
         context_menu.visible = true;
+
     }
+
+    function repaint()
+    {
+        icon.source = "image://imageProvider/" + root.colIndex + "+" + root.mIndex + "+ " + Math.random(1000000);
+    }
+
 
      property Item  p_main222
 
@@ -211,10 +218,12 @@ console.log(" reles  root.z= " +   root.z)
         id: icon
         //anchors.fill: parent
       //  source: "qrc:/Block/file.png"
-        source:  "image://imageProvider/" + root.colIndex + "R" + root.mIndex
+        source:  "image://imageProvider/" + root.colIndex + "+" + root.mIndex + "+ " + Math.random(1000000);
         height: root.height
         width: height
         x:0
+        visible: false
+
             // timeControll.getBlockIcon(colIndex,mIndex)
     }
 
