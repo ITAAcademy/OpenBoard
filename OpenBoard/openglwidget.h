@@ -167,7 +167,6 @@ public slots:
     void pauseAnimated();
     void brushParamsChanged();
     void updateWindow();
-public slots:
     bool isRecord() const;
     int getCountDeleteWT() const;
     int getDelay() const;
