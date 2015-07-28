@@ -57,6 +57,9 @@ void DrawElement::draw()
 bool DrawElement::load(QString path)
 {
     QFile appFile(path);
+    if(!appFile.exists())
+        return false;
+    lastPath = path;
     appFile.open(QFile::ReadOnly);
     QDataStream stream(&appFile);
     icon = load_image(stream);
@@ -87,6 +90,13 @@ bool DrawElement::save(QString path)
     bool bPause;
     */
 
+}
+
+bool DrawElement::reloadLastDone()
+{
+    if(lastPath.isNull())
+        return false;
+    load(lastPath);
 }
 
 QRect DrawElement::getRect()
@@ -228,6 +238,7 @@ void DrawElement::start()
     keyCouter = 0;
     tickTimer.start();
     bPause = false;
+    reloadLastDone();
 }
 
 void DrawElement::restart()

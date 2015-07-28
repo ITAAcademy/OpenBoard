@@ -13,6 +13,8 @@
 #include <QDebug>
 #include <QFont>
 #include "brushpainter.h"
+#include "imageclone.h"
+
 #define TEXTURE_INDEX_BRUSH 1
 class BrushManager : public QObject, public QQuickImageProvider
 {
@@ -27,6 +29,7 @@ class BrushManager : public QObject, public QQuickImageProvider
     int curentBrush;
     Brush createdBrush;
     BrushPainter painter;
+    ImageClone *cloneImg;
     /*
      *
  */

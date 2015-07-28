@@ -30,12 +30,15 @@ protected:
     char type[50];
     OGLWidget *pDrawWidget;
     bool bPause;
+
+    QString lastPath;
 public:
     explicit DrawElement( OGLWidget *drawWidget, QObject *parent = 0);
     virtual ~DrawElement();
     virtual void draw();
     bool load(QString path);
     bool save(QString path);
+    bool reloadLastDone();
 
     QRect getRect();
 

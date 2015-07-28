@@ -321,8 +321,8 @@ ListControll::ListControll(QObject *parent) : QObject(parent), QQuickImageProvid
     new QQmlFileSelector(view.engine(), &view);\
     view.engine()->rootContext()->setContextProperty("timeControll", this);
     view.engine()->rootContext()->setContextProperty("viewerWidget", &view);
-
-    view.engine()->addImageProvider("imageProvider", this);//&image_provider);
+    cloneImg = new ImageClone(this);
+    view.engine()->addImageProvider("imageProvider", cloneImg);//&image_provider);
     view.setSource(QUrl("qrc:/main.qml")); \
     view.setResizeMode(QQuickView::SizeRootObjectToView);
     view.setPersistentOpenGLContext(true);
@@ -568,6 +568,7 @@ QImage ListControll::requestImage(const QString &id, QSize *size, const QSize &r
 
     QVector <QStringRef> argv = id.splitRef('R');
     QImage img = getBlock(argv[0].toInt(), argv[1].toInt()).draw_element->getIcon();
+    qDebug() << "IMAGE                                                          ppp " << getBlock(argv[0].toInt(), argv[1].toInt()).draw_element->getKey();
     if(img.isNull())
             return QImage(":/0.png");
 

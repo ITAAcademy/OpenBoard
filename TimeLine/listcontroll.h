@@ -14,6 +14,7 @@
 
 //#include <QDeclarativeContext>
 #include <../OpenBoard/drawSystem/drawsystem.h>
+#include "../Brush/imageclone.h"
 
 
 struct Element {
@@ -95,6 +96,7 @@ class ListControll : public QObject, public QQuickImageProvider
     QList <Element> pointed_block;
     //  QVector< int > testColumnWidth;
     void recountMaxTrackTime();
+    ImageClone *cloneImg;
 public:
     explicit ListControll(QObject *parent = 0);
     ~ListControll();

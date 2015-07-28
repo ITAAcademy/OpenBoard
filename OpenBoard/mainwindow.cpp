@@ -984,7 +984,6 @@ void MainWindow::on_action_Play_triggered()
         mpOGLWidget->setFillColor(mpOGLWidget->getMainFillColor());
         drawCounter = 0;
     }
-    mpOGLWidget->drawAnimated(ui->actionRecord_to_file->isChecked());
     textEdit->setEnabled(false);
 
     onTextChanged();
@@ -995,9 +994,9 @@ void MainWindow::on_action_Play_triggered()
      DrawTextElm drawTTElements(mpOGLWidget);
      drawTTElements.setUnitList(mUnitList);
      drawTTElements.setUnParsestring(textEdit->toPlainText());
-     drawTTElements.save("kaka");
-     drawTTElements.load("kaka.txt");
-     qDebug() << "                                                          qqqqqqqq" << drawTTElements.getType();
+     drawTTElements.save("curent");
+   /*  drawTTElements.load("curent.txt");
+     qDebug() << "                                                          qqqqqqqq" << drawTTElements.getType();*/
  //   drawElements[0]->load("kaka");
 
   //  qDebug() << mUnitList.size();
@@ -1006,6 +1005,8 @@ void MainWindow::on_action_Play_triggered()
     QPoint selElm;
     Element elm;
     mpOGLWidget->editingRectangle.isEditingRectangleVisible = true;
+    mpOGLWidget->drawAnimated(ui->actionRecord_to_file->isChecked());
+
     while( play && mpOGLWidget != 0 && mpOGLWidget->getStatus() != OGLWidget::STOP)
     {
         //while(mpOGLWidget->getStatus() == OGLWidget::PAUSE)

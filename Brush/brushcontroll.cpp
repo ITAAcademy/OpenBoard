@@ -75,9 +75,10 @@ BrushManager::BrushManager(QObject *parent) : QObject(parent), QQuickImageProvid
         view.setFormat(f);\
     }\
   //  view.connect(view.engine(), SIGNAL(quit()), &app, SLOT(quit()));
-    new QQmlFileSelector(view.engine(), &view);\
+    new QQmlFileSelector(view.engine(), &view);
+    cloneImg = new ImageClone(this);
     view.engine()->rootContext()->setContextProperty("brushControll", this);
-    view.engine()->addImageProvider("loader", this);
+    view.engine()->addImageProvider("loader", cloneImg);
     view.setSource(QUrl("qrc:/main_brush.qml")); \
     view.setResizeMode(QQuickView::SizeRootObjectToView);
     view.setPersistentOpenGLContext(true);
@@ -89,7 +90,7 @@ BrushManager::BrushManager(QObject *parent) : QObject(parent), QQuickImageProvid
 
 BrushManager::~BrushManager()
 {
-
+    close();
 }
 
 int BrushManager::getBrushCount()
@@ -99,7 +100,7 @@ int BrushManager::getBrushCount()
 
 void BrushManager::show()
 {
-    view.setFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint | Qt::WindowTitleHint);
+   // view.setFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint | Qt::WindowTitleHint);
 
     if (QGuiApplication::platformName() == QLatin1String("qnx") || \
           QGuiApplication::platformName() == QLatin1String("eglfs")) {\
@@ -116,8 +117,10 @@ void BrushManager::hide()
 
 void BrushManager::close()
 {
-    view.close();
-        painter.close();
+
+        view.engine()->removeImageProvider("loader");
+        view.close();
+
 }
 
 void BrushManager::setPosition(QPoint pos)
@@ -127,7 +130,7 @@ void BrushManager::setPosition(QPoint pos)
 
 QImage BrushManager::requestImage(const QString &id, QSize *size, const QSize& requestedSize)
 {
- //   qDebug() << "REQUEST IMAGE" << id;
+    qDebug() << "REQUEST IMAGE" << id;
     if(id[0] == 'a')
     {
         int i = id.rightRef(id.length() - 1).toInt();
@@ -139,6 +142,8 @@ QImage BrushManager::requestImage(const QString &id, QSize *size, const QSize& r
     {
        return painter.drawBrush(createdBrush);
     }
+
+    return QImage(requestedSize, QImage::Format_ARGB32);
 }
 
 bool BrushManager::openBrushLibrary(QString path)

@@ -197,27 +197,28 @@ console.log(" reles  root.z= " +   root.z)
         }
     }
     Image {
+         parent : root
+        id: background
+       anchors.fill: parent
+       anchors.margins: 3
+
+       fillMode: Image.TileHorizontally
+       source: "qrc:/iphone_toolbar_icons/black_tree.png"
+       visible: true
+
+    }
+    Image {
         id: icon
         //anchors.fill: parent
       //  source: "qrc:/Block/file.png"
-        source:  "image://imageProvider/" + colIndex + "R" + mIndex
+        source:  "image://imageProvider/" + root.colIndex + "R" + root.mIndex
         height: root.height
         width: height
         x:0
             // timeControll.getBlockIcon(colIndex,mIndex)
     }
 
-        Image {
-             parent : root
-            id: background
-           anchors.fill: parent
-           anchors.margins: 3
 
-           fillMode: Image.TileHorizontally
-           source: "qrc:/iphone_toolbar_icons/black_tree.png"
-           visible: true
-
-        }
        /* OpacityMask {
             source: background
             maskSource: root

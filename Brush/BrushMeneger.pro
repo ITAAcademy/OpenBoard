@@ -6,7 +6,8 @@ QMAKE_CXXFLAGS += "-std=c++11"
 
 SOURCES += main.cpp \
     brushpainter.cpp \
-    brushcontroll.cpp
+    brushcontroll.cpp \
+    imageclone.cpp
 
 RESOURCES += qml_brush.qrc
 
@@ -15,6 +16,7 @@ DISTFILES += \
 
 HEADERS += \
     brushpainter.h \
-    brushcontroll.h
+    brushcontroll.h \
+    imageclone.h
 
 RCC_DIR = ./

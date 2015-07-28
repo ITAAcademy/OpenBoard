@@ -603,6 +603,13 @@ if (canDrawByMouse && !isMousePlay)paintBrushInBuffer(false);
 if (isMousePlay)paintBrushInBuffer(true);
 
 paintBufferOnScreen();
+for(int i = 0; i < getList().size(); i++)
+{
+    qDebug() << "draw   " << i;
+    if(getList()[i] != NULL)
+        getList()[i]->draw();
+}
+
 if (editingRectangle.isEditingRectangleVisible)
 {
     //rectangle
@@ -633,12 +640,7 @@ if (editingRectangle.isEditingRectangleVisible)
            glVertex2i(leftCornerX1, leftCornerY2);
          glEnd();
 }
-for(int i = 0; i < getList().size(); i++)
-{
-    qDebug() << "draw   " << i;
-    if(getList()[i] != NULL)
-        getList()[i]->draw();
-}
+
 glDisable(GL_BLEND);
 }
 

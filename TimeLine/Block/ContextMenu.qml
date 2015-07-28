@@ -72,8 +72,10 @@ property Repeater globalRep
             onButtonClicked: {
                 /*var col= contextMenuItem.columnIndex;
                 var id = contextMenuItem.blockIndex;*/
-                contextMenuItem.visible = false;
+
                 timeControll.loadFromFile();//removeBlock(col,id)
+                contextMenuItem.visible = false;
+                console.log("AFTER 9999999999999999999999");
                 globalRep.updateModel();
 
             }
