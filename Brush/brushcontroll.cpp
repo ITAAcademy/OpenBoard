@@ -77,7 +77,7 @@ BrushManager::BrushManager(QObject *parent) : QObject(parent), QQuickImageProvid
   //  view.connect(view.engine(), SIGNAL(quit()), &app, SLOT(quit()));
     new QQmlFileSelector(view.engine(), &view);\
     view.engine()->rootContext()->setContextProperty("brushControll", this);
-    view.engine()->addImageProvider("loader", this);
+    //view.engine()->addImageProvider("loader", this);
     view.setSource(QUrl("qrc:/main_brush.qml")); \
     view.setResizeMode(QQuickView::SizeRootObjectToView);
     view.setPersistentOpenGLContext(true);

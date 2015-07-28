@@ -12,6 +12,7 @@ Rectangle {
   //  width: 1000 ///main222.width + 20
   // height: 500 //main222.height + 20
     //anchors.margins : 20
+    onHeightChanged: console.log("HEIGHT = " + height)
 z: -150
 radius: 10
 MouseAreaForWindowDraging{
@@ -39,11 +40,14 @@ property Rectangle p_main222
 
 Rectangle
 {
-anchors.fill: parent
-anchors.margins:  20
-radius: 10
-    color: "gray"
+
     id:main222
+
+    anchors.fill: parent
+    property int margin_value : 20
+    anchors.margins:  margin_value
+    radius: 10
+        color: "gray"
 
     Component.onCompleted: {
     frama.p_main222 = main222
@@ -61,6 +65,7 @@ radius: 10
    property int selectedBlockCol : 0
    property int selectedBlockIndex : 0
    property int minBlockWidth : 0
+   property bool isPlay : false
 
 
    property  bool needToLightSelected : false
@@ -90,21 +95,21 @@ radius: 10
     }
 
     function play()    {
-        playTimer.running = true;
-
-         playTimer.start();
-
+        main222.isPlay = true
 
     }
     function pause()    {
-     playTimer.stop()
-
+main222.isPlay = false
 
     }
     function stop()    {
-     playTimer.running = false
         scale_pointer.x = 0
+main222.isPlay = false
 
+    }
+
+    function setScalePointerPos(xx)    {
+        scale_pointer.x = xx
 
     }
 
@@ -120,17 +125,12 @@ radius: 10
        onStopSignal: {
        main222.stop()
        }
+       onSetScalePointerPosSignal: {
+       main222.setScalePointerPos(value)
+       }
        }
 
 
-
-    Timer {
-        id: playTimer
-          interval: 1; running: false; repeat: true
-          onTriggered: {
-              scale_pointer.x +=1
-          }
-      }
 
 
 
@@ -216,23 +216,27 @@ radius: 10
 
         onYChanged: y = 0
         onXChanged: {
+            if (x===0)
+                x = scroll.flickableItem.width
            // console.log("XXXXXXXXXXXXXXXscroll.flickableItem.contentX " +scroll.flickableItem.contentX)
-            var half_scale_pointer_width = -scale_pointer.width/2
+           // var half_scale_pointer_width = -scale_pointer.width/2
             var zdvig = 20 - scroll.flickableItem.contentX
+           // console.log(" 3 scroll.flickableItem.contentX = " + scroll.flickableItem.contentX )
+
                 if (zdvig < 0)
                  zdvig = -width/2//   zdvig = 0;
-
-
+                //  console.log(" 4 x = " + x + " zdvig = "+ zdvig)
             if (x<zdvig)
             {
                 scroll.flickableItem.contentX -= zdvig -x
                 if (scroll.flickableItem.contentX < 0)
                         scroll.flickableItem.contentX = 0;
                x = zdvig
+                console.log(" 2 x = " + x )
             }
             else
             {
-                var temp = scroll.width -width/2  /// scroll.x + scroll.width - main222.p_trackbar.width*1.4
+                var temp = scroll.width -width/2 - 3  /// scroll.x + scroll.width - main222.p_trackbar.width*1.4
                 if (x> temp)
                 {
                     if (timeControll.getMaxTrackTime()  >= scroll.width)
@@ -244,31 +248,44 @@ radius: 10
                             scroll.flickableItem.contentX = sad;
                         timeControll.stop();
                     }
-
-
                     }
                     else
-                        if (timeControll.getMaxTrackTime() <= scroll.width )
-                        timeControll.stop();
+                       // if (timeControll.getMaxTrackTime() <= scroll.width )
+                       { timeControll.stop();
                 x = temp
+               // console.log(" 1 x = " + x )
+                    }
                 }
             }
-            timeControll.setScalePointerPos(x-30)
-            timeControll.calcPointedBlocks()
-        }
-        Rectangle{
-            height:  frama.height - 190
-            width: 1
-            color: "#6E0000"
-            x: scale_pointer.width/2
 
+            if (!main222.isPlay)
+            {
+            timeControll.calcPointedBlocks();
+            }
+            timeControll.setScalePointerPos(x-20 + scroll.flickableItem.contentX);
+           // console.log("x + scroll.flickableItem.contentX = "+x +" + " + scroll.flickableItem.contentX )
         }
+
         MouseArea {
             id: spMA
             anchors.fill: parent
             drag.target : scale_pointer
         }
     }
+
+    Rectangle{
+        id:scale_pointer_verline
+       height: tollbar.height  //  scroll.height - main222.margin_value
+        width: 2
+        color: "#6E0000"
+       // y: scale_pointer.height
+        x: scale_pointer.width/2 + scale_pointer.x
+        z: 200
+      // height:400
+         onHeightChanged: console.log("HEIGHT  pointer line = " + height)
+
+    }
+
 
     Row { //scroll + toolbar
         id: toolbar_scroll

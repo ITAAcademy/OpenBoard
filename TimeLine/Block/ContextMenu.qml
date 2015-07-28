@@ -79,8 +79,9 @@ property Repeater globalRep
             }
         }
     }
-    function show(a,b)
+    function show(a,b, globRep)
     {
+        contextMenuItem.globalRep = globRep
         x = a
       y = b
         context_menu.visible = true

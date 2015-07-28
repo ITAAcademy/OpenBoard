@@ -322,7 +322,7 @@ ListControll::ListControll(QObject *parent) : QObject(parent), QQuickImageProvid
     view.engine()->rootContext()->setContextProperty("timeControll", this);
     view.engine()->rootContext()->setContextProperty("viewerWidget", &view);
 
-    view.engine()->addImageProvider("imageProvider", this);//&image_provider);
+   // view.engine()->addImageProvider("imageProvider", this);//&image_provider);
     view.setSource(QUrl("qrc:/main.qml")); \
     view.setResizeMode(QQuickView::SizeRootObjectToView);
     view.setPersistentOpenGLContext(true);
@@ -479,8 +479,8 @@ void ListControll::setFocus()
 
  void ListControll::setScalePointerPos( int x)
  {
-     scale_pointer_pos = x + 10;
- // qDebug() << "RRRRRRRRRRRRRRR scale_pointer_pos=" << scale_pointer_pos;
+     scale_pointer_pos = x;
+ //qDebug() << "RRRRRRRRRRRRRRR scale_pointer_pos=" << scale_pointer_pos;
  }
 
  int ListControll::getScalePointerPos( )
@@ -524,12 +524,34 @@ void ListControll::setFocus()
 /*
 	*		show curent play element
 */
-      qDebug() << "FFFFFFFFFFFFFFF getPointedBlocks size" << pointed_block.size();
+      qDebug() << "FFFFFFFFFFFFFFF getPointedBlocks size" << pointed_block.size()
+               << " scale_pointer_pos " << scale_pointer_pos;
      /* for(int i = 0; i <pointed_block.size(); i++)
       {
           qDebug() << i <<  "   " << pointed_block[i].draw_element->getType();
       }*/
 
+ }
+
+ QList <Element> ListControll::getPointedBlocksAtTime(int ms )
+ {
+     QList <Element> pointed;
+     for (int i=0; i<tracks.size(); i++)
+     {
+         int blockXstart = 0;
+         for (int y=0; y<tracks[i].block.size(); y++ )
+         {
+             int blockXend =blockXstart + tracks[i].block[y].draw_element->getLifeTime();
+             if (ms <= blockXend)
+             {
+                 pointed.append(tracks[i].block[y]);
+                 //qDebug() << "POP: " << i<< " "<<y;
+             break;
+             }
+              blockXstart = blockXend;
+         }
+     }
+     return pointed;
  }
 
  void  ListControll::play()

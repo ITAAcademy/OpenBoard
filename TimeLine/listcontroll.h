@@ -137,6 +137,7 @@ public:
     Q_INVOKABLE int getScalePointerPos( );
 
     Q_INVOKABLE void calcPointedBlocks( );
+    Q_INVOKABLE QList <Element> getPointedBlocksAtTime(int ms );
     Q_INVOKABLE QList <Element> getPointedBlocks( );
     QList <DrawElement*> getPointedBlocksDE( );
 
@@ -170,7 +171,7 @@ signals:
     void playSignal();
     void pauseSignal();
     void stopSignal();
-
+void setScalePointerPosSignal(int value);
 public slots:
 };
 

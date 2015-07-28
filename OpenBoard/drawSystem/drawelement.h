@@ -9,7 +9,6 @@
 #include <QPoint>
 #include <QSize>
 #include <QRect>
-
 #include "../openglwidget.h"
 
 class DrawElement : public QObject
