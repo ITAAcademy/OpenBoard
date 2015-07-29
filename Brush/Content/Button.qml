@@ -1,4 +1,5 @@
 import QtQuick 2.0
+import QtGraphicalEffects 1.0
 
 Rectangle {
     id: root
@@ -14,7 +15,15 @@ Rectangle {
     gradient: enter2;
 
     property string title : "value"
-
+    RectangularGlow {
+          id: effect
+          anchors.fill: root
+          glowRadius: 10
+          spread: 0.00001
+          color:  "white"
+          visible: false
+          cornerRadius: root.radius
+      }
     Gradient{
         id: enter
 
@@ -42,10 +51,12 @@ Rectangle {
         onEntered:
         {
             root.gradient = enter;
+            effect.visible = true;
         }
         onExited:
         {
             root.gradient = enter2;
+            effect.visible = false;
         }
     }
     Text {

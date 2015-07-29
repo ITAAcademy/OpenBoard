@@ -36,7 +36,7 @@ DrawElement::DrawElement(OGLWidget *drawWidget, QObject *parent) : QObject(paren
     width = 100;
     height = 100;
     keyCouter = 0;
-    lifeTime = 10;
+    lifeTime = 100;
     icon = QImage();
 
     connect(pDrawWidget, SIGNAL(startSignal()), this, SLOT(start()));

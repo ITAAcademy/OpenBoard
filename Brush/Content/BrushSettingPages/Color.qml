@@ -95,9 +95,10 @@ Rectangle {
             {
                 if(rgb.focus === true && brushControll.isColorValid(text) === true)
                 {
-                    s.value = brushControll.getSaturation(text);
-                    l.value = brushControll.getLightness(text);
-                    h.value = brushControll.getHue(text);
+                    var my_text = text;
+                    s.value = brushControll.getSaturation(my_text);
+                    l.value = brushControll.getLightness(my_text);
+                    h.value = brushControll.getHue(my_text);
                     brushControll.update();
                 }
             }

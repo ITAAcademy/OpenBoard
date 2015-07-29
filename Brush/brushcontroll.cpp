@@ -34,17 +34,17 @@ QString BrushManager::toHex(QColor col)
 
 float BrushManager::getHue(QString col)
 {
-    return (float)QColor(col).toHsl().hue()/255;
+    return (float)QColor(col).toHsl().hslHueF();
 }
 
 float BrushManager::getSaturation(QString col)
 {
-    return (float)QColor(col).toHsl().saturation()/255;
+    return (float)QColor(col).toHsl().hslSaturationF();
 }
 
 float BrushManager::getLightness(QString col)
 {
-    return (float)QColor(col).toHsl().lightness()/255;
+    return (float)QColor(col).toHsl().lightnessF();
 }
 
 bool BrushManager::isColorValid(QString value)
@@ -100,7 +100,7 @@ int BrushManager::getBrushCount()
 
 void BrushManager::show()
 {
-   // view.setFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint | Qt::WindowTitleHint);
+    view.setFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint | Qt::WindowTitleHint);
 
     if (QGuiApplication::platformName() == QLatin1String("qnx") || \
           QGuiApplication::platformName() == QLatin1String("eglfs")) {\
