@@ -12,7 +12,7 @@ Rectangle {
   //  width: 1000 ///main222.width + 20
   // height: 500 //main222.height + 20
     //anchors.margins : 20
-    onHeightChanged: console.log("HEIGHT = " + height)
+   // onHeightChanged: // console.log("HEIGHT = " + height)
 z: -150
 radius: 10
 MouseAreaForWindowDraging{
@@ -131,7 +131,7 @@ main222.isPlay = false
 
        onUpdateSignal:  {
            if (main222.isPlay )
-                scale_pointer.x = timeControll.getPlayTime();
+                scale_pointer.x = timeControll.getPlayTime()- 20 - scroll.flickableItem.contentX;
            timeControll.calcPointedBlocksAtTime()
        }
        }
@@ -154,7 +154,7 @@ main222.isPlay = false
 
        /* Component.onCompleted: {
             var rec = mapFromItem(time_scale,10,10)
-            console.log(rec.x + " mapFromItem "  + rec.y)
+            // console.log(rec.x + " mapFromItem "  + rec.y)
 
         }*/
         Row {
@@ -200,7 +200,7 @@ main222.isPlay = false
 
                 Component.onCompleted: {
                  /*  time_scale.tX += time_scale.division
-                    console.log(" new division added " +  time_scale.tX)*/
+                    // console.log(" new division added " +  time_scale.tX)*/
                 }
             }
         }
@@ -223,33 +223,43 @@ main222.isPlay = false
         onYChanged: y = 0
         onXChanged: {
           //  if (x===0)     x = scroll.flickableItem.width
-           // console.log("XXXXXXXXXXXXXXXscroll.flickableItem.contentX " +scroll.flickableItem.contentX)
+          // console.log("1000")
            // var half_scale_pointer_width = -scale_pointer.width/2
             var zdvig = 20 - scroll.flickableItem.contentX
-           // console.log(" 3 scroll.flickableItem.contentX = " + scroll.flickableItem.contentX )
-
-                if (zdvig < 0)
-                 zdvig = -width/2//   zdvig = 0;
-                //  console.log(" 4 x = " + x + " zdvig = "+ zdvig)
+           // // console.log(" 3 scroll.flickableItem.contentX = " + scroll.flickableItem.contentX )
+        // console.log("10001")
+            if (zdvig < 0)
+            {
+             zdvig = -width/2//   zdvig = 0;
+             // console.log("10002")
+            }
+            // console.log("10003")
             if (x<zdvig)
             {
+                 // console.log("10004")
                 scroll.flickableItem.contentX -= zdvig -x
                 if (scroll.flickableItem.contentX < 0)
-                        scroll.flickableItem.contentX = 0;
+                {
+                    scroll.flickableItem.contentX = 0;
+                     // console.log("10005")
+                }
                x = zdvig
-                console.log(" 2 x = " + x )
+                 // console.log("10006")
             }
             else
             {
                 var temp = scroll.width -width/2 - 3  /// scroll.x + scroll.width - main222.p_trackbar.width*1.4
+                // console.log("10007")
                 if (x> temp)
                 {
                     if (timeControll.getMaxTrackTime()  >= scroll.width)
                     {
+                         // console.log("10008")
                     scroll.flickableItem.contentX += x - temp
                     var sad = timeControll.getMaxTrackTime() - scroll.width + 17  // scroll.flickableItem.contentWidth - scroll.width + 10
                     if (scroll.flickableItem.contentX  >  sad)
                     {
+                         // // console.log("10009")
                             scroll.flickableItem.contentX = sad;
                         timeControll.stop();
                     }
@@ -257,9 +267,11 @@ main222.isPlay = false
                     else
                        // if (timeControll.getMaxTrackTime() <= scroll.width )
                        { timeControll.stop();
-                x = temp
-               // console.log(" 1 x = " + x )
+               // x = temp
+               // // // console.log(" 1 x = " + x )
+                         // // console.log("10010")
                     }
+                    x = temp
                 }
             }
 
@@ -268,7 +280,7 @@ main222.isPlay = false
             timeControll.calcPointedBlocks();
             }
             timeControll.setScalePointerPos(x-20 + scroll.flickableItem.contentX);
-           // console.log("x + scroll.flickableItem.contentX = "+x +" + " + scroll.flickableItem.contentX )
+           // // console.log("x + scroll.flickableItem.contentX = "+x +" + " + scroll.flickableItem.contentX )
         }
 
         MouseArea {
@@ -287,7 +299,7 @@ main222.isPlay = false
         x: scale_pointer.width/2 + scale_pointer.x
         z: 200
       // height:400
-         onHeightChanged: console.log("HEIGHT  pointer line = " + height)
+       //  onHeightChanged: // console.log("HEIGHT  pointer line = " + height)
 
     }
 
@@ -327,7 +339,7 @@ main222.isPlay = false
                             time_scale.width = width  ;
                             time_scale_rep.model = time_scale.width/ time_scale.division
                         }
-                        console.log("122  item_col.width=" + item_col.width)
+                        // console.log("122  item_col.width=" + item_col.width)
                     }
                     Column {
                           id: columns
@@ -352,13 +364,13 @@ main222.isPlay = false
                                function setColorize(indexa, color)
                                {
                                        repka.itemAt(indexa).p_color_overlay.color = color
-                                  //  console.log("GGGGGGGGGG " + repka.itemAt(indexa).mX)
-                                  // console.log("GGGGGGGGGG " + repka.itemAt(indexa).x)
+                                  //  // console.log("GGGGGGGGGG " + repka.itemAt(indexa).mX)
+                                  // // console.log("GGGGGGGGGG " + repka.itemAt(indexa).x)
                                    //main222.p_scale_pointer.x = repka.itemAt(indexa).x
                                }
                                function getBlockX (indexa)
                                {
-                                   console.log("repka.itemAt(indexa).x="+repka.itemAt(indexa).x)
+                                   // console.log("repka.itemAt(indexa).x="+repka.itemAt(indexa).x)
 
                                      return repka.itemAt(indexa).x
                                }
@@ -396,7 +408,7 @@ main222.isPlay = false
         if (main222.needToLightSelected)
         {
             rep_columns.itemAt(main222.selectedBlockCol).setColorize(main222.selectedBlockIndex,"#8000FF00")
-            console.log("selectedBlockIndex=" + main222.selectedBlockIndex)
+            // console.log("selectedBlockIndex=" + main222.selectedBlockIndex)
        // main222.p_scale_pointer.x =rep_columns.itemAt(main222.selectedBlockCol).getBlockX(main222.selectedBlockIndex)
        //main222.mX//
             main222.needToLightSelected = false
@@ -432,10 +444,10 @@ main222.isPlay = false
                                        }
                                        Component.onCompleted: {
                                          main222.minBlockWidth = repka.itemAt(0).minWidth
-                                         /*   console.log("item_col.p_columns.globalRep " + item_col.p_columns.globalRep)
-                                           console.log("cool.repka " + cool.repka)
+                                         /*   // console.log("item_col.p_columns.globalRep " + item_col.p_columns.globalRep)
+                                           // console.log("cool.repka " + cool.repka)
                                            item_col.p_columns.globalRep = cool.repka
-                                           console.log("REPKA " + item_col.p_columns.globalRep)*/
+                                           // console.log("REPKA " + item_col.p_columns.globalRep)*/
                                            //item_col.main_root = main_root
                                        }
                                      }
@@ -451,7 +463,7 @@ main222.isPlay = false
                             }
                    onChildrenRectChanged:  {
                    width =  timeControll.getMaxTrackTime()/// * main222.scaling
-                   // console.log(" timeControll.getMaxTestWidth() = " +  width)
+                   // // console.log(" timeControll.getMaxTestWidth() = " +  width)
                    }
                     } /* rep_columns end */
               }

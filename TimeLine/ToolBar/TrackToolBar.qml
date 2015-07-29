@@ -32,13 +32,13 @@ Rectangle {
                // main222.p_item_col.p
 
                /* var timeControlWidth = blocks.childrenRect.width                    //timeControll.getTestWidth()
-                console.log("time " + timeControlWidth)
+                // console.log("time " + timeControlWidth)
                 if (timeControll.getTestWidth() >= scroll.width)
                 track.width  = timeControll.getTestWidth();
-                console.log("track " +  track.width)
+                // console.log("track " +  track.width)
                  globalRep.updateModel() ;
-                 console.log(track.width)*/
-              //  console.log("CLICK2 bar_track.index = " + bar_track.mIndex)
+                 // console.log(track.width)*/
+              //  // console.log("CLICK2 bar_track.index = " + bar_track.mIndex)
             }
         }
         Buutton{
@@ -66,7 +66,7 @@ Rectangle {
 
                 }
                // scroll.moveSliderFor(-1 )
-                console.log("CLICK2")
+                // console.log("CLICK2")
             }
         }
     }

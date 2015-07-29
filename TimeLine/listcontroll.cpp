@@ -10,13 +10,13 @@ QPoint ListControll::getSelectedBlockPoint() const
 void ListControll::setSelectedBlockPoint(const QPoint &value)
 {
     selectedBlockPoint = value;
-    qDebug() <<"FFFFFFFFFFFF: col = " << selectedBlockPoint.x() << " ind = " << selectedBlockPoint.y();
+    // qDebug() <<"FFFFFFFFFFFF: col = " << selectedBlockPoint.x() << " ind = " << selectedBlockPoint.y();
 }
 
 void ListControll::setSelectedBlockPoint(int col, int ind)
 {
     selectedBlockPoint = QPoint(col,ind);
-    qDebug() <<"FFFFFFFFFFFF: col = " << selectedBlockPoint.x() << " ind = " << selectedBlockPoint.y();
+    // qDebug() <<"FFFFFFFFFFFF: col = " << selectedBlockPoint.x() << " ind = " << selectedBlockPoint.y();
 }
 
 void ListControll::recountMaxTrackTime()
@@ -70,7 +70,7 @@ void ListControll::addNewBlock(int col, QString str)
     DrawElement *elm = GenerationDrawElement(open);
     if(elm == NULL)
         return;
-    qDebug() << "9999999999999999999999999999999999999999999999" << elm->getType();*/
+    // qDebug() << "9999999999999999999999999999999999999999999999" << elm->getType();*/
     Element temp;
     temp.key = str;
     temp.draw_element->setLifeTime(def_min_block_width);
@@ -78,7 +78,7 @@ void ListControll::addNewBlock(int col, QString str)
     tracks[col].time += def_min_block_width;
    // testWidth[col].append(200);
     //testColumnWidth[col]+=200;
-  //  qDebug() << "SIZE   " << test.size();
+  //  // qDebug() << "SIZE   " << test.size();
     if (maxTrackTime <  tracks[col].time)
         maxTrackTime =  tracks[col].time;
 }
@@ -100,16 +100,24 @@ void ListControll::addNewTrack( )
 
 void ListControll::loadFromFile()
 {
+     QPoint p = getSelectedBlockPoint();
+    tracks[p.x()].time -= tracks[p.x()].block[p.y()].draw_element->getLifeTime();  ;
     QString open = QFileDialog::getOpenFileName();
     DrawElement *elm = GenerationDrawElement(open);
     if(elm == NULL)
         return;
-    qDebug() << "9999999999999999999999999999999999999999999999" << elm->getType();
-    QPoint p = getSelectedBlockPoint();
+    // qDebug() << "9999999999999999999999999999999999999999999999" << elm->getType();
+
     Element &temp = tracks[p.x()].block[p.y()];
     temp.key = elm->getKey();
     temp.draw_element = elm;
     temp.draw_element->setLifeTime(def_min_block_width);
+    tracks[p.x()].time += def_min_block_width;
+   // this->setBlockTime(p.x(),p.y(),def_min_block_width);
+
+
+ // tracks[col].block[i].draw_element->setLifeTime(value);
+recountMaxTrackTime();
 }
 
 bool ListControll::removeLastBlock(int col)
@@ -183,12 +191,11 @@ void ListControll::setBlocks(int col,const QList <Element> &value)
 
 void ListControll::setBlockTime(int col, int i,int value)
 {
-  //   = value;    
+  //   = value;      
         tracks[col].time += value - tracks[col].block[i].draw_element->getLifeTime();  ;
-      tracks[col].block[i].draw_element->setLifeTime(value);
-
+      tracks[col].block[i].draw_element->setLifeTime(value);    
     recountMaxTrackTime();
-    qDebug() << "DDDDD  tracks[col].block[i].draw_element->getLifeTime()=" <<   tracks[col].block[i].draw_element->getLifeTime();
+    // qDebug() << "DDDDD  tracks[col].block[i].draw_element->getLifeTime()=" <<   tracks[col].block[i].draw_element->getLifeTime();
 }
 
 void ListControll::setBlockStartTime(int col, int i,int value)
@@ -269,7 +276,7 @@ int ListControll::getBlockTime(int col, int i ) const
 
 Element ListControll::getBlock(int col, int i) const
 {
-    qDebug() << "getBlock(int col, int i)" << col << " " << i;
+    // qDebug() << "getBlock(int col, int i)" << col << " " << i;
      return tracks[col].block[i];
 }
 
@@ -287,7 +294,7 @@ int ListControll::getMaxTrackTime( ) const
 int ListControll::getTrackSize(int col) const
 {
     int temp = tracks[col].block.size();
-    qDebug()  << "FHFHHFHFHFHFH getTrackSize = " << temp;
+    // qDebug()  << "FHFHHFHFHFHFH getTrackSize = " << temp;
     return temp;
 }
 
@@ -485,7 +492,7 @@ void ListControll::setFocus()
  void ListControll::setScalePointerPos( int x)
  {
      scale_pointer_pos = x;
- //qDebug() << "RRRRRRRRRRRRRRR scale_pointer_pos=" << scale_pointer_pos;
+ //// qDebug() << "RRRRRRRRRRRRRRR scale_pointer_pos=" << scale_pointer_pos;
  }
 
  int ListControll::getScalePointerPos( )
@@ -503,7 +510,7 @@ void ListControll::setFocus()
      QList <DrawElement*> res;
      for(auto elm : pointed_block)
          res.append(elm.draw_element);
-   //  qDebug() << "Curent            count of element in scene   =   " << pointed_block.size();
+   //  // qDebug() << "Curent            count of element in scene   =   " << pointed_block.size();
      return res;
  }
 
@@ -519,7 +526,7 @@ void ListControll::setFocus()
              if (scale_pointer_pos <= blockXend)
              {
                  pointed_block.append(tracks[i].block[y]);
-                 //qDebug() << "POP: " << i<< " "<<y;
+                 //// qDebug() << "POP: " << i<< " "<<y;
              break;
              }
               blockXstart = blockXend;
@@ -529,11 +536,11 @@ void ListControll::setFocus()
 /*
 	*		show curent play element
 */
-      qDebug() << "FFFFFFFFFFFFFFF getPointedBlocks size" << pointed_block.size()
-               << " scale_pointer_pos " << scale_pointer_pos;
+      // qDebug() << "FFFFFFFFFFFFFFF getPointedBlocks size" << pointed_block.size()
+               //<< " scale_pointer_pos " << scale_pointer_pos;
      /* for(int i = 0; i <pointed_block.size(); i++)
       {
-          qDebug() << i <<  "   " << pointed_block[i].draw_element->getType();
+          // qDebug() << i <<  "   " << pointed_block[i].draw_element->getType();
       }*/
 
  }
@@ -550,7 +557,7 @@ void ListControll::setFocus()
              if (ms <= blockXend)
              {
                  pointed_time_blocks.append(tracks[i].block[y]);
-                 //qDebug() << "POP: " << i<< " "<<y;
+                 //// qDebug() << "POP: " << i<< " "<<y;
              break;
              }
               blockXstart = blockXend;
@@ -571,7 +578,7 @@ void ListControll::calcPointedBlocksAtTime( )
              if (ms <= blockXend)
              {
                  pointed_time_blocks.append(tracks[i].block[y]);
-                 //qDebug() << "POP: " << i<< " "<<y;
+                 //// qDebug() << "POP: " << i<< " "<<y;
              break;
              }
               blockXstart = blockXend;
@@ -586,7 +593,7 @@ void ListControll::calcPointedBlocksAtTime( )
 
  void  ListControll::play()
  {
-    // qDebug() << "FFFFFFFFFFFFFFF  emit playSignal();";
+    // // qDebug() << "FFFFFFFFFFFFFFF  emit playSignal();";
     emit playSignal();
      timer.restart();
      isPlayPauseStop = 1;
@@ -636,10 +643,10 @@ QImage ListControll::requestImage(const QString &id, QSize *size, const QSize &r
             //= QImage::fromData(reply->readAll());
     /*size->setWidth(image.width());
     size->setHeight(image.height());*/
-    qDebug() << "                                                                           IMAGE ";
+    // qDebug() << "                                                                           IMAGE ";
     QVector <QStringRef> argv = id.splitRef('+');
     QImage img = getBlock(argv[0].toInt(), argv[1].toInt()).draw_element->getIcon();
-    qDebug() << "IMAGE                                                          ppp " << getBlock(argv[0].toInt(), argv[1].toInt()).draw_element->getKey();
+    // qDebug() << "IMAGE                                                          ppp " << getBlock(argv[0].toInt(), argv[1].toInt()).draw_element->getKey();
     if(img.isNull())
             return QImage(":/0.png");
 

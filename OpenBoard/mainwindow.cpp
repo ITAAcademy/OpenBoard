@@ -27,7 +27,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //QStandardPaths path;
     directory = QStandardPaths::locate(QStandardPaths::DocumentsLocation, QString(),
                                        QStandardPaths::LocateDirectory);
-//qDebug() <<directory;
+//// qDebug() <<directory;
 //    connect(&drawThread, SIGNAL(started()), this, SLOT(myfunction())); //cant have parameter sorry, when using connect
 
     mpOGLWidget = new OGLWidget();
@@ -252,7 +252,7 @@ void MainWindow::closeEvent(QCloseEvent*)
         on_action_Hide_triggered();
         mpOGLWidget->close();
     }
-    qDebug() << "Close drawWidget";
+    // qDebug() << "Close drawWidget";
 }
 
 void MainWindow::on_action_Show_triggered()
@@ -456,7 +456,7 @@ void MainWindow::on_action_Undo_triggered()
 {
     textEdit->undom();
    // commandTextEdit->undo();
-    //qDebug() <<"UNDO";
+    //// qDebug() <<"UNDO";
    // commandTextEdit->changesDetected=false;
 }
 
@@ -741,18 +741,18 @@ void MainWindow::on_backBtn_clicked()
 }
 void MainWindow::onCommandFocusSet(){
     isCommandTextEditFocused=true;
-    qDebug() << "focus changed"<<isCommandTextEditFocused;
+    // qDebug() << "focus changed"<<isCommandTextEditFocused;
 }
 void MainWindow::onCommandFocusLost(){
     isCommandTextEditFocused=false;
-    qDebug() << "focus changed"<<isCommandTextEditFocused;
+    // qDebug() << "focus changed"<<isCommandTextEditFocused;
 }
 
 void MainWindow::on_actionClear_drawing_triggered()
 {
-qDebug() << "on_actionClear_drawing_triggered()";
+// qDebug() << "on_actionClear_drawing_triggered()";
 mpOGLWidget->clearFrameBuffer();
-//qDebug() << mpOGLWidget->isClearFrameBuffer;
+//// qDebug() << mpOGLWidget->isClearFrameBuffer;
 }
 
 void MainWindow::on_actionClear_drawingBuffer_triggered()
@@ -890,7 +890,7 @@ void MainWindow::doUndoRedoEnd()
 void MainWindow::onTextChanged()
 {
     disconnect(textEdit, SIGNAL(textChanged()), this, SLOT(onTextChanged()));
-    qDebug() << "onTextChanged";
+    // qDebug() << "onTextChanged";
     QString str = textEdit->toPlainText();
     /*
      * bida z cursorom
@@ -996,10 +996,10 @@ void MainWindow::on_action_Play_triggered()
      drawTTElements.setUnParsestring(textEdit->toPlainText());
      drawTTElements.save("curent");
    /*  drawTTElements.load("curent.txt");
-     qDebug() << "                                                          qqqqqqqq" << drawTTElements.getType();*/
+     // qDebug() << "                                                          qqqqqqqq" << drawTTElements.getType();*/
  //   drawElements[0]->load("kaka");
 
-  //  qDebug() << mUnitList.size();
+  //  // qDebug() << mUnitList.size();
    // QString name = this->windowTitle();
     play = true;
     mpOGLWidget->editingRectangle.isEditingRectangleVisible = false;
@@ -1135,6 +1135,6 @@ void MainWindow::setEnabledToolBar(bool status)
 
 void MainWindow::on_actionShow_last_drawing_triggered()
 {
-    qDebug() << "show_last_drawing";
+    // qDebug() << "show_last_drawing";
     mpOGLWidget->isMousePlay=true;
 }

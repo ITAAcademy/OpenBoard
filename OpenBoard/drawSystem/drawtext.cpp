@@ -39,7 +39,7 @@ QString DrawTextElm::getUnParsestring() const
 void DrawTextElm::setUnParsestring(const QString &value)
 {
     unParsestring = value;
-    qDebug() << value;
+    // qDebug() << value;
     Parser::ParsingLine(mUnitList, value);
 }
 
@@ -62,17 +62,17 @@ bool DrawTextElm::load_add(QDataStream &stream)
     stream >> sizeOfString;
     QByteArray data;
     data.resize(sizeOfString);
-    qDebug() << "OUT " << sizeOfString;
+    // qDebug() << "OUT " << sizeOfString;
     stream.readRawData(data.data(), sizeOfString);
     unParsestring = data;
-    qDebug() << data;*/
+    // qDebug() << data;*/
     Parser::ParsingLine(mUnitList, unParsestring);
 }
 
 bool DrawTextElm::save_add(QDataStream &stream)
 {
  /*   stream << unParsestring.length();
-    qDebug() << "IN " << unParsestring.length();
+    // qDebug() << "IN " << unParsestring.length();
     stream.writeRawData(unParsestring.toLatin1().data(), unParsestring.length());*/
     stream << unParsestring;
 }

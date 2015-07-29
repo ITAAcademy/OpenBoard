@@ -137,7 +137,7 @@ int Parser::ParsingLine(QList<Unit*> &list, const QString &str)
                         break;
                     }
                     command->setUnitData(pars_line);
-                    qDebug()<<"Pars line:"<<pars_line;
+                    // qDebug()<<"Pars line:"<<pars_line;
                     list.push_back(command);
                     state = -1;
                     i += 1;
@@ -205,7 +205,7 @@ int Parser::ParsingLine(QList<Unit*> &list, const QString &str)
                 if(tmp < 6)
                 {
                     state = i;
-                    qDebug() << "color error";
+                    // qDebug() << "color error";
                     break;
                 }
 

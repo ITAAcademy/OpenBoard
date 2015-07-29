@@ -3,7 +3,7 @@ import QtQuick 2.0
 Rectangle {
     id: root
     color: "gray"
-    onHeightChanged: console.log("HEIGHT  toolbar = " + height)
+   // onHeightChanged: // console.log("HEIGHT  toolbar = " + height)
     property Repeater globalRep
     Column{
         width: parent.width
@@ -18,7 +18,7 @@ Rectangle {
             onClicked: {
                timeControll.addNewTest("vasia");
                  repka.updateModel() ;
-                console.log("CLICK2")
+                // console.log("CLICK2")
             }
         }*/
         Buutton{
