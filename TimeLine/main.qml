@@ -278,6 +278,8 @@ main222.isPlay = false
             if (!main222.isPlay)
             {
             timeControll.calcPointedBlocks();
+                console.log("getScalePointerPos = " + timeControll.getScalePointerPos())
+
             }
             timeControll.setScalePointerPos(x-20 + scroll.flickableItem.contentX);
            // // console.log("x + scroll.flickableItem.contentX = "+x +" + " + scroll.flickableItem.contentX )
