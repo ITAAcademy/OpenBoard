@@ -24,7 +24,7 @@ bool isLower(const ColorMarker &c1,const ColorMarker &c2)
 void UnitCommand::changeColor(OGLWidget *canvas)
 {
    // canvas->setFillColor(QColor(unit_data));
-    qDebug() << "void UnitCommand::changeColor(OGLWidget *canvas)";
+    // qDebug() << "void UnitCommand::changeColor(OGLWidget *canvas)";
     ColorMarker marker;
     marker.startIndex=canvas->getCursorIndex();
     marker.value=unit_data;
@@ -45,12 +45,12 @@ void UnitCommand::boardClean(OGLWidget *canvas)
 
 void UnitCommand::moveLeft(OGLWidget *canvas, int n){
     canvas->moveCursor(-n);
-qDebug() <<"Moved left";
+// qDebug() <<"Moved left";
 
 //INSERT CODE
 }
 void UnitCommand::moveRight(OGLWidget* canvas, int n){
-qDebug() <<"Moved right " << n;
+// qDebug() <<"Moved right " << n;
 canvas->moveCursor(n);
 //INSERT CODE
 }
@@ -78,7 +78,7 @@ void UnitCommand::clearPreChar(OGLWidget *canvas, int n)
 {
     //canvas->crossOutLastSymbol();
    canvas->crossOutLastSymbol(n);
-   qDebug() << "cross" << n;
+   // qDebug() << "cross" << n;
 }
 
 void UnitCommand::pause(OGLWidget *canvas)

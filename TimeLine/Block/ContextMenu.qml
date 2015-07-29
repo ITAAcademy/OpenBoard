@@ -60,7 +60,7 @@ property Repeater globalRep
                 globalRep.updateModel();
                 contextMenuItem.visible = false;
 
-                console.log(" contextMenuItem.visible = false;")
+                // console.log(" contextMenuItem.visible = false;")
             }
         }
         ContextButton {
@@ -75,7 +75,7 @@ property Repeater globalRep
 
                 timeControll.loadFromFile();//removeBlock(col,id)
                 contextMenuItem.visible = false;
-                console.log("AFTER 9999999999999999999999");
+                // console.log("AFTER 9999999999999999999999");
                 main222.selectedBlock.repaint();
                 globalRep.updateModel();
 

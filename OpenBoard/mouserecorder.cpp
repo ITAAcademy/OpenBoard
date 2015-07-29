@@ -81,15 +81,15 @@ void MouseRecorder::clear()
 void MouseRecorder::addBrush(Brush brush)
 {
     for (int i=0;i<brushBeginingIndexes[currentPointsGroup].length();i++){
-         qDebug()<<"brushBeginingIndexes["<<currentPointsGroup<<"].length:"<<brushBeginingIndexes[currentPointsGroup].length();
+         // qDebug()<<"brushBeginingIndexes["<<currentPointsGroup<<"].length:"<<brushBeginingIndexes[currentPointsGroup].length();
         if (i==0) continue;
-       // qDebug() <<"brushBeginingIndexes[currentPointsGroup]["<<i<<"].pointIndex:"<<
+       // // qDebug() <<"brushBeginingIndexes[currentPointsGroup]["<<i<<"].pointIndex:"<<
          //          brushBeginingIndexes[currentPointsGroup][i].pointIndex;
-       // qDebug() << "coordGroup[currentPointsGroup].length())"<<coordGroup[currentPointsGroup].length()-1;
+       // // qDebug() << "coordGroup[currentPointsGroup].length())"<<coordGroup[currentPointsGroup].length()-1;
 
-        qDebug() << "brushBeginingIndexes[currentPointsGroup]["<<i<<"].pointIndex:"<<
+        // qDebug() << "brushBeginingIndexes[currentPointsGroup]["<<i<<"].pointIndex:"<<
                     brushBeginingIndexes[currentPointsGroup][i].pointIndex;
-        qDebug() << "brushBeginingIndexes[currentPointsGroup]["<<i-1<<"].pointIndex:"<<
+        // qDebug() << "brushBeginingIndexes[currentPointsGroup]["<<i-1<<"].pointIndex:"<<
                     brushBeginingIndexes[currentPointsGroup][i-1].pointIndex;
 
         if (brushBeginingIndexes[currentPointsGroup][i].pointIndex==coordGroup[currentPointsGroup].length()-1){

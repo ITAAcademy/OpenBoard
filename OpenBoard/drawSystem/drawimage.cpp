@@ -41,6 +41,6 @@ void DrawImageElm::setDrawWidget(OGLWidget *value)
     DrawElement::setDrawWidget(value);
     if(textureIndex == 0)
         textureIndex = pDrawWidget->loadTexture(image);
-    //qDebug() << "QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQWWWWWWWWWWWWWWWWW     " << textureIndex;
+    //// qDebug() << "QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQWWWWWWWWWWWWWWWWW     " << textureIndex;
 }
 

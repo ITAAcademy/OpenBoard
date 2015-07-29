@@ -150,11 +150,11 @@ charCount=document()->characterCount();
      emit doUndoRedoStart();
      if (undo_changes.size() >0)
      {
-        //  qDebug() << "undom";
+        //  // qDebug() << "undom";
          CursorCymbol backup;
          backup.cursor = this->textCursor().position();
          backup.cymbol = this->toPlainText();
-       //  qDebug() <<  backup.cymbol;
+       //  // qDebug() <<  backup.cymbol;
          redo_changes.push_back(backup);
 
 
@@ -217,12 +217,12 @@ this->setTextCursor(t_cursor);
      changebuf.cursor = this->textCursor().position();
      changebuf.cymbol = this->toPlainText();
 
-   /*  qDebug() << "\nundo";  for (int i=0; i< undo_changes.size(); i++)
+   /*  // qDebug() << "\nundo";  for (int i=0; i< undo_changes.size(); i++)
       {
-         qDebug() << undo_changes[i].cymbol;
-          qDebug() << undo_changes[i].cursor;
+         // qDebug() << undo_changes[i].cymbol;
+          // qDebug() << undo_changes[i].cursor;
       }*/
-  //   qDebug() << "\nredo"; for (int i=0; i< redo_changes.size(); i++)           qDebug() << redo_changes[i].cymbol;
+  //   // qDebug() << "\nredo"; for (int i=0; i< redo_changes.size(); i++)           // qDebug() << redo_changes[i].cymbol;
      }
  }
 

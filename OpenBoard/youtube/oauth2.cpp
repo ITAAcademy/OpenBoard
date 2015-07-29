@@ -52,7 +52,7 @@ QString OAuth2::loginUrl()
 {
     QString str = QString("%1?client_id=%2&redirect_uri=%3&response_type=%4&scope=%5&secret=i4fkkgVkFN6AZPryCcNU-NmH").arg(m_strEndPoint).arg(m_strClientID).
             arg(m_strRedirectURI).arg(m_strResponseType).arg(m_strScope);
-    qDebug() << "Login URL" << str;
+    // qDebug() << "Login URL" << str;
     return str;
 }
 
@@ -72,7 +72,7 @@ void OAuth2::startLogin(bool bForce)
     QString str = settings.value("access_token", "").toString();
      // qDebug(QByteArray("STR|") + m_strAccessToken.toStdString().c_str()+QByteArray("STREND"));
 
-    qDebug() << "OAuth2::startLogin, token from Settings" << str;
+    // qDebug() << "OAuth2::startLogin, token from Settings" << str;
     if(m_strClientID == "YOUR_CLIENT_ID_HERE" || m_strRedirectURI == "YOUR_REDIRECT_URI_HERE")
     {
         QMessageBox::warning(m_pParent, "Warning",
