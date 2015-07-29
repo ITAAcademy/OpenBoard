@@ -8,6 +8,7 @@ DrawBrushElm::DrawBrushElm(OGLWidget *drawWidget, QObject *parent) : DrawElement
 
  //QVector<BrushBeginingIndex> brushBeginings;
 //brushBeginingIndexes.append(brushBeginings);
+    setType("");
 }
 
 

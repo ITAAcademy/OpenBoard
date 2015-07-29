@@ -1151,6 +1151,7 @@ void MainWindow::on_actionSave_drawing_triggered()
     QString fileName = QFileDialog::getSaveFileName(this, tr("Choose file..."), qApp->applicationDirPath(), tr("Drawing (*.paint)"));
     if(!fileName.size())
         return;
+    qDebug() << fileName;
     mpOGLWidget->drawBrushElm->save(fileName);
 }
 
