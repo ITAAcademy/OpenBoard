@@ -1,6 +1,6 @@
 # OpenBoad
 OpenBoard v1.6
-![alt tag](https://raw.githubusercontent.com/ITAAcademy/OpenBoard/master/ReadMe/1.png)
+![alt tag](https://raw.githubusercontent.com/ITAAcademy/OpenBoard/develop/ReadMe/1.png)
 I.	TimeLine. Робота з стрічкою часу.
  
 
@@ -12,7 +12,7 @@ I.	TimeLine. Робота з стрічкою часу.
 
 В блок можна завантажити довільну картинку в форматах png + gif + jpg, а також текст в форматі txt. Для відтворення поточного стану редагованого в текстовому вікні слід добавити файл current.text, який автоматично обновляться після кожного наступного відтворення.
 Кожен блок можна поміняти місцями за допомогою перетаскування, а також змінити його довжину методом перетаскування його за праву сторону. Ширина блоку визначає його час відтворення.
-![alt tag](https://raw.githubusercontent.com/ITAAcademy/OpenBoard/master/ReadMe/2.png)
+![alt tag](https://raw.githubusercontent.com/ITAAcademy/OpenBoard/develop/ReadMe/2.png)
 II.	Canvas. Робота з полотном відтворення.
 
  
@@ -29,7 +29,7 @@ II.	Canvas. Робота з полотном відтворення.
 4)	Зберегти анімацію
 
 Навколо вибраного на TimeLine елементі що відображається відображатиметься  обрамлення червоного кольору. Воно дозволяє змінити розташування та розміри об’єкту під час відтворення.
-![alt tag](https://raw.githubusercontent.com/ITAAcademy/OpenBoard/master/ReadMe/3.png)
+![alt tag](https://raw.githubusercontent.com/ITAAcademy/OpenBoard/develop/ReadMe/3.png)
 III.	EditText. Робота з редактором відтворення тексту.
 
 Набір команд: 
