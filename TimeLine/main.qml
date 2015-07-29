@@ -131,8 +131,10 @@ main222.isPlay = false
 
        onUpdateSignal:  {
            if (main222.isPlay )
+           {
                 scale_pointer.x = timeControll.getPlayTime()- 20 - scroll.flickableItem.contentX;
            timeControll.calcPointedBlocksAtTime()
+           }
        }
        }
 
@@ -277,7 +279,7 @@ main222.isPlay = false
 
             if (!main222.isPlay)
             {
-            timeControll.calcPointedBlocks();
+                timeControll.calcPointedBlocks();
             }
             timeControll.setScalePointerPos(x-20 + scroll.flickableItem.contentX);
            // // console.log("x + scroll.flickableItem.contentX = "+x +" + " + scroll.flickableItem.contentX )

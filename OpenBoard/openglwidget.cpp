@@ -1106,8 +1106,6 @@ void OGLWidget::pause(int ms)
 
 void  OGLWidget::updateWindow(){
     //isCrossingNow=true;
-    updateGL();
-
     setList(timeLine->getPointedBlocksDE());
     QPoint t = timeLine->getSelectedBlockPoint();
     if(curStatus != PLAY && t.x() >= 0)
@@ -1126,6 +1124,7 @@ void  OGLWidget::updateWindow(){
 
         }
     }
+    updateGL();
 }
 
 QColor OGLWidget::getMainFillColor() const

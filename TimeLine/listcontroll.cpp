@@ -504,7 +504,6 @@ void ListControll::setFocus()
 
  QList <Element> ListControll::getPointedBlocks( )
  {
-
      return pointed_block;
  }
  QList <DrawElement*> ListControll::getPointedBlocksDE( )
@@ -512,7 +511,7 @@ void ListControll::setFocus()
      QList <DrawElement*> res;
      for(auto elm : pointed_block)
          res.append(elm.draw_element);
-   //  // qDebug() << "Curent            count of element in scene   =   " << pointed_block.size();
+    qDebug() << "Curent            count of element in scene   =   " << pointed_block.size();
      return res;
  }
 
@@ -528,13 +527,14 @@ void ListControll::setFocus()
              if (scale_pointer_pos <= blockXend)
              {
                  pointed_block.append(tracks[i].block[y]);
-                 //// qDebug() << "POP: " << i<< " "<<y;
+                  qDebug() << "POP: " << i<< " "<<y;
              break;
              }
               blockXstart = blockXend;
          }
 
      }
+      //  qDebug() << "qweqweqweqweqweqw";
 /*
 	*		show curent play element
 */
@@ -549,7 +549,7 @@ void ListControll::setFocus()
 
  void ListControll::calcPointedBlocksAtTime(int ms )
  {
-     pointed_time_blocks.clear();
+     pointed_block.clear();
      for (int i=0; i<tracks.size(); i++)
      {
          int blockXstart = 0;
@@ -558,7 +558,7 @@ void ListControll::setFocus()
              int blockXend =blockXstart + tracks[i].block[y].draw_element->getLifeTime();
              if (ms <= blockXend)
              {
-                 pointed_time_blocks.append(tracks[i].block[y]);
+                 pointed_block.append(tracks[i].block[y]);
                  //// qDebug() << "POP: " << i<< " "<<y;
              break;
              }
@@ -570,7 +570,7 @@ void ListControll::setFocus()
 void ListControll::calcPointedBlocksAtTime( )
  {
      int ms = getPlayTime();
-     pointed_time_blocks.clear();
+     pointed_block.clear();
      for (int i=0; i<tracks.size(); i++)
      {
          int blockXstart = 0;
@@ -579,7 +579,7 @@ void ListControll::calcPointedBlocksAtTime( )
              int blockXend =blockXstart + tracks[i].block[y].draw_element->getLifeTime();
              if (ms <= blockXend)
              {
-                 pointed_time_blocks.append(tracks[i].block[y]);
+                 pointed_block.append(tracks[i].block[y]);
                  //// qDebug() << "POP: " << i<< " "<<y;
              break;
              }
@@ -590,7 +590,7 @@ void ListControll::calcPointedBlocksAtTime( )
 
  QList <Element> ListControll::getPointedBlocksAtTime( )
  {
-     return pointed_time_blocks;
+     return pointed_block;
  }
 
  void  ListControll::play()

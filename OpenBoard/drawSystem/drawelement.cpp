@@ -231,6 +231,9 @@ void DrawElement::pause()
 void DrawElement::stop()
 {
     bPause = false;
+    keyCouter = 0;
+    tickTimer.restart();
+    bPause = false;
 }
 
 void DrawElement::start()
