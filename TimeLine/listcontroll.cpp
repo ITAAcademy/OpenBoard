@@ -4,7 +4,9 @@
 
 QPoint ListControll::getSelectedBlockPoint() const
 {
-    return selectedBlockPoint;
+    if (tracks[selectedBlockPoint.x()].block.length() > selectedBlockPoint.y())
+        return selectedBlockPoint;
+    return QPoint(-1,-1); // ALL BAD
 }
 
 void ListControll::setSelectedBlockPoint(const QPoint &value)

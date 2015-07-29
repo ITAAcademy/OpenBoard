@@ -1109,10 +1109,9 @@ void  OGLWidget::updateWindow(){
     updateGL();
 
     setList(timeLine->getPointedBlocksDE());
-
-    if(curStatus != PLAY)
+    QPoint t = timeLine->getSelectedBlockPoint();
+    if(curStatus != PLAY && t.x() >= 0)
     {
-        QPoint t = timeLine->getSelectedBlockPoint();
         if(t != selElm)
         {
             selElm = t;
