@@ -33,7 +33,8 @@ II.	Canvas. Робота з полотном відтворення.
 ![alt tag](https://raw.githubusercontent.com/ITAAcademy/OpenBoard/develop/ReadMe/3.png)
 III.	EditText. Робота з редактором відтворення тексту.
 
-Набір команд: 
+Набір команд:
+
 1.	\n – перехід на нову стрічку (Enter)
 2.	\ml000 – зміщення курсору на 000 ліворуч
 3.	\mr000 – зміщення курсору на 000 праворуч
