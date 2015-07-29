@@ -63,7 +63,7 @@ class OGLWidget : public QGLWidget, protected QGLFunctions
     Q_PROPERTY(QString  drawText READ getDrawText WRITE setDrawText NOTIFY drawTextChanged)
 
 public:
-
+    BrushManager m_manager;
     /*
      * |Future gradient
      */
@@ -294,7 +294,7 @@ private:
     bool busy = false;
     bool isClose = false;
     bool curentList = false;
-    BrushManager m_manager;
+
 
 
 

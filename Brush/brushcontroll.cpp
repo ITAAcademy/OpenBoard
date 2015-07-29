@@ -11,7 +11,8 @@ void BrushManager::setCurentBrush(int value)
 {
     curentBrush = value;
     createdBrush.img = imageStack[value];
-   createdBrush.color_img = painter.applyColor(createdBrush);
+    createdBrush.patchToImage = brushPathsList[value];
+   createdBrush.color_img = BrushPainter::getInstance()->applyColor(createdBrush);
     emit currentBrushChanged();
     qDebug()<<"emit currentBrushChanged();";
 }
@@ -55,7 +56,7 @@ bool BrushManager::isColorValid(QString value)
 void BrushManager::update()
 {
     qApp->processEvents(QEventLoop::ExcludeUserInputEvents, 200);
-    createdBrush.color_img = painter.applyColor(createdBrush);
+    createdBrush.color_img = BrushPainter::getInstance()->applyColor(createdBrush);
     emit colorChanged();
 }
 BrushManager::BrushManager(QObject *parent) : QObject(parent), QQuickImageProvider(QQuickImageProvider::Image)
@@ -140,7 +141,7 @@ QImage BrushManager::requestImage(const QString &id, QSize *size, const QSize& r
 
     if(id[0] == 'h')
     {
-       return painter.drawBrush(createdBrush);
+       return BrushPainter::getInstance()->drawBrush(createdBrush);
     }
 
     return QImage(requestedSize, QImage::Format_ARGB32);
@@ -150,15 +151,15 @@ bool BrushManager::openBrushLibrary(QString path)
 {
     QString new_path = brushDir.currentPath()+path;
     QDir dir(new_path);
-    QStringList list = dir.entryList(QDir::Files);
-    for(int i = 0; i < list.length(); i++)
+    brushPathsList = dir.entryList(QDir::Files);
+    for(int i = 0; i < brushPathsList.length(); i++)
     {
-        QImage img = QImage(new_path + "\\" + list[i]);
+        QImage img = QImage(new_path + "\\" + brushPathsList[i]);
         if(!img.isNull())
             imageStack.push(img);
     }
     qDebug() << "Image found    " << imageStack.length();
-    qDebug() << list;
+    qDebug() << brushPathsList;
 }
 
 

@@ -28,13 +28,14 @@ class BrushManager : public QObject, public QQuickImageProvider
     QImage mask;
     int curentBrush;
     Brush createdBrush;
-    BrushPainter painter;
     ImageClone *cloneImg;
+
     /*
      *
  */
     int size;
 public:
+      QStringList brushPathsList;
     explicit BrushManager(QObject *parent = 0);
     ~BrushManager();
     Q_INVOKABLE int getBrushCount();

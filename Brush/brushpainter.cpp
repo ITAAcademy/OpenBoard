@@ -1,15 +1,15 @@
 #include "brushpainter.h"
 
-BrushPainter::BrushPainter(QObject *parent) : QObject(parent)
+/*BrushPainter::BrushPainter(QObject *parent) : QObject(parent)
 {
 
-}
+}*/
 
 BrushPainter::~BrushPainter()
 {
 
 }
-
+BrushPainter* BrushPainter::p_instance = 0;
 void BrushPainter::close()
 {
 

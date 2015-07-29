@@ -32,12 +32,18 @@ bool DrawBrushElm::load_add(QDataStream &stream)
      }*/
      int brushCount = 0;
     stream >> brushCount;
+    QString path = "\\Preset\\Brushes";
+    QDir brushDir;
+     QString new_path = brushDir.currentPath()+path;
     for (int i = 0; i <brushCount;i++)
     {
         BrushBeginingIndex brushBeginingIndex;
         Brush data;
-        data.img=load_image(stream);
-        data.color_img=load_image(stream);
+        stream >> data.patchToImage;
+        data.img = QImage(new_path + "\\" +  pDrawWidget->m_manager.brushPathsList[i]);
+        //data.color_img = painter.applyColor(createdBrush);
+       // data.img=load_image(stream);
+        //data.color_img=load_image(stream);
         stream  >> data.size >> data.opacity >> data.blur >> data.color_main >> data.dispers >>
         data.delta_count >> data.count >> data.size_delta >> data.angle_delta >> data.afinn;
         stream >> brushBeginingIndex.pointIndex;
@@ -56,8 +62,9 @@ bool DrawBrushElm::save_add(QDataStream &stream)
     for (BrushBeginingIndex &brushBeginingIndex : brushes)
     {
         Brush &data = brushBeginingIndex.brush;
-        save_image(stream, data.img );
-         save_image(stream, data.color_img );
+        stream << data.patchToImage;
+       // save_image(stream, data.img );
+         //save_image(stream, data.color_img );
    stream  << data.size << data.opacity << data.blur << data.color_main << data.dispers <<
            data.delta_count << data.count << data.size_delta << data.angle_delta << data.afinn;
     stream << brushBeginingIndex.pointIndex;
