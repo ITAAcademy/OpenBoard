@@ -25,19 +25,24 @@ bool DrawBrushElm::load_add(QDataStream &stream)
 {
      clear();
      stream >> coords;
-     qDebug()<<"LOADED len:"<<coords.length();//<<" values:"<<coords[0]<<" "<<coords[1];
+     qDebug()<<"LOADED coords len:"<<coords.length();//<<" values:"<<coords[0]<<" "<<coords[1];
      /*for (QPoint coord : coords)
      {
          qDebug() <<"Point:"<<coord;
      }*/
-    for (BrushBeginingIndex &brushBeginingIndex : brushes)
+     int brushCount = 0;
+    stream >> brushCount;
+    for (int i = 0; i <brushCount;i++)
     {
-        Brush &data = brushBeginingIndex.brush;
+        BrushBeginingIndex brushBeginingIndex;
+        Brush data;
         data.img=load_image(stream);
         data.color_img=load_image(stream);
         stream  >> data.size >> data.opacity >> data.blur >> data.color_main >> data.dispers >>
         data.delta_count >> data.count >> data.size_delta >> data.angle_delta >> data.afinn;
         stream >> brushBeginingIndex.pointIndex;
+        brushBeginingIndex.brush=data;
+        brushes.push_back(brushBeginingIndex);
     }
 
     if(coords.size() != 0)
@@ -47,6 +52,7 @@ bool DrawBrushElm::load_add(QDataStream &stream)
 bool DrawBrushElm::save_add(QDataStream &stream)
 {
  stream << coords;
+ stream << brushes.length();
     for (BrushBeginingIndex &brushBeginingIndex : brushes)
     {
         Brush &data = brushBeginingIndex.brush;
@@ -90,7 +96,7 @@ void DrawBrushElm::setLifeTime(int value)
 }
 void DrawBrushElm::draw()
 {
-    qDebug() << tickTimer.elapsed() << "  " << tickTime;
+    //qDebug() << tickTimer.elapsed() << "  " << tickTime;
     if(keyCouter < coords.size() && tickTimer.elapsed() > tickTime)
     {
         pDrawWidget->paintBrushInBuffer(coords,brushes,keyCouter++);
