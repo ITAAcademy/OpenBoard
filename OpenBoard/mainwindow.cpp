@@ -966,7 +966,6 @@ void MainWindow::onTextChanged()
 
 void MainWindow::on_action_Play_triggered()
 {
-   // mpOGLWidget->getTimeLine()->play(); //off for test
     hideBoardSettings();
     ui->action_Play->setEnabled(false);
     a_play->setEnabled(false);
@@ -1003,44 +1002,21 @@ void MainWindow::on_action_Play_triggered()
   //  qDebug() << mUnitList.size();
    // QString name = this->windowTitle();
     play = true;
-    QPoint selElm;
-    Element elm;
-    mpOGLWidget->editingRectangle.isEditingRectangleVisible = true;
+    mpOGLWidget->editingRectangle.isEditingRectangleVisible = false;
     mpOGLWidget->drawAnimated(ui->actionRecord_to_file->isChecked());
-
+    mpOGLWidget->getTimeLine()->play(); //off for test
     while( play && mpOGLWidget != 0 && mpOGLWidget->getStatus() != OGLWidget::STOP)
     {
         //while(mpOGLWidget->getStatus() == OGLWidget::PAUSE)
         if( mpOGLWidget->getStatus() != OGLWidget::PAUSE )
         {
-            mpOGLWidget->setList(mpOGLWidget->getTimeLine()->getPointedBlocksDE());
-            /*
-             * test
-             */
-            QPoint t = mpOGLWidget->getTimeLine()->getSelectedBlockPoint();
-            if(t != selElm)
-            {
-                selElm = t;
-                elm = mpOGLWidget->getTimeLine()->getBlock(selElm.x(),selElm.y());
-                mpOGLWidget->editingRectangle.rect = elm.draw_element->getRect();
-            }
-            else
-            {
-                QRect t = mpOGLWidget->editingRectangle.rect;
-                mpOGLWidget->getTimeLine()->setDrawX(selElm.x(), selElm.y(), t.x());
-                mpOGLWidget->getTimeLine()->setDrawY(selElm.x(), selElm.y(), t.y());
-                mpOGLWidget->getTimeLine()->setDrawSize(selElm.x(), selElm.y(), t.width(), t.height());
-
-            }
-
-
             qApp->processEvents();
         }
         else
             qApp->processEvents();
     }
     on_action_Stop_triggered();
-    mpOGLWidget->editingRectangle.isEditingRectangleVisible = false;
+    mpOGLWidget->editingRectangle.isEditingRectangleVisible = true;
     play = false;
 
 }

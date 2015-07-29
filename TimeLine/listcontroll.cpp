@@ -254,6 +254,11 @@ QImage ListControll::getBlockIcon(int col, int i)
      return tracks[col].block[i].draw_element->getSize() ;
  }
 
+ QRect ListControll::getDrawRect(int col, int i)
+ {
+     return tracks[col].block[i].draw_element->getRect();
+ }
+
 
 
 

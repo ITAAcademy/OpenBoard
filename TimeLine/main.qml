@@ -389,18 +389,20 @@ main222.isPlay = false
                                            property bool isDrag : false
                                            model:  timeControll.getTrackSize(trackbar.mIndex)//     bar_track.mIndex)
     function updateModel()      {
-    model = model - 1;
-    item_col.width = timeControll.getMaxTrackTime()
-        timeControll.update();
-    model =  timeControll.getTrackSize(bar_track.mIndex)
-    if (main222.needToLightSelected)
-    {
-    rep_columns.itemAt(main222.selectedBlockCol).setColorize(main222.selectedBlockIndex,"#8000FF00")
-        console.log("selectedBlockIndex=" + main222.selectedBlockIndex)
-   // main222.p_scale_pointer.x =rep_columns.itemAt(main222.selectedBlockCol).getBlockX(main222.selectedBlockIndex)
-   //main222.mX//
-        main222.needToLightSelected = false
-    }
+        model = model - 1;
+        item_col.width = timeControll.getMaxTrackTime()
+            timeControll.update();
+        model =  timeControll.getTrackSize(bar_track.mIndex)
+        if (main222.needToLightSelected)
+        {
+            rep_columns.itemAt(main222.selectedBlockCol).setColorize(main222.selectedBlockIndex,"#8000FF00")
+            console.log("selectedBlockIndex=" + main222.selectedBlockIndex)
+       // main222.p_scale_pointer.x =rep_columns.itemAt(main222.selectedBlockCol).getBlockX(main222.selectedBlockIndex)
+       //main222.mX//
+            main222.needToLightSelected = false
+
+        }
+        timeControll.calcPointedBlocks();
 
     }
                                            delegate:

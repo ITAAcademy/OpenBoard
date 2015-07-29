@@ -164,6 +164,7 @@ public:
     Q_INVOKABLE int getDrawZ(int col, int i);
     Q_INVOKABLE void setDrawSize(int col, int i, int width, int height);
     Q_INVOKABLE QSize getDrawSize(int col, int i);
+    Q_INVOKABLE QRect getDrawRect(int col, int i);
 
     Q_INVOKABLE void  play();
     Q_INVOKABLE void  pause();

@@ -24,7 +24,7 @@
 class ListControll;
 class DrawTextElm;
 class DrawElement;
-
+struct Element;
 /*
 #include <QtAV/QtAV>
 #include <QtAVWidgets/QtAVWidgets>
@@ -43,7 +43,7 @@ enum EditingRectangleBindMode {EDIT_RECTANGLE_UNBINDED =0,EDIT_RECTANGLE_MOVE=1,
 struct RectangleEditor {
     QRect rect;
     int leftCornerSize;
-    bool isEditingRectangleVisible = false;
+    bool isEditingRectangleVisible = true;
     int editingRectangleMode = EDIT_RECTANGLE_UNBINDED;
 
 };
@@ -297,6 +297,8 @@ protected:
        void resizeGL(int nWidth, int nHeight);
        void paintGL(); // Output generated Image to screen
         int wax ,way; // Window size
+
+        QPoint selElm;
 };
 
 

@@ -1039,6 +1039,26 @@ void OGLWidget::pause(int ms)
 void  OGLWidget::updateWindow(){
     //isCrossingNow=true;
     updateGL();
+
+    setList(timeLine->getPointedBlocksDE());
+
+    if(curStatus != PLAY)
+    {
+        QPoint t = timeLine->getSelectedBlockPoint();
+        if(t != selElm)
+        {
+            selElm = t;
+            editingRectangle.rect = timeLine->getDrawRect(t.x(), t.y());
+        }
+        else
+        {
+            QRect t = editingRectangle.rect;
+            timeLine->setDrawX(selElm.x(), selElm.y(), t.x());
+            timeLine->setDrawY(selElm.x(), selElm.y(), t.y());
+            timeLine->setDrawSize(selElm.x(), selElm.y(), t.width(), t.height());
+
+        }
+    }
 }
 
 QColor OGLWidget::getMainFillColor() const
