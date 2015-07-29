@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include "../TimeLine/listcontroll.h"
 
+
 #define TIMER_VALUE         300
 #define GLWIDGET_SIZE       640,480
 #define WINDOW_POS          80,100,760,560
@@ -137,6 +138,12 @@ MainWindow::MainWindow(QWidget *parent) :
        connect(a_show_last_drawing,SIGNAL(triggered()),this,  SLOT(on_actionShow_last_drawing_triggered()));
        toolBar->addAction(a_show_last_drawing);
 
+       a_save_drawing = new QAction(this);
+       a_save_drawing->setEnabled(true);
+       a_save_drawing->setIcon(QPixmap(":/icons/Save-icon.png").scaled(QSize(16, 16)));
+       a_save_drawing->setToolTip(tr("Save last drawing"));
+       connect(a_save_drawing,SIGNAL(triggered()),this,  SLOT(on_actionSave_drawing_triggered()));
+       toolBar->addAction(a_save_drawing);
 
 
        toolBar->addAction(QPixmap(":/icons/cut-icon.png").scaled(QSize(16, 16)), "Cut", this, SLOT(on_action_Cut_triggered()));
@@ -757,7 +764,7 @@ mpOGLWidget->clearFrameBuffer();
 
 void MainWindow::on_actionClear_drawingBuffer_triggered()
 {
-    mpOGLWidget->mouseRecorder.clear();
+    mpOGLWidget->drawBrushElm->clear();
 }
 
 void MainWindow::on_animationBtn_clicked()
@@ -1137,4 +1144,20 @@ void MainWindow::on_actionShow_last_drawing_triggered()
 {
     // qDebug() << "show_last_drawing";
     mpOGLWidget->isMousePlay=true;
+}
+
+void MainWindow::on_actionSave_drawing_triggered()
+{
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Choose file..."), qApp->applicationDirPath(), tr("Drawing (*.paint)"));
+    if(!fileName.size())
+        return;
+    mpOGLWidget->drawBrushElm->save(fileName);
+}
+
+void MainWindow::on_actionLoad_drawing_temp_triggered()
+{
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Choose file..."), qApp->applicationDirPath(), tr("Drawing (*.paint)"));
+    if(!fileName.size())
+        return;
+      mpOGLWidget->drawBrushElm->load(fileName);
 }

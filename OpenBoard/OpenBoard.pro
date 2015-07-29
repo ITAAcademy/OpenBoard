@@ -26,8 +26,10 @@ SOURCES += main.cpp\
     ../Brush/brushpainter.cpp \
     ../TimeLine/imageprovider.cpp \
     drawSystem/drawimage.cpp \
-    mouserecorder.cpp \
-    ../Brush/imageclone.cpp
+    ../Brush/imageclone.cpp \
+    drawSystem/drawbrush.cpp
+    drawSystem/drawbrush.cpp
+
 
 
 HEADERS  += mainwindow.h \
@@ -51,8 +53,10 @@ HEADERS  += mainwindow.h \
     ../Brush/brushpainter.h \
     ../TimeLine/imageprovider.h \
     drawSystem/drawimage.h \
-    mouserecorder.h \
-    ../Brush/imageclone.h
+    ../Brush/imageclone.h \
+    drawSystem/drawbrush.h
+    drawSystem/drawbrush.h
+
 
 FORMS    += mainwindow.ui \
     youtube/logindialog.ui

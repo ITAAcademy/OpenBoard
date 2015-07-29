@@ -236,7 +236,7 @@ void DrawElement::stop()
 void DrawElement::start()
 {
     keyCouter = 0;
-    tickTimer.start();
+    tickTimer.restart();
     bPause = false;
     reloadLastDone();
 }

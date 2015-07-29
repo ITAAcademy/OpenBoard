@@ -3,7 +3,7 @@
 #pragma once
 #include "drawtext.h"
 #include "drawimage.h"
-
+#include "drawbrush.h"
 
 static DrawElement *GenerationDrawElement( QString path, OGLWidget *drawWidget = NULL, QObject *parent = NULL )
 {
@@ -46,6 +46,11 @@ static DrawElement *GenerationDrawElement( QString path, OGLWidget *drawWidget =
     if(format == "text")
     {
         DrawTextElm *elm = new DrawTextElm(drawWidget, parent);
+        elm->load(path);
+        return (DrawElement*) elm;
+    }
+    if(format == "paint"){
+        DrawBrushElm *elm = new DrawBrushElm(drawWidget, parent);
         elm->load(path);
         return (DrawElement*) elm;
     }

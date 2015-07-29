@@ -17,14 +17,15 @@
 #include <QtOpenGL>
 #include <QTimer>
 #include <QRect>
-#include "mouserecorder.h"
 #include "encoder/videorencoder.h"
 #include "../Brush/brushcontroll.h"
 
 class ListControll;
+struct BrushBeginingIndex;
 class DrawTextElm;
+class DrawBrushElm;
 class DrawElement;
-struct Element;
+
 /*
 #include <QtAV/QtAV>
 #include <QtAVWidgets/QtAVWidgets>
@@ -66,13 +67,16 @@ public:
     /*
      * |Future gradient
      */
+
    bool isMousePlay = false;//play recorded mouse movement
    bool isMousePress = false;
    bool ismouseWasPressedBeforeDrag = false;  
     bool isClearFrameBuffer = false;//clear frame buffer
    volatile bool isCrossingNow;
-   MouseRecorder mouseRecorder;//record mouse movement
-//ListControll timeLine;
+
+   DrawBrushElm *drawBrushElm;//record mouse movement
+
+
 
 
 //bool isEditingRectangleBindedToCursor = false;
@@ -153,7 +157,7 @@ public:
     void update();
     void initFrameBufferTexture();
     void initFrameBufferDepthBuffer();
-    void paintBrushInBuffer(bool fromRecordedMousePoints);
+    void paintBrushInBuffer();
     void initFrameBuffer();
     QList<DrawElement *> &getList();
     void setList(const QList<DrawElement *> &value);
@@ -163,6 +167,8 @@ public:
     void paintBufferOnScreen();
     void clearFrameBuffer();
 
+
+    void paintBrushInBuffer(QVector<QPoint> coords, QVector<BrushBeginingIndex> brushes,int keyFrame);
 public slots:
     void drawAnimated( bool record );
     void stopAnimated();
@@ -215,9 +221,11 @@ private:
     QImage img;
 
     ListControll *timeLine;
-    unsigned int    fbo, // The frame buffer object
-                    fbo_depth, // The depth buffer for the frame buffer object
-                    fbo_texture; // The texture object to write our frame buffer object to
+
+	unsigned int    fbo,// The frame buffer object
+	fbo_depth, // The depth buffer for the frame buffer object
+
+	fbo_texture; // The texture object to write our frame buffer object to
     QString drawText;
     bool bRecord;
     void generateFrames();

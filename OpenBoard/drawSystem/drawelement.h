@@ -1,6 +1,6 @@
 #ifndef DrawElement_H
 #define DrawElement_H
-#pragma once
+//#pragma once
 #include <QObject>
 #include <QImage>
 #include <QTimer>
@@ -17,6 +17,7 @@ class DrawElement : public QObject
     Q_OBJECT
 
 protected:
+
     QImage icon;
     QString key;
     int lifeTime;
@@ -100,7 +101,7 @@ signals:
 public slots:
 
 
-private slots:
+protected slots:
     void pause();
     void stop();
     void start();
