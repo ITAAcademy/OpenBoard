@@ -145,7 +145,7 @@ void OGLWidget::setList(const QList<DrawElement *> &value)
     for( DrawElement* elm : value)
     {
         if(elm != NULL)
-            elm->setDrawWidget(this);
+            elm->setDrawWidget(this);   //12345
     }
     if(curentList)
     {

@@ -135,7 +135,7 @@ onYChanged: y=0;
             // console.log("onPressed: mIndex="+mIndex+" colIndex="+ colIndex + " time = " + timeControll.getBlockTime(colIndex,mIndex))
             if (mouse.button == Qt.RightButton)
             {
-               context_menu.show(main222.p_scale_pointer.x, mouseY + root.colIndex * root.height ,root.globalRep)
+               context_menu.show(main222.p_scale_pointer.x, mouseY + root.colIndex * root.height - scroll.flickableItem.contentY,root.globalRep)
                 drag.target = null
             }
         else

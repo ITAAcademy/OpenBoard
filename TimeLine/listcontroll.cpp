@@ -47,7 +47,7 @@ void ListControll::removeBlock(int col, int i)
     {
    // tracks[col].block.removeAt(i);
 
-   if (maxTrackTime == tracks[col].time)
+  // if (maxTrackTime == tracks[col].time)
    {
        int temp = tracks[col].block[i].draw_element->getLifeTime();
              //  testWidth[col][i];
@@ -58,13 +58,13 @@ void ListControll::removeBlock(int col, int i)
     recountMaxTrackTime();
 
    }
-   else
+   /*else
    {
        int temp = tracks[col].block[i].draw_element->getLifeTime();
        tracks[col].block[i].clear();
        tracks[col].block.removeAt(i);
         tracks[col].time -= temp;
-   }
+   }*/
   // if (selectedBlockPoint == QPoint(col,i))       selectedBlock = NULL;
     }
     isBlocked = false;
@@ -674,7 +674,10 @@ QImage ListControll::requestImage(const QString &id, QSize *size, const QSize &r
  {
      emit updateSignal();
      if (this->getMaxTrackTime() <= getPlayTime())
+     {
          emit stopSignal();
+         isPlayPauseStop = 3;
+     }
  }
 
 
