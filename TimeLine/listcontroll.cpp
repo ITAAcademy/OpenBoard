@@ -4,7 +4,7 @@
 
 QPoint ListControll::getSelectedBlockPoint() const
 {
-    if (tracks.size() > 0 && selectedBlockPoint.x() >= 0 && tracks[selectedBlockPoint.x()].block.length() > selectedBlockPoint.y())
+    if (tracks.size() > 0 && selectedBlockPoint.x() >= 0 && tracks.length() > selectedBlockPoint.x()  && tracks[selectedBlockPoint.x()].block.length() > selectedBlockPoint.y())
         return selectedBlockPoint;
     return QPoint(-1,-1); // ALL BAD
 }
@@ -163,6 +163,7 @@ bool ListControll::removeLastBlock(int col)
 
 bool ListControll::removeLastTrack()
 {
+    isBlocked = true;
     if (tracks.size())
     {
     int lastColTime = tracks.last().time;
@@ -186,13 +187,16 @@ bool ListControll::removeLastTrack()
 
 
   // if (selectedBlockPoint.x() == tracks.size() - 1)        selectedBlock = NULL;
+    isBlocked = false;
     return true;
     }
+    isBlocked = false;
     return false;
 }
 
 bool ListControll::removeTrack(int col)
 {
+    isBlocked = true;
     if (tracks.size()>col)
     {
     int lastColTime = tracks[col].time;
@@ -202,8 +206,10 @@ bool ListControll::removeTrack(int col)
 
   //  if (selectedBlockPoint.x() == tracks.size() - 1)     selectedBlock = NULL;
     calcPointedBlocks();
+    isBlocked = false;
     return true;
     }
+    isBlocked = false;
     return false;
 }
 

@@ -15,9 +15,10 @@ void DrawTextElm::draw()
     if(keyCouter < mUnitList.size() && bPlay && tickTimer.elapsed() > tickTime)
     {
         mUnitList.at(keyCouter)->draw(pDrawWidget);
-        tickTimer.restart();
         keyCouter++;
+        tickTimer.restart();
     }
+    qDebug() << "drawInfo" << mUnitList.size() << "     " << keyCouter;
     pDrawWidget->drawTextBuffer(x, y, width, height);
 
 }
@@ -27,6 +28,7 @@ void DrawTextElm::setLifeTime(int value)
     lifeTime = value;
     if(mUnitList.size() != 0)
         tickTime = lifeTime/mUnitList.size();
+
 }
 
 QList<Unit *> DrawTextElm::unitList() const
@@ -42,7 +44,9 @@ void DrawTextElm::setUnParsestring(const QString &value)
 {
     unParsestring = value;
     // qDebug() << value;
-    Parser::ParsingLine(mUnitList, value);
+    myParser.ParsingLine(mUnitList, unParsestring);
+    if(mUnitList.size() > 0)
+        tickTime = lifeTime/mUnitList.size();
 }
 
 void DrawTextElm::setUnitList(const QList<Unit *> &unitList)
@@ -68,7 +72,7 @@ bool DrawTextElm::load_add(QDataStream &stream)
     stream.readRawData(data.data(), sizeOfString);
     unParsestring = data;
     // qDebug() << data;*/
-    Parser::ParsingLine(mUnitList, unParsestring);
+    myParser.ParsingLine(mUnitList, unParsestring);
 }
 
 bool DrawTextElm::save_add(QDataStream &stream)
