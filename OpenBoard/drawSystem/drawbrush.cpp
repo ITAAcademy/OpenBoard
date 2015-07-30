@@ -91,11 +91,13 @@ void DrawBrushElm::setLifeTime(int value)
 void DrawBrushElm::draw()
 {
     qDebug() << tickTimer.elapsed() << "  " << tickTime;
-    if(keyCouter < coords.size() && tickTimer.elapsed() > tickTime)
+    if(keyCouter < coords.size() && bPlay && tickTimer.elapsed() > tickTime)
     {
-        pDrawWidget->paintBrushInBuffer(coords,brushes,keyCouter++);
+        pDrawWidget->paintBrushInBuffer(coords,brushes,keyCouter);
         qDebug() << "INTERES";
         tickTimer.restart();
+        if(bPlay)
+            keyCouter++;
     }
 
 }

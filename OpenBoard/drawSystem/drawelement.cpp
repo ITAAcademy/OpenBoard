@@ -30,6 +30,7 @@ DrawElement::DrawElement(OGLWidget *drawWidget, QObject *parent) : QObject(paren
 {
     pDrawWidget = drawWidget;
     bPause = false;
+    bPlay = false;
     x = 0;
     y = 0;
     z = 0;
@@ -49,6 +50,11 @@ DrawElement::~DrawElement()
     disconnect(pDrawWidget, SIGNAL(startSignal()), this, SLOT(start()));
     disconnect(pDrawWidget, SIGNAL(stopSignal()), this, SLOT(stop()));
     disconnect(pDrawWidget, SIGNAL(pauseSignal()), this, SLOT(pause()));
+}
+
+void DrawElement::paint()
+{
+    draw();
 }
 
 void DrawElement::draw()
@@ -239,17 +245,19 @@ void DrawElement::pause()
 
 void DrawElement::stop()
 {
+    qDebug() << "stop";
     bPause = false;
     keyCouter = 0;
-    tickTimer.restart();
     bPause = false;
+    bPlay = false;
+    tickTimer.restart();
 }
 
 void DrawElement::start()
 {
     keyCouter = 0;
-    tickTimer.restart();
     bPause = false;
+    bPlay = true;
     reloadLastDone();
     qDebug() << "START" << lastPath;
 }

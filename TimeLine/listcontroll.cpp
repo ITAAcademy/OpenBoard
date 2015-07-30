@@ -128,6 +128,7 @@ recountMaxTrackTime();
 
 bool ListControll::removeLastBlock(int col)
 {
+    isBlocked = true;
     if (tracks[col].block.size())
     {
   // tracks[col].block.pop_back();
@@ -149,8 +150,10 @@ bool ListControll::removeLastBlock(int col)
     tracks[col].time -= temp;
    }
   // if (selectedBlockPoint.x() == col)       selectedBlock = NULL;
+   isBlocked = false;
     return true;
     }
+    isBlocked = false;
     return false;
 }
 
@@ -525,7 +528,7 @@ void ListControll::setFocus()
  {
      pointed_block.clear();
    //  qDebug() << "SIZE          " << tracks[0].block.size();
-     if(isBlocked)
+     if(!isBlocked)
      {
          for (int i=0; i<tracks.size(); i++)
          {

@@ -30,28 +30,19 @@ protected:
     char type[50];
     OGLWidget *pDrawWidget;
     bool bPause;
+    bool bPlay;
 
     QString lastPath;
+    virtual void draw();
 public:
     explicit DrawElement( OGLWidget *drawWidget, QObject *parent = 0);
     virtual ~DrawElement();
-    virtual void draw();
+    void paint(); //new use
     bool load(QString path);
     bool save(QString path);
     bool reloadLastDone();
 
     QRect getRect();
-
-
-
-
-
-
-
-
-
-
-
 
     void setPosition(QPoint pos);
     void setPosition( int x, int y);

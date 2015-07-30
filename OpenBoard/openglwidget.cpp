@@ -681,13 +681,13 @@ for(int i = 0; i < getList().size(); i++)
 {
    // // qDebug() << "draw   " << i;
     if(getList()[i] != NULL)
-        getList()[i]->draw();
+        getList()[i]->paint();
 }
 
 if (editingRectangle.isEditingRectangleVisible)
 {
     //rectangle
-    glLineWidth(1);
+    glLineWidth(3);
     glColor3f(1.0f, 0.0f, 0.0f);
     glBegin(GL_LINES);
     glVertex2i(x1,y1);
@@ -715,12 +715,6 @@ if (editingRectangle.isEditingRectangleVisible)
          glEnd();
 }
 
-for(int i = 0; i < getList().size(); i++)
-{
-   // qDebug() << "draw   " << i;
-    if(getList()[i] != NULL)
-        getList()[i]->draw();
-}
 
 glDisable(GL_BLEND);
 }

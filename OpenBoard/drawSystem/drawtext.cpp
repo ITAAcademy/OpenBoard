@@ -12,12 +12,14 @@ DrawTextElm::~DrawTextElm()
 
 void DrawTextElm::draw()
 {
-    if(keyCouter < mUnitList.size() && tickTimer.elapsed() > tickTime)
+    if(keyCouter < mUnitList.size() && bPlay && tickTimer.elapsed() > tickTime)
     {
-        mUnitList.at(keyCouter++)->draw(pDrawWidget);
+        mUnitList.at(keyCouter)->draw(pDrawWidget);
         tickTimer.restart();
+        keyCouter++;
     }
     pDrawWidget->drawTextBuffer(x, y, width, height);
+
 }
 
 void DrawTextElm::setLifeTime(int value)
