@@ -133,9 +133,10 @@ main222.isPlay = false
            if (main222.isPlay )
            {
                 scale_pointer.x = timeControll.getPlayTime() + 15 - scroll.flickableItem.contentX;
+               timeControll.calcPointedBlocksAtTime()
               // console.log("timer value: " +timeControll.getPlayTime())
            }
-           timeControll.calcPointedBlocksAtTime()
+
 
        }
        }
