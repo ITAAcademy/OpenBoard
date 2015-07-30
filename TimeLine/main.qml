@@ -105,7 +105,7 @@ main222.isPlay = false
     function stop()    {
       //  scale_pointer.x =
 main222.isPlay = false
-
+//scale_pointer.x = timeControll.getMaxTrackTime() + scale_pointer.width/2 - scroll.flickableItem.contentX;
     }
 
     function setScalePointerPos(xx)    {
@@ -132,9 +132,11 @@ main222.isPlay = false
        onUpdateSignal:  {
            if (main222.isPlay )
            {
-                scale_pointer.x = timeControll.getPlayTime()- 20 - scroll.flickableItem.contentX;
-           timeControll.calcPointedBlocksAtTime()
+                scale_pointer.x = timeControll.getPlayTime() + 15 - scroll.flickableItem.contentX;
+              // console.log("timer value: " +timeControll.getPlayTime())
            }
+           timeControll.calcPointedBlocksAtTime()
+
        }
        }
 
@@ -225,7 +227,7 @@ main222.isPlay = false
         onYChanged: y = 0
         onXChanged: {
           //  if (x===0)     x = scroll.flickableItem.width
-          // console.log("1000")
+         //  console.log("1000")
            // var half_scale_pointer_width = -scale_pointer.width/2
             var zdvig = 20 - scroll.flickableItem.contentX
            // // console.log(" 3 scroll.flickableItem.contentX = " + scroll.flickableItem.contentX )
@@ -233,62 +235,76 @@ main222.isPlay = false
             if (zdvig < 0)
             {
              zdvig = -width/2//   zdvig = 0;
-             // console.log("10002")
+           //  console.log("10002")
             }
-            // console.log("10003")
+           //  console.log("10003")
             if (x<zdvig)
             {
-                 // console.log("10004")
+               //   console.log("10004")
                 scroll.flickableItem.contentX -= zdvig -x
                 if (scroll.flickableItem.contentX < 0)
                 {
                     scroll.flickableItem.contentX = 0;
-                     // console.log("10005")
+                      //console.log("10005")
                 }
                x = zdvig
                  // console.log("10006")
             }
             else
             {
-                var temp = scroll.width -width/2 - 3  /// scroll.x + scroll.width - main222.p_trackbar.width*1.4
+                var temp = scroll.width -width - 3  /// scroll.x + scroll.width - main222.p_trackbar.width*1.4
                 // console.log("10007")
                 if (x> temp)
                 {
-                    if (timeControll.getMaxTrackTime()  >= scroll.width)
+                   // console.log("DAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa")
+                    if (timeControll.getMaxTrackTime()  >= scroll.width  )
                     {
                          // console.log("10008")
                     scroll.flickableItem.contentX += x - temp
                     var sad = timeControll.getMaxTrackTime() - scroll.width + 17  // scroll.flickableItem.contentWidth - scroll.width + 10
                     if (scroll.flickableItem.contentX  >  sad)
                     {
-                         // // console.log("10009")
                             scroll.flickableItem.contentX = sad;
                         timeControll.stop();
                     }
                     }
                     else
                        // if (timeControll.getMaxTrackTime() <= scroll.width )
-                       { timeControll.stop();
-               // x = temp
+                       {
+                        timeControll.stop();
+                x = temp
                // // // console.log(" 1 x = " + x )
-                         // // console.log("10010")
+                        // console.log("10010")
                     }
                     x = temp
                 }
             }
+            temp = timeControll.getMaxTrackTime() - scroll.flickableItem.contentX + width
+            if (x  > temp )
+            {
+                x = temp
+                timeControll.stop();
+                main222.stop()
+            }
 
             if (!main222.isPlay)
             {
-                timeControll.calcPointedBlocks();
+            timeControll.calcPointedBlocks();
+                //console.log("getScalePointerPos = " + timeControll.getScalePointerPos())
+
             }
             timeControll.setScalePointerPos(x-20 + scroll.flickableItem.contentX);
-           // // console.log("x + scroll.flickableItem.contentX = "+x +" + " + scroll.flickableItem.contentX )
+           // // console.log("x + scroll.flickableItem.contentX = "+x +" + " + scroll.flickableItem.contentX
+
         }
 
         MouseArea {
             id: spMA
             anchors.fill: parent
             drag.target : scale_pointer
+            onPressed: {
+                 context_menu.visible = false
+            }
         }
     }
 
@@ -318,10 +334,17 @@ main222.isPlay = false
               width: parent.width - tollbar.width
               height: parent.height
               property int horizontalX: flickableItem.contentX
+              property int verticalY: flickableItem.contentY
              property int baba: scroll.flickableItem.contentWidth
               onHorizontalXChanged:  {
                time_scale.x = -horizontalX + 30
+                  context_menu.visible = false
               }
+              onVerticalYChanged:  {
+                  context_menu.visible = false
+
+              }
+
 
               horizontalScrollBarPolicy :Qt.ScrollBarAlwaysOn
               verticalScrollBarPolicy  :Qt.ScrollBarAlwaysOn
