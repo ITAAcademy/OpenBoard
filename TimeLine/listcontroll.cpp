@@ -42,6 +42,7 @@ void ListControll::setBlockKey(int col, int i, QString name)
 
 void ListControll::removeBlock(int col, int i)
 {
+    isBlocked = true;
     if (tracks[col].block.size() > i)
     {
    // tracks[col].block.removeAt(i);
@@ -50,6 +51,7 @@ void ListControll::removeBlock(int col, int i)
    {
        int temp = tracks[col].block[i].draw_element->getLifeTime();
              //  testWidth[col][i];
+       tracks[col].block[i].clear();
        tracks[col].block.removeAt(i);
         tracks[col].time -= temp;
    // testColumnWidth[col] -= temp;
@@ -59,11 +61,13 @@ void ListControll::removeBlock(int col, int i)
    else
    {
        int temp = tracks[col].block[i].draw_element->getLifeTime();
+       tracks[col].block[i].clear();
        tracks[col].block.removeAt(i);
         tracks[col].time -= temp;
    }
   // if (selectedBlockPoint == QPoint(col,i))       selectedBlock = NULL;
     }
+    isBlocked = false;
 }
 
 void ListControll::addNewBlock(int col, QString str)
@@ -89,9 +93,9 @@ void ListControll::addNewBlock(int col, QString str)
 void ListControll::addNewTrack( )
 {
     QList <Element>  temp;
-        temp.append(Element("1",def_min_block_width));
-       temp.append(Element("2",def_min_block_width));
-       temp.append(Element("3",def_min_block_width));
+    temp.append(Element());
+    temp.append(Element());
+    temp.append(Element());
        int  temp_traclwidth =   def_min_block_width*temp.size();
        Track trak(temp_traclwidth,temp);
         tracks.append(trak);
@@ -131,6 +135,7 @@ bool ListControll::removeLastBlock(int col)
    if (maxTrackTime == tracks[col].time)
    {
        int temp = tracks[col].block.last().draw_element->getLifeTime();
+       tracks[col].block.last().clear();
       tracks[col].block.pop_back();
     tracks[col].time -= temp;
     recountMaxTrackTime();
@@ -139,6 +144,7 @@ bool ListControll::removeLastBlock(int col)
    else
    {
        int temp = tracks[col].block.last().draw_element->getLifeTime();
+       tracks[col].block.last().clear();
       tracks[col].block.pop_back();
     tracks[col].time -= temp;
    }
@@ -511,28 +517,32 @@ void ListControll::setFocus()
      QList <DrawElement*> res;
      for(auto elm : pointed_block)
          res.append(elm.draw_element);
-    qDebug() << "Curent            count of element in scene   =   " << pointed_block.size();
+ //   qDebug() << "Curent            count of element in scene   =   " << pointed_block.size();
      return res;
  }
 
  void ListControll::calcPointedBlocks( )
  {
      pointed_block.clear();
-     for (int i=0; i<tracks.size(); i++)
-     {        
-         int blockXstart = 0;
-         for (int y=0; y<tracks[i].block.size(); y++ )
+   //  qDebug() << "SIZE          " << tracks[0].block.size();
+     if(isBlocked)
+     {
+         for (int i=0; i<tracks.size(); i++)
          {
-             int blockXend =blockXstart + tracks[i].block[y].draw_element->getLifeTime();
-             if (scale_pointer_pos <= blockXend)
+             int blockXstart = 0;
+             for (int y=0; y<tracks[i].block.size(); y++ )
              {
-                 pointed_block.append(tracks[i].block[y]);
-                  qDebug() << "POP: " << i<< " "<<y;
-             break;
+                 int blockXend =blockXstart + tracks[i].block[y].draw_element->getLifeTime();
+                 if (scale_pointer_pos <= blockXend)
+                 {
+                     pointed_block.append(tracks[i].block[y]);
+                     // qDebug() << "POP: " << i<< " "<<y;
+                 break;
+                 }
+                  blockXstart = blockXend;
              }
-              blockXstart = blockXend;
-         }
 
+         }
      }
       //  qDebug() << "qweqweqweqweqweqw";
 /*
@@ -660,11 +670,8 @@ QImage ListControll::requestImage(const QString &id, QSize *size, const QSize &r
  void ListControll::update()
  {
      emit updateSignal();
-     if (this->getMaxTrackTime() <= getPlayTime() && !isPlayPauseStop==3)
-     {
+     if (this->getMaxTrackTime() <= getPlayTime())
          emit stopSignal();
-         isPlayPauseStop=3;
-     }
  }
 
 

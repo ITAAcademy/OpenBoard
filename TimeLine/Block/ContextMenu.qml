@@ -6,7 +6,7 @@ Rectangle {
 property Repeater globalRep
     property int blockIndex: 0
     property int columnIndex: 0    
-    property int   minBlockWidth : 100
+    property int   minBlockWidth : 0
   //  signal menuSelected(int index) // index{1: Select All, 2: Remove Selected}
     property bool isOpen: false
     width: 150
@@ -16,7 +16,6 @@ property Repeater globalRep
     border { width: 2; color: "black" }
      color: "gray"
      property color text_color: "white"
-
 
     Column {
         id: menuHolder

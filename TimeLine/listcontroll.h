@@ -60,7 +60,13 @@ struct Element {
 
     }
     ~Element() {
-        //delete draw_element;
+
+    }
+    void clear()
+    {
+        if(draw_element != NULL)
+            delete draw_element;
+        draw_element = NULL;
     }
 
 };
@@ -94,7 +100,7 @@ class ListControll : public QObject, public QQuickImageProvider
     int def_min_block_width = 100;
     int scale_pointer_pos = 0;
     QList <Element> pointed_block;
-   // QList <Element> pointed_time_blocks;
+    QList <Element> pointed_time_blocks;
     //  QVector< int > testColumnWidth;
     void recountMaxTrackTime();
     ImageClone *cloneImg;
@@ -102,6 +108,7 @@ class ListControll : public QObject, public QQuickImageProvider
     QTime timer;
     qint64 time_sum;
     int isPlayPauseStop = 3;
+    bool isBlocked = false;
 public:
 
     explicit ListControll(QObject *parent = 0);

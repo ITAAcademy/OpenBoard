@@ -43,7 +43,6 @@ Rectangle {
         onPressed:  {
             // console.log("CLICK");
             root.clicked();
-            context_menu.visible = false
         }
     }
 }

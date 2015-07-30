@@ -6,7 +6,7 @@ ApplicationWindow  {
     id: mainwindow
     property int blockIndex: 0
     property int columnIndex: 0
-   //  property int   minBlockWidth : 0
+     property int   minBlockWidth : 0
 
     property Repeater globalRep
 

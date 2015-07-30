@@ -14,7 +14,7 @@ Rectangle{
     property string title: "value"
     property Repeater globalRep
     property string colorKey : "green"
-    property int minWidth : 100
+    property int minWidth : 20
     property ColorOverlay p_color_overlay
     radius: 3
     clip: true
@@ -135,7 +135,7 @@ onYChanged: y=0;
             // console.log("onPressed: mIndex="+mIndex+" colIndex="+ colIndex + " time = " + timeControll.getBlockTime(colIndex,mIndex))
             if (mouse.button == Qt.RightButton)
             {
-               context_menu.show(main222.p_scale_pointer.x, mouseY + root.colIndex * root.height -scroll.flickableItem.contentY,root.globalRep)
+               context_menu.show(main222.p_scale_pointer.x, mouseY + root.colIndex * root.height ,root.globalRep)
                 drag.target = null
             }
         else
@@ -203,6 +203,7 @@ onYChanged: y=0;
            // // console.log(mouseX + " YY " + mouseY)
         }
     }
+
     Image {
          parent : root
         id: background
@@ -214,18 +215,21 @@ onYChanged: y=0;
        visible: true
 
     }
+
     Image {
         id: icon
         //anchors.fill: parent
       //  source: "qrc:/Block/file.png"
         source:  "image://imageProvider/" + root.colIndex + "+" + root.mIndex + "+ " + Math.random(1000000);
-        height: root.height
+        height: root.height - root.border.width*2 - 1
         width: height
-        x:0
-        visible: false
+        x:root.border.width + 1
+        y:root.border.width + 1
+        visible:  true
 
             // timeControll.getBlockIcon(colIndex,mIndex)
     }
+
 
 
        /* OpacityMask {

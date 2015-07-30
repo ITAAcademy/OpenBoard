@@ -46,7 +46,9 @@ DrawElement::DrawElement(OGLWidget *drawWidget, QObject *parent) : QObject(paren
 
 DrawElement::~DrawElement()
 {
-
+    disconnect(pDrawWidget, SIGNAL(startSignal()), this, SLOT(start()));
+    disconnect(pDrawWidget, SIGNAL(stopSignal()), this, SLOT(stop()));
+    disconnect(pDrawWidget, SIGNAL(pauseSignal()), this, SLOT(pause()));
 }
 
 void DrawElement::draw()
@@ -96,7 +98,14 @@ bool DrawElement::reloadLastDone()
 {
     if(lastPath.isNull())
         return false;
+    QByteArray ba;
+    QDataStream stream( &ba, QIODevice::ReadWrite );
+    qDebug() << "MY1" << lifeTime;
+    stream << key << lifeTime << tickTime << startDrawTime << x << y << z << width << height << keyCouter;
+    stream.device()->reset();
     load(lastPath);
+    stream >> key >> lifeTime >> tickTime >> startDrawTime >> x >> y >> z >> width >> height >> keyCouter;
+    qDebug() << "MY2" << lifeTime;
 }
 
 QRect DrawElement::getRect()
@@ -242,6 +251,7 @@ void DrawElement::start()
     tickTimer.restart();
     bPause = false;
     reloadLastDone();
+    qDebug() << "START" << lastPath;
 }
 
 void DrawElement::restart()
