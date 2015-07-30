@@ -198,11 +198,13 @@ void OGLWidget::paintBrushInBuffer(QVector<QPoint> coords,QVector<BrushBeginingI
              int xPos = 0;
              int yPos = 0;
                  qDebug()<<"mouseRecorder.getBrushBeginings().length():"<<brushes.length();
-                 for (int recordedBrushN = 0; recordedBrushN < brushes.length();recordedBrushN++ )
-                 if (brushes[recordedBrushN].pointIndex==
-                         mousePlayIndex){
+                 for (int recordedBrushN = 0; recordedBrushN < brushes.length();recordedBrushN )
+                 {
+                 if (brushes[recordedBrushN].pointIndex==mousePlayIndex){
                   loadTexture(brushes[recordedBrushN].brush.color_img, TEXTURE_INDEX_BRUSH, true);
                   //qDebug() << "recordedBrushN:"<<recordedBrushN;
+                 }
+                 recordedBrushN++;
                  }
                  xPos=coords[keyFrame].x();
                  yPos=coords[keyFrame].y();

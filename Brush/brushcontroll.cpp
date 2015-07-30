@@ -11,7 +11,7 @@ void BrushManager::setCurentBrush(int value)
 {
     curentBrush = value;
     createdBrush.img = imageStack[value];
-    createdBrush.patchToImage = brushPathsList[value];
+  //  createdBrush.patchToImage = brushPathsList[value];
    createdBrush.color_img = BrushPainter::getInstance()->applyColor(createdBrush);
     emit currentBrushChanged();
     qDebug()<<"emit currentBrushChanged();";

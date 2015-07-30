@@ -11,7 +11,7 @@
 
 using namespace std;
 struct Brush{
-    QString patchToImage;
+
     QImage img = QImage(10,10,QImage::Format_RGB888);
     QImage color_img;
     float size = 50;
