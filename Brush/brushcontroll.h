@@ -35,6 +35,7 @@ class BrushManager : public QObject, public QQuickImageProvider
  */
     int size;
 public:
+    QDir getBrushDir();
       QStringList brushPathsList;
     explicit BrushManager(QObject *parent = 0);
     ~BrushManager();

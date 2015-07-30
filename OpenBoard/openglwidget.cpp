@@ -154,17 +154,35 @@ void OGLWidget::setList(const QList<DrawElement *> &value)
 }
 void OGLWidget::paintBrushInBuffer(QVector<QPoint> coords,QVector<BrushBeginingIndex> brushes,int keyFrame){
     glBindFramebuffer(GL_FRAMEBUFFER_EXT, fbo); // Bind our frame buffer for rendering
-    GLuint texture = textureList[TEXTURE_INDEX_BRUSH];
-    glBindTexture(GL_TEXTURE_2D,texture);
+int recordedBrushN = 0;
+
+GLuint texture = textureList[TEXTURE_INDEX_BRUSH];
+glBindTexture(GL_TEXTURE_2D,texture);
+    for (; recordedBrushN < brushes.length(); )
+    {
+    if (brushes[recordedBrushN].pointIndex==keyFrame){
+        qDebug() << "texture loaded";
+        qDebug() << "mouse play index:"<<keyFrame;
+        qDebug() << "recordedBrushN:"<<recordedBrushN;
+        loadTexture(brushes[recordedBrushN].brush.color_img, TEXTURE_INDEX_BRUSH, true);
+     //qDebug() << "recordedBrushN:"<<recordedBrushN;
+     break;
+    }
+    recordedBrushN++;
+    }
+
+    if (recordedBrushN>=brushes.length())recordedBrushN=brushes.length()-1;
+    Brush curBrush = brushes[recordedBrushN].brush;
+
     QSize brushTextureSize = getTextureSize();
-    int BRUSH_SIZE=m_manager.getSize() + m_manager.getSizeDelta()/2 - rand()%(int)(m_manager.getSizeDelta() + 1);
+    int BRUSH_SIZE=curBrush.size + curBrush.size_delta/2 - rand()%(int)(curBrush.size_delta + 1);
     float scaleX=1,scaleY=1;
     float randScalePtX = 0;
     float randScalePtY = 0;
-    if(m_manager.getAffine() != 0)
+    if(curBrush.afinn != 0)
     {
-        randScalePtX = m_manager.getAffine()/2 - rand() % (m_manager.getAffine());
-        randScalePtY = m_manager.getAffine()/2 - rand() % (m_manager.getAffine());
+        randScalePtX = curBrush.afinn/2 - rand() % ((int)curBrush.afinn);
+        randScalePtY = curBrush.afinn/2 - rand() % ((int)curBrush.afinn);
     }
 
     float MAX_SCALE = 2;
@@ -178,34 +196,27 @@ void OGLWidget::paintBrushInBuffer(QVector<QPoint> coords,QVector<BrushBeginingI
     double koff = 0;
     if(brushTextureSize.height() != 0)
      koff = brushTextureSize.width()/brushTextureSize.height();
-     int maxAngle = m_manager.getAngleDelta();
+     int maxAngle = curBrush.angle_delta;
 
      int angle = 0;
      if (maxAngle > 0){
      angle=maxAngle/2 - rand() % (maxAngle);
     }
-        int maxDispers = (int)m_manager.getDisepers();
+        int maxDispers = (int)curBrush.dispers;
         int i=1;
-        if (maxDispers>0 && m_manager.getCount()>0) i=m_manager.getCount();
+        if (maxDispers>0 && curBrush.count>0) i=curBrush.count;
         for (;i>0;i--)
         {
              int dispersX = 0;
              int dispersY = 0;
-             if ((int)m_manager.getDisepers()>0){
+             if ((int)curBrush.dispers>0){
                  dispersX = maxDispers/2 - rand() % (maxDispers);
                  dispersY = maxDispers/2 - rand() % (maxDispers);
         }
              int xPos = 0;
              int yPos = 0;
                  qDebug()<<"mouseRecorder.getBrushBeginings().length():"<<brushes.length();
-                 for (int recordedBrushN = 0; recordedBrushN < brushes.length();recordedBrushN )
-                 {
-                 if (brushes[recordedBrushN].pointIndex==mousePlayIndex){
-                  loadTexture(brushes[recordedBrushN].brush.color_img, TEXTURE_INDEX_BRUSH, true);
-                  //qDebug() << "recordedBrushN:"<<recordedBrushN;
-                 }
-                 recordedBrushN++;
-                 }
+
                  xPos=coords[keyFrame].x();
                  yPos=coords[keyFrame].y();
                 qDebug() << "x:"<<xPos;

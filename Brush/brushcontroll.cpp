@@ -11,6 +11,7 @@ void BrushManager::setCurentBrush(int value)
 {
     curentBrush = value;
     createdBrush.img = imageStack[value];
+    createdBrush.imageIndex=value;
   //  createdBrush.patchToImage = brushPathsList[value];
    createdBrush.color_img = BrushPainter::getInstance()->applyColor(createdBrush);
     emit currentBrushChanged();
@@ -59,6 +60,10 @@ void BrushManager::update()
     createdBrush.color_img = BrushPainter::getInstance()->applyColor(createdBrush);
     emit colorChanged();
 }
+QDir BrushManager::getBrushDir(){
+    return brushDir;
+}
+
 BrushManager::BrushManager(QObject *parent) : QObject(parent), QQuickImageProvider(QQuickImageProvider::Image)
 {
     QTime midnight(0,0,0);

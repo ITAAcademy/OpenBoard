@@ -27,7 +27,7 @@ struct Brush{
     float size_delta = 0;
     float angle_delta = 0;
     float afinn = 0;
-
+    int imageIndex = -1;
 };
 
 
