@@ -162,9 +162,24 @@ bool ListControll::removeLastTrack()
     if (tracks.size())
     {
     int lastColTime = tracks.last().time;
-    tracks.pop_back();
+
+    int last_ind = tracks.size()-1;
+//tracks[last_ind].deleteClearBlocks();
+ tracks.pop_back();
+    if(last_ind == 0)
+    {
+        maxTrackTime = 0;
+        pointed_block.clear();
+        selectedBlockPoint=QPoint(-1,-1);
+    }
+   else
+    {
     if (maxTrackTime == lastColTime)
         recountMaxTrackTime();
+    this->calcPointedBlocks();
+    }
+
+
 
   // if (selectedBlockPoint.x() == tracks.size() - 1)        selectedBlock = NULL;
     return true;

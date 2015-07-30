@@ -79,6 +79,14 @@ struct Track {
         this-> time = time;
         this-> block = block;
     }
+    void deleteClearBlocks ( ) {      
+           while(block.size())
+           {
+          block.last().clear();
+          block.pop_back();
+           }
+
+    }
 };
 
 
@@ -100,7 +108,7 @@ class ListControll : public QObject, public QQuickImageProvider
     int def_min_block_width = 100;
     int scale_pointer_pos = 0;
     QList <Element> pointed_block;
-    QList <Element> pointed_time_blocks;
+   // QList <Element> pointed_time_blocks;
     //  QVector< int > testColumnWidth;
     void recountMaxTrackTime();
     ImageClone *cloneImg;

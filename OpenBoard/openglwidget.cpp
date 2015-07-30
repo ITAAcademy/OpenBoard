@@ -142,9 +142,9 @@ QList<DrawElement *> &OGLWidget::getList()
 
 void OGLWidget::setList(const QList<DrawElement *> &value)
 {
-    for( DrawElement* elm : value)
+   for( DrawElement* elm : value)
     {
-        if(elm != NULL)
+        if(elm != NULL )//&& timeLine->getMaxTrackTime() > 0)
             elm->setDrawWidget(this);   //12345
     }
     if(curentList)
@@ -155,7 +155,7 @@ void OGLWidget::setList(const QList<DrawElement *> &value)
     {
         list_2 = value;
     }
-    curentList = !curentList;
+    curentList = !curentList;    
 }
 void OGLWidget::paintBrushInBuffer(QVector<QPoint> coords,QVector<BrushBeginingIndex> brushes,int keyFrame){
     glBindFramebuffer(GL_FRAMEBUFFER_EXT, fbo); // Bind our frame buffer for rendering
@@ -680,7 +680,7 @@ paintBufferOnScreen();
 for(int i = 0; i < getList().size(); i++)
 {
    // // qDebug() << "draw   " << i;
-    if(getList()[i] != NULL)
+    if(getList()[i] != NULL && timeLine->getMaxTrackTime() > 0)
         getList()[i]->paint();
 }
 
@@ -1105,7 +1105,8 @@ void OGLWidget::pause(int ms)
 
 void  OGLWidget::updateWindow(){
     //isCrossingNow=true;
-    setList(timeLine->getPointedBlocksDE());
+    //if (timeLine->getPointedBlocks().size())
+         setList(timeLine->getPointedBlocksDE());
     QPoint t = timeLine->getSelectedBlockPoint();
     if(curStatus != PLAY && t.x() >= 0)
     {
