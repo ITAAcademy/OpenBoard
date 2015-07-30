@@ -27,11 +27,9 @@ Rectangle {
             height: parent.width
             width: parent.width
           icon_source : "qrc:/iphone_toolbar_icons/delete.png"
-
             onClicked: {
                 main222.removeTrack();
             }
-
         }
 
         Buutton{

@@ -144,12 +144,17 @@ void OGLWidget::setList(const QList<DrawElement *> &value)
 {
     for( DrawElement* elm : value)
     {
-        elm->setDrawWidget(this);
+        if(elm != NULL)
+            elm->setDrawWidget(this);
     }
     if(curentList)
+    {
         list_1 = value;
+    }
     else
+    {
         list_2 = value;
+    }
     curentList = !curentList;
 }
 void OGLWidget::paintBrushInBuffer(QVector<QPoint> coords,QVector<BrushBeginingIndex> brushes,int keyFrame){
