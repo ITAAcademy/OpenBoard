@@ -116,8 +116,9 @@ class ListControll : public QObject, public QQuickImageProvider
     QTime timer;
     qint64 time_sum;
     int isPlayPauseStop = 3;
-    bool isBlocked = false;
+
 public:
+    volatile bool isBlocked = false;
 
     explicit ListControll(QObject *parent = 0);
     ~ListControll();

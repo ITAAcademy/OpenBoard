@@ -375,9 +375,15 @@ main222.isPlay = false
                           Repeater {
                           id: rep_columns
                           model: 1
+                          onModelChanged: {
+                              if ( model < 0)
+                                  model = 0;
+                          }
+
                           Component.onCompleted: {
                           main222.p_rep_columns = rep_columns
                           }
+
                           delegate:
                                Row {
                                id: bar_track

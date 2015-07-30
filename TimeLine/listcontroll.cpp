@@ -4,7 +4,7 @@
 
 QPoint ListControll::getSelectedBlockPoint() const
 {
-    if (tracks[selectedBlockPoint.x()].block.length() > selectedBlockPoint.y())
+    if (tracks.size() > 0 && selectedBlockPoint.x() >= 0 && tracks[selectedBlockPoint.x()].block.length() > selectedBlockPoint.y())
         return selectedBlockPoint;
     return QPoint(-1,-1); // ALL BAD
 }
@@ -67,6 +67,7 @@ void ListControll::removeBlock(int col, int i)
    }*/
   // if (selectedBlockPoint == QPoint(col,i))       selectedBlock = NULL;
     }
+    calcPointedBlocks();
     isBlocked = false;
 }
 
@@ -87,6 +88,7 @@ void ListControll::addNewBlock(int col, QString str)
   //  // qDebug() << "SIZE   " << test.size();
     if (maxTrackTime <  tracks[col].time)
         maxTrackTime =  tracks[col].time;
+    calcPointedBlocks();
 }
 
 
@@ -102,11 +104,13 @@ void ListControll::addNewTrack( )
 
    if (maxTrackTime < temp_traclwidth)
        maxTrackTime = temp_traclwidth; //1234
+   calcPointedBlocks();
 }
 
 void ListControll::loadFromFile()
 {
      QPoint p = getSelectedBlockPoint();
+     if (p.x() > -1)
     tracks[p.x()].time -= tracks[p.x()].block[p.y()].draw_element->getLifeTime();  ;
     QString open = QFileDialog::getOpenFileName();
     DrawElement *elm = GenerationDrawElement(open);
@@ -197,6 +201,7 @@ bool ListControll::removeTrack(int col)
         recountMaxTrackTime();
 
   //  if (selectedBlockPoint.x() == tracks.size() - 1)     selectedBlock = NULL;
+    calcPointedBlocks();
     return true;
     }
     return false;

@@ -144,8 +144,10 @@ void OGLWidget::setList(const QList<DrawElement *> &value)
 {
    for( DrawElement* elm : value)
     {
-        if(elm != NULL )//&& timeLine->getMaxTrackTime() > 0)
+        if(elm != NULL && !timeLine->isBlocked)//&& timeLine->getMaxTrackTime() > 0)
             elm->setDrawWidget(this);   //12345
+        else
+            break;
     }
     if(curentList)
     {
@@ -680,8 +682,10 @@ paintBufferOnScreen();
 for(int i = 0; i < getList().size(); i++)
 {
    // // qDebug() << "draw   " << i;
-    if(getList()[i] != NULL && timeLine->getMaxTrackTime() > 0)
+    if( timeLine->isBlocked == false && getList()[i] != NULL && timeLine->getMaxTrackTime() > 0)
         getList()[i]->paint();
+    else
+        break;
 }
 
 if (editingRectangle.isEditingRectangleVisible)

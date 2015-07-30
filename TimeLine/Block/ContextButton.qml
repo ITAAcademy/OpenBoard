@@ -15,7 +15,6 @@ Rectangle {
     color: "white"
      property color text_color: "white"
     property color text_entered_color: "green"
-    property color text_clicked_color: "red"
 
     function viewButtonHovered() {
 
@@ -59,11 +58,7 @@ Rectangle {
                 viewButtonExited();
             }
         }
-        states: [
-            State {
-                name: "clicked";
-                PropertyChanges { target: vButton; color: contextButtonItem.text_clicked_color }
-            },
+        states: [         
             State {
                 name: "hovered";
                 PropertyChanges { target: vButton; color: contextButtonItem.text_entered_color }
