@@ -20,7 +20,7 @@ Rectangle {
           anchors.fill: root
           glowRadius: 10
           spread: 0.00001
-          color:  "white"
+          color:  "#BBBBBB"
           visible: false
           cornerRadius: root.radius
       }
