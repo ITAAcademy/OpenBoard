@@ -162,7 +162,7 @@ public:
     bool getIsBrushWindowOpened() const;
     void setIsBrushWindowOpened(bool value);
 
-    void paintBufferOnScreen();
+    void paintBufferOnScreen(int x , int y , int width, int height, int z = 0);
     void clearFrameBuffer();
 
 

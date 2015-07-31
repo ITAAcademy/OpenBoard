@@ -352,17 +352,17 @@ void OGLWidget::resizeGL(int nWidth, int nHeight)
     way=nHeight;
     // qDebug() << "CALL RESIZE";
 }
-void OGLWidget::paintBufferOnScreen(){
+void OGLWidget::paintBufferOnScreen( int x, int y, int width, int height, int z){
     glEnable(GL_TEXTURE_2D);
 
     glBindTexture(GL_TEXTURE_2D,fbo_texture);
    // qglColor(Qt::green);//TO SEE TEXTURE
     glBegin(GL_QUADS);
          //  Draw Picture DEBUG INVERTED BY VERTICAL
-    glTexCoord2i(0,0); glVertex2i(0,way);
-    glTexCoord2i(0,1); glVertex2i(0,0);
-    glTexCoord2i(1,1); glVertex2i(wax,0);
-    glTexCoord2i(1,0); glVertex2i(wax,way);
+    glTexCoord2i(0,0); glVertex2i(x, height);
+    glTexCoord2i(0,1); glVertex2i(x, y);
+    glTexCoord2i(1,1); glVertex2i(width, x);
+    glTexCoord2i(1,0); glVertex2i(width, height);
 
    /*
     glTexCoord2i(0,0); glVertex2i(0,0);
@@ -636,7 +636,7 @@ void OGLWidget::paintGL()
        glEnable(GL_BLEND);
        glEnable(GL_ALPHA_TEST);
        glEnable(GL_DEPTH_TEST);
-       glDepthFunc(GL_LESS);
+       glDepthFunc(GL_LEQUAL); // this maybe problem
        glAlphaFunc(GL_GREATER,0);
        glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE);
        //glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
@@ -666,46 +666,10 @@ void OGLWidget::paintGL()
                   int leftCornerY2=y1 + editingRectangle.leftCornerSize/2;
 
 
-if(isMousePress) {
-    //editingRectangle.setX(0);
-   // editingRectangle.setY(0);
 
-        if (editingRectangle.editingRectangleMode==EDIT_RECTANGLE_UNBINDED && editingRectangle.isEditingRectangleVisible)
- if ((mousePos.x() >= leftCornerX1 && mousePos.x() <= leftCornerX2) && (mousePos.y() >= leftCornerY1 && mousePos.y() <= leftCornerY2))
- {
-     editingRectangle.editingRectangleMode=EDIT_RECTANGLE_RESIZE;
- }
- else if ((mousePos.x() >= x1) && (mousePos.x() <= x2) &&
-          (mousePos.y() >= y1) && (mousePos.y() <= y2))
- {
-     editingRectangle.editingRectangleMode=EDIT_RECTANGLE_MOVE;
- }
-
- switch(editingRectangle.editingRectangleMode){
-case EDIT_RECTANGLE_MOVE:
-     canDrawByMouse=false;
-    // // qDebug()<<"EDIT_RECTANGLE_MOVE width"<<editingRectangle.rect.width();
-     editingRectangle.rect.moveTo(mousePos.x() - mousePressPos.x(), //-editingRectangle.rect.width()/2
-                            mousePos.y() - mousePressPos.y() ); //-editingRectangle.rect.height()/2
-     //editingRectangle.setX(mousePos.x()-editingRectangle.width()/2);
-     //editingRectangle.setY(mousePos.y()-editingRectangle.height()/2);
-    // // qDebug()<< "leftCornerX1:"<<leftCornerX1;
-     //// qDebug()<< "leftCornerY1:"<<leftCornerY1;
-     // // qDebug()<< "leftCornerX2:"<<leftCornerX2;
-     // // qDebug()<< "leftCornerY2:"<<leftCornerY2;
- break;
- case EDIT_RECTANGLE_RESIZE:
-     canDrawByMouse=false;
-     // qDebug()<<"EDIT_RECTANGLE_RESIZE";
-     editingRectangle.rect.setX(mousePos.x());
-     editingRectangle.rect.setY(mousePos.y());
-    break;
- }
-if (canDrawByMouse)paintBrushInBuffer();
-}
 //if (isMousePlay)paintBrushInBuffer(true);
 
-paintBufferOnScreen();
+
 for(int i = 0; i < getList().size(); i++)
 {
    // // qDebug() << "draw   " << i;
@@ -745,8 +709,45 @@ if (editingRectangle.isEditingRectangleVisible)
            glVertex3i(leftCornerX1, leftCornerY2, -10);
          glEnd();
 }
+//glDisable(GL_DEPTH_TEST);
+if(isMousePress) {
+    //editingRectangle.setX(0);
+   // editingRectangle.setY(0);
 
+        if (editingRectangle.editingRectangleMode==EDIT_RECTANGLE_UNBINDED && editingRectangle.isEditingRectangleVisible)
+ if ((mousePos.x() >= leftCornerX1 && mousePos.x() <= leftCornerX2) && (mousePos.y() >= leftCornerY1 && mousePos.y() <= leftCornerY2))
+ {
+     editingRectangle.editingRectangleMode=EDIT_RECTANGLE_RESIZE;
+ }
+ else if ((mousePos.x() >= x1) && (mousePos.x() <= x2) &&
+          (mousePos.y() >= y1) && (mousePos.y() <= y2))
+ {
+     editingRectangle.editingRectangleMode=EDIT_RECTANGLE_MOVE;
+ }
 
+ switch(editingRectangle.editingRectangleMode){
+case EDIT_RECTANGLE_MOVE:
+     canDrawByMouse=false;
+    // // qDebug()<<"EDIT_RECTANGLE_MOVE width"<<editingRectangle.rect.width();
+     editingRectangle.rect.moveTo(mousePos.x() - mousePressPos.x(), //-editingRectangle.rect.width()/2
+                            mousePos.y() - mousePressPos.y() ); //-editingRectangle.rect.height()/2
+     //editingRectangle.setX(mousePos.x()-editingRectangle.width()/2);
+     //editingRectangle.setY(mousePos.y()-editingRectangle.height()/2);
+    // // qDebug()<< "leftCornerX1:"<<leftCornerX1;
+     //// qDebug()<< "leftCornerY1:"<<leftCornerY1;
+     // // qDebug()<< "leftCornerX2:"<<leftCornerX2;
+     // // qDebug()<< "leftCornerY2:"<<leftCornerY2;
+ break;
+ case EDIT_RECTANGLE_RESIZE:
+     canDrawByMouse=false;
+     // qDebug()<<"EDIT_RECTANGLE_RESIZE";
+     editingRectangle.rect.setX(mousePos.x());
+     editingRectangle.rect.setY(mousePos.y());
+    break;
+ }
+if (canDrawByMouse)paintBrushInBuffer();
+}
+//paintBufferOnScreen();
 glDisable(GL_BLEND);
 }
 
@@ -1233,7 +1234,7 @@ void OGLWidget::fillText( QString str,QColor color, int x, int y, int z)
    */
 
     qglColor(color);
-    renderText(x, y, z, str,textFont);
+    renderText(x, y, -z, str,textFont);
      //renderText(x, y , QString::fromUtf8("Вы набрали %1 очков:").arg(17),textFont);
     /*if(textFont.strikeOut())
     {

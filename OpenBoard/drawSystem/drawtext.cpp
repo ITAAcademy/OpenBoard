@@ -26,8 +26,8 @@ void DrawTextElm::draw()
 
         while(keyCouter <realKeyValue)
         {
-        if (keyCouter < mUnitList.size() && bPlay) mUnitList.at(keyCouter)->draw(pDrawWidget);
-        keyCouter++;
+            if (keyCouter < mUnitList.size() && bPlay) mUnitList.at(keyCouter)->draw(pDrawWidget);
+                    keyCouter++;
         }
     }
     qDebug() << "drawInfo" << mUnitList.size() << "     " << keyCouter;

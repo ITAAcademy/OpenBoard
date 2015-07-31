@@ -72,10 +72,8 @@ bool DrawBrushElm::load_add(QDataStream &stream)
         brushes.push_back(brushBeginingIndex);
     }
 
-    if(coords.size() != 0){
+    if(coords.size() != 0)
         tickTime = lifeTime/coords.size();
-       qDebug()<<"tickTime1:"<<tickTime;
-    }
 }
 
 bool DrawBrushElm::save_add(QDataStream &stream)
@@ -146,19 +144,21 @@ void DrawBrushElm::setLifeTime(int value)
     lifeTime = value;
     if(coords.size() != 0)
         tickTime = lifeTime/coords.size();
-     qDebug()<<"tickTime2:"<<tickTime;
 }
 void DrawBrushElm::draw()
 {
 //    qDebug() << tickTimer.elapsed() << "  " << tickTime;
     if(keyCouter < coords.size() && bPlay && tickTimer.elapsed() > tickTime)
     {
+        if(keyCouter == 0)
+            pDrawWidget->clearFrameBuffer();
         pDrawWidget->paintBrushInBuffer(coords,brushes,keyCouter);
         qDebug() << "INTERES";
         tickTimer.restart();
         if(bPlay)
             keyCouter++;
     }
+    pDrawWidget->paintBufferOnScreen(x, y, width, height, z);
 
 }
 
