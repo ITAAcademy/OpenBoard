@@ -99,7 +99,7 @@ bool OGLWidget::reloadTexture(int index)
     loadTexture(imgList[index], index);
 
 }
-void OGLWidget::drawTexture( int x, int y, int width, int height, GLuint texture,int angle,float scaleX,float scaleY){
+void OGLWidget::drawTexture( int x, int y, int width, int height, GLuint texture,int angle,float scaleX,float scaleY, int z){
 //loadTextures();
   // glLoadIdentity();
     glEnable(GL_TEXTURE_2D);
@@ -116,18 +116,18 @@ void OGLWidget::drawTexture( int x, int y, int width, int height, GLuint texture
 
     glBegin(GL_QUADS);
             //Draw Picture
-    glTexCoord2i(0,0); glVertex2i(x, y+height);
-    glTexCoord2i(0,1); glVertex2i(x,y);
-    glTexCoord2i(1,1); glVertex2i(x+width,y);
-    glTexCoord2i(1,0); glVertex2i(x+width, y+height);
+    glTexCoord2i(0,0); glVertex3i(x, y+height, z);
+    glTexCoord2i(0,1); glVertex3i(x,y, z);
+    glTexCoord2i(1,1); glVertex3i(x+width,y,z);
+    glTexCoord2i(1,0); glVertex3i(x+width, y+height, z);
     glEnd();
      glDisable(GL_TEXTURE_2D);
     glPopMatrix();
 
 }
-void OGLWidget::drawTexture(int x, int y, int width, int height, int index)
+void OGLWidget::drawTexture(int x, int y, int width, int height, int index, int angle, float scaleX, float scaleY, int z)
 {
-    drawTexture(x, y, width, height, textureList[index]);
+    drawTexture(x, y, width, height, textureList[index], angle, scaleX, scaleY, z);
     //// qDebug() << "void OGLWidget::drawTexture(int x, int y, int width, int height, int index)";
 }
 
@@ -266,7 +266,7 @@ OGLWidget::OGLWidget(QWidget *parent) :
     editingRectangle.rect.setHeight(100);
     editingRectangle.rect.setX(50);
     editingRectangle.rect.setY(50);
-    editingRectangle.leftCornerSize=5;
+    editingRectangle.leftCornerSize=10;
     bRecord = false;
     this->setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint | Qt::WindowTitleHint);
 
@@ -630,9 +630,11 @@ void OGLWidget::paintGL()
       // glEnable(GL_MULTISAMPLE);
 
        glLoadIdentity(); // загружаем матрицу
-       glOrtho(0,wax,way,0,1,0); // подготавливаем плоскости для матрицы
+       glOrtho(0,wax,way,0, 1000000, -200000); // подготавливаем плоскости для матрицы
        glEnable(GL_BLEND);
        glEnable(GL_ALPHA_TEST);
+       glEnable(GL_DEPTH_TEST);
+       glDepthFunc(GL_LESS);
        glAlphaFunc(GL_GREATER,0);
        glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE);
        //glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
@@ -644,7 +646,7 @@ void OGLWidget::paintGL()
 //WRITE TO FRAME BUFER FROM HERE
    // glBindFramebuffer(GL_FRAMEBUFFER,0);
     qglColor(Qt::white);
-    drawTexture(0, 0, wax, way, textureList[0]);
+    drawTexture(0, 0, wax, way, textureList[0], 0, 1, 1, 100000);
 //WRITE TO SCREEN FROM HERE
 //drawTextBuffer(10,10,400,400);
 
@@ -656,10 +658,10 @@ void OGLWidget::paintGL()
         GLint y2 = editingRectangle.rect.y()+editingRectangle.rect.height();
         bool canDrawByMouse = true;
 
-        int leftCornerX1=x1-editingRectangle.leftCornerSize;
-         int leftCornerY1=y1-editingRectangle.leftCornerSize;
-                 int leftCornerX2=x1;
-                  int leftCornerY2=y1;
+        int leftCornerX1=x1-editingRectangle.leftCornerSize/2;
+         int leftCornerY1=y1-editingRectangle.leftCornerSize/2;
+                 int leftCornerX2=x1 + editingRectangle.leftCornerSize/2;
+                  int leftCornerY2=y1 + editingRectangle.leftCornerSize/2;
 
 
 if(isMousePress){
@@ -718,28 +720,28 @@ if (editingRectangle.isEditingRectangleVisible)
     glLineWidth(3);
     glColor3f(1.0f, 0.0f, 0.0f);
     glBegin(GL_LINES);
-    glVertex2i(x1,y1);
-    glVertex2i(x2,y1);
+    glVertex3i(x1,y1, -10);
+    glVertex3i(x2,y1, -10);
 
-    glVertex2i(x2,y1);
-    glVertex2i(x2,y2);
+    glVertex3i(x2,y1, -10);
+    glVertex3i(x2,y2, -10);
 
-    glVertex2i(x2,y2);
-    glVertex2i(x1,y2);
+    glVertex3i(x2,y2, -10);
+    glVertex3i(x1,y2, -10);
 
-    glVertex2i(x1,y2);
-    glVertex2i(x1,y1);
+    glVertex3i(x1,y2, -10);
+    glVertex3i(x1,y1, -10);
     glEnd();
 
     //left corner
      glColor3f(0.0f, 1.0f, 0.0f);
-     glLineWidth(1);
+     glLineWidth(3);
      glBegin(GL_QUADS);   //We want to draw a quad, i.e. shape with four sides
           // glColor3i(1, 0, 0); //Set the colour to red
-           glVertex2i(leftCornerX1, leftCornerY1);            //Draw the four corners of the rectangle
-           glVertex2i(leftCornerX2, leftCornerY1);
-           glVertex2i(leftCornerX2, leftCornerY2);
-           glVertex2i(leftCornerX1, leftCornerY2);
+           glVertex3i(leftCornerX1, leftCornerY1, -10);            //Draw the four corners of the rectangle
+           glVertex3i(leftCornerX2, leftCornerY1, -10);
+           glVertex3i(leftCornerX2, leftCornerY2, -10);
+           glVertex3i(leftCornerX1, leftCornerY2, -10);
          glEnd();
 }
 
@@ -1216,7 +1218,7 @@ void OGLWidget::recreate()
 void OGLWidget::clear(int x,int y,int width,int height){
 
 }
-void OGLWidget::fillText( QString str,QColor color, int x, int y)
+void OGLWidget::fillText( QString str,QColor color, int x, int y, int z)
 {
 
    /* // qDebug() << "ARG1:  " << str.size();
@@ -1227,7 +1229,7 @@ void OGLWidget::fillText( QString str,QColor color, int x, int y)
    */
 
     qglColor(color);
-    renderText(x, y , str,textFont);
+    renderText(x, y, z, str,textFont);
      //renderText(x, y , QString::fromUtf8("Вы набрали %1 очков:").arg(17),textFont);
     /*if(textFont.strikeOut())
     {
@@ -1375,7 +1377,7 @@ QPoint OGLWidget::drawWrapText(QString str)
     return res;
 }
 
-void OGLWidget::drawTextBuffer( int m_x, int m_y, int m_width, int m_height)
+void OGLWidget::drawTextBuffer( int m_x, int m_y, int m_width, int m_height, int z)
 {
      busy = true;
     //if(!crossTextV2())
@@ -1456,7 +1458,7 @@ void OGLWidget::drawTextBuffer( int m_x, int m_y, int m_width, int m_height)
             x+=fMetrics->width(textToWarp);
             setFillColor(colors[k].value);
             QString textToFill = stringList[i].mid(columnOfColorStrBegin,columnOfColorStrEnd-columnOfColorStrBegin);
-            fillText(textToFill,fillColor,x,y);
+            fillText(textToFill,fillColor,x , y, z);
            // localX+=fMetrics->width(textToFill);
             //setFillColor(QColor(255,255,255));//Костиль, удалити, вистачить верхнього setColor, добавити на початок colors колір канви
            /*  // qDebug() << "columnOfColorStrEnd:" << columnOfColorStrEnd;

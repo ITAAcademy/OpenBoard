@@ -92,7 +92,8 @@ MainWindow::MainWindow(QWidget *parent) :
        this->textEdit->setColOrigin(mSettings.getMainWindowColor());
        this->textEdit->setFont(mSettings.getMainWindowFont());
 
-       toolBar= new QToolBar;
+       toolBar= new QToolBar(this);
+       toolBarBoard= new QToolBar(this);
        toolBar->addAction(QPixmap(":/icons/new-file-icon.png").scaled(QSize(16, 16)), "New", this, SLOT(on_action_New_triggered()));
        toolBar->addAction(QPixmap(":/icons/open-file-icon.png").scaled(QSize(16, 16)), "Open", this, SLOT(on_action_Open_triggered()));
        toolBar->addAction(QPixmap(":/icons/Save-icon.png").scaled(QSize(16, 16)), "Save", this, SLOT(on_action_Save_triggered()));
@@ -122,28 +123,28 @@ MainWindow::MainWindow(QWidget *parent) :
        a_clear_drawing->setIcon(QPixmap(":/icons/Oxygen-Icons.org-Oxygen-Actions-edit-clear.ico").scaled(QSize(16, 16)));
        a_clear_drawing->setToolTip(tr("Clear drawing"));
        connect(a_clear_drawing,SIGNAL(triggered()),this,  SLOT(on_actionClear_drawing_triggered()));
-       toolBar->addAction(a_clear_drawing);
+       toolBarBoard->addAction(a_clear_drawing);
 
        a_clear_drawingBuffer = new QAction(this);
        a_clear_drawingBuffer->setEnabled(true);
        a_clear_drawingBuffer->setIcon(QPixmap(":/icons/Oxygen-Icons.org-Oxygen-Actions-edit-clear.ico").scaled(QSize(16, 16)));
        a_clear_drawingBuffer->setToolTip(tr("Clear drawing BUFFER"));
        connect(a_clear_drawingBuffer,SIGNAL(triggered()),this,  SLOT(on_actionClear_drawingBuffer_triggered()));
-       toolBar->addAction(a_clear_drawingBuffer);
+       toolBarBoard->addAction(a_clear_drawingBuffer);
 
        a_show_last_drawing = new QAction(this);
        a_show_last_drawing->setEnabled(true);
        a_show_last_drawing->setIcon(QPixmap(":/icons/ip_icon_04_New.png").scaled(QSize(16, 16)));
        a_show_last_drawing->setToolTip(tr("Show last drawing"));
        connect(a_show_last_drawing,SIGNAL(triggered()),this,  SLOT(on_actionShow_last_drawing_triggered()));
-       toolBar->addAction(a_show_last_drawing);
+       toolBarBoard->addAction(a_show_last_drawing);
 
        a_save_drawing = new QAction(this);
        a_save_drawing->setEnabled(true);
        a_save_drawing->setIcon(QPixmap(":/icons/Save-icon.png").scaled(QSize(16, 16)));
        a_save_drawing->setToolTip(tr("Save last drawing"));
        connect(a_save_drawing,SIGNAL(triggered()),this,  SLOT(on_actionSave_drawing_triggered()));
-       toolBar->addAction(a_save_drawing);
+       toolBarBoard->addAction(a_save_drawing);
 
 
        toolBar->addAction(QPixmap(":/icons/cut-icon.png").scaled(QSize(16, 16)), "Cut", this, SLOT(on_action_Cut_triggered()));
@@ -161,14 +162,14 @@ MainWindow::MainWindow(QWidget *parent) :
        a_font_canvas->setIcon(QPixmap(":/icons/font-x-generic-icon.png").scaled(QSize(16, 16)));
        a_font_canvas->setToolTip(tr("Font canvas"));
        connect(a_font_canvas,SIGNAL(triggered()),this,  SLOT(on_action_Board_Font_triggered()));
-       toolBar->addAction(a_font_canvas);
+       toolBarBoard->addAction(a_font_canvas);
 
        a_color_canvas = new QAction(this);
        a_color_canvas->setEnabled(false);
        a_color_canvas->setIcon(QPixmap(":/icons/colors-icon.png").scaled(QSize(16, 16)));
-       a_color_canvas->setToolTip(tr("Font canvas"));
+       a_color_canvas->setToolTip(tr("Color canvas"));
        connect(a_color_canvas,SIGNAL(triggered()),this,  SLOT(on_action_Board_Color_triggered()));
-       toolBar->addAction(a_color_canvas);
+       toolBarBoard->addAction(a_color_canvas);
 
        toolBar->addAction(QPixmap(":/icons/default_programs.png").scaled(QSize(16, 16)), "Reset default", this, SLOT(on_action_Reset_default_triggered()));
        toolBar->addSeparator();
@@ -178,7 +179,7 @@ MainWindow::MainWindow(QWidget *parent) :
        a_show->setIcon(QPixmap(":/icons/gnome_show_desktop.png").scaled(QSize(16, 16)));
        a_show->setToolTip(tr("Show canvas"));
        connect(a_show,SIGNAL(triggered()),this,  SLOT(on_action_Show_triggered()));
-       toolBar->addAction(a_show);
+       toolBarBoard->addAction(a_show);
       // toolBar->addAction(QPixmap(":/icons/gnome_show_desktop.png").scaled(QSize(16, 16)), "Show canvas", this, SLOT(on_action_Show_triggered()));
 
 
@@ -187,7 +188,7 @@ MainWindow::MainWindow(QWidget *parent) :
        a_hide->setIcon(QPixmap(":/icons/hide_icon.png").scaled(QSize(16, 16)));
        a_hide->setToolTip(tr("Hide canvas"));
        connect(a_hide,SIGNAL(triggered()),this,  SLOT(on_action_Hide_triggered()));
-       toolBar->addAction(a_hide);
+       toolBarBoard->addAction(a_hide);
       // toolBar->addAction(QPixmap(":/icons/hide_icon.png").scaled(QSize(16, 16)), "Hide canvas", this, SLOT(on_action_Hide_triggered()));
 
        a_play = new QAction(this);
@@ -195,21 +196,21 @@ MainWindow::MainWindow(QWidget *parent) :
        a_play->setIcon(QPixmap(":/icons/play-8-icon.png").scaled(QSize(16, 16)));
        a_play->setToolTip(tr("Play"));
        connect(a_play,SIGNAL(triggered()),this,  SLOT(on_action_Play_triggered()));
-       toolBar->addAction(a_play);
+       toolBarBoard->addAction(a_play);
 
        a_pause = new QAction(this);
        a_pause->setEnabled(false);
        a_pause->setIcon(QPixmap(":/icons/pause-icon.png").scaled(QSize(16, 16)));
        a_pause->setToolTip(tr("Pause"));
        connect(a_pause,SIGNAL(triggered()),this,  SLOT(on_action_Pause_triggered()));
-       toolBar->addAction(a_pause);
+       toolBarBoard->addAction(a_pause);
 
        a_stop = new QAction(this);
        a_stop->setEnabled(false);
        a_stop->setIcon(QPixmap(":/icons/stop_icon.png").scaled(QSize(16, 16)));
        a_stop->setToolTip(tr("Stop"));
        connect(a_stop,SIGNAL(triggered()),this,  SLOT(on_action_Stop_triggered()));
-       toolBar->addAction(a_stop);
+       toolBarBoard->addAction(a_stop);
 
        a_record_to_file = new QAction(this);
        a_record_to_file->setEnabled(false);
@@ -218,13 +219,28 @@ MainWindow::MainWindow(QWidget *parent) :
        a_record_to_file->setCheckable(true);
        a_record_to_file->setChecked(false);
        connect(a_record_to_file,SIGNAL(triggered()),this,  SLOT(a_record_to_file_triggered()));
-       toolBar->addAction(a_record_to_file);
+       toolBarBoard->addAction(a_record_to_file);
 
        toolBar->addAction(QPixmap(":/icons/youtube_icon.png").scaled(QSize(16, 16)), "Send to YouTube", this, SLOT(on_action_youTube_triggered()));
        toolBar->addAction(QPixmap(":/icons/info.png").scaled(QSize(16, 16)), "About", this, SLOT(on_action_About_triggered()));
        toolBar->setMovable(false);
+       toolBarBoard->setMovable(false);
 
+
+
+       QObjectList chield = toolBar->children();
+       for( QObject* i: chield)
+           i->setObjectName("item");
+       toolBar->setIconSize(QSize(20,20));
+
+       chield = toolBarBoard->children();
+       for( QObject* i: chield)
+           i->setObjectName("item");
+       toolBarBoard->setIconSize(QSize(20,20));
+       toolBarBoard->setContentsMargins(0,0,0,0);
        addToolBar(Qt::TopToolBarArea, toolBar);
+       addToolBarBreak();
+       addToolBar(Qt::RightToolBarArea, toolBarBoard);
 
       /* drawElements.append(new DrawTextElm(mpOGLWidget));
        ((DrawTextElm*)drawElements[0])->setLifeTime(6000);
@@ -462,7 +478,7 @@ void MainWindow::on_action_Reset_default_triggered()
 void MainWindow::on_action_Color_triggered()
 {   //call QtColorDialog
     QColor colorm;
-    colorm = QColorDialog::getColor(textEdit->getColOrigin());
+    colorm = QColorDialog::getColor(textEdit->getColOrigin(), this);
     //!!!!!!!!!!!
     if(colorm.isValid())
     {
@@ -484,7 +500,7 @@ void MainWindow::on_action_Color_triggered()
  void MainWindow::on_action_Board_Color_triggered()
 {
     QColor colorm;
-    colorm = QColorDialog::getColor(mpOGLWidget->getMainFillColor());
+    colorm = QColorDialog::getColor(mpOGLWidget->getMainFillColor(), this);
 
    // QString col = colorm.name();
     if(colorm.isValid())
@@ -874,7 +890,7 @@ void MainWindow::on_crossBtn_clicked()
 void MainWindow::on_colorBtn_pressed()
 {
     QTextCursor prev_cursor = textEdit->textCursor();
-    colorPkr = QColorDialog::getColor(mpOGLWidget->getMainFillColor());
+    colorPkr = QColorDialog::getColor(mpOGLWidget->getMainFillColor(), this);
     textEdit->setTextCursor(prev_cursor);
     if(colorPkr.isValid())
     {

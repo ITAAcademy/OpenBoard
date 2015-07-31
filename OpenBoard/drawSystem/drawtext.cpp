@@ -19,7 +19,7 @@ void DrawTextElm::draw()
         tickTimer.restart();
     }
     qDebug() << "drawInfo" << mUnitList.size() << "     " << keyCouter;
-    pDrawWidget->drawTextBuffer(x, y, width, height);
+    pDrawWidget->drawTextBuffer(x, y, width, height, z);
 
 }
 

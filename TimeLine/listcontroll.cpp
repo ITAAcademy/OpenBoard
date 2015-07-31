@@ -81,6 +81,7 @@ void ListControll::addNewBlock(int col, QString str)
     Element temp;
     temp.key = str;
     temp.draw_element->setLifeTime(def_min_block_width);
+    temp.draw_element->setZ(col);
     tracks[col].block.append(temp);
     tracks[col].time += def_min_block_width;
    // testWidth[col].append(200);
@@ -122,6 +123,7 @@ void ListControll::loadFromFile()
     temp.key = elm->getKey();
     temp.draw_element = elm;
     temp.draw_element->setLifeTime(def_min_block_width);
+    temp.draw_element->setZ(p.x());
     tracks[p.x()].time += def_min_block_width;
    // this->setBlockTime(p.x(),p.y(),def_min_block_width);
 

@@ -129,6 +129,7 @@ QMessageBox messAbout;
     OGLWidget       *mpOGLWidget;
     YouTubeWrapper *youtube;
     QToolBar *toolBar;
+    QToolBar *toolBarBoard;
     Parser          mParser;
     MyTextEdit       *textEdit;
     KeyloggerTE *commandTextEdit;

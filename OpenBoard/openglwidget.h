@@ -126,7 +126,7 @@ public:
     void crossOutWithAnimation(int n = 1);
     QPoint drawWrapText( QString str ); // main draw function
     void setFillColor( QColor col);
-    void fillText( QString str,QColor color, int x, int y);
+    void fillText(QString str, QColor color, int x, int y, int z = 0);
     void isLastRow();
     void pause(int ms);
 
@@ -150,8 +150,8 @@ public:
     int getCursorIndex() const;
     void setCursorIndex(int value);
 
-    void drawTexture(int x, int y, int width, int height, int index);
-    void drawTexture(int x, int y, int width, int height, GLuint texture,int angle=0,float scaleX = 1,float scaleY = 1);
+    void drawTexture(int x, int y, int width, int height, int index, int angle=0, float scaleX = 1, float scaleY = 1, int z = 0);
+    void drawTexture(int x, int y, int width, int height, GLuint texture, int angle=0, float scaleX = 1, float scaleY = 1, int z = 0);
     void update();
     void initFrameBufferTexture();
     void initFrameBufferDepthBuffer();
@@ -187,7 +187,7 @@ public slots:
      */
     void insertToBuffer(const QChar ch);
     QPoint convertTextBoxToBufferIndex(int index, bool symbol = false);
-    void drawTextBuffer(int m_x, int m_y, int m_width, int m_height);
+    void drawTextBuffer(int m_x, int m_y, int m_width, int m_height, int z = 0);
     void moveCursor(int n = 1, bool withWrapShift = true);
     void clearBuffer();
     void testWrap(int kIndexOfRow);
