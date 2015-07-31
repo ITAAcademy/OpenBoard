@@ -245,7 +245,7 @@ void DrawElement::pause()
 
 void DrawElement::stop()
 {
-    qDebug() << "stop";
+    //qDebug() << "stop";
     bPause = false;
     keyCouter = 0;
     bPause = false;

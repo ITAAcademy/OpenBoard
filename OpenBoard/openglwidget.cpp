@@ -258,6 +258,7 @@ OGLWidget::OGLWidget(QWidget *parent) :
     connect(timeLine,SIGNAL(pauseSignal()),this,SIGNAL(pauseSignal()));
 
 
+
     //qRegisterMetaType<DrawData>("DrawData");
     // engine()->rootContext()->setContextProperty(QLatin1String("forma"), this);
     m_encoder = new AV_REncoder(this);
@@ -328,6 +329,8 @@ OGLWidget::OGLWidget(QWidget *parent) :
 
 OGLWidget::~OGLWidget()
 {
+    this->stopAnimated();
+        qApp->processEvents();
     if(timeLine != NULL)
         delete timeLine;
 
@@ -336,7 +339,6 @@ OGLWidget::~OGLWidget()
 
     if (drawBrushElm !=NULL)
         delete drawBrushElm;
-
 }
 
 
@@ -450,6 +452,7 @@ glBindFramebuffer(GL_FRAMEBUFFER_EXT, fbo); // Bind our frame buffer for renderi
                   xPos = mousePos.x();
                   yPos = mousePos.y();
 
+//qDebug() <<"mousePos.x() = " << mousePos.x() << " mousePos.y() = " << mousePos.y();
 
             drawTexture(xPos-BRUSH_SIZE/2 + dispersX ,yPos-BRUSH_SIZE/koff/2 + dispersY,BRUSH_SIZE,BRUSH_SIZE/koff,
                     texture,angle,scaleX,scaleY);
@@ -664,8 +667,7 @@ void OGLWidget::paintGL()
                   int leftCornerY2=y1 + editingRectangle.leftCornerSize/2;
 
 
-if(isMousePress){
-
+if(isMousePress) {
     //editingRectangle.setX(0);
    // editingRectangle.setY(0);
 
@@ -684,8 +686,8 @@ if(isMousePress){
 case EDIT_RECTANGLE_MOVE:
      canDrawByMouse=false;
     // // qDebug()<<"EDIT_RECTANGLE_MOVE width"<<editingRectangle.rect.width();
-     editingRectangle.rect.moveTo(mousePos.x()-editingRectangle.rect.width()/2,
-                            mousePos.y()-editingRectangle.rect.height()/2 );
+     editingRectangle.rect.moveTo(mousePos.x() - mousePressPos.x(), //-editingRectangle.rect.width()/2
+                            mousePos.y() - mousePressPos.y() ); //-editingRectangle.rect.height()/2
      //editingRectangle.setX(mousePos.x()-editingRectangle.width()/2);
      //editingRectangle.setY(mousePos.y()-editingRectangle.height()/2);
     // // qDebug()<< "leftCornerX1:"<<leftCornerX1;
@@ -817,6 +819,9 @@ void OGLWidget::mousePressEvent(QMouseEvent *event)
        prevMousePos.setX(mousePos.x());
        prevMousePos.setY(mousePos.y());
        ismouseWasPressedBeforeDrag=false;
+
+       mousePressPos = QPoint(mousePos.x() - editingRectangle.rect.x(),
+                              mousePos.y() - editingRectangle.rect.y());
         }
     }
 

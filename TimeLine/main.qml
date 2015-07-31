@@ -232,61 +232,65 @@ main222.isPlay = false
            // var half_scale_pointer_width = -scale_pointer.width/2
             var zdvig = 20 - scroll.flickableItem.contentX
            // // console.log(" 3 scroll.flickableItem.contentX = " + scroll.flickableItem.contentX )
-        // console.log("10001")
+         console.log("10001")
             if (zdvig < 0)
             {
              zdvig = -width/2//   zdvig = 0;
-           //  console.log("10002")
+             console.log("10002")
             }
-           //  console.log("10003")
+             console.log("10003")
             if (x<zdvig)
             {
-               //   console.log("10004")
+                  console.log("10004")
                 scroll.flickableItem.contentX -= zdvig -x
                 if (scroll.flickableItem.contentX < 0)
                 {
                     scroll.flickableItem.contentX = 0;
-                      //console.log("10005")
+                      console.log("10005")
                 }
                x = zdvig
-                 // console.log("10006")
+                  console.log("10006")
             }
             else
             {
-                var temp = scroll.width -width - 3  /// scroll.x + scroll.width - main222.p_trackbar.width*1.4
-                // console.log("10007")
+               var temp = timeControll.getMaxTrackTime() - scroll.flickableItem.contentX + width
+                if (x  > temp )
+                {
+                    console.log("HAAAAAAAAAAA")
+                    x = temp
+                  // timeControll.stop();
+                   // main222.stop()
+                }
+                else
+                {
+                temp = scroll.width -width - 3  /// scroll.x + scroll.width - main222.p_trackbar.width*1.4
+                 console.log("10007")
                 if (x> temp)
                 {
-                   // console.log("DAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa")
+                    console.log("DAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa")
                     if (timeControll.getMaxTrackTime()  >= scroll.width  )
                     {
-                         // console.log("10008")
+                         console.log("10008")
                     scroll.flickableItem.contentX += x - temp
                     var sad = timeControll.getMaxTrackTime() - scroll.width + 17  // scroll.flickableItem.contentWidth - scroll.width + 10
                     if (scroll.flickableItem.contentX  >  sad)
                     {
                             scroll.flickableItem.contentX = sad;
-                        timeControll.stop();
+                        //timeControll.stop();
+                       // x-=3;
                     }
                     }
                     else
-                       // if (timeControll.getMaxTrackTime() <= scroll.width )
                        {
                         timeControll.stop();
-                x = temp
-               // // // console.log(" 1 x = " + x )
-                        // console.log("10010")
+                        //x = temp
+                         console.log("10010")
                     }
                     x = temp
                 }
             }
-            temp = timeControll.getMaxTrackTime() - scroll.flickableItem.contentX + width
-            if (x  > temp )
-            {
-                x = temp
-                timeControll.stop();
-                main222.stop()
             }
+
 
             if (!main222.isPlay)
             {
@@ -297,6 +301,7 @@ main222.isPlay = false
             timeControll.setScalePointerPos(x-20 + scroll.flickableItem.contentX);
            // // console.log("x + scroll.flickableItem.contentX = "+x +" + " + scroll.flickableItem.contentX
 
+            console.log("scale_pointer X = " +(x+width/2))
         }
 
         MouseArea {
