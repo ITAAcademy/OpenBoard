@@ -1073,6 +1073,7 @@ void MainWindow::on_action_Stop_triggered()
     {
         mpOGLWidget->stopAnimated();
         mpOGLWidget->getTimeLine()->stop();
+       // qDebug("STOP");
     }
    /* textEdit->setEnabled(true);
     ui->action_Undo->setEnabled(true);
