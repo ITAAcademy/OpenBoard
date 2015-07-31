@@ -6,7 +6,7 @@ ApplicationWindow  {
     id: mainwindow
     property int blockIndex: 0
     property int columnIndex: 0
-     property int   minBlockWidth : 0
+     property int   minBlockWidth : 100
 
     property Repeater globalRep
 
@@ -52,6 +52,8 @@ ApplicationWindow  {
                     onFocusChanged:  {
                         if (text.length ==0)
                             text = initText;
+                        if(text< minBlockWidth)
+                            text = minBlockWidth
                     }
                 }
             }
@@ -259,6 +261,8 @@ ApplicationWindow  {
             x: 10
              text: "OK"
              onClicked: {
+                 if (block_time_value.text < 100)
+                     block_time_value.text = 100;
                  timeControll.setBlockTime(mainwindow.columnIndex,mainwindow.blockIndex,block_time_value.text)
                  timeControll.setBlockKey(mainwindow.columnIndex,mainwindow.blockIndex,block_name_value.text)
 

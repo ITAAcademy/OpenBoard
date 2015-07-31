@@ -681,6 +681,7 @@ for(int i = 0; i < getList().size(); i++)
 
 if (editingRectangle.isEditingRectangleVisible)
 {
+    paintBufferOnScreen(0, 0, wax, way);
     //rectangle
     glLineWidth(3);
     glColor3f(1.0f, 0.0f, 0.0f);

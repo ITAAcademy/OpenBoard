@@ -301,7 +301,8 @@ bool MainWindow::event(QEvent * e) // overloading event(QEvent*) method of QMain
                 }
                 isActive = true;
                qApp->processEvents();
-                                isActive = true;
+               activateWindow();
+                isActive = true;
             }
             qDebug() << "SET_ACTIVE_MAIN_WINDOW";
             break ;

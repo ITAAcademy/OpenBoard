@@ -32,7 +32,7 @@ class MainWindow;
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
-    volatile bool isActive = false;
+    volatile bool isActive = true;
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
