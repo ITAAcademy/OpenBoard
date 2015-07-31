@@ -1,5 +1,5 @@
 #include "drawText.h"
-
+#include "../TimeLine/listcontroll.h"
 DrawTextElm::DrawTextElm(OGLWidget *drawWidget, QObject *parent) : DrawElement(drawWidget, parent)
 {
     setType("text");
@@ -12,13 +12,27 @@ DrawTextElm::~DrawTextElm()
 
 void DrawTextElm::draw()
 {
-    if(keyCouter < mUnitList.size() && bPlay && tickTimer.elapsed() > tickTime)
+   // if(keyCouter < mUnitList.size() && bPlay && tickTimer.elapsed() > tickTime)
+    //{
+      //  mUnitList.at(keyCouter)->draw(pDrawWidget);
+        //keyCouter++;
+     //   tickTimer.restart();
+   // }
+    if (pDrawWidget->getTimeLine()->getPlayTime()>0)
     {
-        mUnitList.at(keyCouter)->draw(pDrawWidget);
+        qDebug() << "startDrawTime:"<<startDrawTime;
+       int realKeyValue = (pDrawWidget->getTimeLine()->getPlayTime()-startDrawTime)*mUnitList.size()/lifeTime;
+   // if (keyCouter < realKeyValue)
+
+        while(keyCouter <realKeyValue)
+        {
+        if (keyCouter < mUnitList.size() && bPlay) mUnitList.at(keyCouter)->draw(pDrawWidget);
         keyCouter++;
-        tickTimer.restart();
+        }
     }
-    qDebug() << "drawInfo" << mUnitList.size() << "     " << keyCouter;
+
+qDebug() <<"keyCouter:"<< keyCouter;
+    //qDebug() << "drawInfo" << mUnitList.size() << "     " << keyCouter;
     pDrawWidget->drawTextBuffer(x, y, width, height);
 
 }
@@ -28,6 +42,7 @@ void DrawTextElm::setLifeTime(int value)
     lifeTime = value;
     if(mUnitList.size() != 0)
         tickTime = lifeTime/mUnitList.size();
+    qDebug() << "tickTime4:"<<tickTime;
 
 }
 
@@ -47,13 +62,17 @@ void DrawTextElm::setUnParsestring(const QString &value)
     myParser.ParsingLine(mUnitList, unParsestring);
     if(mUnitList.size() > 0)
         tickTime = lifeTime/mUnitList.size();
+     qDebug()<<"tickTime5:"<<tickTime;
 }
 
 void DrawTextElm::setUnitList(const QList<Unit *> &unitList)
 {
     mUnitList = unitList;
     if(unitList.size() != 0)
+    {
         tickTime = lifeTime/unitList.size();
+         qDebug()<<"tickTime6 :"<<tickTime;
+    }
 }
 
 void DrawTextElm::setTickTime(int value)

@@ -72,8 +72,10 @@ bool DrawBrushElm::load_add(QDataStream &stream)
         brushes.push_back(brushBeginingIndex);
     }
 
-    if(coords.size() != 0)
+    if(coords.size() != 0){
         tickTime = lifeTime/coords.size();
+       qDebug()<<"tickTime1:"<<tickTime;
+    }
 }
 
 bool DrawBrushElm::save_add(QDataStream &stream)
@@ -144,6 +146,7 @@ void DrawBrushElm::setLifeTime(int value)
     lifeTime = value;
     if(coords.size() != 0)
         tickTime = lifeTime/coords.size();
+     qDebug()<<"tickTime2:"<<tickTime;
 }
 void DrawBrushElm::draw()
 {
