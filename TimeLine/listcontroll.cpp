@@ -381,6 +381,7 @@ ListControll::ListControll(QObject *parent) : QObject(parent), QQuickImageProvid
     view.setMinimumWidth(500);
     view.setHeight(view.minimumHeight());
     view.setWidth(800);
+    view.setFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint | Qt::WindowTitleHint);
 
 
 
@@ -492,8 +493,6 @@ ListControll::~ListControll()
 
 void ListControll::show()
 {
-    view.setFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint | Qt::WindowTitleHint);
-
     if (QGuiApplication::platformName() == QLatin1String("qnx") || \
           QGuiApplication::platformName() == QLatin1String("eglfs")) {\
         view.showFullScreen();\
@@ -522,6 +521,17 @@ void ListControll::setFocus()
         view.setVisible(true);
     }
 
+}
+
+void ListControll::setViewPosition(QPoint pos)
+{
+    if(view.isVisible())
+        view.setPosition(pos);
+}
+
+bool ListControll::isVisible()
+{
+    return view.isVisible();
 }
 
 
@@ -689,7 +699,7 @@ QImage ListControll::requestImage(const QString &id, QSize *size, const QSize &r
     QImage img = getBlock(argv[0].toInt(), argv[1].toInt()).draw_element->getIcon();
     // qDebug() << "IMAGE                                                          ppp " << getBlock(argv[0].toInt(), argv[1].toInt()).draw_element->getKey();
     if(img.isNull())
-            return QImage(":/0.png");
+            return QImage(":/icons/12video icon.png");
 
     return img;
 

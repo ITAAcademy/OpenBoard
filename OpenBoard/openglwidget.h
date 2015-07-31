@@ -126,9 +126,7 @@ public:
     void crossOutWithAnimation(int n = 1);
     QPoint drawWrapText( QString str ); // main draw function
     void setFillColor( QColor col);
-    void setFillGradient( int x , int y, int width, int height, GradientSetting color);
     void fillText( QString str,QColor color, int x, int y);
-    void fillAnimationText(QString str, int x, int y, float time);
     void isLastRow();
     void pause(int ms);
 
@@ -205,11 +203,14 @@ public slots:
 
     int getRowFromTextBoxIndex(int index, bool symbol);
     ListControll* getTimeLine();
+
 signals:
     void drawTextChanged();
     void pauseSignal();
     void stopSignal();
     void startSignal();
+
+
 private slots:
     bool crossText();
     bool crossTextV2();
@@ -219,8 +220,7 @@ private slots:
 
 private:
     QImage img;
-
-    ListControll *timeLine;
+    ListControll *timeLine = NULL;
 
 	unsigned int    fbo,// The frame buffer object
 	fbo_depth, // The depth buffer for the frame buffer object

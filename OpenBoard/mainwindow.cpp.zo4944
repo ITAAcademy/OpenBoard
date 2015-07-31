@@ -231,17 +231,18 @@ MainWindow::MainWindow(QWidget *parent) :
        ((DrawTextElm*)drawElements[0])->setRect(180,180,200,200);*/
 
 
-        connect(mpOGLWidget, SIGNAL(stopSignal()), this, SLOT(on_action_Stop_triggered()));
+        /*connect(mpOGLWidget, SIGNAL(stopSignal()), this, SLOT(on_action_Stop_triggered()));
         connect(mpOGLWidget, SIGNAL(startSignal()), this, SLOT(on_action_Play_triggered()));
         connect(mpOGLWidget, SIGNAL(pauseSignal()), this, SLOT(on_action_Pause_triggered()));
-
-
+        */
+       /*
        //load new style
         QFile file(":/style.txt");
         file.open(QFile::ReadOnly);
         QString styleSheet = QLatin1String(file.readAll());
         setStyleSheet(styleSheet);
         file.close();
+*/
 
 }
 
@@ -281,19 +282,18 @@ bool MainWindow::event(QEvent * e) // overloading event(QEvent*) method of QMain
                     mpOGLWidget->setWindowState(Qt::WindowNoState);
                     mpOGLWidget->setVisible(true);
                     mpOGLWidget->getTimeLine()->setFocus();
-                    //childIsActive = true;
+                    childIsActive = true;
                 }
-                isActive = true;
-               qApp->processEvents();
-                                isActive = true;
             }
-            qDebug() << "SET_ACTIVE_MAIN_WINDOW";
             break ;
 
         case QEvent::WindowDeactivate :
             // lost focus
-            isActive = false;
-            qDebug() << "LOSE_ACTIVE_MAIN_WINDOW";
+            if(!childIsActive)
+            {
+                isActive = false;
+            }
+            childIsActive = false; // for next time
             break ;
         // ...
     } ;
@@ -1048,11 +1048,8 @@ void MainWindow::on_action_Play_triggered()
    // QString name = this->windowTitle();
     play = true;
     mpOGLWidget->editingRectangle.isEditingRectangleVisible = false;
-    if(mpOGLWidget->getStatus() == OGLWidget::STOP )
-    {
-        mpOGLWidget->drawAnimated(ui->actionRecord_to_file->isChecked());
-        mpOGLWidget->getTimeLine()->play(); //off for test
-    }
+    mpOGLWidget->drawAnimated(ui->actionRecord_to_file->isChecked());
+    mpOGLWidget->getTimeLine()->play(); //off for test
     /*while( play && mpOGLWidget != 0 && mpOGLWidget->getStatus() != OGLWidget::STOP)
     {
         //while(mpOGLWidget->getStatus() == OGLWidget::PAUSE)
@@ -1069,11 +1066,7 @@ void MainWindow::on_action_Play_triggered()
 
 void MainWindow::on_action_Stop_triggered()
 {
-    if(mpOGLWidget->getStatus() != OGLWidget::STOP)
-    {
-        mpOGLWidget->stopAnimated();
-        mpOGLWidget->getTimeLine()->stop();
-    }
+    mpOGLWidget->stopAnimated();
     textEdit->setEnabled(true);
     ui->action_Undo->setEnabled(true);
     ui->action_Redo->setEnabled(true);
@@ -1089,7 +1082,7 @@ void MainWindow::on_action_Stop_triggered()
         a_play->setEnabled(true);
         showBoardSettings();
     }
-
+    mpOGLWidget->getTimeLine()->stop();
     mpOGLWidget->editingRectangle.isEditingRectangleVisible = true;
     play = false;
 }

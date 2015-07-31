@@ -127,6 +127,8 @@ public:
     void close();
     void hide();
     void setFocus();
+    void setViewPosition(QPoint pos);
+    bool isVisible();
     Q_INVOKABLE int getTrackSize(int col) const;
     Q_INVOKABLE QString getBlockKey(int col, int i) const;
     Q_INVOKABLE void addNewBlock(int col, QString str );

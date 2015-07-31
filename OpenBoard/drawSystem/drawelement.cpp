@@ -245,7 +245,7 @@ void DrawElement::pause()
 
 void DrawElement::stop()
 {
- //   qDebug() << "stop";
+    qDebug() << "stop";
     bPause = false;
     keyCouter = 0;
     bPause = false;
@@ -259,7 +259,7 @@ void DrawElement::start()
     bPause = false;
     bPlay = true;
     reloadLastDone();
- //   qDebug() << "START" << lastPath;
+    qDebug() << "START" << lastPath;
 }
 
 void DrawElement::restart()

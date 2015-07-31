@@ -90,7 +90,8 @@ signals:
 void colorChanged();
 void currentBrushChanged();
 public slots:
-    QImage requestImage(const QString &id, QSize *size, const QSize &requestedSize);
+QImage requestImage(const QString &id, QSize *size, const QSize &requestedSize);
+void setFocus();
 private:
     bool openBrushLibrary( QString path = "\\Preset\\Brushes");
 };

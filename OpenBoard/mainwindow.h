@@ -32,7 +32,7 @@ class MainWindow;
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
-    QDebug *deb;
+    volatile bool isActive = false;
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
@@ -51,6 +51,7 @@ public slots:
     void moveEvent(QMoveEvent *event);
     void resizeEvent(QResizeEvent *event);
     void focusInEvent(QFocusEvent * event);
+    bool event(QEvent *e);
     void on_action_Show_triggered();
     void on_action_Hide_triggered();
     void on_action_Play_triggered();
@@ -101,7 +102,6 @@ public slots:
     void on_colorBtn_released();
     void on_colorBtn_clicked();
     void show_color_dialog();
-
 
 private slots:
     void on_action_Record_to_file_triggered();

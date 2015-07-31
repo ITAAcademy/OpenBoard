@@ -270,4 +270,14 @@ QColor BrushManager::getColor()
 {
 return createdBrush.color_main;
 }
+void BrushManager::setFocus()
+{
+   // view.setPosition(view.position());
+    if(view.isVisible())
+    {
+        view.setVisible(false);
+        view.setWindowState(Qt::WindowNoState);
+        view.setVisible(true);
+    }
 
+}

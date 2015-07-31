@@ -253,16 +253,20 @@ OGLWidget::OGLWidget(QWidget *parent) :
 {
     timeLine = new ListControll;
 
-    connect(timeLine,SIGNAL(stopSignal()),this,SLOT(stopAnimated()));
+    connect(timeLine,SIGNAL(stopSignal()),this,SIGNAL(stopSignal()));
+    connect(timeLine,SIGNAL(playSignal()),this,SIGNAL(startSignal()));
+    connect(timeLine,SIGNAL(pauseSignal()),this,SIGNAL(pauseSignal()));
+
+
     //qRegisterMetaType<DrawData>("DrawData");
     // engine()->rootContext()->setContextProperty(QLatin1String("forma"), this);
     m_encoder = new AV_REncoder(this);
     fMetrics = NULL;
-editingRectangle.rect.setWidth(100);
-editingRectangle.rect.setHeight(100);
-editingRectangle.rect.setX(50);
-editingRectangle.rect.setY(50);
-editingRectangle.leftCornerSize=5;
+    editingRectangle.rect.setWidth(100);
+    editingRectangle.rect.setHeight(100);
+    editingRectangle.rect.setX(50);
+    editingRectangle.rect.setY(50);
+    editingRectangle.leftCornerSize=5;
     bRecord = false;
     this->setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint | Qt::WindowTitleHint);
 
@@ -324,12 +328,14 @@ editingRectangle.leftCornerSize=5;
 
 OGLWidget::~OGLWidget()
 {
-    delete timeLine;
-      if(m_encoder != NULL);
+    if(timeLine != NULL)
+        delete timeLine;
+
+    if(m_encoder != NULL);
         delete m_encoder;
 
-      if (drawBrushElm !=NULL)
-         delete drawBrushElm;
+    if (drawBrushElm !=NULL)
+        delete drawBrushElm;
 
 }
 
@@ -569,7 +575,12 @@ void OGLWidget::initializeGL()
 
 void OGLWidget::moveEvent(QMoveEvent *event)
 {
-
+    if(isVisible())
+    {
+        QPoint curentPos = this->pos();
+        curentPos.setY(curentPos.y() + this->height());
+        timeLine->setViewPosition(curentPos);
+    }
 }
 
 void OGLWidget::destroy(bool destroyWindow, bool destroySubWindow){
@@ -891,7 +902,7 @@ void OGLWidget::drawAnimated(bool record)
 
 void OGLWidget::stopAnimated()
 {
-    pause(100);
+    //pause(100);
     curStatus = STOP;
     tickTimer.stop();
     m_encoder->stop();
@@ -1193,11 +1204,6 @@ void OGLWidget::setFillColor(QColor col)
     fillColor = col;
 }
 
-void OGLWidget::setFillGradient(int x, int y, int width, int height, GradientSetting color)
-{
-
-}
-
 OGLWidget::StatusDraw OGLWidget::getStatus() const
 {
     return curStatus;
@@ -1237,30 +1243,6 @@ void OGLWidget::fillText( QString str,QColor color, int x, int y)
         drawFigure(x ,y2 ,x2 , y2,LINE, false, fillColor);
     }*/
 }
-
-void OGLWidget::fillAnimationText(QString str, int x, int y, float time)
-{
-    /*QTimer timer;
-    timer.setInterval(time);*/
-    GradientSetting color;
-    color.addColorStop(0,0,255,0);
-    color.addColorStop(0.85f,0,255,0,255);
-    int widthX = fMetrics->width(str) + x + 35;
-    int widthT = fMetrics->width(str) + 35;
-    int heightT = fMetrics->height() + y + 35;
-    float nx = x - widthT;
-    while(nx <= widthX)
-    {
-        setFillGradient(x - widthT, y, 250, heightT, color);
-        fillText(str,fillColor,x, y);
-        this->update();
-        qApp->processEvents(QEventLoop::ExcludeUserInputEvents);
-        nx += widthT/time;
-       // Sleep(time);
-    }
-}
-
-
 
 bool OGLWidget::crossTextV2()
 {
@@ -1720,8 +1702,6 @@ ListControll* OGLWidget::getTimeLine()
 {
     return timeLine;
 }
-
-
 
 int OGLWidget::getRowFromTextBoxIndex(int index, bool symbol)
 {
