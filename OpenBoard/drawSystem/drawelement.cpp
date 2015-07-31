@@ -282,6 +282,7 @@ bool DrawElement::save_image(QDataStream &stream, QImage img)
 {
     stream << img.size().width() << img.size().height() << (int)img.format();
     stream.writeRawData((const char*)img.bits(), img.byteCount());
+    qDebug() <<"image saved:"<<img.byteCount();
 }
 
 QImage DrawElement::load_image(QDataStream &stream)

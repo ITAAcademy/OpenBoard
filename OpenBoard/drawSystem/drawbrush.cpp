@@ -24,20 +24,52 @@ QVector<BrushBeginingIndex> DrawBrushElm::getBrushes(){
 bool DrawBrushElm::load_add(QDataStream &stream)
 {
      clear();
+     QVector<QImage> images;
+     QVector<int> imagesIndexed;
      stream >> coords;
-     qDebug()<<"LOADED len:"<<coords.length();//<<" values:"<<coords[0]<<" "<<coords[1];
+     qDebug()<<"LOADED coords len:"<<coords.length();//<<" values:"<<coords[0]<<" "<<coords[1];
      /*for (QPoint coord : coords)
      {
          qDebug() <<"Point:"<<coord;
      }*/
-    for (BrushBeginingIndex &brushBeginingIndex : brushes)
+     int brushCount = 0;
+    stream >> brushCount;
+    int imgBrushCount = 0;
+           stream >>  imgBrushCount;
+
+           for (int i = 0 ;i< imgBrushCount; i++) {
+               int index = 0;
+               stream >> index;
+               imagesIndexed.push_back(index);
+               images.push_back(load_image(stream));
+           }
+            qDebug() <<"imagesIndexed:"<<imagesIndexed.toList();
+     qDebug() << "load brushes:"<<brushCount;
+    for (int i = 0; i <brushCount;i++)
     {
-        Brush &data = brushBeginingIndex.brush;
-        data.img=load_image(stream);
-        data.color_img=load_image(stream);
+        BrushBeginingIndex brushBeginingIndex;
+        Brush data;
+        //stream >> data.patchToImage;
+     // data.img = load_image(stream );
+
+       // data.img=load_image(stream);
+        //data.color_img=load_image(stream);
         stream  >> data.size >> data.opacity >> data.blur >> data.color_main >> data.dispers >>
         data.delta_count >> data.count >> data.size_delta >> data.angle_delta >> data.afinn;
-        stream >> brushBeginingIndex.pointIndex;
+        stream >> data.imageIndex >> brushBeginingIndex.pointIndex;
+        for (int j = 0 ; j < imagesIndexed.length();j++)
+        {
+            if (imagesIndexed[j]==data.imageIndex)
+            {
+                qDebug() << "imagesIndexed["<<j<<"]==data.imageIndex:"
+                         <<imagesIndexed[j]<<"=="<<data.imageIndex;
+        data.img = images[j];
+        data.color_img = BrushPainter::getInstance()->applyColor(data);
+
+            }
+                }
+        brushBeginingIndex.brush=data;
+        brushes.push_back(brushBeginingIndex);
     }
 
     if(coords.size() != 0)
@@ -46,15 +78,40 @@ bool DrawBrushElm::load_add(QDataStream &stream)
 
 bool DrawBrushElm::save_add(QDataStream &stream)
 {
+//QVector<QImage> brushImages;
  stream << coords;
+ stream << brushes.length();
+ QSet<int> usedImageIndexes;
+ for (BrushBeginingIndex brushI : brushes)
+ usedImageIndexes.insert(brushI.brush.imageIndex);
+ int usedImageIndexesCount=usedImageIndexes.size();
+ stream << usedImageIndexesCount;
+ qDebug() << "save usedImageIndexes:"<<usedImageIndexesCount;
+ //pDrawWidget->m_manager;
+ QString path = "\\Preset\\Brushes";
+         QString new_path =  pDrawWidget->m_manager.getBrushDir().currentPath()+path;
+         QDir dir(new_path);
+        // pDrawWidget->m_manager.brushPathsList
+         for(int i = 0; i < usedImageIndexesCount; i++)
+         {
+             int brushImageIndex = usedImageIndexes.values()[i];
+             qDebug() << "new_path:"<<new_path + "\\" + usedImageIndexes.values()[i];
+            QImage img = QImage(new_path + "\\" + pDrawWidget->m_manager.brushPathsList[brushImageIndex]);
+            //brushImages.push_back();
+            stream <<usedImageIndexes.values()[i];
+            save_image(stream, img );
+         }
+
     for (BrushBeginingIndex &brushBeginingIndex : brushes)
     {
         Brush &data = brushBeginingIndex.brush;
-        save_image(stream, data.img );
-         save_image(stream, data.color_img );
+        qDebug()<<"before save_image";
+        //save_image(stream, data.img );
+        //save_image(stream,data.color_img);
+         qDebug()<<"save_image";
    stream  << data.size << data.opacity << data.blur << data.color_main << data.dispers <<
            data.delta_count << data.count << data.size_delta << data.angle_delta << data.afinn;
-    stream << brushBeginingIndex.pointIndex;
+    stream << data.imageIndex << brushBeginingIndex.pointIndex;
     }
 
 
@@ -90,7 +147,7 @@ void DrawBrushElm::setLifeTime(int value)
 }
 void DrawBrushElm::draw()
 {
-    qDebug() << tickTimer.elapsed() << "  " << tickTime;
+//    qDebug() << tickTimer.elapsed() << "  " << tickTime;
     if(keyCouter < coords.size() && bPlay && tickTimer.elapsed() > tickTime)
     {
         pDrawWidget->paintBrushInBuffer(coords,brushes,keyCouter);
