@@ -1074,14 +1074,20 @@ void MainWindow::on_action_Stop_triggered()
         mpOGLWidget->stopAnimated();
         mpOGLWidget->getTimeLine()->stop();
     }
-    textEdit->setEnabled(true);
+   /* textEdit->setEnabled(true);
     ui->action_Undo->setEnabled(true);
     ui->action_Redo->setEnabled(true);
     a_undo->setEnabled(true);
-    a_redo->setEnabled(true);
+    a_redo->setEnabled(true);*/
 
     if(mpOGLWidget->isVisible())
     {
+        textEdit->setEnabled(true);
+        ui->action_Undo->setEnabled(true);
+        ui->action_Redo->setEnabled(true);
+        a_undo->setEnabled(true);
+        a_redo->setEnabled(true);
+
         ui->action_Play->setText("Play");
         ui->action_Play->setEnabled(true);
         ui->action_Pause->setEnabled(false);

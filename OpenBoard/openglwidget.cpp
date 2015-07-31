@@ -329,6 +329,8 @@ OGLWidget::OGLWidget(QWidget *parent) :
 
 OGLWidget::~OGLWidget()
 {
+    this->stopAnimated();
+        qApp->processEvents();
     if(timeLine != NULL)
         delete timeLine;
 
@@ -337,7 +339,6 @@ OGLWidget::~OGLWidget()
 
     if (drawBrushElm !=NULL)
         delete drawBrushElm;
-
 }
 
 
