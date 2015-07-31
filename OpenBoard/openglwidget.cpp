@@ -617,7 +617,6 @@ void OGLWidget::paintGL()
     glClearColor(0.0,0.0,0.0,0.0);
     //glClearStencil(0);
     timeLine->update();
-//
 
     glMatrixMode(GL_PROJECTION); // устанавливаем матрицу
      //  glShadeModel(GL_SMOOTH);
