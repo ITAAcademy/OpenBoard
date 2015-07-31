@@ -47,7 +47,7 @@ struct Element {
           draw_element->setY(0);
           draw_element->setZ(0);
           draw_element->setSize(100, 100);
-
+           draw_element->setStartDraw( 0);
     }
     Element(DrawElement *element) {
         this->key = element->getKey();
@@ -57,6 +57,7 @@ struct Element {
           draw_element->setY(0);
           draw_element->setZ(0);
           draw_element->setSize(100, 100);
+          draw_element->setStartDraw( element->getStartDrawTime());
 
     }
     ~Element() {

@@ -14,7 +14,7 @@ Rectangle{
     property string title: "value"
     property Repeater globalRep
     property string colorKey : "green"
-    property int minWidth : 20
+    property int minWidth : 100
     property ColorOverlay p_color_overlay
     radius: 3
     clip: true
@@ -123,7 +123,7 @@ onYChanged: y=0;
                 main222.selectedBlock.hideMenu();
             timeControll.setSelectedBlockPoint(root.colIndex,root.mIndex);
             main222.selectedBlock = root;
-            main222.p_scale_pointer.x = mouseX + root.x - scroll.flickableItem.contentX
+            main222.p_scale_pointer.x = mouseX + root.x - scroll.flickableItem.contentX + main222.p_scale_pointer.width //1234
             main222.needToLightSelected = true
             for (var y=0; y< rep_columns.model; y++)
                  rep_columns.itemAt(y).abortColorize()
