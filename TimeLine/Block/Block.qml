@@ -121,14 +121,16 @@ onYChanged: y=0;
         onPressed: {
             if(main222.selectedBlock != null)
                 main222.selectedBlock.hideMenu();
+             main222.p_scale_pointer.x = mouseX + root.x - scroll.flickableItem.contentX + main222.p_scale_pointer.width //1234
             timeControll.setSelectedBlockPoint(root.colIndex,root.mIndex);
+            main222.p_scale_pointer.x+=1
             main222.selectedBlock = root;
-            main222.p_scale_pointer.x = mouseX + root.x - scroll.flickableItem.contentX + main222.p_scale_pointer.width //1234
+
             main222.needToLightSelected = true
             for (var y=0; y< rep_columns.model; y++)
                  rep_columns.itemAt(y).abortColorize()
-            main222.selectedBlockCol = colIndex
-            main222.selectedBlockIndex = mIndex
+            main222.selectedBlockCol = root.colIndex
+            main222.selectedBlockIndex = root.mIndex
             icon_coloroverlay.color = "#8000FF00"  //1234
            // blocks.itemAt(i).icon_coloroverlay.color = "#00000000"
             //columns.childAt()

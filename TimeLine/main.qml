@@ -295,7 +295,7 @@ main222.isPlay = false
             if (!main222.isPlay)
             {
             timeControll.calcPointedBlocks();
-                console.log("AAAAAAAAAAA")
+                //console.log("AAAAAAAAAAA")
                 //console.log("getScalePointerPos = " + timeControll.getScalePointerPos())
 
             }
