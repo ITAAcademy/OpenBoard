@@ -8,7 +8,7 @@ import "ToolBar" as ContentToolBar
 
 Rectangle {
     id: frama
-    color: "dimgrey"
+    color: "#333333"
   //  width: 1000 ///main222.width + 20
   // height: 500 //main222.height + 20
     //anchors.margins : 20
@@ -365,6 +365,7 @@ main222.isPlay = false
                     property Item p_trackbar
                    // width: childrenRect.width
                     height: childrenRect.height
+                    color: "gray"
                     onWidthChanged: {
                         if (time_scale.width < width  )
                         {
@@ -542,6 +543,14 @@ ContentBlock.ContextMenu {
     }*/
     globalRep: main222.p_trackbar.globalRep
     minBlockWidth : main222.minBlockWidth
+}
+
+Rectangle {
+    anchors.fill: parent
+    border.color: "#333333";
+    color: "transparent"
+    radius: 10
+    border.width: main222.margin_value
 }
 }
 
