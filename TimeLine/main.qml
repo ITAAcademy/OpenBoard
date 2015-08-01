@@ -333,7 +333,7 @@ main222.isPlay = false
         id: toolbar_scroll
         width: parent.width
         height: parent.height - time_scale.height
- y : time_scale.height
+        y : time_scale.height
 
 
          ScrollView {
