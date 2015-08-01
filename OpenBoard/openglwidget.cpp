@@ -160,7 +160,7 @@ void OGLWidget::setList(const QList<DrawElement *> &value)
     curentList = !curentList;    
 }
 void OGLWidget::paintBrushInBuffer(QVector<QPoint> coords,QVector<BrushBeginingIndex> brushes,int keyFrame){
-    glBindFramebuffer(GL_FRAMEBUFFER_EXT, fbo); // Bind our frame buffer for rendering
+    glBindFramebuffer(GL_FRAMEBUFFER , fbo); // Bind our frame buffer for rendering
 int recordedBrushN = 0;
 
 GLuint texture = textureList[TEXTURE_INDEX_BRUSH];
@@ -245,7 +245,7 @@ glBindTexture(GL_TEXTURE_2D,texture);
 
 
 glBindTexture(GL_TEXTURE_2D,0);
-glBindFramebuffer(GL_FRAMEBUFFER_EXT, 0); // Unbind our texture
+glBindFramebuffer(GL_FRAMEBUFFER , 0); // Unbind our texture
 }
 
 OGLWidget::OGLWidget(QWidget *parent) :
@@ -359,10 +359,10 @@ void OGLWidget::paintBufferOnScreen( int x, int y, int width, int height, int z)
    // qglColor(Qt::green);//TO SEE TEXTURE
     glBegin(GL_QUADS);
          //  Draw Picture DEBUG INVERTED BY VERTICAL
-    glTexCoord2i(0,0); glVertex2i(x, height);
-    glTexCoord2i(0,1); glVertex2i(x, y);
-    glTexCoord2i(1,1); glVertex2i(width, x);
-    glTexCoord2i(1,0); glVertex2i(width, height);
+    glTexCoord2i(0,0); glVertex3i(x, height,z);
+    glTexCoord2i(0,1); glVertex3i(x, y,z);
+    glTexCoord2i(1,1); glVertex3i(width, x,z);
+    glTexCoord2i(1,0); glVertex3i(width, height,z);
 
    /*
     glTexCoord2i(0,0); glVertex2i(0,0);
@@ -377,7 +377,7 @@ void OGLWidget::paintBufferOnScreen( int x, int y, int width, int height, int z)
 }
 
 void OGLWidget::paintBrushInBuffer() {
-glBindFramebuffer(GL_FRAMEBUFFER_EXT, fbo); // Bind our frame buffer for rendering
+glBindFramebuffer(GL_FRAMEBUFFER , fbo); // Bind our frame buffer for rendering
 //glPushAttrib(GL_VIEWPORT_BIT | GL_ENABLE_BIT); // Push our glEnable and glViewport states
 //glViewport(0, 0, window_width, window_height); // Set the size of the frame buffer view port
 
@@ -487,7 +487,7 @@ glBindFramebuffer(GL_FRAMEBUFFER_EXT, fbo); // Bind our frame buffer for renderi
 
 
 glBindTexture(GL_TEXTURE_2D,0);
-glBindFramebuffer(GL_FRAMEBUFFER_EXT, 0); // Unbind our texture
+glBindFramebuffer(GL_FRAMEBUFFER , 0); // Unbind our texture
    //FRAMEBUFFER PART
 
 
@@ -511,13 +511,18 @@ glBindFramebuffer(GL_FRAMEBUFFER_EXT, 0); // Unbind our texture
 
 void OGLWidget::initFrameBufferDepthBuffer() {
 glGenRenderbuffers(1, &fbo_depth); // Generate one render buffer and store the ID in fbo_depth
-glBindRenderbuffer(GL_RENDERBUFFER_EXT, fbo_depth); // Bind the fbo_depth render buffer
-
-glRenderbufferStorage(GL_RENDERBUFFER_EXT, GL_DEPTH_COMPONENT, wax, way); // Set the render buffer storage to be a depth component, with a width and height of the window
-
-glFramebufferRenderbuffer(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, fbo_depth); // Set the render buffer of this buffer to the depth buffer
-
-glBindRenderbuffer(GL_RENDERBUFFER_EXT, 0); // Unbind the render buffer
+glBindRenderbuffer(GL_RENDERBUFFER , fbo_depth); // Bind the fbo_depth render buffer
+GLenum error = glGetError();
+qDebug() << "GL_ERROR_STATUS glBindRenderbuffer:"<<error;
+glRenderbufferStorage(GL_RENDERBUFFER , GL_DEPTH_COMPONENT, wax, way); // Set the render buffer storage to be a depth component, with a width and height of the window
+ error = glGetError();
+qDebug() << "GL_ERROR_STATUS glRenderbufferStorage:"<<error;
+//glFramebufferRenderbuffer(GL_FRAMEBUFFER , GL_DEPTH_ATTACHMENT , GL_RENDERBUFFER ,fbo_depth); // Set the render buffer of this buffer to the depth buffer
+ //error = glGetError();
+//qDebug() << "GL_ERROR_STATUS glFramebufferRenderbuffer:"<<error;
+glBindRenderbuffer(GL_RENDERBUFFER , 0); // Unbind the render buffer
+ error = glGetError();
+qDebug() << "GL_ERROR_STATUS glBindRenderbuffer:"<<error;
 }
 
 void OGLWidget::initFrameBufferTexture() {
@@ -539,27 +544,37 @@ glBindTexture(GL_TEXTURE_2D, 0);
 glDisable(GL_TEXTURE_2D);
 }
 
-void OGLWidget::initFrameBuffer() {
-initFrameBufferDepthBuffer(); // Initialize our frame buffer depth buffer
 
+void OGLWidget::initFrameBuffer() {
+    GLenum error = glGetError();
+    qDebug() << "GL_ERROR_STATUS initFrameBuffer:"<<error;
+    glEnable(GL_DEPTH_TEST);
+    glGenFramebuffers(1, &fbo); // Generate one frame buffer and store the ID in fbo
+
+initFrameBufferDepthBuffer(); // Initialize our frame buffer depth buffer
+ error = glGetError();
+qDebug() << "GL_ERROR_STATUS initFrameBufferDepthBuffer:"<<error;
+glBindFramebuffer(GL_FRAMEBUFFER , fbo); // Bind our frame buffer
 initFrameBufferTexture(); // Initialize our frame buffer texture
 
-glGenFramebuffers(1, &fbo); // Generate one frame buffer and store the ID in fbo
-glBindFramebuffer(GL_FRAMEBUFFER_EXT, fbo); // Bind our frame buffer
+error = glGetError();
+qDebug() << "GL_ERROR_STATUS initFrameBufferTexture:"<<error;
 
-glFramebufferTexture2D(GL_FRAMEBUFFER_EXT, GL_COLOR_ATTACHMENT0_EXT, GL_TEXTURE_2D, fbo_texture, 0); // Attach the texture fbo_texture to the color buffer in our frame buffer
 
-glFramebufferRenderbuffer(GL_FRAMEBUFFER_EXT, GL_DEPTH_ATTACHMENT_EXT, GL_RENDERBUFFER_EXT, fbo_depth); // Attach the depth buffer fbo_depth to our frame buffer
+glFramebufferTexture2D(GL_FRAMEBUFFER , GL_COLOR_ATTACHMENT0 , GL_TEXTURE_2D, fbo_texture, 0); // Attach the texture fbo_texture to the color buffer in our frame buffer
 
-GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER_EXT); // Check that status of our generated frame buffer
+//glFramebufferRenderbuffer(GL_FRAMEBUFFER , GL_DEPTH_ATTACHMENT , GL_RENDERBUFFER , fbo_depth); // Attach the depth buffer fbo_depth to our frame buffer
+error = glGetError();
+qDebug() << "GL_ERROR_STATUS:"<<error;
+GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER ); // Check that status of our generated frame buffer
 
-if (status != GL_FRAMEBUFFER_COMPLETE_EXT) // If the frame buffer does not report back as complete
+if (status != GL_FRAMEBUFFER_COMPLETE ) // If the frame buffer does not report back as complete
 {
-// qDebug() << "Couldn't create frame buffer\n" ; // Output an error to the console
+ qDebug() << "Couldn't create frame buffer\n" ; // Output an error to the console
 exit(0); // Exit the application
 }
 
-glBindFramebuffer(GL_FRAMEBUFFER_EXT, 0); // Unbind our frame buffer
+glBindFramebuffer(GL_FRAMEBUFFER , 0); // Unbind our frame buffer
 }
 
 void OGLWidget::initializeGL()
@@ -593,21 +608,22 @@ void OGLWidget::destroy(bool destroyWindow, bool destroySubWindow){
 
 void OGLWidget::clearFrameBuffer(){
 
-    glBindFramebuffer(GL_FRAMEBUFFER_EXT, fbo); // Bind our frame buffer for rendering
+    glBindFramebuffer(GL_FRAMEBUFFER , fbo); // Bind our frame buffer for rendering
    std::vector<GLubyte> emptyData(wax * way * 4, 0);
    glBindTexture(GL_TEXTURE_2D, fbo_texture);
      glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, wax, way, GL_RGBA, GL_UNSIGNED_BYTE, &emptyData[0]);
       glBindTexture(GL_TEXTURE_2D,0);
+
     //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         isClearFrameBuffer=false;
-      glBindFramebuffer(GL_FRAMEBUFFER_EXT, 0);
+      glBindFramebuffer(GL_FRAMEBUFFER , 0);
       // qDebug()<<"clearFrameBuffer";
 
 }
 
 void OGLWidget::paintGL()
 {
-     glBindFramebuffer(GL_FRAMEBUFFER_EXT, 0);
+     glBindFramebuffer(GL_FRAMEBUFFER , 0);
     if(m_encoder->newImage)
         m_encoder->setFrame(grabFrameBuffer());
     //// qDebug() << "isClearFrameBuffer:"<<isClearFrameBuffer;
@@ -635,7 +651,8 @@ void OGLWidget::paintGL()
        glOrtho(0,wax,way,0, 1000000, -200000); // подготавливаем плоскости для матрицы
        glEnable(GL_BLEND);
        glEnable(GL_ALPHA_TEST);
-       glEnable(GL_DEPTH_TEST);
+
+      // glDepthMask(false);
        glDepthFunc(GL_LEQUAL); // this maybe problem
        glAlphaFunc(GL_GREATER,0);
        glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE);
@@ -681,7 +698,7 @@ for(int i = 0; i < getList().size(); i++)
 
 if (editingRectangle.isEditingRectangleVisible)
 {
-    paintBufferOnScreen(0, 0, wax, way);
+   // paintBufferOnScreen(0, 0, wax, way);
     //rectangle
     glLineWidth(3);
     glColor3f(1.0f, 0.0f, 0.0f);
@@ -748,8 +765,11 @@ case EDIT_RECTANGLE_MOVE:
  }
 if (canDrawByMouse)paintBrushInBuffer();
 }
-//paintBufferOnScreen();
+paintBufferOnScreen(0, 0, wax, way,-100);
+
 glDisable(GL_BLEND);
+GLuint error = glGetError();
+qDebug() << "GL_ERROR_STATUS end:"<<error;
 }
 
 void OGLWidget::paintEvent(QPaintEvent *event)

@@ -222,7 +222,7 @@ private:
     QImage img;
     ListControll *timeLine = NULL;
 
-	unsigned int    fbo,// The frame buffer object
+    GLuint    fbo,// The frame buffer object
 	fbo_depth, // The depth buffer for the frame buffer object
 
 	fbo_texture; // The texture object to write our frame buffer object to
