@@ -40,6 +40,12 @@ property Repeater globalRep
                 window.blockIndex = contextMenuItem.blockIndex
                 window.columnIndex = contextMenuItem.columnIndex
                 window.show()
+                var temp = 400
+                window.maximumHeight = temp
+                window.maximumWidth = temp
+                window.minimumHeight = temp
+                window.minimumWidth = temp
+
                 window.globalRep = contextMenuItem.globalRep
                  window.minBlockWidth = contextMenuItem.minBlockWidth
                 contextMenuItem.visible = false

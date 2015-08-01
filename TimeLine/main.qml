@@ -370,7 +370,7 @@ main222.isPlay = false
                         if (time_scale.width < width  )
                         {
                             time_scale.width = width  ;
-                            time_scale_rep.model = time_scale.width/ time_scale.division
+                            time_scale_rep.model = time_scale.width/ time_scale.division + 2
                         }
                         // console.log("122  item_col.width=" + item_col.width)
                     }
