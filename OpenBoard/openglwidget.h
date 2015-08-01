@@ -62,7 +62,7 @@ class OGLWidget : public QGLWidget, protected QGLFunctions
     Q_OBJECT
     Q_PROPERTY(QString  drawText READ getDrawText WRITE setDrawText NOTIFY drawTextChanged)
         QPoint mousePressPos;
-        bool isNotPainting = false;
+
 public:
     BrushManager m_manager;
     /*
@@ -220,6 +220,7 @@ private slots:
     void storeMousePos();
 
 private:
+     bool isNotPainting;
     QImage img;
     ListControll *timeLine = NULL;
 
