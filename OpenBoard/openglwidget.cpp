@@ -769,7 +769,7 @@ paintBufferOnScreen(0, 0, wax, way,-100);
 
 glDisable(GL_BLEND);
 GLuint error = glGetError();
-qDebug() << "GL_ERROR_STATUS end:"<<error;
+//qDebug() << "GL_ERROR_STATUS end:"<<error;
 }
 
 void OGLWidget::paintEvent(QPaintEvent *event)

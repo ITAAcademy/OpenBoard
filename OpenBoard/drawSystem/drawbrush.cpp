@@ -67,6 +67,10 @@ bool DrawBrushElm::load_add(QDataStream &stream)
         data.color_img = BrushPainter::getInstance()->applyColor(data);
 
             }
+            else{
+                data.img = QImage();
+                data.color_img = BrushPainter::getInstance()->applyColor(data);
+            }
                 }
         brushBeginingIndex.brush=data;
         brushes.push_back(brushBeginingIndex);
@@ -83,10 +87,14 @@ bool DrawBrushElm::save_add(QDataStream &stream)
  stream << brushes.length();
  QSet<int> usedImageIndexes;
  for (BrushBeginingIndex brushI : brushes)
+ {
+     if (brushI.brush.imageIndex!=-1)
  usedImageIndexes.insert(brushI.brush.imageIndex);
+ }
  int usedImageIndexesCount=usedImageIndexes.size();
  stream << usedImageIndexesCount;
  qDebug() << "save usedImageIndexes:"<<usedImageIndexesCount;
+
  //pDrawWidget->m_manager;
  QString path = "\\Preset\\Brushes";
          QString new_path =  pDrawWidget->m_manager.getBrushDir().currentPath()+path;
