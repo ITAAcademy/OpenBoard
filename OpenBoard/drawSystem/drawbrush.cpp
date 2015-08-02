@@ -1,4 +1,5 @@
 #include "drawbrush.h"
+#include "../TimeLine/listcontroll.h"
 
 DrawBrushElm::DrawBrushElm(OGLWidget *drawWidget, QObject *parent) : DrawElement(drawWidget, parent)
 {
@@ -57,19 +58,21 @@ bool DrawBrushElm::load_add(QDataStream &stream)
         stream  >> data.size >> data.opacity >> data.blur >> data.color_main >> data.dispers >>
         data.delta_count >> data.count >> data.size_delta >> data.angle_delta >> data.afinn;
         stream >> data.imageIndex >> brushBeginingIndex.pointIndex;
+        if (data.imageIndex==-1){
+            data.img = QImage();
+            data.color_img = BrushPainter::getInstance()->applyColor(data);
+            qDebug() <<"DEFAULT INDEX";
+        }
+        else
         for (int j = 0 ; j < imagesIndexed.length();j++)
         {
-            if (imagesIndexed[j]==data.imageIndex)
+            if (data.imageIndex==imagesIndexed[j])
             {
                 qDebug() << "imagesIndexed["<<j<<"]==data.imageIndex:"
                          <<imagesIndexed[j]<<"=="<<data.imageIndex;
         data.img = images[j];
         data.color_img = BrushPainter::getInstance()->applyColor(data);
 
-            }
-            else{
-                data.img = QImage();
-                data.color_img = BrushPainter::getInstance()->applyColor(data);
             }
                 }
         brushBeginingIndex.brush=data;
@@ -156,15 +159,21 @@ void DrawBrushElm::setLifeTime(int value)
 void DrawBrushElm::draw()
 {
 //    qDebug() << tickTimer.elapsed() << "  " << tickTime;
-    if(keyCouter < coords.size() && bPlay && tickTimer.elapsed() > tickTime)
+
+
+
+
+     if (pDrawWidget->getTimeLine()->getPlayTime()>0)
     {
+          int realKeyValue = (pDrawWidget->getTimeLine()->getPlayTime()-startDrawTime)*coords.size()/lifeTime;
         if(keyCouter == 0)
             pDrawWidget->clearFrameBuffer();
-        pDrawWidget->paintBrushInBuffer(coords,brushes,keyCouter);
-        qDebug() << "INTERES";
-        tickTimer.restart();
-        if(bPlay)
-            keyCouter++;
+
+        while(keyCouter <realKeyValue)
+        {
+            if (keyCouter < coords.size() && bPlay) pDrawWidget->paintBrushInBuffer(coords,brushes,keyCouter);
+                    keyCouter++;
+        }
     }
     pDrawWidget->paintBufferOnScreen(x, y, width, height, z);
 
