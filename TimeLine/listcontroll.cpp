@@ -111,8 +111,8 @@ void ListControll::addNewTrack( )
 void ListControll::loadFromFile()
 {
      QPoint p = getSelectedBlockPoint();
-     if (p.x() > -1)
-        tracks[p.x()].time -= tracks[p.x()].block[p.y()].draw_element->getLifeTime();
+   /*  if (p.x() > -1)
+        tracks[p.x()].time -= tracks[p.x()].block[p.y()].draw_element->getLifeTime();*/
     QString open = QFileDialog::getOpenFileName();
     DrawElement *elm = GenerationDrawElement(open);
     if(elm == NULL)
@@ -123,16 +123,10 @@ void ListControll::loadFromFile()
     int life_time = temp.draw_element->getLifeTime();
     int start_time = temp.draw_element->getStartDrawTime();
     temp.key = elm->getKey();
-
     temp.draw_element = elm;
-    temp.draw_element->setLifeTime(life_time);
+  temp.draw_element->setLifeTime(life_time);
     temp.draw_element->setStartDraw(start_time);
     temp.draw_element->setZ(p.x());
-    tracks[p.x()].time += def_min_block_width;
-   // this->setBlockTime(p.x(),p.y(),def_min_block_width);
-
-
- // tracks[col].block[i].draw_element->setLifeTime(value);
 recountMaxTrackTime();
 }
 

@@ -333,7 +333,7 @@ main222.isPlay = false
         id: toolbar_scroll
         width: parent.width
         height: parent.height - time_scale.height
- y : time_scale.height
+        y : time_scale.height
 
 
          ScrollView {
@@ -370,7 +370,7 @@ main222.isPlay = false
                         if (time_scale.width < width  )
                         {
                             time_scale.width = width  ;
-                            time_scale_rep.model = time_scale.width/ time_scale.division
+                            time_scale_rep.model = time_scale.width/ time_scale.division + 2
                         }
                         // console.log("122  item_col.width=" + item_col.width)
                     }

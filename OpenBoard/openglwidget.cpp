@@ -257,7 +257,7 @@ OGLWidget::OGLWidget(QWidget *parent) :
     connect(timeLine,SIGNAL(playSignal()),this,SIGNAL(startSignal()));
     connect(timeLine,SIGNAL(pauseSignal()),this,SIGNAL(pauseSignal()));
 
-
+    isNotPainting = false;
 
     //qRegisterMetaType<DrawData>("DrawData");
     // engine()->rootContext()->setContextProperty(QLatin1String("forma"), this);
@@ -677,6 +677,7 @@ void OGLWidget::paintGL()
         GLint y2 = editingRectangle.rect.y()+editingRectangle.rect.height();
         bool canDrawByMouse = true;
 
+
         int leftCornerX1=x1-editingRectangle.leftCornerSize/2;
          int leftCornerY1=y1-editingRectangle.leftCornerSize/2;
                  int leftCornerX2=x1 + editingRectangle.leftCornerSize/2;
@@ -743,12 +744,16 @@ if(isMousePress) {
      editingRectangle.editingRectangleMode=EDIT_RECTANGLE_MOVE;
  }
 
+
  switch(editingRectangle.editingRectangleMode){
 case EDIT_RECTANGLE_MOVE:
      canDrawByMouse=false;
     // // qDebug()<<"EDIT_RECTANGLE_MOVE width"<<editingRectangle.rect.width();
+     if (isNotPainting)
+     {
      editingRectangle.rect.moveTo(mousePos.x() - mousePressPos.x(), //-editingRectangle.rect.width()/2
                             mousePos.y() - mousePressPos.y() ); //-editingRectangle.rect.height()/2
+     }
      //editingRectangle.setX(mousePos.x()-editingRectangle.width()/2);
      //editingRectangle.setY(mousePos.y()-editingRectangle.height()/2);
     // // qDebug()<< "leftCornerX1:"<<leftCornerX1;
@@ -759,8 +764,11 @@ case EDIT_RECTANGLE_MOVE:
  case EDIT_RECTANGLE_RESIZE:
      canDrawByMouse=false;
      // qDebug()<<"EDIT_RECTANGLE_RESIZE";
+      if (isNotPainting)
+     {
      editingRectangle.rect.setX(mousePos.x());
      editingRectangle.rect.setY(mousePos.y());
+     }
     break;
  }
 if (canDrawByMouse)paintBrushInBuffer();
@@ -843,6 +851,24 @@ void OGLWidget::mousePressEvent(QMouseEvent *event)
 
        mousePressPos = QPoint(mousePos.x() - editingRectangle.rect.x(),
                               mousePos.y() - editingRectangle.rect.y());
+
+       QRect temp = editingRectangle.rect;
+       if (temp.x() <= mousePos.x() && temp.x() + temp.width() >= mousePos.x()
+             && temp.y() <= mousePos.y() && temp.y() + temp.height() >= mousePos.y()  )
+           isNotPainting = true;
+
+       //for rectangle resize
+       GLint x1 = editingRectangle.rect.x();
+         GLint y1 = editingRectangle.rect.y();
+
+       int leftCornerX1=x1-editingRectangle.leftCornerSize/2;
+               int leftCornerY1=y1-editingRectangle.leftCornerSize/2;
+                       int leftCornerX2=x1 + editingRectangle.leftCornerSize/2;
+                        int leftCornerY2=y1 + editingRectangle.leftCornerSize/2;
+
+     if ((mousePos.x() >= leftCornerX1 && mousePos.x() <= leftCornerX2)
+      && (mousePos.y() >= leftCornerY1 && mousePos.y() <= leftCornerY2))
+           isNotPainting = true;
         }
     }
 
@@ -863,6 +889,7 @@ void OGLWidget::mouseReleaseEvent(QMouseEvent *event)
         editingRectangle.rect=editingRectangle.rect.normalized();
     editingRectangle.editingRectangleMode=EDIT_RECTANGLE_UNBINDED;
 
+    isNotPainting = false;
 }
 
 void OGLWidget::mouseMoveEvent ( QMouseEvent * event ){
