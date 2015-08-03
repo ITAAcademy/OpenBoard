@@ -61,7 +61,6 @@ bool DrawBrushElm::load_add(QDataStream &stream)
         if (data.imageIndex==-1){
             data.img = QImage();
             data.color_img = BrushPainter::getInstance()->applyColor(data);
-            qDebug() <<"DEFAULT INDEX";
         }
         else
         for (int j = 0 ; j < imagesIndexed.length();j++)
@@ -207,12 +206,12 @@ QDataStream &operator >> ( QDataStream &st, BrushBeginingIndex &data )
 */
 void DrawBrushElm::addBrush(Brush brush)
 {
-    qDebug() << "brushes.length():"<<brushes.length();
+    qDebug() << "brushes.length() before add:"<<brushes.length();
     for (int i=0;i<brushes.length();i++){
    // qDebug() << "i:"<<i;
     qDebug() << "pointIndex         :   "<<brushes[i].pointIndex;
     qDebug() << "coords.length()          :   "<<coords.length();
-        if (i==0) continue;
+       // if (i==0) continue;
 
         if (brushes[i].pointIndex==coords.length()){
             brushes[i].brush=brush;
@@ -223,6 +222,7 @@ void DrawBrushElm::addBrush(Brush brush)
     beginIndex.brush=brush;
     beginIndex.pointIndex=coords.length();
 brushes.append(beginIndex);
+qDebug() << "brushes.length() after add:"<<brushes.length();
 }
 
 

@@ -222,20 +222,20 @@ glBindTexture(GL_TEXTURE_2D,texture);
         }
              int xPos = 0;
              int yPos = 0;
-                 qDebug()<<"mouseRecorder.getBrushBeginings().length():"<<brushes.length();
+                // qDebug()<<"mouseRecorder.getBrushBeginings().length():"<<brushes.length();
 
                  xPos=coords[keyFrame].x();
                  yPos=coords[keyFrame].y();
-                qDebug() << "x:"<<xPos;
-                qDebug() << "y:"<<yPos;
-                qDebug() << "keyFrame:"<<keyFrame;
-                     if (mousePlayIndex >= coords.length()-1)
+               // qDebug() << "x:"<<xPos;
+                //qDebug() << "y:"<<yPos;
+               // qDebug() << "keyFrame:"<<keyFrame;
+                    /* if (mousePlayIndex >= coords.length()-1)
                      {
                      isMousePlay=false;
                      mousePlayIndex=0;
                      }
                      else
-                      mousePlayIndex++;
+                      mousePlayIndex++;*/
 
 
         drawTexture(xPos-BRUSH_SIZE/2 + dispersX ,yPos-BRUSH_SIZE/koff/2 + dispersY,BRUSH_SIZE,BRUSH_SIZE/koff,

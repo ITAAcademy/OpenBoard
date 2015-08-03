@@ -16,6 +16,9 @@ void BrushPainter::close()
 }
  QImage BrushPainter::applyColor(Brush brush)
 {
+     qint64 tempDeltaTime = QDateTime::currentMSecsSinceEpoch();
+     callCounter++;
+     qDebug()<<"applyColor calls:"<<callCounter;
      QImage res(brush.img.size()*2, QImage::Format_RGBA8888_Premultiplied);
      res.fill(Qt::transparent);
      QPainter paint;
@@ -30,6 +33,8 @@ void BrushPainter::close()
      blur = new QGraphicsBlurEffect();
      blur->setBlurRadius(brush.blur);
      res = applyEffectToImage(applyEffectToImage(res, effect).scaled(brush.img.size()), blur);
+     tempDeltaTime=QDateTime::currentMSecsSinceEpoch()-tempDeltaTime;
+     qDebug () << "apply color time:"<<tempDeltaTime;
      return res;
 
 }

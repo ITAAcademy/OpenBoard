@@ -37,6 +37,7 @@ class BrushPainter : public QObject
     Q_OBJECT
 
 private:
+    int callCounter = 0;
      QGraphicsScene scene;
   static BrushPainter * p_instance;
   // Конструкторы и оператор присваивания недоступны клиентам
