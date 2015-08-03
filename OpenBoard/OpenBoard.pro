@@ -66,7 +66,7 @@ RESOURCES += \
     ../TimeLine/icons_timeLine.qrc \
     ../TimeLine/qml_timeLine.qrc \
     ../Brush/qml_brush.qrc \
-    ../shaders.qrc
+    shaders.qrc
     RC_FILE = myapp.rc
 
 #unix {

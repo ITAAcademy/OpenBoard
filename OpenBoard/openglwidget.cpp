@@ -582,7 +582,7 @@ void OGLWidget::initShader(){
     QString fragmentShaderCode;
     QString vertexShaderCode;
     QString shaderDir = QDir::currentPath();
-     QFile fragmentShadeFile(":/shaders/OpenBoard/shaders/fragmentShader.glsl");
+     QFile fragmentShadeFile(":/shaders/fragmentShader.glsl");
      if(fragmentShadeFile.open(QIODevice::ReadOnly | QIODevice::Text))
      {
          QTextStream in(&fragmentShadeFile);
@@ -592,7 +592,7 @@ void OGLWidget::initShader(){
     else
          qDebug() << "error on fragmentShader.glsl open path: "<<shaderDir+"/shaders/fragmentShader.glsl";
 
-     QFile vertexShaderFile(":/shaders/OpenBoard/shaders/vertexShader.glsl");
+     QFile vertexShaderFile(":/shaders/vertexShader.glsl");
      if(vertexShaderFile.open(QIODevice::ReadOnly | QIODevice::Text))
      {
          QTextStream in(&vertexShaderFile);
