@@ -378,6 +378,7 @@ void OGLWidget::paintBufferOnScreen( int x, int y, int width, int height, int z)
 
 void OGLWidget::paintBrushInBuffer() {
 glBindFramebuffer(GL_FRAMEBUFFER , fbo); // Bind our frame buffer for rendering
+glUseProgram(ShaderProgram);
 //glPushAttrib(GL_VIEWPORT_BIT | GL_ENABLE_BIT); // Push our glEnable and glViewport states
 //glViewport(0, 0, window_width, window_height); // Set the size of the frame buffer view port
 
@@ -456,6 +457,7 @@ glBindFramebuffer(GL_FRAMEBUFFER , fbo); // Bind our frame buffer for rendering
 
             drawTexture(xPos-BRUSH_SIZE/2 + dispersX ,yPos-BRUSH_SIZE/koff/2 + dispersY,BRUSH_SIZE,BRUSH_SIZE/koff,
                     texture,angle,scaleX,scaleY);
+            glUseProgram(NULL);
             }
         /*
     else{
@@ -576,6 +578,81 @@ exit(0); // Exit the application
 
 glBindFramebuffer(GL_FRAMEBUFFER , 0); // Unbind our frame buffer
 }
+void OGLWidget::initShader(){
+    QString fragmentShaderCode;
+    QString vertexShaderCode;
+    QString shaderDir = QDir::currentPath();
+     QFile fragmentShadeFile(":/shaders/OpenBoard/shaders/fragmentShader.glsl");
+     if(fragmentShadeFile.open(QIODevice::ReadOnly | QIODevice::Text))
+     {
+         QTextStream in(&fragmentShadeFile);
+         fragmentShaderCode = in.readAll();
+        // qDebug() << "fragmentShaderCode:"<<fragmentShaderCode;
+     }
+    else
+         qDebug() << "error on fragmentShader.glsl open path: "<<shaderDir+"/shaders/fragmentShader.glsl";
+
+     QFile vertexShaderFile(":/shaders/OpenBoard/shaders/vertexShader.glsl");
+     if(vertexShaderFile.open(QIODevice::ReadOnly | QIODevice::Text))
+     {
+         QTextStream in(&vertexShaderFile);
+         vertexShaderCode = in.readAll();
+     }
+     else
+           qDebug() << "error on vertexShader.glsl open path: "<<shaderDir+"/shaders/vertexShader.glsl";
+
+      ShaderProgram = glCreateProgram();
+      GLuint vertexShaderObj = glCreateShader(GL_VERTEX_SHADER);
+      GLuint fragmentShaderObj = glCreateShader(GL_FRAGMENT_SHADER);
+
+      const GLchar* p[1];
+      p[0] = vertexShaderCode.toLatin1().constData();
+      GLint Lengths[1];
+      Lengths[0]= vertexShaderCode.length();
+      glShaderSource(vertexShaderObj, 1, p, Lengths);
+
+      const GLchar* p2[1];
+      p2[0] = fragmentShaderCode.toLatin1().constData();
+      GLint Lengths2[1];
+      Lengths2[0]= fragmentShaderCode.length();
+      glShaderSource(fragmentShaderObj, 1, p2, Lengths2);
+
+      glCompileShader(vertexShaderObj);
+      glCompileShader(fragmentShaderObj);
+
+      //Get compile status and errors detected by compiler
+      GLint success;
+      glGetShaderiv(vertexShaderObj, GL_COMPILE_STATUS, &success);
+      if (!success) {
+          GLchar infoLog[1024];
+          glGetShaderInfoLog(vertexShaderObj, sizeof(infoLog), NULL, infoLog);
+            qDebug() <<"Error compiling shader type:" << "GL_VERTEX_SHADER" << infoLog;
+      }
+      glGetShaderiv(fragmentShaderObj, GL_COMPILE_STATUS, &success);
+      if (!success) {
+          GLchar infoLog[1024];
+          glGetShaderInfoLog(fragmentShaderObj, sizeof(infoLog), NULL,infoLog);
+          qDebug() <<"Error compiling shader type:" << "GL_FRAGMENT_SHADER" << infoLog;
+      }
+
+  glAttachShader(ShaderProgram,vertexShaderObj);
+  glAttachShader(ShaderProgram,fragmentShaderObj);
+glLinkProgram(ShaderProgram);
+glDeleteShader(vertexShaderObj);
+glDeleteShader(fragmentShaderObj);
+glGetProgramiv(ShaderProgram, GL_LINK_STATUS, &success);
+GLchar errorLog[1024];
+if (success == 0) {
+    glGetProgramInfoLog(ShaderProgram, sizeof(errorLog), NULL, errorLog);
+    qDebug() << "Error linking shader program:" << errorLog;
+}
+else
+    qDebug() << "Linking shader program success";
+glValidateProgram(ShaderProgram);
+
+    //glLinkProgram(program);
+    //glUseProgram(program);
+}
 
 void OGLWidget::initializeGL()
 {
@@ -586,6 +663,7 @@ void OGLWidget::initializeGL()
    loadTexture(m_manager.getCreatedBrush().color_img, TEXTURE_INDEX_BRUSH);
     //loadTextureFromFile(":/ThirdPart/images/brush.png");
     initFrameBuffer(); // Create our frame buffer object
+    initShader();
    /* list_1.append(GenerationDrawElement("kaka.text", this, 0));
     list_1.append(GenerationDrawElement("brush.png", this, 0));*/
 

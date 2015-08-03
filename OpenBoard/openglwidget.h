@@ -19,7 +19,7 @@
 #include <QRect>
 #include "encoder/videorencoder.h"
 #include "../Brush/brushcontroll.h"
-
+#include <QGLShader>
 class ListControll;
 struct BrushBeginingIndex;
 class DrawTextElm;
@@ -167,6 +167,7 @@ public:
 
 
     void paintBrushInBuffer(QVector<QPoint> coords, QVector<BrushBeginingIndex> brushes,int keyFrame);
+    void initShader();
 public slots:
     void drawAnimated( bool record );
     void stopAnimated();
@@ -220,6 +221,7 @@ private slots:
 
 private:
     QImage img;
+    GLuint ShaderProgram;
     ListControll *timeLine = NULL;
 
     GLuint    fbo,// The frame buffer object

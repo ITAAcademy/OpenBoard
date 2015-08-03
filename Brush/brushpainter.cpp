@@ -14,6 +14,7 @@ void BrushPainter::close()
 {
 
 }
+
  QImage BrushPainter::applyColor(Brush brush)
 {
      qint64 tempDeltaTime = QDateTime::currentMSecsSinceEpoch();

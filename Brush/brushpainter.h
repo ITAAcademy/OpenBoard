@@ -58,6 +58,7 @@ public:
     QImage applyEffectToImage(QImage src, QGraphicsEffect *effect, int extent = 0);
     QImage applyMask(QImage src, QImage mask);
     //Q_DISABLE_COPY(BrushPainter)
+    QImage applyColorFast(QImage img,QColor col);
 };
 
 
