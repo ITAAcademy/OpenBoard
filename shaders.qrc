@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/shaders">
+        <file>OpenBoard/shaders/fragmentShader.glsl</file>
+        <file>OpenBoard/shaders/vertexShader.glsl</file>
+    </qresource>
+</RCC>
