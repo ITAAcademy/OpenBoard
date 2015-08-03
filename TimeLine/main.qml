@@ -372,7 +372,7 @@ main222.isPlay = false
                             time_scale.width = width  ;
                             time_scale_rep.model = time_scale.width/ time_scale.division + 2
                         }
-                        // console.log("122  item_col.width=" + item_col.width)
+                         //console.log("122  item_col.width=" + item_col.width)
                     }
                     Column {
                           id: columns
@@ -441,7 +441,7 @@ main222.isPlay = false
                                            model:  timeControll.getTrackSize(trackbar.mIndex)//     bar_track.mIndex)
     function updateModel()      {
         model = model - 1;
-        item_col.width = timeControll.getMaxTrackTime()
+        item_col.width = timeControll.getMaxTrackTime() + 31
             timeControll.update();
         model =  timeControll.getTrackSize(bar_track.mIndex)
         if (main222.needToLightSelected)
