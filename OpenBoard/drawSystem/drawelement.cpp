@@ -6,8 +6,10 @@ OGLWidget *DrawElement::getDrawWidget() const
     return pDrawWidget;
 }
 
-void DrawElement::setDrawWidget(OGLWidget *value)
+bool DrawElement::setDrawWidget(OGLWidget *value)
 {
+    if(value == pDrawWidget)
+        return false;
     disconnect(pDrawWidget, SIGNAL(startSignal()), this, SLOT(start()));
     disconnect(pDrawWidget, SIGNAL(stopSignal()), this, SLOT(stop()));
     disconnect(pDrawWidget, SIGNAL(pauseSignal()), this, SLOT(pause()));
@@ -15,6 +17,7 @@ void DrawElement::setDrawWidget(OGLWidget *value)
     connect(pDrawWidget, SIGNAL(startSignal()), this, SLOT(start()));
     connect(pDrawWidget, SIGNAL(stopSignal()), this, SLOT(stop()));
     connect(pDrawWidget, SIGNAL(pauseSignal()), this, SLOT(pause()));
+    return true;
 }
 
 QString DrawElement::getKey() const

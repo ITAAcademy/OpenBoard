@@ -82,7 +82,7 @@ public:
     virtual void setTickTime(int value);
 
     OGLWidget *getDrawWidget() const;
-    virtual void setDrawWidget(OGLWidget *value);
+    virtual bool setDrawWidget(OGLWidget *value);
 
     QString getKey() const;
     void setKey(const QString &value);

@@ -10,7 +10,7 @@ static DrawElement *GenerationDrawElement( QString path, OGLWidget *drawWidget =
     QFileInfo target(path);
     if(!target.exists())
         return NULL;
-    QString format = target.suffix();
+    QString format = target.suffix().toLower();
     qDebug() << "format   " << format;
 
     /*

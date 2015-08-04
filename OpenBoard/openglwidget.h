@@ -195,6 +195,7 @@ public slots:
     void deleteFromBuffer(int n);
     bool crossTextDraw();
     int loadTexture(QImage img, int index = -1, bool modify = false);
+    void deleteTexture( int index);
     int loadTextureFromFile(QString path, int index = -1); // return index for reload + texture indefication
     bool reloadTexture( int index);
     /*

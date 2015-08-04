@@ -32,14 +32,20 @@ void DrawImageElm::setDrawImage(QImage img)
     icon = img;
     //image.save("12334243534534534.png");
     if(pDrawWidget != NULL)
-        textureIndex = pDrawWidget->loadTexture(image);
+        if(textureIndex > 1)
+            textureIndex = pDrawWidget->loadTexture(image, textureIndex , true);
+        else
+            textureIndex = pDrawWidget->loadTexture(image);
 
 }
 
-void DrawImageElm::setDrawWidget(OGLWidget *value)
+bool DrawImageElm::setDrawWidget(OGLWidget *value)
 {
-    DrawElement::setDrawWidget(value);
-    if(textureIndex == 0)
+    if(!DrawElement::setDrawWidget(value))
+        return 0;
+    if(textureIndex > 1) // 0 is backgraund in default
+        textureIndex = pDrawWidget->loadTexture(image, textureIndex , true);
+    else
         textureIndex = pDrawWidget->loadTexture(image);
     //// qDebug() << "QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQWWWWWWWWWWWWWWWWW     " << textureIndex;
 }

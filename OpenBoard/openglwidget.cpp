@@ -19,24 +19,19 @@ int OGLWidget::loadTexture(QImage img, int index, bool modify){
         return 0;
     }
     else
-        qDebug() << "image successfully loaded";
-    QImage GL_formatted_image = QGLWidget::convertToGLFormat(img);
+        qDebug() << "image successfully loaded  " << index;
+    QImage GL_formatted_image = img;
     // qDebug() << "image converted to GL format";
     if(GL_formatted_image.isNull())
-        qWarning("IMAGE IS NULL");
+        qWarning() << "IMAGE IS NULL" << modify;
     else
-        qWarning("IMAGE NOT NULL");
+        qWarning() << "IMAGE NOT NULL" << modify;
     //generate the texture name
-    glEnable(GL_TEXTURE_2D); // Enable texturing
+    //glEnable(GL_TEXTURE_2D); // Enable texturing
     GLuint texture;
 
-     if(index >= 0 && index < imgList.length()){
-         // qDebug()<<"textureListLen:"<<textureList.length();
-          // qDebug()<<"index:"<<index;
-       glDeleteTextures(1,&textureList[index]);
-     }
-
        glGenTextures(1, &texture); // Obtain an id for the texture
+       qDebug() << texture;
        glBindTexture(GL_TEXTURE_2D, texture); // Set as the current texture
  //qDebug(" after  glBindTexture(GL_TEXTURE_2D, texture);");
        //glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
@@ -52,31 +47,36 @@ int OGLWidget::loadTexture(QImage img, int index, bool modify){
        glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 
        glDisable(GL_TEXTURE_2D);
+        glBindTexture(GL_TEXTURE_2D, 0);
 //qDebug("before int realIndex = index; ");
        int realIndex = index;
        if(modify)
        {
-          // qDebug(" if(modify)");
+           qDebug() << " if(modify)  " <<  index ;
+           deleteTexture(index);
            textureList[index] = texture;
            imgList[index] = img;
            return index;
        }
-       if(index >= 0 && index < imgList.length())
-       {
-           //qDebug(" if(index >= 0 && index < imgList.length())");
-           imgList.insert(index, img);
-           textureList.insert(index, texture);
-       }
-       else
+
        {
             qDebug("else");
            realIndex = imgList.length();
            imgList.append(img);
            textureList.append(texture);
        }
-       // qDebug("TEXTURE_FINAL");
+       qDebug() << "TEXTURE_FINAL    " <<  realIndex;
        return realIndex;
-    //bind the texture ID
+       //bind the texture ID
+}
+
+void OGLWidget::deleteTexture(int index)
+{
+    if(index >= 0 && index < imgList.length()){
+        // qDebug()<<"textureListLen:"<<textureList.length();
+         // qDebug()<<"index:"<<index;
+      glDeleteTextures(1,&textureList[index]);
+    }
 }
 
 int OGLWidget::loadTextureFromFile(QString path, int index)

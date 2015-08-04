@@ -1065,7 +1065,7 @@ void MainWindow::on_action_Play_triggered()
    // QString name = this->windowTitle();
     play = true;
     mpOGLWidget->editingRectangle.isEditingRectangleVisible = false;
-    if(mpOGLWidget->getStatus() == OGLWidget::STOP )
+    if(mpOGLWidget->getStatus() != OGLWidget::PLAY )
     {
         mpOGLWidget->drawAnimated(ui->actionRecord_to_file->isChecked());
         mpOGLWidget->getTimeLine()->play(); //off for test
@@ -1131,7 +1131,6 @@ void MainWindow::on_action_youTube_triggered()
 void MainWindow::on_action_Pause_triggered()
 {
     ui->action_Play->setText("Resume");
-    mpOGLWidget->pauseAnimated();
     //mpGLWidget->pauseAnimated();
     ui->action_Play->setEnabled(true);
     a_play->setEnabled(true);
@@ -1139,7 +1138,11 @@ void MainWindow::on_action_Pause_triggered()
     ui->action_Redo->setEnabled(true);
     a_undo->setEnabled(true);
     a_redo->setEnabled(true);
-    mpOGLWidget->getTimeLine()->pause();
+    if (mpOGLWidget->getStatus() != OGLWidget::PAUSE)
+    {
+        mpOGLWidget->pauseAnimated();
+        mpOGLWidget->getTimeLine()->pause();
+    }
 }
 
 

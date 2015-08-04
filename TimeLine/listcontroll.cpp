@@ -124,10 +124,10 @@ void ListControll::loadFromFile()
     int start_time = temp.draw_element->getStartDrawTime();
     temp.key = elm->getKey();
     temp.draw_element = elm;
-  temp.draw_element->setLifeTime(life_time);
+    temp.draw_element->setLifeTime(life_time);
     temp.draw_element->setStartDraw(start_time);
     temp.draw_element->setZ(p.x());
-recountMaxTrackTime();
+    recountMaxTrackTime();
 }
 
 bool ListControll::removeLastBlock(int col)
