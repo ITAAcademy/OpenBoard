@@ -378,7 +378,10 @@ void OGLWidget::paintBufferOnScreen( int x, int y, int width, int height, int z)
 
 void OGLWidget::paintBrushInBuffer() {
 glBindFramebuffer(GL_FRAMEBUFFER , fbo); // Bind our frame buffer for rendering
-glUseProgram(ShaderProgram);
+//glUseProgram(ShaderProgram);
+QColor curColor = m_manager.getColor();
+GLfloat color[4] = {curColor.red()/255.0,curColor.green()/255.0,curColor.blue()/255.0,curColor.alpha()/255.0};
+ //glUniform4fv(Unif_color, 1, color );
 //glPushAttrib(GL_VIEWPORT_BIT | GL_ENABLE_BIT); // Push our glEnable and glViewport states
 //glViewport(0, 0, window_width, window_height); // Set the size of the frame buffer view port
 
@@ -457,7 +460,7 @@ glUseProgram(ShaderProgram);
 
             drawTexture(xPos-BRUSH_SIZE/2 + dispersX ,yPos-BRUSH_SIZE/koff/2 + dispersY,BRUSH_SIZE,BRUSH_SIZE/koff,
                     texture,angle,scaleX,scaleY);
-            glUseProgram(NULL);
+           // glUseProgram(NULL);
             }
         /*
     else{
@@ -650,6 +653,13 @@ else
     qDebug() << "Linking shader program success";
 glValidateProgram(ShaderProgram);
 
+const char* unif_name = "color";
+  Unif_color = glGetUniformLocation(ShaderProgram, unif_name);
+  if(Unif_color == -1)
+  {
+    qDebug() << "could not bind uniform " << unif_name ;
+    return;
+  }
     //glLinkProgram(program);
     //glUseProgram(program);
 }
@@ -663,7 +673,7 @@ void OGLWidget::initializeGL()
    loadTexture(m_manager.getCreatedBrush().color_img, TEXTURE_INDEX_BRUSH);
     //loadTextureFromFile(":/ThirdPart/images/brush.png");
     initFrameBuffer(); // Create our frame buffer object
-    initShader();
+   // initShader();
    /* list_1.append(GenerationDrawElement("kaka.text", this, 0));
     list_1.append(GenerationDrawElement("brush.png", this, 0));*/
 

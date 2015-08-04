@@ -67,7 +67,8 @@ public:
     /*
      * |Future gradient
      */
-
+    // ! ID юниформ переменной цвета
+    GLint  Unif_color;
    bool isMousePlay = false;//play recorded mouse movement
    bool isMousePress = false;
    bool ismouseWasPressedBeforeDrag = false;  
