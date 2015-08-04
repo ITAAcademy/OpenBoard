@@ -221,7 +221,7 @@ private slots:
 private:
     QImage img;
     ListControll *timeLine = NULL;
-
+         Brush currentBrushOfDrawSystem;
     GLuint    fbo,// The frame buffer object
 	fbo_depth, // The depth buffer for the frame buffer object
 

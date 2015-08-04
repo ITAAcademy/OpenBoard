@@ -58,7 +58,7 @@ void BrushManager::update()
 {
     qApp->processEvents(QEventLoop::ExcludeUserInputEvents, 200);
     createdBrush.color_img = BrushPainter::getInstance()->applyColor(createdBrush);
-    emit colorChanged();
+    emit currentBrushChanged();
 }
 QDir BrushManager::getBrushDir(){
     return brushDir;
@@ -171,52 +171,63 @@ bool BrushManager::openBrushLibrary(QString path)
 void BrushManager::setSize(float value)
 {
     createdBrush.size = value;
+    currentBrushChanged();
 }
 
 void BrushManager::setOpacity(float value)
 {
     createdBrush.opacity = value;
+    currentBrushChanged();
 }
 
 void BrushManager::setBlur(float value)
 {
     createdBrush.blur = value;
+    currentBrushChanged();
 }
 
 void BrushManager::setDisepers(float value)
 {
     createdBrush.dispers = value;
+    currentBrushChanged();
 }
+
 
 void BrushManager::setSizeMax(float value)
 {
     createdBrush.delta_count = value;
+    currentBrushChanged();
 }
 
 void BrushManager::setCount(float value)
 {
     createdBrush.count = value;
+    currentBrushChanged();
 }
 
 void BrushManager::setSizeDelta(float value)
 {
     createdBrush.size_delta = value;
+    currentBrushChanged();
 }
 
 void BrushManager::setAngleDelta(float value)
 {
     createdBrush.angle_delta = value;
+    currentBrushChanged();
 }
 
 void BrushManager::setAffine(float value)
 {
     createdBrush.afinn = value;
+    currentBrushChanged();
 }
 
 void BrushManager::setColor(QColor value)
 {
     //qDebug() << value;
     createdBrush.color_main = value;
+    currentBrushChanged();
 
   //    ;
 }

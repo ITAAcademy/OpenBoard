@@ -162,34 +162,38 @@ void OGLWidget::setList(const QList<DrawElement *> &value)
 void OGLWidget::paintBrushInBuffer(QVector<QPoint> coords,QVector<BrushBeginingIndex> brushes,int keyFrame){
     glBindFramebuffer(GL_FRAMEBUFFER , fbo); // Bind our frame buffer for rendering
 int recordedBrushN = 0;
-
+//qDebug() << "keyFrame:"<<keyFrame;
 GLuint texture = textureList[TEXTURE_INDEX_BRUSH];
 glBindTexture(GL_TEXTURE_2D,texture);
     for (; recordedBrushN < brushes.length(); )
     {
+        //qDebug() << "brushes["<<recordedBrushN<<"].pointIndex"<<brushes[recordedBrushN].pointIndex;
     if (brushes[recordedBrushN].pointIndex==keyFrame){
-        qDebug() << "texture loaded";
-        qDebug() << "mouse play index:"<<keyFrame;
-        qDebug() << "recordedBrushN:"<<recordedBrushN;
+       // qDebug() << "texture loaded";
+       // qDebug() << "mouse play index:"<<keyFrame;
+       // qDebug() << "recordedBrushN:"<<recordedBrushN;
+        currentBrushOfDrawSystem = brushes[recordedBrushN].brush;
         loadTexture(brushes[recordedBrushN].brush.color_img, TEXTURE_INDEX_BRUSH, true);
      //qDebug() << "recordedBrushN:"<<recordedBrushN;
      break;
     }
     recordedBrushN++;
     }
+     //qDebug() << "recordedBrushN:"<<recordedBrushN;
+    //if (recordedBrushN>=brushes.length())recordedBrushN=brushes.length()-1;
+   // qDebug() << "recordedBrushN:"<<recordedBrushN;
 
-    if (recordedBrushN>=brushes.length())recordedBrushN=brushes.length()-1;
-    Brush curBrush = brushes[recordedBrushN].brush;
 
     QSize brushTextureSize = getTextureSize();
-    int BRUSH_SIZE=curBrush.size + curBrush.size_delta/2 - rand()%(int)(curBrush.size_delta + 1);
+    int BRUSH_SIZE=currentBrushOfDrawSystem.size + currentBrushOfDrawSystem.size_delta/2 - rand()%(int)(currentBrushOfDrawSystem.size_delta + 1);
+    qDebug() << "LOADED BRUSH SIZE DRAW:"<<BRUSH_SIZE;
     float scaleX=1,scaleY=1;
     float randScalePtX = 0;
     float randScalePtY = 0;
-    if(curBrush.afinn != 0)
+    if(currentBrushOfDrawSystem.afinn != 0)
     {
-        randScalePtX = curBrush.afinn/2 - rand() % ((int)curBrush.afinn);
-        randScalePtY = curBrush.afinn/2 - rand() % ((int)curBrush.afinn);
+        randScalePtX = currentBrushOfDrawSystem.afinn/2 - rand() % ((int)currentBrushOfDrawSystem.afinn);
+        randScalePtY = currentBrushOfDrawSystem.afinn/2 - rand() % ((int)currentBrushOfDrawSystem.afinn);
     }
 
     float MAX_SCALE = 2;
@@ -203,20 +207,20 @@ glBindTexture(GL_TEXTURE_2D,texture);
     double koff = 0;
     if(brushTextureSize.height() != 0)
      koff = brushTextureSize.width()/brushTextureSize.height();
-     int maxAngle = curBrush.angle_delta;
+     int maxAngle = currentBrushOfDrawSystem.angle_delta;
 
      int angle = 0;
      if (maxAngle > 0){
      angle=maxAngle/2 - rand() % (maxAngle);
     }
-        int maxDispers = (int)curBrush.dispers;
+        int maxDispers = (int)currentBrushOfDrawSystem.dispers;
         int i=1;
-        if (maxDispers>0 && curBrush.count>0) i=curBrush.count;
+        if (maxDispers>0 && currentBrushOfDrawSystem.count>0) i=currentBrushOfDrawSystem.count;
         for (;i>0;i--)
         {
              int dispersX = 0;
              int dispersY = 0;
-             if ((int)curBrush.dispers>0){
+             if ((int)currentBrushOfDrawSystem.dispers>0){
                  dispersX = maxDispers/2 - rand() % (maxDispers);
                  dispersY = maxDispers/2 - rand() % (maxDispers);
         }
@@ -226,9 +230,9 @@ glBindTexture(GL_TEXTURE_2D,texture);
 
                  xPos=coords[keyFrame].x();
                  yPos=coords[keyFrame].y();
-                qDebug() << "x:"<<xPos;
-                qDebug() << "y:"<<yPos;
-                qDebug() << "keyFrame:"<<keyFrame;
+               // qDebug() << "x:"<<xPos;
+               // qDebug() << "y:"<<yPos;
+                //qDebug() << "keyFrame:"<<keyFrame;
                      if (mousePlayIndex >= coords.length()-1)
                      {
                      isMousePlay=false;
@@ -321,7 +325,6 @@ OGLWidget::OGLWidget(QWidget *parent) :
    timer->start(5);
    connect(&mouseTimer, SIGNAL(timeout()), this, SLOT(storeMousePos()));
    mouseTimer.start();
-   connect(&m_manager,SIGNAL(colorChanged()),this,SLOT(brushParamsChanged()));
    connect(&m_manager,SIGNAL(currentBrushChanged()),this,SLOT(brushParamsChanged()));
 
 }

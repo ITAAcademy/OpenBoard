@@ -87,7 +87,7 @@ public:
 
 
 signals:
-void colorChanged();
+//void colorChanged();
 void currentBrushChanged();
 public slots:
 QImage requestImage(const QString &id, QSize *size, const QSize &requestedSize);

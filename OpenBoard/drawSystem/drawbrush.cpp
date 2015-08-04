@@ -58,6 +58,8 @@ bool DrawBrushElm::load_add(QDataStream &stream)
         stream  >> data.size >> data.opacity >> data.blur >> data.color_main >> data.dispers >>
         data.delta_count >> data.count >> data.size_delta >> data.angle_delta >> data.afinn;
         stream >> data.imageIndex >> brushBeginingIndex.pointIndex;
+        qDebug() << "loaded:"<< data.size << data.opacity << data.blur << data.color_main << data.dispers <<
+                    data.delta_count << data.count << data.size_delta << data.angle_delta << data.afinn<< data.imageIndex << brushBeginingIndex.pointIndex;
         if (data.imageIndex==-1){
             data.img = QImage();
             data.color_img = BrushPainter::getInstance()->applyColor(data);
@@ -123,6 +125,8 @@ bool DrawBrushElm::save_add(QDataStream &stream)
    stream  << data.size << data.opacity << data.blur << data.color_main << data.dispers <<
            data.delta_count << data.count << data.size_delta << data.angle_delta << data.afinn;
     stream << data.imageIndex << brushBeginingIndex.pointIndex;
+    qDebug() << "saved:"<< data.size << data.opacity << data.blur << data.color_main << data.dispers <<
+                data.delta_count << data.count << data.size_delta << data.angle_delta << data.afinn<< data.imageIndex << brushBeginingIndex.pointIndex;
     }
 
 
@@ -212,11 +216,13 @@ void DrawBrushElm::addBrush(Brush brush)
    // qDebug() << "i:"<<i;
     qDebug() << "pointIndex         :   "<<brushes[i].pointIndex;
     qDebug() << "coords.length()          :   "<<coords.length();
-        if (i==0) continue;
+       // if (i==0) continue;
 
         if (brushes[i].pointIndex==coords.length()){
             brushes[i].brush=brush;
+            qDebug () << "BRUSH ALREADY EXCIST:"<<i;
             return;
+
         }
     }
     BrushBeginingIndex beginIndex;
