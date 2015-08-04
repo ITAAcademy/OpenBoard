@@ -67,11 +67,14 @@ void DrawTextElm::setUnParsestring(const QString &value)
 void DrawTextElm::setUnitList(const QList<Unit *> &unitList)
 {
     mUnitList = unitList;
+
+    mUnitList.append(command);
     if(unitList.size() != 0)
     {
         tickTime = lifeTime/unitList.size();
          qDebug()<<"tickTime6 :"<<tickTime;
     }
+
 }
 
 void DrawTextElm::setTickTime(int value)

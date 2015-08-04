@@ -483,6 +483,10 @@ main222.isPlay = false
                                        }
                                        Component.onCompleted: {
                                          main222.minBlockWidth = repka.itemAt(0).minWidth
+
+                                           /* var pnt2 = new Point(-1,-1)
+                                           timeControll.setSelectedBlockPoint(pnt2)*/
+                                          // main222.p_trackbar.globalRep.updateModel()
                                          /*   // console.log("item_col.p_columns.globalRep " + item_col.p_columns.globalRep)
                                            // console.log("cool.repka " + cool.repka)
                                            item_col.p_columns.globalRep = cool.repka
