@@ -22,6 +22,10 @@ Rectangle{
     anchors.leftMargin: 15
     border { color: "white" ; width: 2 }
 
+
+
+
+
     function hideMenu()
     {
         context_menu.visible = false;
@@ -137,7 +141,7 @@ onYChanged: y=0;
             // console.log("onPressed: mIndex="+mIndex+" colIndex="+ colIndex + " time = " + timeControll.getBlockTime(colIndex,mIndex))
             if (mouse.button == Qt.RightButton)
             {
-               context_menu.show(main222.p_scale_pointer.x, mouseY + root.colIndex * root.height - scroll.flickableItem.contentY,root.globalRep)
+               context_menu.show(main222.p_scale_pointer.x, mouseY + root.colIndex * (root.height + 2) - scroll.flickableItem.contentY,root.globalRep)
                 drag.target = null
             }
         else
@@ -220,18 +224,27 @@ onYChanged: y=0;
 
     Image {
         id: icon
+
         //anchors.fill: parent
       //  source: "qrc:/Block/file.png"
-        source:  "image://imageProvider/" + root.colIndex + "+" + root.mIndex + "+ " + Math.random(1000000);
+        source:  "image://imageProvider/" + root.colIndex + "+" + root.mIndex + "+ " + (Math.round(Math.random(99999999) * 100000));
         height: root.height - root.border.width*2 - 1
         width: height
         x:root.border.width + 1
         y:root.border.width + 1
         visible:  true
+       /* onSourceChanged: {
+            if (main222.selectedBlockCol === root.colIndex &&
+                    main222.selectedBlockIndex === root.mIndex)
+          console.log("  AAAAAAAAAAAAAAAAAA " + root.colIndex + " " + root.mIndex);
+        }*/
 
 
             // timeControll.getBlockIcon(colIndex,mIndex)
     }
+
+
+
 
 
 

@@ -201,6 +201,8 @@ public:
     Q_INVOKABLE QPoint  getPrevMousePosition();
     Q_INVOKABLE void  update();
 
+    Q_INVOKABLE int  getTracksNumber();
+
 signals:
     void playSignal();
     void pauseSignal();

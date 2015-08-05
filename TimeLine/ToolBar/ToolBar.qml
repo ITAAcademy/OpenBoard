@@ -40,7 +40,12 @@ Rectangle {
           icon_source : "qrc:/iphone_toolbar_icons/eject.png"
           rotation: 180
             onClicked: {
+
+                //for (var i = 0; i< 15; i++)
+                {
                     main222.addTrack() ;
+                 //  console.log("AAAAAAAAAAAAding track : "  + timeControll.getTracksNumber())
+                }
             }
         }
         Buutton{

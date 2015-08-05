@@ -699,12 +699,18 @@ QImage ListControll::requestImage(const QString &id, QSize *size, const QSize &r
             //= QImage::fromData(reply->readAll());
     /*size->setWidth(image.width());
     size->setHeight(image.height());*/
-    // qDebug() << "                                                                           IMAGE ";
+    // qDebug() << "
+
     QVector <QStringRef> argv = id.splitRef('+');
+
     QImage img = getBlock(argv[0].toInt(), argv[1].toInt()).draw_element->getIcon();
-    //qDebug() << "IMAGE                                                          ppp " << getBlock(argv[0].toInt(), argv[1].toInt()).draw_element->getKey();
+   //qDebug() << "IMAGE  pp " << getBlock(argv[0].toInt(), argv[1].toInt()).draw_element->getKey();
+
     if(img.isNull())
+    {
+               // qDebug() << "AAAAAAAAAAAAAAAAAA  id = " << id ;
             return QImage(":/icons/12video icon.png");
+    }
 
     return img;
 
@@ -719,6 +725,13 @@ QImage ListControll::requestImage(const QString &id, QSize *size, const QSize &r
          emit stopSignal();
          isPlayPauseStop = 3;
      }
+ }
+
+
+
+ int  ListControll::getTracksNumber()
+ {
+     return tracks.size();
  }
 
 
