@@ -14,8 +14,7 @@ void BrushManager::setCurentBrush(int value)
     createdBrush.imageIndex=value;
   //  createdBrush.patchToImage = brushPathsList[value];
    createdBrush.color_img = BrushPainter::getInstance()->applyColor(createdBrush);
-    emit currentBrushChanged();
-    qDebug()<<"emit currentBrushChanged();";
+    //emit currentBrushChanged();
 }
 
 Brush BrushManager::getCreatedBrush()
@@ -58,7 +57,7 @@ void BrushManager::update()
 {
     qApp->processEvents(QEventLoop::ExcludeUserInputEvents, 200);
     createdBrush.color_img = BrushPainter::getInstance()->applyColor(createdBrush);
-    emit currentBrushChanged();
+   // emit currentBrushChanged();
 }
 QDir BrushManager::getBrushDir(){
     return brushDir;
@@ -119,6 +118,7 @@ void BrushManager::show()
 void BrushManager::hide()
 {
     view.hide();
+    emit currentBrushChanged();
 }
 
 void BrushManager::close()
@@ -171,63 +171,63 @@ bool BrushManager::openBrushLibrary(QString path)
 void BrushManager::setSize(float value)
 {
     createdBrush.size = value;
-    currentBrushChanged();
+   // currentBrushChanged();
 }
 
 void BrushManager::setOpacity(float value)
 {
     createdBrush.opacity = value;
-    currentBrushChanged();
+    //currentBrushChanged();
 }
 
 void BrushManager::setBlur(float value)
 {
     createdBrush.blur = value;
-    currentBrushChanged();
+    //currentBrushChanged();
 }
 
 void BrushManager::setDisepers(float value)
 {
     createdBrush.dispers = value;
-    currentBrushChanged();
+   // currentBrushChanged();
 }
 
 
 void BrushManager::setSizeMax(float value)
 {
     createdBrush.delta_count = value;
-    currentBrushChanged();
+    //currentBrushChanged();
 }
 
 void BrushManager::setCount(float value)
 {
     createdBrush.count = value;
-    currentBrushChanged();
+   // currentBrushChanged();
 }
 
 void BrushManager::setSizeDelta(float value)
 {
     createdBrush.size_delta = value;
-    currentBrushChanged();
+    //currentBrushChanged();
 }
 
 void BrushManager::setAngleDelta(float value)
 {
     createdBrush.angle_delta = value;
-    currentBrushChanged();
+    //currentBrushChanged();
 }
 
 void BrushManager::setAffine(float value)
 {
     createdBrush.afinn = value;
-    currentBrushChanged();
+    //currentBrushChanged();
 }
 
 void BrushManager::setColor(QColor value)
 {
     //qDebug() << value;
     createdBrush.color_main = value;
-    currentBrushChanged();
+    //currentBrushChanged();
 
   //    ;
 }

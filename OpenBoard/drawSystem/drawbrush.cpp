@@ -228,7 +228,9 @@ void DrawBrushElm::addBrush(Brush brush)
     BrushBeginingIndex beginIndex;
     beginIndex.brush=brush;
     beginIndex.pointIndex=coords.length();
+    qDebug() << "before append";
 brushes.append(beginIndex);
+qDebug() << "after append";
 }
 
 
