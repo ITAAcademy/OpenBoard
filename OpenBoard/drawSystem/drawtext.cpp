@@ -69,7 +69,6 @@ void DrawTextElm::setUnitList(const QList<Unit *> &unitList)
 {
     mUnitList = unitList;
 
-    mUnitList.append(command);
     if(unitList.size() != 0)
     {
         tickTime = lifeTime/unitList.size();

@@ -20,7 +20,7 @@ int OGLWidget::loadTexture(QImage img, int index, bool modify){
     }
     else
         qDebug() << "image successfully loaded  " << index;
-    QImage GL_formatted_image = img;
+    QImage GL_formatted_image = OGLWidget::convertToGLFormat(img);
     // qDebug() << "image converted to GL format";
     if(GL_formatted_image.isNull())
         qWarning() << "IMAGE IS NULL" << modify;
