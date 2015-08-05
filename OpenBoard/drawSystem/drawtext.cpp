@@ -20,11 +20,12 @@ void DrawTextElm::draw()
    // }
     if (pDrawWidget->getTimeLine()->getPlayTime()>0)
     {
-        qDebug() << "startDrawTime:"<<startDrawTime;
+       // qDebug() << "startDrawTime:"<<startDrawTime;
        int realKeyValue = (pDrawWidget->getTimeLine()->getPlayTime()-startDrawTime)*mUnitList.size()/lifeTime;
+       qDebug() << "pDrawWidget->getTimeLine()->getPlayTime()"<<pDrawWidget->getTimeLine()->getPlayTime();
    // if (keyCouter < realKeyValue)
 
-        while(keyCouter <realKeyValue)
+        while(keyCouter <=realKeyValue)
         {
             if (keyCouter < mUnitList.size() && bPlay) mUnitList.at(keyCouter)->draw(pDrawWidget);
                     keyCouter++;
