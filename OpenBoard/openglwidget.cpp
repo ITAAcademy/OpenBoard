@@ -53,7 +53,7 @@ int OGLWidget::loadTexture(QImage img, int index, bool modify){
        if(modify)
        {
            qDebug() << " if(modify)  " <<  index ;
-           deleteTexture(index);
+           deleteTexture(index, true);
            textureList[index] = texture;
            imgList[index] = img;
            return index;
@@ -70,14 +70,17 @@ int OGLWidget::loadTexture(QImage img, int index, bool modify){
        //bind the texture ID
 }
 
-void OGLWidget::deleteTexture(int index)
+void OGLWidget::deleteTexture(int index, bool gl_only)
 {
     if(index >= 0 && index < imgList.length()){
         // qDebug()<<"textureListLen:"<<textureList.length();
          // qDebug()<<"index:"<<index;
       glDeleteTextures(1,&textureList[index]);
-      textureList.remove(index);
-      imgList.remove(index);
+      if(!gl_only)
+      {
+          textureList.remove(index);
+          imgList.remove(index);
+      }
     }
 }
 
