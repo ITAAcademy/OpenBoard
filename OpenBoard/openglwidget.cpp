@@ -20,7 +20,7 @@ int OGLWidget::loadTexture(QImage img, int index, bool modify){
     }
     else
         qDebug() << "image successfully loaded  " << index;
-    QImage GL_formatted_image = OGLWidget::convertToGLFormat(img);
+    QImage GL_formatted_image = convertToGLFormat(img);
     // qDebug() << "image converted to GL format";
     if(GL_formatted_image.isNull())
         qWarning() << "IMAGE IS NULL" << modify;
@@ -76,6 +76,8 @@ void OGLWidget::deleteTexture(int index)
         // qDebug()<<"textureListLen:"<<textureList.length();
          // qDebug()<<"index:"<<index;
       glDeleteTextures(1,&textureList[index]);
+      textureList.remove(index);
+      imgList.remove(index);
     }
 }
 

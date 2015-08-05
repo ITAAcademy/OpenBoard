@@ -122,6 +122,7 @@ void ListControll::loadFromFile()
     Element &temp = tracks[p.x()].block[p.y()];
     int life_time = temp.draw_element->getLifeTime();
     int start_time = temp.draw_element->getStartDrawTime();
+    delete temp.draw_element;
     temp.key = elm->getKey();
     temp.draw_element = elm;
     temp.draw_element->setLifeTime(life_time);
@@ -701,7 +702,7 @@ QImage ListControll::requestImage(const QString &id, QSize *size, const QSize &r
     // qDebug() << "                                                                           IMAGE ";
     QVector <QStringRef> argv = id.splitRef('+');
     QImage img = getBlock(argv[0].toInt(), argv[1].toInt()).draw_element->getIcon();
-    // qDebug() << "IMAGE                                                          ppp " << getBlock(argv[0].toInt(), argv[1].toInt()).draw_element->getKey();
+    //qDebug() << "IMAGE                                                          ppp " << getBlock(argv[0].toInt(), argv[1].toInt()).draw_element->getKey();
     if(img.isNull())
             return QImage(":/icons/12video icon.png");
 

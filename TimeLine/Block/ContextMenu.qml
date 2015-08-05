@@ -82,7 +82,7 @@ property Repeater globalRep
                 timeControll.loadFromFile();//removeBlock(col,id)
                 contextMenuItem.visible = false;
                 // console.log("AFTER 9999999999999999999999");
-                main222.selectedBlock.repaint();
+                //main222.selectedBlock.repaint();
                 globalRep.updateModel();
 
             }

@@ -7,7 +7,8 @@ DrawImageElm::DrawImageElm(OGLWidget *drawWidget, QObject *parent) : DrawElement
 
 DrawImageElm::~DrawImageElm()
 {
-
+    if(textureIndex > 1)
+        pDrawWidget->deleteTexture(textureIndex);
 }
 
 void DrawImageElm::draw()
@@ -43,10 +44,7 @@ bool DrawImageElm::setDrawWidget(OGLWidget *value)
 {
     if(!DrawElement::setDrawWidget(value))
         return 0;
-    if(textureIndex > 1) // 0 is backgraund in default
-        textureIndex = pDrawWidget->loadTexture(image, textureIndex , true);
-    else
-        textureIndex = pDrawWidget->loadTexture(image);
-    //// qDebug() << "QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQWWWWWWWWWWWWWWWWW     " << textureIndex;
+    textureIndex = pDrawWidget->loadTexture(image);
+    qDebug() << "QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQWWWWWWWWWWWWWWWWW     " << textureIndex;
 }
 
