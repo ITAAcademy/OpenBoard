@@ -262,6 +262,7 @@ OGLWidget::OGLWidget(QWidget *parent) :
     connect(timeLine,SIGNAL(pauseSignal()),this,SIGNAL(pauseSignal()));
 
     isNotPainting = false;
+    selElm = QPoint(-1,-1); //because it undefined
 
     //qRegisterMetaType<DrawData>("DrawData");
     // engine()->rootContext()->setContextProperty(QLatin1String("forma"), this);
@@ -1194,8 +1195,9 @@ void  OGLWidget::updateWindow(){
     //if (timeLine->getPointedBlocks().size())
          setList(timeLine->getPointedBlocksDE());
     QPoint t = timeLine->getSelectedBlockPoint();
-    if(curStatus != PLAY && t.x() >= 0)
+    if(curStatus != PLAY && t.x() >= 0 && t.x() != -1)
     {
+        editingRectangle.isEditingRectangleVisible = true;
         if(t != selElm)
         {
             selElm = t;
@@ -1203,13 +1205,17 @@ void  OGLWidget::updateWindow(){
         }
         else
         {
-            QRect t = editingRectangle.rect;
-            timeLine->setDrawX(selElm.x(), selElm.y(), t.x());
-            timeLine->setDrawY(selElm.x(), selElm.y(), t.y());
-            timeLine->setDrawSize(selElm.x(), selElm.y(), t.width(), t.height());
+            QRect t2 = editingRectangle.rect;
+            timeLine->setDrawX(selElm.x(), selElm.y(), t2.x());
+            timeLine->setDrawY(selElm.x(), selElm.y(), t2.y());
+            timeLine->setDrawSize(selElm.x(), selElm.y(), t2.width(), t2.height());
+
+
 
         }
     }
+    else
+        editingRectangle.isEditingRectangleVisible = false;
     updateGL();
 }
 

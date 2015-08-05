@@ -340,6 +340,7 @@ ListControll::ListControll(QObject *parent) : QObject(parent), QQuickImageProvid
 {
     maxTrackTime = 0;
     time_sum = 0;
+    selectedBlockPoint = QPoint(-1,-1);
    /* QList <QString>  temp;
         temp.append("1");
         temp.append("2");
