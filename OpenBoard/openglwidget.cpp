@@ -595,6 +595,7 @@ void OGLWidget::initializeGL()
    loadTexture(m_manager.getCreatedBrush().color_img, TEXTURE_INDEX_BRUSH);
     //loadTextureFromFile(":/ThirdPart/images/brush.png");
     initFrameBuffer(); // Create our frame buffer object
+    setAutoBufferSwap(false);
    /* list_1.append(GenerationDrawElement("kaka.text", this, 0));
     list_1.append(GenerationDrawElement("brush.png", this, 0));*/
 
@@ -786,6 +787,7 @@ paintBufferOnScreen(0, 0, wax, way,-100);
 
 glDisable(GL_BLEND);
 GLuint error = glGetError();
+swapBuffers();
 //qDebug() << "GL_ERROR_STATUS end:"<<error;
 }
 
