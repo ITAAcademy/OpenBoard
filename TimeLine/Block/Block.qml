@@ -229,6 +229,7 @@ onYChanged: y=0;
         y:root.border.width + 1
         visible:  true
 
+
             // timeControll.getBlockIcon(colIndex,mIndex)
     }
 

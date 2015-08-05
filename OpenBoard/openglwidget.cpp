@@ -20,7 +20,7 @@ int OGLWidget::loadTexture(QImage img, int index, bool modify){
     }
     else
         qDebug() << "image successfully loaded  " << index;
-    QImage GL_formatted_image = OGLWidget::convertToGLFormat(img);
+    QImage GL_formatted_image = convertToGLFormat(img);
     // qDebug() << "image converted to GL format";
     if(GL_formatted_image.isNull())
         qWarning() << "IMAGE IS NULL" << modify;
@@ -53,7 +53,7 @@ int OGLWidget::loadTexture(QImage img, int index, bool modify){
        if(modify)
        {
            qDebug() << " if(modify)  " <<  index ;
-           deleteTexture(index);
+           deleteTexture(index, true);
            textureList[index] = texture;
            imgList[index] = img;
            return index;
@@ -70,12 +70,17 @@ int OGLWidget::loadTexture(QImage img, int index, bool modify){
        //bind the texture ID
 }
 
-void OGLWidget::deleteTexture(int index)
+void OGLWidget::deleteTexture(int index, bool gl_only)
 {
     if(index >= 0 && index < imgList.length()){
         // qDebug()<<"textureListLen:"<<textureList.length();
          // qDebug()<<"index:"<<index;
       glDeleteTextures(1,&textureList[index]);
+      if(!gl_only)
+      {
+          textureList.remove(index);
+          imgList.remove(index);
+      }
     }
 }
 

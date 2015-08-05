@@ -10,9 +10,12 @@ bool DrawElement::setDrawWidget(OGLWidget *value)
 {
     if(value == pDrawWidget)
         return false;
-    disconnect(pDrawWidget, SIGNAL(startSignal()), this, SLOT(start()));
-    disconnect(pDrawWidget, SIGNAL(stopSignal()), this, SLOT(stop()));
-    disconnect(pDrawWidget, SIGNAL(pauseSignal()), this, SLOT(pause()));
+    if(pDrawWidget != NULL)
+    {
+        disconnect(pDrawWidget, SIGNAL(startSignal()), this, SLOT(start()));
+        disconnect(pDrawWidget, SIGNAL(stopSignal()), this, SLOT(stop()));
+        disconnect(pDrawWidget, SIGNAL(pauseSignal()), this, SLOT(pause()));
+    }
     pDrawWidget = value;
     connect(pDrawWidget, SIGNAL(startSignal()), this, SLOT(start()));
     connect(pDrawWidget, SIGNAL(stopSignal()), this, SLOT(stop()));
@@ -43,16 +46,23 @@ DrawElement::DrawElement(OGLWidget *drawWidget, QObject *parent) : QObject(paren
     lifeTime = 100;
     icon = QImage();
 
-    connect(pDrawWidget, SIGNAL(startSignal()), this, SLOT(start()));
-    connect(pDrawWidget, SIGNAL(stopSignal()), this, SLOT(stop()));
-    connect(pDrawWidget, SIGNAL(pauseSignal()), this, SLOT(pause()));
+    if(pDrawWidget != NULL)
+    {
+        connect(pDrawWidget, SIGNAL(startSignal()), this, SLOT(start()));
+        connect(pDrawWidget, SIGNAL(stopSignal()), this, SLOT(stop()));
+        connect(pDrawWidget, SIGNAL(pauseSignal()), this, SLOT(pause()));
+    }
+
 }
 
 DrawElement::~DrawElement()
 {
-    disconnect(pDrawWidget, SIGNAL(startSignal()), this, SLOT(start()));
-    disconnect(pDrawWidget, SIGNAL(stopSignal()), this, SLOT(stop()));
-    disconnect(pDrawWidget, SIGNAL(pauseSignal()), this, SLOT(pause()));
+    if(pDrawWidget != NULL)
+    {
+        disconnect(pDrawWidget, SIGNAL(startSignal()), this, SLOT(start()));
+        disconnect(pDrawWidget, SIGNAL(stopSignal()), this, SLOT(stop()));
+        disconnect(pDrawWidget, SIGNAL(pauseSignal()), this, SLOT(pause()));
+    }
 }
 
 void DrawElement::paint()
