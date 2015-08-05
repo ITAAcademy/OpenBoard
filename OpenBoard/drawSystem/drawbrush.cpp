@@ -61,7 +61,7 @@ bool DrawBrushElm::load_add(QDataStream &stream)
         qDebug() << "loaded:"<< data.size << data.opacity << data.blur << data.color_main << data.dispers <<
                     data.delta_count << data.count << data.size_delta << data.angle_delta << data.afinn<< data.imageIndex << brushBeginingIndex.pointIndex;
         if (data.imageIndex==-1){
-            data.img = QImage();
+            data.img = QImage(1,1,QImage::Format_ARGB32_Premultiplied);
             data.img.fill(Qt::black);
             data.color_img = BrushPainter::getInstance()->applyColor(data);
             qDebug() <<"DEFAULT INDEX";

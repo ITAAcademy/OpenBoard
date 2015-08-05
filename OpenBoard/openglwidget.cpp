@@ -170,19 +170,25 @@ int recordedBrushN = 0;
 //qDebug() << "keyFrame:"<<keyFrame;
 GLuint texture = textureList[TEXTURE_INDEX_BRUSH];
 glBindTexture(GL_TEXTURE_2D,texture);
+bool isBrushUsed = false;
     for (; recordedBrushN < brushes.length(); )
     {
         //qDebug() << "brushes["<<recordedBrushN<<"].pointIndex"<<brushes[recordedBrushN].pointIndex;
     if (brushes[recordedBrushN].pointIndex==keyFrame){
-       // qDebug() << "texture loaded";
+       qDebug() << "KEY_FRAME:"<<keyFrame;
        // qDebug() << "mouse play index:"<<keyFrame;
-       // qDebug() << "recordedBrushN:"<<recordedBrushN;
-        currentBrushOfDrawSystem = brushes[recordedBrushN].brush;
+        qDebug() << "recordedBrushN:"<<recordedBrushN;
+
         loadTexture(brushes[recordedBrushN].brush.color_img, TEXTURE_INDEX_BRUSH, true);
+        isBrushUsed=true;
      //qDebug() << "recordedBrushN:"<<recordedBrushN;
      break;
     }
     recordedBrushN++;
+    }
+    if (isBrushUsed) {
+        qDebug() << "recordedBrushN:" << recordedBrushN;
+        currentBrushOfDrawSystem = brushes[recordedBrushN].brush;
     }
      //qDebug() << "recordedBrushN:"<<recordedBrushN;
     //if (recordedBrushN>=brushes.length())recordedBrushN=brushes.length()-1;
