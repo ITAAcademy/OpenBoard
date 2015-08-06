@@ -21,12 +21,15 @@ Rectangle {
             width: parent.width
           icon_source : "qrc:/iphone_toolbar_icons/plus.png"
             onClicked: {
+               // for (var i=0; i< 30; i++)
+                {
                 var ss = num
                timeControll.addNewBlock(bar_track.mIndex,"vasia" + ss);
                 num +=1
                 // item_col.globalRep.updateModel() ;
                 globalRep.updateModel()
-
+              //  console.log("AAAAAAAAAAAAding blocks num : "  + timeControll.getTrackSize(main222.selectedBlockCol))
+                    }
                /* item_col.p_columns.columns.globalRep.updateModel();
                  item_col.p_columns.rep_columns.globalRep.updateModel();*/
                // main222.p_item_col.p

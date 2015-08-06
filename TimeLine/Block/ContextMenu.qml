@@ -17,6 +17,25 @@ property Repeater globalRep
      color: "gray"
      property color text_color: "white"
 
+     function showEditBlock()
+     {
+         //var component = Qt.createComponent("EditBlock.qml")
+         var window    = Qt.createComponent("EditBlock.qml").createObject(contextMenuItem)
+         window.modality = Qt.WindowModal
+         window.blockIndex = contextMenuItem.blockIndex
+         window.columnIndex = contextMenuItem.columnIndex
+         window.show()
+         var temp = 400
+         window.maximumHeight = temp
+         window.maximumWidth = temp
+         window.minimumHeight = temp
+         window.minimumWidth = temp
+
+         window.globalRep = contextMenuItem.globalRep
+          window.minBlockWidth = contextMenuItem.minBlockWidth
+
+     }
+
     Column {
         id: menuHolder
         spacing: 1
@@ -33,22 +52,8 @@ property Repeater globalRep
             button_text: "Edit block"
             index: 1
             onButtonClicked: {
-
-                //var component = Qt.createComponent("EditBlock.qml")
-                var window    = Qt.createComponent("EditBlock.qml").createObject(contextMenuItem)
-                window.modality = Qt.WindowModal
-                window.blockIndex = contextMenuItem.blockIndex
-                window.columnIndex = contextMenuItem.columnIndex
-                window.show()
-                var temp = 400
-                window.maximumHeight = temp
-                window.maximumWidth = temp
-                window.minimumHeight = temp
-                window.minimumWidth = temp
-
-                window.globalRep = contextMenuItem.globalRep
-                 window.minBlockWidth = contextMenuItem.minBlockWidth
                 contextMenuItem.visible = false
+                contextMenuItem.showEditBlock()
             }
         }
 

@@ -152,6 +152,17 @@ MainWindow::MainWindow(QWidget *parent) :
        toolBar->addAction(QPixmap(":/icons/Paste-icon.png").scaled(QSize(16, 16)), "Paste", this, SLOT(on_action_Paste_triggered()));
        toolBar->addAction(QPixmap(":/icons/select_all.png").scaled(QSize(16, 16)), "Select all", this, SLOT(on_action_Select_all_triggered()));
        toolBar->addAction(QPixmap(":/icons/search-icon.png").scaled(QSize(16, 16)), "Search", this, SLOT(on_action_Find_triggered()));
+
+
+       a_clear_textedit = new QAction(this);
+       a_clear_textedit->setEnabled(true);
+       a_clear_textedit->setIcon(QPixmap(":/icons/222.png").scaled(QSize(16, 16)));
+       a_clear_textedit->setToolTip(tr("Clear text areas"));
+       connect(a_clear_textedit,SIGNAL(triggered()),this,  SLOT(on_action_Clear_TextEdit_triggered()));
+       toolBar->addAction(a_clear_textedit);
+
+
+
        toolBar->addSeparator();
 
        toolBar->addAction(QPixmap(":/icons/font-x-generic-icon.png").scaled(QSize(16, 16)), "Font text area", this, SLOT(on_action_Font_triggered()));
@@ -197,6 +208,11 @@ MainWindow::MainWindow(QWidget *parent) :
        a_play->setToolTip(tr("Play"));
        connect(a_play,SIGNAL(triggered()),this,  SLOT(on_action_Play_triggered()));
        toolBarBoard->addAction(a_play);
+
+
+
+
+
 
        a_pause = new QAction(this);
        a_pause->setEnabled(false);
@@ -418,6 +434,12 @@ void MainWindow::on_action_Hide_triggered()
     a_record_to_file->setEnabled(false);
     a_undo->setEnabled(false);
    a_redo->setEnabled(false);
+}
+
+void MainWindow::on_action_Clear_TextEdit_triggered()
+{
+    this->textEdit->clear();
+    this->commandTextEdit->clear();
 }
 
 void MainWindow::on_action_Font_triggered()

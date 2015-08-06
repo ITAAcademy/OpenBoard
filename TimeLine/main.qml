@@ -86,6 +86,8 @@ Rectangle
     }
 
 
+
+
     function addTrack()     {
         timeControll.addNewTrack( )
     rep_columns.model +=1
