@@ -984,7 +984,8 @@ void MainWindow::onTextChanged()
     QTextCursor cursor = textEdit->textCursor();
     int cursPos = textEdit->textCursor().position();
     int textSize = str.size();
-    int status = mParser.ParsingLine(mUnitList, str); // add parsing /n
+    quint64 drawTime = 0;
+    int status = mParser.ParsingLine(mUnitList, str,drawTime); // add parsing /n
    /* if(textSize != str.size())
     {
         textEdit->clear();

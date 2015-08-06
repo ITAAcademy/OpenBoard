@@ -136,19 +136,26 @@ int recordedBrushN = 0;
 //qDebug() << "keyFrame:"<<keyFrame;
 GLuint texture = brushTexture;
 glBindTexture(GL_TEXTURE_2D,texture);
+bool isBrushUsed = false;
     for (; recordedBrushN < brushes.length(); )
     {
         //qDebug() << "brushes["<<recordedBrushN<<"].pointIndex"<<brushes[recordedBrushN].pointIndex;
     if (brushes[recordedBrushN].pointIndex==keyFrame){
-       // qDebug() << "texture loaded";
+       qDebug() << "KEY_FRAME:"<<keyFrame;
        // qDebug() << "mouse play index:"<<keyFrame;
-       // qDebug() << "recordedBrushN:"<<recordedBrushN;
+
         currentBrushOfDrawSystem = brushes[recordedBrushN].brush;
         brushTexture = loadTexture(brushes[recordedBrushN].brush.color_img);
+        qDebug() << "recordedBrushN:"<<recordedBrushN;
+        isBrushUsed=true;
      //qDebug() << "recordedBrushN:"<<recordedBrushN;
      break;
     }
     recordedBrushN++;
+    }
+    if (isBrushUsed) {
+        qDebug() << "recordedBrushN:" << recordedBrushN;
+        currentBrushOfDrawSystem = brushes[recordedBrushN].brush;
     }
      //qDebug() << "recordedBrushN:"<<recordedBrushN;
     //if (recordedBrushN>=brushes.length())recordedBrushN=brushes.length()-1;
@@ -771,9 +778,11 @@ paintBufferOnScreen(0, 0, wax, way,-100);
 
 glDisable(GL_BLEND);
 GLuint error = glGetError();
+
 glFinish();
 swapBuffers();
 glFlush();
+
 
 //qDebug() << "GL_ERROR_STATUS end:"<<error;
 }

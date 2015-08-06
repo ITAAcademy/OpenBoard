@@ -1,5 +1,5 @@
 #include "parser.h"
-
+#include <typeinfo>
 
 Parser::Parser()
 {
@@ -26,7 +26,28 @@ QString Parser::commands[]   ={
 };
 int Parser::COMMANDS_COUNT = 12;
 int Parser::MAX_COMMAND_LENGTH = 3;
-int Parser::ParsingLine(QList<Unit*> &list,  QString &str)
+quint64 Parser::processTimeOfUnits(QList<Unit*> list, int delayMS){
+    if(list.isEmpty())return 0;
+    quint64 resultTime = 0;
+    for (Unit *unit : list)
+    {
+        QString unitClass = QString(typeid(*unit).name());
+      qDebug() <<"typeid name:"<< unitClass;
+      if (unitClass.indexOf("UnitSumbol")>=0){
+          qDebug()<<"contains UnitSumbol";
+          resultTime+=delayMS;
+      }
+      else if (unitClass.indexOf("UnitCommand")>=0){
+         if (((UnitCommand*)unit)->getUnitCommandType()=="ErasePreChar") resultTime+=delayMS;
+         else if (((UnitCommand*)unit)->getUnitCommandType()=="Pause")resultTime+=delayMS;
+      }
+
+    }
+    return resultTime;
+}
+
+
+int Parser::ParsingLine(QList<Unit*> &list,  QString &str,quint64& timeSpendToDraw)
 {
     list.clear();
     QString pars_line;
@@ -349,5 +370,7 @@ int Parser::ParsingLine(QList<Unit*> &list,  QString &str)
             state = -1;
         }
     }
+    timeSpendToDraw=processTimeOfUnits(list);
+    qDebug()<<"timeSpendToDraw:"<<timeSpendToDraw;
     return state;
 }

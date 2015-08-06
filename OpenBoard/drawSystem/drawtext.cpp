@@ -22,6 +22,11 @@ void DrawTextElm::draw()
     if (current_time > 0)
     {
        // qDebug() << "startDrawTime:"<<startDrawTime;
+	        if(keyCouter == 0)
+           {
+               pDrawWidget->clearCanvas();
+               pDrawWidget->clearBuffer();
+           }
        int realKeyValue = (current_time - startDrawTime)*mUnitList.size()/lifeTime;
        qDebug() << "pDrawWidget->getTimeLine()->getPlayTime()"<< current_time;
    // if (keyCouter < realKeyValue)
@@ -63,11 +68,7 @@ void DrawTextElm::setUnParsestring(const QString &value)
 {
     unParsestring = value;
     // qDebug() << value;
-    myParser.ParsingLine(mUnitList, unParsestring);
-
-   /* Unit unit;
-    unit.setUnitData(QString(" "));
-    mUnitList.append(&unit);*/
+    myParser.ParsingLine(mUnitList, unParsestring,drawTime);
 
     if(mUnitList.size() > 0)
         tickTime = lifeTime/mUnitList.size();
@@ -107,7 +108,7 @@ bool DrawTextElm::load_add(QDataStream &stream)
     stream.readRawData(data.data(), sizeOfString);
     unParsestring = data;
     // qDebug() << data;*/
-    myParser.ParsingLine(mUnitList, unParsestring);
+    myParser.ParsingLine(mUnitList, unParsestring,drawTime);
 }
 
 bool DrawTextElm::save_add(QDataStream &stream)

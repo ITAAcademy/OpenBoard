@@ -7,7 +7,7 @@ DrawImageElm::DrawImageElm(OGLWidget *drawWidget, QObject *parent) : DrawElement
 
 DrawImageElm::~DrawImageElm()
 {
-    if(textureIndex > 1)
+    if(textureIndex != 0)
         pDrawWidget->deleteTexture(textureIndex);
 }
 
