@@ -11,6 +11,7 @@ class DrawTextElm : public DrawElement
 
     QList <Unit*>mUnitList;
     Parser myParser;
+    quint64 drawTime;
 public:
     explicit DrawTextElm( OGLWidget *drawWidget, QObject *parent = 0);
     ~DrawTextElm();

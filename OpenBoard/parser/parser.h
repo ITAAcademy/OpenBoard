@@ -19,7 +19,8 @@ public:
     Parser();
     virtual ~Parser();
 
-    static int ParsingLine(QList<Unit*>& list, QString &str);
+    static int ParsingLine(QList<Unit*>& list, QString &str,quint64& timeSpendToDraw);
+   static quint64 processTimeOfUnits(QList<Unit *> list,int delayMS=5);
 };
 
 #endif // PARSER
