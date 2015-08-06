@@ -16,7 +16,8 @@ class MyTextEdit : public QTextEdit
 {
     Q_OBJECT
 private:
-      enum SCAN_CODE_TABLE {SCAN_KEY_Z=44,SCAN_KEY_V=47,SCAN_KEY_X=45,SCAN_KEY_C=46,SCAN_KEY_A=30};
+      enum SCAN_CODE_TABLE {SCAN_KEY_Z=44,SCAN_KEY_V=47,SCAN_KEY_X=45,
+                            SCAN_KEY_C=46,SCAN_KEY_A=30, SCAN_KEY_TAB = 15};
       QTextCursor t_cursor;
     bool pair_change;
     bool undo_redo;
@@ -37,6 +38,7 @@ private:
 public slots:
     // void onEditText();
     void saveChanges();
+    void tabTo4Spaces();
 public:
     void openText();
     void newText();
