@@ -251,6 +251,7 @@ private slots:
     void storeMousePos();
 
 private:
+       bool firstUpdate = true;
      bool isNotPainting;
     QImage img;
     ListControll *timeLine = NULL;

@@ -12,6 +12,8 @@ this->destination=destination;
     changebuf.cursor = 0;
     changebuf.cymbol = "";
     changebuf.changeSize =0;
+
+     connect(this, SIGNAL(textChanged()),this, SLOT(tabTo4Spaces()));
 }
 void KeyloggerTE::saveChanges(int sizeOfChange){
 
@@ -372,5 +374,22 @@ void KeyloggerTE::mouseReleaseEvent(QMouseEvent *eventPress){
                changesDetected=true;
       }
 //// qDebug() << "cursor changed";
+}
+
+void KeyloggerTE::tabTo4Spaces()
+{
+     disconnect(this, SIGNAL(textChanged()),this, SLOT(tabTo4Spaces()));
+
+    QTextCursor textCurs = this->textCursor();
+    int cursorPos = textCurs.position();
+
+     QString text =  this->toPlainText();
+     if (text.contains(QString("\t")))
+         cursorPos += 3;
+    text.replace(QString("\t"), QString("    "));
+    this->setPlainText(text);
+   textCurs.setPosition(cursorPos);
+   this->setTextCursor(textCurs);
+      connect(this, SIGNAL(textChanged()),this, SLOT(tabTo4Spaces()));
 }
 

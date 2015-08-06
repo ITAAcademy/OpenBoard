@@ -97,8 +97,8 @@ void ListControll::addNewTrack( )
 {
     QList <Element>  temp;
     temp.append(Element());
-    temp.append(Element());
-    temp.append(Element());
+ //   temp.append(Element());
+  //  temp.append(Element());
        int  temp_traclwidth =   def_min_block_width*temp.size();
        Track trak(temp_traclwidth,temp);
         tracks.append(trak);
@@ -114,6 +114,7 @@ void ListControll::loadFromFile()
    /*  if (p.x() > -1)
         tracks[p.x()].time -= tracks[p.x()].block[p.y()].draw_element->getLifeTime();*/
     QString open = QFileDialog::getOpenFileName();
+//qDebug() <<"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA " + open;
     DrawElement *elm = GenerationDrawElement(open);
     if(elm == NULL)
         return;
@@ -361,7 +362,8 @@ ListControll::ListControll(QObject *parent) : QObject(parent), QQuickImageProvid
         testWidth.append(temp_int);
 */
     addNewTrack( );
-   // selectedBlock  = getBlock(0,0);
+
+
     recountMaxTrackTime();
     if (qgetenv("QT_QUICK_CORE_PROFILE").toInt()) {\
         QSurfaceFormat f = view.format();\
@@ -388,7 +390,29 @@ ListControll::ListControll(QObject *parent) : QObject(parent), QQuickImageProvid
 
 
 //view.setMaximumHeight(215);
+    //loadCurrentTextInTheFirstBlockWhenInit();
 
+}
+void ListControll::loadCurrentTextInTheFirstBlockWhenInit()
+{
+    isBlocked = true;
+    QPoint p(0,0);
+    QString open = "curent.text";
+    DrawElement *elm = GenerationDrawElement(open);
+    if(elm == NULL)
+        return;
+    Element &temp = tracks[p.x()].block[p.y()];
+    int life_time = temp.draw_element->getLifeTime();
+    int start_time = temp.draw_element->getStartDrawTime();
+    delete temp.draw_element;
+    temp.key = elm->getKey();
+    temp.draw_element = elm;
+    temp.draw_element->setLifeTime(life_time);
+    temp.draw_element->setStartDraw(start_time);
+    temp.draw_element->setZ(p.x());
+    recountMaxTrackTime();
+    isBlocked = false;
+    qDebug() <<"loadCurrentTextInTheFirstBlockWhenInit DONE!!!!!!!!!!!!!!!!!!!!!!!";
 }
 
  void ListControll::moveWindow()
@@ -699,12 +723,18 @@ QImage ListControll::requestImage(const QString &id, QSize *size, const QSize &r
             //= QImage::fromData(reply->readAll());
     /*size->setWidth(image.width());
     size->setHeight(image.height());*/
-    // qDebug() << "                                                                           IMAGE ";
+    // qDebug() << "
+
     QVector <QStringRef> argv = id.splitRef('+');
+
     QImage img = getBlock(argv[0].toInt(), argv[1].toInt()).draw_element->getIcon();
-    //qDebug() << "IMAGE                                                          ppp " << getBlock(argv[0].toInt(), argv[1].toInt()).draw_element->getKey();
+   //qDebug() << "IMAGE  pp " << getBlock(argv[0].toInt(), argv[1].toInt()).draw_element->getKey();
+
     if(img.isNull())
+    {
+               // qDebug() << "AAAAAAAAAAAAAAAAAA  id = " << id ;
             return QImage(":/icons/12video icon.png");
+    }
 
     return img;
 
@@ -719,6 +749,13 @@ QImage ListControll::requestImage(const QString &id, QSize *size, const QSize &r
          emit stopSignal();
          isPlayPauseStop = 3;
      }
+ }
+
+
+
+ int  ListControll::getTracksNumber()
+ {
+     return tracks.size();
  }
 
 

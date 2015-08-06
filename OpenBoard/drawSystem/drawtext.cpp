@@ -64,6 +64,11 @@ void DrawTextElm::setUnParsestring(const QString &value)
     unParsestring = value;
     // qDebug() << value;
     myParser.ParsingLine(mUnitList, unParsestring);
+
+   /* Unit unit;
+    unit.setUnitData(QString(" "));
+    mUnitList.append(&unit);*/
+
     if(mUnitList.size() > 0)
         tickTime = lifeTime/mUnitList.size();
      qDebug()<<"tickTime5:"<<tickTime;
@@ -72,6 +77,11 @@ void DrawTextElm::setUnParsestring(const QString &value)
 void DrawTextElm::setUnitList(const QList<Unit *> &unitList)
 {
     mUnitList = unitList;
+
+
+  /*  Unit unit;
+    unit.setUnitData(QString(" "));
+    mUnitList.append(&unit);*/
 
     if(unitList.size() != 0)
     {

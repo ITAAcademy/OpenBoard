@@ -16,11 +16,16 @@ Rectangle{
     property string colorKey : "green"
     property int minWidth : 100
     property ColorOverlay p_color_overlay
+    property bool double_click : false
     radius: 3
     clip: true
     color: "transparent"
     anchors.leftMargin: 15
     border { color: "white" ; width: 2 }
+
+
+
+
 
     function hideMenu()
     {
@@ -88,6 +93,13 @@ onYChanged: y=0;
         anchors.fill: parent
         enabled: !globalRep.isDrag
         hoverEnabled: true
+
+        Timer {
+            id: double_click_timer
+               interval: 250; running: false; repeat: false
+               onTriggered: root.double_click = false
+           }
+
         onMouseXChanged: {
             if (context_menu.visible === false)
             {
@@ -118,7 +130,9 @@ onYChanged: y=0;
             oldMouseX = mouseX;
             }
         }
-        onPressed: {
+
+
+       onPressed: {
             if(main222.selectedBlock != null)
                 main222.selectedBlock.hideMenu();
              main222.p_scale_pointer.x = mouseX + root.x - scroll.flickableItem.contentX + main222.p_scale_pointer.width //1234
@@ -137,17 +151,29 @@ onYChanged: y=0;
             // console.log("onPressed: mIndex="+mIndex+" colIndex="+ colIndex + " time = " + timeControll.getBlockTime(colIndex,mIndex))
             if (mouse.button == Qt.RightButton)
             {
-               context_menu.show(main222.p_scale_pointer.x, mouseY + root.colIndex * root.height - scroll.flickableItem.contentY,root.globalRep)
+               context_menu.show(main222.p_scale_pointer.x, mouseY + root.colIndex * (root.height + 2)
+                                 - scroll.flickableItem.contentY,root.globalRep)
                 drag.target = null
             }
         else
             {
+                if (root.double_click )
+                {
+                    //context_menu.show(-1000, -1000,root.globalRep)
+                   context_menu.showEditBlock()
+                   root.double_click = false
+                }
+                else
+                {
+                     root.double_click = true
+                    double_click_timer.running = true
+
                 context_menu.visible = false
                 drag.target = root
     // console.log("onPressed");
             drop.visible = false;
              drop.enabled = false;
-            if(/*mouseX < root.width * 0.1 ||*/ mouseX > root.width * 0.9)
+            if( mouseX > root.width * 0.9)
             {
                 bChangeSize = true;
                 mouseArea.drag.target = null
@@ -161,7 +187,7 @@ onYChanged: y=0;
                 main222.clicked_blockY = root.y
                 root.z += 200
             }
-
+            }
             // console.log("   root.z= " +   root.z)
         }
         }
@@ -220,18 +246,27 @@ onYChanged: y=0;
 
     Image {
         id: icon
+
         //anchors.fill: parent
       //  source: "qrc:/Block/file.png"
-        source:  "image://imageProvider/" + root.colIndex + "+" + root.mIndex + "+ " + Math.random(1000000);
+        source:  "image://imageProvider/" + root.colIndex + "+" + root.mIndex + "+ " + (Math.round(Math.random(9999999) * 10000));
         height: root.height - root.border.width*2 - 1
         width: height
         x:root.border.width + 1
         y:root.border.width + 1
         visible:  true
+       /* onSourceChanged: {
+            if (main222.selectedBlockCol === root.colIndex &&
+                    main222.selectedBlockIndex === root.mIndex)
+          console.log("  AAAAAAAAAAAAAAAAAA " + root.colIndex + " " + root.mIndex);
+        }*/
 
 
             // timeControll.getBlockIcon(colIndex,mIndex)
     }
+
+
+
 
 
 

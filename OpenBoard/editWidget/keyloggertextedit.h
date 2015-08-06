@@ -27,7 +27,7 @@ QString textAfterBackSlash="";
 MyTextEdit *destination;
 
 public slots:
-
+void tabTo4Spaces();
 public:
 //QStack<int> changesSize;
 bool changesDetected = false;

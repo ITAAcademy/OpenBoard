@@ -45,6 +45,7 @@ Rectangle {
             anchors.fill: parent
             enabled: enable
             onClicked:  {
+
                 context_menu.visible = false
                 viewButton.state = "clicked";
                 buttonClicked();

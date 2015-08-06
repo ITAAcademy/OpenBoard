@@ -47,5 +47,6 @@
         <file>icons/ip_icon_04_New.png</file>
         <file>icons/new-icon.png</file>
         <file>icons/Oxygen-Icons.org-Oxygen-Actions-edit-clear.ico</file>
+        <file>icons/222.png</file>
     </qresource>
 </RCC>

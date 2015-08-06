@@ -24,6 +24,7 @@ MyTextEdit::MyTextEdit(QColor originalColor,QColor specifiedColor,QWidget *paren
  qsrand(midnight.secsTo(QTime::currentTime()));
 
  //connect(this, SIGNAL(textChanged()),this, SLOT(saveChanges()));
+ connect(this, SIGNAL(textChanged()),this, SLOT(tabTo4Spaces()));
  pair_change=false;
  t_cursor = this->textCursor();
  newText();\
@@ -79,14 +80,16 @@ charCount=document()->characterCount();
  void MyTextEdit::keyPressEvent(QKeyEvent *e) {
         quint32 scanCode = e->nativeScanCode();
          int keyCode = e->key();
- if(e->type() == QKeyEvent::KeyPress) {
+ if(e->type() == QKeyEvent::KeyPress)
+ {
  if(e->matches(QKeySequence::Undo))
  undom();
  else
      if(e->matches(QKeySequence::Redo))
      rendom();
-     else
+ else
  QTextEdit::keyPressEvent(e);
+
  if(e->modifiers() & Qt::ControlModifier)
  {
 
@@ -138,9 +141,11 @@ charCount=document()->characterCount();
                  QCoreApplication::postEvent (this, e);
              }
 
-         }
+         }  
 
  }
+
+
 
  }
  }
@@ -208,6 +213,23 @@ this->setTextCursor(t_cursor);
      emit doUndoRedoEnd();
 
  }
+
+  void MyTextEdit::tabTo4Spaces()
+  {
+       disconnect(this, SIGNAL(textChanged()),this, SLOT(tabTo4Spaces()));
+
+      QTextCursor textCurs = this->textCursor();
+      int cursorPos = textCurs.position();
+
+       QString text =  this->toPlainText();
+       if (text.contains(QString("\t")))
+           cursorPos += 3;
+      text.replace(QString("\t"), QString("    "));
+      this->setPlainText(text);
+     textCurs.setPosition(cursorPos);
+     this->setTextCursor(textCurs);
+        connect(this, SIGNAL(textChanged()),this, SLOT(tabTo4Spaces()));
+  }
 
  void MyTextEdit::saveChanges()
  {

@@ -51,6 +51,8 @@ Rectangle
 
     Component.onCompleted: {
     frama.p_main222 = main222
+     timeControll.loadCurrentTextInTheFirstBlockWhenInit()
+         p_context_menu.globalRep.updateModel();
     }
     width: childrenRect.width ///main222.width + 20
    height: childrenRect.height //main222.height + 20
@@ -66,6 +68,7 @@ Rectangle
    property int selectedBlockIndex : 0
    property int minBlockWidth : 0
    property bool isPlay : false
+   // property int torepainting : 1
 
 
    property  bool needToLightSelected : false
@@ -83,6 +86,9 @@ Rectangle
         if (scaling <= 0.02)
             scaling = 0.02
     }
+
+
+
 
     function addTrack()     {
         timeControll.addNewTrack( )
@@ -441,6 +447,7 @@ main222.isPlay = false
                                            model:  timeControll.getTrackSize(trackbar.mIndex)//     bar_track.mIndex)
     function updateModel()      {
         model = model - 1;
+
         item_col.width = timeControll.getMaxTrackTime() + 31
             timeControll.update();
         model =  timeControll.getTrackSize(bar_track.mIndex)
@@ -478,6 +485,8 @@ main222.isPlay = false
                                            }
                                            onModelChanged: {
                 columns.width =  timeControll.getMaxTrackTime() //* main222.scaling
+
+
                                            }
 
                                        }
