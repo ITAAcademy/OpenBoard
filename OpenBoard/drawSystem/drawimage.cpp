@@ -33,10 +33,8 @@ void DrawImageElm::setDrawImage(QImage img)
     icon = img;
     //image.save("12334243534534534.png");
     if(pDrawWidget != NULL)
-        if(textureIndex > 1)
-            textureIndex = pDrawWidget->loadTexture(image, textureIndex , true);
-        else
-            textureIndex = pDrawWidget->loadTexture(image);
+         textureIndex = pDrawWidget->loadTexture(image);
+
 
 }
 

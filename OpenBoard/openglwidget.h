@@ -41,6 +41,8 @@ struct ColorMarker{
     QColor value;
 };
 enum EditingRectangleBindMode {EDIT_RECTANGLE_UNBINDED =0,EDIT_RECTANGLE_MOVE=1,EDIT_RECTANGLE_RESIZE=2};
+class OGLWidget;
+
 struct RectangleEditor {
     QRect rect;
     int leftCornerSize;
@@ -48,6 +50,26 @@ struct RectangleEditor {
     int editingRectangleMode = EDIT_RECTANGLE_UNBINDED;
 
 };
+struct AnimationFigure
+{
+    AnimationFigure( QRect rect, int type, int start, int stop )
+    {
+        this->rect = rect;
+        this->type = type;
+        this->start = start;
+        this->stop = stop;
+    }
+
+    AnimationFigure(){};
+
+    QRect rect;
+    double persent = 0;
+    bool fill = true;
+    int type = 0;
+    int start = -1;
+    int stop = -1;
+};
+
 class Encoder;
 
 struct DrawData{
@@ -69,6 +91,7 @@ public:
      * |Future gradient
      */
 
+
    bool isMousePlay = false;//play recorded mouse movement
    bool isMousePress = false;
    bool ismouseWasPressedBeforeDrag = false;  
@@ -76,6 +99,9 @@ public:
    volatile bool isCrossingNow;
 
    DrawBrushElm *drawBrushElm;//record mouse movement
+    GLuint brushTexture;
+    GLuint backGroundTexture;
+    QVector <AnimationFigure> listOfAnimationFigure; // now use only for cross animation
 
 
 
@@ -121,7 +147,8 @@ public:
      */
     void clearCanvas(int m_x = 0, int m_y = 0);
     void drawFigure (int x, int y, int width, int height, FigureType type, bool fill, QColor col, float size);
-    void drawAnimationFigure (int x, int y, int width, int height, FigureType type, bool fill);
+    bool drawAnimationFigure (int x, int y, int width, int height, double persent, FigureType type, bool fill);
+    bool drawAnimationFigure (AnimationFigure &figure);
     void nextRow(int n   = -1, int Row = -1, bool wrap = true);
     Q_INVOKABLE void crossOutLastSymbol(int n = 1);
     void crossOutWithAnimation(int n = 1);
@@ -168,6 +195,9 @@ public:
 
 
     void paintBrushInBuffer(QVector<QPoint> coords, QVector<BrushBeginingIndex> brushes,int keyFrame);
+    double getAnimationPersentOfCross() const;
+    void setAnimationPersentOfCross(double value);
+
 public slots:
     void drawAnimated( bool record );
     void stopAnimated();
@@ -194,10 +224,9 @@ public slots:
     void testWrap(int kIndexOfRow);
     void deleteFromBuffer(int n);
     bool crossTextDraw();
-    int loadTexture(QImage img, int index = -1, bool modify = false);
-    void deleteTexture(int index, bool gl_only = false); // gl_only delete only from video memory, can reload
-    int loadTextureFromFile(QString path, int index = -1); // return index for reload + texture indefication
-    bool reloadTexture( int index);
+    GLuint loadTexture(QImage img);
+    void deleteTexture(GLuint index); // gl_only delete only from video memory, can reload
+    int loadTextureFromFile(QString path); // return index for reload + texture indefication
     /*
      *
      *
@@ -206,6 +235,7 @@ public slots:
     int getRowFromTextBoxIndex(int index, bool symbol);
     ListControll* getTimeLine();
 
+    void displayText(const QString &text, QColor color);
 signals:
     void drawTextChanged();
     void pauseSignal();
@@ -290,7 +320,7 @@ private:
     int widthToClean=0;
 
     double timer_test;
-    double animationSpeed = 0.01;
+    double animationPersentOfCross = 0.01;
     QTimer tickTimer;
     QTimer mouseTimer;
 

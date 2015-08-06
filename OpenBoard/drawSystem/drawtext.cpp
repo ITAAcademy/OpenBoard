@@ -18,11 +18,12 @@ void DrawTextElm::draw()
         //keyCouter++;
      //   tickTimer.restart();
    // }
-    if (pDrawWidget->getTimeLine()->getPlayTime()>0)
+    int current_time =  pDrawWidget->getTimeLine()->getPlayTime();
+    if (current_time > 0)
     {
        // qDebug() << "startDrawTime:"<<startDrawTime;
-       int realKeyValue = (pDrawWidget->getTimeLine()->getPlayTime()-startDrawTime)*mUnitList.size()/lifeTime;
-       qDebug() << "pDrawWidget->getTimeLine()->getPlayTime()"<<pDrawWidget->getTimeLine()->getPlayTime();
+       int realKeyValue = (current_time - startDrawTime)*mUnitList.size()/lifeTime;
+       qDebug() << "pDrawWidget->getTimeLine()->getPlayTime()"<< current_time;
    // if (keyCouter < realKeyValue)
 
         while(keyCouter <=realKeyValue)
@@ -30,8 +31,11 @@ void DrawTextElm::draw()
             if (keyCouter < mUnitList.size() && bPlay) mUnitList.at(keyCouter)->draw(pDrawWidget);
                     keyCouter++;
         }
+      //  qDebug() << "drawInfo   " << (double) 1 - (double)(qAbs(((current_time - startDrawTime) - (lifeTime/mUnitList.size())*keyCouter)))/(lifeTime/mUnitList.size());
+        if(keyCouter < mUnitList.size() - 1 && mUnitList.at(keyCouter)->unitType != mUnitList.at(keyCouter - 1)->unitType)
+            pDrawWidget->update();
+        pDrawWidget->setAnimationPersentOfCross( qAbs((double) 1 - (double)(qAbs(((current_time - startDrawTime) - (tickTime)*keyCouter)))/(tickTime)));
     }
-    qDebug() << "drawInfo" << mUnitList.size() << "     " << keyCouter;
     pDrawWidget->drawTextBuffer(x, y, width, height, z);
 
 

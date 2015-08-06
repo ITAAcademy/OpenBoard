@@ -673,7 +673,7 @@ void  ListControll::stop()
 qint64 ListControll::getPlayTime()
 {
     if (isPlayPauseStop ==1 )
-    return time_sum + timer.elapsed();
+        return time_sum + timer.elapsed();
     else
         if (isPlayPauseStop ==2 )
         return time_sum ;

@@ -11,21 +11,20 @@ int k = canvas->property("scroll").toInt() - 10;
 canvas->setProperty("scroll", k);
 */
 
-int OGLWidget::loadTexture(QImage img, int index, bool modify){
+GLuint OGLWidget::loadTexture(QImage img){
     if(img.isNull()) // QCoreApplication::applicationDirPath()+"/star.png"
     {
         //loads correctly
         qWarning() << "ERROR LOADING IMAGE";// + QCoreApplication::applicationDirPath()+"/star.png";
         return 0;
     }
-    else
-        qDebug() << "image successfully loaded  " << index;
+
     QImage GL_formatted_image = convertToGLFormat(img);
     // qDebug() << "image converted to GL format";
     if(GL_formatted_image.isNull())
-        qWarning() << "IMAGE IS NULL" << modify;
+        qWarning() << "IMAGE IS NULL";
     else
-        qWarning() << "IMAGE NOT NULL" << modify;
+        qWarning() << "IMAGE NOT NULL";
     //generate the texture name
     //glEnable(GL_TEXTURE_2D); // Enable texturing
     GLuint texture;
@@ -47,44 +46,18 @@ int OGLWidget::loadTexture(QImage img, int index, bool modify){
        glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 
        glDisable(GL_TEXTURE_2D);
-        glBindTexture(GL_TEXTURE_2D, 0);
+       glBindTexture(GL_TEXTURE_2D, 0);
 //qDebug("before int realIndex = index; ");
-       int realIndex = index;
-       if(modify)
-       {
-           qDebug() << " if(modify)  " <<  index ;
-           deleteTexture(index, true);
-           textureList[index] = texture;
-           imgList[index] = img;
-           return index;
-       }
-
-       {
-            qDebug("else");
-           realIndex = imgList.length();
-           imgList.append(img);
-           textureList.append(texture);
-       }
-       qDebug() << "TEXTURE_FINAL    " <<  realIndex;
-       return realIndex;
+       return texture;
        //bind the texture ID
 }
 
-void OGLWidget::deleteTexture(int index, bool gl_only)
+void OGLWidget::deleteTexture(GLuint index)
 {
-    if(index >= 0 && index < imgList.length()){
-        // qDebug()<<"textureListLen:"<<textureList.length();
-         // qDebug()<<"index:"<<index;
-      glDeleteTextures(1,&textureList[index]);
-      if(!gl_only)
-      {
-          textureList.remove(index);
-          imgList.remove(index);
-      }
-    }
+      glDeleteTextures(1, &index);
 }
 
-int OGLWidget::loadTextureFromFile(QString path, int index)
+int OGLWidget::loadTextureFromFile(QString path)
 {
     QImage img(path);
     if(img.isNull()) // QCoreApplication::applicationDirPath()+"/star.png"
@@ -93,17 +66,10 @@ int OGLWidget::loadTextureFromFile(QString path, int index)
         qWarning() << "ERROR LOADING IMAGE  " + path;
         return 0;
     }
-    return loadTexture(img, index);
+    return loadTexture(img);
 
 }
 
-bool OGLWidget::reloadTexture(int index)
-{
-    if(index >= imgList.length())
-        return false;
-    loadTexture(imgList[index], index);
-
-}
 void OGLWidget::drawTexture( int x, int y, int width, int height, GLuint texture,int angle,float scaleX,float scaleY, int z){
 //loadTextures();
   // glLoadIdentity();
@@ -132,7 +98,7 @@ void OGLWidget::drawTexture( int x, int y, int width, int height, GLuint texture
 }
 void OGLWidget::drawTexture(int x, int y, int width, int height, int index, int angle, float scaleX, float scaleY, int z)
 {
-    drawTexture(x, y, width, height, textureList[index], angle, scaleX, scaleY, z);
+    drawTexture(x, y, width, height, index, angle, scaleX, scaleY, z);
     //// qDebug() << "void OGLWidget::drawTexture(int x, int y, int width, int height, int index)";
 }
 
@@ -168,7 +134,7 @@ void OGLWidget::paintBrushInBuffer(QVector<QPoint> coords,QVector<BrushBeginingI
     glBindFramebuffer(GL_FRAMEBUFFER , fbo); // Bind our frame buffer for rendering
 int recordedBrushN = 0;
 //qDebug() << "keyFrame:"<<keyFrame;
-GLuint texture = textureList[TEXTURE_INDEX_BRUSH];
+GLuint texture = brushTexture;
 glBindTexture(GL_TEXTURE_2D,texture);
     for (; recordedBrushN < brushes.length(); )
     {
@@ -178,7 +144,7 @@ glBindTexture(GL_TEXTURE_2D,texture);
        // qDebug() << "mouse play index:"<<keyFrame;
        // qDebug() << "recordedBrushN:"<<recordedBrushN;
         currentBrushOfDrawSystem = brushes[recordedBrushN].brush;
-        loadTexture(brushes[recordedBrushN].brush.color_img, TEXTURE_INDEX_BRUSH, true);
+        brushTexture = loadTexture(brushes[recordedBrushN].brush.color_img);
      //qDebug() << "recordedBrushN:"<<recordedBrushN;
      break;
     }
@@ -324,7 +290,12 @@ OGLWidget::OGLWidget(QWidget *parent) :
     isCrossingNow = false;
      drawBrushElm = new DrawBrushElm(this,this);//record mouse movement
     //OPENGL
-    setFormat(QGLFormat(QGL::DoubleBuffer)); // Двойная буферизация
+   //setFormat(QGLFormat(QGL::SampleBuffers | QGL::DoubleBuffer | QGL::DepthBuffer)); // Двойная буферизация
+     QGLFormat format;
+     format.setProfile(QGLFormat::CompatibilityProfile);
+     format.setVersion(3,0);
+     format.setDoubleBuffer(true);
+     setFormat(format);
    glDepthFunc(GL_LEQUAL); // Буфер глубины
    QTimer *timer = new QTimer(this);
    connect(timer, SIGNAL(timeout()), this, SLOT(updateWindow()));
@@ -402,7 +373,7 @@ glBindFramebuffer(GL_FRAMEBUFFER , fbo); // Bind our frame buffer for rendering
    // glEnable(GL_TEXTURE_2D);
         //// qDebug() << "before index";
 //// qDebug() << "paint brush in buffer";
-    GLuint texture = textureList[TEXTURE_INDEX_BRUSH];
+    GLuint texture = brushTexture;
     //// qDebug()<<"texture:"<<texture;
   // if (!ismouseWasPressedBeforeDrag)
 
@@ -591,10 +562,11 @@ void OGLWidget::initializeGL()
     initializeGLFunctions();
     qglClearColor(Qt::black); // Черный цвет фона
      //glEnable(GL_TEXTURE_2D);
-    loadTextureFromFile(":/ThirdPart/images/start.png");
-   loadTexture(m_manager.getCreatedBrush().color_img, TEXTURE_INDEX_BRUSH);
+    backGroundTexture = loadTextureFromFile(":/ThirdPart/images/start.png");
+    brushTexture = loadTexture(m_manager.getCreatedBrush().color_img);
     //loadTextureFromFile(":/ThirdPart/images/brush.png");
     initFrameBuffer(); // Create our frame buffer object
+    setAutoBufferSwap(false);
    /* list_1.append(GenerationDrawElement("kaka.text", this, 0));
     list_1.append(GenerationDrawElement("brush.png", this, 0));*/
 
@@ -674,7 +646,7 @@ void OGLWidget::paintGL()
 //WRITE TO FRAME BUFER FROM HERE
    // glBindFramebuffer(GL_FRAMEBUFFER,0);
     qglColor(Qt::white);
-    drawTexture(0, 0, wax, way, textureList[0], 0, 1, 1, 100000);
+    drawTexture(0, 0, wax, way, backGroundTexture, 0, 1, 1, 100000);
 //WRITE TO SCREEN FROM HERE
 //drawTextBuffer(10,10,400,400);
 
@@ -786,6 +758,10 @@ paintBufferOnScreen(0, 0, wax, way,-100);
 
 glDisable(GL_BLEND);
 GLuint error = glGetError();
+glFinish();
+swapBuffers();
+glFlush();
+
 //qDebug() << "GL_ERROR_STATUS end:"<<error;
 }
 
@@ -971,16 +947,16 @@ void OGLWidget::stopAnimated()
     tickTimer.stop();
     m_encoder->stop();
     // max speed // stop draw function
-    double t_animationSpeed = animationSpeed;
+    double t_animationPersentOfCross = animationPersentOfCross;
 /*    int t_delay = delay;
 
-    animationSpeed = 1;
+    animationPersentOfCross = 1;
     delay = 1;
     while(busy)
     {
          qApp->processEvents();
     }
-    animationSpeed = t_animationSpeed;
+    animationPersentOfCross = t_animationPersentOfCross;
     delay = t_delay;
 */
     bRecord = false;
@@ -1001,7 +977,7 @@ void OGLWidget::pauseAnimated()
 
 void OGLWidget::brushParamsChanged()
 {
-    int index = loadTexture(m_manager.getCreatedBrush().color_img, TEXTURE_INDEX_BRUSH, true);
+    brushTexture = loadTexture(m_manager.getCreatedBrush().color_img);
     drawBrushElm->addBrush(m_manager.getCreatedBrush());
     qDebug() << "brushParamsChanged";
 
@@ -1097,23 +1073,36 @@ void OGLWidget::drawFigure(int x, int y, int x2, int y2, OGLWidget::FigureType t
 
 }
 
-void OGLWidget::drawAnimationFigure(int x, int y, int width, int height, OGLWidget::FigureType type, bool fill)
+bool OGLWidget::drawAnimationFigure(int x, int y, int width, int height, double persent, OGLWidget::FigureType type, bool fill)
 {
     isCrossingNow=true;
-    float persent;
-    while(persent < 1)
+    qDebug() << "wqweqweqwe "  << persent;
+    if(persent < 0.9f)
     {
         drawFigure(x, y, x + (width - x)*persent, height, type, fill);
-     //   // qDebug() << delPos.x() << "             " << delPos.x() + (maxWidth - delPos.x())*persent;
-        persent += animationSpeed;
-        swapBuffers();
-         QThread::currentThread()->msleep(10);
-     //   pause(10);
+         //qDebug() << delPos.x() << "             " << delPos.x() + (maxWidth - delPos.x())*persent;
+        //persent += animationPersentOfCross;
+       // QThread::currentThread()->msleep(10);
         if(curStatus == STOP )
-            return;
+        {
+            isCrossingNow=false;
+            return true;
+        }
+        isCrossingNow=false;
+        return false;
     }
-    drawFigure(x, y, width, height, type, fill);
-    isCrossingNow=false;
+    else
+    {
+        drawFigure(x, y, width, height, type, fill);
+        isCrossingNow=false;
+        return true;
+    }
+
+}
+
+bool OGLWidget::drawAnimationFigure(AnimationFigure &figure)
+{
+    return drawAnimationFigure(figure.rect.x(), figure.rect.y(), figure.rect.width(), figure.rect.height(), animationPersentOfCross, (FigureType)figure.type, figure.fill);
 }
 
 void OGLWidget::crossOutLastSymbol( int n)
@@ -1151,6 +1140,16 @@ void OGLWidget::crossOutWithAnimation(int n)
 void OGLWidget::generateFrames()
 {
 }
+double OGLWidget::getAnimationPersentOfCross() const
+{
+    return animationPersentOfCross;
+}
+
+void OGLWidget::setAnimationPersentOfCross(double value)
+{
+    animationPersentOfCross = value;
+}
+
 bool OGLWidget::getIsBrushWindowOpened() const
 {
     return isBrushWindowOpened;
@@ -1243,8 +1242,8 @@ int OGLWidget::getDelay() const
 void OGLWidget::setDelay(int value)
 {
     delay = value;
-    animationSpeed = (double)1/(value*0.6);
-    // qDebug() << animationSpeed;
+    animationPersentOfCross = (double)1/(value*0.6);
+    // qDebug() << animationPersentOfCross;
 }
 
 int OGLWidget::getCountDeleteWT() const
@@ -1296,7 +1295,12 @@ void OGLWidget::fillText( QString str,QColor color, int x, int y, int z)
    */
 
     qglColor(color);
-    renderText(x, y, -z, str,textFont);
+   // glDisable(GL_DEPTH_TEST);
+    qDebug() << "SHOW_Z " << z;
+    renderText(x, y, str,textFont);
+    //displayText(str, color);
+
+    //glEnable(GL_DEPTH_TEST);
      //renderText(x, y , QString::fromUtf8("Вы набрали %1 очков:").arg(17),textFont);
     /*if(textFont.strikeOut())
     {
@@ -1871,6 +1875,18 @@ void OGLWidget::update(){
 
 bool OGLWidget::crossTextDraw()
 {
+    glDisable(GL_DEPTH);
+    for( int i = 0; i < listOfAnimationFigure.length(); i++)
+    {
+        if(drawAnimationFigure(listOfAnimationFigure[i]))
+        {
+            for( int j = listOfAnimationFigure[i].start; j < listOfAnimationFigure[i].stop; j++) // convert to cross without animation
+                cross[j] = 1;
+            listOfAnimationFigure.remove(i);
+        }
+
+    }
+    glEnable(GL_DEPTH);
     int y;
     int x1, x2, x;
     bool lastGood = false;
@@ -1916,10 +1932,10 @@ bool OGLWidget::crossTextDraw()
             {
                 // qDebug() << "FIRST";
                // drawAnimationFigure(x1, y, x2, y, LINE, 0);
-                drawAnimationFigure(x1, y, x2, y, LINE, 0);
-
+                //drawAnimationFigure(x1, y, x2, y, LINE, 0);
+                listOfAnimationFigure.append(AnimationFigure(QRect(x1, y, x2, y), (int)LINE, x, i));
                 for( int j = x; j < i; j++) // convert to cross without animation
-                    cross[j] = 1;
+                    cross[j] = 0;
             }
             else{
                 //drawFigure(x1, y, x2, y, LINE, 0);
@@ -1931,6 +1947,7 @@ bool OGLWidget::crossTextDraw()
                 i--;
         }
     }
+
 }
 
 bool OGLWidget::crossText()
@@ -1966,4 +1983,19 @@ bool OGLWidget::crossText()
         spacePaid++;
     }
 
+
+}
+
+void OGLWidget::displayText(QString const &text, QColor color)
+{
+
+        QImage textimg(1000, 1000, QImage::Format_RGBA8888);
+        QPainter painter(&textimg);
+        painter.fillRect(0, 0, 1000, 1000, QColor(0,0,0,0));
+        painter.setBrush(color);
+        painter.setPen(color);
+        painter.setFont(font);
+        painter.drawText(0, 0, text);
+
+    glBindTexture(GL_TEXTURE_2D, 0);
 }

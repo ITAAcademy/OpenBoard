@@ -13,6 +13,7 @@ private:
 
 public:
     QString unit_data;
+    int unitType;
 
 public:
     Unit();

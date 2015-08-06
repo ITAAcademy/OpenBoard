@@ -5,6 +5,7 @@
 UnitCommand::UnitCommand() : Unit()
 {
     Type = "";
+    unitType = 1;
 }
 
 UnitCommand::~UnitCommand()
