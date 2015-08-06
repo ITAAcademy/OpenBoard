@@ -96,6 +96,7 @@ class ListControll : public QObject, public QQuickImageProvider
 {
     Q_OBJECT
 
+
     int maxTrackTime ;
     QQuickView view;
     QPoint framaMousePosition;
@@ -119,6 +120,7 @@ class ListControll : public QObject, public QQuickImageProvider
     int isPlayPauseStop = 3;
 
 public:
+   Q_INVOKABLE void loadCurrentTextInTheFirstBlockWhenInit();
     volatile bool isBlocked = false;
 
     explicit ListControll(QObject *parent = 0);
@@ -134,7 +136,7 @@ public:
     Q_INVOKABLE QString getBlockKey(int col, int i) const;
     Q_INVOKABLE void addNewBlock(int col, QString str );
     Q_INVOKABLE void addNewTrack( );
-    Q_INVOKABLE void loadFromFile( );
+    Q_INVOKABLE void loadFromFile();
     Q_INVOKABLE bool removeLastBlock(int col);
     Q_INVOKABLE bool removeLastTrack();
     Q_INVOKABLE bool removeTrack(int col);

@@ -275,6 +275,7 @@ MainWindow::MainWindow(QWidget *parent) :
         setStyleSheet(styleSheet);
         file.close();
 
+
 }
 
 MainWindow::~MainWindow()

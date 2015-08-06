@@ -333,11 +333,24 @@ OGLWidget::OGLWidget(QWidget *parent) :
    mouseTimer.start();
    connect(&m_manager,SIGNAL(currentBrushChanged()),this,SLOT(brushParamsChanged()));
 
+
+   //for loading current text in to fist init block
+   DrawTextElm drawTTElements(this);
+   QList <Unit*>mUnitList;
+
+   Unit unit;
+   mUnitList.append(&unit);
+   drawTTElements.setUnitList(mUnitList);
+   drawTTElements.setUnParsestring("");
+   drawTTElements.save("curent");
+ // timeLine->loadCurrentTextInTheFirstBlockWhenInit();
+
 }
 
 
 OGLWidget::~OGLWidget()
 {
+
     this->stopAnimated();
         qApp->processEvents();
     if(timeLine != NULL)
@@ -1199,6 +1212,7 @@ void  OGLWidget::updateWindow(){
     //isCrossingNow=true;
     //if (timeLine->getPointedBlocks().size())
          setList(timeLine->getPointedBlocksDE());
+
     QPoint t = timeLine->getSelectedBlockPoint();
     if(curStatus != PLAY && t.x() >= 0 && t.x() != -1)
     {
