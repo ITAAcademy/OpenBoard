@@ -61,11 +61,12 @@ QString DrawTextElm::getUnParsestring() const
     return unParsestring;
 }
 
-void DrawTextElm::setUnParsestring(const QString &value)
+void DrawTextElm::setUnParsestring(const QString &value,bool needToSaveLifeTime )
 {
     unParsestring = value;
     // qDebug() << value;
-    myParser.ParsingLine(mUnitList, unParsestring,drawTime);
+    myParser.ParsingLine(mUnitList, unParsestring,drawTime,delay);
+    if (needToSaveLifeTime)lifeTime=drawTime;
     if(mUnitList.size() > 0)
         tickTime = lifeTime/mUnitList.size();
      qDebug()<<"tickTime5:"<<tickTime;
@@ -99,7 +100,7 @@ bool DrawTextElm::load_add(QDataStream &stream)
     stream.readRawData(data.data(), sizeOfString);
     unParsestring = data;
     // qDebug() << data;*/
-    myParser.ParsingLine(mUnitList, unParsestring,drawTime);
+    myParser.ParsingLine(mUnitList, unParsestring,drawTime,delay);
 }
 
 bool DrawTextElm::save_add(QDataStream &stream)

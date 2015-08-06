@@ -202,6 +202,7 @@ public:
     Q_INVOKABLE void  update();
 
 signals:
+    void loadFromFileSignal();
     void playSignal();
     void pauseSignal();
     void stopSignal();

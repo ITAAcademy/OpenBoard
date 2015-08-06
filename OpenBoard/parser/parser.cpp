@@ -47,7 +47,7 @@ quint64 Parser::processTimeOfUnits(QList<Unit*> list, int delayMS){
 }
 
 
-int Parser::ParsingLine(QList<Unit*> &list,  QString &str,quint64& timeSpendToDraw)
+int Parser::ParsingLine(QList<Unit*> &list,  QString &str,quint64& timeSpendToDraw,int delay)
 {
     list.clear();
     QString pars_line;
@@ -370,7 +370,7 @@ int Parser::ParsingLine(QList<Unit*> &list,  QString &str,quint64& timeSpendToDr
             state = -1;
         }
     }
-    timeSpendToDraw=processTimeOfUnits(list);
+    timeSpendToDraw=processTimeOfUnits(list,delay);
     qDebug()<<"timeSpendToDraw:"<<timeSpendToDraw;
     return state;
 }

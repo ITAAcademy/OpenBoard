@@ -106,6 +106,7 @@ public slots:
 private slots:
     void on_action_Record_to_file_triggered();
     void on_action_About_triggered();
+    void updateCurrentTxt();
 
     void on_speedBtn_pressed();
     void on_slider_speedTB_valueChanged(int value);

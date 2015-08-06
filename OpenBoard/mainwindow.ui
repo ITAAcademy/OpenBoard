@@ -214,6 +214,13 @@
           </property>
          </spacer>
         </item>
+        <item>
+         <widget class="QCheckBox" name="check_use_speed_value">
+          <property name="text">
+           <string>use</string>
+          </property>
+         </widget>
+        </item>
        </layout>
       </widget>
      </widget>
