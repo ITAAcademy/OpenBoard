@@ -21,7 +21,7 @@ public:
     QString unParsestring;
     void setUnitList(const QList<Unit *> &unitList);
     QString getUnParsestring() const;
-    void setUnParsestring(const QString &value);
+    void setUnParsestring(const QString &value,bool needToSaveLifeTime = false);
 
 private:
     void setTickTime(int value);

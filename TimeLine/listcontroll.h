@@ -206,6 +206,7 @@ public:
     Q_INVOKABLE int  getTracksNumber();
 
 signals:
+    void loadFromFileSignal();
     void playSignal();
     void pauseSignal();
     void stopSignal();

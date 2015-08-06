@@ -80,6 +80,7 @@ void ListControll::addNewBlock(int col, QString str)
     // qDebug() << "9999999999999999999999999999999999999999999999" << elm->getType();*/
     Element temp;
     temp.key = str;
+    //temp.draw_element->setLifeTime(def_min_block_width);
     temp.draw_element->setLifeTime(def_min_block_width);
     temp.draw_element->setZ(col);
     tracks[col].block.append(temp);
@@ -110,6 +111,7 @@ void ListControll::addNewTrack( )
 
 void ListControll::loadFromFile()
 {
+    emit loadFromFileSignal();
      QPoint p = getSelectedBlockPoint();
    /*  if (p.x() > -1)
         tracks[p.x()].time -= tracks[p.x()].block[p.y()].draw_element->getLifeTime();*/
@@ -121,12 +123,18 @@ void ListControll::loadFromFile()
     // qDebug() << "9999999999999999999999999999999999999999999999" << elm->getType();
 
     Element &temp = tracks[p.x()].block[p.y()];
-    int life_time = temp.draw_element->getLifeTime();
+    int life_time = elm->getLifeTime();
+
     int start_time = temp.draw_element->getStartDrawTime();
+
+    if (life_time == -1) {
+        life_time=temp.draw_element->getLifeTime();
+    }
+    setBlockTime(p.x(),p.y(),life_time);
     delete temp.draw_element;
     temp.key = elm->getKey();
     temp.draw_element = elm;
-    temp.draw_element->setLifeTime(life_time);
+    //temp.draw_element->setLifeTime(life_time);
     temp.draw_element->setStartDraw(start_time);
     temp.draw_element->setZ(p.x());
     recountMaxTrackTime();

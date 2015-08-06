@@ -43,7 +43,7 @@ DrawElement::DrawElement(OGLWidget *drawWidget, QObject *parent) : QObject(paren
     width = 100;
     height = 100;
     keyCouter = 0;
-    lifeTime = 100;
+    lifeTime = -1;
     icon = QImage();
 
     if(pDrawWidget != NULL)
@@ -142,6 +142,11 @@ void DrawElement::setPosition(int x, int y)
 {
     this->x = x;
     this->y = y;
+}
+
+void DrawElement::setDelay(int d)
+{
+    delay=d;
 }
 
 void DrawElement::setSize(QSize pos)

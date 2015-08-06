@@ -22,6 +22,7 @@ protected:
     QString key;
     int lifeTime;
     int tickTime;
+    int delay;
     int startDrawTime;
     int x, y, z, width, height;
     int keyCouter;
@@ -46,7 +47,7 @@ public:
 
     void setPosition(QPoint pos);
     void setPosition( int x, int y);
-
+    void setDelay(int d);
     void setSize( QSize pos );
     void setSize( int width, int height);
     QSize getSize();

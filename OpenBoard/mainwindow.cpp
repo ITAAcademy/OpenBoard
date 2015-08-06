@@ -57,7 +57,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionSend_to_youTube, SIGNAL( triggered()), this, SLOT (on_action_youTube_triggered()));
     connect(textEdit,SIGNAL(doUndoRedoStart()),this,SLOT(doUndoRedoStart()));
     connect(textEdit,SIGNAL(doUndoRedoEnd()),this,SLOT(doUndoRedoEnd()));
-
+    qDebug () << "TIME_LINE:"<<mpOGLWidget->getTimeLine();
+    connect(mpOGLWidget->getTimeLine(),SIGNAL(loadFromFileSignal()),this,SLOT(updateCurrentTxt()));
 
 
     ui->widget_Find->setVisible(false);
@@ -985,7 +986,7 @@ void MainWindow::onTextChanged()
     int cursPos = textEdit->textCursor().position();
     int textSize = str.size();
     quint64 drawTime = 0;
-    int status = mParser.ParsingLine(mUnitList, str,drawTime); // add parsing /n
+    int status = mParser.ParsingLine(mUnitList, str,drawTime,ui->slider_speedTB->value()); // add parsing /n
    /* if(textSize != str.size())
     {
         textEdit->clear();
@@ -1078,8 +1079,10 @@ void MainWindow::on_action_Play_triggered()
     //((DrawTextElm*)drawElements[0])->setUnParsestring(textEdit->toPlainText());
 
      DrawTextElm drawTTElements(mpOGLWidget);
+     drawTTElements.setDelay(ui->slider_speedTB->value());
+     bool needToSaveLifeTime = ui->check_use_speed_value->isChecked();
      drawTTElements.setUnitList(mUnitList);
-     drawTTElements.setUnParsestring(textEdit->toPlainText());
+     drawTTElements.setUnParsestring(textEdit->toPlainText(),needToSaveLifeTime);
      drawTTElements.save("curent");
    /*  drawTTElements.load("curent.txt");
      // qDebug() << "                                                          qqqqqqqq" << drawTTElements.getType();*/
@@ -1186,6 +1189,17 @@ void MainWindow::on_action_About_triggered()
 {
     messAbout.setText("This is program for making video-lessons.\nITA, 2015");
     messAbout.show();
+}
+
+void MainWindow::updateCurrentTxt()
+{
+    qDebug() << "updateCurrentTxt";
+    DrawTextElm drawTTElements(mpOGLWidget);
+    drawTTElements.setDelay(ui->slider_speedTB->value());
+    bool needToSaveLifeTime = ui->check_use_speed_value->isChecked();
+    drawTTElements.setUnitList(mUnitList);
+    drawTTElements.setUnParsestring(textEdit->toPlainText(),needToSaveLifeTime);
+    drawTTElements.save("curent");
 }
 void MainWindow::on_speedBtn_pressed()
 {
