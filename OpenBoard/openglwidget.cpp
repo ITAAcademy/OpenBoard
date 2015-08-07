@@ -1308,6 +1308,45 @@ void OGLWidget::recreate()
 void OGLWidget::clear(int x,int y,int width,int height){
 
 }
+void OGLWidget::myRenderText( QGLWidget* w, int x, int y,int z, const QString& text, const QColor& col , const QFont& font  )
+{
+    glMatrixMode( GL_PROJECTION );
+    glPushMatrix();
+    glLoadIdentity();
+    glOrtho( 0, w->width(), w->height(), 0, 0, 1 );
+    glMatrixMode( GL_MODELVIEW );
+    glPushMatrix();
+    glLoadIdentity();
+
+    QFontMetrics fm(font);
+    QRect rect = fm.boundingRect( text);
+
+    QPixmap pixmap( rect.size() );
+    pixmap.fill( Qt::black );
+    QPainter painter(&pixmap);
+    painter.setPen( Qt::white );
+    painter.setFont( font );
+    painter.drawText( -rect.left(), -rect.top(), text );
+    QImage img = pixmap.toImage().convertToFormat(QImage::Format_ARGB32);
+    //img.setAlphaBuffer( true );
+    for ( int i = 0; i < img.height(); i++ ) {
+        QRgb* rgb = (QRgb*) img.scanLine(i);
+        for ( int j = 0; j < img.width(); j++ ) {
+            rgb[j] = qRgba( col.red(), col.green(), col.blue(), qRed(rgb[j]) );
+        }
+    }
+    img = QGLWidget::convertToGLFormat(img);
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glRasterPos3i( x, y, z );
+    glDrawPixels( rect.width(), rect.height(), GL_RGBA, GL_UNSIGNED_BYTE, img.bits() );
+    glDisable(GL_BLEND);
+    glMatrixMode( GL_PROJECTION );
+    glPopMatrix();
+    glMatrixMode( GL_MODELVIEW );
+    glPopMatrix();
+}
 void OGLWidget::fillText( QString str,QColor color, int x, int y, int z)
 {
 
@@ -1321,7 +1360,10 @@ void OGLWidget::fillText( QString str,QColor color, int x, int y, int z)
     qglColor(color);
    // glDisable(GL_DEPTH_TEST);
   //  qDebug() << "SHOW_Z " << z;
-    renderText(x, y, str,textFont);
+
+
+   // renderText(x, y, str,textFont);
+    myRenderText(this,x,y,z,str,color,textFont);
     //displayText(str, color);
 
     //glEnable(GL_DEPTH_TEST);

@@ -198,6 +198,7 @@ public:
     double getAnimationPersentOfCross() const;
     void setAnimationPersentOfCross(double value);
 
+    void myRenderText(QGLWidget *w, int x, int y,int z, const QString &text, const QColor &col = Qt::white, const QFont &font = QFont());
 public slots:
     bool drawAnimated( bool record );
     void stopAnimated();

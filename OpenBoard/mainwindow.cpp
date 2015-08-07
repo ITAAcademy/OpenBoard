@@ -1272,3 +1272,8 @@ void MainWindow::on_actionLoad_drawing_temp_triggered()
         return;
       mpOGLWidget->drawBrushElm->load(fileName);
 }
+
+void MainWindow::on_slider_speedTB_sliderReleased()
+{
+    updateCurrentTxt();
+}
