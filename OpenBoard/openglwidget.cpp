@@ -936,20 +936,20 @@ void OGLWidget::setDrawText(QString data)
 
 
 
-void OGLWidget::drawAnimated(bool record)
+bool OGLWidget::drawAnimated(bool record)
 {
     if(curStatus == this->PAUSE)
     {
         //m_recorder->resume();
         curStatus = PLAY;
         m_encoder->pause();
-        return;
+        return true;
     }
     if(record)
     {
         QString fileName = QFileDialog::getSaveFileName(this, tr("Choose file..."), qApp->applicationDirPath(), tr("Videos (*.avi *.mp4)"));
-        if(!fileName.size())
-            return;
+        if(fileName.size() == 0)
+            return false;
         m_encoder->setFileName(fileName);
         m_encoder->setGrabWidget(this);
         m_encoder->startRecord();
@@ -960,6 +960,7 @@ void OGLWidget::drawAnimated(bool record)
     tickTimer.start();
     // qDebug() << "Start play";
     emit startSignal();
+    return true;
 }
 
 void OGLWidget::stopAnimated()
@@ -983,7 +984,7 @@ void OGLWidget::stopAnimated()
 */
     bRecord = false;
  //   pause(200);
-    // qDebug() << "Stop play";
+     qDebug() << "Stop play";
     emit stopSignal();
 
 }
@@ -1319,7 +1320,7 @@ void OGLWidget::fillText( QString str,QColor color, int x, int y, int z)
 
     qglColor(color);
    // glDisable(GL_DEPTH_TEST);
-    qDebug() << "SHOW_Z " << z;
+  //  qDebug() << "SHOW_Z " << z;
     renderText(x, y, str,textFont);
     //displayText(str, color);
 

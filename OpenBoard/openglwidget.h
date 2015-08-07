@@ -199,7 +199,7 @@ public:
     void setAnimationPersentOfCross(double value);
 
 public slots:
-    void drawAnimated( bool record );
+    bool drawAnimated( bool record );
     void stopAnimated();
     void pauseAnimated();
     void brushParamsChanged();

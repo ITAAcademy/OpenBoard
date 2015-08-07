@@ -1094,8 +1094,8 @@ void MainWindow::on_action_Play_triggered()
     mpOGLWidget->editingRectangle.isEditingRectangleVisible = false;
     if(mpOGLWidget->getStatus() != OGLWidget::PLAY )
     {
-        mpOGLWidget->drawAnimated(ui->actionRecord_to_file->isChecked());
-        mpOGLWidget->getTimeLine()->play(); //off for test
+        if(mpOGLWidget->drawAnimated(ui->actionRecord_to_file->isChecked()))
+            mpOGLWidget->getTimeLine()->play(); //off for test
     }
     /*while( play && mpOGLWidget != 0 && mpOGLWidget->getStatus() != OGLWidget::STOP)
     {

@@ -28,7 +28,7 @@ void DrawTextElm::draw()
                pDrawWidget->clearBuffer();
            }
        int realKeyValue = (current_time - startDrawTime)*mUnitList.size()/lifeTime;
-       qDebug() << "pDrawWidget->getTimeLine()->getPlayTime()"<< current_time;
+     //  qDebug() << "pDrawWidget->getTimeLine()->getPlayTime()"<< current_time;
    // if (keyCouter < realKeyValue)
 
         while(keyCouter <=realKeyValue)

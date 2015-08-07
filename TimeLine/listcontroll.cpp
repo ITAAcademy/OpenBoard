@@ -112,32 +112,32 @@ void ListControll::addNewTrack( )
 void ListControll::loadFromFile()
 {
     emit loadFromFileSignal();
-     QPoint p = getSelectedBlockPoint();
-   /*  if (p.x() > -1)
-        tracks[p.x()].time -= tracks[p.x()].block[p.y()].draw_element->getLifeTime();*/
-    QString open = QFileDialog::getOpenFileName();
+    QPoint p = getSelectedBlockPoint();
+  /*  if (p.x() > -1)
+       tracks[p.x()].time -= tracks[p.x()].block[p.y()].draw_element->getLifeTime();*/
+   QString open = QFileDialog::getOpenFileName();
 //qDebug() <<"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA " + open;
-    DrawElement *elm = GenerationDrawElement(open);
-    if(elm == NULL)
-        return;
-    // qDebug() << "9999999999999999999999999999999999999999999999" << elm->getType();
+   DrawElement *elm = GenerationDrawElement(open);
+   if(elm == NULL)
+       return;
+   // qDebug() << "9999999999999999999999999999999999999999999999" << elm->getType();
 
-    Element &temp = tracks[p.x()].block[p.y()];
-    int life_time = elm->getLifeTime();
+   Element &temp = tracks[p.x()].block[p.y()];
+   int life_time = temp.draw_element->getLifeTime();
+   int new_life_time = elm->getLifeTime();
+   int start_time = temp.draw_element->getStartDrawTime();
+   delete temp.draw_element;
+   temp.key = elm->getKey();
+   temp.draw_element = elm;
+   temp.draw_element->setLifeTime(life_time);
+   temp.draw_element->setStartDraw(start_time);
+   temp.draw_element->setZ(p.x());
 
-    int start_time = temp.draw_element->getStartDrawTime();
+   if(new_life_time > 100)
+   {
+       setBlockTime(p.x(),p.y(), new_life_time);
+   }
 
-    if (life_time == -1) {
-        life_time=temp.draw_element->getLifeTime();
-    }
-    setBlockTime(p.x(),p.y(),life_time);
-    delete temp.draw_element;
-    temp.key = elm->getKey();
-    temp.draw_element = elm;
-    //temp.draw_element->setLifeTime(life_time);
-    temp.draw_element->setStartDraw(start_time);
-    temp.draw_element->setZ(p.x());
-    recountMaxTrackTime();
 }
 
 bool ListControll::removeLastBlock(int col)
