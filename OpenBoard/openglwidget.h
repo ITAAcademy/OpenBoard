@@ -36,6 +36,7 @@ using namespace QtAV;
 #define STREAM_FRAME_RATE 10
 #define STREAM_DURATION 60
 #define TEXTURE_INDEX_BRUSH 1
+#define MIN_RECT_SIZE 25
 struct ColorMarker{
     int startIndex;
     QColor value;
@@ -236,6 +237,7 @@ public slots:
     ListControll* getTimeLine();
 
     void displayText(const QString &text, QColor color);
+    void testRectangle();
 signals:
     void drawTextChanged();
     void pauseSignal();

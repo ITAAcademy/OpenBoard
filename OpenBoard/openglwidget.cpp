@@ -755,6 +755,7 @@ case EDIT_RECTANGLE_MOVE:
      editingRectangle.rect.moveTo(mousePos.x() - mousePressPos.x(), //-editingRectangle.rect.width()/2
                             mousePos.y() - mousePressPos.y() ); //-editingRectangle.rect.height()/2
      }
+
      //editingRectangle.setX(mousePos.x()-editingRectangle.width()/2);
      //editingRectangle.setY(mousePos.y()-editingRectangle.height()/2);
     // // qDebug()<< "leftCornerX1:"<<leftCornerX1;
@@ -767,11 +768,13 @@ case EDIT_RECTANGLE_MOVE:
      // qDebug()<<"EDIT_RECTANGLE_RESIZE";
       if (isNotPainting)
      {
-     editingRectangle.rect.setX(mousePos.x());
-     editingRectangle.rect.setY(mousePos.y());
+         editingRectangle.rect.setX(mousePos.x());
+         editingRectangle.rect.setY(mousePos.y());
      }
+
     break;
  }
+ testRectangle();
 if (canDrawByMouse)paintBrushInBuffer();
 }
 paintBufferOnScreen(0, 0, wax, way,-100);
@@ -886,6 +889,27 @@ void OGLWidget::mousePressEvent(QMouseEvent *event)
 
 
 }
+
+void OGLWidget::testRectangle()
+{
+
+    if(editingRectangle.rect.x() > this->width() - editingRectangle.rect.width())
+        editingRectangle.rect.moveTo(this->width() - editingRectangle.rect.width(), editingRectangle.rect.y());
+    if(editingRectangle.rect.y() > this->height() - editingRectangle.rect.height())
+        editingRectangle.rect.moveTo(editingRectangle.rect.x(), this->height()  - editingRectangle.rect.height());
+
+    if(editingRectangle.rect.x() < 0)
+        editingRectangle.rect.moveTo(0, editingRectangle.rect.y());
+    if(editingRectangle.rect.y() < 0)
+        editingRectangle.rect.moveTo(editingRectangle.rect.x(), 0);
+
+    if(editingRectangle.rect.width() > this->width())
+        editingRectangle.rect.setWidth(this->width());
+    if(editingRectangle.rect.height() > this->height())
+        editingRectangle.rect.setHeight(this->height());
+
+}
+
 void OGLWidget::mouseReleaseEvent(QMouseEvent *event)
 {
     //int x = event->x();
@@ -895,6 +919,23 @@ void OGLWidget::mouseReleaseEvent(QMouseEvent *event)
     if (editingRectangle.editingRectangleMode==EDIT_RECTANGLE_RESIZE)
         editingRectangle.rect=editingRectangle.rect.normalized();
     editingRectangle.editingRectangleMode=EDIT_RECTANGLE_UNBINDED;
+
+    /*
+     * MIN_SIZE
+     */
+
+    if(editingRectangle.rect.width() < MIN_RECT_SIZE)
+           editingRectangle.rect.setWidth(MIN_RECT_SIZE);
+    if(editingRectangle.rect.height() < MIN_RECT_SIZE)
+           editingRectangle.rect.setHeight(MIN_RECT_SIZE);
+
+    testRectangle();
+
+   /* if(editingRectangle.rect.width() > this->width())
+        editingRectangle.rect.setWidth(this->width());
+    if(editingRectangle.rect.height() > this->height())
+        editingRectangle.rect.setHeight(this->height());
+    */
 
     isNotPainting = false;
 }
