@@ -1091,7 +1091,7 @@ void MainWindow::on_action_Play_triggered()
   //  // qDebug() << mUnitList.size();
    // QString name = this->windowTitle();
     play = true;
-    mpOGLWidget->editingRectangle.isEditingRectangleVisible = false;
+    //mpOGLWidget->editingRectangle.isEditingRectangleVisible = false;
     if(mpOGLWidget->getStatus() != OGLWidget::PLAY )
     {
         if(mpOGLWidget->drawAnimated(ui->actionRecord_to_file->isChecked()))
@@ -1141,7 +1141,7 @@ void MainWindow::on_action_Stop_triggered()
         showBoardSettings();
     }
 
-    mpOGLWidget->editingRectangle.isEditingRectangleVisible = true;
+    //mpOGLWidget->editingRectangle.isEditingRectangleVisible = true;
     play = false;
 }
 

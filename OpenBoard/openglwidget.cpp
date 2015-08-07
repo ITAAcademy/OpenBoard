@@ -1220,10 +1220,11 @@ void OGLWidget::pause(int ms)
 void  OGLWidget::updateWindow(){
     //isCrossingNow=true;
     //if (timeLine->getPointedBlocks().size())
-         setList(timeLine->getPointedBlocksDE());
+    setList(timeLine->getPointedBlocksDE());
 
     QPoint t = timeLine->getSelectedBlockPoint();
-    if(curStatus != PLAY && t.x() >= 0 && t.x() != -1)
+
+    if(curStatus != PLAY && t.x() >= 0)
     {
         editingRectangle.isEditingRectangleVisible = true;
         if(t != selElm)
@@ -1243,7 +1244,10 @@ void  OGLWidget::updateWindow(){
         }
     }
     else
+    {
+       // qDebug() << "SBLOCK " << t;
         editingRectangle.isEditingRectangleVisible = false;
+    }
     updateGL();
 }
 

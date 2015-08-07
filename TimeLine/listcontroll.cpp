@@ -12,7 +12,7 @@ QPoint ListControll::getSelectedBlockPoint() const
 void ListControll::setSelectedBlockPoint(const QPoint &value)
 {
     selectedBlockPoint = value;
-    // qDebug() <<"FFFFFFFFFFFF: col = " << selectedBlockPoint.x() << " ind = " << selectedBlockPoint.y();
+     //qDebug() <<"FFFFFFFFFFFF: col = " << selectedBlockPoint.x() << " ind = " << selectedBlockPoint.y();
 }
 
 void ListControll::setSelectedBlockPoint(int col, int ind)
@@ -43,6 +43,7 @@ void ListControll::setBlockKey(int col, int i, QString name)
 void ListControll::removeBlock(int col, int i)
 {
     isBlocked = true;
+    setSelectedBlockPoint(QPoint(-1,-1));
     if (tracks[col].block.size() > i)
     {
    // tracks[col].block.removeAt(i);
@@ -143,6 +144,7 @@ void ListControll::loadFromFile()
 bool ListControll::removeLastBlock(int col)
 {
     isBlocked = true;
+    setSelectedBlockPoint(QPoint(-1,-1));
     if (tracks[col].block.size())
     {
   // tracks[col].block.pop_back();
@@ -168,6 +170,7 @@ bool ListControll::removeLastBlock(int col)
     return true;
     }
     isBlocked = false;
+
     return false;
 }
 
