@@ -378,7 +378,7 @@ void OGLWidget::paintBufferOnScreen( int x, int y, int width, int height, int z)
 
 void OGLWidget::paintBrushInBuffer() {
 glBindFramebuffer(GL_FRAMEBUFFER , fbo); // Bind our frame buffer for rendering
-glUseProgram(ShaderProgram);
+
 //glPushAttrib(GL_VIEWPORT_BIT | GL_ENABLE_BIT); // Push our glEnable and glViewport states
 //glViewport(0, 0, window_width, window_height); // Set the size of the frame buffer view port
 
@@ -405,7 +405,7 @@ glUseProgram(ShaderProgram);
         glEnd();*/
     //qglColor(m_manager.getColor());
 
-
+ glUseProgram(ShaderProgram);
          glBindTexture(GL_TEXTURE_2D,texture);
         QSize brushTextureSize = getTextureSize();
         int BRUSH_SIZE=m_manager.getSize() + m_manager.getSizeDelta()/2 - rand()%(int)(m_manager.getSizeDelta() + 1);
@@ -440,6 +440,25 @@ glUseProgram(ShaderProgram);
             int maxDispers = (int)m_manager.getDisepers();
             int i=1;
             if (maxDispers>0 && m_manager.getCount()>0) i=m_manager.getCount();
+
+             int imgUniform = glGetUniformLocation(ShaderProgram,"vUV");
+               glUniform2i(imgUniform,0,0);
+
+               int colorUniform = glGetUniformLocation(ShaderProgram,"toColor");
+               QColor color = m_manager.getColor();
+               float r = (float)color.red()/255;
+               float g = (float)color.green()/255;
+               float b = (float)color.blue()/255;
+               float a = (float)color.alpha()/255;
+              // qDebug() << r << g << b << a;
+                 glUniform4f(colorUniform,r,g,b,a);
+              /*
+             int imgWidthUniform = glGetUniformLocation(ShaderProgram,"imgWidth");
+             int imgHeightUniform = glGetUniformLocation(ShaderProgram,"imgHeight");
+
+glUniform1i(imgWidthUniform,60);
+glUniform1i(imgHeightUniform,60);
+*/
             for (;i>0;i--)
             {
                  int dispersX = 0;
@@ -457,8 +476,9 @@ glUseProgram(ShaderProgram);
 
             drawTexture(xPos-BRUSH_SIZE/2 + dispersX ,yPos-BRUSH_SIZE/koff/2 + dispersY,BRUSH_SIZE,BRUSH_SIZE/koff,
                     texture,angle,scaleX,scaleY);
-            glUseProgram(NULL);
+
             }
+             glUseProgram(NULL);
         /*
     else{
       glEnable(GL_TEXTURE_2D);

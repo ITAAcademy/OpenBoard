@@ -17,7 +17,7 @@ void BrushPainter::close()
 
  QImage BrushPainter::applyColor(Brush brush)
 {
-     qint64 tempDeltaTime = QDateTime::currentMSecsSinceEpoch();
+    /* qint64 tempDeltaTime = QDateTime::currentMSecsSinceEpoch();
      callCounter++;
      qDebug()<<"applyColor calls:"<<callCounter;
      QImage res(brush.img.size()*2, QImage::Format_RGBA8888_Premultiplied);
@@ -37,7 +37,8 @@ void BrushPainter::close()
      tempDeltaTime=QDateTime::currentMSecsSinceEpoch()-tempDeltaTime;
      qDebug () << "apply color time:"<<tempDeltaTime;
      return res;
-
+*/
+     return brush.img;
 }
 
 QImage BrushPainter::drawBrush(Brush &brush, QSize size)
