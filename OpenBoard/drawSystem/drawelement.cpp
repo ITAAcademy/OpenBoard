@@ -82,21 +82,34 @@ bool DrawElement::load(QString path)
         return false;
     lastPath = path;
     appFile.open(QFile::ReadOnly);
-    QDataStream stream(&appFile);
-    icon = load_image(stream);
-    stream >> key >> lifeTime >> tickTime >> startDrawTime >> x >> y >> z >> width >> height >> keyCouter;
-    load_add(stream);
+    this->load(&appFile);
     appFile.close();
+}
+
+bool DrawElement::load(QIODevice* device)
+{
+    QDataStream stream(device);
+    icon = load_image(stream);
+    int temp_type;
+    stream >> temp_type  >> key >> lifeTime >> tickTime >> startDrawTime >> x >> y >> z >> width >> height >> keyCouter;
+   typeId = static_cast<Element_type>(temp_type);
+    load_add(stream);
+}
+
+bool DrawElement::save(QIODevice* device)
+{
+    QDataStream stream(device);
+    save_image(stream, icon);
+    int temp_type = static_cast<int>(typeId);
+    stream << temp_type << key << lifeTime << tickTime << startDrawTime << x << y << z << width << height << keyCouter;
+    save_add(stream);
 }
 
 bool DrawElement::save(QString path)
 {
     QFile appFile(QString(path + "." + type));
     appFile.open(QFile::WriteOnly);
-    QDataStream stream(&appFile);
-    save_image(stream, icon);
-    stream << key << lifeTime << tickTime << startDrawTime << x << y << z << width << height << keyCouter;
-    save_add(stream);
+    this->save(&appFile);
     appFile.close();
     /*QImage icon;
     int lifeTime;
@@ -249,6 +262,16 @@ void DrawElement::setType(const char name[])
 QString DrawElement::getType()
 {
     return QString(type);
+}
+
+void DrawElement::setTypeId( Element_type val)
+{
+    this->typeId = val;
+}
+
+int DrawElement::getTypeId()
+{
+    return this->typeId;
 }
 
 void DrawElement::pause()

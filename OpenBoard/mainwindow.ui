@@ -672,7 +672,6 @@
     <addaction name="action_Save"/>
     <addaction name="action_Save_as"/>
     <addaction name="separator"/>
-    <addaction name="action_Exit"/>
    </widget>
    <widget class="QMenu" name="menu_Edit">
     <property name="title">
@@ -1138,6 +1137,29 @@
   <action name="actionLoad_drawing_temp">
    <property name="text">
     <string>Load drawing (temp)</string>
+   </property>
+  </action>
+  <action name="actionNew">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/new-file-icon.png</normaloff>:/icons/new-file-icon.png</iconset>
+   </property>
+   <property name="text">
+    <string>New</string>
+   </property>
+  </action>
+  <action name="actionOpen">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/open-file-icon.png</normaloff>:/icons/open-file-icon.png</iconset>
+   </property>
+   <property name="text">
+    <string>Open</string>
+   </property>
+  </action>
+  <action name="actionSave">
+   <property name="text">
+    <string>Save</string>
    </property>
   </action>
  </widget>

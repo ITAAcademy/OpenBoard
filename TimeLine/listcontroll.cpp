@@ -337,12 +337,20 @@ int ListControll::getTrackSize(int col) const
     return temp;
 }
 
+ bool ListControll::isProjectChanged()
+ {
+     return isProjectChange;
+ }
+
+ void ListControll::setIsProjectChanged(bool value)
+ {
+     isProjectChange = value;
+ }
+
 
 ListControll::ListControll(QObject *parent) : QObject(parent), QQuickImageProvider(QQuickImageProvider::Image)
 {
-    maxTrackTime = 0;
-    time_sum = 0;
-    selectedBlockPoint = QPoint(-1,-1);
+   resetProjectToDefault();
    /* QList <QString>  temp;
         temp.append("1");
         temp.append("2");
@@ -361,10 +369,8 @@ ListControll::ListControll(QObject *parent) : QObject(parent), QQuickImageProvid
         temp_int.append(200);
         testWidth.append(temp_int);
 */
-    addNewTrack( );
 
 
-    recountMaxTrackTime();
     if (qgetenv("QT_QUICK_CORE_PROFILE").toInt()) {\
         QSurfaceFormat f = view.format();\
         f.setProfile(QSurfaceFormat::CoreProfile);\
@@ -525,6 +531,33 @@ void ListControll::show()
     } else {\
         view.show();\
     }\
+}
+
+bool ListControll::save(QIODevice* device)
+{
+    QDataStream stream(device);
+    stream << tracks.size() ;
+    for (int i=0; i< tracks.size(); i++)
+        tracks[i].save(device);
+    return true;
+}
+
+bool ListControll::load(QIODevice* device)
+{
+    //QDataStream stream(device);
+
+    tracks.clear();
+    int tracks_size;
+    QDataStream stream(device);
+    stream >> tracks_size ;
+    for (int i=0; i< tracks_size; i++)
+    {
+        Track temp;
+         temp.load(device);
+         tracks.append(temp);
+    }
+    recountMaxTrackTime();
+    return true;
 }
 
 void ListControll::close()
@@ -757,5 +790,45 @@ QImage ListControll::requestImage(const QString &id, QSize *size, const QSize &r
  {
      return tracks.size();
  }
+
+ void ListControll::sendUpdateModel()
+ {
+     emit updateModel();
+ }
+
+  void ListControll::emitNewProject()
+  {
+      emit newProjectSignel();
+  }
+
+    void ListControll::emitOpenProject()
+    {
+        emit openProjectSignel();
+        qDebug() <<"AAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+    }
+
+    void ListControll::emitSaveProject()
+    {
+        emit saveProjectSignel();
+    }
+
+    void ListControll::emitResetProject()
+    {
+        emit resetProjectSignel();
+    }
+
+
+    int  ListControll::resetProjectToDefault()
+    {
+        for (int i=0; i< tracks.size(); i++)
+            tracks[i].clear();
+        tracks.clear();
+        maxTrackTime = 0;
+        time_sum = 0;
+        selectedBlockPoint = QPoint(-1,-1);
+        addNewTrack( );
+        recountMaxTrackTime();
+        recountMaxTrackTime();
+    }
 
 

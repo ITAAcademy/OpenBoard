@@ -69,6 +69,21 @@ struct Element {
             delete draw_element;
         draw_element = NULL;
     }
+    bool save(QIODevice* device)
+    {
+        QDataStream stream(device);
+        stream << key ;
+       draw_element->save(device);
+       return true;
+    }
+
+    bool load(QIODevice* device)
+    {
+        QDataStream stream(device);
+        stream >> key ;
+        draw_element->load(device);
+        return true;
+    }
 
 };
 
@@ -88,6 +103,39 @@ struct Track {
            }
 
     }
+    bool save(QIODevice* device)
+    {
+        QDataStream stream(device);
+        stream << block.size() << time ;
+        for (int i=0; i< block.size(); i++)
+            block[i].save(device);
+        return true;
+    }
+
+    bool load(QIODevice* device)
+    {
+        block.clear();
+        time = 0;
+        int blocks_size;
+        QDataStream stream(device);
+        stream >> blocks_size >> time ;
+        for (int i=0; i< blocks_size; i++)
+        {
+            Element temp;
+             temp.load(device);
+             block.append(temp);
+             //time +=temp.draw_element->getLifeTime();
+        }
+        return true;
+    }
+    void clear()
+    {
+        for (int i=0; i< block.size(); i++)
+            block[i].clear();
+        block.clear();
+        time = 0;
+    }
+
 };
 
 
@@ -97,6 +145,7 @@ class ListControll : public QObject, public QQuickImageProvider
     Q_OBJECT
 
 
+    bool isProjectChange = false;
     int maxTrackTime ;
     QQuickView view;
     QPoint framaMousePosition;
@@ -120,6 +169,9 @@ class ListControll : public QObject, public QQuickImageProvider
     int isPlayPauseStop = 3;
 
 public:
+    bool save(QIODevice* device);
+    bool load(QIODevice* device);
+
    Q_INVOKABLE void loadCurrentTextInTheFirstBlockWhenInit();
     volatile bool isBlocked = false;
 
@@ -130,8 +182,10 @@ public:
     void close();
     void hide();
     void setFocus();
-    void setViewPosition(QPoint pos);
+    void setViewPosition(QPoint pos); //1234
     bool isVisible();
+    Q_INVOKABLE  bool isProjectChanged();
+    Q_INVOKABLE  void setIsProjectChanged(bool);
     Q_INVOKABLE int getTrackSize(int col) const;
     Q_INVOKABLE QString getBlockKey(int col, int i) const;
     Q_INVOKABLE void addNewBlock(int col, QString str );
@@ -205,13 +259,28 @@ public:
 
     Q_INVOKABLE int  getTracksNumber();
 
+    Q_INVOKABLE int  resetProjectToDefault();
+
+  void sendUpdateModel();
+
 signals:
     void playSignal();
     void pauseSignal();
     void stopSignal();
     void updateSignal();
+    void updateModel();
+
+    void newProjectSignel();
+    void openProjectSignel();
+    void saveProjectSignel();
+    void resetProjectSignel();
+
 void setScalePointerPosSignal(int value);
 public slots:
+Q_INVOKABLE void emitNewProject();
+  Q_INVOKABLE void emitOpenProject();
+  Q_INVOKABLE void emitSaveProject();
+            void emitResetProject();
 };
 
 #endif // LISTCONTROLL_H

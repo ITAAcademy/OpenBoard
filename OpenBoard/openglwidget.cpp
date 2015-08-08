@@ -323,6 +323,7 @@ OGLWidget::OGLWidget(QWidget *parent) :
    drawTTElements.save("curent");
  // timeLine->loadCurrentTextInTheFirstBlockWhenInit();
 
+   getTimeLine()->setIsProjectChanged(false);
 }
 
 

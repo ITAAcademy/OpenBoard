@@ -3,6 +3,7 @@
 DrawImageElm::DrawImageElm(OGLWidget *drawWidget, QObject *parent) : DrawElement(drawWidget, parent)
 {
     setType("image");
+    setTypeId(Element_type::Image);
 }
 
 DrawImageElm::~DrawImageElm()
