@@ -13,7 +13,7 @@ void BrushManager::setCurentBrush(int value)
     createdBrush.img = imageStack[value];
     createdBrush.imageIndex=value;
   //  createdBrush.patchToImage = brushPathsList[value];
-   createdBrush.color_img = BrushPainter::getInstance()->applyColor(createdBrush);
+   //createdBrush.color_img = BrushPainter::getInstance()->applyColor(createdBrush);
     //emit currentBrushChanged();
 }
 
@@ -56,7 +56,7 @@ bool BrushManager::isColorValid(QString value)
 void BrushManager::update()
 {
     qApp->processEvents(QEventLoop::ExcludeUserInputEvents, 200);
-    createdBrush.color_img = BrushPainter::getInstance()->applyColor(createdBrush);
+    //createdBrush.color_img = BrushPainter::getInstance()->applyColor(createdBrush);
    // emit currentBrushChanged();
 }
 QDir BrushManager::getBrushDir(){

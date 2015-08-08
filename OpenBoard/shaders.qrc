@@ -1,5 +1,5 @@
 <RCC>
-    <qresource prefix="/">
+    <qresource prefix="/shaders">
         <file>shaders/fragmentShader.glsl</file>
         <file>shaders/vertexShader.glsl</file>
     </qresource>
