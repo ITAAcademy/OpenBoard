@@ -1411,6 +1411,8 @@ void OGLWidget::clear(int x,int y,int width,int height){
 }
 void OGLWidget::myRenderText( QGLWidget* w, int x, int y,int z, const QString& text, const QColor& col , const QFont& font  )
 {
+    if (text.isEmpty()) return;
+    qDebug() <<"myRenderText begin";
     glMatrixMode( GL_PROJECTION );
     glPushMatrix();
     glLoadIdentity();
@@ -1447,6 +1449,7 @@ void OGLWidget::myRenderText( QGLWidget* w, int x, int y,int z, const QString& t
     glPopMatrix();
     glMatrixMode( GL_MODELVIEW );
     glPopMatrix();
+    qDebug() <<"myRenderText end";
 }
 void OGLWidget::fillText( QString str,QColor color, int x, int y, int z)
 {
