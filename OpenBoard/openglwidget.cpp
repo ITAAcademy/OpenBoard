@@ -198,12 +198,13 @@ bool isBrushUsed = false;
         int imgUniform = glGetUniformLocation(ShaderProgram,"vUV");
           glUniform2i(imgUniform,0,0);
 
+
           int colorUniform = glGetUniformLocation(ShaderProgram,"toColor");
           QColor color = currentBrushOfDrawSystem.color_main;
           float r = (float)color.red()/255;
           float g = (float)color.green()/255;
           float b = (float)color.blue()/255;
-          float a = (float)color.alpha()/255;
+          float a = (float)currentBrushOfDrawSystem.opacity/100;
          // qDebug() << r << g << b << a;
             glUniform4f(colorUniform,r,g,b,a);
 
@@ -456,12 +457,13 @@ glUseProgram(ShaderProgram);
             int imgUniform = glGetUniformLocation(ShaderProgram,"vUV");
               glUniform2i(imgUniform,0,0);
 
+
               int colorUniform = glGetUniformLocation(ShaderProgram,"toColor");
               QColor color = m_manager.getColor();
               float r = (float)color.red()/255;
               float g = (float)color.green()/255;
               float b = (float)color.blue()/255;
-              float a = (float)color.alpha()/255;
+              float a = (float)m_manager.getOpacity()/100;
              // qDebug() << r << g << b << a;
                 glUniform4f(colorUniform,r,g,b,a);
             for (;i>0;i--)
