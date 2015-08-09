@@ -88,20 +88,39 @@ bool DrawElement::load(QString path)
 
 bool DrawElement::load(QIODevice* device)
 {
-    QDataStream stream(device);
-    icon = load_image(stream);
+    /*QDataStream stream(device);
+
     int temp_type;
     stream >> temp_type  >> key >> lifeTime >> tickTime >> startDrawTime >> x >> y >> z >> width >> height >> keyCouter;
    typeId = static_cast<Element_type>(temp_type);
+    icon = load_image(stream);
+    load_add(stream);*/
+    loadTypeId(device);
+    loadRest(device);
+}
+bool DrawElement::loadTypeId(QIODevice* device)
+{
+    QDataStream stream(device);
+
+    int temp_type;
+    stream >> temp_type  ;
+   typeId = static_cast<Element_type>(temp_type);
+}
+bool DrawElement::loadRest(QIODevice* device)
+{
+    QDataStream stream(device);
+    stream  >> key >> lifeTime >> tickTime >> startDrawTime >> x >> y >> z >> width >> height >> keyCouter;
+    icon = load_image(stream);
     load_add(stream);
 }
 
 bool DrawElement::save(QIODevice* device)
 {
     QDataStream stream(device);
-    save_image(stream, icon);
+
     int temp_type = static_cast<int>(typeId);
     stream << temp_type << key << lifeTime << tickTime << startDrawTime << x << y << z << width << height << keyCouter;
+    save_image(stream, icon);
     save_add(stream);
 }
 
@@ -269,7 +288,7 @@ void DrawElement::setTypeId( Element_type val)
     this->typeId = val;
 }
 
-int DrawElement::getTypeId()
+Element_type DrawElement::getTypeId()
 {
     return this->typeId;
 }

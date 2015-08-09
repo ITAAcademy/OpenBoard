@@ -16,6 +16,10 @@
 #include <../OpenBoard/drawSystem/drawsystem.h>
 #include "../Brush/imageclone.h"
 
+class DrawTextElm;
+class DrawBrushElm;
+class DrawElement;
+
 
 struct Element {
     QString key;
@@ -24,7 +28,7 @@ struct Element {
     //QImage icon;
 //    int startDrawTime;
 //    int x, y, z, width, height; //on canva
-
+    //Element_type type;
     DrawElement *draw_element;
 
     Element( QString key, int time,int x = 0, int y = 0, int z = 0, int width = 100, int height = 100) {
@@ -81,7 +85,35 @@ struct Element {
     {
         QDataStream stream(device);
         stream >> key ;
-        draw_element->load(device);
+        draw_element->loadTypeId(device);
+
+
+       Element_type typeId = draw_element->getTypeId();// Element_type::Image;//static_cast<Element_type>(temp_type);
+
+        if(typeId == Element_type::Text)
+        {
+            DrawTextElm *elm = new DrawTextElm(NULL,NULL);
+                    elm->loadRest(device);
+                    delete  draw_element;
+                    draw_element = (DrawElement*) elm;
+        }
+        else
+        if(typeId == Element_type::Image)
+        {
+           DrawImageElm *elm = new DrawImageElm(NULL,NULL);
+                    elm->loadRest(device);
+                    delete  draw_element;
+                    draw_element = (DrawElement*) elm;
+                    draw_element->getIcon().save("blaaaaaaaaaaaaaaaaaaaaaa.jpg");
+        }
+        else
+        if(typeId == Element_type::Brushh)
+        {
+           DrawBrushElm *elm = new DrawBrushElm(NULL,NULL);
+                    elm->loadRest(device);
+                    delete  draw_element;
+                    draw_element = (DrawElement*) elm;
+        }
         return true;
     }
 
@@ -123,8 +155,7 @@ struct Track {
         {
             Element temp;
              temp.load(device);
-             block.append(temp);
-             //time +=temp.draw_element->getLifeTime();
+            block.append(temp);
         }
         return true;
     }

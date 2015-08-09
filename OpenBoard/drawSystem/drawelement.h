@@ -47,6 +47,8 @@ public:
     bool reloadLastDone();
 
     bool load(QIODevice* device);
+    bool loadTypeId(QIODevice* device);
+    bool loadRest(QIODevice* device);
  bool save(QIODevice* device);
 
     QRect getRect();
@@ -86,7 +88,7 @@ public:
     QString getType();
 
     void setTypeId( Element_type);
-    int getTypeId();
+    Element_type getTypeId();
 
     virtual int getTickTime() const;
     virtual void setTickTime(int value);
