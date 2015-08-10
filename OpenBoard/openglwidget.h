@@ -19,7 +19,7 @@
 #include <QRect>
 #include "encoder/videorencoder.h"
 #include "../Brush/brushcontroll.h"
-
+#include <QGLShader>
 class ListControll;
 struct BrushBeginingIndex;
 class DrawTextElm;
@@ -201,6 +201,8 @@ public:
     double getAnimationPersentOfCross() const;
     void setAnimationPersentOfCross(double value);
 
+    void myRenderText(QGLWidget *w, int x, int y,int z, const QString &text, const QColor &col = Qt::white, const QFont &font = QFont());
+    void initShader();
 public slots:
     bool drawAnimated( bool record );
     void stopAnimated();
@@ -255,6 +257,7 @@ private slots:
     void storeMousePos();
 
 private:
+    GLuint ShaderProgram;
        bool firstUpdate = true;
      bool isNotPainting;
     QImage img;

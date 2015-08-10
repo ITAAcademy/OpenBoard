@@ -321,6 +321,10 @@ MainWindow::MainWindow(QWidget *parent) :
         connect(mpOGLWidget, SIGNAL(pauseSignal()), this, SLOT(on_action_Pause_triggered()));
         connect(this, SIGNAL(signalCurentStateChanged()), this, SLOT(slotCurentStateChanged()));
 
+        connect(mpOGLWidget->getTimeLine(), SIGNAL(newProjectSignel()), this, SLOT(on_action_New_Project_triggered()));
+        connect(mpOGLWidget->getTimeLine(), SIGNAL(openProjectSignel()), this, SLOT(on_action_Open_Project_triggered()));
+        connect(mpOGLWidget->getTimeLine(), SIGNAL(saveProjectSignel()), this, SLOT(on_action_Save_Project_triggered()));
+
 
        //load new style
         QFile file(":/style.txt");
@@ -953,6 +957,7 @@ activateWindow();
 
 void MainWindow::on_action_New_Project_triggered()
 {
+    qDebug() << "NEW_PROJECT";
 if (mpOGLWidget->getTimeLine()->isProjectChanged())
 {
     QMessageBox::StandardButton reply;
@@ -1463,4 +1468,8 @@ void MainWindow::on_actionLoad_drawing_temp_triggered()
       mpOGLWidget->drawBrushElm->load(fileName);
 }
 
+void MainWindow::on_slider_speedTB_sliderReleased()
+{
+    updateCurrentTxt();
+}
 

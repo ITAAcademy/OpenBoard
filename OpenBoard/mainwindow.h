@@ -124,6 +124,8 @@ private slots:
 
     void on_actionLoad_drawing_temp_triggered();
 
+    void on_slider_speedTB_sliderReleased();
+
 
 private:
     bool changeone;

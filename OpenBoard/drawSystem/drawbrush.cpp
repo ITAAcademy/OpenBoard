@@ -64,7 +64,7 @@ bool DrawBrushElm::load_add(QDataStream &stream)
         if (data.imageIndex==-1){
             data.img = QImage(1,1,QImage::Format_ARGB32_Premultiplied);
             data.img.fill(Qt::black);
-            data.color_img = BrushPainter::getInstance()->applyColor(data);
+            //data.color_img = BrushPainter::getInstance()->applyColor(data);
             qDebug() <<"DEFAULT INDEX";
         }
         else
@@ -75,7 +75,7 @@ bool DrawBrushElm::load_add(QDataStream &stream)
                 qDebug() << "imagesIndexed["<<j<<"]==data.imageIndex:"
                          <<imagesIndexed[j]<<"=="<<data.imageIndex;
         data.img = images[j];
-        data.color_img = BrushPainter::getInstance()->applyColor(data);
+        //data.color_img = BrushPainter::getInstance()->applyColor(data);
 
             }
                 }

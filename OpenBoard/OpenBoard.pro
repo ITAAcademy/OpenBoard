@@ -69,6 +69,7 @@ RESOURCES += \
     ../TimeLine/qml_timeLine.qrc \
     ../Brush/qml_brush.qrc \
     ../NewProject/qml_new_project.qrc
+    shaders.qrc
     RC_FILE = myapp.rc
 
 #unix {
@@ -102,7 +103,9 @@ QMAKE_TARGET_PRODUCT = OpenBoard
 QMAKE_TARGET_DESCRIPTION = Good program
 QMAKE_TARGET_COPYRIGHT = @@@
 
-DISTFILES +=
+DISTFILES += \
+    shaders/fragmentShader.glsl \
+    shaders/vertexShader.glsl
 
 INCLUDEPATH += $$PWD/ThirdPart/include
 DEPENDPATH += $$PWD/ThirdPart/include
