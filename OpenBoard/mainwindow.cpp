@@ -268,13 +268,17 @@ MainWindow::MainWindow(QWidget *parent) :
         connect(mpOGLWidget, SIGNAL(startSignal()), this, SLOT(on_action_Play_triggered()));
         connect(mpOGLWidget, SIGNAL(pauseSignal()), this, SLOT(on_action_Pause_triggered()));
 
+        connect(this, SIGNAL(signalCurentStateChanged()), this, SLOT(slotCurentStateChanged()));
+
 
        //load new style
         QFile file(":/style.txt");
         file.open(QFile::ReadOnly);
         QString styleSheet = QLatin1String(file.readAll());
-        setStyleSheet(styleSheet);
+        qApp->setStyleSheet(styleSheet);
         file.close();
+
+
 
 
 }
@@ -663,6 +667,21 @@ bool MainWindow::maybeSave()
     return true;
 }
 
+VIEW_STATE MainWindow::getCurentState()
+{
+    return curentState;
+}
+
+void MainWindow::setCurentState(VIEW_STATE state)
+{
+    curentState = state;
+}
+
+void MainWindow::slotCurentStateChanged()
+{
+    qDebug() << "NOT_BAD" << curentState;
+}
+
 void MainWindow::search()
 {
     QString str = ui->lineEdit_Find->text();
@@ -768,6 +787,7 @@ bool MainWindow::openFile(QString fileName)
         {
             curFile = fileName;
              textEdit->setText(QString::fromLocal8Bit((file.readAll())));
+             commandTextEdit->setText(QString::fromLocal8Bit((file.readAll())));
             return true;
         }
         else
@@ -784,8 +804,11 @@ void MainWindow::on_action_New_triggered()
     {
         curFile.clear();
         textEdit->clear();
+        commandTextEdit->clear();
     }
-textEdit->newText();
+    textEdit->newText();
+    ProjectCreator::getProjectSetting(false);
+
 }
 
 void MainWindow::on_delayBtn_pressed()
@@ -1053,6 +1076,7 @@ void MainWindow::onTextChanged()
 
 void MainWindow::on_action_Play_triggered()
 {
+    setCurentState(VIDEO_EDIT_PRO);
     hideBoardSettings();
     ui->action_Play->setEnabled(false);
     a_play->setEnabled(false);

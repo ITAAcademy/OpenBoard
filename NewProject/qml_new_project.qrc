@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main_new_poject.qml</file>
+        <file>checkbox.png</file>
+        <file>Content/ContentItem.qml</file>
+        <file>Content/MenuItem.qml</file>
+        <file>Content/Button_1.png</file>
+        <file>Content/Button_2.png</file>
+        <file>Content/Button_3.png</file>
+    </qresource>
+</RCC>

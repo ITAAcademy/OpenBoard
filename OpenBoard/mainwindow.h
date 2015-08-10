@@ -24,6 +24,7 @@
 #include "youtube/youtubewrapper.h"
 #include "editWidget/keyloggertextedit.h"
 #include "drawSystem/drawsystem.h"
+#include "../NewProject/projectcreator.h"
 
 namespace Ui {
 class MainWindow;
@@ -32,7 +33,7 @@ class MainWindow;
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
-    volatile bool isActive = true;
+
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
@@ -45,7 +46,7 @@ public slots:
     void on_actionClear_drawing_triggered();
     void on_actionClear_drawingBuffer_triggered();
 
- void doUndoRedoEnd();
+    void doUndoRedoEnd();
 //    board
     void closeEvent(QCloseEvent* event);
     void moveEvent(QMoveEvent *event);
@@ -58,7 +59,7 @@ public slots:
     void on_action_Pause_triggered();
     void on_action_Stop_triggered();
     void on_action_youTube_triggered();
-void on_action_Clear_TextEdit_triggered();
+    void on_action_Clear_TextEdit_triggered();
     void onTextChanged();
 
 //    settings
@@ -153,6 +154,20 @@ QMessageBox messAbout;
     bool maybeSave();
 
     bool play = false;
+
+    volatile bool isActive = true; // active main windows?
+    VIEW_STATE curentState;
+    Q_PROPERTY(VIEW_STATE curentState READ getCurentState WRITE setCurentState NOTIFY signalCurentStateChanged) //show curent state of window
+public slots:
+    VIEW_STATE getCurentState();
+    void setCurentState(VIEW_STATE state);
+
+signals:
+    void signalCurentStateChanged();
+private slots:
+    void slotCurentStateChanged();
+
+
 
 
 

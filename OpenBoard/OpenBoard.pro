@@ -27,7 +27,8 @@ SOURCES += main.cpp\
     ../TimeLine/imageprovider.cpp \
     drawSystem/drawimage.cpp \
     ../Brush/imageclone.cpp \
-    drawSystem/drawbrush.cpp
+    drawSystem/drawbrush.cpp \
+    ../NewProject/projectcreator.cpp
     drawSystem/drawbrush.cpp
 
 
@@ -54,7 +55,8 @@ HEADERS  += mainwindow.h \
     ../TimeLine/imageprovider.h \
     drawSystem/drawimage.h \
     ../Brush/imageclone.h \
-    drawSystem/drawbrush.h
+    drawSystem/drawbrush.h \
+    ../NewProject/projectcreator.h
     drawSystem/drawbrush.h
 
 
@@ -65,7 +67,8 @@ RESOURCES += \
     icons.qrc \
     ../TimeLine/icons_timeLine.qrc \
     ../TimeLine/qml_timeLine.qrc \
-    ../Brush/qml_brush.qrc
+    ../Brush/qml_brush.qrc \
+    ../NewProject/qml_new_project.qrc
     RC_FILE = myapp.rc
 
 #unix {

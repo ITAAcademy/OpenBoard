@@ -358,11 +358,11 @@ void OGLWidget::paintBufferOnScreen( int x, int y, int width, int height, int z)
     glBindTexture(GL_TEXTURE_2D,fbo_texture);
    // qglColor(Qt::green);//TO SEE TEXTURE
     glBegin(GL_QUADS);
-         //  Draw Picture DEBUG INVERTED BY VERTICAL
-    glTexCoord2i(0,0); glVertex3i(x, height,z);
-    glTexCoord2i(0,1); glVertex3i(x, y,z);
-    glTexCoord2i(1,1); glVertex3i(width, x,z);
-    glTexCoord2i(1,0); glVertex3i(width, height,z);
+            //Draw Picture
+    glTexCoord2i(0,0); glVertex3i(x, y+height, z);
+    glTexCoord2i(0,1); glVertex3i(x,y, z);
+    glTexCoord2i(1,1); glVertex3i(x+width,y,z);
+    glTexCoord2i(1,0); glVertex3i(x+width, y+height, z);
 
    /*
     glTexCoord2i(0,0); glVertex2i(0,0);
@@ -777,7 +777,8 @@ case EDIT_RECTANGLE_MOVE:
  testRectangle();
 if (canDrawByMouse)paintBrushInBuffer();
 }
-paintBufferOnScreen(0, 0, wax, way,-100);
+if(curStatus == STOP)
+    paintBufferOnScreen(0, 0, wax, way,-100);
 
 glDisable(GL_BLEND);
 GLuint error = glGetError();
