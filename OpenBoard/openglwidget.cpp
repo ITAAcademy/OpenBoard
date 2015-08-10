@@ -197,7 +197,8 @@ bool isBrushUsed = false;
         if (maxDispers>0 && currentBrushOfDrawSystem.count>0) i=currentBrushOfDrawSystem.count;
         int imgUniform = glGetUniformLocation(ShaderProgram,"vUV");
           glUniform2i(imgUniform,0,0);
-
+          int bloorStepUnifrom = glGetUniformLocation(ShaderProgram,"bloorStep");
+            glUniform1i(bloorStepUnifrom,currentBrushOfDrawSystem.blur);
 
           int colorUniform = glGetUniformLocation(ShaderProgram,"toColor");
           QColor color = currentBrushOfDrawSystem.color_main;
@@ -456,6 +457,9 @@ glUseProgram(ShaderProgram);
 
             int imgUniform = glGetUniformLocation(ShaderProgram,"vUV");
               glUniform2i(imgUniform,0,0);
+
+              int bloorStepUnifrom = glGetUniformLocation(ShaderProgram,"bloorStep");
+                glUniform1i(bloorStepUnifrom,m_manager.getCreatedBrush().blur);
 
 
 

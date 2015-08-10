@@ -2,6 +2,7 @@ precision highp float;
 varying vec2 vUV;
 uniform sampler2D textureSampler;
 uniform vec4 toColor;
+uniform int bloorStep;
 vec4 smoothing(vec2 tc,sampler2D u_texture,vec2 u_Scale);
 
  const vec2 gaussFilter[7] =
@@ -17,7 +18,8 @@ vec4 smoothing(vec2 tc,sampler2D u_texture,vec2 u_Scale);
 void main(void) {
     vec4 resultColor;
     //vec4 col = texture2D(textureSampler, gl_TexCoord[0].st);
-    vec4 col = smoothing(gl_TexCoord[0].st,textureSampler,vec2(0,1.0/100.0));// 1/width
+    vec2 step = vec2(0,0.001*bloorStep);
+    vec4 col = smoothing(gl_TexCoord[0].st,textureSampler,step);// 1/width
     float max = col.r;
     if (col.g>max)max=col.g;
     if (col.b>max)max=col.b;
