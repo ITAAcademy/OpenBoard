@@ -32,9 +32,9 @@ quint64 Parser::processTimeOfUnits(QList<Unit*> list, int delayMS){
     for (Unit *unit : list)
     {
         QString unitClass = QString(typeid(*unit).name());
-      qDebug() <<"typeid name:"<< unitClass;
+     // qDebug() <<"typeid name:"<< unitClass;
       if (unitClass.indexOf("UnitSumbol")>=0){
-          qDebug()<<"contains UnitSumbol";
+         // qDebug()<<"contains UnitSumbol";
           resultTime+=delayMS;
       }
       else if (unitClass.indexOf("UnitCommand")>=0){
