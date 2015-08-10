@@ -16,6 +16,10 @@
 #include <../OpenBoard/drawSystem/drawsystem.h>
 #include "../Brush/imageclone.h"
 
+class DrawTextElm;
+class DrawBrushElm;
+class DrawElement;
+
 
 struct Element {
     QString key;
@@ -24,7 +28,7 @@ struct Element {
     //QImage icon;
 //    int startDrawTime;
 //    int x, y, z, width, height; //on canva
-
+    //Element_type type;
     DrawElement *draw_element;
 
     Element( QString key, int time,int x = 0, int y = 0, int z = 0, int width = 100, int height = 100) {
@@ -69,6 +73,51 @@ struct Element {
             delete draw_element;
         draw_element = NULL;
     }
+    bool save(QIODevice* device)
+    {
+        QDataStream stream(device);
+        stream << key ;
+       draw_element->save(device);
+       return true;
+    }
+
+    bool load(QIODevice* device)
+    {
+        QDataStream stream(device);
+        stream >> key ;
+        draw_element->loadTypeId(device);
+
+
+       Element_type typeId = draw_element->getTypeId();// Element_type::Image;//static_cast<Element_type>(temp_type);
+
+        if(typeId == Element_type::Text)
+        {
+            DrawTextElm *elm = new DrawTextElm(NULL,NULL);
+                    elm->loadRest(device);
+                    delete  draw_element;
+                    draw_element = (DrawElement*) elm;
+        }
+        else
+        if(typeId == Element_type::Image)
+        {
+           DrawImageElm *elm = new DrawImageElm(NULL,NULL);
+                    elm->loadRest(device);
+                    delete  draw_element;
+                    elm->setDrawImage(elm->getIcon());
+                    draw_element = (DrawElement*) elm;
+                    //draw_element->getIcon().save("blaaaaaaaaaaaaaaaaaaaaaa.jpg");
+
+        }
+        else
+        if(typeId == Element_type::Brushh)
+        {
+           DrawBrushElm *elm = new DrawBrushElm(NULL,NULL);
+                    elm->loadRest(device);
+                    delete  draw_element;
+                    draw_element = (DrawElement*) elm;
+        }
+        return true;
+    }
 
 };
 
@@ -88,6 +137,38 @@ struct Track {
            }
 
     }
+    bool save(QIODevice* device)
+    {
+        QDataStream stream(device);
+        stream << block.size() << time ;
+        for (int i=0; i< block.size(); i++)
+            block[i].save(device);
+        return true;
+    }
+
+    bool load(QIODevice* device)
+    {
+        block.clear();
+        time = 0;
+        int blocks_size;
+        QDataStream stream(device);
+        stream >> blocks_size >> time ;
+        for (int i=0; i< blocks_size; i++)
+        {
+            Element temp;
+             temp.load(device);
+            block.append(temp);
+        }
+        return true;
+    }
+    void clear()
+    {
+        for (int i=0; i< block.size(); i++)
+            block[i].clear();
+        block.clear();
+        time = 0;
+    }
+
 };
 
 
@@ -97,6 +178,7 @@ class ListControll : public QObject, public QQuickImageProvider
     Q_OBJECT
 
 
+    bool isProjectChange = false;
     int maxTrackTime ;
     QQuickView view;
     QPoint framaMousePosition;
@@ -120,6 +202,9 @@ class ListControll : public QObject, public QQuickImageProvider
     int isPlayPauseStop = 3;
 
 public:
+    bool save(QIODevice* device);
+    bool load(QIODevice* device);
+
    Q_INVOKABLE void loadCurrentTextInTheFirstBlockWhenInit();
     volatile bool isBlocked = false;
 
@@ -130,8 +215,10 @@ public:
     void close();
     void hide();
     void setFocus();
-    void setViewPosition(QPoint pos);
+    void setViewPosition(QPoint pos); //1234
     bool isVisible();
+    Q_INVOKABLE  bool isProjectChanged();
+    Q_INVOKABLE  void setIsProjectChanged(bool);
     Q_INVOKABLE int getTrackSize(int col) const;
     Q_INVOKABLE QString getBlockKey(int col, int i) const;
     Q_INVOKABLE void addNewBlock(int col, QString str );
@@ -205,14 +292,29 @@ public:
 
     Q_INVOKABLE int  getTracksNumber();
 
+    Q_INVOKABLE int  resetProjectToDefault();
+
+  void sendUpdateModel();
+
 signals:
     void loadFromFileSignal();
     void playSignal();
     void pauseSignal();
     void stopSignal();
     void updateSignal();
+    void updateModel();
+
+    void newProjectSignel();
+    void openProjectSignel();
+    void saveProjectSignel();
+    void resetProjectSignel();
+
 void setScalePointerPosSignal(int value);
 public slots:
+Q_INVOKABLE void emitNewProject();
+  Q_INVOKABLE void emitOpenProject();
+  Q_INVOKABLE void emitSaveProject();
+            void emitResetProject();
 };
 
 #endif // LISTCONTROLL_H

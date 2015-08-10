@@ -11,6 +11,8 @@
 #include <QRect>
 #include "../openglwidget.h"
 
+enum Element_type { Text,Image,Brushh};
+
 class DrawElement : public QObject
 {
 
@@ -29,6 +31,7 @@ protected:
     QTimer lifeTimer;
     QElapsedTimer tickTimer;
     char type[50];
+    Element_type typeId;
     OGLWidget *pDrawWidget;
     bool bPause;
     bool bPlay;
@@ -36,12 +39,18 @@ protected:
     QString lastPath;
     virtual void draw();
 public:
+
     explicit DrawElement( OGLWidget *drawWidget, QObject *parent = 0);
     virtual ~DrawElement();
     void paint(); //new use
     bool load(QString path);
     bool save(QString path);
     bool reloadLastDone();
+
+    bool load(QIODevice* device);
+    bool loadTypeId(QIODevice* device);
+    bool loadRest(QIODevice* device);
+ bool save(QIODevice* device);
 
     QRect getRect();
 
@@ -78,6 +87,9 @@ public:
 
     void setType( const char name[]);
     QString getType();
+
+    void setTypeId( Element_type);
+    Element_type getTypeId();
 
     virtual int getTickTime() const;
     virtual void setTickTime(int value);

@@ -16,6 +16,9 @@
 #include "imageclone.h"
 
 #define TEXTURE_INDEX_BRUSH 1
+
+
+
 class BrushManager : public QObject, public QQuickImageProvider
 {
     Q_OBJECT

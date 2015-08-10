@@ -3,6 +3,7 @@
 DrawTextElm::DrawTextElm(OGLWidget *drawWidget, QObject *parent) : DrawElement(drawWidget, parent)
 {
     setType("text");
+    setTypeId(Element_type::Text);
 }
 
 DrawTextElm::~DrawTextElm()

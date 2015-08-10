@@ -19,6 +19,8 @@ MouseAreaForWindowDraging{
     id: framaMA
 anchors.fill:   frama
 }
+
+
 /*
 MouseAreaForWindowDraging{
 anchors.left:   frama.left
@@ -86,8 +88,20 @@ Rectangle
         if (scaling <= 0.02)
             scaling = 0.02
     }
-
-
+focus: true
+    Keys.onPressed: {
+         if(event.modifiers && Qt.ControlModifier) {
+            // console.log("AAAAAAAAAAAAAAAAAAAAA " + event.key)
+             if ((event.key === Qt.Key_S || event.key === 1067) && (event.modifiers & Qt.ShiftModifier))
+                       timeControll.emitSaveProject();
+             else
+                 if ((event.key === Qt.Key_O  || event.key === 1065) && (event.modifiers & Qt.ShiftModifier)) //1065 - 'Щ'
+                            timeControll.emitOpenProject();
+                 else
+                     if ((event.key === Qt.Key_N || event.key === 1058) && (event.modifiers & Qt.ShiftModifier))
+                                timeControll.emitNewProject();
+         }
+     }
 
 
     function addTrack()     {
@@ -142,9 +156,29 @@ main222.isPlay = false
                timeControll.calcPointedBlocksAtTime()
               // console.log("timer value: " +timeControll.getPlayTime())
            }
-
-
        }
+
+       onUpdateModel: {
+           rep_columns.model = timeControll.getTracksNumber()
+            main222.p_trackbar.globalRep.updateModel()
+
+           //repka.updateModel();
+       }
+
+
+       onResetProjectSignel: {
+
+          main222.selectedBlockCol = -1
+            main222.selectedBlockIndex = -1
+           rep_columns.model = timeControll.getTracksNumber()
+           console.log("1111111111111111111")
+            main222.p_trackbar.globalRep.updateModel()
+           console.log("2111111111111111111")
+           main222.p_scale_pointer.x = 26
+       timeControll.setIsProjectChanged(false)
+       }
+
+
        }
 
 
@@ -446,11 +480,15 @@ main222.isPlay = false
                                            property bool isDrag : false
                                            model:  timeControll.getTrackSize(trackbar.mIndex)//     bar_track.mIndex)
     function updateModel()      {
-        model = model - 1;
-
+        console.log("1111112222222222")
+        model = 0//model - 1;
+console.log("222222222222222")
         item_col.width = timeControll.getMaxTrackTime() + 31
+        console.log("3333333333333333333")
             timeControll.update();
+        console.log("44444444444444444444")
         model =  timeControll.getTrackSize(bar_track.mIndex)
+        console.log("55555555555555555")
         if (main222.needToLightSelected)
         {
             rep_columns.itemAt(main222.selectedBlockCol).setColorize(main222.selectedBlockIndex,"#8000FF00")
@@ -460,8 +498,10 @@ main222.isPlay = false
             main222.needToLightSelected = false
 
         }
+        console.log("6666666666666666666")
         timeControll.calcPointedBlocks();
-
+        console.log("77777777777777777")
+        timeControll.setIsProjectChanged(true)
     }
                                            delegate:
                                            ContentBlock.Block{

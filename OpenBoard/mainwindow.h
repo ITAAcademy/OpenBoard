@@ -87,6 +87,10 @@ public slots:
     void on_action_Open_triggered();
     void on_action_New_triggered();
 
+    bool on_action_Save_Project_triggered();
+    void on_action_Open_Project_triggered();
+    void on_action_New_Project_triggered();
+
 //    toolbar
     void on_backBtn_clicked();
     void on_animationBtn_clicked();
@@ -120,11 +124,13 @@ private slots:
 
     void on_actionLoad_drawing_temp_triggered();
 
+
 private:
     bool changeone;
    QString directory;
 QAction *a_play,*a_clear_textedit,*a_pause,*a_stop,*a_font_canvas,*a_color_canvas,
-*a_record_to_file,*a_undo,*a_redo,*a_show,*a_hide,*a_clear_drawing,*a_clear_drawingBuffer,*a_show_last_drawing,*a_save_drawing;
+*a_record_to_file,*a_undo,*a_redo,*a_show,*a_hide,*a_clear_drawing,*a_clear_drawingBuffer,
+*a_show_last_drawing,*a_save_drawing ,*a_open_project,*a_new_project, *a_save_project,*a_exit;
     Ui::MainWindow  *ui;
 QMessageBox messAbout;
  //   GLWidget        *mpGLWidget;
@@ -141,6 +147,7 @@ QMessageBox messAbout;
     int drawCounter;
     bool isCommandTextEditFocused = false;
     QString         curFile;
+    QString         curProjectFile;
     pSettings       mSettings;
     QTimer          *mTimer;
     QTimer          *mTimerClr;

@@ -28,6 +28,9 @@ MainWindow::MainWindow(QWidget *parent) :
     //QStandardPaths path;
     directory = QStandardPaths::locate(QStandardPaths::DocumentsLocation, QString(),
                                        QStandardPaths::LocateDirectory);
+
+
+    curProjectFile.clear();
 //// qDebug() <<directory;
 //    connect(&drawThread, SIGNAL(started()), this, SLOT(myfunction())); //cant have parameter sorry, when using connect
 
@@ -99,6 +102,9 @@ MainWindow::MainWindow(QWidget *parent) :
        toolBar->addAction(QPixmap(":/icons/open-file-icon.png").scaled(QSize(16, 16)), "Open", this, SLOT(on_action_Open_triggered()));
        toolBar->addAction(QPixmap(":/icons/Save-icon.png").scaled(QSize(16, 16)), "Save", this, SLOT(on_action_Save_triggered()));
        toolBar->addAction(QPixmap(":/icons/Save-as-icon.png").scaled(QSize(16, 16)), "Save as", this, SLOT(on_action_Save_as_triggered()));
+
+
+
        toolBar->addAction(QPixmap(":/icons/Close-2-icon.png").scaled(QSize(16, 16)), "Exit", this, SLOT(on_action_Exit_triggered()));
        toolBar->addSeparator();
 
@@ -186,6 +192,52 @@ MainWindow::MainWindow(QWidget *parent) :
        toolBar->addAction(QPixmap(":/icons/default_programs.png").scaled(QSize(16, 16)), "Reset default", this, SLOT(on_action_Reset_default_triggered()));
        toolBar->addSeparator();
 
+
+       a_new_project = new QAction(this);
+       a_new_project->setEnabled(true);
+       a_new_project->setIcon(QPixmap(":/iphone_toolbar_icons/New Folder.png").scaled(QSize(16, 16)));
+       a_new_project->setToolTip(tr("New project"));
+       a_new_project->setIconText(tr("New project"));
+       a_new_project->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_N));
+        connect(a_new_project,SIGNAL(triggered()),mpOGLWidget->getTimeLine(),  SLOT(emitNewProject()));
+
+
+       a_open_project = new QAction(this);
+       a_open_project->setEnabled(true);
+       a_open_project->setIcon(QPixmap(":/iphone_toolbar_icons/Open_.png").scaled(QSize(16, 16)));
+       a_open_project->setToolTip(tr("Open project"));
+       a_open_project->setIconText(tr("Open project"));
+       a_open_project->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_O));
+       connect(a_open_project,SIGNAL(triggered()),mpOGLWidget->getTimeLine(),  SLOT(emitOpenProject()));
+
+       a_save_project = new QAction(this);
+       a_save_project->setEnabled(true);
+       a_save_project->setIcon(QPixmap(":/iphone_toolbar_icons/save.png").scaled(QSize(16, 16)));
+       a_save_project->setToolTip("Save project");
+       a_save_project->setIconText("Save project");
+       a_save_project->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_S));
+       connect(a_save_project,SIGNAL(triggered()),mpOGLWidget->getTimeLine(),  SLOT(emitSaveProject()));
+
+       a_exit = new QAction(this);
+       a_exit->setEnabled(true);
+       a_exit->setIcon(QPixmap(":/icons/Close-2-icon.png").scaled(QSize(16, 16)));
+       a_exit->setToolTip("Exit");
+       a_exit->setIconText("Exit");
+       connect(a_exit,SIGNAL(triggered()),this,  SLOT(on_action_Exit_triggered()));
+
+
+
+       QList <QAction *> list_act;
+             list_act.append(a_new_project);
+             list_act.append(a_open_project);
+             list_act.append(a_save_project);
+
+             this->ui->menu_File->addActions(list_act); //1234
+             list_act.clear();
+              list_act.append(a_exit);
+               this->ui->menu_File->addSeparator();
+               this->ui->menu_File->addActions(list_act); //1234
+
        a_show = new QAction(this);
        a_show->setEnabled(true);
        a_show->setIcon(QPixmap(":/icons/gnome_show_desktop.png").scaled(QSize(16, 16)));
@@ -267,7 +319,6 @@ MainWindow::MainWindow(QWidget *parent) :
         connect(mpOGLWidget, SIGNAL(stopSignal()), this, SLOT(on_action_Stop_triggered()));
         connect(mpOGLWidget, SIGNAL(startSignal()), this, SLOT(on_action_Play_triggered()));
         connect(mpOGLWidget, SIGNAL(pauseSignal()), this, SLOT(on_action_Pause_triggered()));
-
         connect(this, SIGNAL(signalCurentStateChanged()), this, SLOT(slotCurentStateChanged()));
 
 
@@ -773,6 +824,7 @@ void MainWindow::on_action_Open_triggered()
     {
         QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), directory,
                                                               tr("Text Files (*.txt);;All Files (*.*)"));
+
     openFile( fileName);
     }
      textEdit->openText();
@@ -810,6 +862,120 @@ void MainWindow::on_action_New_triggered()
     ProjectCreator::getProjectSetting(false);
 
 }
+
+
+
+bool MainWindow::on_action_Save_Project_triggered()
+{
+
+   if(curProjectFile.isEmpty())
+   {
+        isActive = false;
+        qApp->processEvents();
+        activateWindow();
+       QString fileName = QFileDialog::getSaveFileName(this,
+        tr("Save project"), directory, tr("Project file (*.project)"));
+        isActive = true;
+        qApp->processEvents();
+        activateWindow();
+       if(fileName.isEmpty())   return false;
+         curProjectFile = fileName;
+   }
+
+   QFile file(curProjectFile);
+   if(file.open(QIODevice::WriteOnly))
+   {
+       ui->statusBar->showMessage("project saving...");
+       mpOGLWidget->getTimeLine()->save(&file);
+       file.close();
+       ui->statusBar->showMessage("project saved");
+       mpOGLWidget->getTimeLine()->setIsProjectChanged(false);
+       return true;
+   }
+   else
+   {
+       QMessageBox::warning(this, "Error",tr("Project\'s saving failed") //щ
+                            .arg(curProjectFile).arg(file.errorString()));
+       return false;
+   }
+}
+
+void MainWindow::on_action_Open_Project_triggered()
+{
+    isActive = true;
+    qApp->processEvents();
+    activateWindow();
+    if (mpOGLWidget->getTimeLine()->isProjectChanged())
+    {
+    QMessageBox::StandardButton reply;
+     reply = QMessageBox::question(this, "Test", "Are you want to save changes in current project?",
+                                   QMessageBox::Yes|QMessageBox::No | QMessageBox::Cancel);
+     if (reply == QMessageBox::Cancel)
+         return ;
+     else
+     if (reply == QMessageBox::Yes)
+     {
+       if (on_action_Save_Project_triggered() == false)
+           return;
+     }
+    }
+    mpOGLWidget->getTimeLine()->setIsProjectChanged(false);
+    curProjectFile.clear();
+isActive = false;
+qApp->processEvents();
+activateWindow();
+        QString fileName = QFileDialog::getOpenFileName(this,
+           tr("Open project"), directory, tr("Project file (*.project)"));
+        isActive = true;
+        qApp->processEvents();
+        activateWindow();
+        if(fileName.isEmpty())   return;
+          curProjectFile = fileName;
+
+    QFile file(curProjectFile);
+    if(file.open(QIODevice::ReadOnly))
+    {
+        ui->statusBar->showMessage("project opening...");
+        mpOGLWidget->getTimeLine()->load(&file);
+        file.close();
+        ui->statusBar->showMessage("project opened");
+       mpOGLWidget->getTimeLine()->sendUpdateModel();
+        return ;
+    }
+    else
+    {
+        QMessageBox::warning(this, "Error",tr("Project\'s opening failed") //щ
+                             .arg(curProjectFile).arg(file.errorString()));
+        return ;
+    }
+
+}
+
+void MainWindow::on_action_New_Project_triggered()
+{
+if (mpOGLWidget->getTimeLine()->isProjectChanged())
+{
+    QMessageBox::StandardButton reply;
+     reply = QMessageBox::question(this, "Test", "Are you want to save changes in current project?",
+                                   QMessageBox::Yes|QMessageBox::No | QMessageBox::Cancel);
+     if (reply == QMessageBox::Cancel)
+         return;
+     else
+     if (reply == QMessageBox::Yes)
+     {
+         if (on_action_Save_Project_triggered() == false)
+             return;
+     }
+}
+
+
+     curProjectFile.clear();
+      mpOGLWidget->getTimeLine()->resetProjectToDefault();
+     mpOGLWidget->getTimeLine()->emitResetProject();
+     mpOGLWidget->getTimeLine()->setIsProjectChanged(false);
+
+}
+
 
 void MainWindow::on_delayBtn_pressed()
 {
@@ -1296,3 +1462,5 @@ void MainWindow::on_actionLoad_drawing_temp_triggered()
         return;
       mpOGLWidget->drawBrushElm->load(fileName);
 }
+
+
