@@ -103,8 +103,10 @@ struct Element {
            DrawImageElm *elm = new DrawImageElm(NULL,NULL);
                     elm->loadRest(device);
                     delete  draw_element;
+                    elm->setDrawImage(elm->getIcon());
                     draw_element = (DrawElement*) elm;
-                    draw_element->getIcon().save("blaaaaaaaaaaaaaaaaaaaaaa.jpg");
+                    //draw_element->getIcon().save("blaaaaaaaaaaaaaaaaaaaaaa.jpg");
+
         }
         else
         if(typeId == Element_type::Brushh)
