@@ -458,6 +458,8 @@ glUseProgram(ShaderProgram);
               glUniform2i(imgUniform,0,0);
 
 
+
+
               int colorUniform = glGetUniformLocation(ShaderProgram,"toColor");
               QColor color = m_manager.getColor();
               float r = (float)color.red()/255;
