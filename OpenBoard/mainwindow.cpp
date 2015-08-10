@@ -94,7 +94,9 @@ MainWindow::MainWindow(QWidget *parent) :
        setWindowTitle(mSettings.getMainWindowTitle());
        setGeometry(mSettings.getMainWindowRect());
        this->textEdit->setColOrigin(mSettings.getMainWindowColor());
+       commandTextEdit->setStyleSheet("color: " + mSettings.getMainWindowColor().name());
        this->textEdit->setFont(mSettings.getMainWindowFont());
+       commandTextEdit->setFont(mSettings.getMainWindowFont());
 
        toolBar= new QToolBar(this);
        toolBarBoard= new QToolBar(this);
@@ -512,7 +514,7 @@ void MainWindow::on_action_Font_triggered()
         return;
   // setFont(font);
     textEdit->setFont(font);
-
+    commandTextEdit->setFont(font);
     mSettings.setMainWindowFont(font);
     ///!!!!!!!!!
     /*// bool ok;
@@ -551,6 +553,8 @@ void MainWindow::on_action_Reset_default_triggered()
         ui->menuBar->setFont(font);
         textEdit->setFont(font);
         textEdit->setTextColor("#000000");
+        commandTextEdit->setStyleSheet("color: #000000");
+        commandTextEdit->setFont(font);
         QString temp = textEdit->toPlainText();
         textEdit->clear();
         textEdit->insertPlainText(temp);
@@ -572,6 +576,8 @@ void MainWindow::on_action_Color_triggered()
         QString temp = textEdit->toPlainText();
         textEdit->clear();
         textEdit->insertPlainText(temp);
+
+        commandTextEdit->setStyleSheet("color: " + col);
 
         mSettings.setMainWindowColor(colorm);
     }
@@ -722,19 +728,22 @@ bool MainWindow::maybeSave()
     return true;
 }
 
-VIEW_STATE MainWindow::getCurentState()
+ProjectStartupSetting MainWindow::getCurentState()
 {
     return curentState;
 }
 
-void MainWindow::setCurentState(VIEW_STATE state)
+void MainWindow::setCurentState(ProjectStartupSetting state)
 {
     curentState = state;
+    emit signalCurentStateChanged();
+
 }
 
 void MainWindow::slotCurentStateChanged()
 {
-    qDebug() << "NOT_BAD" << curentState;
+    //qDebug() << "NOT_BAD" << curentState.state;
+
 }
 
 void MainWindow::search()
@@ -842,8 +851,8 @@ bool MainWindow::openFile(QString fileName)
         if(file.open(QFile::ReadOnly))
         {
             curFile = fileName;
-             textEdit->setText(QString::fromLocal8Bit((file.readAll())));
-             commandTextEdit->setText(QString::fromLocal8Bit((file.readAll())));
+             textEdit->setPlainText(QString::fromLocal8Bit((file.readAll())));
+             commandTextEdit->setPlainText(QString::fromLocal8Bit((file.readAll())));
             return true;
         }
         else
@@ -863,7 +872,6 @@ void MainWindow::on_action_New_triggered()
         commandTextEdit->clear();
     }
     textEdit->newText();
-    ProjectCreator::getProjectSetting(false);
 
 }
 
@@ -975,9 +983,10 @@ if (mpOGLWidget->getTimeLine()->isProjectChanged())
 
 
      curProjectFile.clear();
-      mpOGLWidget->getTimeLine()->resetProjectToDefault();
+     mpOGLWidget->getTimeLine()->resetProjectToDefault();
      mpOGLWidget->getTimeLine()->emitResetProject();
      mpOGLWidget->getTimeLine()->setIsProjectChanged(false);
+     this->setCurentState(ProjectCreator::getProjectSetting(true));
 
 }
 
@@ -1247,7 +1256,6 @@ void MainWindow::onTextChanged()
 
 void MainWindow::on_action_Play_triggered()
 {
-    setCurentState(VIDEO_EDIT_PRO);
     hideBoardSettings();
     ui->action_Play->setEnabled(false);
     a_play->setEnabled(false);
@@ -1277,7 +1285,7 @@ void MainWindow::on_action_Play_triggered()
      drawTTElements.setDelay(ui->slider_speedTB->value());
      bool needToSaveLifeTime = ui->check_use_speed_value->isChecked();
      drawTTElements.setUnitList(mUnitList);
-     drawTTElements.setUnParsestring(textEdit->toPlainText(),needToSaveLifeTime);
+     drawTTElements.setUnParsestring(textEdit->toPlainText(), commandTextEdit->toPlainText(), needToSaveLifeTime);
      drawTTElements.save("curent");
    /*  drawTTElements.load("curent.txt");
      // qDebug() << "                                                          qqqqqqqq" << drawTTElements.getType();*/
@@ -1291,6 +1299,8 @@ void MainWindow::on_action_Play_triggered()
     {
         if(mpOGLWidget->drawAnimated(ui->actionRecord_to_file->isChecked()))
             mpOGLWidget->getTimeLine()->play(); //off for test
+        else
+            on_action_Stop_triggered();
     }
     /*while( play && mpOGLWidget != 0 && mpOGLWidget->getStatus() != OGLWidget::STOP)
     {
@@ -1393,7 +1403,7 @@ void MainWindow::updateCurrentTxt()
     drawTTElements.setDelay(ui->slider_speedTB->value());
     bool needToSaveLifeTime = ui->check_use_speed_value->isChecked();
     drawTTElements.setUnitList(mUnitList);
-    drawTTElements.setUnParsestring(textEdit->toPlainText(),needToSaveLifeTime);
+    drawTTElements.setUnParsestring(textEdit->toPlainText(), commandTextEdit->toPlainText(), needToSaveLifeTime);
     drawTTElements.save("curent");
 }
 void MainWindow::on_speedBtn_pressed()

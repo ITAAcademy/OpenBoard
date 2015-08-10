@@ -18,8 +18,9 @@ Rectangle {
     RectangularGlow {
           id: effect
           anchors.fill: root
+          z:-100
           glowRadius: 10
-          spread: 0.00001
+          spread: 0.0031
           color:  "#BBBBBB"
           visible: false
           cornerRadius: root.radius

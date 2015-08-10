@@ -59,6 +59,7 @@ VideoCodecSettings AV_REncoder::videoCodecSettings() const
     settings.setFlags2(EncoderGlobal::FastPSkip);
     settings.setConstantQuantizerMode(0);
     settings.setPFramePredictionAnalysisMethod(EncoderGlobal::NoWpm);
+    settings.setBitrate(2048000);
 
     return settings;
 }

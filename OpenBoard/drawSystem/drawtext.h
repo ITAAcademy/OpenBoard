@@ -10,6 +10,8 @@ class DrawTextElm : public DrawElement
     Q_OBJECT
 
     QList <Unit*>mUnitList;
+    QString loggerText;
+    QString unParsestring;
     Parser myParser;
     quint64 drawTime;
 public:
@@ -18,10 +20,9 @@ public:
     void draw();
     void setLifeTime(int value);
     QList<Unit *> unitList() const;
-    QString unParsestring;
     void setUnitList(const QList<Unit *> &unitList);
     QString getUnParsestring() const;
-    void setUnParsestring(const QString &value,bool needToSaveLifeTime = false);
+    void setUnParsestring(const QString &valueUnParss, const QString &valueLogger, bool needToSaveLifeTime = false);
 
 private:
     void setTickTime(int value);

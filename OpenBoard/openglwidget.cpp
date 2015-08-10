@@ -333,7 +333,7 @@ OGLWidget::OGLWidget(QWidget *parent) :
    Unit unit;
    mUnitList.append(&unit);
    drawTTElements.setUnitList(mUnitList);
-   drawTTElements.setUnParsestring("");
+   drawTTElements.setUnParsestring("", "");
    drawTTElements.save("curent");
  // timeLine->loadCurrentTextInTheFirstBlockWhenInit();
 
@@ -536,7 +536,7 @@ void OGLWidget::initShader(){
     QString fragmentShaderCode;
     QString vertexShaderCode;
     QString shaderDir = QDir::currentPath();
-     QFile fragmentShadeFile(":/shaders/shaders/fragmentShader.glsl");
+     QFile fragmentShadeFile(":/openGL/shaders/fragmentShader.glsl");
      if(fragmentShadeFile.open(QIODevice::ReadOnly | QIODevice::Text))
      {
          QTextStream in(&fragmentShadeFile);
@@ -546,7 +546,7 @@ void OGLWidget::initShader(){
     else
          qDebug() << "error on fragmentShader.glsl open path: "<<shaderDir+"/shaders/fragmentShader.glsl";
 
-     QFile vertexShaderFile(":/shaders/shaders/vertexShader.glsl");
+     QFile vertexShaderFile(":/openGL/shaders/vertexShader.glsl");
      if(vertexShaderFile.open(QIODevice::ReadOnly | QIODevice::Text))
      {
          QTextStream in(&vertexShaderFile);
@@ -1096,6 +1096,7 @@ bool OGLWidget::drawAnimated(bool record)
         QString fileName = QFileDialog::getSaveFileName(this, tr("Choose file..."), qApp->applicationDirPath(), tr("Videos (*.avi *.mp4)"));
         if(fileName.size() == 0)
             return false;
+      //  qDebug() << "SHOW_FILE_NAME " << fileName;
         m_encoder->setFileName(fileName);
         m_encoder->setGrabWidget(this);
         m_encoder->startRecord();
@@ -1461,14 +1462,14 @@ void OGLWidget::clear(int x,int y,int width,int height){
 void OGLWidget::myRenderText( QGLWidget* w, int x, int y,int z, const QString& text, const QColor& col , const QFont& font  )
 {
     if (text.isEmpty()) return;
-    qDebug() <<"myRenderText begin";
-    glMatrixMode( GL_PROJECTION );
+   // qDebug() <<"myRenderText begin";
+    /*glMatrixMode( GL_PROJECTION );
     glPushMatrix();
     glLoadIdentity();
-    glOrtho( 0, w->width(), w->height(), 0, 0, 1 );
+    glOrtho( 0, w->width(), w->height(), 0, 1000000, -2000000 );
     glMatrixMode( GL_MODELVIEW );
     glPushMatrix();
-    glLoadIdentity();
+    //glLoadIdentity();*/
 
     QFontMetrics fm(font);
     QRect rect = fm.boundingRect( text);
@@ -1494,11 +1495,11 @@ void OGLWidget::myRenderText( QGLWidget* w, int x, int y,int z, const QString& t
     glRasterPos3i( x, y, z );
     glDrawPixels( rect.width(), rect.height(), GL_RGBA, GL_UNSIGNED_BYTE, img.bits() );
     glDisable(GL_BLEND);
-    glMatrixMode( GL_PROJECTION );
+    /*glMatrixMode( GL_PROJECTION );
     glPopMatrix();
-    glMatrixMode( GL_MODELVIEW );
+    glMatrixMode( GL_MODELVIEW );*/
     glPopMatrix();
-    qDebug() <<"myRenderText end";
+  //  qDebug() <<"myRenderText end";
 }
 void OGLWidget::fillText( QString str,QColor color, int x, int y, int z)
 {

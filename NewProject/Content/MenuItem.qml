@@ -121,7 +121,7 @@ Rectangle {
         NumberAnimation {id: enter; target: root; property: "scale"; to: menu_mouse.scale_value; duration: menu_mouse.duration }
         NumberAnimation {id: exited; target: root; property: "scale"; to: 1; duration: menu_mouse.duration }
         NumberAnimation {id: rotation_start; target: rotation_part_3; loops: Animation.Infinite; property: "angle"; duration: menu_mouse.duration*10; from: 0; to:360}
-        NumberAnimation {id: rotation_end; target: rotation_part_3; property: "angle"; duration: 100; to:0}
+        NumberAnimation {id: rotation_end; target: rotation_part_3; property: "angle"; duration: 300; to:0}
     }
     Text {
         id: title

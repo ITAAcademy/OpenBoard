@@ -165,11 +165,11 @@ QMessageBox messAbout;
     bool play = false;
 
     volatile bool isActive = true; // active main windows?
-    VIEW_STATE curentState;
-    Q_PROPERTY(VIEW_STATE curentState READ getCurentState WRITE setCurentState NOTIFY signalCurentStateChanged) //show curent state of window
+    ProjectStartupSetting curentState;
+    Q_PROPERTY(ProjectStartupSetting curentState READ getCurentState WRITE setCurentState NOTIFY signalCurentStateChanged) //show curent state of window
 public slots:
-    VIEW_STATE getCurentState();
-    void setCurentState(VIEW_STATE state);
+    ProjectStartupSetting getCurentState();
+    void setCurentState(ProjectStartupSetting state);
 
 signals:
     void signalCurentStateChanged();

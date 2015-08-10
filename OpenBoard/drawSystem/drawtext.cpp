@@ -65,9 +65,10 @@ QString DrawTextElm::getUnParsestring() const
     return unParsestring;
 }
 
-void DrawTextElm::setUnParsestring(const QString &value,bool needToSaveLifeTime )
+void DrawTextElm::setUnParsestring(const QString &valueUnParss, const QString &valueLogger, bool needToSaveLifeTime )
 {
-    unParsestring = value;
+    unParsestring = valueUnParss;
+    loggerText = valueLogger;
     // qDebug() << value;
     myParser.ParsingLine(mUnitList, unParsestring,drawTime,delay);
     if (needToSaveLifeTime)

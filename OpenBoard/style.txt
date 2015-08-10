@@ -264,13 +264,14 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical
 
 QTextEdit
 {
-    background-color: #777777;
-	color: #FFFFFF
+   // background-color: #777777;
+	color: #FFFFFF;
 }
 
 QPlainTextEdit
 {
-    background-color: #777777;
+   // background-color: #777777;
+	color: #FFFFFF;
 }
 
 QHeaderView::section

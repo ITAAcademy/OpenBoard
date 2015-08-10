@@ -5,6 +5,7 @@
 #include <QColor>
 #include <QStack>
 #include <QClipboard>
+#include <QPlainTextEdit>
 #include <QApplication>
 #include "mytextedit.h"
 struct CursorSymbolExtended{
@@ -12,7 +13,7 @@ int cursor;
 QString cymbol;
 int changeSize;
 };
-class KeyloggerTE : public QTextEdit
+class KeyloggerTE : public QPlainTextEdit
 {
     Q_OBJECT
 private:

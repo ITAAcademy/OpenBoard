@@ -192,7 +192,7 @@ this->setTextCursor(t_cursor);
 
     CursorCymbol change ;
     change = redo_changes.pop();
-    this->setText(change.cymbol);
+    this->setPlainText(change.cymbol);
     t_cursor.setPosition(change.cursor);
     this->setTextCursor(t_cursor);
 
