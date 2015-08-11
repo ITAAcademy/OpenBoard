@@ -143,6 +143,8 @@ void ListControll::loadFromFile()
    temp.draw_element->setStartDraw(start_time);
    temp.draw_element->setZ(p.x());
 
+   emit updateSelectedBlock(selectedBlockPoint);
+
   /* if(new_life_time > 100)
    {
        setBlockTime(p.x(),p.y(), new_life_time);

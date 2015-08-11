@@ -102,6 +102,10 @@ void DrawTextElm::setUnParsestring(const QString &valueUnParss, const QString &v
     loggerText = valueLogger;
     // qDebug() << value;
     myParser.ParsingLine(mUnitList, unParsestring, drawTime, delay);
+    UnitCommand* command = new UnitCommand();
+    command->setUnitCommandType("MoveLeft");
+    command->setUnitData("1");
+    mUnitList.append(command);
     /*if (needToSaveLifeTime)
         lifeTime=drawTime;*/
     if(mUnitList.size() > 0)
@@ -133,7 +137,8 @@ void DrawTextElm::setTickTime(int value)
 
 bool DrawTextElm::load_add(QDataStream &stream)
 {
-    stream >> unParsestring;
+    stream >> unParsestring >> loggerText >> textCursor;
+    setUnParsestring(unParsestring, loggerText);
     /*int sizeOfString = 0;
     stream >> sizeOfString;
     QByteArray data;
@@ -142,7 +147,7 @@ bool DrawTextElm::load_add(QDataStream &stream)
     stream.readRawData(data.data(), sizeOfString);
     unParsestring = data;
     // qDebug() << data;*/
-    myParser.ParsingLine(mUnitList, unParsestring,drawTime,delay);
+    //myParser.ParsingLine(mUnitList, unParsestring,drawTime,delay);
 }
 
 bool DrawTextElm::save_add(QDataStream &stream)
@@ -150,5 +155,5 @@ bool DrawTextElm::save_add(QDataStream &stream)
  /*   stream << unParsestring.length();
     // qDebug() << "IN " << unParsestring.length();
     stream.writeRawData(unParsestring.toLatin1().data(), unParsestring.length());*/
-    stream << unParsestring;
+    stream << unParsestring << loggerText << textCursor;
 }
