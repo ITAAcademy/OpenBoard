@@ -244,6 +244,12 @@ bool isBrushUsed = false;
 glBindTexture(GL_TEXTURE_2D,0);
 glBindFramebuffer(GL_FRAMEBUFFER , 0); // Unbind our texture
 }
+bool OGLWidget::isShowLastDrawing(){
+    return showingLastDrawing;
+}
+void OGLWidget::setShowLastDrawing(bool val){
+     showingLastDrawing=val;
+}
 
 OGLWidget::OGLWidget(QWidget *parent) :
     QGLWidget(parent)
@@ -886,6 +892,33 @@ case EDIT_RECTANGLE_MOVE:
  testRectangle();
 if (canDrawByMouse && m_manager.isAbleToDraw())paintBrushInBuffer();
 }
+if (showingLastDrawing)
+{
+ int recordedBrushN = 0;
+    for (; recordedBrushN < drawBrushElm->getBrushes().length(); )
+    {
+        //qDebug() << "brushes["<<recordedBrushN<<"].pointIndex"<<brushes[recordedBrushN].pointIndex;
+     if (drawBrushElm->getBrushes()[recordedBrushN].pointIndex==currentLastDrawingPointIterator){
+      // qDebug() << "KEY_FRAME:"<<keyFrame;
+       // qDebug() << "mouse play index:"<<keyFrame;
+
+       currentBrushOfLastDrawing =drawBrushElm->getBrushes()[recordedBrushN].brush;
+        brushTexture = loadTexture(drawBrushElm->getBrushes()[recordedBrushN].brush.img);
+     break;
+    }
+    recordedBrushN++;
+    }
+
+
+
+    paintBrushInBuffer(drawBrushElm->getCoords(),drawBrushElm->getBrushes(),currentLastDrawingPointIterator++);
+    if (currentLastDrawingPointIterator>=drawBrushElm->getCoords().length())
+    {
+        showingLastDrawing=false;
+        currentLastDrawingPointIterator=0;
+    }
+}
+
 if(curStatus == STOP)
     paintBufferOnScreen(0, 0, wax, way,-100);
 

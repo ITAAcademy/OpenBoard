@@ -203,6 +203,8 @@ public:
 
     void myRenderText(QGLWidget *w, int x, int y,int z, const QString &text, const QColor &col = Qt::white, const QFont &font = QFont());
     void initShader();
+    bool isShowLastDrawing();
+    void setShowLastDrawing(bool val);
 public slots:
     bool drawAnimated( bool record );
     void stopAnimated();
@@ -257,12 +259,15 @@ private slots:
     void storeMousePos();
 
 private:
+    bool showingLastDrawing = false;
+    int currentLastDrawingPointIterator = 0;
     GLuint ShaderProgram;
        bool firstUpdate = true;
      bool isNotPainting;
     QImage img;
     ListControll *timeLine = NULL;
          Brush currentBrushOfDrawSystem;
+         Brush currentBrushOfLastDrawing;
     GLuint    fbo,// The frame buffer object
 	fbo_depth, // The depth buffer for the frame buffer object
 

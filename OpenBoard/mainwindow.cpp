@@ -1601,6 +1601,7 @@ void MainWindow::on_actionShow_last_drawing_triggered()
 {
     // qDebug() << "show_last_drawing";
     mpOGLWidget->isMousePlay=true;
+    mpOGLWidget->setShowLastDrawing(true);
 }
 
 void MainWindow::on_actionSave_drawing_triggered()
