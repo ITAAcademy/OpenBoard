@@ -112,6 +112,7 @@ focus: true
     function removeTrack()    {
         timeControll.removeLastTrack()
     rep_columns.model -=1
+item_col.width = timeControll.getMaxTrackTime() + 31
     }
 
     function play()    {
@@ -382,7 +383,7 @@ main222.isPlay = false
               height: parent.height
               property int horizontalX: flickableItem.contentX
               property int verticalY: flickableItem.contentY
-             property int baba: scroll.flickableItem.contentWidth
+             //property int baba: scroll.flickableItem.contentWidth
               onHorizontalXChanged:  {
                time_scale.x = -horizontalX + 30
                   context_menu.visible = false
@@ -416,7 +417,7 @@ main222.isPlay = false
                     }
                     Column {
                           id: columns
-                          width:  timeControll.getMaxTestWidth()
+                          width:  timeControll.getMaxTrackTime()
                           property Repeater globalRep
                           spacing: 2
                           Repeater {

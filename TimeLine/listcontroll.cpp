@@ -197,11 +197,11 @@ bool ListControll::removeLastTrack()
     }
    else
     {
-    if (maxTrackTime == lastColTime)
-        recountMaxTrackTime();
+   // if (maxTrackTime == lastColTime)
+        //recountMaxTrackTime();
     this->calcPointedBlocks();
     }
-
+recountMaxTrackTime();
 
 
   // if (selectedBlockPoint.x() == tracks.size() - 1)        selectedBlock = NULL;

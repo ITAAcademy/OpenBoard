@@ -782,7 +782,6 @@ void OGLWidget::paintGL()
         GLint y2 = editingRectangle.rect.y()+editingRectangle.rect.height();
         bool canDrawByMouse = true;
 
-
         int leftCornerX1=x1-editingRectangle.leftCornerSize/2;
          int leftCornerY1=y1-editingRectangle.leftCornerSize/2;
                  int leftCornerX2=x1 + editingRectangle.leftCornerSize/2;
@@ -1374,7 +1373,7 @@ void  OGLWidget::updateWindow(){
     if(curStatus != PLAY && t.x() >= 0)
     {
         editingRectangle.isEditingRectangleVisible = true;
-        if(t != selElm)
+        if(t != selElm )
         {
             selElm = t;
             editingRectangle.rect = timeLine->getDrawRect(t.x(), t.y());
@@ -1393,6 +1392,7 @@ void  OGLWidget::updateWindow(){
     else
     {
        // qDebug() << "SBLOCK " << t;
+        selElm = t;
         editingRectangle.isEditingRectangleVisible = false;
     }
     updateGL();
