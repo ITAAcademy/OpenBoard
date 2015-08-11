@@ -21,6 +21,7 @@ QVector<QPoint> coords;
 //QVector <QPoint> mouseCoord;
 QVector<BrushBeginingIndex> brushes;
 QStringList brushesPaths;
+bool ableToDraw = true;
 public:
  static int SPEED_OF_RECORDING_MS;
    DrawBrushElm(OGLWidget *drawWidget, QObject *parent);

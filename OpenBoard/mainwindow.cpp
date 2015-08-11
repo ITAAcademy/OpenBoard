@@ -35,6 +35,9 @@ MainWindow::MainWindow(QWidget *parent) :
 //    connect(&drawThread, SIGNAL(started()), this, SLOT(myfunction())); //cant have parameter sorry, when using connect
 
     mpOGLWidget = new OGLWidget();
+     qDebug() << "connect unableToDraw";
+
+
     mpOGLWidget->setFixedSize(GLWIDGET_SIZE);
     mpOGLWidget->move(pos().x() + width() + WINDOW_MARGING, pos().y());
     mpOGLWidget->hide();
@@ -43,6 +46,7 @@ MainWindow::MainWindow(QWidget *parent) :
     textEdit->setObjectName(QStringLiteral("textEdit"));
     textEdit->setEnabled(true);
     connect(textEdit,SIGNAL(setFocus()),this,SLOT(onCommandFocusLost()));
+
 
 
     commandTextEdit = new KeyloggerTE(textEdit, this);
@@ -60,6 +64,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionSend_to_youTube, SIGNAL( triggered()), this, SLOT (on_action_youTube_triggered()));
     connect(textEdit,SIGNAL(doUndoRedoStart()),this,SLOT(doUndoRedoStart()));
     connect(textEdit,SIGNAL(doUndoRedoEnd()),this,SLOT(doUndoRedoEnd()));
+
 
     ui->widget_Find->setVisible(false);
     ui->widget_delayTB->setVisible(false);
@@ -339,6 +344,7 @@ ui->actionRecord_to_file->setCheckable(true);
         commandTextEdit->setEnabled(false);
         setEnabledToolBar(false);
 
+
        //load new style
         QFile file(":/style.txt");
         file.open(QFile::ReadOnly);
@@ -467,6 +473,11 @@ void MainWindow::on_action_Show_triggered()
     ui->action_Show->setEnabled(false);
     a_hide->setEnabled(true);
     ui->action_Hide->setEnabled(true);
+    if (!mpOGLWidget->m_manager.isAbleToDraw())
+    {
+        a_save_drawing->setEnabled(false);
+        ui->actionSave_drawing->setEnabled(false);
+    }
 
 /*
  * QML

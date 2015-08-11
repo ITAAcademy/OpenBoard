@@ -878,7 +878,7 @@ case EDIT_RECTANGLE_MOVE:
     break;
  }
  testRectangle();
-if (canDrawByMouse)paintBrushInBuffer();
+if (canDrawByMouse && m_manager.isAbleToDraw())paintBrushInBuffer();
 }
 if(curStatus == STOP)
     paintBufferOnScreen(0, 0, wax, way,-100);
@@ -1146,6 +1146,7 @@ void OGLWidget::pauseAnimated()
 
 void OGLWidget::brushParamsChanged()
 {
+    if (!m_manager.isAbleToDraw())return;
     brushTexture = loadTexture(m_manager.getCreatedBrush().img);
     drawBrushElm->addBrush(m_manager.getCreatedBrush());
     qDebug() << "brushParamsChanged";
@@ -1463,6 +1464,7 @@ void OGLWidget::clear(int x,int y,int width,int height){
 void OGLWidget::myRenderText( QGLWidget* w, int x, int y,int z, const QString& text, const QColor& col , const QFont& font  )
 {
     if (text.isEmpty()) return;
+
    // qDebug() <<"myRenderText begin";
     /*glMatrixMode( GL_PROJECTION );
     glPushMatrix();
@@ -1501,8 +1503,6 @@ void OGLWidget::myRenderText( QGLWidget* w, int x, int y,int z, const QString& t
     glMatrixMode( GL_MODELVIEW );*/
     glPopMatrix();
   //  qDebug() <<"myRenderText end";
-
-    //qDebug() <<"myRenderText end";
 
 }
 void OGLWidget::fillText( QString str,QColor color, int x, int y, int z)
@@ -2148,7 +2148,8 @@ bool OGLWidget::crossTextDraw()
             y -=   indexRowInList;
             // qDebug() << "YYYYYYYYYYYYYYYYYYYYYYY2" << y;
             ++y *= lineHeight + pt;
-            y -= 0.25f * fMetrics->height();// first paid + midle
+            // QRect rect = fm.boundingRect( text);
+            y -= 0.5f * fMetrics->height();// first paid + midle LABEL1
 
             x2 = marginLeft + fMetrics->width(stringList[conv.y()].left(conv.x() + 1));
             y += marginTop;
