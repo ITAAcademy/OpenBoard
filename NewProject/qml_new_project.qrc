@@ -7,5 +7,7 @@
         <file>Content/Button_1.png</file>
         <file>Content/Button_2.png</file>
         <file>Content/Button_3.png</file>
+        <file>Content/TextVideoContent.qml</file>
+        <file>Content/OpenImage.qml</file>
     </qresource>
 </RCC>

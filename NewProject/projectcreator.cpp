@@ -29,10 +29,11 @@ void ProjectCreator::close()
     view.close();
 }
 
-ProjectStartupSetting ProjectCreator::getProjectSetting(bool fullScreen)
+ProjectStartupSetting ProjectCreator::getProjectSetting(bool isStart, bool fullScreen)
 {
     ProjectCreator creator;
-    creator.show();
+    creator.setStart(isStart);
+    creator.show(fullScreen);
     while(creator.isVisible())
         qApp->processEvents();
     qDebug() << "close()";
@@ -47,6 +48,16 @@ void ProjectCreator::setProjectState(int state)
 void ProjectCreator::setAdvanceMode(bool state)
 {
     curent.advance_mode = state;
+}
+
+bool ProjectCreator::isStart() const
+{
+    return start;
+}
+
+void ProjectCreator::setStart(bool value)
+{
+    start = value;
 }
 ProjectCreator::ProjectCreator(QObject *parent) : QObject(parent)
 {

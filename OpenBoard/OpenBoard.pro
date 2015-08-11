@@ -105,3 +105,5 @@ QMAKE_TARGET_COPYRIGHT = @@@
 
 INCLUDEPATH += $$PWD/ThirdPart/include
 DEPENDPATH += $$PWD/ThirdPart/include
+
+RCC_DIR = ../

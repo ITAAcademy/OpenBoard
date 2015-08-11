@@ -1031,27 +1031,26 @@ activateWindow();
 void MainWindow::on_action_New_Project_triggered()
 {
     qDebug() << "NEW_PROJECT";
-if (mpOGLWidget->getTimeLine()->isProjectChanged())
-{
-    QMessageBox::StandardButton reply;
-     reply = QMessageBox::question(this, "Test", "Are you want to save changes in current project?",
-                                   QMessageBox::Yes|QMessageBox::No | QMessageBox::Cancel);
-     if (reply == QMessageBox::Cancel)
-         return;
-     else
-     if (reply == QMessageBox::Yes)
-     {
-         if (on_action_Save_Project_triggered() == false)
+    if (mpOGLWidget->getTimeLine()->isProjectChanged())
+    {
+        QMessageBox::StandardButton reply;
+         reply = QMessageBox::question(this, "Test", "Are you want to save changes in current project?",
+                                       QMessageBox::Yes|QMessageBox::No | QMessageBox::Cancel);
+         if (reply == QMessageBox::Cancel)
              return;
-     }
-}
-
+         else
+         if (reply == QMessageBox::Yes)
+         {
+             if (on_action_Save_Project_triggered() == false)
+                 return;
+         }
+    }
 
      curProjectFile.clear();
      mpOGLWidget->getTimeLine()->resetProjectToDefault();
      mpOGLWidget->getTimeLine()->emitResetProject();
      mpOGLWidget->getTimeLine()->setIsProjectChanged(false);
-     this->setCurentState(ProjectCreator::getProjectSetting(true));
+     this->setCurentState(ProjectCreator::getProjectSetting(true, false));
 
 }
 

@@ -1510,6 +1510,30 @@ void OGLWidget::myRenderText( QGLWidget* w, int x, int y,int z, const QString& t
     glPopMatrix();
   //  qDebug() <<"myRenderText end";
 
+    /*
+     *
+     * IMAGE VERSION
+    QFontMetrics fm(font);
+    QRect rect = fm.boundingRect( text);
+
+    QImage img(rect.size(), QImage::Format_RGBA8888);
+    img.fill("transparent");
+    QPainter painter(&img);
+    painter.setPen( Qt::white );
+    painter.setFont( font );
+    painter.drawText( -rect.left(), -rect.top(), text );
+    painter.end();
+    img = QGLWidget::convertToGLFormat(img);
+
+    glEnable(GL_BLEND);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glRasterPos3i( x, y, z );
+    glDrawPixels( rect.width(), rect.height(), GL_RGBA, GL_UNSIGNED_BYTE, img.bits() );
+    glDisable(GL_BLEND);
+    glPopMatrix();
+
+     */
+
 }
 void OGLWidget::fillText( QString str,QColor color, int x, int y, int z)
 {

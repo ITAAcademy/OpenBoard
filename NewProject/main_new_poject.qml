@@ -45,6 +45,7 @@ Rectangle{
                         onClicked: {
                             my_col.clean();
                             projectControll.setProjectState(0);
+                            content.next = c1;
                         }
                     }
                     Content.MenuItem{
@@ -52,6 +53,7 @@ Rectangle{
                         onClicked: {
                             my_col.clean();
                             projectControll.setProjectState(1);
+                            content.next = c2;
                         }
                     }
                     Content.MenuItem{
@@ -75,10 +77,20 @@ Rectangle{
                             projectControll.setProjectState(4);
                         }
                     }
+                    Content.MenuItem{
+                        title: "Open project"
+                        visible: projectControll.isStart();
+                        onClicked: {
+                            my_col.clean();
+                            projectControll.setProjectState(5);
+                            projectControll.close();
+                        }
+                    }
                 }
             }
             Component.onCompleted: {
                 m1.check();
+                m1.click();
                 projectControll.setProjectState(0);
             }
         }
@@ -93,8 +105,50 @@ Rectangle{
             id: content
             width: parent.width * 0.7
             height: parent.height
+            property Item curent: c1
+            property Item next: c1
+            property int swap_animation_duration: 500
+
+           NumberAnimation {id: one; target: content.curent; properties: "scale, opacity";from: 1.0; to: 0.0; duration: content.swap_animation_duration;
+                onStopped: {
+                    console.log("stop_1");
+                    content.curent.visible = false;
+                    two.start();
+                }
+            }
+            NumberAnimation { id: two; target: content.next; properties: "scale, opacity"; from: 0.0; to: 1.0; duration: content.swap_animation_duration;
+                onStarted: {
+                    console.log("start_2");
+                    content.next.visible = true;
+                }
+                onStopped: content.swap();
+            }
+
+            onNextChanged:
+            {
+                one.start();
+            }
+            function swap()
+            {
+               console.log("swap");
+               content.curent = content.next;
+            }
+
             ScrollView{
+                id: content_scroll
                 anchors.fill: parent
+                Column{
+                    Content.TextVideoContent{
+                        id: c1
+                        parent: content_scroll
+                    }
+                    Content.TextVideoContent{
+                        id: c2
+                        parent: content_scroll
+                    }
+                }
+
+
             }
             Rectangle{
                 id: advance

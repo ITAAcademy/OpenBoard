@@ -26,6 +26,7 @@ class ProjectCreator : public QObject
 
     QQuickView view;
     ProjectStartupSetting curent;
+    bool start = false;
 public:
     explicit ProjectCreator(QObject *parent = 0);
     ~ProjectCreator();
@@ -35,11 +36,13 @@ public:
     bool isVisible();
     void show(bool fullScreen = false);
 
-    static ProjectStartupSetting getProjectSetting(bool fullScreen);
+    static ProjectStartupSetting getProjectSetting(bool isStart, bool fullScreen = false);
 
     Q_INVOKABLE void close();
     Q_INVOKABLE void setProjectState( int state);
     Q_INVOKABLE void setAdvanceMode( bool state);
+    Q_INVOKABLE bool isStart() const;
+    void setStart(bool value);
 
 signals:
 

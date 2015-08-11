@@ -42,6 +42,13 @@ Rectangle {
 
     }
 
+    function click()
+    {
+        root.clicked()
+        if(root.checkable)
+            root.check();
+    }
+
     RectangularGlow {
         id: effect
         visible: false
@@ -51,6 +58,9 @@ Rectangle {
         spread: 0.2
         color: "white"
         cornerRadius: root.radius + glowRadius
+
+        //privat
+
     }
     Image {
         id: part1
@@ -79,13 +89,11 @@ Rectangle {
         id: menu_mouse
         anchors.fill: parent
         hoverEnabled: true
-        property double scale_value: 1.2
+        property double scale_value: 1.1
         property int duration: 300
         property bool isFocus: false
         onClicked: {
-            root.clicked()
-            if(root.checkable)
-            root.check();
+            root.click();
         }
         onPressed: {
             effect.visible =true;

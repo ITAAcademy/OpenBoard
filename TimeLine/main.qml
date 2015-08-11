@@ -160,8 +160,9 @@ main222.isPlay = false
        }
 
        onUpdateModel: {
-           rep_columns.model = timeControll.getTracksNumber()
-            main222.p_trackbar.globalRep.updateModel()
+           rep_columns.model = 0
+            rep_columns.model =  timeControll.getTracksNumber()
+           // main222.p_trackbar.globalRep.updateModel()
 
            //repka.updateModel();
        }
@@ -422,7 +423,7 @@ main222.isPlay = false
                           spacing: 2
                           Repeater {
                           id: rep_columns
-                          model: 1
+                          model: timeControll.getTracksNumber()
                           onModelChanged: {
                               if ( model < 0)
                                   model = 0;
