@@ -25,6 +25,7 @@ void ListControll::setSelectedBlockPoint(int col, int ind)
     // qDebug() <<"FFFFFFFFFFFF: col = " << selectedBlockPoint.x() << " ind = " << selectedBlockPoint.y();
 }
 
+
 void ListControll::recountMaxTrackTime()
 {
     maxTrackTime = 0;
@@ -125,12 +126,15 @@ void ListControll::loadFromFile()
 //qDebug() <<"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA " + open;
    DrawElement *elm = GenerationDrawElement(open);
    if(elm == NULL)
+   {
+       qDebug() << "loadFromFile(): elm == NULL";
        return;
+   }
    // qDebug() << "9999999999999999999999999999999999999999999999" << elm->getType();
 
    Element &temp = tracks[p.x()].block[p.y()];
    int life_time = temp.draw_element->getLifeTime();
-   int new_life_time = elm->getLifeTime();
+   //int new_life_time = elm->getLifeTime();
    int start_time = temp.draw_element->getStartDrawTime();
    delete temp.draw_element;
    temp.key = elm->getKey();
@@ -139,10 +143,10 @@ void ListControll::loadFromFile()
    temp.draw_element->setStartDraw(start_time);
    temp.draw_element->setZ(p.x());
 
-   if(new_life_time > 100)
+  /* if(new_life_time > 100)
    {
        setBlockTime(p.x(),p.y(), new_life_time);
-   }
+   }*/
 
 }
 
@@ -171,6 +175,7 @@ bool ListControll::removeLastBlock(int col)
     tracks[col].time -= temp;
    }
   // if (selectedBlockPoint.x() == col)       selectedBlock = NULL;
+   pointed_block.clear();
    isBlocked = false;
     return true;
     }
@@ -197,11 +202,11 @@ bool ListControll::removeLastTrack()
     }
    else
     {
-    if (maxTrackTime == lastColTime)
-        recountMaxTrackTime();
+   // if (maxTrackTime == lastColTime)
+        //recountMaxTrackTime();
     this->calcPointedBlocks();
     }
-
+recountMaxTrackTime();
 
 
   // if (selectedBlockPoint.x() == tracks.size() - 1)        selectedBlock = NULL;

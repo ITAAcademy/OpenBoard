@@ -327,7 +327,7 @@ OGLWidget::OGLWidget(QWidget *parent) :
 
 
    //for loading current text in to fist init block
-   DrawTextElm drawTTElements(this);
+   /*DrawTextElm drawTTElements(this);
    QList <Unit*>mUnitList;
 
    Unit unit;
@@ -336,7 +336,7 @@ OGLWidget::OGLWidget(QWidget *parent) :
    drawTTElements.setUnParsestring("", "");
    drawTTElements.save("curent");
  // timeLine->loadCurrentTextInTheFirstBlockWhenInit();
-
+*/
    getTimeLine()->setIsProjectChanged(false);
 }
 
@@ -781,7 +781,6 @@ void OGLWidget::paintGL()
         GLint x2 = editingRectangle.rect.x()+editingRectangle.rect.width();
         GLint y2 = editingRectangle.rect.y()+editingRectangle.rect.height();
         bool canDrawByMouse = true;
-
 
         int leftCornerX1=x1-editingRectangle.leftCornerSize/2;
          int leftCornerY1=y1-editingRectangle.leftCornerSize/2;
@@ -1367,6 +1366,7 @@ void OGLWidget::pause(int ms)
 void  OGLWidget::updateWindow(){
     //isCrossingNow=true;
     //if (timeLine->getPointedBlocks().size())
+   /// if(!timeLine->isBlocked)
     setList(timeLine->getPointedBlocksDE());
 
     QPoint t = timeLine->getSelectedBlockPoint();
@@ -1374,7 +1374,7 @@ void  OGLWidget::updateWindow(){
     if(curStatus != PLAY && t.x() >= 0)
     {
         editingRectangle.isEditingRectangleVisible = true;
-        if(t != selElm)
+        if(t != selElm )
         {
             selElm = t;
             editingRectangle.rect = timeLine->getDrawRect(t.x(), t.y());
@@ -1393,6 +1393,7 @@ void  OGLWidget::updateWindow(){
     else
     {
        // qDebug() << "SBLOCK " << t;
+        selElm = t;
         editingRectangle.isEditingRectangleVisible = false;
     }
     updateGL();
@@ -1500,6 +1501,9 @@ void OGLWidget::myRenderText( QGLWidget* w, int x, int y,int z, const QString& t
     glMatrixMode( GL_MODELVIEW );*/
     glPopMatrix();
   //  qDebug() <<"myRenderText end";
+
+    //qDebug() <<"myRenderText end";
+
 }
 void OGLWidget::fillText( QString str,QColor color, int x, int y, int z)
 {

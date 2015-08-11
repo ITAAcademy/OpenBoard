@@ -290,8 +290,12 @@ MainWindow::MainWindow(QWidget *parent) :
        a_record_to_file->setToolTip(tr("Record in file"));
        a_record_to_file->setCheckable(true);
        a_record_to_file->setChecked(false);
-       connect(a_record_to_file,SIGNAL(triggered()),this,  SLOT(a_record_to_file_triggered()));
+       connect(a_record_to_file,SIGNAL(triggered()),this,  SLOT(on_action_Record_to_file_triggered()));
        toolBarBoard->addAction(a_record_to_file);
+
+        connect(ui->actionRecord_to_file,SIGNAL(triggered()),this,  SLOT(on_action_Record_to_file_triggered()));
+ui->actionRecord_to_file->setCheckable(true);
+
 
        toolBar->addAction(QPixmap(":/icons/youtube_icon.png").scaled(QSize(16, 16)), "Send to YouTube", this, SLOT(on_action_youTube_triggered()));
        toolBar->addAction(QPixmap(":/icons/info.png").scaled(QSize(16, 16)), "About", this, SLOT(on_action_About_triggered()));
@@ -503,6 +507,7 @@ void MainWindow::on_action_Show_triggered()
     a_font_canvas->setEnabled(true);
     a_color_canvas->setEnabled(true);
     a_record_to_file->setEnabled(true);
+    ui->actionRecord_to_file->setEnabled(true);
     a_undo->setEnabled(true);
     a_redo->setEnabled(true);
 
@@ -540,6 +545,7 @@ void MainWindow::on_action_Hide_triggered()
     a_font_canvas->setEnabled(false);
     a_color_canvas->setEnabled(false);
     a_record_to_file->setEnabled(false);
+    ui->actionRecord_to_file->setEnabled(false);
     a_undo->setEnabled(false);
    a_redo->setEnabled(false);
    textEdit->setEnabled(false);
@@ -1485,15 +1491,25 @@ void MainWindow::on_action_Pause_triggered()
 
 
 
-void MainWindow::a_record_to_file_triggered()
-{
-    ui->actionRecord_to_file->setChecked(!(ui->actionRecord_to_file->isChecked()));
-}
+
 
 void MainWindow::on_action_Record_to_file_triggered()
 {
-   // ui->actionRecord_to_file->setChecked((ui->actionRecord_to_file->isChecked()));
-    a_record_to_file->setChecked(!(a_record_to_file->isChecked()));
+    disconnect(ui->actionRecord_to_file,SIGNAL(triggered()),this,  SLOT(on_action_Record_to_file_triggered()));
+    disconnect(a_record_to_file,SIGNAL(triggered()),this,  SLOT(on_action_Record_to_file_triggered()));
+
+    isRecordToFile = !isRecordToFile;
+    ui->actionRecord_to_file->setChecked(isRecordToFile);
+    a_record_to_file->setChecked( isRecordToFile);
+    //a_record_to_file->setChecked(!(a_record_to_file->isChecked()));
+    connect(ui->actionRecord_to_file,SIGNAL(triggered()),this,  SLOT(on_action_Record_to_file_triggered()));
+     connect(a_record_to_file,SIGNAL(triggered()),this,  SLOT(on_action_Record_to_file_triggered()));
+
+
+
+   /* qDebug() << "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA " << a_record_to_file->isChecked()
+             << " ui->actionRecord_to_file" << ui->actionRecord_to_file->isChecked();*/
+
 }
 
 void MainWindow::on_action_About_triggered()

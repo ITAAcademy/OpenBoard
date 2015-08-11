@@ -64,7 +64,6 @@ public slots:
     void updateTextEditFromBlock(QPoint point);
 
 //    settings
-    void a_record_to_file_triggered();
     void on_action_Font_triggered();
     void on_action_Color_triggered();
     void on_action_Board_Font_triggered();
@@ -129,6 +128,7 @@ private slots:
 
 
 private:
+    bool isRecordToFile = false;
     bool changeone;
    QString directory;
 QAction *a_play,*a_clear_textedit,*a_pause,*a_stop,*a_font_canvas,*a_color_canvas,
