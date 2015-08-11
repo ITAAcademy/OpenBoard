@@ -2142,7 +2142,8 @@ bool OGLWidget::crossTextDraw()
             y -=   indexRowInList;
             // qDebug() << "YYYYYYYYYYYYYYYYYYYYYYY2" << y;
             ++y *= lineHeight + pt;
-            y -= 0.25f * fMetrics->height();// first paid + midle
+            // QRect rect = fm.boundingRect( text);
+            y -= 0.5f * fMetrics->height();// first paid + midle LABEL1
 
             x2 = marginLeft + fMetrics->width(stringList[conv.y()].left(conv.x() + 1));
             y += marginTop;
