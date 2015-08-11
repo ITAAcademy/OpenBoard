@@ -1,5 +1,31 @@
 #include "drawText.h"
 #include "../TimeLine/listcontroll.h"
+
+QString DrawTextElm::getLoggerText() const
+{
+    return loggerText;
+}
+
+void DrawTextElm::setLoggerText(const QString &value)
+{
+    loggerText = value;
+}
+
+quint64 DrawTextElm::getDrawTime() const
+{
+    return drawTime;
+}
+
+
+int DrawTextElm::getTextCursor() const
+{
+    return textCursor;
+}
+
+void DrawTextElm::setTextCursor(const int &value)
+{
+    textCursor = value;
+}
 DrawTextElm::DrawTextElm(OGLWidget *drawWidget, QObject *parent) : DrawElement(drawWidget, parent)
 {
     setType("text");
@@ -29,16 +55,20 @@ void DrawTextElm::draw()
                pDrawWidget->clearBuffer();
            }
        int realKeyValue = (current_time - startDrawTime)*mUnitList.size()/lifeTime;
-     //  qDebug() << "pDrawWidget->getTimeLine()->getPlayTime()"<< current_time;
+       qDebug() << "pDrawWidget->getTimeLine()->getPlayTime()"<< realKeyValue;
+       qDebug() << "cur " << current_time;
+       qDebug() << "start " << startDrawTime;
+       qDebug() << "list " << mUnitList.length();
+
    // if (keyCouter < realKeyValue)
 
-        while(keyCouter <=realKeyValue)
+        while(keyCouter <= realKeyValue)
         {
             if (keyCouter < mUnitList.size() && bPlay) mUnitList.at(keyCouter)->draw(pDrawWidget);
                     keyCouter++;
         }
       //  qDebug() << "drawInfo   " << (double) 1 - (double)(qAbs(((current_time - startDrawTime) - (lifeTime/mUnitList.size())*keyCouter)))/(lifeTime/mUnitList.size());
-        if(keyCouter < mUnitList.size() - 1 && mUnitList.at(keyCouter)->unitType != mUnitList.at(keyCouter - 1)->unitType)
+        if(keyCouter > 0 && keyCouter < mUnitList.size() && mUnitList.at(keyCouter)->unitType != mUnitList.at(keyCouter - 1)->unitType)
             pDrawWidget->update();
         pDrawWidget->setAnimationPersentOfCross( qAbs((double) 1 - (double)(qAbs(((current_time - startDrawTime) - (tickTime)*keyCouter)))/(tickTime)));
     }
@@ -65,14 +95,14 @@ QString DrawTextElm::getUnParsestring() const
     return unParsestring;
 }
 
-void DrawTextElm::setUnParsestring(const QString &valueUnParss, const QString &valueLogger, bool needToSaveLifeTime )
+void DrawTextElm::setUnParsestring(const QString &valueUnParss, const QString &valueLogger)
 {
     unParsestring = valueUnParss;
     loggerText = valueLogger;
     // qDebug() << value;
-    myParser.ParsingLine(mUnitList, unParsestring,drawTime,delay);
-    if (needToSaveLifeTime)
-		lifeTime=drawTime;
+    myParser.ParsingLine(mUnitList, unParsestring, drawTime, delay);
+    /*if (needToSaveLifeTime)
+        lifeTime=drawTime;*/
     if(mUnitList.size() > 0)
         tickTime = lifeTime/mUnitList.size();
      qDebug()<<"tickTime5:"<<tickTime;

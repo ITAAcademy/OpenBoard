@@ -33,7 +33,7 @@ struct Element {
 
     Element( QString key, int time,int x = 0, int y = 0, int z = 0, int width = 100, int height = 100) {
         this->key = key;
-        draw_element = new DrawElement(NULL);
+        draw_element = new DrawElement((OGLWidget *)NULL, NULL);
          draw_element->setLifeTime(time);
         draw_element->setX(x);
          draw_element->setY(y);
@@ -45,7 +45,7 @@ struct Element {
     }
     Element() {
         this->key = "key";
- draw_element = new DrawElement(NULL);
+        draw_element = new DrawElement((OGLWidget *)NULL, NULL);
           draw_element->setLifeTime(100);
          draw_element->setX(0);
           draw_element->setY(0);
@@ -92,7 +92,7 @@ struct Element {
 
         if(typeId == Element_type::Text)
         {
-            DrawTextElm *elm = new DrawTextElm(NULL,NULL);
+            DrawTextElm *elm = new DrawTextElm(NULL);
                     elm->loadRest(device);
                     delete  draw_element;
                     draw_element = (DrawElement*) elm;
@@ -217,6 +217,7 @@ public:
     void setFocus();
     void setViewPosition(QPoint pos); //1234
     bool isVisible();
+    bool isActiveWindow();
     Q_INVOKABLE  bool isProjectChanged();
     Q_INVOKABLE  void setIsProjectChanged(bool);
     Q_INVOKABLE int getTrackSize(int col) const;
@@ -233,9 +234,11 @@ public:
     Q_INVOKABLE void setBlockTime(int col, int i, int value);
     Q_INVOKABLE void setBlockStartTime(int col, int i, int value);
     Q_INVOKABLE int getBlockStartTime(int col, int i);
+    Q_INVOKABLE void setBlockDrawElemet(DrawElement *elm, int col, int i);
     Q_INVOKABLE   void removeBlock(int col, int i);
     Q_INVOKABLE int getBlockTime(int col, int i) const;
     Q_INVOKABLE Element getBlock(int col, int i) const;
+    Q_INVOKABLE Element getBlock(QPoint point) const;
     Q_INVOKABLE int getTrackTime(int col) const;
     Q_INVOKABLE int getMaxTrackTime( ) const;
 
@@ -293,6 +296,7 @@ public:
     Q_INVOKABLE int  getTracksNumber();
 
     Q_INVOKABLE int  resetProjectToDefault();
+    Q_INVOKABLE void convertCurentBlockToText();
 
   void sendUpdateModel();
 
@@ -303,6 +307,8 @@ signals:
     void stopSignal();
     void updateSignal();
     void updateModel();
+
+    void updateSelectedBlock(QPoint point);
 
     void newProjectSignel();
     void openProjectSignel();

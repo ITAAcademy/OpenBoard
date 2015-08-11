@@ -11,13 +11,17 @@ QPoint ListControll::getSelectedBlockPoint() const
 
 void ListControll::setSelectedBlockPoint(const QPoint &value)
 {
-    selectedBlockPoint = value;
+    if(value != selectedBlockPoint)
+    {
+        selectedBlockPoint = value;
+        emit updateSelectedBlock(value);
+    }
      //qDebug() <<"FFFFFFFFFFFF: col = " << selectedBlockPoint.x() << " ind = " << selectedBlockPoint.y();
 }
 
 void ListControll::setSelectedBlockPoint(int col, int ind)
 {
-    selectedBlockPoint = QPoint(col,ind);
+    setSelectedBlockPoint(QPoint(col,ind));
     // qDebug() <<"FFFFFFFFFFFF: col = " << selectedBlockPoint.x() << " ind = " << selectedBlockPoint.y();
 }
 
@@ -79,6 +83,7 @@ void ListControll::addNewBlock(int col, QString str)
     if(elm == NULL)
         return;
     // qDebug() << "9999999999999999999999999999999999999999999999" << elm->getType();*/
+    setSelectedBlockPoint(QPoint(-1,-1));
     Element temp;
     temp.key = str;
     //temp.draw_element->setLifeTime(def_min_block_width);
@@ -258,6 +263,11 @@ int ListControll::getBlockStartTime(int col, int i)
     return tracks[col].block[i].draw_element->getStartDrawTime();
 }
 
+void ListControll::setBlockDrawElemet(DrawElement *elm, int col, int i)
+{
+    tracks[col].block[i].draw_element = elm;
+}
+
 void ListControll::setBlockIcon(int col, int i, QImage icon)
 {
      tracks[col].block[i].draw_element->setIcon(icon);
@@ -327,7 +337,12 @@ int ListControll::getBlockTime(int col, int i ) const
 Element ListControll::getBlock(int col, int i) const
 {
     // qDebug() << "getBlock(int col, int i)" << col << " " << i;
-     return tracks[col].block[i];
+    return tracks[col].block[i];
+}
+
+Element ListControll::getBlock(QPoint point) const
+{
+    return tracks[point.x()].block[point.y()];
 }
 
 int ListControll::getTrackTime( int col) const
@@ -604,6 +619,11 @@ bool ListControll::isVisible()
     return view.isVisible();
 }
 
+bool ListControll::isActiveWindow()
+{
+    return view.isActive();
+}
+
 
 
  void ListControll::setScalePointerPos( int x)
@@ -769,19 +789,26 @@ QImage ListControll::requestImage(const QString &id, QSize *size, const QSize &r
     size->setHeight(image.height());*/
     // qDebug() << "
 
-    QVector <QStringRef> argv = id.splitRef('+');
-
-    QImage img = getBlock(argv[0].toInt(), argv[1].toInt()).draw_element->getIcon();
-   //qDebug() << "IMAGE  pp " << getBlock(argv[0].toInt(), argv[1].toInt()).draw_element->getKey();
-
-    if(img.isNull())
+    if(!isBlocked)
     {
-               // qDebug() << "AAAAAAAAAAAAAAAAAA  id = " << id ;
+        QVector <QStringRef> argv = id.splitRef('+');
+        Element elm = getBlock(argv[0].toInt(), argv[1].toInt());
+        QImage img = elm.draw_element->getIcon();
+       //qDebug() << "IMAGE  pp " << getBlock(argv[0].toInt(), argv[1].toInt()).draw_element->getKey();
+
+        if(img.isNull())
+        {
+                   // qDebug() << "AAAAAAAAAAAAAAAAAA  id = " << id ;
+            if(elm.draw_element->getTypeId() == Text)
+                return QImage(":/iphone_toolbar_icons/Document-Icon.png");
+
             return QImage(":/icons/12video icon.png");
+        }
+
+
+
+        return img;
     }
-
-    return img;
-
 
 }
 
@@ -840,6 +867,16 @@ QImage ListControll::requestImage(const QString &id, QSize *size, const QSize &r
         addNewTrack( );
         recountMaxTrackTime();
         recountMaxTrackTime();
+    }
+
+    void ListControll::convertCurentBlockToText()
+    {
+        Element &elm = tracks[selectedBlockPoint.x()].block[selectedBlockPoint.y()];
+        DrawTextElm *text = new DrawTextElm(NULL);
+        text->copy(elm.draw_element);
+        delete elm.draw_element;
+        elm.draw_element = text;
+        emit updateSelectedBlock(selectedBlockPoint);
     }
 
 

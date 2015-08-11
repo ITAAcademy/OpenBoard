@@ -130,7 +130,7 @@ void KeyloggerTE::keyPressEvent(QKeyEvent *event){
 
             }
         //    else
-    QPlainTextEdit::keyPressEvent(event);
+    QTextEdit::keyPressEvent(event);
 
             QString textInField = destination->toPlainText();
 
@@ -327,11 +327,11 @@ else {
 void KeyloggerTE::focusInEvent( QFocusEvent * ev )
 {
     emit KeyloggerTE::setFocus() ;
-    QPlainTextEdit::focusInEvent(ev);
+    QTextEdit::focusInEvent(ev);
 }
 
 void KeyloggerTE::mousePressEvent(QMouseEvent *eventPress){
-  QPlainTextEdit::mousePressEvent(eventPress);
+  QTextEdit::mousePressEvent(eventPress);
     int delta = textCursor().position() - previousCursorPosition;
     previousCursorPosition=textCursor().position();
 
@@ -353,15 +353,15 @@ void KeyloggerTE::mousePressEvent(QMouseEvent *eventPress){
 //// qDebug() << "cursor changed";
 }
 void KeyloggerTE::mouseReleaseEvent(QMouseEvent *eventPress){
-  QPlainTextEdit::mouseReleaseEvent(eventPress);
+    QTextEdit::mouseReleaseEvent(eventPress);
     int delta = textCursor().position() - previousCursorPosition;
     previousCursorPosition=textCursor().position();
 
       QString textInField = destination->toPlainText();
       if (delta>0)
-      textInField +=QString("\\mr%1").arg(delta, 3, 10, QChar('0'));
+        textInField +=QString("\\mr%1").arg(delta, 3, 10, QChar('0'));
       else if (delta<0)
-      textInField +=QString("\\ml%1").arg(-delta, 3, 10, QChar('0'));
+        textInField +=QString("\\ml%1").arg(-delta, 3, 10, QChar('0'));
       int destinationLen = destination->toPlainText().length();
       int textInFieldLen = textInField.length();
       if(textInField.length() != 0)
@@ -376,9 +376,10 @@ void KeyloggerTE::mouseReleaseEvent(QMouseEvent *eventPress){
 //// qDebug() << "cursor changed";
 }
 
+
 void KeyloggerTE::tabTo4Spaces()
 {
-     disconnect(this, SIGNAL(textChanged()),this, SLOT(tabTo4Spaces()));
+    disconnect(this, SIGNAL(textChanged()),this, SLOT(tabTo4Spaces()));
 
     QTextCursor textCurs = this->textCursor();
     int cursorPos = textCurs.position();
@@ -392,4 +393,28 @@ void KeyloggerTE::tabTo4Spaces()
    this->setTextCursor(textCurs);
       connect(this, SIGNAL(textChanged()),this, SLOT(tabTo4Spaces()));
 }
+
+void KeyloggerTE::newText()
+{
+    clear();
+    undo_changes.clear();
+    redo_changes.clear();
+    previousCursorPosition = 0;
+    lastSlashPosInDestination = -1;
+    textAfterBackSlash="";
+    t_cursor = this->textCursor();
+    changebuf.cursor = 0;
+    changebuf.cymbol = "";
+    changebuf.changeSize =0;
+}
+int KeyloggerTE::getPreviousCursorPosition() const
+{
+    return previousCursorPosition;
+}
+
+void KeyloggerTE::setPreviousCursorPosition(const int& value)
+{
+    previousCursorPosition = value;
+}
+
 

@@ -489,6 +489,7 @@ console.log("222222222222222")
         console.log("44444444444444444444")
         model =  timeControll.getTrackSize(bar_track.mIndex)
         console.log("55555555555555555")
+
         if (main222.needToLightSelected)
         {
             rep_columns.itemAt(main222.selectedBlockCol).setColorize(main222.selectedBlockIndex,"#8000FF00")

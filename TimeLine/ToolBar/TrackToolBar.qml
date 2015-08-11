@@ -49,10 +49,13 @@ Rectangle {
             title_text: ""
             height: parent.width
             width: parent.width
-          icon_source : "qrc:/iphone_toolbar_icons/delete.png"
+            icon_source : "qrc:/iphone_toolbar_icons/delete.png"
             onClicked: {
+
                 if ( timeControll.removeLastBlock(trackbar.mIndex))
                 {
+                    for (var y = 0; y < rep_columns.model; y++)
+                         rep_columns.itemAt(y).abortColorize()
                     globalRep.updateModel()
 
                 // track.width -=track.height

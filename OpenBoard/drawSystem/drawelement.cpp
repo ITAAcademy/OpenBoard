@@ -45,6 +45,7 @@ DrawElement::DrawElement(OGLWidget *drawWidget, QObject *parent) : QObject(paren
     keyCouter = 0;
     lifeTime = -1;
     icon = QImage();
+    typeId = (Element_type)-1;
 
     if(pDrawWidget != NULL)
     {
@@ -53,6 +54,18 @@ DrawElement::DrawElement(OGLWidget *drawWidget, QObject *parent) : QObject(paren
         connect(pDrawWidget, SIGNAL(pauseSignal()), this, SLOT(pause()));
     }
 
+}
+
+void DrawElement::copy(DrawElement *elm)
+{
+    lifeTime = elm->getLifeTime();
+    tickTime = elm->getTickTime();
+    startDrawTime = elm->getStartDrawTime();
+    x = elm->getX();
+    y = elm->getY();
+    z = elm->getZ();
+    width = elm->getSize().width();
+    height = elm->getSize().height();
 }
 
 DrawElement::~DrawElement()

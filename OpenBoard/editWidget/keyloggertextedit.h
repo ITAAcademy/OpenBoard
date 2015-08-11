@@ -13,22 +13,23 @@ int cursor;
 QString cymbol;
 int changeSize;
 };
-class KeyloggerTE : public QPlainTextEdit
+class KeyloggerTE : public QTextEdit
 {
     Q_OBJECT
 private:
     enum SCAN_CODE_TABLE {SCAN_KEY_Z=44,SCAN_KEY_V=47,SCAN_KEY_X=45,SCAN_KEY_C=46,SCAN_KEY_A=30};
-      CursorSymbolExtended changebuf;
-     QTextCursor t_cursor;
- QStack<CursorSymbolExtended> undo_changes;
+    CursorSymbolExtended changebuf;
+    QTextCursor t_cursor;
+    QStack<CursorSymbolExtended> undo_changes;
 
-  QStack<CursorSymbolExtended> redo_changes;
-int lastSlashPosInDestination = -1;
-QString textAfterBackSlash="";
-MyTextEdit *destination;
+    QStack<CursorSymbolExtended> redo_changes;
+    int lastSlashPosInDestination = -1;
+    QString textAfterBackSlash="";
+    MyTextEdit *destination;
 
 public slots:
-void tabTo4Spaces();
+    void tabTo4Spaces();
+    void newText();
 public:
 //QStack<int> changesSize;
 bool changesDetected = false;
@@ -41,8 +42,11 @@ int previousCursorPosition = 0;
     void undo();
     void redo();
     void saveChanges(int sizeOfChange);
+    int getPreviousCursorPosition() const;
+    void setPreviousCursorPosition(const int &value);
+
 signals:
-      void setFocus() ;
+    void setFocus() ;
 };
 #endif // MYTEXTEDIT_H
 

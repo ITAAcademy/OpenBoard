@@ -40,7 +40,7 @@ protected:
     virtual void draw();
 public:
 
-    explicit DrawElement( OGLWidget *drawWidget, QObject *parent = 0);
+    explicit DrawElement(OGLWidget *drawWidget, QObject *parent);
     virtual ~DrawElement();
     void paint(); //new use
     bool load(QString path);
@@ -100,6 +100,7 @@ public:
     QString getKey() const;
     void setKey(const QString &value);
 
+    void copy(DrawElement *elm);
 signals:
 
 public slots:

@@ -262,16 +262,14 @@ QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical
       background: none;
 }
 
-QTextEdit
+QTextEdit, QPlainTextEdit
 {
-   // background-color: #777777;
-	color: #FFFFFF;
+	border: 2px solid QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #FFFFFF, stop: 1 #e2e2e2);
 }
 
-QPlainTextEdit
-{
-   // background-color: #777777;
-	color: #FFFFFF;
+QTextEdit:disabled, QPlainTextEdit:disabled {
+	color: black;
+	border: 2px solid QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #000000, stop: 1 #e2e2e2);
 }
 
 QHeaderView::section

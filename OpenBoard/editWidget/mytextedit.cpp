@@ -56,7 +56,9 @@ charCount=document()->characterCount();
 
  void MyTextEdit::textColorSet(int position)
  {
-     mergeFormatOnWordOrSelection(position);
+     if(isEnabled())
+        mergeFormatOnWordOrSelection(position);
+
  }
 
  QColor MyTextEdit::getColOrigin() const
@@ -68,6 +70,13 @@ charCount=document()->characterCount();
  {
       colOrigin = value;
       textFormat.setForeground(value);
+
+      QTextCursor cursor = textCursor();
+      cursor.movePosition(QTextCursor::End, QTextCursor::MoveAnchor);
+      cursor.movePosition(QTextCursor::Start, QTextCursor::KeepAnchor);
+      QTextCharFormat textFormat;
+      textFormat.setForeground(QColor(value));
+      cursor.mergeCharFormat(textFormat);
  }
  /*
  void MyTextEdit::onEditText()
@@ -148,6 +157,16 @@ charCount=document()->characterCount();
 
 
  }
+ }
+
+ void MyTextEdit::showEvent(QShowEvent *event)
+ {
+
+ }
+
+ void MyTextEdit::hideEvent(QHideEvent *event)
+ {
+
  }
 
  void MyTextEdit::undom()
@@ -258,4 +277,7 @@ this->setTextCursor(t_cursor);
  {
      changebuf.cursor = 0;
      changebuf.cymbol = "";
+     undo_changes.clear();
+     redo_changes.clear();
+     clear();
  }

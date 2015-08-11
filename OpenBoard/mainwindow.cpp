@@ -60,13 +60,13 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionSend_to_youTube, SIGNAL( triggered()), this, SLOT (on_action_youTube_triggered()));
     connect(textEdit,SIGNAL(doUndoRedoStart()),this,SLOT(doUndoRedoStart()));
     connect(textEdit,SIGNAL(doUndoRedoEnd()),this,SLOT(doUndoRedoEnd()));
-    qDebug () << "TIME_LINE:"<<mpOGLWidget->getTimeLine();
-    connect(mpOGLWidget->getTimeLine(),SIGNAL(loadFromFileSignal()),this,SLOT(updateCurrentTxt()));
-
 
     ui->widget_Find->setVisible(false);
     ui->widget_delayTB->setVisible(false);
     lastInpuDelay = ui->slider_speedTB->value();
+
+   // ui->slider_speedTB->setAlignment(Qt::AlignVCenter);
+    ui->spinBox_speedTB->setAlignment(Qt::AlignVCenter);
   //  drawWidget->setVisible(false);
   //  on_action_Show_triggered();
 
@@ -94,7 +94,8 @@ MainWindow::MainWindow(QWidget *parent) :
        setWindowTitle(mSettings.getMainWindowTitle());
        setGeometry(mSettings.getMainWindowRect());
        this->textEdit->setColOrigin(mSettings.getMainWindowColor());
-       commandTextEdit->setStyleSheet("color: " + mSettings.getMainWindowColor().name());
+       //commandTextEdit->setStyleSheet("color: " + mSettings.getMainWindowColor().name());
+       commandTextEdit->setTextColor(mSettings.getMainWindowColor());
        this->textEdit->setFont(mSettings.getMainWindowFont());
        commandTextEdit->setFont(mSettings.getMainWindowFont());
 
@@ -327,6 +328,12 @@ MainWindow::MainWindow(QWidget *parent) :
         connect(mpOGLWidget->getTimeLine(), SIGNAL(openProjectSignel()), this, SLOT(on_action_Open_Project_triggered()));
         connect(mpOGLWidget->getTimeLine(), SIGNAL(saveProjectSignel()), this, SLOT(on_action_Save_Project_triggered()));
 
+        connect(mpOGLWidget->getTimeLine(),SIGNAL(loadFromFileSignal()),this,SLOT(updateBlockFromTextEdit()));
+        connect(mpOGLWidget->getTimeLine(), SIGNAL(updateSelectedBlock(QPoint)), this, SLOT(updateTextEditFromBlock(QPoint)));
+
+        textEdit->setEnabled(false);
+        commandTextEdit->setEnabled(false);
+        setEnabledToolBar(false);
 
        //load new style
         QFile file(":/style.txt");
@@ -335,9 +342,7 @@ MainWindow::MainWindow(QWidget *parent) :
         qApp->setStyleSheet(styleSheet);
         file.close();
 
-
-
-
+        updateEditWidgets(true); //instal normal color
 }
 
 MainWindow::~MainWindow()
@@ -359,6 +364,26 @@ void MainWindow::closeEvent(QCloseEvent*)
         mpOGLWidget->close();
     }
     // qDebug() << "Close drawWidget";
+}
+
+void MainWindow::updateEditWidgets( bool forceEnabled )
+{
+    if(textEdit != NULL && commandTextEdit != NULL)
+    {
+        textEdit->textColorSet(-1);
+        if(textEdit->isEnabled() || forceEnabled)
+        {
+            this->textEdit->setColOrigin(mSettings.getMainWindowColor());
+            commandTextEdit->setStyleSheet("color: " + mSettings.getMainWindowColor().name());
+            textEdit->setStyleSheet("color: " + mSettings.getMainWindowColor().name());
+        }
+        else
+        {
+            commandTextEdit->setStyleSheet("color: black");
+            textEdit->setStyleSheet("color: black");
+            this->textEdit->setColOrigin("black");
+        }
+    }
 }
 
 bool MainWindow::event(QEvent * e) // overloading event(QEvent*) method of QMainWindow
@@ -388,11 +413,27 @@ bool MainWindow::event(QEvent * e) // overloading event(QEvent*) method of QMain
 
         case QEvent::WindowDeactivate :
             // lost focus
-            isActive = false;
+            bool activeOther = false;
+            if(mpOGLWidget->isActiveWindow())
+                activeOther = true;
+            if(mpOGLWidget->getTimeLine()->isActiveWindow())
+                activeOther = true;
+            if(!activeOther)
+                isActive = false;
             qDebug() << "LOSE_ACTIVE_MAIN_WINDOW";
             break ;
         // ...
+
     } ;
+
+    if (e->type() == QEvent::WindowStateChange) {
+        if (isMinimized()) {
+          isActive = false;
+          e->ignore();
+        } else {
+          e->accept();
+        }
+      }
     return QMainWindow::event(e) ;
 }
 
@@ -468,6 +509,10 @@ void MainWindow::on_action_Show_triggered()
     ui->action_Pause->setEnabled(false);
     a_pause->setEnabled(false);
 
+    updateTextEditFromBlock(mpOGLWidget->getTimeLine()->getSelectedBlockPoint());
+
+
+
 
 }
 
@@ -497,12 +542,14 @@ void MainWindow::on_action_Hide_triggered()
     a_record_to_file->setEnabled(false);
     a_undo->setEnabled(false);
    a_redo->setEnabled(false);
+   textEdit->setEnabled(false);
+   commandTextEdit->setEnabled(false);
 }
 
 void MainWindow::on_action_Clear_TextEdit_triggered()
 {
-    this->textEdit->clear();
-    this->commandTextEdit->clear();
+    this->textEdit->newText();
+    this->commandTextEdit->newText();
 }
 
 void MainWindow::on_action_Font_triggered()
@@ -553,7 +600,7 @@ void MainWindow::on_action_Reset_default_triggered()
         ui->menuBar->setFont(font);
         textEdit->setFont(font);
         textEdit->setTextColor("#000000");
-        commandTextEdit->setStyleSheet("color: #000000");
+        commandTextEdit->setTextColor("#000000");
         commandTextEdit->setFont(font);
         QString temp = textEdit->toPlainText();
         textEdit->clear();
@@ -577,7 +624,8 @@ void MainWindow::on_action_Color_triggered()
         textEdit->clear();
         textEdit->insertPlainText(temp);
 
-        commandTextEdit->setStyleSheet("color: " + col);
+        //commandTextEdit->setTextColor(col);
+        commandTextEdit->setTextColor(col);
 
         mSettings.setMainWindowColor(colorm);
     }
@@ -1235,9 +1283,9 @@ void MainWindow::onTextChanged()
                 a_show->setEnabled(true);
             }
         }
+    updateBlockFromTextEdit();
     textEdit->saveChanges();
     connect(textEdit, SIGNAL(textChanged()), this, SLOT(onTextChanged()));
-
     /*
     // DrawData temp = mpOGLWidget.getDrawData();
      /*if(!textEdit->toPlainText().isEmpty())
@@ -1254,17 +1302,56 @@ void MainWindow::onTextChanged()
    }*/
 }
 
+void MainWindow::updateTextEditFromBlock(QPoint point)
+{
+    if(point.x() != -1)
+    {
+        Element elm = mpOGLWidget->getTimeLine()->getBlock(point);
+        if(elm.draw_element->getTypeId() == Element_type::Text)
+        {
+            DrawTextElm *text_elm = (DrawTextElm *)elm.draw_element;
+            setEnabledToolBar(true);
+            disconnect(textEdit, SIGNAL(textChanged()), this, SLOT(onTextChanged()));
+            textEdit->newText();
+            commandTextEdit->newText();
+            commandTextEdit->setPlainText(text_elm->getLoggerText());
+            commandTextEdit->setPreviousCursorPosition(text_elm->getTextCursor());
+            textEdit->setText(text_elm->getUnParsestring());
+            connect(textEdit, SIGNAL(textChanged()), this, SLOT(onTextChanged()));
+            return;
+        }
+    }
+    textEdit->newText();
+    commandTextEdit->newText();
+    setEnabledToolBar(false);
+}
+
+
+void MainWindow::updateBlockFromTextEdit()
+{
+    QPoint point = mpOGLWidget->getTimeLine()->getSelectedBlockPoint();
+    if(point.x() != -1)
+    {
+        Element elm = mpOGLWidget->getTimeLine()->getBlock(point);
+        if(elm.draw_element->getTypeId() == Element_type::Text)
+        {
+            DrawTextElm *text_elm = (DrawTextElm *)elm.draw_element;
+            text_elm->setDelay(ui->slider_speedTB->value());
+            text_elm->setUnParsestring(textEdit->toPlainText(), commandTextEdit->toPlainText());
+            text_elm->setTextCursor(commandTextEdit->textCursor().position());
+            int change_time = text_elm->getDrawTime();
+            ui->expected_time->setText("EXPECTED TIME:  " + QString::number(change_time) + " ms");
+            if(ui->check_use_speed_value->isChecked())
+            {
+                mpOGLWidget->getTimeLine()->setBlockTime(point.x(), point.y(), change_time);
+                mpOGLWidget->getTimeLine()->sendUpdateModel();
+            }
+        }
+    }
+}
+
 void MainWindow::on_action_Play_triggered()
 {
-    hideBoardSettings();
-    ui->action_Play->setEnabled(false);
-    a_play->setEnabled(false);
-    ui->action_Pause->setEnabled(true);
-    a_pause->setEnabled(true);
-    ui->action_Undo->setEnabled(false);
-    ui->action_Redo->setEnabled(false);
-    a_undo->setEnabled(false);
-    a_redo->setEnabled(false);
     if(mpOGLWidget->getStatus() == OGLWidget::PAUSE)
         ui->action_Play->setText("Play");
     else
@@ -1274,19 +1361,19 @@ void MainWindow::on_action_Play_triggered()
         mpOGLWidget->setFillColor(mpOGLWidget->getMainFillColor());
         drawCounter = 0;
     }
-    textEdit->setEnabled(false);
 
     onTextChanged();
     // curent
     //((DrawTextElm*)drawElements[0])->setUnitList(mUnitList);
     //((DrawTextElm*)drawElements[0])->setUnParsestring(textEdit->toPlainText());
-
+/*
      DrawTextElm drawTTElements(mpOGLWidget);
      drawTTElements.setDelay(ui->slider_speedTB->value());
      bool needToSaveLifeTime = ui->check_use_speed_value->isChecked();
      drawTTElements.setUnitList(mUnitList);
      drawTTElements.setUnParsestring(textEdit->toPlainText(), commandTextEdit->toPlainText(), needToSaveLifeTime);
      drawTTElements.save("curent");
+     */
    /*  drawTTElements.load("curent.txt");
      // qDebug() << "                                                          qqqqqqqq" << drawTTElements.getType();*/
  //   drawElements[0]->load("kaka");
@@ -1302,6 +1389,24 @@ void MainWindow::on_action_Play_triggered()
         else
             on_action_Stop_triggered();
     }
+    hideBoardSettings();
+    ui->action_Play->setEnabled(false);
+    a_play->setEnabled(false);
+    ui->action_Pause->setEnabled(true);
+    a_pause->setEnabled(true);
+    ui->action_Undo->setEnabled(false);
+    ui->action_Redo->setEnabled(false);
+    a_undo->setEnabled(false);
+    a_redo->setEnabled(false);
+    /*
+     * costial
+     */
+    textEdit->setEnabled(false);
+    commandTextEdit->setEnabled(false);
+
+    updateEditWidgets();
+
+
     /*while( play && mpOGLWidget != 0 && mpOGLWidget->getStatus() != OGLWidget::STOP)
     {
         //while(mpOGLWidget->getStatus() == OGLWidget::PAUSE)
@@ -1333,6 +1438,7 @@ void MainWindow::on_action_Stop_triggered()
     if(mpOGLWidget->isVisible())
     {
         textEdit->setEnabled(true);
+        commandTextEdit->setEnabled(true);
         ui->action_Undo->setEnabled(true);
         ui->action_Redo->setEnabled(true);
         a_undo->setEnabled(true);
@@ -1345,7 +1451,7 @@ void MainWindow::on_action_Stop_triggered()
         a_play->setEnabled(true);
         showBoardSettings();
     }
-
+    updateEditWidgets();
     //mpOGLWidget->editingRectangle.isEditingRectangleVisible = true;
     play = false;
 }
@@ -1398,13 +1504,13 @@ void MainWindow::on_action_About_triggered()
 
 void MainWindow::updateCurrentTxt()
 {
-    qDebug() << "updateCurrentTxt";
+    /*qDebug() << "updateCurrentTxt";
     DrawTextElm drawTTElements(mpOGLWidget);
     drawTTElements.setDelay(ui->slider_speedTB->value());
     bool needToSaveLifeTime = ui->check_use_speed_value->isChecked();
     drawTTElements.setUnitList(mUnitList);
     drawTTElements.setUnParsestring(textEdit->toPlainText(), commandTextEdit->toPlainText(), needToSaveLifeTime);
-    drawTTElements.save("curent");
+    drawTTElements.save("curent");*/
 }
 void MainWindow::on_speedBtn_pressed()
 {
@@ -1452,6 +1558,15 @@ void MainWindow::setEnabledToolBar(bool status)
     ui->delayBtn->setEnabled(status);
     ui->colorBtn->setEnabled(status);
     ui->animationBtn->setEnabled(status);
+    ui->speedBtn->setEnabled(status);
+    ui->slider_delayTB->setEnabled(status);
+    ui->slider_speedTB->setEnabled(status);
+    ui->spinBox_speedTB->setEnabled(status);
+    ui->spinBox_delayTB->setEnabled(status);
+    ui->check_use_speed_value->setEnabled(status);
+
+    commandTextEdit->setEnabled(status);
+    textEdit->setEnabled(status);
 
 }
 
@@ -1480,6 +1595,6 @@ void MainWindow::on_actionLoad_drawing_temp_triggered()
 
 void MainWindow::on_slider_speedTB_sliderReleased()
 {
-    updateCurrentTxt();
+    updateBlockFromTextEdit();
 }
 

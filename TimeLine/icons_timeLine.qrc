@@ -75,5 +75,6 @@
         <file>iphone_toolbar_icons/New Folder.png</file>
         <file>iphone_toolbar_icons/Open_.png</file>
         <file>iphone_toolbar_icons/save.png</file>
+        <file>iphone_toolbar_icons/Document-Icon.png</file>
     </qresource>
 </RCC>

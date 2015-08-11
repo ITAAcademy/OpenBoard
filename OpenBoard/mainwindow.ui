@@ -422,12 +422,30 @@
        </size>
       </property>
       <layout class="QGridLayout" name="gridLayout_2">
+       <property name="leftMargin">
+        <number>0</number>
+       </property>
+       <property name="topMargin">
+        <number>0</number>
+       </property>
+       <property name="rightMargin">
+        <number>0</number>
+       </property>
+       <property name="bottomMargin">
+        <number>0</number>
+       </property>
+       <property name="spacing">
+        <number>0</number>
+       </property>
        <item row="0" column="0">
         <layout class="QHBoxLayout" name="horizontalLayout_3">
          <item>
           <widget class="QLabel" name="label">
            <property name="text">
             <string>Speed value</string>
+           </property>
+           <property name="scaledContents">
+            <bool>false</bool>
            </property>
           </widget>
          </item>
@@ -479,6 +497,29 @@
           </widget>
          </item>
          <item>
+          <spacer name="horizontalSpacer_3">
+           <property name="orientation">
+            <enum>Qt::Horizontal</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>108</width>
+             <height>13</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+         <item>
+          <widget class="QLabel" name="expected_time">
+           <property name="styleSheet">
+            <string notr="true">color: &quot;white&quot;;</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+          </widget>
+         </item>
+         <item>
           <spacer name="horizontalSpacer_4">
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
@@ -493,8 +534,11 @@
          </item>
          <item>
           <widget class="QCheckBox" name="check_use_speed_value">
+           <property name="styleSheet">
+            <string notr="true">color : rgb(255, 255, 255)</string>
+           </property>
            <property name="text">
-            <string>use</string>
+            <string>USE THIS VALUE</string>
            </property>
           </widget>
          </item>
@@ -618,8 +662,6 @@
         </layout>
        </item>
       </layout>
-      <zorder>slider_delayTB</zorder>
-      <zorder>spacer</zorder>
      </widget>
     </item>
    </layout>
@@ -627,8 +669,6 @@
    <zorder>line</zorder>
    <zorder>widget_speedTB</zorder>
    <zorder></zorder>
-   <zorder>frame</zorder>
-   <zorder>animationBtn</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">

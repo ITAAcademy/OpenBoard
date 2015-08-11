@@ -13,6 +13,7 @@ class DrawTextElm : public DrawElement
     QString loggerText;
     QString unParsestring;
     Parser myParser;
+    int textCursor = 0;
     quint64 drawTime;
 public:
     explicit DrawTextElm( OGLWidget *drawWidget, QObject *parent = 0);
@@ -22,7 +23,15 @@ public:
     QList<Unit *> unitList() const;
     void setUnitList(const QList<Unit *> &unitList);
     QString getUnParsestring() const;
-    void setUnParsestring(const QString &valueUnParss, const QString &valueLogger, bool needToSaveLifeTime = false);
+    void setUnParsestring(const QString &valueUnParss, const QString &valueLogger);
+
+    QString getLoggerText() const;
+    void setLoggerText(const QString &value);
+
+    quint64 getDrawTime() const;
+
+    int getTextCursor() const;
+    void setTextCursor(const int &value);
 
 private:
     void setTickTime(int value);

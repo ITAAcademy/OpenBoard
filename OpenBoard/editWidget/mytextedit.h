@@ -46,13 +46,15 @@ public:
     void rendom();
     void appendNoNL(QString text);
     void keyPressEvent(QKeyEvent *e);
+    void showEvent(QShowEvent *event);
+    void hideEvent(QHideEvent *event);
     explicit MyTextEdit(QColor originalColor, QColor specifiedColor, QWidget *parent = 0);
     void textColorSet(int position);
     void mergeFormatOnWordOrSelection(int position);
 
     QColor getColOrigin() const;
     void setColOrigin(const QColor &value);
-        void focusInEvent( QFocusEvent * ev ) ;
+    void focusInEvent( QFocusEvent * ev ) ;
 signals:
     void doUndoRedoStart();
     void doUndoRedoEnd();

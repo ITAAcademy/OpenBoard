@@ -61,6 +61,7 @@ public slots:
     void on_action_youTube_triggered();
     void on_action_Clear_TextEdit_triggered();
     void onTextChanged();
+    void updateTextEditFromBlock(QPoint point);
 
 //    settings
     void a_record_to_file_triggered();
@@ -111,7 +112,7 @@ public slots:
 private slots:
     void on_action_Record_to_file_triggered();
     void on_action_About_triggered();
-    void updateCurrentTxt();
+    void updateCurrentTxt(); // not need
 
     void on_speedBtn_pressed();
     void on_slider_speedTB_valueChanged(int value);
@@ -141,8 +142,8 @@ QMessageBox messAbout;
     QToolBar *toolBar;
     QToolBar *toolBarBoard;
     Parser          mParser;
-    MyTextEdit       *textEdit;
-    KeyloggerTE *commandTextEdit;
+    MyTextEdit       *textEdit = NULL;
+    KeyloggerTE *commandTextEdit = NULL;
    // ListControll timeLine;
     QList <DrawElement*> drawElements;
 
@@ -167,6 +168,7 @@ QMessageBox messAbout;
     volatile bool isActive = true; // active main windows?
     ProjectStartupSetting curentState;
     Q_PROPERTY(ProjectStartupSetting curentState READ getCurentState WRITE setCurentState NOTIFY signalCurentStateChanged) //show curent state of window
+    void updateEditWidgets(bool forceEnabled = false);
 public slots:
     ProjectStartupSetting getCurentState();
     void setCurentState(ProjectStartupSetting state);
@@ -175,11 +177,7 @@ signals:
     void signalCurentStateChanged();
 private slots:
     void slotCurentStateChanged();
-
-
-
-
-
+    void updateBlockFromTextEdit();
 };
 
 #endif // MAINWINDOW_H

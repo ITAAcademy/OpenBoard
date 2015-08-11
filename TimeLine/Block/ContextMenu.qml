@@ -93,6 +93,25 @@ property Repeater globalRep
 
             }
         }
+        ContextButton {
+            text_color: contextMenuItem.text_color
+            color: contextMenuItem.color
+            id: but_convertToText
+            button_text: "Convert to text block"
+            index: 3
+            onButtonClicked: {
+                /*var col= contextMenuItem.columnIndex;
+                var id = contextMenuItem.blockIndex;*/
+                timeControll.convertCurentBlockToText();//removeBlock(col,id)
+                contextMenuItem.visible = false;
+                // console.log("AFTER 9999999999999999999999");
+                //main222.selectedBlock.repaint();
+                globalRep.updateModel();
+
+
+
+            }
+        }
     }
     function show(a,b, globRep)
     {
