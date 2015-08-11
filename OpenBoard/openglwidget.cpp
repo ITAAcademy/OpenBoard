@@ -327,7 +327,7 @@ OGLWidget::OGLWidget(QWidget *parent) :
 
 
    //for loading current text in to fist init block
-   DrawTextElm drawTTElements(this);
+   /*DrawTextElm drawTTElements(this);
    QList <Unit*>mUnitList;
 
    Unit unit;
@@ -336,7 +336,7 @@ OGLWidget::OGLWidget(QWidget *parent) :
    drawTTElements.setUnParsestring("");
    drawTTElements.save("curent");
  // timeLine->loadCurrentTextInTheFirstBlockWhenInit();
-
+*/
    getTimeLine()->setIsProjectChanged(false);
 }
 
@@ -1366,6 +1366,7 @@ void OGLWidget::pause(int ms)
 void  OGLWidget::updateWindow(){
     //isCrossingNow=true;
     //if (timeLine->getPointedBlocks().size())
+   /// if(!timeLine->isBlocked)
     setList(timeLine->getPointedBlocksDE());
 
     QPoint t = timeLine->getSelectedBlockPoint();
@@ -1461,7 +1462,7 @@ void OGLWidget::clear(int x,int y,int width,int height){
 void OGLWidget::myRenderText( QGLWidget* w, int x, int y,int z, const QString& text, const QColor& col , const QFont& font  )
 {
     if (text.isEmpty()) return;
-    qDebug() <<"myRenderText begin";
+   // qDebug() <<"myRenderText begin";
     glMatrixMode( GL_PROJECTION );
     glPushMatrix();
     glLoadIdentity();
@@ -1498,7 +1499,7 @@ void OGLWidget::myRenderText( QGLWidget* w, int x, int y,int z, const QString& t
     glPopMatrix();
     glMatrixMode( GL_MODELVIEW );
     glPopMatrix();
-    qDebug() <<"myRenderText end";
+    //qDebug() <<"myRenderText end";
 }
 void OGLWidget::fillText( QString str,QColor color, int x, int y, int z)
 {

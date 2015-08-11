@@ -53,7 +53,7 @@ Rectangle
 
     Component.onCompleted: {
     frama.p_main222 = main222
-     timeControll.loadCurrentTextInTheFirstBlockWhenInit()
+     //timeControll.loadCurrentTextInTheFirstBlockWhenInit()
          p_context_menu.globalRep.updateModel();
     }
     width: childrenRect.width ///main222.width + 20

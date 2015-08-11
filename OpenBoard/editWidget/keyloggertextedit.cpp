@@ -14,6 +14,7 @@ this->destination=destination;
     changebuf.changeSize =0;
 
      connect(this, SIGNAL(textChanged()),this, SLOT(tabTo4Spaces()));
+     setContextMenuPolicy(Qt::NoContextMenu);
 }
 void KeyloggerTE::saveChanges(int sizeOfChange){
 

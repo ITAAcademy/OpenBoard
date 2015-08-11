@@ -13,7 +13,7 @@ MyTextEdit::MyTextEdit(QColor originalColor,QColor specifiedColor,QWidget *paren
     QTextEdit(parent)
 {
 
-
+setContextMenuPolicy(Qt::NoContextMenu);
  //connect(this,SIGNAL(cursorPositionChanged()),this,SLOT(onEditText()));
   colSelection=specifiedColor;
   colOrigin=originalColor;
