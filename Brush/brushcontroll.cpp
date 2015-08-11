@@ -154,6 +154,7 @@ QImage BrushManager::requestImage(const QString &id, QSize *size, const QSize& r
 
 bool BrushManager::openBrushLibrary(QString path)
 {
+    qDebug () << "OPENG BRUSH LIBRARY";
     QString new_path = brushDir.currentPath()+path;
     QDir dir(new_path);
     brushPathsList = dir.entryList(QDir::Files);
@@ -165,8 +166,20 @@ bool BrushManager::openBrushLibrary(QString path)
     }
     qDebug() << "Image found    " << imageStack.length();
     qDebug() << brushPathsList;
+    if (imageStack.length()>0)setCurentBrush(0);
+    else setAbleToDraw(false);
 }
 
+bool BrushManager::isAbleToDraw(){
+    return ableToDraw;
+}
+void BrushManager::setAbleToDraw(bool isAble){
+    ableToDraw=isAble;
+     if (!isAble)
+    {
+    qDebug() << "emit unableToDraw();";
+    }
+}
 
 void BrushManager::setSize(float value)
 {

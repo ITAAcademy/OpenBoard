@@ -879,7 +879,7 @@ case EDIT_RECTANGLE_MOVE:
     break;
  }
  testRectangle();
-if (canDrawByMouse)paintBrushInBuffer();
+if (canDrawByMouse && m_manager.isAbleToDraw())paintBrushInBuffer();
 }
 if(curStatus == STOP)
     paintBufferOnScreen(0, 0, wax, way,-100);
@@ -1146,6 +1146,7 @@ void OGLWidget::pauseAnimated()
 
 void OGLWidget::brushParamsChanged()
 {
+    if (!m_manager.isAbleToDraw())return;
     brushTexture = loadTexture(m_manager.getCreatedBrush().img);
     drawBrushElm->addBrush(m_manager.getCreatedBrush());
     qDebug() << "brushParamsChanged";
