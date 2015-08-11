@@ -374,6 +374,6 @@ int Parser::ParsingLine(QList<Unit*> &list,  QString &str,quint64& timeSpendToDr
         }
     }
     timeSpendToDraw = processTimeOfUnits(list, delay);
-    qDebug() << "timeSpendToDraw:" << timeSpendToDraw;
+    //qDebug() << "timeSpendToDraw:" << timeSpendToDraw;
     return state;
 }

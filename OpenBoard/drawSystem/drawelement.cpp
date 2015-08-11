@@ -376,7 +376,7 @@ int DrawElement::getTickTime() const
 void DrawElement::setTickTime(int value)
 {
     tickTime = value;
-     qDebug()<<"tickTime3:"<<tickTime;
+    // qDebug()<<"tickTime3:"<<tickTime;
 }
 
 QSize  DrawElement::getSize()

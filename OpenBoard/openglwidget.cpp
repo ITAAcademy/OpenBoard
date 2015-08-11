@@ -1482,6 +1482,8 @@ void OGLWidget::myRenderText( QGLWidget* w, int x, int y,int z, const QString& t
 
     QFontMetrics fm(font);
     QRect rect = fm.boundingRect( text);
+    if (rect.width()>wax)rect.setWidth(wax);
+    if (rect.height()>way)rect.setHeight(way);
 
     QPixmap pixmap( rect.size() );
     pixmap.fill( Qt::black );
@@ -1526,7 +1528,7 @@ void OGLWidget::fillText( QString str,QColor color, int x, int y, int z)
   //  qDebug() << "SHOW_Z " << z;
 
 
-   // renderText(x, y, str,textFont);
+    //renderText(x, y, str,textFont);
     myRenderText(this,x,y,z,str,color,textFont);
     //displayText(str, color);
 
