@@ -203,12 +203,13 @@ main222.isPlay = false
 
           main222.selectedBlockCol = -1
             main222.selectedBlockIndex = -1
-           rep_columns.model = timeControll.getTracksNumber()
+          // rep_columns.model = timeControll.getTracksNumber()
            console.log("1111111111111111111")
-            main222.p_trackbar.globalRep.updateModel()
-           console.log("2111111111111111111")
+           // main222.p_trackbar.globalRep.updateModel()
            main222.p_scale_pointer.x = 26
        timeControll.setIsProjectChanged(false)
+
+           main222.updateTracksModel()
        }
 
 
@@ -514,15 +515,10 @@ main222.isPlay = false
                                            property bool isDrag : false
                                            model:  timeControll.getTrackSize(trackbar.mIndex)//     bar_track.mIndex)
     function updateModel()      {
-        console.log("1111112222222222")
-        model = 0//model - 1;
-console.log("222222222222222")
+        model = 0
         item_col.width = (timeControll.getMaxTrackTime()) / main222.scaling + 31
-        console.log("3333333333333333333 item_col.width = " + item_col.width)
-            timeControll.update();
-        console.log("44444444444444444444")
+            //timeControll.update();
         model =  timeControll.getTrackSize(bar_track.mIndex)
-        console.log("55555555555555555")
 
         if (main222.needToLightSelected)
         {
