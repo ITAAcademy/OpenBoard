@@ -366,6 +366,141 @@ MainWindow::~MainWindow()
     delete mpOGLWidget;
 }
 
+void MainWindow::setViewState(int state)
+{
+    /*
+     VIDEO_EDIT_TEXT,
+    VIDEO_EDIT_PRO,
+    VIDEO_EDIT_DEFAULT,
+    BRUSH_ANIMATION,
+    VISUAL_EFFECT
+*/
+switch (state){
+
+case VIDEO_EDIT_TEXT:
+    mpOGLWidget->show();
+    mpOGLWidget->getTimeLine()->hide();
+toolBar->show();
+toolBarBoard->show();
+a_clear_drawing->setVisible(false);
+a_clear_drawingBuffer->setVisible(false);
+a_clear_textedit->setVisible(true);
+a_color_canvas->setVisible(true);
+a_exit->setVisible(true);
+a_font_canvas->setVisible(true);
+a_hide->setVisible(false);
+a_new_project->setVisible(true);
+a_open_project->setVisible(true);
+a_pause->setVisible(true);
+a_play->setVisible(true);
+a_record_to_file->setVisible(true);
+a_redo->setVisible(true);
+a_save_drawing->setVisible(false);
+a_save_project->setVisible(true);
+a_show->setVisible(false);
+a_show_last_drawing->setVisible(false);
+a_stop->setVisible(true);
+a_undo->setVisible(true);
+    break;
+VIDEO_EDIT_PRO:
+toolBar->show();
+toolBarBoard->show();
+a_clear_drawing->setVisible(true);
+a_clear_drawingBuffer->setVisible(true);
+a_clear_textedit->setVisible(true);
+a_color_canvas->setVisible(true);
+a_exit->setVisible(true);
+a_font_canvas->setVisible(true);
+a_hide->setVisible(true);
+a_new_project->setVisible(true);
+a_open_project->setVisible(true);
+a_pause->setVisible(true);
+a_play->setVisible(true);
+a_record_to_file->setVisible(true);
+a_redo->setVisible(true);
+a_save_drawing->setVisible(true);
+a_save_project->setVisible(true);
+a_show->setVisible(true);
+a_show_last_drawing->setVisible(true);
+a_stop->setVisible(true);
+a_undo->setVisible(true);
+mpOGLWidget->getTimeLine()->hide();
+    break;
+case VIDEO_EDIT_DEFAULT:
+    mpOGLWidget->show();
+    toolBar->show();
+    toolBarBoard->show();
+    a_clear_drawing->setVisible(true);
+    a_clear_drawingBuffer->setVisible(true);
+    a_clear_textedit->setVisible(true);
+    a_color_canvas->setVisible(true);
+    a_exit->setVisible(true);
+    a_font_canvas->setVisible(true);
+    a_hide->setVisible(false);
+    a_new_project->setVisible(true);
+    a_open_project->setVisible(true);
+    a_pause->setVisible(true);
+    a_play->setVisible(true);
+    a_record_to_file->setVisible(true);
+    a_redo->setVisible(true);
+    a_save_drawing->setVisible(true);
+    a_save_project->setVisible(true);
+    a_show->setVisible(false);
+    a_show_last_drawing->setVisible(true);
+    a_stop->setVisible(true);
+    a_undo->setVisible(true);
+    break;
+    case BRUSH_ANIMATION:
+    toolBar->show();
+    toolBarBoard->show();
+    a_clear_drawing->setVisible(true);
+    a_clear_drawingBuffer->setVisible(true);
+    a_clear_textedit->setVisible(true);
+    a_color_canvas->setVisible(true);
+    a_exit->setVisible(true);
+    a_font_canvas->setVisible(true);
+    a_hide->setVisible(false);
+    a_new_project->setVisible(true);
+    a_open_project->setVisible(true);
+    a_pause->setVisible(false);
+    a_play->setVisible(false);
+    a_record_to_file->setVisible(false);
+    a_redo->setVisible(false);
+    a_save_drawing->setVisible(true);
+    a_save_project->setVisible(true);
+    a_show->setVisible(false);
+    a_show_last_drawing->setVisible(true);
+    a_stop->setVisible(false);
+    a_undo->setVisible(false);
+    break;
+case VISUAL_EFFECT:
+    toolBar->show();
+    toolBarBoard->show();
+    a_clear_drawing->setVisible(true);
+    a_clear_drawingBuffer->setVisible(true);
+    a_clear_textedit->setVisible(true);
+    a_color_canvas->setVisible(true);
+    a_exit->setVisible(true);
+    a_font_canvas->setVisible(true);
+    a_hide->setVisible(true);
+    a_new_project->setVisible(true);
+    a_open_project->setVisible(true);
+    a_pause->setVisible(true);
+    a_play->setVisible(true);
+    a_record_to_file->setVisible(true);
+    a_redo->setVisible(true);
+    a_save_drawing->setVisible(true);
+    a_save_project->setVisible(true);
+    a_show->setVisible(true);
+    a_show_last_drawing->setVisible(true);
+    a_stop->setVisible(true);
+    a_undo->setVisible(true);
+}
+
+
+
+}
+
 void MainWindow::closeEvent(QCloseEvent*)
 {
     if(mpOGLWidget != NULL)
