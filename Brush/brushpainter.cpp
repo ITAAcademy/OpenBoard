@@ -29,8 +29,8 @@ void BrushPainter::close()
      QGraphicsBlurEffect *blur;
      blur = new QGraphicsBlurEffect();
      blur->setBlurRadius(brush.blur);
-    // res = applyEffectToImage(applyEffectToImage(res, effect).scaled(brush.img.size()), blur);
-      res = applyEffectToImage(res, effect);
+     res = applyEffectToImage(applyEffectToImage(res, effect).scaled(brush.img.size()), blur);
+     // res = applyEffectToImage(res, effect);
      return res;
 }
  QImage BrushPainter::applyBlur(Brush brush)

@@ -24,7 +24,7 @@ void main(void) {
     if (col.g>max)max=col.g;
     if (col.b>max)max=col.b;
    col=vec4(max,max,max,col.a);
-    if (max==0 && col.a>=0.05)resultColor=toColor;
+    if (max==0 && col.a<1.0/255.0)resultColor=toColor;
     else
     resultColor = col*toColor;
 

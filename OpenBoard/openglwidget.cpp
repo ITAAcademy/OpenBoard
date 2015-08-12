@@ -135,7 +135,7 @@ void OGLWidget::paintBrushInBuffer(QVector<QPoint> coords,QVector<BrushBeginingI
 int recordedBrushN = 0;
 //qDebug() << "keyFrame:"<<keyFrame;
 GLuint texture = brushTexture;
-glUseProgram(ShaderProgram);
+//glUseProgram(ShaderProgram);
 glBindTexture(GL_TEXTURE_2D,texture);
 bool isBrushUsed = false;
     for (; recordedBrushN < brushes.length(); )
@@ -238,7 +238,7 @@ bool isBrushUsed = false;
         drawTexture(xPos-BRUSH_SIZE/2 + dispersX ,yPos-BRUSH_SIZE/koff/2 + dispersY,BRUSH_SIZE,BRUSH_SIZE/koff,
                 texture,angle,scaleX,scaleY);
         }
- glUseProgram(NULL);
+// glUseProgram(NULL);
 
 
 glBindTexture(GL_TEXTURE_2D,0);
@@ -425,7 +425,7 @@ glBindFramebuffer(GL_FRAMEBUFFER , fbo); // Bind our frame buffer for rendering
         // qDebug() << mousePos.x();
         glEnd();*/
     //qglColor(m_manager.getColor());
-glUseProgram(ShaderProgram);
+//glUseProgram(ShaderProgram);
 
          glBindTexture(GL_TEXTURE_2D,texture);
         QSize brushTextureSize = getTextureSize();
@@ -497,7 +497,7 @@ glUseProgram(ShaderProgram);
             drawTexture(xPos-BRUSH_SIZE/2 + dispersX ,yPos-BRUSH_SIZE/koff/2 + dispersY,BRUSH_SIZE,BRUSH_SIZE/koff,
                     texture,angle,scaleX,scaleY);
             }
-              glUseProgram(NULL);
+              //glUseProgram(NULL);
         /*
     else{
       glEnable(GL_TEXTURE_2D);
@@ -698,8 +698,8 @@ void OGLWidget::initializeGL()
     qglClearColor(Qt::black); // Черный цвет фона
      //glEnable(GL_TEXTURE_2D);
     backGroundTexture = loadTextureFromFile(":/ThirdPart/images/start.png");
-    m_manager.getCreatedBrush().color_img=m_manager.getCreatedBrush().img;
-    brushTexture = loadTexture(m_manager.getCreatedBrush().img);
+    m_manager.getCreatedBrush().color_img=BrushPainter::getInstance()->applyColor(m_manager.getCreatedBrush());
+    brushTexture = loadTexture(m_manager.getCreatedBrush().color_img);
     //loadTextureFromFile(":/ThirdPart/images/brush.png");
     initFrameBuffer(); // Create our frame buffer object
      initShader();
@@ -1187,7 +1187,7 @@ void OGLWidget::pauseAnimated()
 void OGLWidget::brushParamsChanged()
 {
     if (!m_manager.isAbleToDraw())return;
-    m_manager.getCreatedBrush().color_img=BrushPainter::getInstance()->applyBlur(m_manager.getCreatedBrush());
+    m_manager.getCreatedBrush().color_img=BrushPainter::getInstance()->applyColor(m_manager.getCreatedBrush());
     brushTexture = loadTexture(m_manager.getCreatedBrush().color_img);
     drawBrushElm->addBrush(m_manager.getCreatedBrush());
     qDebug() << "brushParamsChanged";
