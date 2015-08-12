@@ -13,7 +13,7 @@ using namespace std;
 struct Brush{
 
     QImage img = QImage(10,10,QImage::Format_RGB888);
-   // QImage color_img;
+    QImage color_img;
     float size = 50;
     float opacity = 100;
     float blur = 0;
@@ -57,6 +57,7 @@ public:
     QImage applyEffectToImage(QImage src, QGraphicsEffect *effect, int extent = 0);
     QImage applyMask(QImage src, QImage mask);
     //Q_DISABLE_COPY(BrushPainter)
+    QImage applyBlur(Brush brush);
 };
 
 

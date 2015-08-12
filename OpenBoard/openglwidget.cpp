@@ -146,7 +146,7 @@ bool isBrushUsed = false;
        // qDebug() << "mouse play index:"<<keyFrame;
 
         currentBrushOfDrawSystem = brushes[recordedBrushN].brush;
-        brushTexture = loadTexture(brushes[recordedBrushN].brush.img);
+        brushTexture = loadTexture(brushes[recordedBrushN].brush.color_img);
         qDebug() << "recordedBrushN:"<<recordedBrushN;
         isBrushUsed=true;
      //qDebug() << "recordedBrushN:"<<recordedBrushN;
@@ -197,8 +197,8 @@ bool isBrushUsed = false;
         if (maxDispers>0 && currentBrushOfDrawSystem.count>0) i=currentBrushOfDrawSystem.count;
         int imgUniform = glGetUniformLocation(ShaderProgram,"vUV");
           glUniform2i(imgUniform,0,0);
-          int bloorStepUnifrom = glGetUniformLocation(ShaderProgram,"bloorStep");
-            glUniform1i(bloorStepUnifrom,currentBrushOfDrawSystem.blur);
+         // int bloorStepUnifrom = glGetUniformLocation(ShaderProgram,"bloorStep");
+           // glUniform1i(bloorStepUnifrom,currentBrushOfDrawSystem.blur);
 
           int colorUniform = glGetUniformLocation(ShaderProgram,"toColor");
           QColor color = currentBrushOfDrawSystem.color_main;
@@ -465,8 +465,8 @@ glUseProgram(ShaderProgram);
             int imgUniform = glGetUniformLocation(ShaderProgram,"vUV");
               glUniform2i(imgUniform,0,0);
 
-              int bloorStepUnifrom = glGetUniformLocation(ShaderProgram,"bloorStep");
-                glUniform1i(bloorStepUnifrom,m_manager.getCreatedBrush().blur);
+              //int bloorStepUnifrom = glGetUniformLocation(ShaderProgram,"bloorStep");
+              // glUniform1i(bloorStepUnifrom,m_manager.getCreatedBrush().blur);
 
 
 
@@ -698,6 +698,7 @@ void OGLWidget::initializeGL()
     qglClearColor(Qt::black); // Черный цвет фона
      //glEnable(GL_TEXTURE_2D);
     backGroundTexture = loadTextureFromFile(":/ThirdPart/images/start.png");
+    m_manager.getCreatedBrush().color_img=m_manager.getCreatedBrush().img;
     brushTexture = loadTexture(m_manager.getCreatedBrush().img);
     //loadTextureFromFile(":/ThirdPart/images/brush.png");
     initFrameBuffer(); // Create our frame buffer object
@@ -903,7 +904,7 @@ if (showingLastDrawing)
        // qDebug() << "mouse play index:"<<keyFrame;
 
        currentBrushOfLastDrawing =drawBrushElm->getBrushes()[recordedBrushN].brush;
-        brushTexture = loadTexture(drawBrushElm->getBrushes()[recordedBrushN].brush.img);
+        brushTexture = loadTexture(drawBrushElm->getBrushes()[recordedBrushN].brush.color_img);
      break;
     }
     recordedBrushN++;
@@ -1186,7 +1187,8 @@ void OGLWidget::pauseAnimated()
 void OGLWidget::brushParamsChanged()
 {
     if (!m_manager.isAbleToDraw())return;
-    brushTexture = loadTexture(m_manager.getCreatedBrush().img);
+    m_manager.getCreatedBrush().color_img=BrushPainter::getInstance()->applyBlur(m_manager.getCreatedBrush());
+    brushTexture = loadTexture(m_manager.getCreatedBrush().color_img);
     drawBrushElm->addBrush(m_manager.getCreatedBrush());
     qDebug() << "brushParamsChanged";
 

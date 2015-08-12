@@ -14,10 +14,11 @@ void BrushManager::setCurentBrush(int value)
     createdBrush.imageIndex=value;
   //  createdBrush.patchToImage = brushPathsList[value];
    //createdBrush.color_img = BrushPainter::getInstance()->applyColor(createdBrush);
+    createdBrush.color_img = BrushPainter::getInstance()->applyBlur(createdBrush);
     //emit currentBrushChanged();
 }
 
-Brush BrushManager::getCreatedBrush()
+Brush& BrushManager::getCreatedBrush()
 {
 
     return createdBrush;
