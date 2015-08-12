@@ -6,7 +6,8 @@ class DrawImageElm  :public DrawElement
 {
     Q_OBJECT
     QImage image;
-    GLuint textureIndex = 0;
+    GLuint textureIndex = -1;
+    int failedLoad = 10;
 public:
     explicit DrawImageElm( OGLWidget *drawWidget, QObject *parent = 0);
     ~DrawImageElm();

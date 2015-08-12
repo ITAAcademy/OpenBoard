@@ -77,7 +77,7 @@ void ListControll::removeBlock(int col, int i)
     isBlocked = false;
 }
 
-void ListControll::addNewBlock(int col, QString str)
+void ListControll::addNewBlock(int col, QString str, DrawElement *element)
 {
   /*  QString open = QFileDialog::getOpenFileName();
     DrawElement *elm = GenerationDrawElement(open);
@@ -87,11 +87,16 @@ void ListControll::addNewBlock(int col, QString str)
     setSelectedBlockPoint(QPoint(-1,-1));
     Element temp;
     temp.key = str;
+    if(element != NULL)
+    {
+        temp.draw_element = element;
+    }
     //temp.draw_element->setLifeTime(def_min_block_width);
-    temp.draw_element->setLifeTime(def_min_block_width);
+    if(temp.draw_element->getLifeTime() == 0)
+        temp.draw_element->setLifeTime(def_min_block_width);
     temp.draw_element->setZ(col);
     tracks[col].block.append(temp);
-    tracks[col].time += def_min_block_width;
+    tracks[col].time += temp.draw_element->getLifeTime();
    // testWidth[col].append(200);
     //testColumnWidth[col]+=200;
   //  // qDebug() << "SIZE   " << test.size();
@@ -104,7 +109,7 @@ void ListControll::addNewBlock(int col, QString str)
 void ListControll::addNewTrack( )
 {
     QList <Element>  temp;
-    temp.append(Element());
+   // temp.append(Element());
  //   temp.append(Element());
   //  temp.append(Element());
        int  temp_traclwidth =   def_min_block_width*temp.size();
@@ -590,6 +595,8 @@ bool ListControll::load(QIODevice* device)
          tracks.append(temp);
     }
     recountMaxTrackTime();
+    calcPointedBlocks();
+    setSelectedBlockPoint(-1, -1);
     return true;
 }
 
@@ -874,6 +881,7 @@ QImage ListControll::requestImage(const QString &id, QSize *size, const QSize &r
         addNewTrack( );
         recountMaxTrackTime();
         recountMaxTrackTime();
+        calcPointedBlocks();
     }
 
     void ListControll::convertCurentBlockToText()

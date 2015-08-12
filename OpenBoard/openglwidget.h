@@ -90,6 +90,7 @@ class OGLWidget : public QGLWidget, protected QGLFunctions
 
 public:
     BrushManager m_manager;
+    bool sucsessLoadTexture;
     /*
      * |Future gradient
      */

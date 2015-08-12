@@ -290,9 +290,19 @@ onYChanged: y=0;
 
     Text {
         id: name
-        color: "#FFFF00"
-        anchors.fill: parent
+        anchors.margins: 3
+        anchors.centerIn: parent
         text: root.title
+        font.pixelSize: 1
+        color: "white"
+        style: Text.Outline;
+        styleColor: "black"
+        onTextChanged: {
+            name.font.pixelSize = (root.width*1.2)/text.length;
+            if(name.font.pixelSize > root.height*0.7)
+                name.font.pixelSize = root.height*0.7
+
+        }
     }
     DropArea {
         id: drop

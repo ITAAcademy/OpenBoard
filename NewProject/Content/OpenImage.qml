@@ -10,6 +10,12 @@ Rectangle{
     height: 80
     property string title: "value"
     border.width: 0
+    function getFilePath()
+    {
+        return openfile.text;
+    }
+    signal pathChange;
+
     gradient: Gradient {
         GradientStop {
             position: 0.00;
@@ -69,10 +75,9 @@ Rectangle{
         TextField {
             id: openfile
             y: parent.height/2 - height/2
-            width: parent.width - firstImage.width - parent.spacing*2 - load.width - name.paintedWidth
+            width: parent.width - firstImage.width - parent.spacing*3 - load.width - root.parent.maxTextWidth
             height: parent.height/2
             font.pixelSize: height*0.45
-            text: fileDialog.fileUrl
             style: TextFieldStyle {
                 textColor: "white"
                 background: Rectangle {
@@ -96,6 +101,7 @@ Rectangle{
             height: width
             y: parent.height/2 - height/2
             transform: Rotation {id: rotation_load; origin.x: load.width/2; origin.y: load.height/2; angle: 180}
+            property string getLoadFileName: "  "
             MouseArea{
                 anchors.fill: parent
                 hoverEnabled: true
@@ -106,21 +112,9 @@ Rectangle{
                     load.scale = 1.0;
                 }
                 onClicked: {
-                    fileDialog.open();
-                }
-                FileDialog {
-                    id: fileDialog
-                    title: "Please choose a file"
-                    folder: shortcuts.home
-                    onAccepted: {
-                        console.log("You chose: " + fileDialog.fileUrls)
-                        Qt.quit()
-                    }
-                    onRejected: {
-                        console.log("Canceled")
-                        Qt.quit()
-                    }
-                    Component.onCompleted: visible = false
+                    load.getLoadFileName = projectControll.fileDialog(0);
+                    openfile.text = "file:///" + load.getLoadFileName;
+                    root.pathChange();
                 }
             }
         }
@@ -131,6 +125,11 @@ Rectangle{
             y: parent.height/2 - height/2
             text: root.title
             font.pixelSize: parent.height*0.45
+            Component.onCompleted: {
+                if(name.paintedWidth > root.parent.maxTextWidth)
+                    root.parent.maxTextWidth = name.paintedWidth;
+            }
+
 /*
             MouseArea{
                 anchors.fill: parent

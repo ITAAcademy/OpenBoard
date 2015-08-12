@@ -37,10 +37,15 @@ MainWindow::MainWindow(QWidget *parent) :
     mpOGLWidget = new OGLWidget();
      qDebug() << "connect unableToDraw";
 
+     mpOGLWidget->getTimeLine()->show();
+     mpOGLWidget->show();
+
+    qApp->processEvents(QEventLoop::AllEvents, 1000);
 
     mpOGLWidget->setFixedSize(GLWIDGET_SIZE);
     mpOGLWidget->move(pos().x() + width() + WINDOW_MARGING, pos().y());
     mpOGLWidget->hide();
+    mpOGLWidget->getTimeLine()->hide();
    // mpOGLWidget->moveToThread(&drawThread);
     textEdit = new MyTextEdit(QColor("#000000"), QColor("#FF0000"), ui->centralWidget);
     textEdit->setObjectName(QStringLiteral("textEdit"));
@@ -801,13 +806,6 @@ ProjectStartupSetting MainWindow::getCurentState()
 void MainWindow::setCurentState(ProjectStartupSetting state)
 {
     curentState = state;
-    emit signalCurentStateChanged();
-
-}
-
-void MainWindow::slotCurentStateChanged()
-{
-    //qDebug() << "NOT_BAD" << curentState.state;
 
 }
 
@@ -878,7 +876,7 @@ void MainWindow::search()
 bool MainWindow::on_action_Save_as_triggered()
 {
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"), directory,
-                                                    tr("Text Files (*.txt);;All Files (*.*)"));
+                                                    tr("Text Files (*.txt);;All Files (*.*)"), 0, QFileDialog::DontUseNativeDialog);
 
     if(!fileName.isEmpty())
     {
@@ -901,7 +899,7 @@ void MainWindow::on_action_Open_triggered()
     if (maybeSave())
     {
         QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), directory,
-                                                              tr("Text Files (*.txt);;All Files (*.*)"));
+                                                              tr("Text Files (*.txt);;All Files (*.*)"), 0, QFileDialog::DontUseNativeDialog);
 
     openFile( fileName);
     }
@@ -951,7 +949,7 @@ bool MainWindow::on_action_Save_Project_triggered()
         qApp->processEvents();
         activateWindow();
        QString fileName = QFileDialog::getSaveFileName(this,
-        tr("Save project"), directory, tr("Project file (*.project)"));
+        tr("Save project"), directory, tr("Project file (*.project)"), 0, QFileDialog::DontUseNativeDialog);
         isActive = true;
         qApp->processEvents();
         activateWindow();
@@ -998,16 +996,15 @@ void MainWindow::on_action_Open_Project_triggered()
     }
     mpOGLWidget->getTimeLine()->setIsProjectChanged(false);
     curProjectFile.clear();
-isActive = false;
-qApp->processEvents();
-activateWindow();
-        QString fileName = QFileDialog::getOpenFileName(this,
-           tr("Open project"), directory, tr("Project file (*.project)"));
-        isActive = true;
-        qApp->processEvents();
-        activateWindow();
-        if(fileName.isEmpty())   return;
-          curProjectFile = fileName;
+    isActive = false;
+    qApp->processEvents();
+    activateWindow();
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Open project"), directory, tr("Project file (*.project)"), 0, QFileDialog::DontUseNativeDialog);
+    isActive = true;
+    qApp->processEvents();
+    activateWindow();
+    if(fileName.isEmpty())   return;
+    curProjectFile = fileName;
 
     QFile file(curProjectFile);
     if(file.open(QIODevice::ReadOnly))
@@ -1047,10 +1044,50 @@ void MainWindow::on_action_New_Project_triggered()
     }
 
      curProjectFile.clear();
+  //   mpOGLWidget->getTimeLine()->emitResetProject();
      mpOGLWidget->getTimeLine()->resetProjectToDefault();
-     mpOGLWidget->getTimeLine()->emitResetProject();
      mpOGLWidget->getTimeLine()->setIsProjectChanged(false);
      this->setCurentState(ProjectCreator::getProjectSetting(true, false));
+     qApp->processEvents();
+     switch (curentState.state) {
+     case VIDEO_EDIT_TEXT:
+     {
+         DrawImageElm *first = new DrawImageElm(NULL);
+         first->setDrawImage(QImage(QUrl(curentState.firstImage).toLocalFile()));
+
+       //  qApp->processEvents();
+
+         DrawImageElm *last = new DrawImageElm(NULL);
+         last->setDrawImage(QImage(QUrl(curentState.lastImage).toLocalFile()));
+
+         first->setTypeId(Element_type::Image);
+         last->setTypeId(Element_type::Image);
+
+         DrawTextElm *text = new DrawTextElm(NULL);
+
+         first->setLifeTime(3000);
+         last->setLifeTime(3000);
+
+         first->setSize(width(), height());
+         last->setSize(width(), height());
+         text->setSize(width(), height());
+
+
+
+         mpOGLWidget->getTimeLine()->addNewBlock(0, "NEW4", first);
+         mpOGLWidget->getTimeLine()->addNewBlock(0, "NEW3", text);
+         mpOGLWidget->getTimeLine()->addNewBlock(0, "NEW2", last);
+         mpOGLWidget->getTimeLine()->setSelectedBlockPoint(0, 1);
+         break;
+     }
+     case VIDEO_EDIT_DEFAULT:
+         mpOGLWidget->getTimeLine()->addNewBlock(0, "NEW1", new DrawTextElm(NULL));
+         break;
+     default:
+         break;
+     }
+
+     mpOGLWidget->getTimeLine()->sendUpdateModel();
 
 }
 
@@ -1352,7 +1389,7 @@ void MainWindow::updateBlockFromTextEdit()
         if(elm.draw_element->getTypeId() == Element_type::Text)
         {
             DrawTextElm *text_elm = (DrawTextElm *)elm.draw_element;
-            text_elm->setDelay(ui->slider_speedTB->value());
+            text_elm->setDelay(ui->slider_speedTB->value()*10);
             text_elm->setUnParsestring(textEdit->toPlainText(), commandTextEdit->toPlainText());
             text_elm->setTextCursor(commandTextEdit->textCursor().position());
             int change_time = text_elm->getDrawTime();
@@ -1474,7 +1511,7 @@ void MainWindow::on_action_Stop_triggered()
 
 void MainWindow::on_action_youTube_triggered()
 {
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Choose file..."), qApp->applicationDirPath(), tr("Videos (*.avi *.mp4)"));
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Choose file..."), qApp->applicationDirPath(), tr("Videos (*.avi *.mp4)"), 0, QFileDialog::DontUseNativeDialog);
     if(fileName.size() != 0)
     {
         youtube= new YouTubeWrapper(QString(fileName),this);
@@ -1605,7 +1642,7 @@ void MainWindow::on_actionShow_last_drawing_triggered()
 
 void MainWindow::on_actionSave_drawing_triggered()
 {
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Choose file..."), qApp->applicationDirPath(), tr("Drawing (*.paint)"));
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Choose file..."), qApp->applicationDirPath(), tr("Drawing (*.paint)"), 0, QFileDialog::DontUseNativeDialog);
     if(!fileName.size())
         return;
     qDebug() << fileName;
@@ -1614,7 +1651,7 @@ void MainWindow::on_actionSave_drawing_triggered()
 
 void MainWindow::on_actionLoad_drawing_temp_triggered()
 {
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Choose file..."), qApp->applicationDirPath(), tr("Drawing (*.paint)"));
+    QString fileName = QFileDialog::getOpenFileName(this, tr("Choose file..."), qApp->applicationDirPath(), tr("Drawing (*.paint)"), 0, QFileDialog::DontUseNativeDialog);
     if(!fileName.size())
         return;
       mpOGLWidget->drawBrushElm->load(fileName);

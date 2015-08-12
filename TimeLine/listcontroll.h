@@ -222,7 +222,7 @@ public:
     Q_INVOKABLE  void setIsProjectChanged(bool);
     Q_INVOKABLE int getTrackSize(int col) const;
     Q_INVOKABLE QString getBlockKey(int col, int i) const;
-    Q_INVOKABLE void addNewBlock(int col, QString str );
+    Q_INVOKABLE void addNewBlock(int col, QString str , DrawElement *element = NULL);
     Q_INVOKABLE void addNewTrack( );
     Q_INVOKABLE void loadFromFile();
     Q_INVOKABLE bool removeLastBlock(int col);

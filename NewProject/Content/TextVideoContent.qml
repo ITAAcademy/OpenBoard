@@ -10,11 +10,18 @@ ContentItem{
         id: items_col
         anchors.fill: parent
         spacing: 10
+        property int maxTextWidth: 0
         OpenImage{
             title: "START"
+            onPathChange: {
+                projectControll.textMode_SetFirstImage(getFilePath());
+            }
         }
         OpenImage{
             title: "FINAL"
+            onPathChange: {
+                projectControll.textMode_SetLastImage(getFilePath());
+            }
         }
     }
 }

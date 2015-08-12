@@ -22,6 +22,7 @@ static DrawElement *GenerationDrawElement( QString path, OGLWidget *drawWidget =
         DrawImageElm *elm = new DrawImageElm(drawWidget, parent);
         elm->load(path);
         elm->setTypeId(Element_type::Image);
+        elm->setKey(target.baseName());
         return (DrawElement*) elm;
     }
     if(format == "jpg" || format == "png" || format == "gif")
@@ -29,6 +30,7 @@ static DrawElement *GenerationDrawElement( QString path, OGLWidget *drawWidget =
         DrawImageElm *elm = new DrawImageElm(drawWidget, parent);
         elm->setDrawImage(QImage(path));
         elm->setTypeId(Element_type::Image);
+        elm->setKey(target.baseName());
         return (DrawElement*) elm;
     }
 
@@ -44,7 +46,7 @@ static DrawElement *GenerationDrawElement( QString path, OGLWidget *drawWidget =
         QString data(file.readAll());
         elm->setUnParsestring(data, data);
         elm->setTypeId(Element_type::Text);
-
+        elm->setKey(target.baseName());
         return (DrawElement*) elm;
     }
     if(format == "text")
@@ -58,6 +60,7 @@ static DrawElement *GenerationDrawElement( QString path, OGLWidget *drawWidget =
         DrawBrushElm *elm = new DrawBrushElm(drawWidget, parent);
         elm->load(path);
         elm->setTypeId(Element_type::Brushh);
+        elm->setKey(target.baseName());
         return (DrawElement*) elm;
     }
     return NULL;

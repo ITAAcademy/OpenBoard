@@ -4,6 +4,7 @@
 #include <QObject>
 #include <QtCore>
 #include <QtQuick>
+#include <QFileDialog>
 
 enum VIEW_STATE
 {
@@ -18,6 +19,10 @@ struct ProjectStartupSetting
 {
     VIEW_STATE state;
     bool advance_mode;
+
+    // text
+    QString firstImage;
+    QString lastImage;
 };
 
 class ProjectCreator : public QObject
@@ -41,7 +46,11 @@ public:
     Q_INVOKABLE void close();
     Q_INVOKABLE void setProjectState( int state);
     Q_INVOKABLE void setAdvanceMode( bool state);
+
+    Q_INVOKABLE void textMode_SetFirstImage(QString path);
+    Q_INVOKABLE void textMode_SetLastImage(QString path);
     Q_INVOKABLE bool isStart() const;
+    Q_INVOKABLE QString fileDialog(int OPEN_SAVE = 0);
     void setStart(bool value);
 
 signals:

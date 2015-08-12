@@ -167,16 +167,12 @@ QMessageBox messAbout;
 
     volatile bool isActive = true; // active main windows?
     ProjectStartupSetting curentState;
-    Q_PROPERTY(ProjectStartupSetting curentState READ getCurentState WRITE setCurentState NOTIFY signalCurentStateChanged) //show curent state of window
     void updateEditWidgets(bool forceEnabled = false);
 public slots:
     ProjectStartupSetting getCurentState();
-    void setCurentState(ProjectStartupSetting state);
+    Q_INVOKABLE void setCurentState(ProjectStartupSetting state);
 
-signals:
-    void signalCurentStateChanged();
 private slots:
-    void slotCurentStateChanged();
     void updateBlockFromTextEdit();
 };
 

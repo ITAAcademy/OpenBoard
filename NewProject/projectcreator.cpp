@@ -50,9 +50,24 @@ void ProjectCreator::setAdvanceMode(bool state)
     curent.advance_mode = state;
 }
 
+void ProjectCreator::textMode_SetFirstImage(QString path)
+{
+    curent.firstImage = path;
+}
+
+void ProjectCreator::textMode_SetLastImage(QString path)
+{
+    curent.lastImage = path;
+}
+
 bool ProjectCreator::isStart() const
 {
     return start;
+}
+
+QString ProjectCreator::fileDialog(int OPEN_SAVE)
+{
+    return QFileDialog::getOpenFileName(0, QString(), QString(), QString(), 0, QFileDialog::DontUseNativeDialog);
 }
 
 void ProjectCreator::setStart(bool value)

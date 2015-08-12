@@ -41,9 +41,12 @@ void DrawImageElm::setDrawImage(QImage img)
 
 bool DrawImageElm::setDrawWidget(OGLWidget *value)
 {
-    if(!DrawElement::setDrawWidget(value))
+    if(!DrawElement::setDrawWidget(value) && textureIndex != -1 || failedLoad == 0)
+    {
+        failedLoad--;
         return 0;
+    }
     textureIndex = pDrawWidget->loadTexture(image);
-    //qDebug() << "QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQWWWWWWWWWWWWWWWWW     " << textureIndex;
+    qDebug() << "QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQWWWWWWWWWWWWWWWWW     " << textureIndex;
 }
 

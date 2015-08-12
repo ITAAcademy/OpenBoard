@@ -24,7 +24,7 @@ Rectangle {
                // for (var i=0; i< 30; i++)
                 {
                 var ss = num
-               timeControll.addNewBlock(bar_track.mIndex,"vasia" + ss);
+               timeControll.addNewBlock(bar_track.mIndex,"Block_" + ss);
                 num +=1
                 // item_col.globalRep.updateModel() ;
                 globalRep.updateModel()

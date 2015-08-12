@@ -22,7 +22,7 @@ protected:
 
     QImage icon;
     QString key;
-    int lifeTime;
+    int lifeTime = 0;
     int tickTime;
     int delay;
     int startDrawTime;

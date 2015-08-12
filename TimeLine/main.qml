@@ -161,7 +161,8 @@ main222.isPlay = false
 
        onUpdateModel: {
            rep_columns.model = 0
-            rep_columns.model =  timeControll.getTracksNumber()
+            rep_columns.model =  timeControll.getTracksNumber();
+           item_col.width = timeControll.getMaxTrackTime()
            // main222.p_trackbar.globalRep.updateModel()
 
            //repka.updateModel();

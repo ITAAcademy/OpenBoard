@@ -16,20 +16,24 @@ GLuint OGLWidget::loadTexture(QImage img){
     {
         //loads correctly
         qWarning() << "ERROR LOADING IMAGE";// + QCoreApplication::applicationDirPath()+"/star.png";
-        return 0;
+        return -1;
     }
-
+    qDebug() << "GL_ERROR_STATUS LOAD_TEXTURE:   "<< glGetError();
     QImage GL_formatted_image = convertToGLFormat(img);
+    qDebug() << "GL_ERROR_STATUS LOAD_TEXTURE:   "<< glGetError();
     // qDebug() << "image converted to GL format";
     if(GL_formatted_image.isNull())
         qWarning() << "IMAGE IS NULL";
     else
+    {
         qWarning() << "IMAGE NOT NULL";
+    }
     //generate the texture name
     //glEnable(GL_TEXTURE_2D); // Enable texturing
     GLuint texture;
 
        glGenTextures(1, &texture); // Obtain an id for the texture
+       qDebug() << "GL_ERROR_STATUS LOAD_TEXTURE:   "<< glGetError();
        qDebug() << texture;
        glBindTexture(GL_TEXTURE_2D, texture); // Set as the current texture
  //qDebug(" after  glBindTexture(GL_TEXTURE_2D, texture);");
@@ -38,16 +42,27 @@ GLuint OGLWidget::loadTexture(QImage img){
 
 
        glTexImage2D(GL_TEXTURE_2D, 0, 4, GL_formatted_image.width(), GL_formatted_image.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, GL_formatted_image.bits());
+       qDebug() << "GL_ERROR_STATUS LOAD_TEXTURE:   "<< glGetError();
       //// qDebug() <<
        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-       glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+       qDebug() << "GL_ERROR_STATUS LOAD_TEXTURE:   "<< glGetError();
+     //  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 
-       glDisable(GL_TEXTURE_2D);
        glBindTexture(GL_TEXTURE_2D, 0);
+       glDisable(GL_TEXTURE_2D);
+
 //qDebug("before int realIndex = index; ");
+       GLenum error = glGetError();
+       if(error != 0)
+           sucsessLoadTexture = true;
+        else
+           sucsessLoadTexture = false;
+
+       qDebug() << "GL_ERROR_STATUS LOAD_TEXTURE:   "<< glGetError();
+
        return texture;
        //bind the texture ID
 }
@@ -1131,7 +1146,7 @@ bool OGLWidget::drawAnimated(bool record)
     }
     if(record)
     {
-        QString fileName = QFileDialog::getSaveFileName(this, tr("Choose file..."), qApp->applicationDirPath(), tr("Videos (*.avi *.mp4)"));
+        QString fileName = QFileDialog::getSaveFileName(this, tr("Choose file..."), qApp->applicationDirPath(), tr("Videos (*.avi *.mp4)"), 0, QFileDialog::DontUseNativeDialog);
         if(fileName.size() == 0)
             return false;
       //  qDebug() << "SHOW_FILE_NAME " << fileName;
@@ -1286,7 +1301,7 @@ bool OGLWidget::drawAnimationFigure(int x, int y, int width, int height, double 
 {
     isCrossingNow=true;
     qDebug() << "wqweqweqwe "  << persent;
-    if(persent < 0.9f)
+    if(persent < 0.6f)
     {
         drawFigure(x, y, x + (width - x)*persent, height, type, fill);
          //qDebug() << delPos.x() << "             " << delPos.x() + (maxWidth - delPos.x())*persent;
@@ -1348,7 +1363,9 @@ void OGLWidget::crossOutWithAnimation(int n)
 
 void OGLWidget::generateFrames()
 {
+
 }
+
 double OGLWidget::getAnimationPersentOfCross() const
 {
     return animationPersentOfCross;
@@ -1851,8 +1868,9 @@ void OGLWidget::insertToBuffer(const QChar ch)
     if (convertedIndex.x()>=str.length())
         str.append(ch);
     else
-    str.insert(convertedIndex.x(), ch);
-    cross.insert(cursorIndex - convertedIndex.y(), 0);
+        str.insert(convertedIndex.x(), ch);
+    cross.insert(cursorIndex - convertTextBoxToBufferIndex(cursorIndex).y(), 0);
+  //  qDebug() << "insert " << cursorIndex - convertTextBoxToBufferIndex(cursorIndex).y() << "        " << cross;
 
   //  DrawTextElm(convertedIndex.y());
     listChars.append(ch);
@@ -1906,7 +1924,7 @@ void OGLWidget::deleteFromBuffer(int n)
     while(mustDell > 0)
     {
         QPoint convertedIndex = convertTextBoxToBufferIndex(cursorIndex);
-        cross.insert(cursorIndex - convertedIndex.y(), 0);
+       // cross.insert(cursorIndex - convertedIndex.y(), 0);
         // qDebug() << convertedIndex << "DELL   " << mustDell;
         QString &str =  stringList[convertedIndex.y()];
         int realDell;
@@ -2172,6 +2190,7 @@ bool OGLWidget::crossTextDraw()
             for( int j = listOfAnimationFigure[i].start; j < listOfAnimationFigure[i].stop; j++) // convert to cross without animation
                 cross[j] = 1;
             listOfAnimationFigure.remove(i);
+  //          qDebug() << cross;
         }
 
     }
@@ -2182,7 +2201,7 @@ bool OGLWidget::crossTextDraw()
     bool needNextRow = false;
     for(int i = indexFirstDrawSymbol; i < cross.length(); i++)
     {
-        //// qDebug() << "CROSS [i]:" << cross[i];
+
         if(cross[i] != 0)
         {
             QPoint conv = convertTextBoxToBufferIndex(i, true);
