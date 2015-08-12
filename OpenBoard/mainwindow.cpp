@@ -86,7 +86,7 @@ MainWindow::MainWindow(QWidget *parent) :
         mSettings.setMainWindowRect(geometry());
         mSettings.setMainWindowTitle(windowTitle());
         mSettings.setMainWindowFont(font());
-        mSettings.setMainWindowColor(this->textEdit->textColor());
+        mSettings.setMainWindowColor(QColor(255,255,255));
         QColor col (255,255,255);
         mSettings.setBoardFontColor(QColor(255,255,255));
 

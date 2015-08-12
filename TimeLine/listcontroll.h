@@ -180,6 +180,7 @@ class ListControll : public QObject, public QQuickImageProvider
 
     bool isProjectChange = false;
     int maxTrackTime ;
+    float scale_scroll_children = 1.0;
     QQuickView view;
     QPoint framaMousePosition;
      QPoint prevMousePosition;
@@ -300,11 +301,21 @@ public:
 
   void sendUpdateModel();
 
+ Q_INVOKABLE  float getScaleScrollChildren() const;
+ Q_INVOKABLE  void setScaleScrollChildren(const float &value);
+ Q_INVOKABLE  void changeScaleScrollChildren(const float &value);
+
+  Q_INVOKABLE  void videoSignalHAHAHAA(QString addrW)
+{
+  //QDesktopServices::openUrl(QUrl(QString("E:/Adele - Someone Like You.mp4")));
+ // QDesktopServices::openUrl(QUrl::FromLocalFile(addrW, QUrl::TolerantMode));
+}
+
 signals:
-    void loadFromFileSignal();
-    void playSignal();
-    void pauseSignal();
-    void stopSignal();
+  void loadFromFileSignal();
+  void playSignal();
+  void pauseSignal();
+  void stopSignal();
     void updateSignal();
     void updateModel();
 
