@@ -78,7 +78,7 @@ public:
     Q_INVOKABLE int getAffine();
     Q_INVOKABLE QColor getColor();
 
-    Brush getCreatedBrush();
+    Brush& getCreatedBrush();
     void setCreatedBrush(const Brush &value);
 
     Q_INVOKABLE QString toHex(QColor col);

@@ -37,7 +37,7 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-
+    void setViewState(int state);
 public slots:
     bool openFile(QString fileName);
     void doUndoRedoStart();
