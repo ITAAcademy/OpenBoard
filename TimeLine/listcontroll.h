@@ -177,7 +177,6 @@ class ListControll : public QObject, public QQuickImageProvider
 {
     Q_OBJECT
 
-
     bool isProjectChange = false;
     int maxTrackTime ;
     float scale_scroll_children = 1.0;

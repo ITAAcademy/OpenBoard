@@ -805,6 +805,8 @@ void MainWindow::setCurentState(ProjectStartupSetting state)
 
 }
 
+
+
 void MainWindow::slotCurentStateChanged()
 {
     //qDebug() << "NOT_BAD" << curentState.state;
@@ -963,6 +965,9 @@ bool MainWindow::on_action_Save_Project_triggered()
    if(file.open(QIODevice::WriteOnly))
    {
        ui->statusBar->showMessage("project saving...");
+       QDataStream stream(&file);
+       int state =   static_cast<int>(curentState.state);
+             stream << curentState.advance_mode << state ;
        mpOGLWidget->getTimeLine()->save(&file);
        file.close();
        ui->statusBar->showMessage("project saved");
@@ -1013,6 +1018,11 @@ activateWindow();
     if(file.open(QIODevice::ReadOnly))
     {
         ui->statusBar->showMessage("project opening...");
+        QDataStream stream(&file);
+        int state ;//=   static_cast<int>(curentState.state);
+        stream >> curentState.advance_mode >> state ;
+       curentState.state = static_cast<VIEW_STATE>(state);
+              stream >> curentState.advance_mode << state ;
         mpOGLWidget->getTimeLine()->load(&file);
         file.close();
         ui->statusBar->showMessage("project opened");

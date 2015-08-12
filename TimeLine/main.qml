@@ -92,12 +92,12 @@ function zoomChange(value)
      timeControll.changeScaleScrollChildren(value)
     scaling = timeControll.getScaleScrollChildren()
     updateTracksModel()
-    console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA " + timeControll.getScaleScrollChildren())
+    //console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA " + timeControll.getScaleScrollChildren())
 }
 
     property bool ctrl_pressed : false
          Keys.onPressed: {
-              console.log("AAAAAAAAAAAAAAAAAAAAA " + event.key)
+              //console.log("AAAAAAAAAAAAAAAAAAAAA " + event.key)
           if(event.modifiers & Qt.ControlModifier) {
                main222.ctrl_pressed = true
               //console.log("AAAAAAAAAAAAAAAAAAAAA " + ctrl_pressed)
@@ -136,7 +136,7 @@ function zoomChange(value)
     function removeTrack()    {
         timeControll.removeLastTrack()
     rep_columns.model -=1
-item_col.width = (timeControll.getMaxTrackTime() + 31) * timeControll.getScaleScrollChildren()
+item_col.width = (timeControll.getMaxTrackTime() + 31) * main222.scaling
     }
 
     function play()    {
@@ -181,7 +181,7 @@ main222.isPlay = false
        main222.stop()
        }
        onSetScalePointerPosSignal: {
-       main222.setScalePointerPos(value/main222.scaling)
+       main222.setScalePointerPos(value * main222.scaling)
        }
 
        onUpdateSignal:  {
@@ -195,7 +195,7 @@ main222.isPlay = false
        }
 
        onUpdateModel: {
-           updateTracksModel()
+           main222.updateTracksModel()
        }
 
 
@@ -326,7 +326,8 @@ main222.isPlay = false
             }
             else
             {
-               var temp = timeControll.getMaxTrackTime() - scroll.flickableItem.contentX + width
+                var real_time = timeControll.getMaxTrackTime() / main222.scaling
+               var temp = real_time - scroll.flickableItem.contentX + width
                 if (x  > temp )
                 {
                    // console.log("HAAAAAAAAAAA")
@@ -341,11 +342,11 @@ main222.isPlay = false
                 if (x> temp)
                 {
                    // console.log("DAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa")
-                    if (timeControll.getMaxTrackTime()  >= scroll.width  )
+                    if (real_time  >= scroll.width  )
                     {
                          //console.log("10008")
                     scroll.flickableItem.contentX += x - temp
-                    var sad = timeControll.getMaxTrackTime() - scroll.width + 17  // scroll.flickableItem.contentWidth - scroll.width + 10
+                    var sad = real_time - scroll.width + 17  // scroll.flickableItem.contentWidth - scroll.width + 10
                     if (scroll.flickableItem.contentX  >  sad)
                     {
                             scroll.flickableItem.contentX = sad;
@@ -372,7 +373,7 @@ main222.isPlay = false
                 //console.log("getScalePointerPos = " + timeControll.getScalePointerPos())
 
             }
-            timeControll.setScalePointerPos(x-20 + scroll.flickableItem.contentX);
+            timeControll.setScalePointerPos(x * main222.scaling -20 + scroll.flickableItem.contentX);
            // // console.log("x + scroll.flickableItem.contentX = "+x +" + " + scroll.flickableItem.contentX
 
             //console.log("scale_pointer X = " +(x+width/2))
@@ -517,7 +518,7 @@ main222.isPlay = false
         model = 0//model - 1;
 console.log("222222222222222")
         item_col.width = (timeControll.getMaxTrackTime()) / main222.scaling + 31
-        console.log("3333333333333333333")
+        console.log("3333333333333333333 item_col.width = " + item_col.width)
             timeControll.update();
         console.log("44444444444444444444")
         model =  timeControll.getTrackSize(bar_track.mIndex)

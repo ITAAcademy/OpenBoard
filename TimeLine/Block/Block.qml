@@ -72,7 +72,7 @@ z: 0
          //timeControll.setBlockTime(mainwindow.columnIndex,mainwindow.blockIndex,block_width_value.value)
     }
     onXChanged: {
-        timeControll.setBlockStartTime(root.colIndex,root.mIndex, x/ timeControll.getScaleScrollChildren())
+        timeControll.setBlockStartTime(root.colIndex,root.mIndex, x * main222.scaling)
     }
 
 
@@ -132,8 +132,9 @@ onYChanged: y=0;
 
 
        onPressed: {
-            if(main222.selectedBlock != null)
+            if(main222.selectedBlock !== null)
                 main222.selectedBlock.hideMenu();
+            console.log("AAAAAAAAAAAAAAA " + timeControll.getBlockStartTime(root.colIndex,root.mIndex))
              main222.p_scale_pointer.x = mouseX + root.x - scroll.flickableItem.contentX + main222.p_scale_pointer.width //1234
             timeControll.setSelectedBlockPoint(root.colIndex,root.mIndex);
             main222.p_scale_pointer.x+=1
