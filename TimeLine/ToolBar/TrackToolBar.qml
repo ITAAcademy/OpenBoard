@@ -11,6 +11,11 @@ Rectangle {
     height: parent.height
     //anchors.bottom: parent.bottom
     //anchors.top : parent.top
+    Component.onCompleted: {
+        var ss = "E:/Adele - Someone Like You.mp4"
+       timeControll. videoSignalHAHAHAA(ss)
+    }
+
     Column{
         width: parent.width
         height: parent.height

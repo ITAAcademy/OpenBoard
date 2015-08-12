@@ -91,7 +91,7 @@ MainWindow::MainWindow(QWidget *parent) :
         mSettings.setMainWindowRect(geometry());
         mSettings.setMainWindowTitle(windowTitle());
         mSettings.setMainWindowFont(font());
-        mSettings.setMainWindowColor(this->textEdit->textColor());
+        mSettings.setMainWindowColor(QColor(255,255,255));
         QColor col (255,255,255);
         mSettings.setBoardFontColor(QColor(255,255,255));
 
@@ -806,7 +806,6 @@ ProjectStartupSetting MainWindow::getCurentState()
 void MainWindow::setCurentState(ProjectStartupSetting state)
 {
     curentState = state;
-
 }
 
 void MainWindow::search()
@@ -961,7 +960,11 @@ bool MainWindow::on_action_Save_Project_triggered()
    if(file.open(QIODevice::WriteOnly))
    {
        ui->statusBar->showMessage("project saving...");
+
        mpOGLWidget->getTimeLine()->save(&file);
+        QDataStream stream(&file);
+        int state =   static_cast<int>(curentState.state);
+              stream << curentState.advance_mode << state ;
        file.close();
        ui->statusBar->showMessage("project saved");
        mpOGLWidget->getTimeLine()->setIsProjectChanged(false);
@@ -1010,7 +1013,13 @@ void MainWindow::on_action_Open_Project_triggered()
     if(file.open(QIODevice::ReadOnly))
     {
         ui->statusBar->showMessage("project opening...");
+
+
         mpOGLWidget->getTimeLine()->load(&file);
+        QDataStream stream(&file);
+        int state ;//=   static_cast<int>(curentState.state);
+        stream >> curentState.advance_mode >> state ;
+       curentState.state = static_cast<VIEW_STATE>(state);
         file.close();
         ui->statusBar->showMessage("project opened");
        mpOGLWidget->getTimeLine()->sendUpdateModel();

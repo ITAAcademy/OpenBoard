@@ -68,7 +68,8 @@ Rectangle
    property Item selectedBlock
    property int selectedBlockCol : 0
    property int selectedBlockIndex : 0
-   property int minBlockWidth : 0
+    property real scaling :  timeControll.getScaleScrollChildren()
+   property int minBlockWidth : 100 / scaling
    property bool isPlay : false
    // property int torepainting : 1
 
@@ -83,25 +84,48 @@ Rectangle
    property int mX : 0
 
 
-    property real scaling : 1
-    onScalingChanged: {
-        if (scaling <= 0.02)
-            scaling = 0.02
-    }
-focus: true
-    Keys.onPressed: {
-         if(event.modifiers && Qt.ControlModifier) {
-            // console.log("AAAAAAAAAAAAAAAAAAAAA " + event.key)
-             if ((event.key === Qt.Key_S || event.key === 1067) && (event.modifiers & Qt.ShiftModifier))
-                       timeControll.emitSaveProject();
-             else
-                 if ((event.key === Qt.Key_O  || event.key === 1065) && (event.modifiers & Qt.ShiftModifier)) //1065 - 'Щ'
-                            timeControll.emitOpenProject();
-                 else
-                     if ((event.key === Qt.Key_N || event.key === 1058) && (event.modifiers & Qt.ShiftModifier))
-                                timeControll.emitNewProject();
-         }
-     }
+
+focus: true    
+function zoomChange(value)
+{
+
+     timeControll.changeScaleScrollChildren(value)
+    scaling = timeControll.getScaleScrollChildren()
+    updateTracksModel()
+    //console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA " + timeControll.getScaleScrollChildren())
+}
+
+    property bool ctrl_pressed : false
+         Keys.onPressed: {
+              //console.log("AAAAAAAAAAAAAAAAAAAAA " + event.key)
+          if(event.modifiers & Qt.ControlModifier) {
+               main222.ctrl_pressed = true
+              //console.log("AAAAAAAAAAAAAAAAAAAAA " + ctrl_pressed)
+
+              if ((event.key === Qt.Key_S || event.key === 1067) && (event.modifiers & Qt.ShiftModifier))
+                        timeControll.emitSaveProject();
+              else
+                  if ((event.key === Qt.Key_O  || event.key === 1065) && (event.modifiers & Qt.ShiftModifier)) //1065 - 'Щ'
+                             timeControll.emitOpenProject();
+                  else
+                      if ((event.key === Qt.Key_N || event.key === 1058) && (event.modifiers & Qt.ShiftModifier))
+                                 timeControll.emitNewProject();
+                      else
+                          if (event.key === 43)
+                              zoomChange(0.1)
+                          else
+                              if (event.key === 45)
+                                  zoomChange(-0.1)
+          }
+
+      }
+         Keys.onReleased: {
+             //ctrl release
+                 if( event.key === 16777249) {
+                     main222.ctrl_pressed = false
+                    //console.log("AAAAAAAAAAAAAAAAAAAAA " + ctrl_pressed)
+                     }
+             }
 
 
     function addTrack()     {
@@ -112,7 +136,7 @@ focus: true
     function removeTrack()    {
         timeControll.removeLastTrack()
     rep_columns.model -=1
-item_col.width = timeControll.getMaxTrackTime() + 31
+item_col.width = (timeControll.getMaxTrackTime() + 31) * main222.scaling
     }
 
     function play()    {
@@ -134,6 +158,16 @@ main222.isPlay = false
 
     }
 
+    function updateTracksModel()
+    {
+        rep_columns.model = 0
+         rep_columns.model =  timeControll.getTracksNumber()
+        item_col.width = timeControll.getMaxTrackTime()
+        // main222.p_trackbar.globalRep.updateModel()
+
+        //repka.updateModel();
+    }
+
      Connections {
        target: timeControll
 
@@ -147,13 +181,14 @@ main222.isPlay = false
        main222.stop()
        }
        onSetScalePointerPosSignal: {
-       main222.setScalePointerPos(value)
+       main222.setScalePointerPos(value * main222.scaling)
        }
 
        onUpdateSignal:  {
            if (main222.isPlay )
            {
-                scale_pointer.x = timeControll.getPlayTime() + 15 - scroll.flickableItem.contentX;
+                scale_pointer.x =  (timeControll.getPlayTime() -
+                                                    scroll.flickableItem.contentX)/main222.scaling + 15 ;
                timeControll.calcPointedBlocksAtTime()
               // console.log("timer value: " +timeControll.getPlayTime())
            }
@@ -166,6 +201,8 @@ main222.isPlay = false
            // main222.p_trackbar.globalRep.updateModel()
 
            //repka.updateModel();
+           main222.updateTracksModel()
+
        }
 
 
@@ -173,12 +210,13 @@ main222.isPlay = false
 
           main222.selectedBlockCol = -1
             main222.selectedBlockIndex = -1
-           rep_columns.model = timeControll.getTracksNumber()
+          // rep_columns.model = timeControll.getTracksNumber()
            console.log("1111111111111111111")
-            main222.p_trackbar.globalRep.updateModel()
-           console.log("2111111111111111111")
+           // main222.p_trackbar.globalRep.updateModel()
            main222.p_scale_pointer.x = 26
        timeControll.setIsProjectChanged(false)
+
+           main222.updateTracksModel()
        }
 
 
@@ -231,7 +269,7 @@ main222.isPlay = false
                 color: "white"
                 }
                 Text {
-                text:  time_scale.division * index + " ms"
+                text:  Math.round(time_scale.division * index * main222.scaling) + " ms"
 
                 y:  time_scale.ud_down === true ? 0: hor_line.y
                 width:  time_scale.division
@@ -296,7 +334,8 @@ main222.isPlay = false
             }
             else
             {
-               var temp = timeControll.getMaxTrackTime() - scroll.flickableItem.contentX + width
+                var real_time = timeControll.getMaxTrackTime() / main222.scaling
+               var temp = real_time - scroll.flickableItem.contentX + width
                 if (x  > temp )
                 {
                    // console.log("HAAAAAAAAAAA")
@@ -311,11 +350,11 @@ main222.isPlay = false
                 if (x> temp)
                 {
                    // console.log("DAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa")
-                    if (timeControll.getMaxTrackTime()  >= scroll.width  )
+                    if (real_time  >= scroll.width  )
                     {
                          //console.log("10008")
                     scroll.flickableItem.contentX += x - temp
-                    var sad = timeControll.getMaxTrackTime() - scroll.width + 17  // scroll.flickableItem.contentWidth - scroll.width + 10
+                    var sad = real_time - scroll.width + 17  // scroll.flickableItem.contentWidth - scroll.width + 10
                     if (scroll.flickableItem.contentX  >  sad)
                     {
                             scroll.flickableItem.contentX = sad;
@@ -342,7 +381,7 @@ main222.isPlay = false
                 //console.log("getScalePointerPos = " + timeControll.getScalePointerPos())
 
             }
-            timeControll.setScalePointerPos(x-20 + scroll.flickableItem.contentX);
+            timeControll.setScalePointerPos(x * main222.scaling -20 + scroll.flickableItem.contentX);
            // // console.log("x + scroll.flickableItem.contentX = "+x +" + " + scroll.flickableItem.contentX
 
             //console.log("scale_pointer X = " +(x+width/2))
@@ -396,6 +435,7 @@ main222.isPlay = false
               }
 
 
+
               horizontalScrollBarPolicy :Qt.ScrollBarAlwaysOn
               verticalScrollBarPolicy  :Qt.ScrollBarAlwaysOn
                 clip: true
@@ -403,14 +443,13 @@ main222.isPlay = false
 
               Rectangle {
                     id: item_col
-                    scale: 1
                     property Item p_columns
                     property Item p_trackbar
                    // width: childrenRect.width
                     height: childrenRect.height
                     color: "gray"
                     onWidthChanged: {
-                        if (time_scale.width < width  )
+                        if (time_scale.width < width  ) //1234
                         {
                             time_scale.width = width  ;
                             time_scale_rep.model = time_scale.width/ time_scale.division + 2
@@ -483,15 +522,10 @@ main222.isPlay = false
                                            property bool isDrag : false
                                            model:  timeControll.getTrackSize(trackbar.mIndex)//     bar_track.mIndex)
     function updateModel()      {
-        console.log("1111112222222222")
-        model = 0//model - 1;
-console.log("222222222222222")
-        item_col.width = timeControll.getMaxTrackTime() + 31
-        console.log("3333333333333333333")
-            timeControll.update();
-        console.log("44444444444444444444")
+        model = 0
+        item_col.width = (timeControll.getMaxTrackTime()) / main222.scaling + 31
+            //timeControll.update();
         model =  timeControll.getTrackSize(bar_track.mIndex)
-        console.log("55555555555555555")
 
         if (main222.needToLightSelected)
         {
@@ -511,10 +545,10 @@ console.log("222222222222222")
                                            ContentBlock.Block{
                                                id: cool
                                                globalRep : repka
-                                               height:  100 //* main222.scaling
+                                               height:  100
                                                mIndex: index
                                                 colIndex:  bar_track.mIndex
-                                   width:  timeControll.getBlockTime(colIndex, mIndex) //* main222.scaling
+                                   width:  timeControll.getBlockTime(colIndex, mIndex) / main222.scaling
                                     p_main222: main222
 
                                                title: timeControll.getBlockKey(colIndex,mIndex)
@@ -535,7 +569,6 @@ console.log("222222222222222")
 
                                        }
                                        Component.onCompleted: {
-                                         main222.minBlockWidth = repka.itemAt(0).minWidth
 
                                            /* var pnt2 = new Point(-1,-1)
                                            timeControll.setSelectedBlockPoint(pnt2)*/
@@ -558,7 +591,7 @@ console.log("222222222222222")
                                  }    //
                             }
                    onChildrenRectChanged:  {
-                   width =  timeControll.getMaxTrackTime()/// * main222.scaling
+                   width =  timeControll.getMaxTrackTime() / main222.scaling
                    // // console.log(" timeControll.getMaxTestWidth() = " +  width)
                    }
                     } /* rep_columns end */

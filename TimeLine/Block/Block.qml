@@ -14,7 +14,6 @@ Rectangle{
     property string title: "value"
     property Repeater globalRep
     property string colorKey : "green"
-    property int minWidth : 100
     property ColorOverlay p_color_overlay
     property bool double_click : false
     radius: 3
@@ -55,12 +54,12 @@ Rectangle{
     anchors.leftMargin: 0*/
 z: 0
     onWidthChanged: {
-        if (width < minWidth)
-            width = minWidth
+        if (width < main222.minBlockWidth)
+            width = main222.minBlockWidth
 
-        if (width < height)
+       /* if (width < height* timeControll.getScaleScrollChildren())
                 icon.width = width;
-        else
+        else*/
             icon.width = icon.height;
 
        /* var temp = width + timeControll.getBlockStartTime(colIndex,mIndex) > scroll.width
@@ -73,7 +72,7 @@ z: 0
          //timeControll.setBlockTime(mainwindow.columnIndex,mainwindow.blockIndex,block_width_value.value)
     }
     onXChanged: {
-        timeControll.setBlockStartTime(root.colIndex,root.mIndex, x)
+        timeControll.setBlockStartTime(root.colIndex,root.mIndex, x * main222.scaling)
     }
 
 
@@ -133,8 +132,9 @@ onYChanged: y=0;
 
 
        onPressed: {
-            if(main222.selectedBlock != null)
+            if(main222.selectedBlock !== null)
                 main222.selectedBlock.hideMenu();
+            console.log("AAAAAAAAAAAAAAA " + timeControll.getBlockStartTime(root.colIndex,root.mIndex))
              main222.p_scale_pointer.x = mouseX + root.x - scroll.flickableItem.contentX + main222.p_scale_pointer.width //1234
             timeControll.setSelectedBlockPoint(root.colIndex,root.mIndex);
             main222.p_scale_pointer.x+=1
@@ -202,7 +202,7 @@ onYChanged: y=0;
             if(bChangeSize)
             {
                 mouseArea.drag.target = root;
-                 timeControll.setBlockTime(colIndex, mIndex,root.width);
+                 timeControll.setBlockTime(colIndex, mIndex,root.width * main222.scaling);
 
                 // item_col.width = timeControll.getMaxTrackTime()// item_col.childrenRect.width
                 // console.log("118 item_col.width="+  item_col.width )

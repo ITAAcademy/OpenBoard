@@ -26,6 +26,25 @@ void ListControll::setSelectedBlockPoint(int col, int ind)
 }
 
 
+
+float ListControll::getScaleScrollChildren() const
+{
+    return scale_scroll_children;
+}
+
+void ListControll::setScaleScrollChildren(const float &value)
+{
+    scale_scroll_children = value;
+}
+
+void ListControll::changeScaleScrollChildren(const float &value)
+{
+    scale_scroll_children += value;
+    if (scale_scroll_children <1)
+        scale_scroll_children = 1;
+}
+
+
 void ListControll::recountMaxTrackTime()
 {
     maxTrackTime = 0;
