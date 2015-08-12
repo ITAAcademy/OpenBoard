@@ -95,6 +95,8 @@ public:
      * |Future gradient
      */
 
+    QImage twiceImageSizeWithouScaling(QImage img);
+
 
    bool isMousePlay = false;//play recorded mouse movement
    bool isMousePress = false;
