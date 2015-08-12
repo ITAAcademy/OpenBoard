@@ -36,12 +36,12 @@ MainWindow::MainWindow(QWidget *parent) :
 
     mpOGLWidget = new OGLWidget();
      qDebug() << "connect unableToDraw";
-
+/*
      mpOGLWidget->getTimeLine()->show();
      mpOGLWidget->show();
 
     qApp->processEvents(QEventLoop::AllEvents, 1000);
-
+*/
     mpOGLWidget->setFixedSize(GLWIDGET_SIZE);
     mpOGLWidget->move(pos().x() + width() + WINDOW_MARGING, pos().y());
     mpOGLWidget->hide();

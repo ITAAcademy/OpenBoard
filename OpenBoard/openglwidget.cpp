@@ -854,11 +854,11 @@ if (editingRectangle.isEditingRectangleVisible)
      glLineWidth(3);
      glBegin(GL_QUADS);   //We want to draw a quad, i.e. shape with four sides
           // glColor3i(1, 0, 0); //Set the colour to red
-           glVertex3i(leftCornerX1, leftCornerY1, -10);            //Draw the four corners of the rectangle
-           glVertex3i(leftCornerX2, leftCornerY1, -10);
-           glVertex3i(leftCornerX2, leftCornerY2, -10);
-           glVertex3i(leftCornerX1, leftCornerY2, -10);
-         glEnd();
+       glVertex3i(leftCornerX1, leftCornerY1, -10);            //Draw the four corners of the rectangle
+       glVertex3i(leftCornerX2, leftCornerY1, -10);
+       glVertex3i(leftCornerX2, leftCornerY2, -10);
+       glVertex3i(leftCornerX1, leftCornerY2, -10);
+     glEnd();
 }
 //glDisable(GL_DEPTH_TEST);
 if(isMousePress) {
