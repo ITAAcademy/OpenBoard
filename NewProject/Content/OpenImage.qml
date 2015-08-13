@@ -12,9 +12,14 @@ Rectangle{
     border.width: 0
     function getFilePath()
     {
-        return openfile.text;
+        return load.getLoadFileName;
+    }
+    function getTime()
+    {
+        return time.text;
     }
     signal pathChange;
+    signal timeChange;
 
     gradient: Gradient {
         GradientStop {
@@ -69,15 +74,16 @@ Rectangle{
                 id: firstImage
                 anchors.fill: parent
                 anchors.margins: 0
-                source: openfile.text
+                source: "file:///" +  load.getLoadFileName
             }
         }
         TextField {
-            id: openfile
+            id: time
             y: parent.height/2 - height/2
             width: parent.width - firstImage.width - parent.spacing*3 - load.width - root.parent.maxTextWidth
             height: parent.height/2
             font.pixelSize: height*0.45
+            text: "3000"
             style: TextFieldStyle {
                 textColor: "white"
                 background: Rectangle {
@@ -91,7 +97,7 @@ Rectangle{
             }
             onTextChanged:
             {
-
+                root.timeChange();
             }
         }
         Image {
@@ -113,7 +119,7 @@ Rectangle{
                 }
                 onClicked: {
                     load.getLoadFileName = projectControll.fileDialog(0);
-                    openfile.text = "file:///" + load.getLoadFileName;
+                    //openfile.text = "file:///" + load.getLoadFileName;
                     root.pathChange();
                 }
             }

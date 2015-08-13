@@ -361,6 +361,9 @@ ui->actionRecord_to_file->setCheckable(true);
         textEdit->setEnabled(false);
         commandTextEdit->setEnabled(false);
         updateEditWidgets(true); //instal normal color
+
+
+        on_action_New_Project_triggered();
 }
 
 MainWindow::~MainWindow()
@@ -383,9 +386,11 @@ void MainWindow::setViewState(int state)
     BRUSH_ANIMATION,
     VISUAL_EFFECT
 */
+    //qDebug() << "Hdfjkhdfdhdjfh" << state;
 switch (state){
 
 case VIDEO_EDIT_TEXT:
+{
     on_action_Show_triggered();
     mpOGLWidget->getTimeLine()->hide();
     toolBar->show();
@@ -410,7 +415,9 @@ case VIDEO_EDIT_TEXT:
     a_stop->setVisible(true);
     a_undo->setVisible(true);
     break;
-VIDEO_EDIT_PRO:
+}
+case VIDEO_EDIT_PRO:
+{
     toolBar->show();
     toolBarBoard->show();
     a_clear_drawing->setVisible(true);
@@ -432,9 +439,11 @@ VIDEO_EDIT_PRO:
     a_show_last_drawing->setVisible(true);
     a_stop->setVisible(true);
     a_undo->setVisible(true);
+    qDebug() << "PRO";
     //mpOGLWidget->getTimeLine()->hide();
     break;
-case VIDEO_EDIT_DEFAULT:
+}
+/*case VIDEO_EDIT_DEFAULT:
     toolBar->show();
     toolBarBoard->show();
     a_clear_drawing->setVisible(true);
@@ -456,8 +465,9 @@ case VIDEO_EDIT_DEFAULT:
     a_show_last_drawing->setVisible(true);
     a_stop->setVisible(true);
     a_undo->setVisible(true);
-    break;
-    case BRUSH_ANIMATION:
+    break;*/
+case BRUSH_ANIMATION:
+{
     toolBar->hide();
     toolBarBoard->show();
     on_action_Show_triggered();
@@ -482,7 +492,9 @@ case VIDEO_EDIT_DEFAULT:
     a_stop->setVisible(false);
     a_undo->setVisible(false);
     break;
+}
 case VISUAL_EFFECT:
+{
     toolBar->show();
     toolBarBoard->show();
     a_clear_drawing->setVisible(true);
@@ -504,6 +516,11 @@ case VISUAL_EFFECT:
     a_show_last_drawing->setVisible(true);
     a_stop->setVisible(true);
     a_undo->setVisible(true);
+    break;
+}
+case 5:
+    on_action_Open_Project_triggered();
+    break;
 }
 
 }
@@ -667,6 +684,7 @@ void MainWindow::on_action_Show_triggered()
     ui->action_Pause->setEnabled(false);
     a_pause->setEnabled(false);
     updateTextEditFromBlock(mpOGLWidget->getTimeLine()->getSelectedBlockPoint());
+    mpOGLWidget->update();
 
 
 }
@@ -940,6 +958,9 @@ ProjectStartupSetting MainWindow::getCurentState()
 void MainWindow::setCurentState(ProjectStartupSetting state)
 {
     curentState = state;
+    qDebug() << state.state;
+    if(!isVisible())
+        show();
 }
 
 void MainWindow::search()
@@ -1190,22 +1211,29 @@ void MainWindow::on_action_New_Project_triggered()
   //   mpOGLWidget->getTimeLine()->emitResetProject();
      mpOGLWidget->getTimeLine()->resetProjectToDefault();
      mpOGLWidget->getTimeLine()->setIsProjectChanged(false);
-     this->setCurentState(ProjectCreator::getProjectSetting(true, false));
-     setViewState((int)curentState.state);
+     if(isVisible())
+        this->setCurentState(ProjectCreator::getProjectSetting(false, false));
+     else
+         this->setCurentState(ProjectCreator::getProjectSetting(true, false));
+
+     if(!curentState.advance_mode)
+        setViewState((int)curentState.state);
+     else
+         setViewState(1);
 
      qApp->processEvents(QEventLoop::AllEvents, 1000);
      switch (curentState.state) {
      case VIDEO_EDIT_TEXT:
      {
          DrawImageElm *first = new DrawImageElm(mpOGLWidget);
-         QImage load(QUrl(curentState.firstImage).toLocalFile());
+         QImage load(curentState.firstImage);
          qApp->processEvents();
          first->setDrawImage(load);
 
 
 
          DrawImageElm *last = new DrawImageElm(mpOGLWidget);
-         QImage load2(QUrl(curentState.lastImage).toLocalFile());
+         QImage load2(curentState.lastImage);
          qApp->processEvents();
          last->setDrawImage(load2);
 
@@ -1214,8 +1242,8 @@ void MainWindow::on_action_New_Project_triggered()
 
          DrawTextElm *text = new DrawTextElm(mpOGLWidget);
 
-         first->setLifeTime(3000);
-         last->setLifeTime(3000);
+         first->setLifeTime(curentState.firsTime);
+         last->setLifeTime(curentState.lastTime);
 
          first->setSize(width(), height());
          last->setSize(width(), height());

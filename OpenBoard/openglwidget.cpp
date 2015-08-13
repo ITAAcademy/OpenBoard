@@ -2190,6 +2190,7 @@ void OGLWidget::isLastRow()
 void OGLWidget::update(){
     busy = true;
         crossText();
+        moveEvent(NULL);
        // busy = false;
 }
 

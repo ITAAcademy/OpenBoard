@@ -45,15 +45,16 @@ Rectangle{
                         onClicked: {
                             my_col.clean();
                             projectControll.setProjectState(0);
-                            content.next = c1;
+                            content.next = c0;
                         }
                     }
                     Content.MenuItem{
+                        id: m2
                         title: "New pro video"
                         onClicked: {
                             my_col.clean();
                             projectControll.setProjectState(1);
-                            content.next = c2;
+                            content.next = c1;
                         }
                     }
                     Content.MenuItem{
@@ -61,6 +62,7 @@ Rectangle{
                         onClicked: {
                             my_col.clean();
                             projectControll.setProjectState(2);
+                            content.next = c2;
                         }
                     }
                     Content.MenuItem{
@@ -68,6 +70,7 @@ Rectangle{
                         onClicked: {
                             my_col.clean();
                             projectControll.setProjectState(3);
+                            content.next = c3;
                         }
                     }
                     Content.MenuItem{
@@ -75,11 +78,21 @@ Rectangle{
                         onClicked: {
                             my_col.clean();
                             projectControll.setProjectState(4);
+                            content.next = c4;
                         }
                     }
                     Content.MenuItem{
+                        id: open
                         title: "Open project"
-                        visible: projectControll.isStart();
+                        visible: projectControll.isForStart()
+                        onVisibleChanged: {
+                            console.log(projectControll.isForStart());
+                            if(projectControll.isForStart())
+                                open.visible =  true;
+                            else
+                                open.visible =  false;
+                        }
+
                         onClicked: {
                             my_col.clean();
                             projectControll.setProjectState(5);
@@ -89,9 +102,8 @@ Rectangle{
                 }
             }
             Component.onCompleted: {
-                m1.check();
-                m1.click();
-                projectControll.setProjectState(0);
+                m2.check();
+                m2.click();
             }
         }
         Rectangle{
@@ -139,11 +151,27 @@ Rectangle{
                 anchors.fill: parent
                 Column{
                     Content.TextVideoContent{
+                        id: c0
+                        parent: content_scroll
+                    }
+                    Content.ContentItem{
                         id: c1
                         parent: content_scroll
                     }
-                    Content.TextVideoContent{
+                    Content.ContentItem{
                         id: c2
+                        parent: content_scroll
+                    }
+                    Content.ContentItem{
+                        id: c3
+                        parent: content_scroll
+                    }
+                    Content.ContentItem{
+                        id: c4
+                        parent: content_scroll
+                    }
+                    Content.ContentItem{
+                        id: c5
                         parent: content_scroll
                     }
                 }

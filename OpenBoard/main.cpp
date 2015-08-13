@@ -59,7 +59,7 @@ int main(int argc, char *argv[])
 
     MainWindow window;
   //  QtAV::Widgets::registerRenderers();
-    window.show();
+    //window.show();
 
     return app.exec();
 }

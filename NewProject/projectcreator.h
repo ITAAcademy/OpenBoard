@@ -8,21 +8,23 @@
 
 enum VIEW_STATE
 {
-    VIDEO_EDIT_TEXT,
-    VIDEO_EDIT_PRO,
-    VIDEO_EDIT_DEFAULT,
-    BRUSH_ANIMATION,
-    VISUAL_EFFECT
+    VIDEO_EDIT_TEXT = 0,
+    VIDEO_EDIT_PRO = 1,
+    VIDEO_EDIT_DEFAULT = 2,
+    BRUSH_ANIMATION = 3,
+    VISUAL_EFFECT = 4
 };
 
 struct ProjectStartupSetting
 {
-    VIEW_STATE state;
+    int state;
     bool advance_mode;
 
     // text
     QString firstImage;
     QString lastImage;
+    int firsTime = 3000;
+    int lastTime = 3000;
 };
 
 class ProjectCreator : public QObject
@@ -31,7 +33,7 @@ class ProjectCreator : public QObject
 
     QQuickView view;
     ProjectStartupSetting curent;
-    bool start = false;
+    volatile bool start;
 public:
     explicit ProjectCreator(QObject *parent = 0);
     ~ProjectCreator();
@@ -48,8 +50,10 @@ public:
     Q_INVOKABLE void setAdvanceMode( bool state);
 
     Q_INVOKABLE void textMode_SetFirstImage(QString path);
+    Q_INVOKABLE void textMode_SetFirstTime(QString time);
     Q_INVOKABLE void textMode_SetLastImage(QString path);
-    Q_INVOKABLE bool isStart() const;
+    Q_INVOKABLE void textMode_SetLastTime(QString time);
+    Q_INVOKABLE bool isForStart();
     Q_INVOKABLE QString fileDialog(int OPEN_SAVE = 0);
     void setStart(bool value);
 

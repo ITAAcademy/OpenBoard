@@ -540,6 +540,9 @@
            <property name="text">
             <string>USE THIS VALUE</string>
            </property>
+           <property name="checked">
+            <bool>true</bool>
+           </property>
           </widget>
          </item>
         </layout>

@@ -18,6 +18,7 @@ bool ProjectCreator::isVisible()
 
 void ProjectCreator::show(bool fullScreen)
 {
+    view.setSource(QUrl(QStringLiteral("qrc:/main_new_poject.qml")));
     if(fullScreen)
         view.showFullScreen();
     else
@@ -36,13 +37,13 @@ ProjectStartupSetting ProjectCreator::getProjectSetting(bool isStart, bool fullS
     creator.show(fullScreen);
     while(creator.isVisible())
         qApp->processEvents();
-    qDebug() << "close()";
+    qDebug() << "close()" << isStart;
     return creator.getCurentSetting();
 }
 
 void ProjectCreator::setProjectState(int state)
 {
-    curent.state = (VIEW_STATE) state;
+    curent.state =  state;
 }
 
 void ProjectCreator::setAdvanceMode(bool state)
@@ -55,12 +56,22 @@ void ProjectCreator::textMode_SetFirstImage(QString path)
     curent.firstImage = path;
 }
 
+void ProjectCreator::textMode_SetFirstTime(QString time)
+{
+    curent.firsTime = time.toInt();
+}
+
 void ProjectCreator::textMode_SetLastImage(QString path)
 {
     curent.lastImage = path;
 }
 
-bool ProjectCreator::isStart() const
+void ProjectCreator::textMode_SetLastTime(QString time)
+{
+    curent.lastTime = time.toInt();
+}
+
+bool ProjectCreator::isForStart()
 {
     return start;
 }
@@ -85,7 +96,6 @@ ProjectCreator::ProjectCreator(QObject *parent) : QObject(parent)
     view.setMinimumWidth(750);
     view.setMinimumHeight(500);
     view.engine()->rootContext()->setContextProperty("projectControll", this);
-    view.setSource(QUrl(QStringLiteral("qrc:/main_new_poject.qml")));
 }
 
 ProjectCreator::~ProjectCreator()

@@ -16,11 +16,17 @@ ContentItem{
             onPathChange: {
                 projectControll.textMode_SetFirstImage(getFilePath());
             }
+            onTimeChange: {
+                projectControll.textMode_SetFirstTime(getTime());
+            }
         }
         OpenImage{
             title: "FINAL"
             onPathChange: {
                 projectControll.textMode_SetLastImage(getFilePath());
+            }
+            onTimeChange: {
+                projectControll.textMode_SetLastTimeTime(getTime());
             }
         }
     }
