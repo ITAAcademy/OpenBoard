@@ -393,6 +393,7 @@ void OGLWidget::resizeGL(int nWidth, int nHeight)
     // qDebug() << "CALL RESIZE";
 }
 void OGLWidget::paintBufferOnScreen( int x, int y, int width, int height, int z){
+    glColor3f(1.0,1.0,1.0);
     glEnable(GL_TEXTURE_2D);
 
     glBindTexture(GL_TEXTURE_2D,fbo_texture);
@@ -912,7 +913,7 @@ case EDIT_RECTANGLE_MOVE:
     break;
  }
  testRectangle();
-if (canDrawByMouse && m_manager.isAbleToDraw())paintBrushInBuffer();
+    if (canDrawByMouse && m_manager.isAbleToDraw()) paintBrushInBuffer();
 }
 if (showingLastDrawing)
 {
@@ -2092,7 +2093,7 @@ void OGLWidget::storeMousePos()
     if (isMousePress){
 
         if (drawBrushElm->getCoords().length()==0)drawBrushElm->addBrush(m_manager.getCreatedBrush());
-    drawBrushElm->addCoord(QPoint(mousePos.x(),mousePos.y()));
+            drawBrushElm->addCoord(QPoint(mousePos.x(),mousePos.y()));
    // qDebug()<<"position stored:"<<QCursor::pos();
     }
 }

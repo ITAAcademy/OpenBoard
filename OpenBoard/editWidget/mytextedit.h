@@ -2,6 +2,7 @@
 #define MYTEXTEDIT_H
 
 #include <QTextEdit>
+#include <QPlainTextEdit>
 #include <QColor>
 #include <QStack>
 #include <QClipboard>
@@ -12,7 +13,7 @@ int cursor;
 QString cymbol;
 };
 
-class MyTextEdit : public QTextEdit
+class MyTextEdit : public QPlainTextEdit
 {
     Q_OBJECT
 private:

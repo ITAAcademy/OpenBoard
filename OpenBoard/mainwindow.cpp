@@ -106,7 +106,7 @@ connect(mpOGLWidget,SIGNAL(keyPressSignal(QKeyEvent*)),this,SLOT(keyEventSlot(QK
        setGeometry(mSettings.getMainWindowRect());
        this->textEdit->setColOrigin(mSettings.getMainWindowColor());
        //commandTextEdit->setStyleSheet("color: " + mSettings.getMainWindowColor().name());
-       commandTextEdit->setTextColor(mSettings.getMainWindowColor());
+       //commandTextEdit->setTextColor(mSettings.getMainWindowColor());
        this->textEdit->setFont(mSettings.getMainWindowFont());
        commandTextEdit->setFont(mSettings.getMainWindowFont());
 
@@ -523,6 +523,9 @@ case 5:
     break;
 }
 
+    if(!isVisible())
+        show();
+    activateWindow();
 }
 
 void MainWindow::closeEvent(QCloseEvent*)
@@ -685,7 +688,7 @@ void MainWindow::on_action_Show_triggered()
     a_pause->setEnabled(false);
     updateTextEditFromBlock(mpOGLWidget->getTimeLine()->getSelectedBlockPoint());
     mpOGLWidget->update();
-
+    activateWindow();
 
 }
 
@@ -774,7 +777,7 @@ void MainWindow::on_action_Reset_default_triggered()
         ui->menuBar->setFont(font);
         textEdit->setFont(font);
         textEdit->setTextColor("#000000");
-        commandTextEdit->setTextColor("#000000");
+        //commandTextEdit->setTextColor("#000000");
         commandTextEdit->setFont(font);
         QString temp = textEdit->toPlainText();
         textEdit->clear();
@@ -799,7 +802,7 @@ void MainWindow::on_action_Color_triggered()
         textEdit->insertPlainText(temp);
 
         //commandTextEdit->setTextColor(col);
-        commandTextEdit->setTextColor(col);
+        //commandTextEdit->setTextColor(col);
 
         mSettings.setMainWindowColor(colorm);
     }
@@ -965,8 +968,6 @@ void MainWindow::setCurentState(ProjectStartupSetting state)
 {
     curentState = state;
     qDebug() << state.state;
-    if(!isVisible())
-        show();
 }
 
 void MainWindow::search()

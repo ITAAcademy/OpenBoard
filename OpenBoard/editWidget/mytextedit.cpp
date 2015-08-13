@@ -10,7 +10,7 @@
 
 
 MyTextEdit::MyTextEdit(QColor originalColor,QColor specifiedColor,QWidget *parent) :
-    QTextEdit(parent)
+    QPlainTextEdit(parent)
 {
 
 setContextMenuPolicy(Qt::NoContextMenu);
@@ -33,7 +33,7 @@ setContextMenuPolicy(Qt::NoContextMenu);
 void MyTextEdit::focusInEvent( QFocusEvent * ev )
 {
     emit MyTextEdit::setFocus() ;
-    QTextEdit::focusInEvent(ev);
+    QPlainTextEdit::focusInEvent(ev);
 }
  void MyTextEdit::mergeFormatOnWordOrSelection(int position)
  {
@@ -97,7 +97,7 @@ charCount=document()->characterCount();
      if(e->matches(QKeySequence::Redo))
      rendom();
  else
- QTextEdit::keyPressEvent(e);
+ QPlainTextEdit::keyPressEvent(e);
 
  if(e->modifiers() & Qt::ControlModifier)
  {
@@ -188,7 +188,7 @@ charCount=document()->characterCount();
        change = undo_changes.pop();
       // curs.setPosition(change.cursor);
        this->clear();
-        this->append(change.cymbol);
+        this->appendPlainText(change.cymbol);
        t_cursor.setPosition(change.cursor);
 this->setTextCursor(t_cursor);
      }

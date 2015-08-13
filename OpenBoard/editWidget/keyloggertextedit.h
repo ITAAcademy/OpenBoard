@@ -13,7 +13,7 @@ int cursor;
 QString cymbol;
 int changeSize;
 };
-class KeyloggerTE : public QTextEdit
+class KeyloggerTE : public QPlainTextEdit
 {
     Q_OBJECT
 private:

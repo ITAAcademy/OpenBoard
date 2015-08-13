@@ -131,7 +131,7 @@ void KeyloggerTE::keyPressEvent(QKeyEvent *event){
 
             }
         //    else
-    QTextEdit::keyPressEvent(event);
+    QPlainTextEdit::keyPressEvent(event);
 
             QString textInField = destination->toPlainText();
 
@@ -313,7 +313,9 @@ else {
      int destinationLen = destination->toPlainText().length();
      int textInFieldLen = textInField.length();
      if(textInField.length() != 0)
-      destination->setPlainText(textInField);
+     {
+        destination->setPlainText(textInField);
+     }
       //changesSize.push(textInField.length());
      previousCursorPosition=textCursor().position();
 
@@ -328,11 +330,11 @@ else {
 void KeyloggerTE::focusInEvent( QFocusEvent * ev )
 {
     emit KeyloggerTE::setFocus() ;
-    QTextEdit::focusInEvent(ev);
+    QPlainTextEdit::focusInEvent(ev);
 }
 
 void KeyloggerTE::mousePressEvent(QMouseEvent *eventPress){
-  QTextEdit::mousePressEvent(eventPress);
+  QPlainTextEdit::mousePressEvent(eventPress);
     int delta = textCursor().position() - previousCursorPosition;
     previousCursorPosition=textCursor().position();
 
@@ -354,7 +356,7 @@ void KeyloggerTE::mousePressEvent(QMouseEvent *eventPress){
 //// qDebug() << "cursor changed";
 }
 void KeyloggerTE::mouseReleaseEvent(QMouseEvent *eventPress){
-    QTextEdit::mouseReleaseEvent(eventPress);
+    QPlainTextEdit::mouseReleaseEvent(eventPress);
     int delta = textCursor().position() - previousCursorPosition;
     previousCursorPosition=textCursor().position();
 
