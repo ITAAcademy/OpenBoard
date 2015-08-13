@@ -8,7 +8,7 @@ OGLWidget *DrawElement::getDrawWidget() const
 
 bool DrawElement::setDrawWidget(OGLWidget *value)
 {
-    if(value == pDrawWidget)
+    if(value == pDrawWidget && value != NULL)
         return false;
     if(pDrawWidget != NULL)
     {

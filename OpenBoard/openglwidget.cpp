@@ -12,15 +12,16 @@ canvas->setProperty("scroll", k);
 */
 
 GLuint OGLWidget::loadTexture(QImage img){
+    makeCurrent();
     if(img.isNull()) // QCoreApplication::applicationDirPath()+"/star.png"
     {
         //loads correctly
         qWarning() << "ERROR LOADING IMAGE";// + QCoreApplication::applicationDirPath()+"/star.png";
         return -1;
     }
-    qDebug() << "GL_ERROR_STATUS LOAD_TEXTURE:   "<< glGetError();
+    //qDebug() << "GL_ERROR_STATUS LOAD_TEXTURE:   "<< glGetError();
     QImage GL_formatted_image = convertToGLFormat(img);
-    qDebug() << "GL_ERROR_STATUS LOAD_TEXTURE:   "<< glGetError();
+    //qDebug() << "GL_ERROR_STATUS LOAD_TEXTURE:   "<< glGetError();
     // qDebug() << "image converted to GL format";
     if(GL_formatted_image.isNull())
         qWarning() << "IMAGE IS NULL";
@@ -33,8 +34,8 @@ GLuint OGLWidget::loadTexture(QImage img){
     GLuint texture;
 
        glGenTextures(1, &texture); // Obtain an id for the texture
-       qDebug() << "GL_ERROR_STATUS LOAD_TEXTURE:   "<< glGetError();
-       qDebug() << texture;
+      // qDebug() << "GL_ERROR_STATUS LOAD_TEXTURE:   "<< glGetError();
+    //   qDebug() << texture;
        glBindTexture(GL_TEXTURE_2D, texture); // Set as the current texture
  //qDebug(" after  glBindTexture(GL_TEXTURE_2D, texture);");
        //glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
@@ -42,26 +43,28 @@ GLuint OGLWidget::loadTexture(QImage img){
 
 
        glTexImage2D(GL_TEXTURE_2D, 0, 4, GL_formatted_image.width(), GL_formatted_image.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, GL_formatted_image.bits());
-       qDebug() << "GL_ERROR_STATUS LOAD_TEXTURE:   "<< glGetError();
+  //     qDebug() << "GL_ERROR_STATUS LOAD_TEXTURE:   "<< glGetError();
       //// qDebug() <<
        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-       qDebug() << "GL_ERROR_STATUS LOAD_TEXTURE:   "<< glGetError();
+      // qDebug() << "GL_ERROR_STATUS LOAD_TEXTURE:   "<< glGetError();
      //  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 
        glBindTexture(GL_TEXTURE_2D, 0);
        glDisable(GL_TEXTURE_2D);
 
 //qDebug("before int realIndex = index; ");
-       GLenum error = glGetError();
+       /*GLenum error = glGetError();
        if(error != 0)
            sucsessLoadTexture = true;
         else
            sucsessLoadTexture = false;
-
-       qDebug() << "GL_ERROR_STATUS LOAD_TEXTURE:   "<< glGetError();
+*/
+       //qDebug() << "GL_ERROR_STATUS LOAD_TEXTURE:   "<< glGetError();
+       if(glGetError())
+           return -1;
 
        return texture;
        //bind the texture ID
@@ -269,6 +272,7 @@ void OGLWidget::setShowLastDrawing(bool val){
 OGLWidget::OGLWidget(QWidget *parent) :
     QGLWidget(parent)
 {
+    init = false;
     timeLine = new ListControll;
 
     connect(timeLine,SIGNAL(stopSignal()),this,SIGNAL(stopSignal()));
@@ -719,6 +723,7 @@ void OGLWidget::initializeGL()
     initFrameBuffer(); // Create our frame buffer object
      initShader();
     setAutoBufferSwap(false);
+    qApp->processEvents(QEventLoop::AllEvents, 1000);
    /* list_1.append(GenerationDrawElement("kaka.text", this, 0));
     list_1.append(GenerationDrawElement("brush.png", this, 0));*/
 
@@ -945,6 +950,7 @@ glFinish();
 swapBuffers();
 glFlush();
 
+init = true;
 
 //qDebug() << "GL_ERROR_STATUS end:"<<error;
 }
@@ -1067,6 +1073,11 @@ void OGLWidget::testRectangle()
     if(editingRectangle.rect.height() > this->height())
         editingRectangle.rect.setHeight(this->height());
 
+}
+
+bool OGLWidget::isInit()
+{
+    return init;
 }
 
 void OGLWidget::mouseReleaseEvent(QMouseEvent *event)

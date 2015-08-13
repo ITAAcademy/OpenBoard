@@ -245,6 +245,7 @@ public slots:
 
     void displayText(const QString &text, QColor color);
     void testRectangle();
+    bool isInit();
 signals:
     void drawTextChanged();
     void pauseSignal();
@@ -341,6 +342,7 @@ private:
     bool busy = false;
     bool isClose = false;
     bool curentList = false;
+    bool init;
 
 
 

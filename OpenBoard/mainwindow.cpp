@@ -35,6 +35,8 @@ MainWindow::MainWindow(QWidget *parent) :
 //    connect(&drawThread, SIGNAL(started()), this, SLOT(myfunction())); //cant have parameter sorry, when using connect
 
     mpOGLWidget = new OGLWidget();
+    mpOGLWidget->show();
+    mpOGLWidget->setVisible(false);
      qDebug() << "connect unableToDraw";
 /*
      mpOGLWidget->getTimeLine()->show();
@@ -44,8 +46,7 @@ MainWindow::MainWindow(QWidget *parent) :
 */
     mpOGLWidget->setFixedSize(GLWIDGET_SIZE);
     mpOGLWidget->move(pos().x() + width() + WINDOW_MARGING, pos().y());
-    mpOGLWidget->hide();
-    mpOGLWidget->getTimeLine()->hide();
+
    // mpOGLWidget->moveToThread(&drawThread);
     textEdit = new MyTextEdit(QColor("#000000"), QColor("#FF0000"), ui->centralWidget);
     textEdit->setObjectName(QStringLiteral("textEdit"));
@@ -357,6 +358,8 @@ ui->actionRecord_to_file->setCheckable(true);
         qApp->setStyleSheet(styleSheet);
         file.close();
 
+        textEdit->setEnabled(false);
+        commandTextEdit->setEnabled(false);
         updateEditWidgets(true); //instal normal color
 }
 
@@ -383,56 +386,55 @@ void MainWindow::setViewState(int state)
 switch (state){
 
 case VIDEO_EDIT_TEXT:
-    mpOGLWidget->show();
+    on_action_Show_triggered();
     mpOGLWidget->getTimeLine()->hide();
-toolBar->show();
-toolBarBoard->show();
-a_clear_drawing->setVisible(false);
-a_clear_drawingBuffer->setVisible(false);
-a_clear_textedit->setVisible(true);
-a_color_canvas->setVisible(true);
-a_exit->setVisible(true);
-a_font_canvas->setVisible(true);
-a_hide->setVisible(false);
-a_new_project->setVisible(true);
-a_open_project->setVisible(true);
-a_pause->setVisible(true);
-a_play->setVisible(true);
-a_record_to_file->setVisible(true);
-a_redo->setVisible(true);
-a_save_drawing->setVisible(false);
-a_save_project->setVisible(true);
-a_show->setVisible(false);
-a_show_last_drawing->setVisible(false);
-a_stop->setVisible(true);
-a_undo->setVisible(true);
+    toolBar->show();
+    toolBarBoard->show();
+    a_clear_drawing->setVisible(false);
+    a_clear_drawingBuffer->setVisible(false);
+    a_clear_textedit->setVisible(true);
+    a_color_canvas->setVisible(true);
+    a_exit->setVisible(true);
+    a_font_canvas->setVisible(true);
+    a_hide->setVisible(false);
+    a_new_project->setVisible(true);
+    a_open_project->setVisible(true);
+    a_pause->setVisible(true);
+    a_play->setVisible(true);
+    a_record_to_file->setVisible(true);
+    a_redo->setVisible(true);
+    a_save_drawing->setVisible(false);
+    a_save_project->setVisible(true);
+    a_show->setVisible(false);
+    a_show_last_drawing->setVisible(false);
+    a_stop->setVisible(true);
+    a_undo->setVisible(true);
     break;
 VIDEO_EDIT_PRO:
-toolBar->show();
-toolBarBoard->show();
-a_clear_drawing->setVisible(true);
-a_clear_drawingBuffer->setVisible(true);
-a_clear_textedit->setVisible(true);
-a_color_canvas->setVisible(true);
-a_exit->setVisible(true);
-a_font_canvas->setVisible(true);
-a_hide->setVisible(true);
-a_new_project->setVisible(true);
-a_open_project->setVisible(true);
-a_pause->setVisible(true);
-a_play->setVisible(true);
-a_record_to_file->setVisible(true);
-a_redo->setVisible(true);
-a_save_drawing->setVisible(true);
-a_save_project->setVisible(true);
-a_show->setVisible(true);
-a_show_last_drawing->setVisible(true);
-a_stop->setVisible(true);
-a_undo->setVisible(true);
-mpOGLWidget->getTimeLine()->hide();
+    toolBar->show();
+    toolBarBoard->show();
+    a_clear_drawing->setVisible(true);
+    a_clear_drawingBuffer->setVisible(true);
+    a_clear_textedit->setVisible(true);
+    a_color_canvas->setVisible(true);
+    a_exit->setVisible(true);
+    a_font_canvas->setVisible(true);
+    a_hide->setVisible(true);
+    a_new_project->setVisible(true);
+    a_open_project->setVisible(true);
+    a_pause->setVisible(true);
+    a_play->setVisible(true);
+    a_record_to_file->setVisible(true);
+    a_redo->setVisible(true);
+    a_save_drawing->setVisible(true);
+    a_save_project->setVisible(true);
+    a_show->setVisible(true);
+    a_show_last_drawing->setVisible(true);
+    a_stop->setVisible(true);
+    a_undo->setVisible(true);
+    //mpOGLWidget->getTimeLine()->hide();
     break;
 case VIDEO_EDIT_DEFAULT:
-    mpOGLWidget->show();
     toolBar->show();
     toolBarBoard->show();
     a_clear_drawing->setVisible(true);
@@ -456,8 +458,10 @@ case VIDEO_EDIT_DEFAULT:
     a_undo->setVisible(true);
     break;
     case BRUSH_ANIMATION:
-    toolBar->show();
+    toolBar->hide();
     toolBarBoard->show();
+    on_action_Show_triggered();
+    mpOGLWidget->getTimeLine()->hide();
     a_clear_drawing->setVisible(true);
     a_clear_drawingBuffer->setVisible(true);
     a_clear_textedit->setVisible(true);
@@ -501,8 +505,6 @@ case VISUAL_EFFECT:
     a_stop->setVisible(true);
     a_undo->setVisible(true);
 }
-
-
 
 }
 
@@ -664,10 +666,7 @@ void MainWindow::on_action_Show_triggered()
 
     ui->action_Pause->setEnabled(false);
     a_pause->setEnabled(false);
-
     updateTextEditFromBlock(mpOGLWidget->getTimeLine()->getSelectedBlockPoint());
-
-
 
 
 }
@@ -1192,22 +1191,28 @@ void MainWindow::on_action_New_Project_triggered()
      mpOGLWidget->getTimeLine()->resetProjectToDefault();
      mpOGLWidget->getTimeLine()->setIsProjectChanged(false);
      this->setCurentState(ProjectCreator::getProjectSetting(true, false));
-     qApp->processEvents();
+     setViewState((int)curentState.state);
+
+     qApp->processEvents(QEventLoop::AllEvents, 1000);
      switch (curentState.state) {
      case VIDEO_EDIT_TEXT:
      {
-         DrawImageElm *first = new DrawImageElm(NULL);
-         first->setDrawImage(QImage(QUrl(curentState.firstImage).toLocalFile()));
+         DrawImageElm *first = new DrawImageElm(mpOGLWidget);
+         QImage load(QUrl(curentState.firstImage).toLocalFile());
+         qApp->processEvents();
+         first->setDrawImage(load);
 
-       //  qApp->processEvents();
 
-         DrawImageElm *last = new DrawImageElm(NULL);
-         last->setDrawImage(QImage(QUrl(curentState.lastImage).toLocalFile()));
+
+         DrawImageElm *last = new DrawImageElm(mpOGLWidget);
+         QImage load2(QUrl(curentState.lastImage).toLocalFile());
+         qApp->processEvents();
+         last->setDrawImage(load2);
 
          first->setTypeId(Element_type::Image);
          last->setTypeId(Element_type::Image);
 
-         DrawTextElm *text = new DrawTextElm(NULL);
+         DrawTextElm *text = new DrawTextElm(mpOGLWidget);
 
          first->setLifeTime(3000);
          last->setLifeTime(3000);
@@ -1231,7 +1236,10 @@ void MainWindow::on_action_New_Project_triggered()
          break;
      }
 
+     qApp->processEvents(QEventLoop::AllEvents, 1000);
      mpOGLWidget->getTimeLine()->sendUpdateModel();
+     qApp->processEvents(QEventLoop::AllEvents, 1000);
+
 
 }
 
@@ -1501,6 +1509,7 @@ void MainWindow::onTextChanged()
 
 void MainWindow::updateTextEditFromBlock(QPoint point)
 {
+    qDebug() << "SHOW SELECTED  " << point;
     if(point.x() != -1)
     {
         Element elm = mpOGLWidget->getTimeLine()->getBlock(point);
@@ -1527,7 +1536,8 @@ void MainWindow::updateTextEditFromBlock(QPoint point)
 void MainWindow::updateBlockFromTextEdit()
 {
     QPoint point = mpOGLWidget->getTimeLine()->getSelectedBlockPoint();
-    if(point.x() != -1)
+    qDebug() << "IMAGE" << point;
+    if(point.x() != -1 )
     {
         Element elm = mpOGLWidget->getTimeLine()->getBlock(point);
         if(elm.draw_element->getTypeId() == Element_type::Text)
@@ -1636,6 +1646,7 @@ void MainWindow::on_action_Stop_triggered()
     {
         textEdit->setEnabled(true);
         commandTextEdit->setEnabled(true);
+        updateTextEditFromBlock(mpOGLWidget->getTimeLine()->getSelectedBlockPoint());
         ui->action_Undo->setEnabled(true);
         ui->action_Redo->setEnabled(true);
         a_undo->setEnabled(true);

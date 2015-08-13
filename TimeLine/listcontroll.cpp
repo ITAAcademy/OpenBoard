@@ -4,6 +4,7 @@
 
 QPoint ListControll::getSelectedBlockPoint() const
 {
+
     if (tracks.size() > 0 && selectedBlockPoint.x() >= 0 && tracks.length() > selectedBlockPoint.x()  && tracks[selectedBlockPoint.x()].block.length() > selectedBlockPoint.y())
         return selectedBlockPoint;
     return QPoint(-1,-1); // ALL BAD
@@ -16,7 +17,8 @@ void ListControll::setSelectedBlockPoint(const QPoint &value)
         selectedBlockPoint = value;
         emit updateSelectedBlock(value);
     }
-     //qDebug() <<"FFFFFFFFFFFF: col = " << selectedBlockPoint.x() << " ind = " << selectedBlockPoint.y();
+       // qDebug() << selectedBlockPoint;
+     qDebug() <<"FFFFFFFFFFFF: col = " << selectedBlockPoint.x() << " ind = " << selectedBlockPoint.y();
 }
 
 void ListControll::setSelectedBlockPoint(int col, int ind)
@@ -111,7 +113,7 @@ void ListControll::addNewBlock(int col, QString str, DrawElement *element)
         temp.draw_element = element;
     }
     //temp.draw_element->setLifeTime(def_min_block_width);
-    if(temp.draw_element->getLifeTime() == 0)
+    if(temp.draw_element->getLifeTime() < def_min_block_width)
         temp.draw_element->setLifeTime(def_min_block_width);
     temp.draw_element->setZ(col);
     tracks[col].block.append(temp);
@@ -582,6 +584,7 @@ ListControll::~ListControll()
 
 void ListControll::show()
 {
+     setSelectedBlockPoint(-1,-1);
     if (QGuiApplication::platformName() == QLatin1String("qnx") || \
           QGuiApplication::platformName() == QLatin1String("eglfs")) {\
         view.showFullScreen();\
@@ -848,7 +851,7 @@ QImage ListControll::requestImage(const QString &id, QSize *size, const QSize &r
  void ListControll::update()
  {
      emit updateSignal();
-     if (this->getMaxTrackTime() <= getPlayTime())
+     if (this->getMaxTrackTime() < getPlayTime())
      {
          emit stopSignal();
          isPlayPauseStop = 3;

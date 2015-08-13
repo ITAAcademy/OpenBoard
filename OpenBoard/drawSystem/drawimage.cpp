@@ -33,7 +33,7 @@ void DrawImageElm::setDrawImage(QImage img)
     image = img;
     icon = img;
     //image.save("12334243534534534.png");
-    if(pDrawWidget != NULL)
+    if(pDrawWidget != NULL && pDrawWidget->isVisible())
          textureIndex = pDrawWidget->loadTexture(image);
 
 
@@ -41,9 +41,10 @@ void DrawImageElm::setDrawImage(QImage img)
 
 bool DrawImageElm::setDrawWidget(OGLWidget *value)
 {
-    if(!DrawElement::setDrawWidget(value) && textureIndex != -1 || failedLoad == 0)
+    if((!DrawElement::setDrawWidget(value) && textureIndex != -1 || failedLoad == 0) || (!pDrawWidget->isVisible() || !pDrawWidget->isInit()))
     {
-        failedLoad--;
+        if(pDrawWidget->isVisible() && pDrawWidget->isInit())
+            failedLoad--;
         return 0;
     }
     textureIndex = pDrawWidget->loadTexture(image);
