@@ -171,6 +171,7 @@ QMessageBox messAbout;
 public slots:
     ProjectStartupSetting getCurentState();
     Q_INVOKABLE void setCurentState(ProjectStartupSetting state);
+    void keyEventSlot(QKeyEvent *event);
 
 private slots:
     void updateBlockFromTextEdit();

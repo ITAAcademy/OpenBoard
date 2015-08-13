@@ -274,7 +274,6 @@ OGLWidget::OGLWidget(QWidget *parent) :
 {
     init = false;
     timeLine = new ListControll;
-
     connect(timeLine,SIGNAL(stopSignal()),this,SIGNAL(stopSignal()));
     connect(timeLine,SIGNAL(playSignal()),this,SIGNAL(startSignal()));
     connect(timeLine,SIGNAL(pauseSignal()),this,SIGNAL(pauseSignal()));
@@ -739,6 +738,8 @@ void OGLWidget::moveEvent(QMoveEvent *event)
     }
 }
 
+
+
 void OGLWidget::destroy(bool destroyWindow, bool destroySubWindow){
     glDeleteFramebuffers(1,&fbo);
     //glDeleteRenderbuffers(1,&render_buf);
@@ -1121,6 +1122,57 @@ if (event->buttons() & Qt::LeftButton) {
    //// qDebug()<<"mouseRecorderTimer.elapsed():"<<mouseRecorderTimer.elapsed();
 
 }
+}
+
+void OGLWidget::keyReleaseEvent(QKeyEvent *event)
+{
+    if (event->key () == Qt::Key_Control  )
+     pressedCtrl = false;
+    else
+        if (event->key () == Qt::Key_Shift )
+         pressedShift = false;
+}
+
+void OGLWidget::keyPressEvent(QKeyEvent *event)
+{
+    if (event->key () == Qt::Key_Control  )
+     pressedCtrl = true;
+    else
+        if (event->key () == Qt::Key_Shift )
+         pressedShift = true;
+    else
+    {
+     if (pressedCtrl)
+     {
+     if ( pressedShift ) //keySequence[0] == Qt::Key_Control && keySequence[1] == Qt::Key_Shift  )
+     {
+         switch(event->key ())
+         {
+         case Qt::Key_S : case 1067 :
+             timeLine->emitSaveProject();
+             break;
+         case Qt::Key_O : case 1065 :
+             timeLine->emitOpenProject();
+             break;
+         case Qt::Key_N : case 1058 :
+             timeLine->emitNewProject();
+             break;
+         }
+     }
+     else
+         switch(event->key ())
+         {
+         case 43 :
+             timeLine->zoomPlus();
+            timeLine->sendUpdateModel();
+             break;
+         case 45 :
+              emit timeLine->zoomMinus();
+             timeLine->sendUpdateModel();
+             break;
+         }
+     }
+    }
 }
 
 QSize OGLWidget::getTextureSize()

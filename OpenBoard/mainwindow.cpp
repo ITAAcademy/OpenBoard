@@ -70,7 +70,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->actionSend_to_youTube, SIGNAL( triggered()), this, SLOT (on_action_youTube_triggered()));
     connect(textEdit,SIGNAL(doUndoRedoStart()),this,SLOT(doUndoRedoStart()));
     connect(textEdit,SIGNAL(doUndoRedoEnd()),this,SLOT(doUndoRedoEnd()));
-
+connect(mpOGLWidget,SIGNAL(keyPressSignal(QKeyEvent*)),this,SLOT(keyEventSlot(QKeyEvent*)));
 
     ui->widget_Find->setVisible(false);
     ui->widget_delayTB->setVisible(false);
@@ -953,6 +953,12 @@ bool MainWindow::maybeSave()
 ProjectStartupSetting MainWindow::getCurentState()
 {
     return curentState;
+}
+
+void MainWindow::keyEventSlot(QKeyEvent *event)
+{
+    QApplication::postEvent(this, event);
+    qDebug() << "AAAAAAAAAAAAAAAAAAAAAAAAA";
 }
 
 void MainWindow::setCurentState(ProjectStartupSetting state)
