@@ -888,6 +888,16 @@ QImage ListControll::requestImage(const QString &id, QSize *size, const QSize &r
         emit resetProjectSignel();
     }
 
+    void ListControll::zoomMinus()
+    {
+        this->changeScaleScrollChildren(-0.1);
+    }
+
+    void  ListControll::zoomPlus()
+    {
+        this->changeScaleScrollChildren(0.1);
+    }
+
 
     int  ListControll::resetProjectToDefault()
     {

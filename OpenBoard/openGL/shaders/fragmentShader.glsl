@@ -1,3 +1,4 @@
+#version 120
 //precision highp float;
 varying vec2 vUV;
 uniform sampler2D textureSampler;

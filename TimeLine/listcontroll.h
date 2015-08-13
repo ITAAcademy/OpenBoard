@@ -330,7 +330,9 @@ public slots:
 Q_INVOKABLE void emitNewProject();
   Q_INVOKABLE void emitOpenProject();
   Q_INVOKABLE void emitSaveProject();
-            void emitResetProject();
+    Q_INVOKABLE   void emitResetProject();
+    Q_INVOKABLE void zoomMinus();
+    Q_INVOKABLE void zoomPlus();
 };
 
 #endif // LISTCONTROLL_H

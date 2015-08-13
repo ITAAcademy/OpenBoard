@@ -1,4 +1,5 @@
-precision highp float;
+#version 120
+//precision highp float;
 
 // Attributes
 attribute vec3 position;

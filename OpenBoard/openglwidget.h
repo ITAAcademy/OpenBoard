@@ -91,6 +91,7 @@ class OGLWidget : public QGLWidget, protected QGLFunctions
 public:
     BrushManager m_manager;
     bool sucsessLoadTexture;
+    void keyEventSignal(QKeyEvent *event);
     /*
      * |Future gradient
      */
@@ -145,6 +146,8 @@ public:
     void mousePressEvent ( QMouseEvent * event );
     void mouseReleaseEvent ( QMouseEvent * event );
     void mouseMoveEvent ( QMouseEvent * event );
+    void keyPressEvent(QKeyEvent *e);
+    void keyReleaseEvent(QKeyEvent *event);
     QSize getTextureSize();
     /*
      * |Canvas control
@@ -260,6 +263,9 @@ private slots:
     void storeMousePos();
 
 private:
+    bool pressedCtrl = false;
+    bool pressedShift = false;
+
     bool showingLastDrawing = false;
     int currentLastDrawingPointIterator = 0;
     GLuint ShaderProgram;
