@@ -13,7 +13,7 @@ this->destination=destination;
     changebuf.cymbol = "";
     changebuf.changeSize =0;
 
-     connect(this, SIGNAL(textChanged()),this, SLOT(tabTo4Spaces()));
+    // connect(this, SIGNAL(textChanged()),this, SLOT(tabTo4Spaces()));
      setContextMenuPolicy(Qt::NoContextMenu);
 }
 void KeyloggerTE::saveChanges(int sizeOfChange){
@@ -93,6 +93,7 @@ if (redo_changes.size() >0)
 }
 
 void KeyloggerTE::keyPressEvent(QKeyEvent *event){
+    qDebug() << "keyPressEvent:"<<event->key();
     bool needToSaveForUndo = true;
     event->accept();
     if (redo_changes.size()>0)
@@ -130,6 +131,16 @@ void KeyloggerTE::keyPressEvent(QKeyEvent *event){
                 //if(undo_changes.size()>0) setPlainText(undo_changes.pop().cymbol);
 
             }
+            if (keyCode==Qt::Key_Tab){
+
+               // event->
+                //for (int i=0;i<4;i++)
+               // {
+
+                QKeyEvent *key = new QKeyEvent(QKeyEvent::KeyPress, Qt::Key_Space, Qt::NoModifier, "    ", true, 1 );
+                QApplication::postEvent(this, key);
+                return;
+            }
         //    else
     QPlainTextEdit::keyPressEvent(event);
 
@@ -145,6 +156,7 @@ void KeyloggerTE::keyPressEvent(QKeyEvent *event){
                          QKeyEvent *event = new QKeyEvent ( QEvent::KeyPress, Qt::Key_V,Qt::ControlModifier);
                          QCoreApplication::postEvent (this, event);
                      }
+
                      textInField += QApplication::clipboard()->text();
                     // insertPlainText(QApplication::clipboard()->text());
 
@@ -382,7 +394,7 @@ void KeyloggerTE::mouseReleaseEvent(QMouseEvent *eventPress){
 
 void KeyloggerTE::tabTo4Spaces()
 {
-    disconnect(this, SIGNAL(textChanged()),this, SLOT(tabTo4Spaces()));
+   // disconnect(this, SIGNAL(textChanged()),this, SLOT(tabTo4Spaces()));
 
     QTextCursor textCurs = this->textCursor();
     int cursorPos = textCurs.position();
@@ -394,7 +406,7 @@ void KeyloggerTE::tabTo4Spaces()
     this->setPlainText(text);
    textCurs.setPosition(cursorPos);
    this->setTextCursor(textCurs);
-      connect(this, SIGNAL(textChanged()),this, SLOT(tabTo4Spaces()));
+     // connect(this, SIGNAL(textChanged()),this, SLOT(tabTo4Spaces()));
 }
 
 void KeyloggerTE::newText()

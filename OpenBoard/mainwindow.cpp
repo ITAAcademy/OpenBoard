@@ -776,7 +776,7 @@ void MainWindow::on_action_Reset_default_triggered()
     QFont font = (QFont("Tahoma",10,1,false));
         ui->menuBar->setFont(font);
         textEdit->setFont(font);
-        textEdit->setTextColor("#000000");
+        //textEdit->setTextColor("#000000");
         //commandTextEdit->setTextColor("#000000");
         commandTextEdit->setFont(font);
         QString temp = textEdit->toPlainText();
@@ -795,7 +795,7 @@ void MainWindow::on_action_Color_triggered()
     if(colorm.isValid())
     {
         QString col = colorm.name();
-        textEdit->setTextColor(col);
+        //textEdit->setTextColor(col);
         textEdit->setColOrigin(colorm);
         QString temp = textEdit->toPlainText();
         textEdit->clear();
@@ -1557,7 +1557,7 @@ void MainWindow::updateTextEditFromBlock(QPoint point)
             commandTextEdit->newText();
             commandTextEdit->setPlainText(text_elm->getLoggerText());
             commandTextEdit->setPreviousCursorPosition(text_elm->getTextCursor());
-            textEdit->setText(text_elm->getUnParsestring());
+            textEdit->setPlainText(text_elm->getUnParsestring());
             connect(textEdit, SIGNAL(textChanged()), this, SLOT(onTextChanged()));
             return;
         }
