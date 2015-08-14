@@ -24,7 +24,7 @@ setContextMenuPolicy(Qt::NoContextMenu);
  qsrand(midnight.secsTo(QTime::currentTime()));
 
  //connect(this, SIGNAL(textChanged()),this, SLOT(saveChanges()));
- connect(this, SIGNAL(textChanged()),this, SLOT(tabTo4Spaces()));
+// connect(this, SIGNAL(textChanged()),this, SLOT(tabTo4Spaces()));
  pair_change=false;
  t_cursor = this->textCursor();
  newText();\
@@ -235,7 +235,7 @@ this->setTextCursor(t_cursor);
 
   void MyTextEdit::tabTo4Spaces()
   {
-       disconnect(this, SIGNAL(textChanged()),this, SLOT(tabTo4Spaces()));
+      // disconnect(this, SIGNAL(textChanged()),this, SLOT(tabTo4Spaces()));
 
       QTextCursor textCurs = this->textCursor();
       int cursorPos = textCurs.position();
@@ -247,7 +247,7 @@ this->setTextCursor(t_cursor);
       this->setPlainText(text);
      textCurs.setPosition(cursorPos);
      this->setTextCursor(textCurs);
-        connect(this, SIGNAL(textChanged()),this, SLOT(tabTo4Spaces()));
+       // connect(this, SIGNAL(textChanged()),this, SLOT(tabTo4Spaces()));
   }
 
  void MyTextEdit::saveChanges()

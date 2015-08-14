@@ -13,7 +13,7 @@ this->destination=destination;
     changebuf.cymbol = "";
     changebuf.changeSize =0;
 
-     connect(this, SIGNAL(textChanged()),this, SLOT(tabTo4Spaces()));
+    // connect(this, SIGNAL(textChanged()),this, SLOT(tabTo4Spaces()));
      setContextMenuPolicy(Qt::NoContextMenu);
 }
 void KeyloggerTE::saveChanges(int sizeOfChange){
@@ -93,6 +93,7 @@ if (redo_changes.size() >0)
 }
 
 void KeyloggerTE::keyPressEvent(QKeyEvent *event){
+    qDebug() << "keyPressEvent:"<<event->key();
     bool needToSaveForUndo = true;
     event->accept();
     if (redo_changes.size()>0)
@@ -102,6 +103,7 @@ void KeyloggerTE::keyPressEvent(QKeyEvent *event){
     }
     int keyCode = event->key();
     quint32 scanCode = event->nativeScanCode();
+    QString pastedData;
     QString keyChar(event->text());
    // QTextCursor
            int localCursorPosition = textCursor().position();
@@ -130,8 +132,25 @@ void KeyloggerTE::keyPressEvent(QKeyEvent *event){
                 //if(undo_changes.size()>0) setPlainText(undo_changes.pop().cymbol);
 
             }
-        //    else
-    QPlainTextEdit::keyPressEvent(event);
+            if (keyCode==Qt::Key_Tab){
+
+               // event->
+                //for (int i=0;i<4;i++)
+               // {
+
+                QKeyEvent *key = new QKeyEvent(QKeyEvent::KeyPress, Qt::Key_Space, Qt::NoModifier, "    ", true, 1 );
+                QApplication::postEvent(this, key);
+                return;
+            }
+            if (event->modifiers() & Qt::ControlModifier && keyCode==Qt::Key_V){
+        pastedData=QApplication::clipboard()->text();
+               // event->
+                if (pastedData.indexOf("\t")>=0)
+                {
+                    pastedData.replace("\t", "    ");
+                }
+                this->insertPlainText(pastedData);
+            } else QPlainTextEdit::keyPressEvent(event);
 
             QString textInField = destination->toPlainText();
 
@@ -141,11 +160,12 @@ void KeyloggerTE::keyPressEvent(QKeyEvent *event){
 
                  if (scanCode==SCAN_KEY_V)
                  {
-                     if (keyCode!=Qt::Key_V){
-                         QKeyEvent *event = new QKeyEvent ( QEvent::KeyPress, Qt::Key_V,Qt::ControlModifier);
-                         QCoreApplication::postEvent (this, event);
-                     }
-                     textInField += QApplication::clipboard()->text();
+                     //if (keyCode!=Qt::Key_V){
+                       //  QKeyEvent *event = new QKeyEvent ( QEvent::KeyPress, Qt::Key_V,Qt::ControlModifier);
+                       //  QCoreApplication::postEvent (this, event);
+                    // }
+
+                     textInField += pastedData;
                     // insertPlainText(QApplication::clipboard()->text());
 
 
@@ -327,6 +347,8 @@ else {
          saveChanges(sizeOfChanges);
      }
 }
+
+
 void KeyloggerTE::focusInEvent( QFocusEvent * ev )
 {
     emit KeyloggerTE::setFocus() ;
@@ -382,7 +404,7 @@ void KeyloggerTE::mouseReleaseEvent(QMouseEvent *eventPress){
 
 void KeyloggerTE::tabTo4Spaces()
 {
-    disconnect(this, SIGNAL(textChanged()),this, SLOT(tabTo4Spaces()));
+   // disconnect(this, SIGNAL(textChanged()),this, SLOT(tabTo4Spaces()));
 
     QTextCursor textCurs = this->textCursor();
     int cursorPos = textCurs.position();
@@ -394,7 +416,7 @@ void KeyloggerTE::tabTo4Spaces()
     this->setPlainText(text);
    textCurs.setPosition(cursorPos);
    this->setTextCursor(textCurs);
-      connect(this, SIGNAL(textChanged()),this, SLOT(tabTo4Spaces()));
+     // connect(this, SIGNAL(textChanged()),this, SLOT(tabTo4Spaces()));
 }
 
 void KeyloggerTE::newText()
@@ -409,6 +431,12 @@ void KeyloggerTE::newText()
     changebuf.cursor = 0;
     changebuf.cymbol = "";
     changebuf.changeSize =0;
+}
+
+void KeyloggerTE::openText()
+{
+    changebuf.cursor = 1;
+    changebuf.cymbol = this->toPlainText();
 }
 int KeyloggerTE::getPreviousCursorPosition() const
 {

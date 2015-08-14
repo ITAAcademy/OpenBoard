@@ -775,7 +775,8 @@ void MainWindow::on_action_Reset_default_triggered()
     QFont font = (QFont("Tahoma",10,1,false));
         ui->menuBar->setFont(font);
         textEdit->setFont(font);
-       // textEdit->setTextColor("#000000");
+
+        //textEdit->setTextColor("#000000");
         //commandTextEdit->setTextColor("#000000");
         commandTextEdit->setFont(font);
         QString temp = textEdit->toPlainText();
@@ -1067,6 +1068,7 @@ void MainWindow::on_action_Open_triggered()
     openFile( fileName);
     }
      textEdit->openText();
+     commandTextEdit->openText();
 }
 
 bool MainWindow::openFile(QString fileName)
@@ -1077,8 +1079,10 @@ bool MainWindow::openFile(QString fileName)
         if(file.open(QFile::ReadOnly))
         {
             curFile = fileName;
-             textEdit->setPlainText(QString::fromLocal8Bit((file.readAll())));
-             commandTextEdit->setPlainText(QString::fromLocal8Bit((file.readAll())));
+            QString readedString = QString::fromLocal8Bit((file.readAll()));
+            readedString.replace("\t", "    ");
+             textEdit->setPlainText(readedString);
+             commandTextEdit->setPlainText(readedString);
             return true;
         }
         else
