@@ -1165,11 +1165,9 @@ void OGLWidget::keyPressEvent(QKeyEvent *event)
          {
          case 43 :
              timeLine->zoomPlus();
-            timeLine->sendUpdateModel();
              break;
          case 45 :
               emit timeLine->zoomMinus();
-             timeLine->sendUpdateModel();
              break;
          }
      }
@@ -1499,6 +1497,7 @@ void  OGLWidget::updateWindow(){
         editingRectangle.isEditingRectangleVisible = true;
         if(t != selElm )
         {
+           clearBuffer();
             selElm = t;
             editingRectangle.rect = timeLine->getDrawRect(t.x(), t.y());
         }

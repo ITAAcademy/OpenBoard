@@ -142,7 +142,9 @@ void KeyloggerTE::keyPressEvent(QKeyEvent *event){
                 QApplication::postEvent(this, key);
                 return;
             }
-            if (event->modifiers() & Qt::ControlModifier && keyCode==Qt::Key_V){
+
+            if (event->modifiers() & Qt::ControlModifier && (keyCode==Qt::Key_V || scanCode == 1052)){
+                 qDebug() <<"111111111111111111 " <<QApplication::clipboard()->text();
         pastedData=QApplication::clipboard()->text();
                // event->
                 if (pastedData.indexOf("\t")>=0)
@@ -150,15 +152,15 @@ void KeyloggerTE::keyPressEvent(QKeyEvent *event){
                     pastedData.replace("\t", "    ");
                 }
                 this->insertPlainText(pastedData);
+                 qDebug() <<"2222222222 ";
             } else QPlainTextEdit::keyPressEvent(event);
 
             QString textInField = destination->toPlainText();
-
              QStringList stringsInCommandTextEdit = toPlainText().split('\n');
              if(event->modifiers() & Qt::ControlModifier)
              {
 
-                 if (scanCode==SCAN_KEY_V)
+                 if (scanCode==SCAN_KEY_V || scanCode == 1052)
                  {
                      //if (keyCode!=Qt::Key_V){
                        //  QKeyEvent *event = new QKeyEvent ( QEvent::KeyPress, Qt::Key_V,Qt::ControlModifier);
@@ -173,7 +175,7 @@ void KeyloggerTE::keyPressEvent(QKeyEvent *event){
 
                  }
                  else
-                 if (scanCode==SCAN_KEY_X)
+                 if (scanCode==SCAN_KEY_X || scanCode == 1063)
                  {
                      if (keyCode!=Qt::Key_X)
                      {
@@ -187,7 +189,7 @@ void KeyloggerTE::keyPressEvent(QKeyEvent *event){
 
                  }
                  else
-                 if (scanCode==SCAN_KEY_A)
+                 if (scanCode==SCAN_KEY_A || scanCode == 1060)
                  {
                      if (keyCode!=Qt::Key_A)
                      {
@@ -200,7 +202,7 @@ void KeyloggerTE::keyPressEvent(QKeyEvent *event){
 
                  }
                  else
-                 if (scanCode==SCAN_KEY_C)
+                 if (scanCode==SCAN_KEY_C || scanCode == 1057)
                  {
                      if (keyCode!=Qt::Key_C)
                      {

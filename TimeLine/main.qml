@@ -69,7 +69,7 @@ Rectangle
    property int selectedBlockCol : 0
    property int selectedBlockIndex : 0
     property real scaling :  timeControll.getScaleScrollChildren()
-   property int minBlockWidth : 100 / scaling
+   property int minBlockWidth : 1000 / scaling
    property bool isPlay : false
    // property int torepainting : 1
 
@@ -86,18 +86,11 @@ Rectangle
 
 
 focus: true    
-function zoomChange(value)
-{
 
-     timeControll.changeScaleScrollChildren(value)
-    scaling = timeControll.getScaleScrollChildren()
-    updateTracksModel()
-    //console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA " + timeControll.getScaleScrollChildren())
-}
 
     property bool ctrl_pressed : false
          Keys.onPressed: {
-              //console.log("AAAAAAAAAAAAAAAAAAAAA " + event.key)
+              console.log("AAAAAAAAAAAAAAAAAAAAA " + event.key)
           if(event.modifiers & Qt.ControlModifier) {
                main222.ctrl_pressed = true
               //console.log("AAAAAAAAAAAAAAAAAAAAA " + ctrl_pressed)
@@ -112,10 +105,10 @@ function zoomChange(value)
                                  timeControll.emitNewProject();
                       else
                           if (event.key === 43)
-                              zoomChange(0.1)
+                              timeControll.zoomPlus()
                           else
                               if (event.key === 45)
-                                  zoomChange(-0.1)
+                                  timeControll.zoomMinus()
           }
 
       }
@@ -160,6 +153,7 @@ main222.isPlay = false
 
     function updateTracksModel()
     {
+        scaling = timeControll.getScaleScrollChildren()
         rep_columns.model = 0
          rep_columns.model =  timeControll.getTracksNumber()
         item_col.width = timeControll.getMaxTrackTime()
@@ -208,13 +202,15 @@ main222.isPlay = false
            //repka.updateModel();*/
            main222.scaling = timeControll.getScaleScrollChildren();
            main222.updateTracksModel();
+           console.log("AAAAAAAAAAAAAAAAAA " +  main222.scaling)
 
 
        }
 
 
        onResetProjectSignel: {
-
+timeControll.setScaleScrollChildren(0) //it have protection from small values
+           main222.scaling = timeControll.getScaleScrollChildren();
           main222.selectedBlockCol = -1
             main222.selectedBlockIndex = -1
           // rep_columns.model = timeControll.getTracksNumber()
@@ -236,7 +232,6 @@ main222.isPlay = false
     Rectangle {
         id: time_scale
         property int division : 50
-        property bool ud_down : true
         width: 2000//item_col.width
         height: 20// item_col.height/10
         color: "gray"
@@ -276,9 +271,15 @@ main222.isPlay = false
                 color: "white"
                 }
                 Text {
-                text:  Math.round(time_scale.division * index * main222.scaling) + " ms"
 
-                y:  time_scale.ud_down === true ? 0: hor_line.y
+                text: {
+                    if (main222.scaling >= 10)
+                         return Math.round(time_scale.division * index * main222.scaling)/1000 + " sec"
+                    else
+                        return Math.round(time_scale.division * index * main222.scaling) + " ms"
+
+                }
+                y:   0
                 width:  time_scale.division
                 height: time_scale.height/2
                  color: "white"
@@ -286,9 +287,7 @@ main222.isPlay = false
 
 
                  //font { pixelSize: 10 }
-                 Component.onCompleted: {
-                     time_scale.ud_down = !time_scale.ud_down
-                 }
+
                 }
 
                 Component.onCompleted: {

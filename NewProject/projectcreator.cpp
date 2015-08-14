@@ -18,6 +18,7 @@ bool ProjectCreator::isVisible()
 
 void ProjectCreator::show(bool fullScreen)
 {
+   // curent.state = -1;
     view.setSource(QUrl(QStringLiteral("qrc:/main_new_poject.qml")));
     if(fullScreen)
         view.showFullScreen();

@@ -35,6 +35,7 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 public:
+
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     void setViewState(int state);
@@ -129,6 +130,7 @@ private slots:
 
 
 private:
+      bool firstNewProjectCreating = true;
     bool isRecordToFile = false;
     bool changeone;
    QString directory;

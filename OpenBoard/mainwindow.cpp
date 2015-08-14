@@ -1226,13 +1226,22 @@ void MainWindow::on_action_New_Project_triggered()
   //   mpOGLWidget->getTimeLine()->emitResetProject();
      mpOGLWidget->getTimeLine()->resetProjectToDefault();
      mpOGLWidget->getTimeLine()->setIsProjectChanged(false);
-     setEnabledToolBar(false);
+     setEnabledToolBar(true);
      on_action_Clear_TextEdit_triggered();
      if(isVisible())
         this->setCurentState(ProjectCreator::getProjectSetting(false, false));
      else
          this->setCurentState(ProjectCreator::getProjectSetting(true, false));
-
+     if (firstNewProjectCreating && this->getCurentState().state ==-1)
+     {
+         ProjectStartupSetting state = this->getCurentState();
+         state.state = 1;
+         this->setCurentState(state);
+         firstNewProjectCreating = false;
+     }
+if (this->getCurentState().state !=-1)
+{
+    setEnabledToolBar(false);
      if(!curentState.advance_mode)
         setViewState((int)curentState.state);
      else
@@ -1284,7 +1293,7 @@ void MainWindow::on_action_New_Project_triggered()
      qApp->processEvents(QEventLoop::AllEvents, 1000);
      mpOGLWidget->getTimeLine()->sendUpdateModel();
      qApp->processEvents(QEventLoop::AllEvents, 1000);
-
+}
 
 }
 
@@ -1309,6 +1318,8 @@ void MainWindow::delay_released()
         textEdit->appendNoNL(text);
     else
         textEdit->insertPlainText(text);
+
+    updateBlockFromTextEdit();
 
   /*  QString text = ui->action_clearTB->text();
     if( isCommandTextEditFocused )

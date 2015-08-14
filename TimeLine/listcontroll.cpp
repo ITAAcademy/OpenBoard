@@ -37,16 +37,28 @@ float ListControll::getScaleScrollChildren() const
 void ListControll::setScaleScrollChildren(const float &value)
 {
     scale_scroll_children = value;
+    if (scale_scroll_children <zoom_speed)
+        scale_scroll_children = zoom_speed;
 }
 
 void ListControll::changeScaleScrollChildren(const float &value)
 {
     scale_scroll_children += value;
-    if (scale_scroll_children <1)
-        scale_scroll_children = 1;
+    if (scale_scroll_children <zoom_speed)
+        scale_scroll_children = zoom_speed;
 }
 
 
+
+float ListControll::getZoomSpeed() const
+{
+    return zoom_speed;
+}
+
+void ListControll::setZoomSpeed(float value)
+{
+    zoom_speed = value;
+}
 void ListControll::recountMaxTrackTime()
 {
     maxTrackTime = 0;
@@ -171,7 +183,7 @@ void ListControll::loadFromFile()
 
    emit updateSelectedBlock(selectedBlockPoint);
 
-  /* if(new_life_time > 100)
+  /* if(new_life_time > 1000)
    {
        setBlockTime(p.x(),p.y(), new_life_time);
    }*/
@@ -896,12 +908,14 @@ QImage ListControll::requestImage(const QString &id, QSize *size, const QSize &r
 
     void ListControll::zoomMinus()
     {
-        this->changeScaleScrollChildren(-0.1);
+        this->changeScaleScrollChildren(-zoom_speed);
+        emit updateModel();
     }
 
     void  ListControll::zoomPlus()
     {
-        this->changeScaleScrollChildren(0.1);
+        this->changeScaleScrollChildren(zoom_speed);
+         emit updateModel();
     }
 
 

@@ -20,6 +20,8 @@ class DrawTextElm;
 class DrawBrushElm;
 class DrawElement;
 
+#define minBlockTime 1000
+
 
 struct Element {
     QString key;
@@ -31,7 +33,7 @@ struct Element {
     //Element_type type;
     DrawElement *draw_element;
 
-    Element( QString key, int time,int x = 0, int y = 0, int z = 0, int width = 100, int height = 100) {
+    Element( QString key, int time,int x = 0, int y = 0, int z = 0, int width = minBlockTime, int height = 100) {
         this->key = key;
         draw_element = new DrawElement((OGLWidget *)NULL, NULL);
          draw_element->setLifeTime(time);
@@ -46,7 +48,7 @@ struct Element {
     Element() {
         this->key = "key";
         draw_element = new DrawElement((OGLWidget *)NULL, NULL);
-          draw_element->setLifeTime(100);
+          draw_element->setLifeTime(minBlockTime);
          draw_element->setX(0);
           draw_element->setY(0);
           draw_element->setZ(0);
@@ -56,7 +58,7 @@ struct Element {
     Element(DrawElement *element) {
         this->key = element->getKey();
         draw_element = element;
-          draw_element->setLifeTime(100);
+          draw_element->setLifeTime(minBlockTime);
          draw_element->setX(0);
           draw_element->setY(0);
           draw_element->setZ(0);
@@ -179,7 +181,8 @@ class ListControll : public QObject, public QQuickImageProvider
 
     bool isProjectChange = false;
     int maxTrackTime ;
-    float scale_scroll_children = 1.0;
+    float scale_scroll_children = 10.0;
+    float zoom_speed = 1.0;
     QQuickView view;
     QPoint framaMousePosition;
      QPoint prevMousePosition;
@@ -189,7 +192,7 @@ class ListControll : public QObject, public QQuickImageProvider
     QVector< Track > tracks;
    // Element selectedBlock;
     QPoint selectedBlockPoint;
-    int def_min_block_width = 100;
+    int def_min_block_width = minBlockTime;
     int scale_pointer_pos = 0;
     QList <Element> pointed_block;
    // QList <Element> pointed_time_blocks;
@@ -309,6 +312,9 @@ public:
   //QDesktopServices::openUrl(QUrl(QString("E:/Adele - Someone Like You.mp4")));
  // QDesktopServices::openUrl(QUrl::FromLocalFile(addrW, QUrl::TolerantMode));
 }
+
+Q_INVOKABLE  float getZoomSpeed() const;
+ Q_INVOKABLE void setZoomSpeed(float value);
 
 signals:
   void loadFromFileSignal();
