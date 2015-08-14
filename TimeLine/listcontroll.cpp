@@ -145,8 +145,8 @@ void ListControll::addNewTrack( )
 void ListControll::loadFromFile()
 {
 
-    emit loadFromFileSignal();
-     isBlocked=true;
+
+
     QPoint p = getSelectedBlockPoint();
   /*  if (p.x() > -1)
        tracks[p.x()].time -= tracks[p.x()].block[p.y()].draw_element->getLifeTime();*/
@@ -170,7 +170,7 @@ void ListControll::loadFromFile()
    temp.draw_element->setLifeTime(life_time);
    temp.draw_element->setStartDraw(start_time);
    temp.draw_element->setZ(p.x());
-isBlocked=false;
+   emit loadFromFileSignal();
    emit updateSelectedBlock(selectedBlockPoint);
 
   /* if(new_life_time > 100)
