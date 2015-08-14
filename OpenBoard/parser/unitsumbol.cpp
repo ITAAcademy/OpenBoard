@@ -5,6 +5,7 @@ UnitSumbol::UnitSumbol() : Unit()
     Size = 0;
     Color = "";
     Font = "";
+    unitType = 0;
 }
 
 UnitSumbol::~UnitSumbol()

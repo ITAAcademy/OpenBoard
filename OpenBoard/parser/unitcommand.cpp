@@ -73,6 +73,7 @@ void UnitCommand::deleteRight(OGLWidget* canvas, int n){
 void UnitCommand::erasePreChar(OGLWidget *canvas,int n)
 {
     //canvas->crossOutLastSymbol();
+  //  unitType = 2;
     canvas->crossOutWithAnimation(n);
 }
 void UnitCommand::clearPreChar(OGLWidget *canvas, int n)
@@ -82,11 +83,18 @@ void UnitCommand::clearPreChar(OGLWidget *canvas, int n)
    // qDebug() << "cross" << n;
 }
 
+void UnitCommand::update(OGLWidget *canvas)
+{
+    canvas->update();
+   // qDebug() << "UPDATEEEEEEEEE";
+}
+
 void UnitCommand::pause(OGLWidget *canvas)
 {
     //QThread::msleep(unit_data.toULong()*100);
    // canvas->update();
     delay = unit_data.toULong()*1000;
+    canvas->update();
     //canvas->pause(unit_data.toULong()*1000);
 }
 
@@ -102,6 +110,11 @@ void UnitCommand::draw(OGLWidget *canvas)
     if (Type == "ChangeColor")
     {
         changeColor(canvas);
+        return;
+    }
+    if (Type == "Update")
+    {
+        update(canvas);
         return;
     }
     if (Type == "NextLine")

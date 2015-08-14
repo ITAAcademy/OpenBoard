@@ -24,6 +24,7 @@ public:
     void backSlash(OGLWidget* canvas);
     void draw(OGLWidget *canvas);
     void clearPreChar(OGLWidget* canvas, int n);
+    void update(OGLWidget* canvas);
     QString getUnitCommandType();
 };
 

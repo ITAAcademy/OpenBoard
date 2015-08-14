@@ -1367,9 +1367,9 @@ bool OGLWidget::drawAnimationFigure(int x, int y, int width, int height, double 
 {
     isCrossingNow=true;
     qDebug() << "wqweqweqwe "  << persent;
-    if(persent < 0.6f)
+    if(persent < 0.98f)
     {
-        drawFigure(x, y, x + (width - x)*persent, height, type, fill);
+        drawFigure(x, y, x + (width - x)*persent + 0.01, height, type, fill);
          //qDebug() << delPos.x() << "             " << delPos.x() + (maxWidth - delPos.x())*persent;
         //persent += animationPersentOfCross;
        // QThread::currentThread()->msleep(10);
@@ -1440,6 +1440,7 @@ double OGLWidget::getAnimationPersentOfCross() const
 void OGLWidget::setAnimationPersentOfCross(double value)
 {
     animationPersentOfCross = value;
+  //  qDebug() << "QWE    " << value;
 }
 
 bool OGLWidget::getIsBrushWindowOpened() const
@@ -1826,9 +1827,10 @@ void OGLWidget::drawTextBuffer( int m_x, int m_y, int m_width, int m_height, int
     //if(!crossTextV2())
      //   return QPoint(0, 0);
     //int width = fMetrics->width(str)*1.125 ;//+ fMetrics->leftBearing(str.at(0)) + fMetrics->rightBearing(str.at(0));
-    //// qDebug() << "DRAW";
+
     clearCanvas(m_x, m_y);
     int maxDrawElm = (m_height/(lineHeight + pt)) - 1;
+    //qDebug() << "DRAW   "   <<  maxDrawElm;
     int CurRow = convertTextBoxToBufferIndex(cursorIndex).y();
     if(CurRow >= indexRowInList + maxDrawElm)
     {
@@ -1838,7 +1840,13 @@ void OGLWidget::drawTextBuffer( int m_x, int m_y, int m_width, int m_height, int
     {
         indexRowInList = CurRow;
     }
-    indexFirstDrawSymbol = getFirstSymbolOfString(indexRowInList, true);
+    indexFirstDrawSymbol = getFirstSymbolOfString(indexRowInList, false);
+
+    int lastRow = indexRowInList + maxDrawElm - 1;
+    if(lastRow >= stringList.length())
+        lastRow = stringList.length() - 1;
+    indexLastDrawSymbol = getLastSymbolOfString(lastRow, false);
+    //qDebug() << "First  " << indexFirstDrawSymbol <<    "   " <<  indexRowInList << "    " << indexLastDrawSymbol;
   //  // qDebug() << indexRowInList << "   indexFirstDrawSymbol   :           " << indexFirstDrawSymbol << cross;
  //   // qDebug() << "START draw with indexRowInList " << indexRowInList << "MAX elm " << maxElm << "CUR " << CurRow;
     int i = indexRowInList;
@@ -2263,7 +2271,8 @@ void OGLWidget::isLastRow()
 }
 void OGLWidget::update(){
     busy = true;
-        crossText();
+    crossText();
+        crossTextDraw();
         moveEvent(NULL);
        // busy = false;
 }
@@ -2287,7 +2296,7 @@ bool OGLWidget::crossTextDraw()
     int x1, x2, x;
     bool lastGood = false;
     bool needNextRow = false;
-    for(int i = indexFirstDrawSymbol; i < cross.length(); i++)
+    for(int i = indexFirstDrawSymbol; i < indexLastDrawSymbol; i++)
     {
 
         if(cross[i] != 0)
@@ -2325,7 +2334,7 @@ bool OGLWidget::crossTextDraw()
 
             x2 = marginLeft + fMetrics->width(stringList[conv.y()].left(conv.x() + 1));
             y += marginTop;
-            if( cross[i - 1] == -1 && curStatus == PLAY)
+            if( cross[i - 1] == -1 && curStatus == PLAY )
             {
                 // qDebug() << "FIRST";
                // drawAnimationFigure(x1, y, x2, y, LINE, 0);

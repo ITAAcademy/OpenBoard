@@ -23,7 +23,7 @@ Rectangle {
             height: parent.fix_height
             name: "SIZE"
             minimum: 1
-            maximum : 500
+            maximum : 100
             value: 50
             onValueChanged:
             {

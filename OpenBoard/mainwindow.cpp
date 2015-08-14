@@ -1498,7 +1498,8 @@ void MainWindow::onTextChanged()
     int textSize = str.size();
     quint64 drawTime = 0;
     int pause = 0;
-    int status = mParser.ParsingLine(mUnitList, str,drawTime, pause, ui->slider_speedTB->value()); // add parsing /n
+    int commandSize = 0;
+    int status = mParser.ParsingLine(mUnitList, str,drawTime, pause, commandSize, ui->slider_speedTB->value()); // add parsing /n
    /* if(textSize != str.size())
     {
         textEdit->clear();

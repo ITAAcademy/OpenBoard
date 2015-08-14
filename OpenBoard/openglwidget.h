@@ -326,6 +326,7 @@ private:
     int indexRowInList; // first str for draw
     int cursorIndex;
     int indexFirstDrawSymbol = 0;
+    int indexLastDrawSymbol = 0;
     int maxDrawElm = 0;
     int delay;
     int lineHeight;
