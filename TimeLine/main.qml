@@ -65,7 +65,7 @@ Rectangle
     property int drop_blockY : -1
     property int maIsPressed: 0
     property int dropEntered: 0
-   property Item selectedBlock
+   property Item selectedBlock: null
    property int selectedBlockCol : 0
    property int selectedBlockIndex : 0
     property real scaling :  timeControll.getScaleScrollChildren()
@@ -163,25 +163,30 @@ main222.isPlay = false
         rep_columns.model = 0
          rep_columns.model =  timeControll.getTracksNumber()
         item_col.width = timeControll.getMaxTrackTime()
+        if (main222.needToLightSelected)
+        {
+            rep_columns.itemAt(main222.selectedBlockCol).setColorize(main222.selectedBlockIndex,"#8000FF00")
+        }
         // main222.p_trackbar.globalRep.updateModel()
 
         //repka.updateModel();
+
     }
 
      Connections {
        target: timeControll
 
       onPlaySignal: {
-       main222.play()
+            main222.play()
        }
       onPauseSignal: {
-       main222.pause()
+            main222.pause()
        }
        onStopSignal: {
-       main222.stop()
+            main222.stop()
        }
        onSetScalePointerPosSignal: {
-       main222.setScalePointerPos(value * main222.scaling)
+            main222.setScalePointerPos(value * main222.scaling)
        }
 
        onUpdateSignal:  {
@@ -201,8 +206,9 @@ main222.isPlay = false
            // main222.p_trackbar.globalRep.updateModel()
 
            //repka.updateModel();*/
-           main222.scaling = timeControll.getScaleScrollChildren()
-           main222.updateTracksModel()
+           main222.scaling = timeControll.getScaleScrollChildren();
+           main222.updateTracksModel();
+
 
        }
 
@@ -534,7 +540,7 @@ main222.isPlay = false
             // console.log("selectedBlockIndex=" + main222.selectedBlockIndex)
        // main222.p_scale_pointer.x =rep_columns.itemAt(main222.selectedBlockCol).getBlockX(main222.selectedBlockIndex)
        //main222.mX//
-            main222.needToLightSelected = false
+
 
         }
         console.log("6666666666666666666")

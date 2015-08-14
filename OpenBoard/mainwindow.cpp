@@ -2,7 +2,6 @@
 #include "ui_mainwindow.h"
 #include "../TimeLine/listcontroll.h"
 
-
 #define TIMER_VALUE         300
 #define GLWIDGET_SIZE       640,480
 #define WINDOW_POS          80,100,760,560
@@ -776,7 +775,7 @@ void MainWindow::on_action_Reset_default_triggered()
     QFont font = (QFont("Tahoma",10,1,false));
         ui->menuBar->setFont(font);
         textEdit->setFont(font);
-        textEdit->setTextColor("#000000");
+       // textEdit->setTextColor("#000000");
         //commandTextEdit->setTextColor("#000000");
         commandTextEdit->setFont(font);
         QString temp = textEdit->toPlainText();
@@ -795,7 +794,7 @@ void MainWindow::on_action_Color_triggered()
     if(colorm.isValid())
     {
         QString col = colorm.name();
-        textEdit->setTextColor(col);
+        //textEdit->setTextColor(col);
         textEdit->setColOrigin(colorm);
         QString temp = textEdit->toPlainText();
         textEdit->clear();
@@ -1036,8 +1035,11 @@ void MainWindow::search()
 
 bool MainWindow::on_action_Save_as_triggered()
 {
+
+    QString suf;
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"), directory,
-                                                    tr("Text Files (*.txt);;All Files (*.*)"), 0, QFileDialog::DontUseNativeDialog);
+                                                    tr("Text Files (*.txt);;All Files (*.*)"), &suf, QFileDialog::DontUseNativeDialog | QFileDialog::DontConfirmOverwrite);
+    fileName =  mSuffixFromFilter(suf, fileName);
 
     if(!fileName.isEmpty())
     {
@@ -1109,8 +1111,10 @@ bool MainWindow::on_action_Save_Project_triggered()
         isActive = false;
         qApp->processEvents();
         activateWindow();
+        QString suf;
        QString fileName = QFileDialog::getSaveFileName(this,
-        tr("Save project"), directory, tr("Project file (*.project)"), 0, QFileDialog::DontUseNativeDialog);
+        tr("Save project"), directory, tr("Project file (*.project )"), &suf, QFileDialog::DontUseNativeDialog | QFileDialog::DontConfirmOverwrite);
+       fileName =  mSuffixFromFilter(suf, fileName);
         isActive = true;
         qApp->processEvents();
         activateWindow();
@@ -1557,7 +1561,7 @@ void MainWindow::updateTextEditFromBlock(QPoint point)
             commandTextEdit->newText();
             commandTextEdit->setPlainText(text_elm->getLoggerText());
             commandTextEdit->setPreviousCursorPosition(text_elm->getTextCursor());
-            textEdit->setText(text_elm->getUnParsestring());
+            textEdit->setPlainText(text_elm->getUnParsestring());
             connect(textEdit, SIGNAL(textChanged()), this, SLOT(onTextChanged()));
             return;
         }
@@ -1582,6 +1586,8 @@ void MainWindow::updateBlockFromTextEdit()
             text_elm->setUnParsestring(textEdit->toPlainText(), commandTextEdit->toPlainText());
             text_elm->setTextCursor(commandTextEdit->textCursor().position());
             int change_time = text_elm->getDrawTime();
+            if(change_time < 100)
+                change_time == 100;
             ui->expected_time->setText("EXPECTED TIME:  " + QString::number(change_time) + " ms");
             if(ui->check_use_speed_value->isChecked())
             {
@@ -1832,7 +1838,10 @@ void MainWindow::on_actionShow_last_drawing_triggered()
 
 void MainWindow::on_actionSave_drawing_triggered()
 {
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Choose file..."), qApp->applicationDirPath(), tr("Drawing (*.paint)"), 0, QFileDialog::DontUseNativeDialog);
+    QString suf;
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Choose file..."), qApp->applicationDirPath(), tr("Drawing (*.paint)"), &suf, QFileDialog::DontUseNativeDialog | QFileDialog::DontConfirmOverwrite);
+
+    fileName =  mSuffixFromFilter(suf, fileName);
     if(!fileName.size())
         return;
     qDebug() << fileName;

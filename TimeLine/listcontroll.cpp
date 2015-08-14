@@ -279,7 +279,10 @@ void ListControll::setBlocks(int col,const QList <Element> &value)
 
 void ListControll::setBlockTime(int col, int i,int value)
 {
-  //   = value;      
+  //   = value;
+    if(def_min_block_width > value)
+        value = def_min_block_width;
+
         tracks[col].time += value - tracks[col].block[i].draw_element->getLifeTime();  ;
       tracks[col].block[i].draw_element->setLifeTime(value);    
     recountMaxTrackTime();

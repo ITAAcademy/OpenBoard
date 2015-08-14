@@ -28,6 +28,7 @@ Rectangle {
             width: parent.width
           icon_source : "qrc:/iphone_toolbar_icons/delete.png"
             onClicked: {
+                main222.needToLightSelected = false
                 main222.removeTrack();
             }
         }
@@ -43,6 +44,7 @@ Rectangle {
 
                 //for (var i = 0; i< 15; i++)
                 {
+                    main222.needToLightSelected = false;
                     main222.addTrack() ;
                  //  console.log("AAAAAAAAAAAAding track : "  + timeControll.getTracksNumber())
                 }

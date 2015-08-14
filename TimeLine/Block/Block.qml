@@ -282,10 +282,6 @@ onYChanged: y=0;
            anchors.fill: icon
            source: icon
            color: "#00000000"
-
-           Component.onCompleted: {
-               root.p_color_overlay = icon_coloroverlay
-           }
        }
 
     Text {
@@ -325,6 +321,9 @@ onYChanged: y=0;
               globalRep.updateModel();
         }
             }
+    }
+    Component.onCompleted: {
+        root.p_color_overlay = icon_coloroverlay
     }
 }
 

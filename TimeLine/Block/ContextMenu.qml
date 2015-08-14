@@ -67,7 +67,7 @@ property Repeater globalRep
                 var col= contextMenuItem.columnIndex;
                 var id = contextMenuItem.blockIndex;
                 timeControll.removeBlock(col,id);
-                main222.needToLightSelected = false
+                main222.needToLightSelected = false;
                 globalRep.updateModel();
                 contextMenuItem.visible = false;
 

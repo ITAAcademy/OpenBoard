@@ -26,6 +26,7 @@ Rectangle {
             width: parent.width
           icon_source : "qrc:/iphone_toolbar_icons/plus.png"
             onClicked: {
+                main222.needToLightSelected = false
                // for (var i=0; i< 30; i++)
                 {
                 var ss = num
@@ -35,6 +36,7 @@ Rectangle {
                 globalRep.updateModel()
               //  console.log("AAAAAAAAAAAAding blocks num : "  + timeControll.getTrackSize(main222.selectedBlockCol))
                     }
+
                /* item_col.p_columns.columns.globalRep.updateModel();
                  item_col.p_columns.rep_columns.globalRep.updateModel();*/
                // main222.p_item_col.p
@@ -56,7 +58,7 @@ Rectangle {
             width: parent.width
             icon_source : "qrc:/iphone_toolbar_icons/delete.png"
             onClicked: {
-
+                main222.needToLightSelected = false;
                 if ( timeControll.removeLastBlock(trackbar.mIndex))
                 {
                     for (var y = 0; y < rep_columns.model; y++)
@@ -76,6 +78,7 @@ Rectangle {
                     // item_col.p_columns.columns.globalRep.updateModel();
 
                 }
+
                // scroll.moveSliderFor(-1 )
                 // console.log("CLICK2")
             }

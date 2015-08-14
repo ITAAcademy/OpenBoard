@@ -5,6 +5,23 @@
 #include "drawimage.h"
 #include "drawbrush.h"
 
+static inline QString mSuffixFromFilter(const QString &filter, QString name)
+{
+    qDebug() << name;
+    if(name.indexOf('.') != -1)
+        return name;
+    int suffixPos = filter.indexOf(QLatin1String("*."));
+    if (suffixPos < 0)
+        return QString();
+    suffixPos += 2;
+    int endPos = filter.indexOf(QLatin1Char(' '), suffixPos + 1);
+    if (endPos < 0)
+        endPos = filter.indexOf(QLatin1Char(';'), suffixPos + 1);
+    if (endPos < 0)
+        endPos = filter.indexOf(QLatin1Char(')'), suffixPos + 1);
+    return endPos >= 0 ? name + "." + filter.mid(suffixPos, endPos - suffixPos) : QString();
+}
+
 static DrawElement *GenerationDrawElement( QString path, OGLWidget *drawWidget = NULL, QObject *parent = NULL )
 {
     QFileInfo target(path);
