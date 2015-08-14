@@ -42,7 +42,7 @@ quint64 Parser::processTimeOfUnits(QList<Unit*> list, int delayMS){
          if (((UnitCommand*)unit)->getUnitCommandType()=="ErasePreChar")
              resultTime+=delayMS;
          else if (((UnitCommand*)unit)->getUnitCommandType()=="Pause")
-             resultTime+=delayMS;
+             resultTime+=unit->getUnitData().toInt();
       }
 
     }
