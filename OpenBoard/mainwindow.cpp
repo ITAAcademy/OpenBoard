@@ -1297,7 +1297,7 @@ void MainWindow::delay_released()
     prev_cursor.setPosition(QTextCursor::End);*/
     QString text = ui->action_delayTB->text();
     text += QString::number(ui->spinBox_delayTB->value());
-    emit textEdit->setFocus();
+   // emit textEdit->setFocus();
    //  textEdit->setTextCursor(prev_cursor);
     if( isCommandTextEditFocused )
         textEdit->appendNoNL(text);
