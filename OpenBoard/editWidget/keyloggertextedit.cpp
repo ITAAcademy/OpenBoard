@@ -347,6 +347,8 @@ else {
          saveChanges(sizeOfChanges);
      }
 }
+
+
 void KeyloggerTE::focusInEvent( QFocusEvent * ev )
 {
     emit KeyloggerTE::setFocus() ;
@@ -429,6 +431,12 @@ void KeyloggerTE::newText()
     changebuf.cursor = 0;
     changebuf.cymbol = "";
     changebuf.changeSize =0;
+}
+
+void KeyloggerTE::openText()
+{
+    changebuf.cursor = 1;
+    changebuf.cymbol = this->toPlainText();
 }
 int KeyloggerTE::getPreviousCursorPosition() const
 {

@@ -32,6 +32,7 @@ public slots:
     void newText();
 public:
 //QStack<int> changesSize;
+    void openText();
 bool changesDetected = false;
 int previousCursorPosition = 0;
     void keyPressEvent(QKeyEvent *e);
