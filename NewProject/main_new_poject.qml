@@ -9,6 +9,7 @@ Rectangle{
     id: root
     anchors.fill: parent
     color: "#333333"
+    property int project_state : -1
     Row{
         id: row
         spacing: 5
@@ -44,7 +45,8 @@ Rectangle{
                         title: "New text video"
                         onClicked: {
                             my_col.clean();
-                            projectControll.setProjectState(0);
+                           // projectControll.setProjectState(0);
+                            root.project_state = 0
                             content.next = c0;
                         }
                     }
@@ -53,7 +55,8 @@ Rectangle{
                         title: "New pro video"
                         onClicked: {
                             my_col.clean();
-                            projectControll.setProjectState(1);
+                            //projectControll.setProjectState(1);
+                            root.project_state = 1
                             content.next = c1;
                         }
                     }
@@ -61,7 +64,8 @@ Rectangle{
                         title: "New empty project"
                         onClicked: {
                             my_col.clean();
-                            projectControll.setProjectState(2);
+                           // projectControll.setProjectState(2);
+                            root.project_state = 2
                             content.next = c2;
                         }
                     }
@@ -69,7 +73,8 @@ Rectangle{
                         title: "New modeal animation"
                         onClicked: {
                             my_col.clean();
-                            projectControll.setProjectState(3);
+                           // projectControll.setProjectState(3);
+                            root.project_state = 3
                             content.next = c3;
                         }
                     }
@@ -77,7 +82,8 @@ Rectangle{
                         title: "New visual effect"
                         onClicked: {
                             my_col.clean();
-                            projectControll.setProjectState(4);
+                           // projectControll.setProjectState(4);
+                            root.project_state = 4
                             content.next = c4;
                         }
                     }
@@ -95,7 +101,8 @@ Rectangle{
 
                         onClicked: {
                             my_col.clean();
-                            projectControll.setProjectState(5);
+                            //projectControll.setProjectState(5);
+                            root.project_state = 5
                             projectControll.close();
                         }
                     }
@@ -103,7 +110,7 @@ Rectangle{
             }
             Component.onCompleted: {
                 m2.check();
-                m2.click();
+                 content.next = c1;
             }
         }
         Rectangle{
@@ -231,7 +238,8 @@ Rectangle{
                     title: "Create"
                     rotation_animation: false
                     checkable: false
-                    onClicked: {
+                    onClicked: {                        
+                        projectControll.setProjectState(root.project_state);
                         projectControll.close();
                     }
                 }
