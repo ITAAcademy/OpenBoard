@@ -86,7 +86,8 @@ void UnitCommand::pause(OGLWidget *canvas)
 {
     //QThread::msleep(unit_data.toULong()*100);
    // canvas->update();
-    canvas->pause(unit_data.toULong()*100);
+    delay = unit_data.toULong()*1000;
+    //canvas->pause(unit_data.toULong()*1000);
 }
 
 void UnitCommand::backSlash(OGLWidget *canvas)

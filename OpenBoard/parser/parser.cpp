@@ -26,7 +26,7 @@ QString Parser::commands[]   ={
 };
 int Parser::COMMANDS_COUNT = 12;
 int Parser::MAX_COMMAND_LENGTH = 3;
-quint64 Parser::processTimeOfUnits(QList<Unit*> list, int delayMS){
+quint64 Parser::processTimeOfUnits(QList<Unit*> list, int &globalPause, int delayMS){
     if(list.isEmpty())return 0;
     quint64 resultTime = 0;
     for (Unit *unit : list)
@@ -42,7 +42,10 @@ quint64 Parser::processTimeOfUnits(QList<Unit*> list, int delayMS){
          if (((UnitCommand*)unit)->getUnitCommandType()=="ErasePreChar")
              resultTime+=delayMS;
          else if (((UnitCommand*)unit)->getUnitCommandType()=="Pause")
-             resultTime+=delayMS;
+         {
+             resultTime+=delayMS + unit->unit_data.toInt() * 1000;
+             globalPause += unit->unit_data.toInt() * 1000;
+         }
       }
 
     }
@@ -50,7 +53,7 @@ quint64 Parser::processTimeOfUnits(QList<Unit*> list, int delayMS){
 }
 
 
-int Parser::ParsingLine(QList<Unit*> &list,  QString &str,quint64& timeSpendToDraw,int delay)
+int Parser::ParsingLine(QList<Unit*> &list,  QString &str, quint64& timeSpendToDraw, int &globalPause, int delay)
 {
     list.clear();
     QString pars_line;
@@ -373,7 +376,7 @@ int Parser::ParsingLine(QList<Unit*> &list,  QString &str,quint64& timeSpendToDr
             state = -1;
         }
     }
-    timeSpendToDraw = processTimeOfUnits(list, delay);
+    timeSpendToDraw = processTimeOfUnits(list, globalPause,  delay);
     //qDebug() << "timeSpendToDraw:" << timeSpendToDraw;
     return state;
 }

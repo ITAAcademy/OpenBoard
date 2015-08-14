@@ -15,7 +15,9 @@ class DrawTextElm : public DrawElement
     Parser myParser;
     int textCursor = 0;
     quint64 drawTime;
+    int globalPauseLifeTime = 0;
 public:
+    int curentPauseValue = 0;
     explicit DrawTextElm( OGLWidget *drawWidget, QObject *parent = 0);
     ~DrawTextElm();
     void draw();

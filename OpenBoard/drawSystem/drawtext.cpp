@@ -60,8 +60,13 @@ void DrawTextElm::draw()
            pDrawWidget->clearCanvas();
            pDrawWidget->clearBuffer();
            keyCouter = 0;
+           if(keyCouter == 0)
+           {
+               curentPauseValue = 0;
+               globalPauseLifeTime = 0;
+           }
        }
-       int realKeyValue = qRound((double)(current_time - startDrawTime) / (double)(lifeTime/mUnitList.size()));
+       int realKeyValue = qRound((double)(current_time - (curentPauseValue + startDrawTime)) / (double)((lifeTime - globalPauseLifeTime)/mUnitList.size()));
        //qDebug() << "pDrawWidget->getTimeLine()->getPlayTime()"<< realKeyValue;
       // qDebug() << "cur " << current_time;
        //qDebug() << "start " << startDrawTime;
@@ -69,15 +74,21 @@ void DrawTextElm::draw()
 
    // if (keyCouter < realKeyValue)
 
-        while(keyCouter <=realKeyValue || bPlay && (current_time - startDrawTime>lifeTime-50 && current_time - startDrawTime<=lifeTime))
+        while(keyCouter <=realKeyValue)
         {
             if(!bPlay)
                 current_time =  pDrawWidget->getTimeLine()->getScalePointerPos();
             else
                 current_time =  pDrawWidget->getTimeLine()->getPlayTime();
 
-            if (keyCouter < mUnitList.size()) mUnitList.at(keyCouter)->draw(pDrawWidget);
-                    keyCouter++;
+            if (keyCouter < mUnitList.size())
+            {
+                mUnitList.at(keyCouter)->draw(pDrawWidget);
+                if(mUnitList.at(keyCouter)->delay > 0 && bPlay)
+                    curentPauseValue += mUnitList.at(keyCouter)->delay;
+ }
+                keyCouter++;
+
         }
       //  qDebug() << "drawInfo   " << (double) 1 - (double)(qAbs(((current_time - startDrawTime) - (lifeTime/mUnitList.size())*keyCouter)))/(lifeTime/mUnitList.size());
         if(keyCouter > 0 && keyCouter < mUnitList.size() && mUnitList.at(keyCouter)->unitType != mUnitList.at(keyCouter - 1)->unitType)
@@ -114,7 +125,7 @@ void DrawTextElm::setUnParsestring(const QString &valueUnParss, const QString &v
     unParsestring = valueUnParss;
     loggerText = valueLogger;
     // qDebug() << value;
-    myParser.ParsingLine(mUnitList, unParsestring, drawTime, delay);
+    myParser.ParsingLine(mUnitList, unParsestring, drawTime, globalPauseLifeTime, delay);
     UnitCommand* command = new UnitCommand();
     command->setUnitCommandType("MoveLeft");
     command->setUnitData("1");

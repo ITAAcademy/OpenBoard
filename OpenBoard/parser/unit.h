@@ -14,6 +14,7 @@ private:
 public:
     QString unit_data;
     int unitType;
+    int delay = -1;
 
 public:
     Unit();

@@ -1226,6 +1226,8 @@ void MainWindow::on_action_New_Project_triggered()
   //   mpOGLWidget->getTimeLine()->emitResetProject();
      mpOGLWidget->getTimeLine()->resetProjectToDefault();
      mpOGLWidget->getTimeLine()->setIsProjectChanged(false);
+     setEnabledToolBar(false);
+     on_action_Clear_TextEdit_triggered();
      if(isVisible())
         this->setCurentState(ProjectCreator::getProjectSetting(false, false));
      else
@@ -1495,7 +1497,8 @@ void MainWindow::onTextChanged()
     int cursPos = textEdit->textCursor().position();
     int textSize = str.size();
     quint64 drawTime = 0;
-    int status = mParser.ParsingLine(mUnitList, str,drawTime,ui->slider_speedTB->value()); // add parsing /n
+    int pause = 0;
+    int status = mParser.ParsingLine(mUnitList, str,drawTime, pause, ui->slider_speedTB->value()); // add parsing /n
    /* if(textSize != str.size())
     {
         textEdit->clear();
