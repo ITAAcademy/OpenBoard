@@ -103,6 +103,7 @@ void KeyloggerTE::keyPressEvent(QKeyEvent *event){
     }
     int keyCode = event->key();
     quint32 scanCode = event->nativeScanCode();
+    QString pastedData;
     QString keyChar(event->text());
    // QTextCursor
            int localCursorPosition = textCursor().position();
@@ -141,8 +142,15 @@ void KeyloggerTE::keyPressEvent(QKeyEvent *event){
                 QApplication::postEvent(this, key);
                 return;
             }
-        //    else
-    QPlainTextEdit::keyPressEvent(event);
+            if (event->modifiers() & Qt::ControlModifier && keyCode==Qt::Key_V){
+        pastedData=QApplication::clipboard()->text();
+               // event->
+                if (pastedData.indexOf("\t")>=0)
+                {
+                    pastedData.replace("\t", "    ");
+                }
+                this->insertPlainText(pastedData);
+            } else QPlainTextEdit::keyPressEvent(event);
 
             QString textInField = destination->toPlainText();
 
@@ -152,12 +160,12 @@ void KeyloggerTE::keyPressEvent(QKeyEvent *event){
 
                  if (scanCode==SCAN_KEY_V)
                  {
-                     if (keyCode!=Qt::Key_V){
-                         QKeyEvent *event = new QKeyEvent ( QEvent::KeyPress, Qt::Key_V,Qt::ControlModifier);
-                         QCoreApplication::postEvent (this, event);
-                     }
+                     //if (keyCode!=Qt::Key_V){
+                       //  QKeyEvent *event = new QKeyEvent ( QEvent::KeyPress, Qt::Key_V,Qt::ControlModifier);
+                       //  QCoreApplication::postEvent (this, event);
+                    // }
 
-                     textInField += QApplication::clipboard()->text();
+                     textInField += pastedData;
                     // insertPlainText(QApplication::clipboard()->text());
 
 
