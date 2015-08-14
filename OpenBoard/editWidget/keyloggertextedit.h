@@ -44,9 +44,23 @@ int previousCursorPosition = 0;
     void saveChanges(int sizeOfChange);
     int getPreviousCursorPosition() const;
     void setPreviousCursorPosition(const int &value);
+    void hideEvent(QHideEvent *)
+    {
+        // 'false' means hidden..
+        emit widgetVisibilityChanged(false);
+    }
+
+    void showEvent(QShowEvent *)
+    {
+        // 'true' means visible..
+        emit widgetVisibilityChanged(true);
+    }
+    void setEnabled(bool state);
+    void setDisabled(bool state);
 
 signals:
     void setFocus() ;
+    void widgetVisibilityChanged(bool state);
 };
 #endif // MYTEXTEDIT_H
 

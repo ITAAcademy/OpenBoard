@@ -24,6 +24,7 @@ int DrawTextElm::getTextCursor() const
 
 void DrawTextElm::setTextCursor(const int &value)
 {
+    qDebug() << "LAST_CURSOR    " << textCursor;
     textCursor = value;
 }
 DrawTextElm::DrawTextElm(OGLWidget *drawWidget, QObject *parent) : DrawElement(drawWidget, parent)
@@ -45,16 +46,22 @@ void DrawTextElm::draw()
         //keyCouter++;
      //   tickTimer.restart();
    // }
-    int current_time =  pDrawWidget->getTimeLine()->getPlayTime();
-    if (current_time > 0)
+    int current_time;
+    if(!bPlay)
+        current_time =  pDrawWidget->getTimeLine()->getScalePointerPos();
+    else
+        current_time =  pDrawWidget->getTimeLine()->getPlayTime();
+
+    if (current_time > 0 && mUnitList.size() != 0)
     {
        // qDebug() << "startDrawTime:"<<startDrawTime;
-	        if(keyCouter == 0)
-           {
-               pDrawWidget->clearCanvas();
-               pDrawWidget->clearBuffer();
-           }
-       int realKeyValue = (current_time - startDrawTime)*mUnitList.size()/lifeTime;
+        if(keyCouter == 0 || !bPlay)
+       {
+           pDrawWidget->clearCanvas();
+           pDrawWidget->clearBuffer();
+           keyCouter = 0;
+       }
+       int realKeyValue = qRound((double)(current_time - startDrawTime) / (double)(lifeTime/mUnitList.size()));
        //qDebug() << "pDrawWidget->getTimeLine()->getPlayTime()"<< realKeyValue;
       // qDebug() << "cur " << current_time;
        //qDebug() << "start " << startDrawTime;
@@ -62,17 +69,23 @@ void DrawTextElm::draw()
 
    // if (keyCouter < realKeyValue)
 
-        while(keyCouter <=realKeyValue || (current_time - startDrawTime>lifeTime-50 && current_time - startDrawTime<=lifeTime))
+        while(keyCouter <=realKeyValue || bPlay && (current_time - startDrawTime>lifeTime-50 && current_time - startDrawTime<=lifeTime))
         {
-            current_time =  pDrawWidget->getTimeLine()->getPlayTime();
-            if (keyCouter < mUnitList.size() && bPlay) mUnitList.at(keyCouter)->draw(pDrawWidget);
+            if(!bPlay)
+                current_time =  pDrawWidget->getTimeLine()->getScalePointerPos();
+            else
+                current_time =  pDrawWidget->getTimeLine()->getPlayTime();
+
+            if (keyCouter < mUnitList.size()) mUnitList.at(keyCouter)->draw(pDrawWidget);
                     keyCouter++;
         }
       //  qDebug() << "drawInfo   " << (double) 1 - (double)(qAbs(((current_time - startDrawTime) - (lifeTime/mUnitList.size())*keyCouter)))/(lifeTime/mUnitList.size());
         if(keyCouter > 0 && keyCouter < mUnitList.size() && mUnitList.at(keyCouter)->unitType != mUnitList.at(keyCouter - 1)->unitType)
             pDrawWidget->update();
         pDrawWidget->setAnimationPersentOfCross( qAbs((double) 1 - (double)(qAbs(((current_time - startDrawTime) - (tickTime)*keyCouter)))/(tickTime)));
+           // qDebug() << realKeyValue <<"    KEY    " << keyCouter;
     }
+
     pDrawWidget->drawTextBuffer(x, y, width, height, z);
 
 

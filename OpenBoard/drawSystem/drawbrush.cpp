@@ -171,11 +171,13 @@ void DrawBrushElm::draw()
 
 
 
-     if (pDrawWidget->getTimeLine()->getPlayTime()>0)
+     if (pDrawWidget->getTimeLine()->getScalePointerPos() > 0)
     {
           int realKeyValue = (pDrawWidget->getTimeLine()->getPlayTime()-startDrawTime)*coords.size()/lifeTime;
         if(keyCouter == 0)
+        {
             pDrawWidget->clearFrameBuffer();
+        }
 
         while(keyCouter <realKeyValue)
         {

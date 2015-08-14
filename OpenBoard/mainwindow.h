@@ -62,6 +62,7 @@ public slots:
     void on_action_Clear_TextEdit_triggered();
     void onTextChanged();
     void updateTextEditFromBlock(QPoint point);
+    void updateVisibleTextEdit( bool state);
 
 //    settings
     void on_action_Font_triggered();

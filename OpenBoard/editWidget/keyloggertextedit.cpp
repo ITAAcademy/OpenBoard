@@ -420,4 +420,16 @@ void KeyloggerTE::setPreviousCursorPosition(const int& value)
     previousCursorPosition = value;
 }
 
+void KeyloggerTE::setEnabled(bool state)
+{
+    QPlainTextEdit::setEnabled(state);
+}
+
+void KeyloggerTE::setDisabled(bool state)
+{
+    //previousCursorPosition = textCursor().position();
+   // QPlainTextEdit::setDisabled(state);
+    QPlainTextEdit::setDisabled(state);
+}
+
 
