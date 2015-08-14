@@ -878,14 +878,14 @@ void MainWindow::on_action_Find_triggered()
       //  ui->lineEdit_Find->selectAll();
      //   ui->lineEdit_Find->setSelection(0,100);
     }
-    else {
-
+   /* else {
+        qDebug() <<"NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN";
         textEdit->setFocus();
 
         QString str = ui->lineEdit_Find->text();
             QList<QTextEdit::ExtraSelection> extraSelections;
             textEdit->moveCursor(QTextCursor::Start);
-            QColor color = QColor(Qt::white).lighter(130);
+            QColor color = QColor("green");//QColor(Qt::white).lighter(130);
            while(textEdit->find(str))
                 {
                     QTextEdit::ExtraSelection extra;
@@ -895,7 +895,7 @@ void MainWindow::on_action_Find_triggered()
                     extraSelections.append(extra);
                 }
                textEdit->setExtraSelections(extraSelections);
-    }
+    }*/
 }
 
 void MainWindow::on_action_Exit_triggered()
@@ -974,19 +974,17 @@ void MainWindow::search()
     QString str = ui->lineEdit_Find->text();
 
     QList<QTextEdit::ExtraSelection> extraSelections;
-
     textEdit->moveCursor(QTextCursor::Start);
-    QColor color = QColor(Qt::yellow).lighter(130);
+    QColor color ("green");// QColor(Qt::yellow).lighter(130);
 
     if(ui->check_case_sensitive->isChecked() == false
             && ui->check_whole_words->isChecked() == false)
     {
         while(textEdit->find(str))
-        {
+        {           
             QTextEdit::ExtraSelection extra;
-            extra.format.setBackground(color);
-
             extra.cursor = textEdit->textCursor();
+            extra.format.setBackground(color);
             extraSelections.append(extra);
         }
     }
@@ -1029,8 +1027,10 @@ void MainWindow::search()
             extraSelections.append(extra);
         }
     }
-
     textEdit->setExtraSelections(extraSelections);
+    QTextCursor cursor = textEdit->textCursor();
+    cursor.setPosition(extraSelections[0].cursor.position());
+    textEdit->setTextCursor(cursor);
 }
 
 bool MainWindow::on_action_Save_as_triggered()
@@ -1287,18 +1287,28 @@ void MainWindow::on_delayBtn_pressed()
 {
     show_pause_menu();
 
-    textEdit->setFocus();
+   // textEdit->setFocus();
+    commandTextEdit->setFocus();
 }
 
 void MainWindow::delay_released()
 {
+   /* QTextCursor prev_cursor = textEdit->textCursor();
+    prev_cursor.setPosition(QTextCursor::End);*/
     QString text = ui->action_delayTB->text();
     text += QString::number(ui->spinBox_delayTB->value());
     emit textEdit->setFocus();
+   //  textEdit->setTextCursor(prev_cursor);
     if( isCommandTextEditFocused )
         textEdit->appendNoNL(text);
     else
         textEdit->insertPlainText(text);
+
+  /*  QString text = ui->action_clearTB->text();
+    if( isCommandTextEditFocused )
+        textEdit->appendNoNL(text);
+    else
+        textEdit->insertPlainText(text);*/
 }
 
 void MainWindow::show_pause_menu()

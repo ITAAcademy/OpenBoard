@@ -95,8 +95,14 @@
            </item>
            <item>
             <widget class="QPushButton" name="button_Find">
+             <property name="minimumSize">
+              <size>
+               <width>80</width>
+               <height>0</height>
+              </size>
+             </property>
              <property name="text">
-              <string>Find all</string>
+              <string>Find all  </string>
              </property>
             </widget>
            </item>
@@ -1139,21 +1145,37 @@
    </property>
   </action>
   <action name="actionClear_drawing">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/Oxygen-Icons.org-Oxygen-Actions-edit-clear.ico</normaloff>:/icons/Oxygen-Icons.org-Oxygen-Actions-edit-clear.ico</iconset>
+   </property>
    <property name="text">
     <string>Clear drawing</string>
    </property>
   </action>
   <action name="actionShow_last_drawing">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/ip_icon_04_New.png</normaloff>:/icons/ip_icon_04_New.png</iconset>
+   </property>
    <property name="text">
     <string>Show last drawing</string>
    </property>
   </action>
   <action name="actionSave_drawing">
+   <property name="icon">
+    <iconset resource="../TimeLine/icons_timeLine.qrc">
+     <normaloff>:/iphone_toolbar_icons/disk.png</normaloff>:/iphone_toolbar_icons/disk.png</iconset>
+   </property>
    <property name="text">
     <string>Save drawing</string>
    </property>
   </action>
   <action name="actionLoad_drawing_temp">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/new-icon.png</normaloff>:/icons/new-icon.png</iconset>
+   </property>
    <property name="text">
     <string>Load drawing (temp)</string>
    </property>
@@ -1184,6 +1206,7 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
+  <include location="../TimeLine/icons_timeLine.qrc"/>
   <include location="icons.qrc"/>
  </resources>
  <connections>
