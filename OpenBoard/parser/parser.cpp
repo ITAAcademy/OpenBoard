@@ -46,6 +46,7 @@ quint64 Parser::processTimeOfUnits(QList<Unit*> list, int &globalPause, int dela
              resultTime+=delayMS + unit->unit_data.toInt() * 1000;
              globalPause += unit->unit_data.toInt() * 1000;
          }
+
       }
 
     }
