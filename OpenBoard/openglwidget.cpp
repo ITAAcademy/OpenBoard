@@ -1820,7 +1820,7 @@ QPoint OGLWidget::drawWrapText(QString str)
     return res;
 }
 
-void OGLWidget::drawTextBuffer( int m_x, int m_y, int m_width, int m_height, int z)
+void OGLWidget::drawTextBuffer( int m_x, int m_y, int m_width, int m_height, int z, bool cross)
 {
      busy = true;
     //if(!crossTextV2())
@@ -1916,7 +1916,8 @@ void OGLWidget::drawTextBuffer( int m_x, int m_y, int m_width, int m_height, int
        // localX=marginLeft;
         i++;
     }
-    crossTextDraw();
+    if(cross)
+        crossTextDraw();
     busy = false;
 
    // updateGL();
@@ -1926,7 +1927,7 @@ void OGLWidget::drawTextBuffer( int m_x, int m_y, int m_width, int m_height, int
 void OGLWidget::insertToBuffer(const QChar ch)
 {
     crossText();
-    crossTextDraw();
+   // crossTextDraw();
     while (isCrossingNow);
     QPoint convertedIndex = convertTextBoxToBufferIndex(cursorIndex);
    // // qDebug() << convertedIndex << " " << stringList.size() << " " << ch;
@@ -2064,6 +2065,10 @@ void OGLWidget::moveCursor(int n, bool withWrapShift)
                 shift = j;
     }
     */
+   /* int maxSymbol = getLastSymbolOfString(stringList.length() - 1, false);
+    if( maxSymbol < n)
+        n = maxSymbol;*/
+   // qDebug() << "MAX_SYMBOL" << maxSymbol;
     if(n > 0)
         cursorIndex += n + shift;
     else
@@ -2113,6 +2118,22 @@ int OGLWidget::getFirstSymbolOfString(int index, bool symbol)
     //if(sumLength != 0)
       //  sumLength++;
                 return sumLength;
+}
+int OGLWidget::getLastSymbolOfString(int index, bool symbol)
+{
+    int i = 0;
+    int sumLength = 0;
+    while( i <= index)
+    {
+        int nextLen = stringList[i].length();
+        if(!symbol)
+            nextLen++;
+        sumLength +=  nextLen;
+        i++;
+    }
+    //if(sumLength != 0)
+      //  sumLength++;
+    return sumLength + 1;
 }
 
 QPoint OGLWidget::convertTextBoxToBufferIndex(int index, bool symbol)
@@ -2304,7 +2325,7 @@ bool OGLWidget::crossTextDraw()
 
             x2 = marginLeft + fMetrics->width(stringList[conv.y()].left(conv.x() + 1));
             y += marginTop;
-            if( cross[i - 1] == -1)
+            if( cross[i - 1] == -1 && curStatus == PLAY)
             {
                 // qDebug() << "FIRST";
                // drawAnimationFigure(x1, y, x2, y, LINE, 0);

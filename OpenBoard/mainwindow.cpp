@@ -344,6 +344,7 @@ ui->actionRecord_to_file->setCheckable(true);
 
         connect(mpOGLWidget->getTimeLine(),SIGNAL(loadFromFileSignal()),this,SLOT(updateBlockFromTextEdit()));
         connect(mpOGLWidget->getTimeLine(), SIGNAL(updateSelectedBlock(QPoint)), this, SLOT(updateTextEditFromBlock(QPoint)));
+    //    connect(commandTextEdit, SIGNAL(widgetVisibilityChanged(bool)), this, SLOT(updateVisibleTextEdit(bool)));
 
         textEdit->setEnabled(false);
         commandTextEdit->setEnabled(false);
@@ -360,7 +361,6 @@ ui->actionRecord_to_file->setCheckable(true);
         textEdit->setEnabled(false);
         commandTextEdit->setEnabled(false);
         updateEditWidgets(true); //instal normal color
-
 
         on_action_New_Project_triggered();
 }
@@ -1585,11 +1585,17 @@ void MainWindow::updateTextEditFromBlock(QPoint point)
     setEnabledToolBar(false);
 }
 
+void MainWindow::updateVisibleTextEdit(bool state)
+{
+    updateTextEditFromBlock(mpOGLWidget->getTimeLine()->getSelectedBlockPoint());
+    commandTextEdit->textCursor().setPosition(commandTextEdit->getPreviousCursorPosition());
+}
+
 
 void MainWindow::updateBlockFromTextEdit()
 {
     QPoint point = mpOGLWidget->getTimeLine()->getSelectedBlockPoint();
-    qDebug() << "IMAGE" << point;
+    qDebug() << "IMAGE" << commandTextEdit->getPreviousCursorPosition();
     if(point.x() != -1 )
     {
         Element elm = mpOGLWidget->getTimeLine()->getBlock(point);
@@ -1701,7 +1707,7 @@ void MainWindow::on_action_Stop_triggered()
     {
         textEdit->setEnabled(true);
         commandTextEdit->setEnabled(true);
-        updateTextEditFromBlock(mpOGLWidget->getTimeLine()->getSelectedBlockPoint());
+     //   updateTextEditFromBlock(mpOGLWidget->getTimeLine()->getSelectedBlockPoint());
         ui->action_Undo->setEnabled(true);
         ui->action_Redo->setEnabled(true);
         a_undo->setEnabled(true);

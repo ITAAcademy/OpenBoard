@@ -229,7 +229,7 @@ public slots:
      */
     void insertToBuffer(const QChar ch);
     QPoint convertTextBoxToBufferIndex(int index, bool symbol = false);
-    void drawTextBuffer(int m_x, int m_y, int m_width, int m_height, int z = 0);
+    void drawTextBuffer(int m_x, int m_y, int m_width, int m_height, int z = 0, bool cross = true);
     void moveCursor(int n = 1, bool withWrapShift = true);
     void clearBuffer();
     void testWrap(int kIndexOfRow);
@@ -249,6 +249,7 @@ public slots:
     void displayText(const QString &text, QColor color);
     void testRectangle();
     bool isInit();
+    int getLastSymbolOfString(int index, bool symbol);
 signals:
     void drawTextChanged();
     void pauseSignal();
