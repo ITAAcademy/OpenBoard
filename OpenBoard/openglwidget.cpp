@@ -269,6 +269,16 @@ void OGLWidget::setShowLastDrawing(bool val){
      showingLastDrawing=val;
 }
 
+void OGLWidget::slotBlockEdited()
+{
+    qDebug() << "1234566666666666666";
+ // ms_for_debug.show();
+ /*QPoint t = timeLine->getSelectedBlockPoint();
+editingRectangle.rect = timeLine->getDrawRect(t.x(), t.y());
+*/
+selElm = QPoint(-1,-1);
+}
+
 OGLWidget::OGLWidget(QWidget *parent) :
     QGLWidget(parent)
 {
@@ -277,6 +287,8 @@ OGLWidget::OGLWidget(QWidget *parent) :
     connect(timeLine,SIGNAL(stopSignal()),this,SIGNAL(stopSignal()));
     connect(timeLine,SIGNAL(playSignal()),this,SIGNAL(startSignal()));
     connect(timeLine,SIGNAL(pauseSignal()),this,SIGNAL(pauseSignal()));
+
+    connect(timeLine,SIGNAL(blockEditedSignal()),this,SLOT(slotBlockEdited()));
 
     isNotPainting = false;
     selElm = QPoint(-1,-1); //because it undefined
@@ -1504,10 +1516,14 @@ void  OGLWidget::updateWindow(){
         }
         else
         {
+
+           // if (!timeLine->getIsEditBlockShow())
+            {
             QRect t2 = editingRectangle.rect;
             timeLine->setDrawX(selElm.x(), selElm.y(), t2.x());
             timeLine->setDrawY(selElm.x(), selElm.y(), t2.y());
             timeLine->setDrawSize(selElm.x(), selElm.y(), t2.width(), t2.height());
+            }
 
 
 

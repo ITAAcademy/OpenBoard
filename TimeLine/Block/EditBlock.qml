@@ -19,6 +19,8 @@ ApplicationWindow  {
     height: 400
      color: "gray"
      property color text_color: "white"
+
+  // onWindowChanged:   timeControll.setIsEditBlockShow(true) //when show
      Column {
          id: columns
          spacing: 1
@@ -271,8 +273,10 @@ ApplicationWindow  {
                  timeControll.setDrawZ(mainwindow.columnIndex,mainwindow.blockIndex,block_Z_value.text)
                  timeControll.setDrawSize(mainwindow.columnIndex,mainwindow.blockIndex,block_Width_value.text,block_Height_value.text)
 
-
+                timeControll.emitBlockEditedSignal()
                  globalRep.updateModel()
+                 console.log("888888888888 " + timeControll.getDrawX(main222.selectedBlockCol,
+                                                                         main222.selectedBlockIndex))
                  close();
              }
          }

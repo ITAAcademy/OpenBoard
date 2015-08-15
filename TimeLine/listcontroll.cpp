@@ -59,6 +59,16 @@ void ListControll::setZoomSpeed(float value)
 {
     zoom_speed = value;
 }
+
+bool ListControll::getIsEditBlockShow() const
+{
+    return isEditBlockShow;
+}
+
+void ListControll::setIsEditBlockShow(bool value)
+{
+    isEditBlockShow = value;
+}
 void ListControll::recountMaxTrackTime()
 {
     maxTrackTime = 0;
@@ -363,6 +373,11 @@ QImage ListControll::getBlockIcon(int col, int i)
  void ListControll::setDrawSize(int col, int i, int width, int height)
  {
      tracks[col].block[i].draw_element->setSize(width,height);
+
+ }
+ void  ListControll::emitBlockEditedSignal()
+ {
+  emit blockEditedSignal();
  }
 
  QSize ListControll::getDrawSize(int col, int i)

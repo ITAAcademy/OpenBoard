@@ -19,9 +19,10 @@ property Repeater globalRep
 
      function showEditBlock()
      {
-         //var component = Qt.createComponent("EditBlock.qml")
          var window    = Qt.createComponent("EditBlock.qml").createObject(contextMenuItem)
          window.modality = Qt.WindowModal
+        // window.flags =  Qt.WindowMinimizeButtonHint| Qt.WindowMaximizeButtonHint | Qt.CustomizeWindowHint
+        // Qt.WindowCloseButtonHint
          window.blockIndex = contextMenuItem.blockIndex
          window.columnIndex = contextMenuItem.columnIndex
          window.show()
@@ -33,7 +34,6 @@ property Repeater globalRep
 
          window.globalRep = contextMenuItem.globalRep
           window.minBlockWidth = contextMenuItem.minBlockWidth
-
      }
 
     Column {

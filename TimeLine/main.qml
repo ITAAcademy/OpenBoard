@@ -345,11 +345,18 @@ timeControll.setScaleScrollChildren(0) //it have protection from small values
             }
             else
             {
+                var contentWidth =   scroll.flickableItem.contentWidth - width/2
+                if (x > contentWidth)
+                    x = contentWidth
+                else
+                {
+
+
                 var real_time = timeControll.getMaxTrackTime() / main222.scaling
                var temp = scroll.width-30    // real_time - scroll.flickableItem.contentX + width
                 if (x  > temp )
                 {
-                 // console.log("HAAAAAAAAAAA")
+                  console.log("HAAAAAAAAAAA")
 
                     scroll.flickableItem.contentX += (x - temp)
                     var sad = real_time - scroll.width +50 // scroll.flickableItem.contentWidth - scroll.width + 10
@@ -359,6 +366,8 @@ timeControll.setScaleScrollChildren(0) //it have protection from small values
                   // timeControll.stop();
                    // main222.stop()
                 }
+            }
+
               /*  else
                 {
                 temp = scroll.width -width - 3  /// scroll.x + scroll.width - main222.p_trackbar.width*1.4
@@ -390,15 +399,16 @@ timeControll.setScaleScrollChildren(0) //it have protection from small values
             }*/
             }
 
-
+timeControll.setScalePointerPos((x  -20 + scroll.flickableItem.contentX)* main222.scaling);
+         //   console.log("JJJJJJJJJJJJJJJJ " + timeControll.getScalePointerPos())
             if (!main222.isPlay)
             {
             timeControll.calcPointedBlocks();
-                //console.log("AAAAAAAAAAA")
+               //console.log("AAAAAAAAAAAWWWWWWWWWWWWWWWWWWWWWWW")
                 //console.log("getScalePointerPos = " + timeControll.getScalePointerPos())
 
             }
-            timeControll.setScalePointerPos(x * main222.scaling -20 + scroll.flickableItem.contentX);
+
            // // console.log("x + scroll.flickableItem.contentX = "+x +" + " + scroll.flickableItem.contentX
 
             //console.log("scale_pointer X = " +(x+width/2))
@@ -556,7 +566,7 @@ timeControll.setScaleScrollChildren(0) //it have protection from small values
         }
         console.log("6666666666666666666")
         timeControll.calcPointedBlocks();
-        console.log("77777777777777777")
+        console.log("77777777777777777" )
         timeControll.setIsProjectChanged(true)
     }
                                            delegate:
