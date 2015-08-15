@@ -183,12 +183,12 @@ void ListControll::loadFromFile()
    emit loadFromFileSignal();
    emit updateSelectedBlock(selectedBlockPoint);
    emit loadFromFileSignal();
-
-  /* if(new_life_time > 1000)
+/*
+   if(new_life_time > 1000)
    {
        setBlockTime(p.x(),p.y(), new_life_time);
-   }*/
-
+   }
+*/
 }
 
 bool ListControll::removeLastBlock(int col)
@@ -746,7 +746,7 @@ bool ListControll::isActiveWindow()
          int blockXstart = 0;
          for (int y=0; y<tracks[i].block.size(); y++ )
          {
-             int blockXend =blockXstart + tracks[i].block[y].draw_element->getLifeTime();
+             int blockXend = blockXstart + tracks[i].block[y].draw_element->getLifeTime();
              if (ms <= blockXend)
              {
                  pointed_block.append(tracks[i].block[y]);

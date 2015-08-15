@@ -1498,7 +1498,7 @@ void  OGLWidget::updateWindow(){
         editingRectangle.isEditingRectangleVisible = true;
         if(t != selElm )
         {
-           clearBuffer();
+           //clearBuffer();
             selElm = t;
             editingRectangle.rect = timeLine->getDrawRect(t.x(), t.y());
         }

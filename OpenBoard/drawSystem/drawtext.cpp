@@ -40,12 +40,6 @@ DrawTextElm::~DrawTextElm()
 
 void DrawTextElm::draw()
 {
-   // if(keyCouter < mUnitList.size() && bPlay && tickTimer.elapsed() > tickTime)
-    //{
-      //  mUnitList.at(keyCouter)->draw(pDrawWidget);
-        //keyCouter++;
-     //   tickTimer.restart();
-   // }
     int current_time;
     if(!bPlay)
         current_time =  pDrawWidget->getTimeLine()->getScalePointerPos();
@@ -65,9 +59,7 @@ void DrawTextElm::draw()
                curentPauseValue = 0;
            }
        }
-       //qDebug() << (curentPauseValue + startDrawTime) <<    "                   qwe     " << (lifeTime - globalPauseLifeTime) << "      "  << globalDeltaComandSize;
-       int realKeyValue = qFloor((double)((double)(current_time - (curentPauseValue + startDrawTime)) / (double)((lifeTime - globalPauseLifeTime)/(mUnitList.size() - globalDeltaComandSize  - 1))));
-      // qDebug() << "qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqq" << realKeyValue;
+       int realKeyValue = qRound((double)(current_time - (curentPauseValue + startDrawTime)) / (double)((lifeTime - globalPauseLifeTime)/(mUnitList.size() - globalDeltaComandSize)));
        //qDebug() << "pDrawWidget->getTimeLine()->getPlayTime()"<< realKeyValue;
       // qDebug() << "cur " << current_time;
        //qDebug() << "start " << startDrawTime;
@@ -75,51 +67,30 @@ void DrawTextElm::draw()
 
    // if (keyCouter < realKeyValue)
 
-        while(keyCouter <= realKeyValue)
+        while(keyCouter <=realKeyValue)
         {
+            if(!bPlay)
+                current_time =  pDrawWidget->getTimeLine()->getScalePointerPos();
+            else
+                current_time =  pDrawWidget->getTimeLine()->getPlayTime();
 
+            if (keyCouter < mUnitList.size())
+            {
+                mUnitList.at(keyCouter)->draw(pDrawWidget);
+                if(mUnitList.at(keyCouter)->delay > 0 && bPlay)
+                    curentPauseValue += mUnitList.at(keyCouter)->delay;
+ }
+                keyCouter++;
 
-
-         //   qDebug() << "NOW_BLOK_RAMAINE" << (current_time - (curentPauseValue + startDrawTime + tickTime*realKeyValue)) << "     " << tickTime;
-                while(keyCouter < mUnitList.size())
-                {
-
-                    mUnitList.at(keyCouter)->draw(pDrawWidget);
-                    if(mUnitList.at(keyCouter)->delay > 0 && bPlay)
-                    {
-                        curentPauseValue += mUnitList.at(keyCouter++)->delay;
-                        break;
-                    }
-
-                    if(!bPlay)
-                        current_time =  pDrawWidget->getTimeLine()->getScalePointerPos();
-                    else
-                        current_time =  pDrawWidget->getTimeLine()->getPlayTime();
-
-                    if(keyCouter++ > 0 && keyCouter < mUnitList.size() && mUnitList.at(keyCouter)->unitType != mUnitList.at(keyCouter - 1)->unitType)
-                        pDrawWidget->update();
-                    tickTime = ((lifeTime - globalPauseLifeTime)/(mUnitList.size() - globalDeltaComandSize  - 1));
-                    pDrawWidget->setAnimationPersentOfCross(((double)(current_time - (curentPauseValue + startDrawTime + tickTime*realKeyValue))/tickTime ));
-
-                 //   qDebug() << keyCouter;
-                    //if(mUnitList.at(keyCouter++)->unitType == 0 )
-                        break;
-                }
-                if(keyCouter >= mUnitList.size())
-                    break;
-                    pDrawWidget->drawTextBuffer(x, y, width, height, z);
-
-         }
-
-
+        }
       //  qDebug() << "drawInfo   " << (double) 1 - (double)(qAbs(((current_time - startDrawTime) - (lifeTime/mUnitList.size())*keyCouter)))/(lifeTime/mUnitList.size());
-
+        if(keyCouter > 0 && keyCouter < mUnitList.size() && mUnitList.at(keyCouter)->unitType != mUnitList.at(keyCouter - 1)->unitType)
+            pDrawWidget->update();
+        pDrawWidget->setAnimationPersentOfCross( qAbs((double) 1 - (double)(qAbs(((current_time - startDrawTime) - (tickTime)*keyCouter)))/(tickTime)));
            // qDebug() << realKeyValue <<"    KEY    " << keyCouter;
     }
 
     pDrawWidget->drawTextBuffer(x, y, width, height, z);
-
-
 }
 
 void DrawTextElm::setLifeTime(int value)
