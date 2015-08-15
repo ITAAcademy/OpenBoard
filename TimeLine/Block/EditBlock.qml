@@ -275,8 +275,6 @@ ApplicationWindow  {
 
                 timeControll.emitBlockEditedSignal()
                  globalRep.updateModel()
-                 console.log("888888888888 " + timeControll.getDrawX(main222.selectedBlockCol,
-                                                                         main222.selectedBlockIndex))
                  close();
              }
          }

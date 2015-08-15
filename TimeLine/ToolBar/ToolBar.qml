@@ -5,6 +5,8 @@ Rectangle {
     color: "gray"
    // onHeightChanged: // console.log("HEIGHT  toolbar = " + height)
     property Repeater globalRep
+    property Buutton p_button_RemoveTrack
+    property Buutton p_button_AddTrack
     Column{
         width: parent.width
         height: parent.height
@@ -27,6 +29,9 @@ Rectangle {
             height: parent.width
             width: parent.width
           icon_source : "qrc:/iphone_toolbar_icons/delete.png"
+          Component.onCompleted: {
+              root.p_button_RemoveTrack = butRemoveTrack
+          }
             onClicked: {
                 main222.needToLightSelected = false
                 main222.removeTrack();
@@ -40,6 +45,9 @@ Rectangle {
             width: parent.width
           icon_source : "qrc:/iphone_toolbar_icons/eject.png"
           rotation: 180
+          Component.onCompleted: {
+              root.p_button_AddTrack = butAddTrack
+          }
             onClicked: {
 
                 //for (var i = 0; i< 15; i++)
