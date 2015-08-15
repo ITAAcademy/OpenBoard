@@ -182,7 +182,7 @@ class ListControll : public QObject, public QQuickImageProvider
     bool isProjectChange = false;
     int maxTrackTime ;
     float scale_scroll_children = 10.0;
-    float zoom_speed = 10.0;
+    float zoom_speed = 1.0;
     QQuickView view;
     QPoint framaMousePosition;
      QPoint prevMousePosition;

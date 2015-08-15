@@ -1,0 +1,345 @@
+#include "qmlwidget.h"
+/*
+ *scroll
+ *
+int k = canvas->property("scroll").toInt() - 10;
+canvas->setProperty("scroll", k);
+*/
+QmlWidget::QmlWidget(QWidget *parent) :
+    QQuickWidget(parent)
+{
+    //qRegisterMetaType<DrawData>("DrawData");
+     engine()->rootContext()->setContextProperty(QLatin1String("forma"), this);
+    //setSource(QUrl("../OpenBoard/draw.qml"));
+    setSource(QUrl("qrc:/draw.qml"));
+    m_encoder = new Encoder(this);
+
+    this->setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint | Qt::WindowTitleHint);
+    this->setResizeMode(QQuickWidget::SizeRootObjectToView );
+    /*
+     * init
+    */
+    lineHeight = 25;
+    marginLeft = 20;
+    marginTop = 40;
+    maxWidth; //размер поле, где выводится текст
+    pt = 36;
+    font = "LC Chalk";
+    isWord  =  true;
+    x = marginLeft;
+    y = lineHeight + pt;
+    indexW = 1;
+    indexRow = 0;
+    scroll = 0;
+    //listStr[0] = 0;
+    indexInLsit = 1;
+    deleteWT = 0;
+    isPlay = false;
+    /*
+     * canvas set
+    */
+
+    canvas = rootObject()->findChild<QObject *>("mcanvas");
+    maxWidth = width() - marginLeft;
+    QMetaObject::invokeMethod(canvas, "init");
+    QFont canvasFont(font);
+    canvasFont.setPixelSize(20);
+    setTextFont(canvasFont);
+    setFillColor(QColor(255,255,255));
+
+    /*
+     *cursor ALPHA
+     *
+    */
+    //setCursor(Qt::NoArrow);
+    /*QPixmap pix(1,1);
+    QColor color(0,0,0,0);
+    pix.fill(color);
+    QCursor mCursor(pix);
+    setCursor(mCursor);*/
+
+
+
+}
+
+QmlWidget::~QmlWidget()
+{
+    delete m_encoder;
+    delete fMetrics;
+}
+
+void QmlWidget::moveEvent(QMoveEvent *event)
+{
+
+}
+
+void QmlWidget::paintEvent(QPaintEvent *event)
+{
+    if(isPlay)
+        m_encoder->encodeVideoFrame(this->grabFramebuffer());
+}
+
+void QmlWidget::resizeEvent(QResizeEvent *envent)
+{
+    QQuickWidget::resizeEvent(envent);
+    maxWidth = width() - marginLeft;
+}
+
+void QmlWidget::mousePressEvent(QMouseEvent *event)
+{
+    crossOutLastSymbol();
+}
+
+QString QmlWidget::getDrawText()
+{
+    return drawText;
+}
+
+void QmlWidget::setDrawText(QString data)
+{
+    drawText = data;
+}
+
+VideoCodecSettings QmlWidget::videoCodecSettings() const
+{
+    //x264 loseless fast preset
+    VideoCodecSettings settings;
+    settings.setCoderType(EncoderGlobal::Vlc);
+    settings.setFlags(EncoderGlobal::LoopFilter);
+    settings.setMotionEstimationComparison(1);
+    settings.setPartitions(EncoderGlobal::I4x4 | EncoderGlobal::P8x8);
+    settings.setMotionEstimationMethod(EncoderGlobal::Hex);
+    settings.setSubpixelMotionEstimationQuality(3);
+    settings.setMotionEstimationRange(16);
+    settings.setGopSize(250);
+    settings.setMinimumKeyframeInterval(25);
+    settings.setSceneChangeThreshold(40);
+    settings.setIQuantFactor(0.71f);
+    settings.setBFrameStrategy(1);
+    settings.setQuantizerCurveCompressionFactor(0.6f);
+    settings.setMinimumQuantizer(0);
+    settings.setMaximumQuantizer(69);
+    settings.setMaximumQuantizerDifference(4);
+    settings.setDirectMvPredictionMode(EncoderGlobal::SpatialMode);
+    settings.setFlags2(EncoderGlobal::FastPSkip);
+    settings.setConstantQuantizerMode(0);
+    settings.setPFramePredictionAnalysisMethod(EncoderGlobal::NoWpm);
+
+    return settings;
+}
+
+AudioCodecSettings QmlWidget::audioCodecSettings() const
+{
+    // audio, possible future adventures
+    AudioCodecSettings settings;
+    settings.setSampleRate( 44100);
+    settings.setChannelCount(2);
+    settings.setSampleFormat(EncoderGlobal::Signed16);
+
+    return settings;
+}
+
+void QmlWidget::drawAnimated()
+{
+    if(isPlay)
+    {
+        //m_recorder->resume();
+        return;
+    }
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Choose file..."), qApp->applicationDirPath(), tr("Videos (*.avi *.mp4)"));
+    if(!fileName.size())
+        return;
+
+    m_encoder->setVideoCodecSettings(videoCodecSettings());
+   // m_encoder->setAudioCodecSettings(audioCodecSettings());
+   // m_encoder->setEncodingMode(Encoder::VideoAudioMode);
+    m_encoder->setEncodingMode(Encoder::VideoMode);
+    m_encoder->setVideoCodec(EncoderGlobal::H264);
+    m_encoder->setAudioCodec(EncoderGlobal::MP3);
+    m_encoder->setOutputPixelFormat(EncoderGlobal::YUV420P);
+    m_encoder->setFilePath( fileName );
+    m_encoder->setVideoSize(this->size());
+    m_encoder->setFixedFrameRate(25);
+    m_encoder->start();
+    isPlay = true;
+}
+
+void QmlWidget::stopAnimated()
+{
+    m_encoder->stop();
+    isPlay = false;
+}
+
+void QmlWidget::pauseAnimated()
+{
+    //m_recorder->pause();
+}
+
+void QmlWidget::clearCanvas()
+{
+    QMetaObject::invokeMethod(canvas, "clear");
+    x = marginLeft;
+    y = marginTop;
+}
+
+void QmlWidget::nextRow()
+{
+    y += lineHeight + pt;
+    x = marginLeft;
+}
+
+void QmlWidget::crossOutLastSymbol()
+{
+    int tx = x, ty = y;
+    int k = 0;
+    QString str = listWords.right(1 + deleteWT);
+    deleteWT++;
+    int widht = fMetrics->width(str)*1.5;
+    int deltaY = deltaY = (widht - x) /(maxWidth - marginLeft);
+
+    if(x - widht <= marginLeft)
+    {
+        deltaY++;
+    }
+
+    tx = (maxWidth - marginLeft)*deltaY - (widht - x  + marginLeft);
+
+    ty -= (lineHeight + pt)*deltaY;
+
+    fillText("/", tx, ty);
+    fillText("\\", tx, ty);
+}
+
+void QmlWidget::generateFrames()
+{
+    //generate 500 frames for test
+    for (int i = 0; i < 500; ++i) {
+        QImage frame(QSize(1024, 768), QImage::Format_RGB16);
+        frame.fill(Qt::yellow);
+        QPainter painter(&frame);
+        painter.setPen(QPen(Qt::red, 3));
+        painter.drawRect(i, i, 30, 30);
+        m_encoder->encodeVideoFrame(frame);
+        //this is needed to prevent RAM overflow on some computers
+        if (i % 20 == 0) {
+            while (m_encoder->encodedFrameCount() != i) { qApp->processEvents(); }
+        }
+
+        qApp->processEvents();
+    }
+
+    m_encoder->stop();
+
+}
+QFont QmlWidget::getTextFont() const
+{
+    return textFont;
+}
+
+void QmlWidget::setTextFont(const QFont &value)
+{
+    textFont = value;
+    fMetrics = new QFontMetrics(value);
+    pt = value.pixelSize();
+    QVariant a = QVariant(value.family());
+    QVariant b = QVariant(value.pixelSize());
+    QVariant c = QVariant(" "); //style
+    QMetaObject::invokeMethod(canvas, "initFont",
+            Q_ARG(QVariant, b),
+            Q_ARG(QVariant, a),
+            Q_ARG(QVariant, c));
+}
+
+void QmlWidget::setFillColor(QColor col)
+{
+    QString sColor = QString("rgba(%1, %2, %3, %4)").arg(col.red()).arg(col.green()).arg(col.blue()).arg(col.alpha());
+    QMetaObject::invokeMethod(canvas, "setColor",Q_ARG(QVariant, QVariant(sColor)));
+}
+
+void QmlWidget::setFillGradient(int x, int y, int width, int height, GradientSetting color)
+{
+    QMetaObject::invokeMethod(canvas, "setGradientStyle",
+            Q_ARG(QVariant, QVariant(x)),
+            Q_ARG(QVariant, QVariant(y)),
+            Q_ARG(QVariant, QVariant(width)),
+            Q_ARG(QVariant, QVariant(height)),
+            Q_ARG(QVariant, QVariant(color.list)));
+}
+
+bool QmlWidget::IsPlay() const
+{
+    return isPlay;
+}
+
+void QmlWidget::recreate()
+{
+    this->create();
+}
+
+void QmlWidget::fillText( QString str, int x, int y)
+{
+    QMetaObject::invokeMethod(canvas, "fillText",
+            Q_ARG(QVariant, QVariant(str)),
+            Q_ARG(QVariant, QVariant(x)),
+                              Q_ARG(QVariant, QVariant(y)));
+}
+
+void QmlWidget::fillAnimationText(QString str, int x, int y, float time)
+{
+    /*QTimer timer;
+    timer.setInterval(time);*/
+    GradientSetting color;
+    color.addColorStop(0,0,255,0);
+    color.addColorStop(0.85f,0,255,0,255);
+    int widthX = fMetrics->width(str) + x + 35;
+    int widthT = fMetrics->width(str) + 35;
+    int heightT = fMetrics->height() + y + 35;
+    float nx = x - widthT;
+    while(nx <= widthX)
+    {
+        setFillGradient(x - widthT, y, 250, heightT, color);
+        fillText(str, x, y);
+   //     this->update();
+        qApp->processEvents(QEventLoop::ExcludeUserInputEvents);
+        nx += widthT/time;
+       // Sleep(time);
+    }
+}
+
+void QmlWidget::isLastRow()
+{
+    if(y  + scroll*indexRow > this->height() )
+    {
+        scroll = -(lineHeight + pt);
+        QMetaObject::invokeMethod(canvas, "isLastRow",
+                Q_ARG(QVariant, QVariant(scroll)),
+                Q_ARG(QVariant, QVariant((lineHeight + pt)*indexRow)),
+                Q_ARG(QVariant, QVariant(y)));
+       indexRow++;
+    }
+}
+void QmlWidget::drawWrapText(QString str)
+{
+    deleteWT = 0;
+    QVariant returnedValue;
+    QVariant msg = str;
+    int widht = fMetrics->width(str)*1.5 + fMetrics->leftBearing(str.at(0)) + fMetrics->rightBearing(str.at(0));
+
+    if(widht + x > maxWidth)
+    {
+        if(isWord)
+        {
+            fillText("-", x, y);
+            listWords += "-";
+            listStr.push_back( listWords.length() );
+            indexInLsit++;
+        }
+        nextRow();
+    }
+    isLastRow();
+    //fillAnimationText(str, x, y, 6);
+    fillText(str, x, y);
+    listWords += str;
+    x += widht;
+}
+

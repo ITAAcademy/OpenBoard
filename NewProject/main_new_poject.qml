@@ -109,8 +109,8 @@ Rectangle{
                 }
             }
             Component.onCompleted: {
-                m2.check();
-                 content.next = c1;
+            //    m2.check();
+              //   content.next = c1;
             }
         }
         Rectangle{

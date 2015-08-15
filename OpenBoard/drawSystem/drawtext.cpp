@@ -96,7 +96,7 @@ void DrawTextElm::draw()
 void DrawTextElm::setLifeTime(int value)
 {
     lifeTime = value;
-    if(mUnitList.size() != 0)
+    if(mUnitList.size() != 0 && (mUnitList.size() - globalDeltaComandSize  - 1) != 0)
         tickTime = ((lifeTime - globalPauseLifeTime)/(mUnitList.size() - globalDeltaComandSize  - 1));
     qDebug() << "tickTime4:"<<tickTime;
 
@@ -118,8 +118,9 @@ void DrawTextElm::setUnParsestring(const QString &valueUnParss, const QString &v
     // qDebug() << value;
     globalPauseLifeTime = 0;
     globalDeltaComandSize = 0;
-
+    qDebug() << "START";
     myParser.ParsingLine(mUnitList, unParsestring, drawTime, globalPauseLifeTime, globalDeltaComandSize, delay);
+    qDebug() << "STOP";
     UnitCommand* command = new UnitCommand();
     command->setUnitCommandType("Update");
     command->setUnitData("1");
@@ -127,7 +128,7 @@ void DrawTextElm::setUnParsestring(const QString &valueUnParss, const QString &v
     mUnitList.append(command);
     /*if (needToSaveLifeTime)
         lifeTime=drawTime;*/
-    if(mUnitList.size() > 0)
+    if(mUnitList.size() > 0 && (mUnitList.size() - globalDeltaComandSize  - 1) != 0)
         tickTime = ((lifeTime - globalPauseLifeTime)/(mUnitList.size() - globalDeltaComandSize  - 1));
      qDebug()<<"tickTime5:"<<tickTime;
 }

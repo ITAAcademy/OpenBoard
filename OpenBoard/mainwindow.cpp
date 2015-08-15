@@ -342,7 +342,7 @@ ui->actionRecord_to_file->setCheckable(true);
         connect(mpOGLWidget->getTimeLine(), SIGNAL(openProjectSignel()), this, SLOT(on_action_Open_Project_triggered()));
         connect(mpOGLWidget->getTimeLine(), SIGNAL(saveProjectSignel()), this, SLOT(on_action_Save_Project_triggered()));
 
-        connect(mpOGLWidget->getTimeLine(),SIGNAL(loadFromFileSignal()),this,SLOT(updateBlockFromTextEdit()));
+      //  connect(mpOGLWidget->getTimeLine(),SIGNAL(loadFromFileSignal()),this,SLOT(updateBlockFromTextEdit()));
         connect(mpOGLWidget->getTimeLine(), SIGNAL(updateSelectedBlock(QPoint)), this, SLOT(updateTextEditFromBlock(QPoint)));
     //    connect(commandTextEdit, SIGNAL(widgetVisibilityChanged(bool)), this, SLOT(updateVisibleTextEdit(bool)));
 
@@ -1622,7 +1622,7 @@ void MainWindow::updateBlockFromTextEdit()
             text_elm->setTextCursor(commandTextEdit->textCursor().position());
             int change_time = text_elm->getDrawTime();
             if(change_time < 100)
-                change_time == 100;
+                change_time = 100;
             ui->expected_time->setText("EXPECTED TIME:  " + QString::number(change_time) + " ms");
             if(ui->check_use_speed_value->isChecked())
             {

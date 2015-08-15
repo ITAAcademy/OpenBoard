@@ -1844,7 +1844,10 @@ void OGLWidget::drawTextBuffer( int m_x, int m_y, int m_width, int m_height, int
     int lastRow = indexRowInList + maxDrawElm - 1;
     if(lastRow >= stringList.length())
         lastRow = stringList.length() - 1;
+    if(lastRow < 0)
+        lastRow = 0;
     indexLastDrawSymbol = getLastSymbolOfString(lastRow, false);
+
     //qDebug() << "First  " << indexFirstDrawSymbol <<    "   " <<  indexRowInList << "    " << indexLastDrawSymbol;
   //  // qDebug() << indexRowInList << "   indexFirstDrawSymbol   :           " << indexFirstDrawSymbol << cross;
  //   // qDebug() << "START draw with indexRowInList " << indexRowInList << "MAX elm " << maxElm << "CUR " << CurRow;
@@ -2295,7 +2298,11 @@ bool OGLWidget::crossTextDraw()
     int x1, x2, x;
     bool lastGood = false;
     bool needNextRow = false;
-    for(int i = indexFirstDrawSymbol; i < indexLastDrawSymbol; i++)
+    int last = cross.length();
+    if(indexLastDrawSymbol != 0)
+        last = indexLastDrawSymbol;
+
+    for(int i = indexFirstDrawSymbol; i < cross.length(); i++)
     {
 
         if(cross[i] != 0)

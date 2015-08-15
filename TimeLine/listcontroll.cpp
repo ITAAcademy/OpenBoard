@@ -182,7 +182,7 @@ void ListControll::loadFromFile()
    temp.draw_element->setZ(p.x());
    emit loadFromFileSignal();
    emit updateSelectedBlock(selectedBlockPoint);
-   emit loadFromFileSignal();
+   //emit loadFromFileSignal();
 /*
    if(new_life_time > 1000)
    {
