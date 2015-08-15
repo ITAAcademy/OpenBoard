@@ -45,6 +45,7 @@ public:
     void paint(); //new use
     bool load(QString path);
     bool save(QString path);
+    void clear();
     bool reloadLastDone();
 
     bool load(QIODevice* device);

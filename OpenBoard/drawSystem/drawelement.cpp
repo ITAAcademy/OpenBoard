@@ -158,6 +158,11 @@ bool DrawElement::save(QString path)
 
 }
 
+void DrawElement::clear()
+{
+
+}
+
 bool DrawElement::reloadLastDone()
 {
     if(lastPath.isNull())

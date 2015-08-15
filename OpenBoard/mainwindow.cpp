@@ -342,7 +342,7 @@ ui->actionRecord_to_file->setCheckable(true);
         connect(mpOGLWidget->getTimeLine(), SIGNAL(openProjectSignel()), this, SLOT(on_action_Open_Project_triggered()));
         connect(mpOGLWidget->getTimeLine(), SIGNAL(saveProjectSignel()), this, SLOT(on_action_Save_Project_triggered()));
 
-      //  connect(mpOGLWidget->getTimeLine(),SIGNAL(loadFromFileSignal()),this,SLOT(updateBlockFromTextEdit()));
+        connect(mpOGLWidget->getTimeLine(),SIGNAL(loadFromFileSignal()),this,SLOT(updateBlockFromTextEdit()));
         connect(mpOGLWidget->getTimeLine(), SIGNAL(updateSelectedBlock(QPoint)), this, SLOT(updateTextEditFromBlock(QPoint)));
     //    connect(commandTextEdit, SIGNAL(widgetVisibilityChanged(bool)), this, SLOT(updateVisibleTextEdit(bool)));
 
@@ -438,6 +438,8 @@ case VIDEO_EDIT_PRO:
     a_show_last_drawing->setVisible(true);
     a_stop->setVisible(true);
     a_undo->setVisible(true);
+    if(mpOGLWidget->isVisible())
+        mpOGLWidget->getTimeLine()->show();
     qDebug() << "PRO";
     //mpOGLWidget->getTimeLine()->hide();
     break;
@@ -1303,15 +1305,17 @@ void MainWindow::on_delayBtn_pressed()
     show_pause_menu();
 
    // textEdit->setFocus();
-    commandTextEdit->setFocus();
+    if( isCommandTextEditFocused )
+        commandTextEdit->setFocus();
+    else
+        textEdit->setFocus();
 }
 
 void MainWindow::delay_released()
 {
    /* QTextCursor prev_cursor = textEdit->textCursor();
     prev_cursor.setPosition(QTextCursor::End);*/
-    QString text = ui->action_delayTB->text();
-    text += QString::number(ui->spinBox_delayTB->value());
+    QString text = QString("\\p%1").arg(ui->spinBox_delayTB->value(), 2, 10, QChar('0'));
    // emit textEdit->setFocus();
    //  textEdit->setTextCursor(prev_cursor);
     if( isCommandTextEditFocused )

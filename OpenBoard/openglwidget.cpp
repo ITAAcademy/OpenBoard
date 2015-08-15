@@ -1209,9 +1209,16 @@ bool OGLWidget::drawAnimated(bool record)
     }
     if(record)
     {
-        QString fileName = QFileDialog::getSaveFileName(this, tr("Choose file..."), qApp->applicationDirPath(), tr("Videos (*.avi *.mp4)"), 0, QFileDialog::DontUseNativeDialog);
+        //QString fileName = QFileDialog::getSaveFileName(this, tr("Choose file..."), qApp->applicationDirPath(), tr("Videos (*.avi *.mp4)"), 0, QFileDialog::DontUseNativeDialog);
+
+        QString suf;
+        QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"), QString(),
+                                                        tr("Videos (*.avi *.mp4)"), &suf, QFileDialog::DontUseNativeDialog | QFileDialog::DontConfirmOverwrite);
+        fileName =  mSuffixFromFilter(suf, fileName);
+
         if(fileName.size() == 0)
             return false;
+        qDebug() << "OKKKKKKKKKKKKKKKKKKKKKKK";
       //  qDebug() << "SHOW_FILE_NAME " << fileName;
         m_encoder->setFileName(fileName);
         m_encoder->setGrabWidget(this);
@@ -1498,7 +1505,7 @@ void  OGLWidget::updateWindow(){
         editingRectangle.isEditingRectangleVisible = true;
         if(t != selElm )
         {
-           //clearBuffer();
+            clearBuffer();
             selElm = t;
             editingRectangle.rect = timeLine->getDrawRect(t.x(), t.y());
         }
