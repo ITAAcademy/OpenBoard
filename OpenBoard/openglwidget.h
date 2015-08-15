@@ -103,6 +103,7 @@ public:
     bool isClearFrameBuffer = false;//clear frame buffer
    volatile bool isCrossingNow;
 
+
    DrawBrushElm *drawBrushElm;//record mouse movement
     GLuint brushTexture;
     GLuint backGroundTexture;
@@ -210,6 +211,7 @@ public:
     bool isShowLastDrawing();
     void setShowLastDrawing(bool val);
 public slots:
+    void slotBlockEdited();
     bool drawAnimated( bool record );
     void stopAnimated();
     void pauseAnimated();
@@ -265,6 +267,7 @@ private slots:
     void storeMousePos();
 
 private:
+     QMessageBox ms_for_debug;
     bool pressedCtrl = false;
     bool pressedShift = false;
 

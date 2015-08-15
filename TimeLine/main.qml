@@ -70,8 +70,9 @@ Rectangle
    property int selectedBlockIndex : 0
     property real scaling :  timeControll.getScaleScrollChildren()
    property int minBlockWidth : 1000 / scaling
-   property bool isPlay : false
+   property int isPlayPauseStop : 2
    // property int torepainting : 1
+    property int saveScrollX : 0
 
 
    property  bool needToLightSelected : false
@@ -135,16 +136,39 @@ item_col.width = (timeControll.getMaxTrackTime() + 31) * main222.scaling
     }
 
     function play()    {
-        main222.isPlay = true
+        if (isPlayPauseStop === 2)
+            scroll.flickableItem.contentX = 0;
+        else if (isPlayPauseStop === 1)
+        {
+             scale_pointer.x = timeControll.getPlayTime()/main222.scaling;
+           scroll.flickableItem.contentX = main222.saveScrollX
+        }
+        main222.isPlayPauseStop = 0
+
+
+        scroll.enabled = false
+         scale_pointer.enabled = false
+        tollbar.p_button_RemoveTrack.enabled = false
+        tollbar.p_button_RemoveTrack.enabled = false
 
     }
     function pause()    {
-main222.isPlay = false
+        main222.saveScrollX = scroll.flickableItem.contentX
+main222.isPlayPauseStop = 1
 
+        scroll.enabled = true
+       scale_pointer.enabled = true
+       tollbar.p_button_RemoveTrack.enabled = true
+       tollbar.p_button_RemoveTrack.enabled = true
     }
     function stop()    {
       //  scale_pointer.x =
-main222.isPlay = false
+main222.isPlayPauseStop = 2
+
+        scroll.enabled = true
+       scale_pointer.enabled = true
+       tollbar.p_button_RemoveTrack.enabled = true
+       tollbar.p_button_RemoveTrack.enabled = true
 //scale_pointer.x = timeControll.getMaxTrackTime() + scale_pointer.width/2 - scroll.flickableItem.contentX;
     }
 
@@ -176,19 +200,22 @@ main222.isPlay = false
             main222.play()
           scale_pointer.x = 0
 
+
        }
       onPauseSignal: {
             main222.pause()
        }
        onStopSignal: {
             main222.stop()
+
+
        }
        onSetScalePointerPosSignal: {
             main222.setScalePointerPos(value * main222.scaling)
        }
 
        onUpdateSignal:  {
-           if (main222.isPlay )
+           if (main222.isPlayPauseStop === 0 )
            {
                var play_time = timeControll.getPlayTime();
      scale_pointer.x += (play_time - main222.prevPlayTime)/main222.scaling;
@@ -345,11 +372,18 @@ timeControll.setScaleScrollChildren(0) //it have protection from small values
             }
             else
             {
+                var contentWidth =   scroll.flickableItem.contentWidth - width/2
+                if (x > contentWidth)
+                    x = contentWidth
+                else
+                {
+
+
                 var real_time = timeControll.getMaxTrackTime() / main222.scaling
                var temp = scroll.width-30    // real_time - scroll.flickableItem.contentX + width
                 if (x  > temp )
                 {
-                 // console.log("HAAAAAAAAAAA")
+                  console.log("HAAAAAAAAAAA")
 
                     scroll.flickableItem.contentX += (x - temp)
                     var sad = real_time - scroll.width +50 // scroll.flickableItem.contentWidth - scroll.width + 10
@@ -359,6 +393,8 @@ timeControll.setScaleScrollChildren(0) //it have protection from small values
                   // timeControll.stop();
                    // main222.stop()
                 }
+            }
+
               /*  else
                 {
                 temp = scroll.width -width - 3  /// scroll.x + scroll.width - main222.p_trackbar.width*1.4
@@ -390,15 +426,16 @@ timeControll.setScaleScrollChildren(0) //it have protection from small values
             }*/
             }
 
-
-            if (!main222.isPlay)
+timeControll.setScalePointerPos((x  -20 + scroll.flickableItem.contentX)* main222.scaling);
+         //   console.log("JJJJJJJJJJJJJJJJ " + timeControll.getScalePointerPos())
+            if (main222.isPlayPauseStop !== 0)
             {
             timeControll.calcPointedBlocks();
-                //console.log("AAAAAAAAAAA")
+               //console.log("AAAAAAAAAAAWWWWWWWWWWWWWWWWWWWWWWW")
                 //console.log("getScalePointerPos = " + timeControll.getScalePointerPos())
 
             }
-            timeControll.setScalePointerPos(x * main222.scaling -20 + scroll.flickableItem.contentX);
+
            // // console.log("x + scroll.flickableItem.contentX = "+x +" + " + scroll.flickableItem.contentX
 
             //console.log("scale_pointer X = " +(x+width/2))
@@ -556,7 +593,7 @@ timeControll.setScaleScrollChildren(0) //it have protection from small values
         }
         console.log("6666666666666666666")
         timeControll.calcPointedBlocks();
-        console.log("77777777777777777")
+        console.log("77777777777777777" )
         timeControll.setIsProjectChanged(true)
     }
                                            delegate:

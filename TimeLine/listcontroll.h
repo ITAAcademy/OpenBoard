@@ -179,6 +179,7 @@ class ListControll : public QObject, public QQuickImageProvider
 {
     Q_OBJECT
 
+    bool isEditBlockShow = false;
     bool isProjectChange = false;
     int maxTrackTime ;
     float scale_scroll_children = 10.0;
@@ -316,6 +317,9 @@ public:
 Q_INVOKABLE  float getZoomSpeed() const;
  Q_INVOKABLE void setZoomSpeed(float value);
 
+Q_INVOKABLE  bool getIsEditBlockShow() const;
+Q_INVOKABLE  void setIsEditBlockShow(bool value);
+
 signals:
   void loadFromFileSignal();
   void playSignal();
@@ -323,6 +327,7 @@ signals:
   void stopSignal();
     void updateSignal();
     void updateModel();
+    void blockEditedSignal();
 
     void updateSelectedBlock(QPoint point);
 
@@ -336,6 +341,7 @@ public slots:
 Q_INVOKABLE void emitNewProject();
   Q_INVOKABLE void emitOpenProject();
   Q_INVOKABLE void emitSaveProject();
+ Q_INVOKABLE void  emitBlockEditedSignal();
     Q_INVOKABLE   void emitResetProject();
     Q_INVOKABLE void zoomMinus();
     Q_INVOKABLE void zoomPlus();
