@@ -34,7 +34,7 @@ ApplicationWindow  {
                 border  { width: 2; color: "white" }
                 Text {
                     id: block_width_text
-                    text: "Block width"
+                    text: "Block time (ms)"
                     color: "white"
                     anchors { verticalCenter: parent.verticalCenter; left: parent.left; leftMargin: 10 }
                     font { pixelSize: 14 }

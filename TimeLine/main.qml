@@ -83,6 +83,8 @@ Rectangle
 
    property int mX : 0
 
+   property int prevPlayTime : 0
+
 
 
 focus: true    
@@ -161,7 +163,7 @@ main222.isPlay = false
         {
             rep_columns.itemAt(main222.selectedBlockCol).setColorize(main222.selectedBlockIndex,"#8000FF00")
         }
-        // main222.p_trackbar.globalRep.updateModel()
+        main222.p_trackbar.globalRep.updateModel()
 
         //repka.updateModel();
 
@@ -172,6 +174,8 @@ main222.isPlay = false
 
       onPlaySignal: {
             main222.play()
+          scale_pointer.x = 0
+
        }
       onPauseSignal: {
             main222.pause()
@@ -186,8 +190,10 @@ main222.isPlay = false
        onUpdateSignal:  {
            if (main222.isPlay )
            {
-                scale_pointer.x =  (timeControll.getPlayTime() -
-                                                    scroll.flickableItem.contentX)/main222.scaling + 15 ;
+               var play_time = timeControll.getPlayTime();
+     scale_pointer.x += (play_time - main222.prevPlayTime)/main222.scaling;
+               main222.prevPlayTime = play_time;
+   //  (timeControll.getPlayTime() - scroll.flickableItem.contentX)/main222.scaling + 15 ;
                timeControll.calcPointedBlocksAtTime()
               // console.log("timer value: " +timeControll.getPlayTime())
            }
@@ -203,8 +209,6 @@ main222.isPlay = false
            main222.scaling = timeControll.getScaleScrollChildren();
            main222.updateTracksModel();
            console.log("AAAAAAAAAAAAAAAAAA " +  main222.scaling)
-
-
        }
 
 
@@ -314,6 +318,7 @@ timeControll.setScaleScrollChildren(0) //it have protection from small values
 
         onYChanged: y = 0
         onXChanged: {
+
           //  if (x===0)     x = scroll.flickableItem.width
          //  console.log("1000")
            // var half_scale_pointer_width = -scale_pointer.width/2
@@ -341,28 +346,34 @@ timeControll.setScaleScrollChildren(0) //it have protection from small values
             else
             {
                 var real_time = timeControll.getMaxTrackTime() / main222.scaling
-               var temp = real_time - scroll.flickableItem.contentX + width
+               var temp = scroll.width-30    // real_time - scroll.flickableItem.contentX + width
                 if (x  > temp )
                 {
-                   // console.log("HAAAAAAAAAAA")
-                    x = temp
+                 // console.log("HAAAAAAAAAAA")
+
+                    scroll.flickableItem.contentX += (x - temp)
+                    var sad = real_time - scroll.width +50 // scroll.flickableItem.contentWidth - scroll.width + 10
+                    if (scroll.flickableItem.contentX  >  sad)
+                            scroll.flickableItem.contentX = sad;
+                     x = temp
                   // timeControll.stop();
                    // main222.stop()
                 }
-                else
+              /*  else
                 {
                 temp = scroll.width -width - 3  /// scroll.x + scroll.width - main222.p_trackbar.width*1.4
-                 //console.log("10007")
+              //   console.log("10007")
                 if (x> temp)
                 {
                    // console.log("DAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa")
                     if (real_time  >= scroll.width  )
                     {
-                         //console.log("10008")
-                    scroll.flickableItem.contentX += x - temp
-                    var sad = real_time - scroll.width + 17  // scroll.flickableItem.contentWidth - scroll.width + 10
+                        // console.log("10008")
+                    scroll.flickableItem.contentX += (x - temp)
+                    var sad = real_time - scroll.width +17 // scroll.flickableItem.contentWidth - scroll.width + 10
                     if (scroll.flickableItem.contentX  >  sad)
                     {
+                         //console.log("10009")
                             scroll.flickableItem.contentX = sad;
                         //timeControll.stop();
                        // x-=3;
@@ -376,7 +387,7 @@ timeControll.setScaleScrollChildren(0) //it have protection from small values
                     }
                     x = temp
                 }
-            }
+            }*/
             }
 
 
@@ -391,6 +402,7 @@ timeControll.setScaleScrollChildren(0) //it have protection from small values
            // // console.log("x + scroll.flickableItem.contentX = "+x +" + " + scroll.flickableItem.contentX
 
             //console.log("scale_pointer X = " +(x+width/2))
+
         }
 
         MouseArea {
