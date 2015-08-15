@@ -87,29 +87,53 @@ charCount=document()->characterCount();
 
 
  void MyTextEdit::keyPressEvent(QKeyEvent *e) {
+      QString pastedData;
+     e->accept();
         quint32 scanCode = e->nativeScanCode();
          int keyCode = e->key();
  if(e->type() == QKeyEvent::KeyPress)
  {
+     if (keyCode==Qt::Key_Tab){
+
+        // event->
+         //for (int i=0;i<4;i++)
+        // {
+
+         QKeyEvent *key = new QKeyEvent(QKeyEvent::KeyPress, Qt::Key_Space, Qt::NoModifier, "    ", true, 1 );
+         QApplication::postEvent(this, key);
+         return;
+     }
+
+
  if(e->matches(QKeySequence::Undo))
  undom();
  else
      if(e->matches(QKeySequence::Redo))
      rendom();
  else
- QPlainTextEdit::keyPressEvent(e);
+         if (e->modifiers() & Qt::ControlModifier && (keyCode==Qt::Key_V || scanCode == 1052)){
+              qDebug() <<"111111111111111111 " <<QApplication::clipboard()->text();
+     pastedData=QApplication::clipboard()->text();
+            // event->
+             if (pastedData.indexOf("\t")>=0)
+             {
+                 pastedData.replace("\t", "    ");
+             }
+             this->insertPlainText(pastedData);
+              qDebug() <<"2222222222 ";
+         } else QPlainTextEdit::keyPressEvent(e);
 
  if(e->modifiers() & Qt::ControlModifier)
  {
 
-     if (scanCode==SCAN_KEY_V)
-     {
-         if (keyCode!=Qt::Key_V){
-             QKeyEvent *event = new QKeyEvent ( QEvent::KeyPress, Qt::Key_V,Qt::ControlModifier);
-             QCoreApplication::postEvent (this, event);
-         }
-     }
-     else
+    // if (scanCode==SCAN_KEY_V)
+    // {
+      //   if (keyCode!=Qt::Key_V){
+        //     QKeyEvent *event = new QKeyEvent ( QEvent::KeyPress, Qt::Key_V,Qt::ControlModifier);
+         //    QCoreApplication::postEvent (this, event);
+        // }
+    // }
+    // else
      if (scanCode==SCAN_KEY_X)
      {
          if (keyCode!=Qt::Key_X)
