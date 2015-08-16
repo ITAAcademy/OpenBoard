@@ -241,9 +241,11 @@ int recordedBrushN = 0;
              int xPos = 0;
              int yPos = 0;
                 // qDebug()<<"mouseRecorder.getBrushBeginings().length():"<<brushes.length();
-
+                  qDebug() << "xPos:"<<xPos;
+                  qDebug() << "yPos:"<<yPos;
                  xPos=coords[keyFrame].x();
                  yPos=coords[keyFrame].y();
+                  qDebug() << "AFTER123";
                // qDebug() << "x:"<<xPos;
                // qDebug() << "y:"<<yPos;
                 //qDebug() << "keyFrame:"<<keyFrame;
@@ -932,7 +934,7 @@ case EDIT_RECTANGLE_MOVE:
  testRectangle();
     if (canDrawByMouse && m_manager.isAbleToDraw()) paintBrushInBuffer();
 }
-if (showingLastDrawing)
+if (showingLastDrawing && drawBrushElm->getBrushes().length()>0)
 {
  int recordedBrushN = 0;
     for (; recordedBrushN < drawBrushElm->getBrushes().length(); )
@@ -949,14 +951,14 @@ if (showingLastDrawing)
     recordedBrushN++;
     }
 
-
-
-    paintBrushInBuffer(drawBrushElm->getCoords(),drawBrushElm->getBrushes(),currentLastDrawingPointIterator++);
+    paintBrushInBuffer(drawBrushElm->getCoords(),drawBrushElm->getBrushes(),currentLastDrawingPointIterator);
     if (currentLastDrawingPointIterator>=drawBrushElm->getCoords().length())
     {
         showingLastDrawing=false;
         currentLastDrawingPointIterator=0;
     }
+    currentLastDrawingPointIterator++;
+
 }
 
 if(curStatus == STOP)
@@ -1036,11 +1038,12 @@ void OGLWidget::mousePressEvent(QMouseEvent *event)
         setIsBrushWindowOpened(false);
         }
         else{
+            mousePos.setX(event->x());
+           mousePos.setY(event->y());
+           prevMousePos.setX(mousePos.x());
+           prevMousePos.setY(mousePos.y());
         isMousePress=true;
-        mousePos.setX(event->x());
-       mousePos.setY(event->y());
-       prevMousePos.setX(mousePos.x());
-       prevMousePos.setY(mousePos.y());
+
        ismouseWasPressedBeforeDrag=false;
 
        mousePressPos = QPoint(mousePos.x() - editingRectangle.rect.x(),

@@ -85,7 +85,7 @@ bool DrawBrushElm::load_add(QDataStream &stream)
         brushes.push_back(brushBeginingIndex);
     }
 
-    if(coords.size() != 0)
+    if(coords.size() > 0)
         tickTime = lifeTime/coords.size();
 }
 
@@ -161,7 +161,7 @@ void DrawBrushElm::clear()
 void DrawBrushElm::setLifeTime(int value)
 {
     lifeTime = value;
-    if(coords.size() != 0)
+    if(coords.size() > 0)
         tickTime = lifeTime/coords.size();
 }
 void DrawBrushElm::draw()
@@ -174,7 +174,9 @@ void DrawBrushElm::draw()
 
      if (current_time > 0)
     {
-          int realKeyValue = qFloor((double)((current_time - startDrawTime) / ((double)(lifeTime/coords.size()))));
+          int realKeyValue = 0;
+          if (coords.size()>0)
+          realKeyValue=qFloor((double)((current_time - startDrawTime) / ((double)(lifeTime/coords.size()))));
           //int realKeyValue = (pDrawWidget->getTimeLine()->getPlayTime()-startDrawTime)*coords.size()/lifeTime;
          // qDebug() << "QQQQQQQQQQQQQQQQQQQQ" << keyCouter;
         if(keyCouter == 0)
