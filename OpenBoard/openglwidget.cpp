@@ -63,8 +63,8 @@ GLuint OGLWidget::loadTexture(QImage img){
            sucsessLoadTexture = false;
 */
        //qDebug() << "GL_ERROR_STATUS LOAD_TEXTURE:   "<< glGetError();
-       if(glGetError())
-           return -1;
+       //if(glGetError())
+          // return -1;
 
        return texture;
        //bind the texture ID
@@ -151,11 +151,10 @@ void OGLWidget::setList(const QList<DrawElement *> &value)
 void OGLWidget::paintBrushInBuffer(QVector<QPoint> coords,QVector<BrushBeginingIndex> brushes,int keyFrame){
     glBindFramebuffer(GL_FRAMEBUFFER , fbo); // Bind our frame buffer for rendering
 int recordedBrushN = 0;
+
 //qDebug() << "keyFrame:"<<keyFrame;
-GLuint texture = brushTexture;
-//glUseProgram(ShaderProgram);
-glBindTexture(GL_TEXTURE_2D,texture);
-bool isBrushUsed = false;
+
+//bool isBrushUsed = false;
     for (; recordedBrushN < brushes.length(); )
     {
         //qDebug() << "brushes["<<recordedBrushN<<"].pointIndex"<<brushes[recordedBrushN].pointIndex;
@@ -164,18 +163,22 @@ bool isBrushUsed = false;
        // qDebug() << "mouse play index:"<<keyFrame;
 
         currentBrushOfDrawSystem = brushes[recordedBrushN].brush;
-        brushTexture = loadTexture(brushes[recordedBrushN].brush.color_img);
+        brushTexture = loadTexture(currentBrushOfDrawSystem.color_img);
         qDebug() << "recordedBrushN:"<<recordedBrushN;
-        isBrushUsed=true;
+       // isBrushUsed=true;
      //qDebug() << "recordedBrushN:"<<recordedBrushN;
      break;
     }
     recordedBrushN++;
     }
-    if (isBrushUsed) {
-        qDebug() << "recordedBrushN:" << recordedBrushN;
-        currentBrushOfDrawSystem = brushes[recordedBrushN].brush;
-    }
+
+    //glUseProgram(ShaderProgram);
+    glBindTexture(GL_TEXTURE_2D,brushTexture);
+   // if (isBrushUsed) {
+     //   qDebug() << "recordedBrushN:" << recordedBrushN;
+      //  currentBrushOfDrawSystem = brushes[recordedBrushN].brush;
+    //}
+
      //qDebug() << "recordedBrushN:"<<recordedBrushN;
     //if (recordedBrushN>=brushes.length())recordedBrushN=brushes.length()-1;
    // qDebug() << "recordedBrushN:"<<recordedBrushN;
@@ -201,7 +204,7 @@ bool isBrushUsed = false;
         scaleX=MAX_SCALE/randScalePtX;
     if(randScalePtY!=0)
         scaleY=MAX_SCALE/randScalePtY;
-    double koff = 0;
+    double koff = 1;
     if(brushTextureSize.height() != 0)
      koff = brushTextureSize.width()/brushTextureSize.height();
      int maxAngle = currentBrushOfDrawSystem.angle_delta;
@@ -254,7 +257,7 @@ bool isBrushUsed = false;
 
 
         drawTexture(xPos-BRUSH_SIZE/2 + dispersX ,yPos-BRUSH_SIZE/koff/2 + dispersY,BRUSH_SIZE,BRUSH_SIZE/koff,
-                texture,angle,scaleX,scaleY);
+                brushTexture,angle,scaleX,scaleY);
         }
 // glUseProgram(NULL);
 
@@ -482,7 +485,9 @@ glBindFramebuffer(GL_FRAMEBUFFER , fbo); // Bind our frame buffer for rendering
        // // qDebug() <<"scaleY:"<<scaleY;
         //// qDebug() << "brushSize.width():"<<brushTextureSize.width();
         //// qDebug() << "brushSize.height():"<<brushTextureSize.height();
-        double koff = brushTextureSize.width()/brushTextureSize.height();
+
+        double koff = 1;
+        if (brushTextureSize.height()>0)koff=brushTextureSize.width()/brushTextureSize.height();
          int maxAngle = m_manager.getAngleDelta();
 
          int angle = 0;

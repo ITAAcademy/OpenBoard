@@ -185,7 +185,7 @@ void DrawBrushElm::draw()
         while(keyCouter <realKeyValue && bPlay)
         {
             if (keyCouter < coords.size() )
-                pDrawWidget->paintBrushInBuffer(coords,brushes, realKeyValue);
+                pDrawWidget->paintBrushInBuffer(coords,brushes, keyCouter);
                     keyCouter++;
         }
     }

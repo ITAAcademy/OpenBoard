@@ -106,6 +106,7 @@ public:
 
    DrawBrushElm *drawBrushElm;//record mouse movement
     GLuint brushTexture;
+
     GLuint backGroundTexture;
     QVector <AnimationFigure> listOfAnimationFigure; // now use only for cross animation
 
