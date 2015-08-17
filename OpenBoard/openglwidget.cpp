@@ -251,7 +251,8 @@ int recordedBrushN = 0;
                 //qDebug() << "keyFrame:"<<keyFrame;
                      if (mousePlayIndex >= coords.length()-1)
                      {
-                     isMousePlay=false;
+                    // isMousePlay=false;
+                         stopShowLastDrawing();
                      mousePlayIndex=0;
                      }
                      else
@@ -272,6 +273,15 @@ bool OGLWidget::isShowLastDrawing(){
 }
 void OGLWidget::setShowLastDrawing(bool val){
      showingLastDrawing=val;
+}
+void OGLWidget::stopShowLastDrawing(){
+    showingLastDrawing=false;
+    currentLastDrawingPointIterator=0;
+    emit stopShowLastDrawingSignal();
+}
+
+bool OGLWidget::getShowLastDrawing(){
+    return showingLastDrawing;
 }
 
 void OGLWidget::slotBlockEdited()
@@ -954,8 +964,8 @@ if (showingLastDrawing && drawBrushElm->getBrushes().length()>0)
     paintBrushInBuffer(drawBrushElm->getCoords(),drawBrushElm->getBrushes(),currentLastDrawingPointIterator);
     if (currentLastDrawingPointIterator>=drawBrushElm->getCoords().length())
     {
-        showingLastDrawing=false;
-        currentLastDrawingPointIterator=0;
+       stopShowLastDrawing();
+
     }
     currentLastDrawingPointIterator++;
 
@@ -1031,7 +1041,8 @@ void OGLWidget::mousePressEvent(QMouseEvent *event)
     }
     if(event->button() == Qt::LeftButton)
     {
-        isMousePlay = false;
+        //isMousePlay = false;
+       stopShowLastDrawing();
         if (getIsBrushWindowOpened())
         {
         m_manager.hide();
