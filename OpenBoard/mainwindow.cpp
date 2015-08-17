@@ -1599,6 +1599,7 @@ void MainWindow::updateTextEditFromBlock(QPoint point)
             return;
         }
     }
+    qDebug() << "DISABLE INPUT";
     textEdit->newText();
     commandTextEdit->newText();
     setEnabledToolBar(false);
@@ -1724,9 +1725,8 @@ void MainWindow::on_action_Stop_triggered()
 
     if(mpOGLWidget->isVisible())
     {
-        textEdit->setEnabled(true);
-        commandTextEdit->setEnabled(true);
-     //   updateTextEditFromBlock(mpOGLWidget->getTimeLine()->getSelectedBlockPoint());
+        /*textEdit->setEnabled(true);
+        commandTextEdit->setEnabled(true);*/
         ui->action_Undo->setEnabled(true);
         ui->action_Redo->setEnabled(true);
         a_undo->setEnabled(true);
@@ -1738,6 +1738,7 @@ void MainWindow::on_action_Stop_triggered()
         a_pause->setEnabled(false);
         a_play->setEnabled(true);
         showBoardSettings();
+        updateTextEditFromBlock(mpOGLWidget->getTimeLine()->getSelectedBlockPoint());
     }
     updateEditWidgets();
     //mpOGLWidget->editingRectangle.isEditingRectangleVisible = true;

@@ -59,7 +59,8 @@ void DrawTextElm::draw()
                curentPauseValue = 0;
            }
        }
-       int realKeyValue = qRound((double)(current_time - (curentPauseValue + startDrawTime)) / (double)((lifeTime - globalPauseLifeTime)/(mUnitList.size() - globalDeltaComandSize)));
+
+       int realKeyValue = qFloor((double)(current_time - (curentPauseValue + startDrawTime)) / (double)((lifeTime - globalPauseLifeTime)/(mUnitList.size() - globalDeltaComandSize)));
        //qDebug() << "pDrawWidget->getTimeLine()->getPlayTime()"<< realKeyValue;
       // qDebug() << "cur " << current_time;
        //qDebug() << "start " << startDrawTime;
@@ -67,7 +68,7 @@ void DrawTextElm::draw()
 
    // if (keyCouter < realKeyValue)
 
-        while(keyCouter <=realKeyValue)
+        while(keyCouter <= realKeyValue)
         {
             if(!bPlay)
                 current_time =  pDrawWidget->getTimeLine()->getScalePointerPos();
@@ -78,14 +79,19 @@ void DrawTextElm::draw()
             {
                 mUnitList.at(keyCouter)->draw(pDrawWidget);
                 if(mUnitList.at(keyCouter)->delay > 0 && bPlay)
-                    curentPauseValue += mUnitList.at(keyCouter)->delay;
- }
-                keyCouter++;
+                {
+                    curentPauseValue += mUnitList.at(keyCouter++)->delay;
+                    break;
+                }
+            }
+            keyCouter++;
 
         }
       //  qDebug() << "drawInfo   " << (double) 1 - (double)(qAbs(((current_time - startDrawTime) - (lifeTime/mUnitList.size())*keyCouter)))/(lifeTime/mUnitList.size());
         if(keyCouter > 0 && keyCouter < mUnitList.size() && mUnitList.at(keyCouter)->unitType != mUnitList.at(keyCouter - 1)->unitType)
             pDrawWidget->update();
+        if(mUnitList.size() != 0 && (mUnitList.size() - globalDeltaComandSize  - 1) != 0)
+            tickTime = ((lifeTime - globalPauseLifeTime)/(mUnitList.size() - globalDeltaComandSize  - 1));
         pDrawWidget->setAnimationPersentOfCross( qAbs((double) 1 - (double)(qAbs(((current_time - startDrawTime) - (tickTime)*keyCouter)))/(tickTime)));
            // qDebug() << realKeyValue <<"    KEY    " << keyCouter;
     }
