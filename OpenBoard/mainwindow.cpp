@@ -417,6 +417,7 @@ case VIDEO_EDIT_TEXT:
 }
 case VIDEO_EDIT_PRO:
 {
+    mpOGLWidget->getTimeLine()->show();
     toolBar->show();
     toolBarBoard->show();
     a_clear_drawing->setVisible(true);
