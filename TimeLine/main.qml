@@ -149,7 +149,7 @@ item_col.width = (timeControll.getMaxTrackTime() + 31) * main222.scaling
         scroll.enabled = false
          scale_pointer.enabled = false
         tollbar.p_button_RemoveTrack.enabled = false
-        tollbar.p_button_RemoveTrack.enabled = false
+        tollbar.p_button_AddTrack.enabled = false
 
     }
     function pause()    {
@@ -159,7 +159,7 @@ main222.isPlayPauseStop = 1
         scroll.enabled = true
        scale_pointer.enabled = true
        tollbar.p_button_RemoveTrack.enabled = true
-       tollbar.p_button_RemoveTrack.enabled = true
+       tollbar.p_button_AddTrack.enabled = true
     }
     function stop()    {
       //  scale_pointer.x =
@@ -168,7 +168,7 @@ main222.isPlayPauseStop = 2
         scroll.enabled = true
        scale_pointer.enabled = true
        tollbar.p_button_RemoveTrack.enabled = true
-       tollbar.p_button_RemoveTrack.enabled = true
+       tollbar.p_button_AddTrack.enabled = true
 //scale_pointer.x = timeControll.getMaxTrackTime() + scale_pointer.width/2 - scroll.flickableItem.contentX;
     }
 
