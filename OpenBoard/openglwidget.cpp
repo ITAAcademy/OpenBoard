@@ -1572,7 +1572,7 @@ int OGLWidget::getDelay() const
 void OGLWidget::setDelay(int value)
 {
     delay = value;
-    animationPersentOfCross = (double)1/(value*0.6);
+    //animationPersentOfCross = (double)1/(value*0.6);
     // qDebug() << animationPersentOfCross;
 }
 
