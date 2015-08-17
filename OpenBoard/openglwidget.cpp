@@ -163,7 +163,7 @@ int recordedBrushN = 0;
        // qDebug() << "mouse play index:"<<keyFrame;
 
         currentBrushOfDrawSystem = brushes[recordedBrushN].brush;
-        brushTexture = loadTexture(currentBrushOfDrawSystem.color_img);
+        brushTextureCurrentPlayed = loadTexture(currentBrushOfDrawSystem.color_img);
         qDebug() << "recordedBrushN:"<<recordedBrushN;
        // isBrushUsed=true;
      //qDebug() << "recordedBrushN:"<<recordedBrushN;
@@ -173,7 +173,7 @@ int recordedBrushN = 0;
     }
 
     //glUseProgram(ShaderProgram);
-    glBindTexture(GL_TEXTURE_2D,brushTexture);
+    glBindTexture(GL_TEXTURE_2D,brushTextureCurrentPlayed);
    // if (isBrushUsed) {
      //   qDebug() << "recordedBrushN:" << recordedBrushN;
       //  currentBrushOfDrawSystem = brushes[recordedBrushN].brush;
@@ -259,7 +259,7 @@ int recordedBrushN = 0;
 
 
         drawTexture(xPos-BRUSH_SIZE/2 + dispersX ,yPos-BRUSH_SIZE/koff/2 + dispersY,BRUSH_SIZE,BRUSH_SIZE/koff,
-                brushTexture,angle,scaleX,scaleY);
+                brushTextureCurrentPlayed,angle,scaleX,scaleY);
         }
 // glUseProgram(NULL);
 
