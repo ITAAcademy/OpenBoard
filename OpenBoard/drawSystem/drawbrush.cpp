@@ -176,14 +176,19 @@ void DrawBrushElm::draw()
     {
           int realKeyValue = 0;
           if (coords.size()>0)
-          realKeyValue=qFloor((double)((current_time - startDrawTime) / ((double)(lifeTime/coords.size()))));
-          //int realKeyValue = (pDrawWidget->getTimeLine()->getPlayTime()-startDrawTime)*coords.size()/lifeTime;
+          //realKeyValue=qFloor((double)((current_time - startDrawTime) / ((double)(lifeTime/coords.size()))));
+         realKeyValue = (current_time-startDrawTime)*coords.size()/lifeTime;
          // qDebug() << "QQQQQQQQQQQQQQQQQQQQ" << keyCouter;
         if(keyCouter == 0)
         {
             pDrawWidget->clearFrameBuffer();
         }
-
+        qDebug() << "coords.size():"<<coords.size();
+        qDebug() << "lifeTime:"<<lifeTime;
+        qDebug() << "startDrawTime:"<<startDrawTime;
+        qDebug() << "current_time:"<<current_time;
+        qDebug() << "realKeyValue:"<<realKeyValue;
+qDebug() << "keyCouter:"<<keyCouter;
         while(keyCouter <realKeyValue && bPlay)
         {
             if (keyCouter < coords.size() )
