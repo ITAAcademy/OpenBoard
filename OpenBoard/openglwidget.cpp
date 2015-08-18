@@ -249,14 +249,14 @@ int recordedBrushN = 0;
                // qDebug() << "x:"<<xPos;
                // qDebug() << "y:"<<yPos;
                 //qDebug() << "keyFrame:"<<keyFrame;
-                     if (mousePlayIndex >= coords.length()-1)
-                     {
+                    // if (mousePlayIndex >= coords.length()-1)
+                   //  {
                     // isMousePlay=false;
-                         stopShowLastDrawing();
-                     mousePlayIndex=0;
-                     }
-                     else
-                      mousePlayIndex++;
+                    //     stopShowLastDrawing();
+                   //  mousePlayIndex=0;
+                   //  }
+                     //else
+                     // mousePlayIndex++;
 
 
         drawTexture(xPos-BRUSH_SIZE/2 + dispersX ,yPos-BRUSH_SIZE/koff/2 + dispersY,BRUSH_SIZE,BRUSH_SIZE/koff,
@@ -961,12 +961,12 @@ if (showingLastDrawing && drawBrushElm->getBrushes().length()>0)
     }
 
     paintBrushInBuffer(drawBrushElm->getCoords(),drawBrushElm->getBrushes(),currentLastDrawingPointIterator);
+    currentLastDrawingPointIterator++;
     if (currentLastDrawingPointIterator>=drawBrushElm->getCoords().length())
     {
-       stopShowLastDrawing();
-
+       stopShowLastDrawing();     
     }
-    currentLastDrawingPointIterator++;
+   // currentLastDrawingPointIterator++;
 
 }
 

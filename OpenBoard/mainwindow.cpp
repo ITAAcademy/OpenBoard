@@ -1850,6 +1850,9 @@ void MainWindow::updateCurrentTxt()
 void MainWindow::onStopShowLastDrawing()
 {
     ui->actionShow_last_drawing->setText("show last drawing");
+    ui->actionClear_drawing->setEnabled(true);
+    a_clear_drawing->setEnabled(true);
+    a_clear_drawingBuffer->setEnabled(true);
 }
 void MainWindow::on_speedBtn_pressed()
 {
@@ -1917,12 +1920,16 @@ void MainWindow::on_actionShow_last_drawing_triggered()
     if (isLastDrawingShow)
     {
         mpOGLWidget->stopShowLastDrawing();
-        ui->actionShow_last_drawing->setText("show last drawing");
+
+        //ui->actionShow_last_drawing->setText("show last drawing");
     }
     else
     {
     mpOGLWidget->setShowLastDrawing(true);
     ui->actionShow_last_drawing->setText("stop show last drawing");
+    ui->actionClear_drawing->setEnabled(false);
+    a_clear_drawing->setEnabled(false);
+    a_clear_drawingBuffer->setEnabled(false);
     }
 
 }

@@ -343,7 +343,7 @@ private:
     int maxWidth; //размер поле, где виводится текст
     int pt;
     int realDelay;
-    int mousePlayIndex = 0;//current point of stored points arr
+    //int mousePlayIndex = 0;//current point of stored points arr
     int x ,y ;
     int indexW ;
     int indexRow;
