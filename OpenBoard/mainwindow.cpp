@@ -346,6 +346,8 @@ ui->actionRecord_to_file->setCheckable(true);
         connect(mpOGLWidget->getTimeLine(), SIGNAL(updateSelectedBlock(QPoint)), this, SLOT(updateTextEditFromBlock(QPoint)));
     //    connect(commandTextEdit, SIGNAL(widgetVisibilityChanged(bool)), this, SLOT(updateVisibleTextEdit(bool)));
 
+        connect(mpOGLWidget,SIGNAL(stopShowLastDrawingSignal()),this,SLOT(onStopShowLastDrawing()));
+
         textEdit->setEnabled(false);
         commandTextEdit->setEnabled(false);
         setEnabledToolBar(false);
@@ -1844,6 +1846,11 @@ void MainWindow::updateCurrentTxt()
     drawTTElements.setUnParsestring(textEdit->toPlainText(), commandTextEdit->toPlainText(), needToSaveLifeTime);
     drawTTElements.save("curent");*/
 }
+
+void MainWindow::onStopShowLastDrawing()
+{
+    ui->actionShow_last_drawing->setText("show last drawing");
+}
 void MainWindow::on_speedBtn_pressed()
 {
     ui->widget_speedTB->setVisible(!ui->widget_speedTB->isVisible());
@@ -1905,8 +1912,19 @@ void MainWindow::setEnabledToolBar(bool status)
 void MainWindow::on_actionShow_last_drawing_triggered()
 {
     // qDebug() << "show_last_drawing";
-    mpOGLWidget->isMousePlay=true;
+    bool isLastDrawingShow = mpOGLWidget->getShowLastDrawing();
+   // mpOGLWidget->isMousePlay=true;
+    if (isLastDrawingShow)
+    {
+        mpOGLWidget->stopShowLastDrawing();
+        ui->actionShow_last_drawing->setText("show last drawing");
+    }
+    else
+    {
     mpOGLWidget->setShowLastDrawing(true);
+    ui->actionShow_last_drawing->setText("stop show last drawing");
+    }
+
 }
 
 void MainWindow::on_actionSave_drawing_triggered()

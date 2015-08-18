@@ -87,7 +87,8 @@ class OGLWidget : public QGLWidget, protected QGLFunctions
     Q_OBJECT
     Q_PROPERTY(QString  drawText READ getDrawText WRITE setDrawText NOTIFY drawTextChanged)
         QPoint mousePressPos;
-
+signals:
+        void stopShowLastDrawingSignal();
 public:
     BrushManager m_manager;
     bool sucsessLoadTexture;
@@ -97,7 +98,7 @@ public:
      */
 
 
-   bool isMousePlay = false;//play recorded mouse movement
+  // bool isMousePlay = false;//play recorded mouse movement
    bool isMousePress = false;
    bool ismouseWasPressedBeforeDrag = false;  
     bool isClearFrameBuffer = false;//clear frame buffer
@@ -212,6 +213,8 @@ public:
     void initShader();
     bool isShowLastDrawing();
     void setShowLastDrawing(bool val);
+    bool getShowLastDrawing();
+    void stopShowLastDrawing();
 public slots:
     void slotBlockEdited();
     bool drawAnimated( bool record );
