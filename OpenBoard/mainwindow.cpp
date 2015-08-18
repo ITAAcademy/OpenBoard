@@ -571,6 +571,7 @@ bool MainWindow::event(QEvent * e) // overloading event(QEvent*) method of QMain
         // ...
 
         case QEvent::WindowActivate :
+        {
             if(!isActive)
             {
                 if(mpOGLWidget->isVisible()) // get focus for windows
@@ -585,11 +586,19 @@ bool MainWindow::event(QEvent * e) // overloading event(QEvent*) method of QMain
                qApp->processEvents();
                activateWindow();
                 isActive = true;
+
+
             }
+            QPoint curentPos = mpOGLWidget->pos();
+            curentPos.setY(curentPos.y() + mpOGLWidget->height());
+            mpOGLWidget->getTimeLine()->setViewPosition(curentPos);
+
+
             qDebug() << "SET_ACTIVE_MAIN_WINDOW";
             break ;
+        }
 
-        case QEvent::WindowDeactivate :
+        case QEvent::WindowDeactivate : {
             // lost focus
             bool activeOther = false;
             if(mpOGLWidget->isActiveWindow())
@@ -600,16 +609,21 @@ bool MainWindow::event(QEvent * e) // overloading event(QEvent*) method of QMain
                 isActive = false;
             qDebug() << "LOSE_ACTIVE_MAIN_WINDOW";
             break ;
+    }
         // ...
 
     } ;
 
     if (e->type() == QEvent::WindowStateChange) {
         if (isMinimized()) {
+            mpOGLWidget->hide();
+            mpOGLWidget->getTimeLine()->hide();
           isActive = false;
           e->ignore();
         } else {
           e->accept();
+          mpOGLWidget->show();
+          mpOGLWidget->getTimeLine()->show();
         }
       }
     return QMainWindow::event(e) ;
