@@ -272,7 +272,7 @@ connect(mpOGLWidget,SIGNAL(keyPressSignal(QKeyEvent*)),this,SLOT(keyEventSlot(QK
        a_play->setEnabled(false);
        a_play->setIcon(QPixmap(":/icons/play-8-icon.png").scaled(QSize(16, 16)));
        a_play->setToolTip(tr("Play"));
-       connect(a_play,SIGNAL(triggered()),this,  SLOT(on_action_Play_triggered()));
+       connect(a_play,SIGNAL(triggered()),mpOGLWidget->getTimeLine(), SIGNAL(playSignal()));
        toolBarBoard->addAction(a_play);
 
 
@@ -284,14 +284,14 @@ connect(mpOGLWidget,SIGNAL(keyPressSignal(QKeyEvent*)),this,SLOT(keyEventSlot(QK
        a_pause->setEnabled(false);
        a_pause->setIcon(QPixmap(":/icons/pause-icon.png").scaled(QSize(16, 16)));
        a_pause->setToolTip(tr("Pause"));
-       connect(a_pause,SIGNAL(triggered()),this,  SLOT(on_action_Pause_triggered()));
+       connect(a_pause,SIGNAL(triggered()),mpOGLWidget->getTimeLine(), SIGNAL(pauseSignal()));
        toolBarBoard->addAction(a_pause);
 
        a_stop = new QAction(this);
        a_stop->setEnabled(false);
        a_stop->setIcon(QPixmap(":/icons/stop_icon.png").scaled(QSize(16, 16)));
        a_stop->setToolTip(tr("Stop"));
-       connect(a_stop,SIGNAL(triggered()),this,  SLOT(on_action_Stop_triggered()));
+       connect(a_stop,SIGNAL(triggered()),mpOGLWidget->getTimeLine(), SIGNAL(stopSignal()));
        toolBarBoard->addAction(a_stop);
 
        a_record_to_file = new QAction(this);
@@ -333,9 +333,9 @@ ui->actionRecord_to_file->setCheckable(true);
        ((DrawTextElm*)drawElements[0])->setRect(180,180,200,200);*/
 
 
-        connect(mpOGLWidget, SIGNAL(stopSignal()), this, SLOT(on_action_Stop_triggered()));
-        connect(mpOGLWidget, SIGNAL(startSignal()), this, SLOT(on_action_Play_triggered()));
-        connect(mpOGLWidget, SIGNAL(pauseSignal()), this, SLOT(on_action_Pause_triggered()));
+        connect(mpOGLWidget->getTimeLine(), SIGNAL(stopSignal()), this, SLOT(on_action_Stop_triggered()));
+        connect(mpOGLWidget->getTimeLine(), SIGNAL(playSignal()), this, SLOT(on_action_Play_triggered()));
+        connect(mpOGLWidget->getTimeLine(), SIGNAL(pauseSignal()), this, SLOT(on_action_Pause_triggered()));
         connect(this, SIGNAL(signalCurentStateChanged()), this, SLOT(slotCurentStateChanged()));
 
         connect(mpOGLWidget->getTimeLine(), SIGNAL(newProjectSignel()), this, SLOT(on_action_New_Project_triggered()));
@@ -1805,6 +1805,7 @@ void MainWindow::on_action_Pause_triggered()
         mpOGLWidget->pauseAnimated();
         mpOGLWidget->getTimeLine()->pause();
     }
+    a_pause->setEnabled(false);
 }
 
 

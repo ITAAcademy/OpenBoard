@@ -11,7 +11,7 @@ Rectangle{
     property int colIndex
     property int xChange: 0
     property bool bChangeSize: false
-    property string title: "value"
+    property string title:  "value"
     property Repeater globalRep
     property string colorKey : "green"
     property ColorOverlay p_color_overlay

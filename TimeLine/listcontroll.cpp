@@ -386,6 +386,20 @@ QImage ListControll::getBlockIcon(int col, int i)
   emit blockEditedSignal();
  }
 
+  void  ListControll::emitPlaySignal()
+  {
+      emit playSignal();
+  }
+
+  void  ListControll::emitPauseSignal()
+  {
+      emit pauseSignal();
+  }
+  void  ListControll::emitStopSignal()
+  {
+      emit stopSignal();
+  }
+
  QSize ListControll::getDrawSize(int col, int i)
  {
      return tracks[col].block[i].draw_element->getSize() ;
@@ -823,8 +837,8 @@ void ListControll::calcPointedBlocksAtTime( )
  void  ListControll::play()
  {
     // // qDebug() << "FFFFFFFFFFFFFFF  emit playSignal();";
-    emit playSignal();
      timer.restart();
+    //emit playSignal();
      if (isPlayPauseStop==3)
              time_sum = 0;
      isPlayPauseStop = 1;
@@ -832,15 +846,19 @@ void ListControll::calcPointedBlocksAtTime( )
  }
  void  ListControll::pause()
  {
-    emit pauseSignal();
-    time_sum += timer.elapsed();
-    isPlayPauseStop = 2;
+     qDebug() << "AAAAAAAAAAAAAA " << getPlayTime();
+     time_sum = getPlayTime();// timer.elapsed();
+     isPlayPauseStop = 2;
+   // emit pauseSignal();
+
+
+
+    qDebug() << "FFFFFFFFFFFFFFFF " << getPlayTime();
  }
 
 void  ListControll::stop()
 {
-    emit stopSignal();
-   // time_sum = 0;
+   time_sum = 0;
     isPlayPauseStop = 3;
     calcPointedBlocks();
 
@@ -849,7 +867,7 @@ void  ListControll::stop()
 qint64 ListControll::getPlayTime()
 {
     if (isPlayPauseStop ==1 )
-        return time_sum + timer.elapsed();
+        return timer.elapsed() + time_sum;
     else
         if (isPlayPauseStop ==2 )
         return time_sum ;
