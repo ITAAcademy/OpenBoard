@@ -223,9 +223,9 @@ isPlayPauseStop = 1
 
 
        }
-       onSetScalePointerPosSignal: {
+       /*onSetScalePointerPosSignal: {
             main222.setScalePointerPos(value * main222.scaling)
-       }
+       }*/
 
        onUpdateSignal:  {
           main222.play_time = timeControll.getPlayTime()
@@ -385,14 +385,15 @@ timeControll.setScaleScrollChildren(0) //it have protection from small values, w
             }
             else
             {
-                var contentWidth =   scroll.flickableItem.contentWidth - width/2
+                var atempa = 1
+                var contentWidth =   scroll.flickableItem.contentWidth - width/2 - atempa
                 if (x > contentWidth)
                     x = contentWidth
                 else
                 {
 
 
-                var real_time = timeControll.getMaxTrackTime() / main222.scaling
+                var real_time = timeControll.getMaxTrackTime() / main222.scaling - atempa //1234
                var temp = scroll.width-30    // real_time - scroll.flickableItem.contentX + width
                 if (x  > temp )
                 {

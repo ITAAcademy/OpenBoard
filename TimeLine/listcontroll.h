@@ -340,7 +340,7 @@ signals:
     void saveProjectSignel();
     void resetProjectSignel();
 
-void setScalePointerPosSignal(int value);
+//void setScalePointerPosSignal(int value);
 public slots:
 Q_INVOKABLE void emitNewProject();
   Q_INVOKABLE void emitOpenProject();

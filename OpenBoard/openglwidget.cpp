@@ -1292,7 +1292,7 @@ void OGLWidget::stopAnimated()
 */
     bRecord = false;
  //   pause(200);
-     qDebug() << "Stop play";
+     qDebug() << "Stop play" << timeLine->getPlayTime();
     emit stopSignal();
 
 }
