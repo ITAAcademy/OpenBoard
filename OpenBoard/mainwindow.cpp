@@ -1225,9 +1225,10 @@ void MainWindow::on_action_New_Project_triggered()
     }
 
      curProjectFile.clear();
-  //   mpOGLWidget->getTimeLine()->emitResetProject();
+    // mpOGLWidget->getTimeLine()->emitResetProject();
      mpOGLWidget->getTimeLine()->resetProjectToDefault();
      mpOGLWidget->getTimeLine()->setIsProjectChanged(false);
+     mpOGLWidget->getTimeLine()->setBlocked(true);
      setEnabledToolBar(true);
      on_action_Clear_TextEdit_triggered();
      if(isVisible())
@@ -1292,9 +1293,12 @@ if (this->getCurentState().state !=-1)
          break;
      }
 
-     qApp->processEvents(QEventLoop::AllEvents, 1000);
+   //  qApp->processEvents(QEventLoop::AllEvents, 1000);
      mpOGLWidget->getTimeLine()->sendUpdateModel();
-     qApp->processEvents(QEventLoop::AllEvents, 1000);
+     //qApp->processEvents(QEventLoop::AllEvents, 1000);
+
+     mpOGLWidget->setList(mpOGLWidget->getTimeLine()->getPointedBlocksDE());
+     mpOGLWidget->getTimeLine()->setBlocked(false);
 }
 
 }
@@ -1514,7 +1518,10 @@ void MainWindow::onTextChanged()
     quint64 drawTime = 0;
     int pause = 0;
     int commandSize = 0;
-    int status = mParser.ParsingLine(mUnitList, str,drawTime, pause, commandSize, ui->slider_speedTB->value()); // add parsing /n
+    int status;
+
+    if(ui != NULL)
+        status = mParser.ParsingLine(mUnitList, str,drawTime, pause, commandSize, ui->slider_speedTB->value()); // add parsing /n
    /* if(textSize != str.size())
     {
         textEdit->clear();
@@ -1675,7 +1682,10 @@ void MainWindow::on_action_Play_triggered()
         if(mpOGLWidget->drawAnimated(ui->actionRecord_to_file->isChecked()))
             mpOGLWidget->getTimeLine()->play(); //off for test
         else
+        {
             on_action_Stop_triggered();
+            return;
+        }
     }
     hideBoardSettings();
     ui->action_Play->setEnabled(false);
@@ -1737,10 +1747,12 @@ void MainWindow::on_action_Stop_triggered()
         ui->action_Pause->setEnabled(false);
         a_pause->setEnabled(false);
         a_play->setEnabled(true);
+
         showBoardSettings();
-        updateTextEditFromBlock(mpOGLWidget->getTimeLine()->getSelectedBlockPoint());
+
     }
     updateEditWidgets();
+
     //mpOGLWidget->editingRectangle.isEditingRectangleVisible = true;
     play = false;
 }

@@ -44,7 +44,7 @@ class AV_REncoder : public QThread
     bool bPause;
     QString fileName;
 public:
-    bool newImage = false;
+    volatile bool newImage = false;
     explicit AV_REncoder(QObject *parent = 0);
     ~AV_REncoder();
 

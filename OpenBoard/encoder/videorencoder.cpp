@@ -150,6 +150,7 @@ void AV_REncoder::stop()
         audioRecorder->stop();
         m_encoder->stop();
         bRun = false;
+        frame = QImage(grabWidget->size(), QImage::Format_RGB888);
         // qDebug() << "STOPPPP";
     }
  //   exit();

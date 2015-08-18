@@ -845,14 +845,13 @@ void OGLWidget::paintGL()
 
 //if (isMousePlay)paintBrushInBuffer(true);
 
+ //qDebug() << "PREDRAW";
 
-for(int i = 0; i < getList().size(); i++)
+for(int i = 0; !timeLine->isBlocked && i < getList().size(); i++)
 {
-   // // qDebug() << "draw   " << i;
-    if( timeLine->isBlocked == false && getList()[i] != NULL && timeLine->getMaxTrackTime() > 0)
+    //qDebug() << "draw   " << i;
+    if( getList()[i] != NULL && timeLine->getMaxTrackTime() > 0)
         getList()[i]->paint();
-    else
-        break;
 }
 
 if (editingRectangle.isEditingRectangleVisible)
@@ -1247,7 +1246,7 @@ bool OGLWidget::drawAnimated(bool record)
     }
     curStatus = PLAY;
     bRecord = record;
-    tickTimer.start();
+    //tickTimer.start();
     // qDebug() << "Start play";
     emit startSignal();
     return true;
@@ -1256,9 +1255,11 @@ bool OGLWidget::drawAnimated(bool record)
 void OGLWidget::stopAnimated()
 {
     //pause(100);
+    clearFrameBuffer();
     curStatus = STOP;
     tickTimer.stop();
     m_encoder->stop();
+
     // max speed // stop draw function
     double t_animationPersentOfCross = animationPersentOfCross;
 /*    int t_delay = delay;
@@ -1324,6 +1325,7 @@ void OGLWidget::clearCanvas(int m_x, int m_y)
 }
 void OGLWidget::clearBuffer()
 {
+     qDebug() << "CLEAR_TEXT_BUFFER";
      colors.clear();
      ColorMarker startMarker;
      startMarker.startIndex=0;
@@ -1394,7 +1396,7 @@ bool OGLWidget::drawAnimationFigure(int x, int y, int width, int height, double 
     qDebug() << "wqweqweqwe "  << persent;
     if(persent < 0.98f)
     {
-        drawFigure(x, y, x + (width - x)*persent + 0.01, height, type, fill);
+        drawFigure(x, y, x + (width - x)*persent + 1, height, type, fill);
          //qDebug() << delPos.x() << "             " << delPos.x() + (maxWidth - delPos.x())*persent;
         //persent += animationPersentOfCross;
        // QThread::currentThread()->msleep(10);
@@ -1465,7 +1467,7 @@ double OGLWidget::getAnimationPersentOfCross() const
 void OGLWidget::setAnimationPersentOfCross(double value)
 {
     animationPersentOfCross = value;
-  //  qDebug() << "QWE    " << value;
+    //qDebug() << "QWE    " << value;
 }
 
 bool OGLWidget::getIsBrushWindowOpened() const
@@ -1525,7 +1527,7 @@ void  OGLWidget::updateWindow(){
         editingRectangle.isEditingRectangleVisible = true;
         if(t != selElm )
         {
-            clearBuffer();
+            //clearBuffer();
             selElm = t;
             editingRectangle.rect = timeLine->getDrawRect(t.x(), t.y());
         }
@@ -2027,7 +2029,7 @@ void OGLWidget::deleteFromBuffer(int n)
             i--;
         else
             i++;
-        // qDebug() << "QQQ" << crossCursor + i << "   " << " ::  " << cross;
+         qDebug() << "REMOVE" << crossCursor + i << "   " << " ::  " << cross;
     }
     while(mustDell > 0)
     {
@@ -2313,17 +2315,25 @@ void OGLWidget::update(){
 bool OGLWidget::crossTextDraw()
 {
     glDisable(GL_DEPTH);
+
     for( int i = 0; i < listOfAnimationFigure.length(); i++)
     {
         if(drawAnimationFigure(listOfAnimationFigure[i]))
         {
-            for( int j = listOfAnimationFigure[i].start; j < listOfAnimationFigure[i].stop; j++) // convert to cross without animation
-                cross[j] = 1;
+                //qDebug() << listOfAnimationFigure[i].start << "     " << listOfAnimationFigure[i].stop << "     " << cross.length();
+            for( int j = listOfAnimationFigure[i].start; listOfAnimationFigure[i].stop; j++) // convert to cross without animation
+            {
+                if(j < cross.length())
+                    cross[j] = 1;
+                else
+                    break;
+            }
             listOfAnimationFigure.remove(i);
-  //          qDebug() << cross;
+            qDebug() << cross;
         }
 
     }
+
     glEnable(GL_DEPTH);
     int y;
     int x1, x2, x;
@@ -2371,12 +2381,13 @@ bool OGLWidget::crossTextDraw()
 
             x2 = marginLeft + fMetrics->width(stringList[conv.y()].left(conv.x() + 1));
             y += marginTop;
-            if( cross[i - 1] == -1 && curStatus == PLAY )
+            if( cross[i - 1] == -1)
             {
                 // qDebug() << "FIRST";
                // drawAnimationFigure(x1, y, x2, y, LINE, 0);
                 //drawAnimationFigure(x1, y, x2, y, LINE, 0);
                 listOfAnimationFigure.append(AnimationFigure(QRect(x1, y, x2, y), (int)LINE, x, i));
+                qDebug() << "FIRST" << x << "     " << i << "     " << cross.length();
                 for( int j = x; j < i; j++) // convert to cross without animation
                     cross[j] = 0;
             }

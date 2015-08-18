@@ -39,10 +39,13 @@ quint64 Parser::processTimeOfUnits(QList<Unit*> list, int &globalPause, int &com
       else if(unit->unitType == 1)
           {
              if (((UnitCommand*)unit)->getUnitCommandType()=="ErasePreChar")
-                 resultTime+=delayMS;
+             {
+                 unit->delay = delayMS*unit->getUnitData().toInt();
+                 resultTime += unit->delay;
+             }
              else if (((UnitCommand*)unit)->getUnitCommandType()=="Pause")
              {
-                 resultTime+=delayMS + unit->unit_data.toInt() * 1000;
+                 resultTime += delayMS + unit->unit_data.toInt() * 1000;
                  globalPause += unit->unit_data.toInt() * 1000;
              }
              else
@@ -137,7 +140,10 @@ int Parser::ParsingLine(QList<Unit*> &list,  QString &str, quint64& timeSpendToD
                     break;
                 }
                 command->setUnitData(pars_line);
-                list.push_back(command);
+                if((list.size() > 0 &&  list.last()->unitType == 1) && (((UnitCommand*)list.last())->getUnitCommandType() == "ClearPreChar" || ((UnitCommand*)list.last())->getUnitCommandType() == "ErasePreChar"))
+                    list.last()->setUnitData(QString::number(((UnitCommand*)list.last())->getUnitData().toInt() + pars_line.toInt()));
+                else
+                    list.push_back(command);
                 state = -1;
                 i += 1;
                 continue;
@@ -165,7 +171,10 @@ int Parser::ParsingLine(QList<Unit*> &list,  QString &str, quint64& timeSpendToD
                     }
                     command->setUnitData(pars_line);
                     // qDebug()<<"Pars line:"<<pars_line;
-                    list.push_back(command);
+                    if((list.size() > 0 &&  list.last()->unitType == 1) && (((UnitCommand*)list.last())->getUnitCommandType() == "ClearPreChar" || ((UnitCommand*)list.last())->getUnitCommandType() == "ErasePreChar"))
+                        list.last()->setUnitData(QString::number(((UnitCommand*)list.last())->getUnitData().toInt() + pars_line.toInt()));
+                    else
+                        list.push_back(command);
                     state = -1;
                     i += 1;
                     continue;

@@ -211,6 +211,7 @@ public:
 
    Q_INVOKABLE void loadCurrentTextInTheFirstBlockWhenInit();
     volatile bool isBlocked = false;
+    volatile int countBlocked = 0;
 
     explicit ListControll(QObject *parent = 0);
     ~ListControll();
@@ -319,6 +320,9 @@ Q_INVOKABLE  float getZoomSpeed() const;
 
 Q_INVOKABLE  bool getIsEditBlockShow() const;
 Q_INVOKABLE  void setIsEditBlockShow(bool value);
+
+  volatile bool getBlocked() const;
+  void setBlocked(volatile bool value);
 
 signals:
   void loadFromFileSignal();

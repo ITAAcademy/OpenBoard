@@ -75,11 +75,13 @@ void UnitCommand::erasePreChar(OGLWidget *canvas,int n)
     //canvas->crossOutLastSymbol();
   //  unitType = 2;
     canvas->crossOutWithAnimation(n);
+    canvas->update();
 }
 void UnitCommand::clearPreChar(OGLWidget *canvas, int n)
 {
     //canvas->crossOutLastSymbol();
    canvas->crossOutLastSymbol(n);
+   canvas->update();
    // qDebug() << "cross" << n;
 }
 

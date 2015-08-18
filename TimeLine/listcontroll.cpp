@@ -90,7 +90,7 @@ void ListControll::setBlockKey(int col, int i, QString name)
 
 void ListControll::removeBlock(int col, int i)
 {
-    isBlocked = true;
+    setBlocked(true);
     setSelectedBlockPoint(QPoint(-1,-1));
     if (tracks[col].block.size() > i)
     {
@@ -117,7 +117,7 @@ void ListControll::removeBlock(int col, int i)
   // if (selectedBlockPoint == QPoint(col,i))       selectedBlock = NULL;
     }
     calcPointedBlocks();
-    isBlocked = false;
+    setBlocked(false);
 }
 
 void ListControll::addNewBlock(int col, QString str, DrawElement *element)
@@ -167,7 +167,7 @@ void ListControll::addNewTrack( )
 void ListControll::loadFromFile()
 {
   //  emit loadFromFileSignal();
-     isBlocked = true;
+     setBlocked(true);
      qApp->processEvents();
     QPoint p = getSelectedBlockPoint();
   /*  if (p.x() > -1)
@@ -194,7 +194,7 @@ void ListControll::loadFromFile()
    temp.draw_element->setZ(p.x());
 
    emit updateSelectedBlock(selectedBlockPoint);
-   isBlocked = false;
+   setBlocked(false);
   // qApp->processEvents();
    //emit loadFromFileSignal();
    //emit loadFromFileSignal();
@@ -208,7 +208,7 @@ void ListControll::loadFromFile()
 
 bool ListControll::removeLastBlock(int col)
 {
-    isBlocked = true;
+    setBlocked(true);
     setSelectedBlockPoint(QPoint(-1,-1));
     if (tracks[col].block.size())
     {
@@ -232,17 +232,17 @@ bool ListControll::removeLastBlock(int col)
    }
   // if (selectedBlockPoint.x() == col)       selectedBlock = NULL;
    pointed_block.clear();
-   isBlocked = false;
+   setBlocked(false);
     return true;
     }
-    isBlocked = false;
+    setBlocked(false);
 
     return false;
 }
 
 bool ListControll::removeLastTrack()
 {
-    isBlocked = true;
+    setBlocked(true);
     if (tracks.size())
     {
     int lastColTime = tracks.last().time;
@@ -266,10 +266,10 @@ recountMaxTrackTime();
 
 
   // if (selectedBlockPoint.x() == tracks.size() - 1)        selectedBlock = NULL;
-    isBlocked = false;
+    setBlocked(false);
     return true;
     }
-    isBlocked = false;
+    setBlocked(false);
     return false;
 }
 
@@ -285,10 +285,10 @@ bool ListControll::removeTrack(int col)
 
   //  if (selectedBlockPoint.x() == tracks.size() - 1)     selectedBlock = NULL;
     calcPointedBlocks();
-    isBlocked = false;
+    setBlocked(false);
     return true;
     }
-    isBlocked = false;
+    setBlocked(false);
     return false;
 }
 
@@ -496,7 +496,7 @@ ListControll::ListControll(QObject *parent) : QObject(parent), QQuickImageProvid
 }
 void ListControll::loadCurrentTextInTheFirstBlockWhenInit()
 {
-    isBlocked = true;
+    setBlocked(true);
     QPoint p(0,0);
     QString open = "curent.text";
     DrawElement *elm = GenerationDrawElement(open);
@@ -512,14 +512,29 @@ void ListControll::loadCurrentTextInTheFirstBlockWhenInit()
     temp.draw_element->setStartDraw(start_time);
     temp.draw_element->setZ(p.x());
     recountMaxTrackTime();
-    isBlocked = false;
+    setBlocked(false);
     qDebug() <<"loadCurrentTextInTheFirstBlockWhenInit DONE!!!!!!!!!!!!!!!!!!!!!!!";
 }
+volatile bool ListControll::getBlocked() const
+{
+    return isBlocked;
+}
 
- void ListControll::moveWindow()
- {
+void ListControll::setBlocked(volatile bool value)
+{
+    if(value = true)
+        countBlocked++;
+    else
+        countBlocked--;
+    if(countBlocked < 1)
+        isBlocked = value;
+}
+
+
+void ListControll::moveWindow()
+{
     QPoint posMouse = QCursor::pos();
-   // view.setPosition(  pos.x() + x , pos.y()  + y);
+    // view.setPosition(  pos.x() + x , pos.y()  + y);
     view.setPosition( posMouse - framaMousePosition);
   //  setPrevMousePosition(posMouse);
    // qApp->processEvents(QEventLoop::AllEvents, 1000);
@@ -942,6 +957,8 @@ QImage ListControll::requestImage(const QString &id, QSize *size, const QSize &r
 
     int  ListControll::resetProjectToDefault()
     {
+        setBlocked(true);
+
         for (int i=0; i< tracks.size(); i++)
             tracks[i].clear();
         tracks.clear();
@@ -952,6 +969,7 @@ QImage ListControll::requestImage(const QString &id, QSize *size, const QSize &r
         recountMaxTrackTime();
         recountMaxTrackTime();
         calcPointedBlocks();
+        setBlocked(false);
     }
 
     void ListControll::convertCurentBlockToText()

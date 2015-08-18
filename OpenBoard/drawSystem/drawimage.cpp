@@ -41,13 +41,13 @@ void DrawImageElm::setDrawImage(QImage img)
 
 bool DrawImageElm::setDrawWidget(OGLWidget *value)
 {
-    if((!DrawElement::setDrawWidget(value) && textureIndex != -1 || failedLoad == 0) || (!pDrawWidget->isVisible() || !pDrawWidget->isInit()))
+    if(((!DrawElement::setDrawWidget(value) && textureIndex != -1) || failedLoad < 0) || (!pDrawWidget->isVisible() || !pDrawWidget->isInit()))
     {
-        if(pDrawWidget->isVisible() && pDrawWidget->isInit())
-            failedLoad--;
         return 0;
     }
     textureIndex = pDrawWidget->loadTexture(image);
+    if(textureIndex == 4294967295)
+        failedLoad--;
     qDebug() << "QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQWWWWWWWWWWWWWWWWW     " << textureIndex;
 }
 
