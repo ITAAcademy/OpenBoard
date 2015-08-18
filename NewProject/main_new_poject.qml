@@ -9,7 +9,11 @@ Rectangle{
     id: root
     anchors.fill: parent
     color: "#333333"
-    property int project_state : -1
+    property int project_state : 1
+    Component.onCompleted: {
+        projectControll.setProjectState(1)
+    }
+
     Row{
         id: row
         spacing: 5
@@ -91,18 +95,19 @@ Rectangle{
                         id: open
                         title: "Open project"
                         visible: projectControll.isForStart()
-                        onVisibleChanged: {
+                        /*onVisibleChanged: {
                             console.log(projectControll.isForStart());
                             if(projectControll.isForStart())
                                 open.visible =  true;
                             else
                                 open.visible =  false;
-                        }
+                        }*/
 
                         onClicked: {
                             my_col.clean();
-                            //projectControll.setProjectState(5);
+                            projectControll.setProjectState(5);
                             root.project_state = 5
+                            content.next = c5;
                             projectControll.close();
                         }
                     }
