@@ -967,7 +967,6 @@ QImage ListControll::requestImage(const QString &id, QSize *size, const QSize &r
         selectedBlockPoint = QPoint(-1,-1);
         addNewTrack( );
         recountMaxTrackTime();
-        recountMaxTrackTime();
         calcPointedBlocks();
         setBlocked(false);
     }

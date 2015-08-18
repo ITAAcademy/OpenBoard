@@ -413,10 +413,13 @@ case VIDEO_EDIT_TEXT:
     a_show_last_drawing->setVisible(false);
     a_stop->setVisible(true);
     a_undo->setVisible(true);
+
+
     break;
 }
 case VIDEO_EDIT_PRO:
 {
+   // mpOGLWidget->getTimeLine()->show();
     toolBar->show();
     toolBarBoard->show();
     a_clear_drawing->setVisible(true);
@@ -519,7 +522,7 @@ case VISUAL_EFFECT:
     a_undo->setVisible(true);
     break;
 }
-case 5:
+case OPENING_PROJECT:
     on_action_Open_Project_triggered();
     break;
 }
@@ -654,8 +657,9 @@ void MainWindow::on_action_Show_triggered()
     //mpOGLWidget = new OGLWidget();
     mpOGLWidget->getTimeLine()->show();
     mpOGLWidget->show();
-    mpOGLWidget->pause(100);// wait for show window
-    mpOGLWidget->setDelay(1000/lastInpuDelay);
+    //mpOGLWidget->pause(100);// wait for show window
+
+   mpOGLWidget->setDelay(1000/lastInpuDelay);
     mpOGLWidget->setFixedSize(GLWIDGET_SIZE);
     mpOGLWidget->move(pos().x() + width() + WINDOW_MARGING, pos().y());
 
@@ -1151,7 +1155,7 @@ bool MainWindow::on_action_Save_Project_triggered()
 }
 
 void MainWindow::on_action_Open_Project_triggered()
-{
+{   
     isActive = true;
     qApp->processEvents();
     activateWindow();
@@ -1225,35 +1229,44 @@ void MainWindow::on_action_New_Project_triggered()
     }
 
      curProjectFile.clear();
-    // mpOGLWidget->getTimeLine()->emitResetProject();
+     //mpOGLWidget->getTimeLine()->emitResetProject();
      mpOGLWidget->getTimeLine()->resetProjectToDefault();
+     // qDebug() << "AAAAAAAAAAAAAAAAAAAA1";
      mpOGLWidget->getTimeLine()->setIsProjectChanged(false);
      mpOGLWidget->getTimeLine()->setBlocked(true);
+
      setEnabledToolBar(true);
+     // qDebug() << "AAAAAAAAAAAAAAAAAAAA3";
      on_action_Clear_TextEdit_triggered();
-     if(isVisible())
-        this->setCurentState(ProjectCreator::getProjectSetting(false, false));
-     else
-         this->setCurentState(ProjectCreator::getProjectSetting(true, false));
-     if (firstNewProjectCreating && this->getCurentState().state ==-1)
+ //qDebug() << "AAAAAAAAAAAAAAAAAAAA4";
+     if (firstNewProjectCreating)
      {
          ProjectStartupSetting state = this->getCurentState();
          state.state = 1;
          this->setCurentState(state);
          firstNewProjectCreating = false;
      }
-if (this->getCurentState().state !=-1)
+ //qDebug() << "AAAAAAAAAAAAAAAAAAAA5";
+     if(isVisible())
+        this->setCurentState(ProjectCreator::getProjectSetting(false, false));
+     else
+         this->setCurentState(ProjectCreator::getProjectSetting(true, false));
+
+ //qDebug() << "AAAAAAAAAAAAAAAAAAAA6";
+//if (this->getCurentState().state !=-1)
 {
     setEnabledToolBar(false);
      if(!curentState.advance_mode)
         setViewState((int)curentState.state);
      else
-         setViewState(1);
-
-     qApp->processEvents(QEventLoop::AllEvents, 1000);
+         setViewState(VIDEO_EDIT_PRO);
+ qDebug() << "AAAAAAAAAAAAAAAAAAAA   DAAAAAAAAAAAAAA";
+     //qApp->processEvents(QEventLoop::AllEvents, 1000);
+    // qDebug() << "AAAAAAAAAAAAAAAAAAAAww";
      switch (curentState.state) {
      case VIDEO_EDIT_TEXT:
      {
+         // qDebug() << "AAAAAAAAAAAAAAAAAAAA8";
          DrawImageElm *first = new DrawImageElm(mpOGLWidget);
          QImage load(curentState.firstImage);
          qApp->processEvents();
@@ -1284,14 +1297,17 @@ if (this->getCurentState().state !=-1)
          mpOGLWidget->getTimeLine()->addNewBlock(0, "NEW3", text);
          mpOGLWidget->getTimeLine()->addNewBlock(0, "NEW2", last);
          mpOGLWidget->getTimeLine()->setSelectedBlockPoint(0, 1);
+         // qDebug() << "AAAAAAAAAAAAAAAAAAAA9";
          break;
      }
      case VIDEO_EDIT_DEFAULT:
          mpOGLWidget->getTimeLine()->addNewBlock(0, "NEW1", new DrawTextElm(NULL));
+         // qDebug() << "AAAAAAAAAAAAAAAAAAAA10";
          break;
      default:
          break;
      }
+//qDebug() << "AAAAAAAAAAAAAAAAAAAAqq";
 
    //  qApp->processEvents(QEventLoop::AllEvents, 1000);
      mpOGLWidget->getTimeLine()->sendUpdateModel();
@@ -1299,7 +1315,12 @@ if (this->getCurentState().state !=-1)
 
      mpOGLWidget->setList(mpOGLWidget->getTimeLine()->getPointedBlocksDE());
      mpOGLWidget->getTimeLine()->setBlocked(false);
+
 }
+
+
+
+
 
 }
 

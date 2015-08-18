@@ -12,7 +12,8 @@ enum VIEW_STATE
     VIDEO_EDIT_PRO = 1,
     VIDEO_EDIT_DEFAULT = 2,
     BRUSH_ANIMATION = 3,
-    VISUAL_EFFECT = 4
+    VISUAL_EFFECT = 4,
+    OPENING_PROJECT = 5
 };
 
 struct ProjectStartupSetting

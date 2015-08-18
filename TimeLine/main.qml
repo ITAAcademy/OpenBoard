@@ -240,8 +240,7 @@ main222.isPlayPauseStop = 2
 
 
        onResetProjectSignel: {
-timeControll.setScaleScrollChildren(0) //it have protection from small values
-           main222.scaling = timeControll.getScaleScrollChildren();
+timeControll.setScaleScrollChildren(0) //it have protection from small values, will set minimum scale
           main222.selectedBlockCol = -1
             main222.selectedBlockIndex = -1
           // rep_columns.model = timeControll.getTracksNumber()
