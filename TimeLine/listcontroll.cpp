@@ -172,7 +172,8 @@ void ListControll::loadFromFile()
     QPoint p = getSelectedBlockPoint();
   /*  if (p.x() > -1)
        tracks[p.x()].time -= tracks[p.x()].block[p.y()].draw_element->getLifeTime();*/
-   QString open = QFileDialog::getOpenFileName();
+   //QString open = QFileDialog::getOpenFileName();
+   QString open =  QFileDialog::getOpenFileName(0, QString(), QString(), QString(), 0, QFileDialog::DontUseNativeDialog);
 //qDebug() <<"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA " + open;
    DrawElement *elm = GenerationDrawElement(open);
    if(elm == NULL)
@@ -902,10 +903,11 @@ QImage ListControll::requestImage(const QString &id, QSize *size, const QSize &r
  void ListControll::update()
  {
      emit updateSignal();
-     if (this->getMaxTrackTime() < getPlayTime())
+     if (this->getMaxTrackTime() < getPlayTime() + 15) //1234
      {
          emit stopSignal();
          isPlayPauseStop = 3;
+
      }
  }
 
