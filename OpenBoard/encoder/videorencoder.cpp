@@ -25,7 +25,7 @@ QImage AV_REncoder::getFrame() const
 
 void AV_REncoder::setFrame(const QImage &value)
 {
-    //// qDebug() << "NEW IMAGE";
+    //// //qDebug() << "NEW IMAGE";
     // value.save("we.jpg");
     if(newImage)
     {
@@ -78,7 +78,7 @@ void AV_REncoder::setFileName(QString path)
 {
     m_encoder->setFilePath( path );
     fileName = path;
-    // qDebug() << "Set path   " << path;
+    // //qDebug() << "Set path   " << path;
 }
 
 void AV_REncoder::setGrabWidget(QGLWidget *widget)
@@ -100,7 +100,7 @@ void AV_REncoder::startRecord()
 
 void AV_REncoder::onStart()
 {
-    // qDebug() << "RUNNNNNN";
+    // //qDebug() << "RUNNNNNN";
 }
 
 void AV_REncoder::initAudio()
@@ -151,7 +151,7 @@ void AV_REncoder::stop()
         m_encoder->stop();
         bRun = false;
         frame = QImage(grabWidget->size(), QImage::Format_RGB888);
-        // qDebug() << "STOPPPP";
+        // //qDebug() << "STOPPPP";
     }
  //   exit();
 }
@@ -171,7 +171,7 @@ void AV_REncoder::run()
     {
         if(timer.elapsed() >= 40 - delta && !bPause)
         {
-      //      // qDebug() << "SHOW";
+      //      // //qDebug() << "SHOW";
             if(!newImage)
             {
                 m_encoder->encodeVideoFrame(frame);
@@ -192,12 +192,12 @@ void AV_REncoder::processAudioBuffer(const QAudioBuffer& buffer)
     if(!bPause)
     {
         m_encoder->encodeAudioData(QByteArray(buffer.constData<char>(), buffer.byteCount()));
-      //  // qDebug() << "AUDIO";
+      //  // //qDebug() << "AUDIO";
     }
-   // // qDebug() << "AUDIO";
+   // // //qDebug() << "AUDIO";
 }
 
 void AV_REncoder::displayErrorMessage()
 {
-    // qDebug() << (audioRecorder->errorString());
+    // //qDebug() << (audioRecorder->errorString());
 }

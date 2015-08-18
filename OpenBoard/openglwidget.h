@@ -257,6 +257,7 @@ public slots:
     void testRectangle();
     bool isInit();
     int getLastSymbolOfString(int index, bool symbol);
+    bool crossText();
 signals:
     void drawTextChanged();
     void pauseSignal();
@@ -265,7 +266,7 @@ signals:
 
 
 private slots:
-    bool crossText();
+
     bool crossTextV2();
     int getFirstSymbolOfString(int index, bool symbol = false);
     int getCountNullString(int index);

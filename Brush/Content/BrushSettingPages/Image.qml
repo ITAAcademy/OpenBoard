@@ -11,7 +11,7 @@ Rectangle {
     signal update
     onUpdate: {
         show_brush_image.update();
-        console.log("update brush");
+        //console.log("update brush");
     }
     Component.onCompleted: {
         root.update();

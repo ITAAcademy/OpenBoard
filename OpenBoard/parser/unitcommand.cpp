@@ -25,7 +25,7 @@ bool isLower(const ColorMarker &c1,const ColorMarker &c2)
 void UnitCommand::changeColor(OGLWidget *canvas)
 {
    // canvas->setFillColor(QColor(unit_data));
-    // qDebug() << "void UnitCommand::changeColor(OGLWidget *canvas)";
+    // //qDebug() << "void UnitCommand::changeColor(OGLWidget *canvas)";
     ColorMarker marker;
     marker.startIndex=canvas->getCursorIndex();
     marker.value=unit_data;
@@ -46,12 +46,12 @@ void UnitCommand::boardClean(OGLWidget *canvas)
 
 void UnitCommand::moveLeft(OGLWidget *canvas, int n){
     canvas->moveCursor(-n);
-// qDebug() <<"Moved left";
+// //qDebug() <<"Moved left";
 
 //INSERT CODE
 }
 void UnitCommand::moveRight(OGLWidget* canvas, int n){
-// qDebug() <<"Moved right " << n;
+// //qDebug() <<"Moved right " << n;
 canvas->moveCursor(n);
 //INSERT CODE
 }
@@ -75,20 +75,20 @@ void UnitCommand::erasePreChar(OGLWidget *canvas,int n)
     //canvas->crossOutLastSymbol();
   //  unitType = 2;
     canvas->crossOutWithAnimation(n);
-    canvas->update();
+    canvas->crossText();
 }
 void UnitCommand::clearPreChar(OGLWidget *canvas, int n)
 {
     //canvas->crossOutLastSymbol();
    canvas->crossOutLastSymbol(n);
-   canvas->update();
-   // qDebug() << "cross" << n;
+   canvas->crossText();
+   // //qDebug() << "cross" << n;
 }
 
 void UnitCommand::update(OGLWidget *canvas)
 {
     canvas->update();
-   // qDebug() << "UPDATEEEEEEEEE";
+   // //qDebug() << "UPDATEEEEEEEEE";
 }
 
 void UnitCommand::pause(OGLWidget *canvas)
@@ -96,7 +96,7 @@ void UnitCommand::pause(OGLWidget *canvas)
     //QThread::msleep(unit_data.toULong()*100);
    // canvas->update();
     delay = unit_data.toULong()*1000;
-    canvas->update();
+    canvas->crossText();
     //canvas->pause(unit_data.toULong()*1000);
 }
 

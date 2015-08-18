@@ -3,7 +3,7 @@ import QtQuick 2.0
 Rectangle {
     id: root
     color: "gray"
-   // onHeightChanged: // console.log("HEIGHT  toolbar = " + height)
+   // onHeightChanged: // //console.log("HEIGHT  toolbar = " + height)
     property Repeater globalRep
     property Buutton p_button_RemoveTrack
     property Buutton p_button_AddTrack
@@ -24,7 +24,7 @@ Rectangle {
             onClicked: {
                timeControll.addNewTest("vasia");
                  repka.updateModel() ;
-                // console.log("CLICK2")
+                // //console.log("CLICK2")
             }
         }*/
         Buutton{
@@ -58,7 +58,7 @@ Rectangle {
                 {
                     main222.needToLightSelected = false;
                     main222.addTrack() ;
-                 //  console.log("AAAAAAAAAAAAding track : "  + timeControll.getTracksNumber())
+                 //  //console.log("AAAAAAAAAAAAding track : "  + timeControll.getTracksNumber())
                 }
             }
         }

@@ -13,7 +13,7 @@ Rectangle {
     onUpdate: {
         brushControll.setColor(Qt.hsla(h.value, s.value, l.value));
         show_brush_image.update();
-    //    console.log("update color");
+    //    //console.log("update color");
     }
 
     Column{
@@ -109,7 +109,7 @@ Rectangle {
     {
         brushControll.setColor(Qt.hsla(h.value, s.value, l.value));
         brushControll.update();
-        console.log("ooooooooooooooooooooooooooooo");
+        //console.log("ooooooooooooooooooooooooooooo");
     }
 }
 

@@ -71,7 +71,7 @@ property Repeater globalRep
                 globalRep.updateModel();
                 contextMenuItem.visible = false;
 
-                // console.log(" contextMenuItem.visible = false;")
+                // //console.log(" contextMenuItem.visible = false;")
             }
         }
         ContextButton {
@@ -85,7 +85,7 @@ property Repeater globalRep
                 var id = contextMenuItem.blockIndex;*/
                 timeControll.loadFromFile();//removeBlock(col,id)
                 contextMenuItem.visible = false;
-                // console.log("AFTER 9999999999999999999999");
+                // //console.log("AFTER 9999999999999999999999");
                 //main222.selectedBlock.repaint();
                 globalRep.updateModel();
 
@@ -104,7 +104,7 @@ property Repeater globalRep
                 var id = contextMenuItem.blockIndex;*/
                 timeControll.convertCurentBlockToText();//removeBlock(col,id)
                 contextMenuItem.visible = false;
-                // console.log("AFTER 9999999999999999999999");
+                // //console.log("AFTER 9999999999999999999999");
                 //main222.selectedBlock.repaint();
                 globalRep.updateModel();
 

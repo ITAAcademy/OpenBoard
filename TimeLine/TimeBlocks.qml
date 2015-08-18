@@ -27,7 +27,7 @@ import "ToolBar" as ContentToolBar
           model: timeControll.getTrackSize()
           function updateModel()      {
               model = model - 1;
-              console.log("function updateModel()      {")
+              //console.log("function updateModel()      {")
                    model =  timeControll.getTrackSize()
 
               }

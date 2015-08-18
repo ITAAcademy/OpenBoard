@@ -10,7 +10,7 @@ Rectangle {
     property string cLoaderName: "loader"
     signal update
     onUpdate: {
-        console.log("update brush");
+        //console.log("update brush");
     }
     Column{
         width: parent.width

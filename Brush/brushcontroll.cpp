@@ -137,11 +137,11 @@ void BrushManager::setPosition(QPoint pos)
 
 QImage BrushManager::requestImage(const QString &id, QSize *size, const QSize& requestedSize)
 {
-    qDebug() << "REQUEST IMAGE" << id;
+    //qDebug() << "REQUEST IMAGE" << id;
     if(id[0] == 'a')
     {
         int i = id.rightRef(id.length() - 1).toInt();
-        qDebug() << i;
+        //qDebug() << i;
         return imageStack[i];
     }
 
@@ -165,8 +165,8 @@ bool BrushManager::openBrushLibrary(QString path)
         if(!img.isNull())
             imageStack.push(img);
     }
-    qDebug() << "Image found    " << imageStack.length();
-    qDebug() << brushPathsList;
+    //qDebug() << "Image found    " << imageStack.length();
+    //qDebug() << brushPathsList;
     if (imageStack.length()>0)setCurentBrush(0);
     else setAbleToDraw(false);
 }
@@ -178,7 +178,7 @@ void BrushManager::setAbleToDraw(bool isAble){
     ableToDraw=isAble;
      if (!isAble)
     {
-    qDebug() << "emit unableToDraw();";
+    //qDebug() << "emit unableToDraw();";
     }
 }
 
@@ -239,7 +239,7 @@ void BrushManager::setAffine(float value)
 
 void BrushManager::setColor(QColor value)
 {
-    //qDebug() << value;
+    ////qDebug() << value;
     createdBrush.color_main = value;
     //currentBrushChanged();
 

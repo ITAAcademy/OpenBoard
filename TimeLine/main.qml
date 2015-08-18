@@ -12,7 +12,7 @@ Rectangle {
   //  width: 1000 ///main222.width + 20
   // height: 500 //main222.height + 20
     //anchors.margins : 20
-   // onHeightChanged: // console.log("HEIGHT = " + height)
+   // onHeightChanged: // //console.log("HEIGHT = " + height)
 z: -150
 radius: 10
 MouseAreaForWindowDraging{
@@ -95,10 +95,10 @@ focus: true
 
     property bool ctrl_pressed : false
          Keys.onPressed: {
-              console.log("AAAAAAAAAAAAAAAAAAAAA " + event.key)
+              //console.log("AAAAAAAAAAAAAAAAAAAAA " + event.key)
           if(event.modifiers & Qt.ControlModifier) {
                main222.ctrl_pressed = true
-              //console.log("AAAAAAAAAAAAAAAAAAAAA " + ctrl_pressed)
+              ////console.log("AAAAAAAAAAAAAAAAAAAAA " + ctrl_pressed)
 
               if ((event.key === Qt.Key_S || event.key === 1067) && (event.modifiers & Qt.ShiftModifier))
                         timeControll.emitSaveProject();
@@ -121,7 +121,7 @@ focus: true
              //ctrl release
                  if( event.key === 16777249) {
                      main222.ctrl_pressed = false
-                    //console.log("AAAAAAAAAAAAAAAAAAAAA " + ctrl_pressed)
+                    ////console.log("AAAAAAAAAAAAAAAAAAAAA " + ctrl_pressed)
                      }
              }
 
@@ -236,7 +236,7 @@ isPlayPauseStop = 1
                main222.prevPlayTime = play_time;
    //  (timeControll.getPlayTime() - scroll.flickableItem.contentX)/main222.scaling + 15 ;
                timeControll.calcPointedBlocksAtTime()
-              // console.log("timer value: " +timeControll.getPlayTime())
+              // //console.log("timer value: " +timeControll.getPlayTime())
            }
        }
 
@@ -249,7 +249,7 @@ isPlayPauseStop = 1
            //repka.updateModel();*/
            main222.scaling = timeControll.getScaleScrollChildren();
            main222.updateTracksModel();
-           console.log("AAAAAAAAAAAAAAAAAA " +  main222.scaling)
+           //console.log("AAAAAAAAAAAAAAAAAA " +  main222.scaling)
        }
 
 
@@ -258,7 +258,7 @@ timeControll.setScaleScrollChildren(0) //it have protection from small values, w
           main222.selectedBlockCol = -1
             main222.selectedBlockIndex = -1
           // rep_columns.model = timeControll.getTracksNumber()
-           console.log("1111111111111111111")
+           //console.log("1111111111111111111")
            // main222.p_trackbar.globalRep.updateModel()
            main222.p_scale_pointer.x = 26
        timeControll.setIsProjectChanged(false)
@@ -286,7 +286,7 @@ timeControll.setScaleScrollChildren(0) //it have protection from small values, w
 
        /* Component.onCompleted: {
             var rec = mapFromItem(time_scale,10,10)
-            // console.log(rec.x + " mapFromItem "  + rec.y)
+            // //console.log(rec.x + " mapFromItem "  + rec.y)
 
         }*/
         Row {
@@ -336,7 +336,7 @@ timeControll.setScaleScrollChildren(0) //it have protection from small values, w
 
                 Component.onCompleted: {
                  /*  time_scale.tX += time_scale.division
-                    // console.log(" new division added " +  time_scale.tX)*/
+                    // //console.log(" new division added " +  time_scale.tX)*/
                 }
             }
         }
@@ -360,28 +360,28 @@ timeControll.setScaleScrollChildren(0) //it have protection from small values, w
         onXChanged: {
 
           //  if (x===0)     x = scroll.flickableItem.width
-         //  console.log("1000")
+         //  //console.log("1000")
            // var half_scale_pointer_width = -scale_pointer.width/2
             var zdvig = 20 - scroll.flickableItem.contentX
-           // // console.log(" 3 scroll.flickableItem.contentX = " + scroll.flickableItem.contentX )
-        // console.log("10001")
+           // // //console.log(" 3 scroll.flickableItem.contentX = " + scroll.flickableItem.contentX )
+        // //console.log("10001")
             if (zdvig < 0)
             {
              zdvig = -width/2//   zdvig = 0;
-            // console.log("10002")
+            // //console.log("10002")
             }
-            // console.log("10003")
+            // //console.log("10003")
             if (x<zdvig)
             {
-                 // console.log("10004")
+                 // //console.log("10004")
                 scroll.flickableItem.contentX -= zdvig -x
                 if (scroll.flickableItem.contentX < 0)
                 {
                     scroll.flickableItem.contentX = 0;
-                     // console.log("10005")
+                     // //console.log("10005")
                 }
                x = zdvig
-                  //console.log("10006")
+                  ////console.log("10006")
             }
             else
             {
@@ -397,7 +397,7 @@ timeControll.setScaleScrollChildren(0) //it have protection from small values, w
                var temp = scroll.width-30    // real_time - scroll.flickableItem.contentX + width
                 if (x  > temp )
                 {
-               //   console.log("HAAAAAAAAAAA")
+               //   //console.log("HAAAAAAAAAAA")
 
                     scroll.flickableItem.contentX += (x - temp)
                     var sad = real_time - scroll.width +50 // scroll.flickableItem.contentWidth - scroll.width + 10
@@ -412,18 +412,18 @@ timeControll.setScaleScrollChildren(0) //it have protection from small values, w
               /*  else
                 {
                 temp = scroll.width -width - 3  /// scroll.x + scroll.width - main222.p_trackbar.width*1.4
-              //   console.log("10007")
+              //   //console.log("10007")
                 if (x> temp)
                 {
-                   // console.log("DAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa")
+                   // //console.log("DAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa")
                     if (real_time  >= scroll.width  )
                     {
-                        // console.log("10008")
+                        // //console.log("10008")
                     scroll.flickableItem.contentX += (x - temp)
                     var sad = real_time - scroll.width +17 // scroll.flickableItem.contentWidth - scroll.width + 10
                     if (scroll.flickableItem.contentX  >  sad)
                     {
-                         //console.log("10009")
+                         ////console.log("10009")
                             scroll.flickableItem.contentX = sad;
                         //timeControll.stop();
                        // x-=3;
@@ -433,7 +433,7 @@ timeControll.setScaleScrollChildren(0) //it have protection from small values, w
                        {
                         timeControll.stop();
                         //x = temp
-                         //console.log("10010")
+                         ////console.log("10010")
                     }
                     x = temp
                 }
@@ -441,18 +441,18 @@ timeControll.setScaleScrollChildren(0) //it have protection from small values, w
             }
 
 timeControll.setScalePointerPos((x  -20 + scroll.flickableItem.contentX)* main222.scaling);
-         //   console.log("JJJJJJJJJJJJJJJJ " + timeControll.getScalePointerPos())
+         //   //console.log("JJJJJJJJJJJJJJJJ " + timeControll.getScalePointerPos())
             if (main222.isPlayPauseStop !== 0)
             {
             timeControll.calcPointedBlocks();
-               //console.log("AAAAAAAAAAAWWWWWWWWWWWWWWWWWWWWWWW")
-                //console.log("getScalePointerPos = " + timeControll.getScalePointerPos())
+               ////console.log("AAAAAAAAAAAWWWWWWWWWWWWWWWWWWWWWWW")
+                ////console.log("getScalePointerPos = " + timeControll.getScalePointerPos())
 
             }
 
-           // // console.log("x + scroll.flickableItem.contentX = "+x +" + " + scroll.flickableItem.contentX
+           // // //console.log("x + scroll.flickableItem.contentX = "+x +" + " + scroll.flickableItem.contentX
 
-            //console.log("scale_pointer X = " +(x+width/2))
+            ////console.log("scale_pointer X = " +(x+width/2))
 
         }
 
@@ -475,7 +475,7 @@ timeControll.setScalePointerPos((x  -20 + scroll.flickableItem.contentX)* main22
         x: scale_pointer.width/2 + scale_pointer.x
         z: 200
       // height:400
-       //  onHeightChanged: // console.log("HEIGHT  pointer line = " + height)
+       //  onHeightChanged: // //console.log("HEIGHT  pointer line = " + height)
 
     }
 
@@ -523,7 +523,7 @@ timeControll.setScalePointerPos((x  -20 + scroll.flickableItem.contentX)* main22
                             time_scale.width = width  ;
                             time_scale_rep.model = time_scale.width/ time_scale.division + 2
                         }
-                         //console.log("122  item_col.width=" + item_col.width)
+                         ////console.log("122  item_col.width=" + item_col.width)
                     }
                     Column {
                           id: columns
@@ -554,13 +554,13 @@ timeControll.setScalePointerPos((x  -20 + scroll.flickableItem.contentX)* main22
                                function setColorize(indexa, color)
                                {
                                        repka.itemAt(indexa).p_color_overlay.color = color
-                                  //  // console.log("GGGGGGGGGG " + repka.itemAt(indexa).mX)
-                                  // // console.log("GGGGGGGGGG " + repka.itemAt(indexa).x)
+                                  //  // //console.log("GGGGGGGGGG " + repka.itemAt(indexa).mX)
+                                  // // //console.log("GGGGGGGGGG " + repka.itemAt(indexa).x)
                                    //main222.p_scale_pointer.x = repka.itemAt(indexa).x
                                }
                                function getBlockX (indexa)
                                {
-                                   // console.log("repka.itemAt(indexa).x="+repka.itemAt(indexa).x)
+                                   // //console.log("repka.itemAt(indexa).x="+repka.itemAt(indexa).x)
 
                                      return repka.itemAt(indexa).x
                                }
@@ -599,15 +599,15 @@ timeControll.setScalePointerPos((x  -20 + scroll.flickableItem.contentX)* main22
         if (main222.needToLightSelected)
         {
             rep_columns.itemAt(main222.selectedBlockCol).setColorize(main222.selectedBlockIndex,"#8000FF00")
-            // console.log("selectedBlockIndex=" + main222.selectedBlockIndex)
+            // //console.log("selectedBlockIndex=" + main222.selectedBlockIndex)
        // main222.p_scale_pointer.x =rep_columns.itemAt(main222.selectedBlockCol).getBlockX(main222.selectedBlockIndex)
        //main222.mX//
 
 
         }
-        console.log("6666666666666666666")
+        //console.log("6666666666666666666")
         timeControll.calcPointedBlocks();
-        console.log("77777777777777777" )
+        //console.log("77777777777777777" )
         timeControll.setIsProjectChanged(true)
     }
                                            delegate:
@@ -642,10 +642,10 @@ timeControll.setScalePointerPos((x  -20 + scroll.flickableItem.contentX)* main22
                                            /* var pnt2 = new Point(-1,-1)
                                            timeControll.setSelectedBlockPoint(pnt2)*/
                                           // main222.p_trackbar.globalRep.updateModel()
-                                         /*   // console.log("item_col.p_columns.globalRep " + item_col.p_columns.globalRep)
-                                           // console.log("cool.repka " + cool.repka)
+                                         /*   // //console.log("item_col.p_columns.globalRep " + item_col.p_columns.globalRep)
+                                           // //console.log("cool.repka " + cool.repka)
                                            item_col.p_columns.globalRep = cool.repka
-                                           // console.log("REPKA " + item_col.p_columns.globalRep)*/
+                                           // //console.log("REPKA " + item_col.p_columns.globalRep)*/
                                            //item_col.main_root = main_root
                                        }
                                      }
@@ -661,7 +661,7 @@ timeControll.setScalePointerPos((x  -20 + scroll.flickableItem.contentX)* main22
                             }
                    onChildrenRectChanged:  {
                    width =  timeControll.getMaxTrackTime() / main222.scaling
-                   // // console.log(" timeControll.getMaxTestWidth() = " +  width)
+                   // // //console.log(" timeControll.getMaxTestWidth() = " +  width)
                    }
                     } /* rep_columns end */
               }

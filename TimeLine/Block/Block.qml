@@ -68,7 +68,7 @@ z: 0
 
        // timeControll.setBlockTime(colIndex,mIndex,width)
 
-        //// console.log("333 timeControll.setBlockTime " + colIndex + " " + mIndex + " " + width)
+        //// //console.log("333 timeControll.setBlockTime " + colIndex + " " + mIndex + " " + width)
          //timeControll.setBlockTime(mainwindow.columnIndex,mainwindow.blockIndex,block_width_value.value)
     }
     onXChanged: {
@@ -134,7 +134,7 @@ onYChanged: y=0;
        onPressed: {
             if(main222.selectedBlock !== null)
                 main222.selectedBlock.hideMenu();
-            console.log("AAAAAAAAAAAAAAA " + timeControll.getBlockStartTime(root.colIndex,root.mIndex))
+            //console.log("AAAAAAAAAAAAAAA " + timeControll.getBlockStartTime(root.colIndex,root.mIndex))
              main222.p_scale_pointer.x = mouseX + root.x - scroll.flickableItem.contentX + main222.p_scale_pointer.width //1234
             timeControll.setSelectedBlockPoint(root.colIndex,root.mIndex);
             main222.p_scale_pointer.x+=1
@@ -148,7 +148,7 @@ onYChanged: y=0;
             icon_coloroverlay.color = "#8000FF00"  //1234
            // blocks.itemAt(i).icon_coloroverlay.color = "#00000000"
             //columns.childAt()
-            // console.log("onPressed: mIndex="+mIndex+" colIndex="+ colIndex + " time = " + timeControll.getBlockTime(colIndex,mIndex))
+            // //console.log("onPressed: mIndex="+mIndex+" colIndex="+ colIndex + " time = " + timeControll.getBlockTime(colIndex,mIndex))
             if (mouse.button == Qt.RightButton)
             {
                context_menu.show(main222.p_scale_pointer.x, mouseY + root.colIndex * (root.height + 2)
@@ -170,7 +170,7 @@ onYChanged: y=0;
 
                 context_menu.visible = false
                 drag.target = root
-    // console.log("onPressed");
+    // //console.log("onPressed");
             drop.visible = false;
              drop.enabled = false;
             if( mouseX > root.width * 0.9)
@@ -188,14 +188,14 @@ onYChanged: y=0;
                 root.z += 200
             }
             }
-            // console.log("   root.z= " +   root.z)
+            // //console.log("   root.z= " +   root.z)
         }
         }
         onReleased: {
            // main222.p_scale_pointer.x = mouseX + root.x
             if (context_menu.visible === false)
             {
-            // console.log("RELEASE");
+            // //console.log("RELEASE");
             if (globalRep.isDrag)
                        root.z -= 200
  globalRep.isDrag = false
@@ -205,8 +205,8 @@ onYChanged: y=0;
                  timeControll.setBlockTime(colIndex, mIndex,root.width * main222.scaling);
 
                 // item_col.width = timeControll.getMaxTrackTime()// item_col.childrenRect.width
-                // console.log("118 item_col.width="+  item_col.width )
-                // console.log("119 timeControll.getMaxTrackTime="+  timeControll.getMaxTrackTime() )
+                // //console.log("118 item_col.width="+  item_col.width )
+                // //console.log("119 timeControll.getMaxTrackTime="+  timeControll.getMaxTrackTime() )
                  globalRep.updateModel();
 
             }
@@ -224,11 +224,11 @@ onYChanged: y=0;
              drop.enabled = true;
 //globalRep.updateModel()
 
-// console.log(" reles  root.z= " +   root.z)
+// //console.log(" reles  root.z= " +   root.z)
         }
         }
         onEntered: {
-           // // console.log(mouseX + " YY " + mouseY)
+           // // //console.log(mouseX + " YY " + mouseY)
         }
     }
 
@@ -258,7 +258,7 @@ onYChanged: y=0;
        /* onSourceChanged: {
             if (main222.selectedBlockCol === root.colIndex &&
                     main222.selectedBlockIndex === root.mIndex)
-          console.log("  AAAAAAAAAAAAAAAAAA " + root.colIndex + " " + root.mIndex);
+          //console.log("  AAAAAAAAAAAAAAAAAA " + root.colIndex + " " + root.mIndex);
         }*/
 
 
@@ -311,7 +311,7 @@ onYChanged: y=0;
 
     }
     onExited: {
-         // console.log( " DropArea onExited main_root.maIsPressed="+main222.maIsPressed)
+         // //console.log( " DropArea onExited main_root.maIsPressed="+main222.maIsPressed)
         icon_coloroverlay.color = "#00000000"
  main222.dropEntered = 0
         if (main222.maIsPressed === 0)        {

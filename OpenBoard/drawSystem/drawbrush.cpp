@@ -29,10 +29,10 @@ bool DrawBrushElm::load_add(QDataStream &stream)
      QVector<QImage> images;
      QVector<int> imagesIndexed;
      stream >> coords;
-     qDebug()<<"LOADED coords len:"<<coords.length();//<<" values:"<<coords[0]<<" "<<coords[1];
+     //qDebug()<<"LOADED coords len:"<<coords.length();//<<" values:"<<coords[0]<<" "<<coords[1];
      /*for (QPoint coord : coords)
      {
-         qDebug() <<"Point:"<<coord;
+         //qDebug() <<"Point:"<<coord;
      }*/
      int brushCount = 0;
     stream >> brushCount;
@@ -45,8 +45,8 @@ bool DrawBrushElm::load_add(QDataStream &stream)
                imagesIndexed.push_back(index);
                images.push_back(load_image(stream));
            }
-            qDebug() <<"imagesIndexed:"<<imagesIndexed.toList();
-     qDebug() << "load brushes:"<<brushCount;
+            //qDebug() <<"imagesIndexed:"<<imagesIndexed.toList();
+     //qDebug() << "load brushes:"<<brushCount;
     for (int i = 0; i <brushCount;i++)
     {
         BrushBeginingIndex brushBeginingIndex;
@@ -66,7 +66,7 @@ bool DrawBrushElm::load_add(QDataStream &stream)
             data.img.fill(Qt::black);
             //data.color_img = BrushPainter::getInstance()->applyColor(data);
              data.color_img = BrushPainter::getInstance()->applyColor(data);
-            qDebug() <<"DEFAULT INDEX";
+            //qDebug() <<"DEFAULT INDEX";
         }
         else
         for (int j = 0 ; j < imagesIndexed.length();j++)
@@ -102,7 +102,7 @@ bool DrawBrushElm::save_add(QDataStream &stream)
  }
  int usedImageIndexesCount=usedImageIndexes.size();
  stream << usedImageIndexesCount;
- qDebug() << "save usedImageIndexes:"<<usedImageIndexesCount;
+ //qDebug() << "save usedImageIndexes:"<<usedImageIndexesCount;
 
  //pDrawWidget->m_manager;
  QString path = "\\Preset\\Brushes";
@@ -112,7 +112,7 @@ bool DrawBrushElm::save_add(QDataStream &stream)
          for(int i = 0; i < usedImageIndexesCount; i++)
          {
              int brushImageIndex = usedImageIndexes.values()[i];
-             qDebug() << "new_path:"<<new_path + "\\" + usedImageIndexes.values()[i];
+             //qDebug() << "new_path:"<<new_path + "\\" + usedImageIndexes.values()[i];
             QImage img = QImage(new_path + "\\" + pDrawWidget->m_manager.brushPathsList[brushImageIndex]);
             //brushImages.push_back();
             stream <<usedImageIndexes.values()[i];
@@ -122,10 +122,10 @@ bool DrawBrushElm::save_add(QDataStream &stream)
     for (BrushBeginingIndex &brushBeginingIndex : brushes)
     {
         Brush &data = brushBeginingIndex.brush;
-        qDebug()<<"before save_image";
+        //qDebug()<<"before save_image";
         //save_image(stream, data.img );
         //save_image(stream,data.color_img);
-         qDebug()<<"save_image";
+         //qDebug()<<"save_image";
    stream  << data.size << data.opacity << data.blur << data.color_main << data.dispers <<
            data.delta_count << data.count << data.size_delta << data.angle_delta << data.afinn;
     stream << data.imageIndex << brushBeginingIndex.pointIndex;
@@ -166,7 +166,7 @@ void DrawBrushElm::setLifeTime(int value)
 }
 void DrawBrushElm::draw()
 {
-//    qDebug() << tickTimer.elapsed() << "  " << tickTime;
+//    //qDebug() << tickTimer.elapsed() << "  " << tickTime;
 
 
 
@@ -178,17 +178,17 @@ void DrawBrushElm::draw()
           if (coords.size()>0)
           //realKeyValue=qFloor((double)((current_time - startDrawTime) / ((double)(lifeTime/coords.size()))));
          realKeyValue = (current_time-startDrawTime)*coords.size()/lifeTime;
-         // qDebug() << "QQQQQQQQQQQQQQQQQQQQ" << keyCouter;
+         // //qDebug() << "QQQQQQQQQQQQQQQQQQQQ" << keyCouter;
         if(keyCouter == 0)
         {
             pDrawWidget->clearFrameBuffer();
         }
-        qDebug() << "coords.size():"<<coords.size();
-        qDebug() << "lifeTime:"<<lifeTime;
-        qDebug() << "startDrawTime:"<<startDrawTime;
-        qDebug() << "current_time:"<<current_time;
-        qDebug() << "realKeyValue:"<<realKeyValue;
-qDebug() << "keyCouter:"<<keyCouter;
+        //qDebug() << "coords.size():"<<coords.size();
+        //qDebug() << "lifeTime:"<<lifeTime;
+        //qDebug() << "startDrawTime:"<<startDrawTime;
+        //qDebug() << "current_time:"<<current_time;
+        //qDebug() << "realKeyValue:"<<realKeyValue;
+//qDebug() << "keyCouter:"<<keyCouter;
         while(keyCouter <realKeyValue && bPlay)
         {
             if (keyCouter < coords.size() )
@@ -228,11 +228,11 @@ QDataStream &operator >> ( QDataStream &st, BrushBeginingIndex &data )
 */
 void DrawBrushElm::addBrush(Brush brush)
 {
-    qDebug() << "brushes.length():"<<brushes.length();
+    //qDebug() << "brushes.length():"<<brushes.length();
     for (int i=0;i<brushes.length();i++){
-   // qDebug() << "i:"<<i;
-    qDebug() << "pointIndex         :   "<<brushes[i].pointIndex;
-    qDebug() << "coords.length()          :   "<<coords.length();
+   // //qDebug() << "i:"<<i;
+    //qDebug() << "pointIndex         :   "<<brushes[i].pointIndex;
+    //qDebug() << "coords.length()          :   "<<coords.length();
        // if (i==0) continue;
 
         if (brushes[i].pointIndex==coords.length()){
@@ -245,9 +245,9 @@ void DrawBrushElm::addBrush(Brush brush)
     BrushBeginingIndex beginIndex;
     beginIndex.brush=brush;
     beginIndex.pointIndex=coords.length();
-    qDebug() << "before append";
+    //qDebug() << "before append";
 brushes.append(beginIndex);
-qDebug() << "after append";
+//qDebug() << "after append";
 }
 
 

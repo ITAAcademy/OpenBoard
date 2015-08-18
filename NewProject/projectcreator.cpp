@@ -38,7 +38,7 @@ ProjectStartupSetting ProjectCreator::getProjectSetting(bool isStart, bool fullS
     creator.show(fullScreen);
     while(creator.isVisible())
         qApp->processEvents();
-    qDebug() << "close()" << isStart;
+    //qDebug() << "close()" << isStart;
     return creator.getCurentSetting();
 }
 

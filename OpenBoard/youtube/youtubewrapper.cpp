@@ -72,7 +72,7 @@ void YouTubeWrapper::handleNetworkReply(QNetworkReply *reply)
     //reply->ignoreSslErrors();
     if (reply->error())
     {
-        // qDebug()<<reply->errorString();
+        // //qDebug()<<reply->errorString();
     }
     else
     {
@@ -130,9 +130,9 @@ void YouTubeWrapper::handleUploadReply(QNetworkReply *reply)
     reply->ignoreSslErrors();
     if(reply->error())
     {
-    // qDebug()<<reply->errorString();
+    // //qDebug()<<reply->errorString();
     } else
    {
-      // qDebug()<<reply->readAll();
+      // //qDebug()<<reply->readAll();
    }
 }

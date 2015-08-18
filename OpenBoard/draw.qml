@@ -41,7 +41,7 @@ Item{
                 }
 
         function bdrawWrapText( a ){
-            //console.debug("drawWrapText____OK" + a)
+            ////console.debug("drawWrapText____OK" + a)
             JS.drawWrapText(a)
             mainDrawElm.markDirty();
         }
@@ -52,7 +52,7 @@ Item{
             //if(JS.context != null)
             var text = str.replace(/(\t)/g, "   "); // I use 4 spaces for tabulation, but you can use anything you want
                 JS.context.fillText( text, x, y);
-            //console.log("QML__LOG:  " + str);
+            ////console.log("QML__LOG:  " + str);
             /*
             if(mainDrawElm.cross == true)
                     drawCrossText(str, x, y);
@@ -89,19 +89,19 @@ Item{
 
         function initFont(pt, font, style, underLine, crossOut)
         {
-           // console.debug(pt +  " " + font)
+           // //console.debug(pt +  " " + font)
             JS.context.font = style + pt + "pt \"" + font + "\"";// "bold 10pt  \"font_name\" "
             JS.context.kerning = 10;
             mainDrawElm.cross = crossOut;
             mainDrawElm.underline = underLine;
-       //     console.debug(mainDrawElm.cross +  " " + mainDrawElm.underline);
+       //     //console.debug(mainDrawElm.cross +  " " + mainDrawElm.underline);
         }
 
         function setColor( col )
         {
             JS.context.fillStyle = col;
             mainDrawElm.color = col;
-          //  console.debug("color set" + mainDrawElm.color);
+          //  //console.debug("color set" + mainDrawElm.color);
         }
 
         function drawFigure(x, y, w, h, type, fill, size, color)
@@ -121,7 +121,7 @@ Item{
           var height = JS.context.measureText(text).height;
           var size =  Math.round(height*1.3);
           size = size + y;
-           console.debug("                  height" + height)
+           //console.debug("                  height" + height)
           JS.context.beginPath();
           JS.context.strokeStyle = mainDrawElm.color;
           JS.context.lineWidth = Math.round(0.15*height);
@@ -164,7 +164,7 @@ Item{
 
         Connections {
             target: forma
-         //   onDrawTextChanged: console.log("The application data changed!")
+         //   onDrawTextChanged: //console.log("The application data changed!")
         }
 
         onPaint: {

@@ -48,7 +48,7 @@ import "ToolBar" as ContentToolBar
 
     }
     onChildrenChanged: {
-        console
+        //console
         //item_col.children[1].parent = track
         item_col.childa = item_col.children[1]
 

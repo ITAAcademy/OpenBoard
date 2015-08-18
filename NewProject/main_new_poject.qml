@@ -87,7 +87,7 @@ Rectangle{
                         title: "Open project"
                         visible: projectControll.isForStart()
                         /*onVisibleChanged: {
-                            console.log(projectControll.isForStart());
+                            //console.log(projectControll.isForStart());
                             if(projectControll.isForStart())
                                 open.visible =  true;
                             else
@@ -126,14 +126,14 @@ Rectangle{
 
            NumberAnimation {id: one; target: content.curent; properties: "scale, opacity";from: 1.0; to: 0.0; duration: content.swap_animation_duration;
                 onStopped: {
-                    console.log("stop_1");
+                    //console.log("stop_1");
                     content.curent.visible = false;
                     two.start();
                 }
             }
             NumberAnimation { id: two; target: content.next; properties: "scale, opacity"; from: 0.0; to: 1.0; duration: content.swap_animation_duration;
                 onStarted: {
-                    console.log("start_2");
+                    //console.log("start_2");
                     content.next.visible = true;
                 }
                 onStopped: content.swap();
@@ -145,7 +145,7 @@ Rectangle{
             }
             function swap()
             {
-               console.log("swap");
+               //console.log("swap");
                content.curent = content.next;
             }
 

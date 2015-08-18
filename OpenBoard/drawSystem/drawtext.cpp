@@ -24,7 +24,7 @@ int DrawTextElm::getTextCursor() const
 
 void DrawTextElm::setTextCursor(const int &value)
 {
-    qDebug() << "LAST_CURSOR    " << textCursor;
+    //qDebug() << "LAST_CURSOR    " << textCursor;
     textCursor = value;
 }
 DrawTextElm::DrawTextElm(OGLWidget *drawWidget, QObject *parent) : DrawElement(drawWidget, parent)
@@ -45,28 +45,30 @@ void DrawTextElm::draw()
         current_time =  pDrawWidget->getTimeLine()->getScalePointerPos();
     else
         current_time =  pDrawWidget->getTimeLine()->getPlayTime();
-//    qDebug() << current_time;
+//    //qDebug() << current_time;
     if (current_time > 0 && mUnitList.size() != 0)
     {
-       // qDebug() << "startDrawTime:"<<startDrawTime;
+       // //qDebug() << "startDrawTime:"<<startDrawTime;
         if((keyCouter == 0 || !bPlay) && curentCh != current_time )
        {
            pDrawWidget->clearCanvas();
            pDrawWidget->clearBuffer();
            keyCouter = 0;
+           animationDelayCount = 1;
+                   animationDelayStart = 1;
            curentPauseValue = 0;
        }
 
        int realKeyValue = qCeil((double)(current_time - (curentPauseValue + startDrawTime)) / (double)((lifeTime - globalPauseLifeTime)/(mUnitList.size() - 1)));
 
-       qDebug() << mUnitList.size() << "            qwe         "<< realKeyValue;
-      // qDebug() << "cur " << current_time;
-       //qDebug() << "start " << startDrawTime;
-       //qDebug() << "list " << mUnitList.length();
+       //qDebug() << mUnitList.size() << "            qwe         "<< realKeyValue;
+      // //qDebug() << "cur " << current_time;
+       ////qDebug() << "start " << startDrawTime;
+       ////qDebug() << "list " << mUnitList.length();
 
    // if (keyCouter < realKeyValue)
 
-        while( keyCouter < mUnitList.size() && (keyCouter <= realKeyValue || mUnitList[keyCouter]->unitType == 1) )
+        while( keyCouter < mUnitList.size() && current_time > animationDelayCount + animationDelayStart && (keyCouter <= realKeyValue || mUnitList[keyCouter]->unitType == 1) )
         {
             if(!bPlay)
                 current_time =  pDrawWidget->getTimeLine()->getScalePointerPos();
@@ -76,14 +78,14 @@ void DrawTextElm::draw()
             //if ()
             {
                 mUnitList.at(keyCouter)->draw(pDrawWidget);
-                if(mUnitList.at(keyCouter)->delay > 0)
+                if( bPlay && mUnitList.at(keyCouter)->delay > 0)
                 {
                     curentPauseValue += mUnitList.at(keyCouter)->delay;
                     if(mUnitList[keyCouter]->unitType == 1 && ((UnitCommand*) mUnitList[keyCouter])->getUnitCommandType() == "ErasePreChar")
                     {
                         animationDelayCount = mUnitList.at(keyCouter)->delay;
                         animationDelayStart = current_time;
-                        pDrawWidget->update();
+                        pDrawWidget->crossText();
                     }
                     keyCouter++;
                     break;
@@ -92,15 +94,15 @@ void DrawTextElm::draw()
             keyCouter++;
 
         }
-      //  qDebug() << "drawInfo   " << (double) 1 - (double)(qAbs(((current_time - startDrawTime) - (lifeTime/mUnitList.size())*keyCouter)))/(lifeTime/mUnitList.size());
+      //  //qDebug() << "drawInfo   " << (double) 1 - (double)(qAbs(((current_time - startDrawTime) - (lifeTime/mUnitList.size())*keyCouter)))/(lifeTime/mUnitList.size());
       /*  if(keyCouter > 0 && keyCouter < mUnitList.size() && mUnitList.at(keyCouter)->unitType != mUnitList.at(keyCouter - 1)->unitType)
             pDrawWidget->update();*/
 
         if(mUnitList.size() != 0 && (mUnitList.size() - globalDeltaComandSize  - 1) != 0)
             tickTime = ((lifeTime - globalPauseLifeTime)/(mUnitList.size()  - 1));
-       // qDebug() << "                                                                           HHHH" << animationDelayCount - current_time;
+       // //qDebug() << "                                                                           HHHH" << animationDelayCount - current_time;
         pDrawWidget->setAnimationPersentOfCross( (double)(current_time - animationDelayStart)/animationDelayCount);
-           // qDebug() << realKeyValue <<"    KEY    " << keyCouter;
+           // //qDebug() << realKeyValue <<"    KEY    " << keyCouter;
     }
 
     pDrawWidget->drawTextBuffer(x, y, width, height, z);
@@ -112,7 +114,7 @@ void DrawTextElm::setLifeTime(int value)
     lifeTime = value;
     if(mUnitList.size() != 0 && (mUnitList.size() - globalDeltaComandSize  - 1) != 0)
         tickTime = ((lifeTime - globalPauseLifeTime)/(mUnitList.size() - globalDeltaComandSize  - 1));
-    qDebug() << "tickTime4:"<<tickTime;
+    //qDebug() << "tickTime4:"<<tickTime;
 
 }
 
@@ -129,12 +131,12 @@ void DrawTextElm::setUnParsestring(const QString &valueUnParss, const QString &v
 {
     unParsestring = valueUnParss;
     loggerText = valueLogger;
-    // qDebug() << value;
+    // //qDebug() << value;
     globalPauseLifeTime = 0;
     globalDeltaComandSize = 0;
-    qDebug() << "START";
+    //qDebug() << "START";
     myParser.ParsingLine(mUnitList, unParsestring, drawTime, globalPauseLifeTime, globalDeltaComandSize, delay);
-    qDebug() << "STOP";
+    //qDebug() << "STOP";
     UnitCommand* command = new UnitCommand();
     command->setUnitCommandType("Update");
     command->setUnitData("1");
@@ -144,7 +146,7 @@ void DrawTextElm::setUnParsestring(const QString &valueUnParss, const QString &v
         lifeTime=drawTime;*/
     if(mUnitList.size() > 0 && (mUnitList.size() - globalDeltaComandSize  - 1) != 0)
         tickTime = ((lifeTime - globalPauseLifeTime)/(mUnitList.size() - globalDeltaComandSize  - 1));
-     qDebug()<<"tickTime5:"<<tickTime;
+     //qDebug()<<"tickTime5:"<<tickTime;
 }
 
 void DrawTextElm::setUnitList(const QList<Unit *> &unitList)
@@ -159,7 +161,7 @@ void DrawTextElm::setUnitList(const QList<Unit *> &unitList)
     if(unitList.size() != 0)
     {
         tickTime = lifeTime/unitList.size();
-         qDebug()<<"tickTime6 :"<<tickTime;
+         //qDebug()<<"tickTime6 :"<<tickTime;
     }
 
 }
@@ -177,17 +179,17 @@ bool DrawTextElm::load_add(QDataStream &stream)
     stream >> sizeOfString;
     QByteArray data;
     data.resize(sizeOfString);
-    // qDebug() << "OUT " << sizeOfString;
+    // //qDebug() << "OUT " << sizeOfString;
     stream.readRawData(data.data(), sizeOfString);
     unParsestring = data;
-    // qDebug() << data;*/
+    // //qDebug() << data;*/
     //myParser.ParsingLine(mUnitList, unParsestring,drawTime,delay);
 }
 
 bool DrawTextElm::save_add(QDataStream &stream)
 {
  /*   stream << unParsestring.length();
-    // qDebug() << "IN " << unParsestring.length();
+    // //qDebug() << "IN " << unParsestring.length();
     stream.writeRawData(unParsestring.toLatin1().data(), unParsestring.length());*/
     stream << unParsestring << loggerText << textCursor;
 }

@@ -30,13 +30,13 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
     curProjectFile.clear();
-//// qDebug() <<directory;
+//// //qDebug() <<directory;
 //    connect(&drawThread, SIGNAL(started()), this, SLOT(myfunction())); //cant have parameter sorry, when using connect
 
     mpOGLWidget = new OGLWidget();
     mpOGLWidget->show();
     mpOGLWidget->setVisible(false);
-     qDebug() << "connect unableToDraw";
+     //qDebug() << "connect unableToDraw";
 /*
      mpOGLWidget->getTimeLine()->show();
      mpOGLWidget->show();
@@ -387,7 +387,7 @@ void MainWindow::setViewState(int state)
     BRUSH_ANIMATION,
     VISUAL_EFFECT
 */
-    //qDebug() << "Hdfjkhdfdhdjfh" << state;
+    ////qDebug() << "Hdfjkhdfdhdjfh" << state;
 switch (state){
 
 case VIDEO_EDIT_TEXT:
@@ -445,7 +445,7 @@ case VIDEO_EDIT_PRO:
     a_undo->setVisible(true);
     if(mpOGLWidget->isVisible())
         mpOGLWidget->getTimeLine()->show();
-    qDebug() << "PRO";
+    //qDebug() << "PRO";
     //mpOGLWidget->getTimeLine()->hide();
     break;
 }
@@ -541,7 +541,7 @@ void MainWindow::closeEvent(QCloseEvent*)
         on_action_Hide_triggered();
         mpOGLWidget->close();
     }
-    // qDebug() << "Close drawWidget";
+    // //qDebug() << "Close drawWidget";
 }
 
 void MainWindow::updateEditWidgets( bool forceEnabled )
@@ -586,7 +586,7 @@ bool MainWindow::event(QEvent * e) // overloading event(QEvent*) method of QMain
                activateWindow();
                 isActive = true;
             }
-            qDebug() << "SET_ACTIVE_MAIN_WINDOW";
+            //qDebug() << "SET_ACTIVE_MAIN_WINDOW";
             break ;
 
         case QEvent::WindowDeactivate :
@@ -598,7 +598,7 @@ bool MainWindow::event(QEvent * e) // overloading event(QEvent*) method of QMain
                 activeOther = true;
             if(!activeOther)
                 isActive = false;
-            qDebug() << "LOSE_ACTIVE_MAIN_WINDOW";
+            //qDebug() << "LOSE_ACTIVE_MAIN_WINDOW";
             break ;
         // ...
 
@@ -840,7 +840,7 @@ void MainWindow::on_action_Undo_triggered()
 {
     textEdit->undom();
    // commandTextEdit->undo();
-    //// qDebug() <<"UNDO";
+    //// //qDebug() <<"UNDO";
    // commandTextEdit->changesDetected=false;
 }
 
@@ -888,7 +888,7 @@ void MainWindow::on_action_Find_triggered()
      //   ui->lineEdit_Find->setSelection(0,100);
     }
    /* else {
-        qDebug() <<"NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN";
+        //qDebug() <<"NNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNN";
         textEdit->setFocus();
 
         QString str = ui->lineEdit_Find->text();
@@ -969,13 +969,13 @@ ProjectStartupSetting MainWindow::getCurentState()
 void MainWindow::keyEventSlot(QKeyEvent *event)
 {
     QApplication::postEvent(this, event);
-    qDebug() << "AAAAAAAAAAAAAAAAAAAAAAAAA";
+    //qDebug() << "AAAAAAAAAAAAAAAAAAAAAAAAA";
 }
 
 void MainWindow::setCurentState(ProjectStartupSetting state)
 {
     curentState = state;
-    qDebug() << state.state;
+    //qDebug() << state.state;
 }
 
 void MainWindow::search()
@@ -1214,7 +1214,7 @@ void MainWindow::on_action_Open_Project_triggered()
 
 void MainWindow::on_action_New_Project_triggered()
 {
-    qDebug() << "NEW_PROJECT";
+    //qDebug() << "NEW_PROJECT";
     if (mpOGLWidget->getTimeLine()->isProjectChanged())
     {
         QMessageBox::StandardButton reply;
@@ -1233,14 +1233,14 @@ void MainWindow::on_action_New_Project_triggered()
      curProjectFile.clear();
      //mpOGLWidget->getTimeLine()->emitResetProject();
      mpOGLWidget->getTimeLine()->resetProjectToDefault();
-     // qDebug() << "AAAAAAAAAAAAAAAAAAAA1";
+     // //qDebug() << "AAAAAAAAAAAAAAAAAAAA1";
      mpOGLWidget->getTimeLine()->setIsProjectChanged(false);
      mpOGLWidget->getTimeLine()->setBlocked(true);
 
      setEnabledToolBar(true);
-     // qDebug() << "AAAAAAAAAAAAAAAAAAAA3";
+     // //qDebug() << "AAAAAAAAAAAAAAAAAAAA3";
      on_action_Clear_TextEdit_triggered();
- //qDebug() << "AAAAAAAAAAAAAAAAAAAA4";
+ ////qDebug() << "AAAAAAAAAAAAAAAAAAAA4";
      if (firstNewProjectCreating)
      {
          ProjectStartupSetting state = this->getCurentState();
@@ -1248,13 +1248,13 @@ void MainWindow::on_action_New_Project_triggered()
          this->setCurentState(state);
          firstNewProjectCreating = false;
      }
- //qDebug() << "AAAAAAAAAAAAAAAAAAAA5";
+ ////qDebug() << "AAAAAAAAAAAAAAAAAAAA5";
      if(isVisible())
         this->setCurentState(ProjectCreator::getProjectSetting(false, false));
      else
          this->setCurentState(ProjectCreator::getProjectSetting(true, false));
 
- //qDebug() << "AAAAAAAAAAAAAAAAAAAA6";
+ ////qDebug() << "AAAAAAAAAAAAAAAAAAAA6";
 //if (this->getCurentState().state !=-1)
 {
     setEnabledToolBar(false);
@@ -1262,13 +1262,13 @@ void MainWindow::on_action_New_Project_triggered()
         setViewState((int)curentState.state);
      else
          setViewState(VIDEO_EDIT_PRO);
-     qDebug() << "AAAAAAAAAAAAAAAAAAAA   DAAAAAAAAAAAAAA";
+     //qDebug() << "AAAAAAAAAAAAAAAAAAAA   DAAAAAAAAAAAAAA";
      qApp->processEvents(QEventLoop::AllEvents, 1000);
-    // qDebug() << "AAAAAAAAAAAAAAAAAAAAww";
+    // //qDebug() << "AAAAAAAAAAAAAAAAAAAAww";
      switch (curentState.state) {
      case VIDEO_EDIT_TEXT:
      {
-         // qDebug() << "AAAAAAAAAAAAAAAAAAAA8";
+         // //qDebug() << "AAAAAAAAAAAAAAAAAAAA8";
          DrawImageElm *first = new DrawImageElm(mpOGLWidget);
          QImage load(curentState.firstImage);
          qApp->processEvents();
@@ -1299,17 +1299,17 @@ void MainWindow::on_action_New_Project_triggered()
          mpOGLWidget->getTimeLine()->addNewBlock(0, "NEW3", text);
          mpOGLWidget->getTimeLine()->addNewBlock(0, "NEW2", last);
          mpOGLWidget->getTimeLine()->setSelectedBlockPoint(0, 1);
-         // qDebug() << "AAAAAAAAAAAAAAAAAAAA9";
+         // //qDebug() << "AAAAAAAAAAAAAAAAAAAA9";
          break;
      }
      case VIDEO_EDIT_DEFAULT:
          mpOGLWidget->getTimeLine()->addNewBlock(0, "NEW1", new DrawTextElm(NULL));
-         // qDebug() << "AAAAAAAAAAAAAAAAAAAA10";
+         // //qDebug() << "AAAAAAAAAAAAAAAAAAAA10";
          break;
      default:
          break;
      }
-//qDebug() << "AAAAAAAAAAAAAAAAAAAAqq";
+////qDebug() << "AAAAAAAAAAAAAAAAAAAAqq";
 
    //  qApp->processEvents(QEventLoop::AllEvents, 1000);
      mpOGLWidget->getTimeLine()->sendUpdateModel();
@@ -1380,18 +1380,18 @@ void MainWindow::on_backBtn_clicked()
 }
 void MainWindow::onCommandFocusSet(){
     isCommandTextEditFocused=true;
-    // qDebug() << "focus changed"<<isCommandTextEditFocused;
+    // //qDebug() << "focus changed"<<isCommandTextEditFocused;
 }
 void MainWindow::onCommandFocusLost(){
     isCommandTextEditFocused=false;
-    // qDebug() << "focus changed"<<isCommandTextEditFocused;
+    // //qDebug() << "focus changed"<<isCommandTextEditFocused;
 }
 
 void MainWindow::on_actionClear_drawing_triggered()
 {
-// qDebug() << "on_actionClear_drawing_triggered()";
+// //qDebug() << "on_actionClear_drawing_triggered()";
 mpOGLWidget->clearFrameBuffer();
-//// qDebug() << mpOGLWidget->isClearFrameBuffer;
+//// //qDebug() << mpOGLWidget->isClearFrameBuffer;
 }
 
 void MainWindow::on_actionClear_drawingBuffer_triggered()
@@ -1529,7 +1529,7 @@ void MainWindow::doUndoRedoEnd()
 void MainWindow::onTextChanged()
 {
     disconnect(textEdit, SIGNAL(textChanged()), this, SLOT(onTextChanged()));
-    // qDebug() << "onTextChanged";
+    // //qDebug() << "onTextChanged";
     QString str = textEdit->toPlainText();
     /*
      * bida z cursorom
@@ -1611,7 +1611,7 @@ void MainWindow::onTextChanged()
 
 void MainWindow::updateTextEditFromBlock(QPoint point)
 {
-    qDebug() << "SHOW SELECTED  " << point;
+    //qDebug() << "SHOW SELECTED  " << point;
     if(point.x() != -1)
     {
         Element elm = mpOGLWidget->getTimeLine()->getBlock(point);
@@ -1629,7 +1629,7 @@ void MainWindow::updateTextEditFromBlock(QPoint point)
             return;
         }
     }
-    qDebug() << "DISABLE INPUT";
+    //qDebug() << "DISABLE INPUT";
     textEdit->newText();
     commandTextEdit->newText();
     setEnabledToolBar(false);
@@ -1645,7 +1645,7 @@ void MainWindow::updateVisibleTextEdit(bool state)
 void MainWindow::updateBlockFromTextEdit()
 {
     QPoint point = mpOGLWidget->getTimeLine()->getSelectedBlockPoint();
-    qDebug() << "IMAGE" << commandTextEdit->getPreviousCursorPosition();
+    //qDebug() << "IMAGE" << commandTextEdit->getPreviousCursorPosition();
     if(point.x() != -1 )
     {
         Element elm = mpOGLWidget->getTimeLine()->getBlock(point);
@@ -1693,10 +1693,10 @@ void MainWindow::on_action_Play_triggered()
      drawTTElements.save("curent");
      */
    /*  drawTTElements.load("curent.txt");
-     // qDebug() << "                                                          qqqqqqqq" << drawTTElements.getType();*/
+     // //qDebug() << "                                                          qqqqqqqq" << drawTTElements.getType();*/
  //   drawElements[0]->load("kaka");
 
-  //  // qDebug() << mUnitList.size();
+  //  // //qDebug() << mUnitList.size();
    // QString name = this->windowTitle();
     play = true;
     //mpOGLWidget->editingRectangle.isEditingRectangleVisible = false;
@@ -1826,7 +1826,7 @@ void MainWindow::on_action_Record_to_file_triggered()
 
 
 
-   /* qDebug() << "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA " << a_record_to_file->isChecked()
+   /* //qDebug() << "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA " << a_record_to_file->isChecked()
              << " ui->actionRecord_to_file" << ui->actionRecord_to_file->isChecked();*/
 
 }
@@ -1839,7 +1839,7 @@ void MainWindow::on_action_About_triggered()
 
 void MainWindow::updateCurrentTxt()
 {
-    /*qDebug() << "updateCurrentTxt";
+    /*//qDebug() << "updateCurrentTxt";
     DrawTextElm drawTTElements(mpOGLWidget);
     drawTTElements.setDelay(ui->slider_speedTB->value());
     bool needToSaveLifeTime = ui->check_use_speed_value->isChecked();
@@ -1915,7 +1915,7 @@ void MainWindow::setEnabledToolBar(bool status)
 
 void MainWindow::on_actionShow_last_drawing_triggered()
 {
-    // qDebug() << "show_last_drawing";
+    // //qDebug() << "show_last_drawing";
     bool isLastDrawingShow = mpOGLWidget->getShowLastDrawing();
    // mpOGLWidget->isMousePlay=true;
     if (isLastDrawingShow)
@@ -1943,7 +1943,7 @@ void MainWindow::on_actionSave_drawing_triggered()
     fileName =  mSuffixFromFilter(suf, fileName);
     if(!fileName.size())
         return;
-    qDebug() << fileName;
+    //qDebug() << fileName;
     mpOGLWidget->drawBrushElm->save(fileName);
 }
 

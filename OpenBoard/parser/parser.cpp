@@ -34,7 +34,7 @@ quint64 Parser::processTimeOfUnits(QList<Unit*> list, int &globalPause, int &com
     {
 
       if (unit->unitType == 0){
-         // qDebug()<<"contains UnitSumbol";
+         // //qDebug()<<"contains UnitSumbol";
           resultTime += delayMS;
       }
       else if(unit->unitType == 1)
@@ -174,7 +174,7 @@ int Parser::ParsingLine(QList<Unit*> &list,  QString &str, quint64& timeSpendToD
                         break;
                     }
                     command->setUnitData(pars_line);
-                    // qDebug()<<"Pars line:"<<pars_line;
+                    // //qDebug()<<"Pars line:"<<pars_line;
                     if((list.size() > 0 &&  list.last()->unitType == 1) && (((UnitCommand*)list.last())->getUnitCommandType() == "ClearPreChar" || ((UnitCommand*)list.last())->getUnitCommandType() == "ErasePreChar"))
                         list.last()->setUnitData(QString::number(((UnitCommand*)list.last())->getUnitData().toInt() + pars_line.toInt()));
                     else
@@ -245,7 +245,7 @@ int Parser::ParsingLine(QList<Unit*> &list,  QString &str, quint64& timeSpendToD
                 if(tmp < 6)
                 {
                     state = i;
-                    // qDebug() << "color error";
+                    // //qDebug() << "color error";
                     break;
                 }
 
@@ -390,7 +390,7 @@ int Parser::ParsingLine(QList<Unit*> &list,  QString &str, quint64& timeSpendToD
         }
     }
     timeSpendToDraw = processTimeOfUnits(list, globalPause, commandSize,  delay);
-    qDebug() << "G  " << timeSpendToDraw - globalPause;
-    //qDebug() << "timeSpendToDraw:" << timeSpendToDraw;
+    //qDebug() << "G  " << timeSpendToDraw - globalPause;
+    ////qDebug() << "timeSpendToDraw:" << timeSpendToDraw;
     return state;
 }

@@ -17,14 +17,14 @@ void ListControll::setSelectedBlockPoint(const QPoint &value)
         selectedBlockPoint = value;
         emit updateSelectedBlock(value);
     }
-       // qDebug() << selectedBlockPoint;
-     qDebug() <<"FFFFFFFFFFFF: col = " << selectedBlockPoint.x() << " ind = " << selectedBlockPoint.y();
+       // //qDebug() << selectedBlockPoint;
+     //qDebug() <<"FFFFFFFFFFFF: col = " << selectedBlockPoint.x() << " ind = " << selectedBlockPoint.y();
 }
 
 void ListControll::setSelectedBlockPoint(int col, int ind)
 {
     setSelectedBlockPoint(QPoint(col,ind));
-    // qDebug() <<"FFFFFFFFFFFF: col = " << selectedBlockPoint.x() << " ind = " << selectedBlockPoint.y();
+    // //qDebug() <<"FFFFFFFFFFFF: col = " << selectedBlockPoint.x() << " ind = " << selectedBlockPoint.y();
 }
 
 
@@ -126,7 +126,7 @@ void ListControll::addNewBlock(int col, QString str, DrawElement *element)
     DrawElement *elm = GenerationDrawElement(open);
     if(elm == NULL)
         return;
-    // qDebug() << "9999999999999999999999999999999999999999999999" << elm->getType();*/
+    // //qDebug() << "9999999999999999999999999999999999999999999999" << elm->getType();*/
     setSelectedBlockPoint(QPoint(-1,-1));
     Element temp;
     temp.key = str;
@@ -142,7 +142,7 @@ void ListControll::addNewBlock(int col, QString str, DrawElement *element)
     tracks[col].time += temp.draw_element->getLifeTime();
    // testWidth[col].append(200);
     //testColumnWidth[col]+=200;
-  //  // qDebug() << "SIZE   " << test.size();
+  //  // //qDebug() << "SIZE   " << test.size();
     if (maxTrackTime <  tracks[col].time)
         maxTrackTime =  tracks[col].time;
     calcPointedBlocks();
@@ -174,14 +174,14 @@ void ListControll::loadFromFile()
        tracks[p.x()].time -= tracks[p.x()].block[p.y()].draw_element->getLifeTime();*/
    //QString open = QFileDialog::getOpenFileName();
    QString open =  QFileDialog::getOpenFileName(0, QString(), QString(), QString(), 0, QFileDialog::DontUseNativeDialog);
-//qDebug() <<"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA " + open;
+////qDebug() <<"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA " + open;
    DrawElement *elm = GenerationDrawElement(open);
    if(elm == NULL)
    {
-       qDebug() << "loadFromFile(): elm == NULL";
+       //qDebug() << "loadFromFile(): elm == NULL";
        return;
    }
-   // qDebug() << "9999999999999999999999999999999999999999999999" << elm->getType();
+   // //qDebug() << "9999999999999999999999999999999999999999999999" << elm->getType();
 
    Element &temp = tracks[p.x()].block[p.y()];
    int life_time = temp.draw_element->getLifeTime();
@@ -315,7 +315,7 @@ void ListControll::setBlockTime(int col, int i,int value)
         tracks[col].time += value - tracks[col].block[i].draw_element->getLifeTime();  ;
       tracks[col].block[i].draw_element->setLifeTime(value);    
     recountMaxTrackTime();
-    // qDebug() << "DDDDD  tracks[col].block[i].draw_element->getLifeTime()=" <<   tracks[col].block[i].draw_element->getLifeTime();
+    // //qDebug() << "DDDDD  tracks[col].block[i].draw_element->getLifeTime()=" <<   tracks[col].block[i].draw_element->getLifeTime();
 }
 
 void ListControll::setBlockStartTime(int col, int i,int value)
@@ -420,7 +420,7 @@ int ListControll::getBlockTime(int col, int i ) const
 
 Element ListControll::getBlock(int col, int i) const
 {
-    // qDebug() << "getBlock(int col, int i)" << col << " " << i;
+    // //qDebug() << "getBlock(int col, int i)" << col << " " << i;
     return tracks[col].block[i];
 }
 
@@ -443,7 +443,7 @@ int ListControll::getMaxTrackTime( ) const
 int ListControll::getTrackSize(int col) const
 {
     int temp = tracks[col].block.size();
-    // qDebug()  << "FHFHHFHFHFHFH getTrackSize = " << temp;
+    // //qDebug()  << "FHFHHFHFHFHFH getTrackSize = " << temp;
     return temp;
 }
 
@@ -528,7 +528,7 @@ void ListControll::loadCurrentTextInTheFirstBlockWhenInit()
     temp.draw_element->setZ(p.x());
     recountMaxTrackTime();
     setBlocked(false);
-    qDebug() <<"loadCurrentTextInTheFirstBlockWhenInit DONE!!!!!!!!!!!!!!!!!!!!!!!";
+    //qDebug() <<"loadCurrentTextInTheFirstBlockWhenInit DONE!!!!!!!!!!!!!!!!!!!!!!!";
 }
 volatile bool ListControll::getBlocked() const
 {
@@ -731,7 +731,7 @@ bool ListControll::isActiveWindow()
  void ListControll::setScalePointerPos( int x)
  {
      scale_pointer_pos = x;
- //// qDebug() << "RRRRRRRRRRRRRRR scale_pointer_pos=" << scale_pointer_pos;
+ //// //qDebug() << "RRRRRRRRRRRRRRR scale_pointer_pos=" << scale_pointer_pos;
  }
 
  int ListControll::getScalePointerPos( )
@@ -748,14 +748,14 @@ bool ListControll::isActiveWindow()
      QList <DrawElement*> res;
      for(auto elm : pointed_block)
          res.append(elm.draw_element);
- //   qDebug() << "Curent            count of element in scene   =   " << pointed_block.size();
+ //   //qDebug() << "Curent            count of element in scene   =   " << pointed_block.size();
      return res;
  }
 
  void ListControll::calcPointedBlocks( )
  {
      pointed_block.clear();
-   //  qDebug() << "SIZE          " << tracks[0].block.size();
+   //  //qDebug() << "SIZE          " << tracks[0].block.size();
      if(!isBlocked)
      {
          for (int i=0; i<tracks.size(); i++)
@@ -767,7 +767,7 @@ bool ListControll::isActiveWindow()
                  if (scale_pointer_pos <= blockXend)
                  {
                      pointed_block.append(tracks[i].block[y]);
-                     // qDebug() << "POP: " << i<< " "<<y;
+                     // //qDebug() << "POP: " << i<< " "<<y;
                  break;
                  }
                   blockXstart = blockXend;
@@ -775,15 +775,15 @@ bool ListControll::isActiveWindow()
 
          }
      }
-      //  qDebug() << "qweqweqweqweqweqw";
+      //  //qDebug() << "qweqweqweqweqweqw";
 /*
 	*		show curent play element
 */
-      // qDebug() << "FFFFFFFFFFFFFFF getPointedBlocks size" << pointed_block.size()
+      // //qDebug() << "FFFFFFFFFFFFFFF getPointedBlocks size" << pointed_block.size()
                //<< " scale_pointer_pos " << scale_pointer_pos;
      /* for(int i = 0; i <pointed_block.size(); i++)
       {
-          // qDebug() << i <<  "   " << pointed_block[i].draw_element->getType();
+          // //qDebug() << i <<  "   " << pointed_block[i].draw_element->getType();
       }*/
 
  }
@@ -800,7 +800,7 @@ bool ListControll::isActiveWindow()
              if (ms <= blockXend)
              {
                  pointed_block.append(tracks[i].block[y]);
-                 //// qDebug() << "POP: " << i<< " "<<y;
+                 //// //qDebug() << "POP: " << i<< " "<<y;
              break;
              }
               blockXstart = blockXend;
@@ -821,7 +821,7 @@ void ListControll::calcPointedBlocksAtTime( )
              if (ms <= blockXend)
              {
                  pointed_block.append(tracks[i].block[y]);
-                 //// qDebug() << "POP: " << i<< " "<<y;
+                 //// //qDebug() << "POP: " << i<< " "<<y;
              break;
              }
               blockXstart = blockXend;
@@ -836,7 +836,7 @@ void ListControll::calcPointedBlocksAtTime( )
 
  void  ListControll::play()
  {
-    // // qDebug() << "FFFFFFFFFFFFFFF  emit playSignal();";
+    // // //qDebug() << "FFFFFFFFFFFFFFF  emit playSignal();";
      timer.restart();
     //emit playSignal();
      if (isPlayPauseStop==3)
@@ -846,14 +846,14 @@ void ListControll::calcPointedBlocksAtTime( )
  }
  void  ListControll::pause()
  {
-     qDebug() << "AAAAAAAAAAAAAA " << getPlayTime();
+     //qDebug() << "AAAAAAAAAAAAAA " << getPlayTime();
      time_sum = getPlayTime();// timer.elapsed();
      isPlayPauseStop = 2;
    // emit pauseSignal();
 
 
 
-    qDebug() << "FFFFFFFFFFFFFFFF " << getPlayTime();
+    //qDebug() << "FFFFFFFFFFFFFFFF " << getPlayTime();
  }
 
 void  ListControll::stop()
@@ -893,18 +893,18 @@ QImage ListControll::requestImage(const QString &id, QSize *size, const QSize &r
             //= QImage::fromData(reply->readAll());
     /*size->setWidth(image.width());
     size->setHeight(image.height());*/
-    // qDebug() << "
+    // //qDebug() << "
 
     if(!isBlocked)
     {
         QVector <QStringRef> argv = id.splitRef('+');
         Element elm = getBlock(argv[0].toInt(), argv[1].toInt());
         QImage img = elm.draw_element->getIcon();
-       //qDebug() << "IMAGE  pp " << getBlock(argv[0].toInt(), argv[1].toInt()).draw_element->getKey();
+       ////qDebug() << "IMAGE  pp " << getBlock(argv[0].toInt(), argv[1].toInt()).draw_element->getKey();
 
         if(img.isNull())
         {
-                   // qDebug() << "AAAAAAAAAAAAAAAAAA  id = " << id ;
+                   // //qDebug() << "AAAAAAAAAAAAAAAAAA  id = " << id ;
             if(elm.draw_element->getTypeId() == Text)
                 return QImage(":/iphone_toolbar_icons/Document-Icon.png");
 
@@ -949,7 +949,7 @@ QImage ListControll::requestImage(const QString &id, QSize *size, const QSize &r
     void ListControll::emitOpenProject()
     {
         emit openProjectSignel();
-        qDebug() <<"AAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+        //qDebug() <<"AAAAAAAAAAAAAAAAAAAAAAAAAAAA";
     }
 
     void ListControll::emitSaveProject()

@@ -18,7 +18,7 @@ MouseArea
         if (Qt.LeftButton)
         {
             main222.p_context_menu.visible = false
-             //// console.log("mouseX ="+mouseX+" mouseY ="+mouseY)
+             //// //console.log("mouseX ="+mouseX+" mouseY ="+mouseY)
             timeControll.setFramaMousePosition(mouseX, mouseY)
             timeControll.setPrevMousePosition()
             var div=5
@@ -74,7 +74,7 @@ MouseArea
          if ( isMoved )
          {
        timeControll.moveWindow()
-         // // console.log("mouseX ="+mouseX+" mouseY ="+mouseY)
+         // // //console.log("mouseX ="+mouseX+" mouseY ="+mouseY)
          }
        else
          if (isChangingWidthLeft )

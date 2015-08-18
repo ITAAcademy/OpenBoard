@@ -35,13 +35,13 @@ Rectangle {
         hoverEnabled: true
         onEntered: {
              root.color =  "black";
-                        // console.log("CLICK---");
+                        // //console.log("CLICK---");
         }
         onExited: {
             root.color =  "white";
         }
         onPressed:  {
-            // console.log("CLICK");
+            // //console.log("CLICK");
             context_menu.visible = false
             root.clicked();
         }

@@ -31,7 +31,7 @@ void KeyloggerTE::saveChanges(int sizeOfChange){
 
 void KeyloggerTE::undo()
 {
-    // qDebug() <<"changes before:"<<undo_changes.length();
+    // //qDebug() <<"changes before:"<<undo_changes.length();
     if (undo_changes.size() >0)
     {
         CursorSymbolExtended backup;
@@ -68,7 +68,7 @@ void KeyloggerTE::undo()
         this->clear();
         destination->clear();
     }
-    // qDebug() <<"changes after:"<<undo_changes.length();
+    // //qDebug() <<"changes after:"<<undo_changes.length();
 
 }
 
@@ -93,7 +93,7 @@ if (redo_changes.size() >0)
 }
 
 void KeyloggerTE::keyPressEvent(QKeyEvent *event){
-    qDebug() << "keyPressEvent:"<<event->key();
+    //qDebug() << "keyPressEvent:"<<event->key();
     bool needToSaveForUndo = true;
     event->accept();
     if (redo_changes.size()>0)
@@ -114,11 +114,11 @@ void KeyloggerTE::keyPressEvent(QKeyEvent *event){
            int localCursorSelectionEnd=textCursor().selectionEnd();
 
             QString textInFieldBeforePress=destination->toPlainText();
-            // qDebug() << "nativeScanCode:"<<scanCode;
+            // //qDebug() << "nativeScanCode:"<<scanCode;
             if (event->modifiers() & Qt::ControlModifier && scanCode==SCAN_KEY_Z )
             {
                   if (keyCode==Qt::Key_Z){
-               // qDebug() <<"UNDO";
+               // //qDebug() <<"UNDO";
                 undo();
                 changesDetected=false;
                 return;
@@ -144,7 +144,7 @@ void KeyloggerTE::keyPressEvent(QKeyEvent *event){
             }
 
             if (event->modifiers() & Qt::ControlModifier && (keyCode==Qt::Key_V || scanCode == 1052)){
-                 qDebug() <<"111111111111111111 " <<QApplication::clipboard()->text();
+                 //qDebug() <<"111111111111111111 " <<QApplication::clipboard()->text();
         pastedData=QApplication::clipboard()->text();
                // event->
                 if (pastedData.indexOf("\t")>=0)
@@ -152,7 +152,7 @@ void KeyloggerTE::keyPressEvent(QKeyEvent *event){
                     pastedData.replace("\t", "    ");
                 }
                 this->insertPlainText(pastedData);
-                 qDebug() <<"2222222222 ";
+                 //qDebug() <<"2222222222 ";
             } else QPlainTextEdit::keyPressEvent(event);
 
             QString textInField = destination->toPlainText();
@@ -219,7 +219,7 @@ void KeyloggerTE::keyPressEvent(QKeyEvent *event){
     else
     switch(keyCode){
     case Qt::Key_Up:
-        // qDebug() << "on_Key_UP";
+        // //qDebug() << "on_Key_UP";
          if (textCursor().position()!=previousCursorPosition)
          {
            int delta =   abs(localCursorPosition - textCursor().position());
@@ -227,7 +227,7 @@ void KeyloggerTE::keyPressEvent(QKeyEvent *event){
          }
         break;
     case Qt::Key_Down:
-        // qDebug() << "on_Key_DOWN";
+        // //qDebug() << "on_Key_DOWN";
         if (textCursor().position()!=previousCursorPosition)
         {
           int delta =    abs(localCursorPosition - textCursor().position());
@@ -235,12 +235,12 @@ void KeyloggerTE::keyPressEvent(QKeyEvent *event){
         }
         break;
     case Qt::Key_Left:
-        // qDebug() << "on_KEY_LEFT";
+        // //qDebug() << "on_KEY_LEFT";
            if (textCursor().position()!=previousCursorPosition)
          textInField +="\\ml001";
         break;
     case Qt::Key_Right:
-        // qDebug() << "on_KEY_RIGHT";
+        // //qDebug() << "on_KEY_RIGHT";
         if (textCursor().position()!=previousCursorPosition)
         textInField +="\\mr001";
         break;
@@ -271,15 +271,15 @@ void KeyloggerTE::keyPressEvent(QKeyEvent *event){
         {
             textInField +="\\dr001";
         }
-        // qDebug()<<"textCursor().position():"<<textCursor().position();
-        // qDebug()<<"previousCursorPosition:"<<previousCursorPosition;
-        // qDebug()<<"localCursorPosition:"<<localCursorPosition;
+        // //qDebug()<<"textCursor().position():"<<textCursor().position();
+        // //qDebug()<<"previousCursorPosition:"<<previousCursorPosition;
+        // //qDebug()<<"localCursorPosition:"<<localCursorPosition;
         break;
     case Qt::Key_Backspace:
-        // qDebug() << "on_KEY_BACKSPACE";
-// qDebug() << "cursorPosition:" <<localCursorPosition;
-// qDebug() << "selection start:" << localCursorSelectionStart;
-// qDebug() << "selection end:" << localCursorSelectionEnd;
+        // //qDebug() << "on_KEY_BACKSPACE";
+// //qDebug() << "cursorPosition:" <<localCursorPosition;
+// //qDebug() << "selection start:" << localCursorSelectionStart;
+// //qDebug() << "selection end:" << localCursorSelectionEnd;
 if (localCursorSelectionEnd-localCursorSelectionStart==0)
            {if (textCursor().position()!=previousCursorPosition)
         textInField +="\\dl001";
@@ -293,12 +293,12 @@ else {
         break;
     case Qt::Key_Enter:
     case Qt::Key_Return:
-        // qDebug() << "on_KEY_ENTER";
+        // //qDebug() << "on_KEY_ENTER";
         textInField +="\n";
         break;
      case Qt::Key_Backslash:
         lastSlashPosInDestination = textInField.length();
-        // qDebug() << "Last slash pos:"<<lastSlashPosInDestination;
+        // //qDebug() << "Last slash pos:"<<lastSlashPosInDestination;
         textInField +="\\\\";
         break;
     default:
@@ -315,18 +315,18 @@ else {
          textAfterBackSlash= textInField.mid(lastSlashPosInDestination+1);
          if (textAfterBackSlash.length()<=Parser::MAX_COMMAND_LENGTH){
         bool isCommandAfterSlash=false;
-         // qDebug() << "TEXT AFTER SLASH:"<<textAfterBackSlash;
+         // //qDebug() << "TEXT AFTER SLASH:"<<textAfterBackSlash;
         for (int i =0;i<Parser::COMMANDS_COUNT;i++)
          if (textAfterBackSlash==Parser::commands[i]){
-              // qDebug() << "Command "<<Parser::commands[i] << "after slash detected";
+              // //qDebug() << "Command "<<Parser::commands[i] << "after slash detected";
                  isCommandAfterSlash=true;
          }
 
         if (isCommandAfterSlash){
            textInField = textInField.remove(lastSlashPosInDestination,1);
 
-        // qDebug() << "SLASH:"<<textAfterBackSlash;
-        // qDebug() << "SLASH POS:"<<lastSlashPosInDestination;
+        // //qDebug() << "SLASH:"<<textAfterBackSlash;
+        // //qDebug() << "SLASH POS:"<<lastSlashPosInDestination;
         lastSlashPosInDestination=-1;
         textAfterBackSlash.clear();
         }
@@ -345,7 +345,7 @@ else {
          changesDetected=true;
 
          int sizeOfChanges = textInFieldLen-destinationLen;
-         // qDebug() << "Save changes ,size:"<<sizeOfChanges;
+         // //qDebug() << "Save changes ,size:"<<sizeOfChanges;
          saveChanges(sizeOfChanges);
      }
 }
@@ -377,7 +377,7 @@ void KeyloggerTE::mousePressEvent(QMouseEvent *eventPress){
      saveChanges(sizeOfChanges);//TODO
               changesDetected=true;
      }
-//// qDebug() << "cursor changed";
+//// //qDebug() << "cursor changed";
 }
 void KeyloggerTE::mouseReleaseEvent(QMouseEvent *eventPress){
     QPlainTextEdit::mouseReleaseEvent(eventPress);
@@ -400,7 +400,7 @@ void KeyloggerTE::mouseReleaseEvent(QMouseEvent *eventPress){
       saveChanges(sizeOfChanges);//TODO
                changesDetected=true;
       }
-//// qDebug() << "cursor changed";
+//// //qDebug() << "cursor changed";
 }
 
 

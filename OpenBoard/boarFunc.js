@@ -47,7 +47,7 @@ function floodFill(x, y, color, borderColor){
         point = pixel[1] * 4 * width + pixel[0] * 4 + 3;
 
         // Если это не рамка и ещё не закрасили
-        console.debug("color: " + imageData.data[point]);
+        //console.debug("color: " + imageData.data[point]);
         if (imageData.data[point] != borderColor && imageData.data[point] != color)
         {
             // Закрашиваем
@@ -113,10 +113,10 @@ function drawWrapText(context, text, x, y, maxWidth, lineHeight) {
             context.fillText(mainDrawElm.listOfObjects[n], x, y);
             y+= lineHeight;
         }
-       /*console.log("L: " + mainDrawElm.listOfObjects.length);
-       console.log("W:  " + mainDrawElm.indexWords);
-        console.log("W:  " + mainDrawElm.indexSTR);
-        console.log("W:  " + mainDrawElm.listOfObjects);*/
+       /*//console.log("L: " + mainDrawElm.listOfObjects.length);
+       //console.log("W:  " + mainDrawElm.indexWords);
+        //console.log("W:  " + mainDrawElm.indexSTR);
+        //console.log("W:  " + mainDrawElm.listOfObjects);*/
 
         for(var n = mainDrawElm.indexWords; n < words.length - 4; n++) {
           var testLine = line + words[n] + ' ';
@@ -170,7 +170,7 @@ function init()
 function drawWrapText( WT )
 {
     init();
-  //  console.debug(lineHeight + pt  + y  + mainDrawElm.scroll*indexRow);
+  //  //console.debug(lineHeight + pt  + y  + mainDrawElm.scroll*indexRow);
     var widht = context.measureText(WT).width;
     if(widht + x > maxWidth)
     {
@@ -188,7 +188,7 @@ function drawWrapText( WT )
     context.fillText(WT, x, y);
     listWords += WT;
     x += widht;
-    console.debug("Y:" + y + ":Y");
+    //console.debug("Y:" + y + ":Y");
    // brickLastWT();
     /*mainDrawElm.row = 1;
     if(lineHeight + pt > mainDrawElm.height )

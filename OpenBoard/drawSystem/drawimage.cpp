@@ -48,6 +48,6 @@ bool DrawImageElm::setDrawWidget(OGLWidget *value)
     textureIndex = pDrawWidget->loadTexture(image);
     if(textureIndex == 4294967295)
         failedLoad--;
-    qDebug() << "QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQWWWWWWWWWWWWWWWWW     " << textureIndex;
+    //qDebug() << "QQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQQWWWWWWWWWWWWWWWWW     " << textureIndex;
 }
 

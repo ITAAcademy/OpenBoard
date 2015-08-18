@@ -169,12 +169,12 @@ bool DrawElement::reloadLastDone()
         return false;
     QByteArray ba;
     QDataStream stream( &ba, QIODevice::ReadWrite );
-    qDebug() << "MY1" << lifeTime;
+    //qDebug() << "MY1" << lifeTime;
     stream << key << lifeTime << tickTime << startDrawTime << x << y << z << width << height << keyCouter;
     stream.device()->reset();
     load(lastPath);
     stream >> key >> lifeTime >> tickTime >> startDrawTime >> x >> y >> z >> width >> height >> keyCouter;
-    qDebug() << "MY2" << lifeTime;
+    //qDebug() << "MY2" << lifeTime;
 }
 
 QRect DrawElement::getRect()
@@ -323,7 +323,7 @@ void DrawElement::pause()
 
 void DrawElement::stop()
 {
-    //qDebug() << "stop";
+    ////qDebug() << "stop";
     bPause = false;
     keyCouter = 0;
     bPause = false;
@@ -337,7 +337,7 @@ void DrawElement::start()
     bPause = false;
     bPlay = true;
     reloadLastDone();
-    qDebug() << "START" << lastPath;
+    //qDebug() << "START" << lastPath;
 }
 
 void DrawElement::restart()
@@ -360,7 +360,7 @@ bool DrawElement::save_image(QDataStream &stream, QImage img)
 {
     stream << img.size().width() << img.size().height() << (int)img.format();
     stream.writeRawData((const char*)img.bits(), img.byteCount());
-    qDebug() <<"image saved:"<<img.byteCount();
+    //qDebug() <<"image saved:"<<img.byteCount();
 }
 
 QImage DrawElement::load_image(QDataStream &stream)
@@ -381,7 +381,7 @@ int DrawElement::getTickTime() const
 void DrawElement::setTickTime(int value)
 {
     tickTime = value;
-    // qDebug()<<"tickTime3:"<<tickTime;
+    // //qDebug()<<"tickTime3:"<<tickTime;
 }
 
 QSize  DrawElement::getSize()

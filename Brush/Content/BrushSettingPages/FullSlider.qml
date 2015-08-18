@@ -144,7 +144,7 @@ Item{
                  onReleased: {
                      from.start();
                      root.release();
-                     console.log("LOGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG");
+                     //console.log("LOGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG");
                  }
                  onDoubleClicked: {
                      if(checkable)

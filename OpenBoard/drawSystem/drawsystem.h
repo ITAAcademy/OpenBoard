@@ -7,7 +7,7 @@
 
 static inline QString mSuffixFromFilter(const QString &filter, QString name)
 {
-    qDebug() << name;
+    //qDebug() << name;
     if(name.indexOf('.') != -1)
         return name;
     int suffixPos = filter.indexOf(QLatin1String("*."));
@@ -28,7 +28,7 @@ static DrawElement *GenerationDrawElement( QString path, OGLWidget *drawWidget =
     if(!target.exists())
         return NULL;
     QString format = target.suffix().toLower();
-    qDebug() << "format   " << format;
+    //qDebug() << "format   " << format;
 
     /*
      *

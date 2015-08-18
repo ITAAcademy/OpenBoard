@@ -19,10 +19,10 @@ GLuint OGLWidget::loadTexture(QImage img){
         qWarning() << "ERROR LOADING IMAGE";// + QCoreApplication::applicationDirPath()+"/star.png";
         return -1;
     }
-    //qDebug() << "GL_ERROR_STATUS LOAD_TEXTURE:   "<< glGetError();
+    ////qDebug() << "GL_ERROR_STATUS LOAD_TEXTURE:   "<< glGetError();
     QImage GL_formatted_image = convertToGLFormat(img);
-    //qDebug() << "GL_ERROR_STATUS LOAD_TEXTURE:   "<< glGetError();
-    // qDebug() << "image converted to GL format";
+    ////qDebug() << "GL_ERROR_STATUS LOAD_TEXTURE:   "<< glGetError();
+    // //qDebug() << "image converted to GL format";
     if(GL_formatted_image.isNull())
         qWarning() << "IMAGE IS NULL";
     else
@@ -34,8 +34,8 @@ GLuint OGLWidget::loadTexture(QImage img){
     GLuint texture;
 
        glGenTextures(1, &texture); // Obtain an id for the texture
-      // qDebug() << "GL_ERROR_STATUS LOAD_TEXTURE:   "<< glGetError();
-    //   qDebug() << texture;
+      // //qDebug() << "GL_ERROR_STATUS LOAD_TEXTURE:   "<< glGetError();
+    //   //qDebug() << texture;
        glBindTexture(GL_TEXTURE_2D, texture); // Set as the current texture
  //qDebug(" after  glBindTexture(GL_TEXTURE_2D, texture);");
        //glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
@@ -43,13 +43,13 @@ GLuint OGLWidget::loadTexture(QImage img){
 
 
        glTexImage2D(GL_TEXTURE_2D, 0, 4, GL_formatted_image.width(), GL_formatted_image.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, GL_formatted_image.bits());
-  //     qDebug() << "GL_ERROR_STATUS LOAD_TEXTURE:   "<< glGetError();
-      //// qDebug() <<
+  //     //qDebug() << "GL_ERROR_STATUS LOAD_TEXTURE:   "<< glGetError();
+      //// //qDebug() <<
        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-      // qDebug() << "GL_ERROR_STATUS LOAD_TEXTURE:   "<< glGetError();
+      // //qDebug() << "GL_ERROR_STATUS LOAD_TEXTURE:   "<< glGetError();
      //  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 
        glBindTexture(GL_TEXTURE_2D, 0);
@@ -62,7 +62,7 @@ GLuint OGLWidget::loadTexture(QImage img){
         else
            sucsessLoadTexture = false;
 */
-       //qDebug() << "GL_ERROR_STATUS LOAD_TEXTURE:   "<< glGetError();
+       ////qDebug() << "GL_ERROR_STATUS LOAD_TEXTURE:   "<< glGetError();
        //if(glGetError())
           // return -1;
 
@@ -117,7 +117,7 @@ void OGLWidget::drawTexture( int x, int y, int width, int height, GLuint texture
 void OGLWidget::drawTexture(int x, int y, int width, int height, int index, int angle, float scaleX, float scaleY, int z)
 {
     drawTexture(x, y, width, height, index, angle, scaleX, scaleY, z);
-    //// qDebug() << "void OGLWidget::drawTexture(int x, int y, int width, int height, int index)";
+    //// //qDebug() << "void OGLWidget::drawTexture(int x, int y, int width, int height, int index)";
 }
 
 
@@ -152,21 +152,21 @@ void OGLWidget::paintBrushInBuffer(QVector<QPoint> coords,QVector<BrushBeginingI
     glBindFramebuffer(GL_FRAMEBUFFER , fbo); // Bind our frame buffer for rendering
 int recordedBrushN = 0;
 
-//qDebug() << "keyFrame:"<<keyFrame;
+////qDebug() << "keyFrame:"<<keyFrame;
 
 //bool isBrushUsed = false;
     for (; recordedBrushN < brushes.length(); )
     {
-        //qDebug() << "brushes["<<recordedBrushN<<"].pointIndex"<<brushes[recordedBrushN].pointIndex;
+        ////qDebug() << "brushes["<<recordedBrushN<<"].pointIndex"<<brushes[recordedBrushN].pointIndex;
     if (brushes[recordedBrushN].pointIndex==keyFrame){
-       qDebug() << "KEY_FRAME:"<<keyFrame;
-       // qDebug() << "mouse play index:"<<keyFrame;
+       //qDebug() << "KEY_FRAME:"<<keyFrame;
+       // //qDebug() << "mouse play index:"<<keyFrame;
 
         currentBrushOfDrawSystem = brushes[recordedBrushN].brush;
         brushTextureCurrentPlayed = loadTexture(currentBrushOfDrawSystem.color_img);
-        qDebug() << "recordedBrushN:"<<recordedBrushN;
+        //qDebug() << "recordedBrushN:"<<recordedBrushN;
        // isBrushUsed=true;
-     //qDebug() << "recordedBrushN:"<<recordedBrushN;
+     ////qDebug() << "recordedBrushN:"<<recordedBrushN;
      break;
     }
     recordedBrushN++;
@@ -175,18 +175,18 @@ int recordedBrushN = 0;
     //glUseProgram(ShaderProgram);
     glBindTexture(GL_TEXTURE_2D,brushTextureCurrentPlayed);
    // if (isBrushUsed) {
-     //   qDebug() << "recordedBrushN:" << recordedBrushN;
+     //   //qDebug() << "recordedBrushN:" << recordedBrushN;
       //  currentBrushOfDrawSystem = brushes[recordedBrushN].brush;
     //}
 
-     //qDebug() << "recordedBrushN:"<<recordedBrushN;
+     ////qDebug() << "recordedBrushN:"<<recordedBrushN;
     //if (recordedBrushN>=brushes.length())recordedBrushN=brushes.length()-1;
-   // qDebug() << "recordedBrushN:"<<recordedBrushN;
+   // //qDebug() << "recordedBrushN:"<<recordedBrushN;
 
 
     QSize brushTextureSize = getTextureSize();
     int BRUSH_SIZE=currentBrushOfDrawSystem.size + currentBrushOfDrawSystem.size_delta/2 - rand()%(int)(currentBrushOfDrawSystem.size_delta + 1);
-    //qDebug() << "LOADED BRUSH SIZE DRAW:"<<BRUSH_SIZE;
+    ////qDebug() << "LOADED BRUSH SIZE DRAW:"<<BRUSH_SIZE;
     float scaleX=1,scaleY=1;
     float randScalePtX = 0;
     float randScalePtY = 0;
@@ -227,7 +227,7 @@ int recordedBrushN = 0;
           float g = (float)color.green()/255;
           float b = (float)color.blue()/255;
           float a = (float)currentBrushOfDrawSystem.opacity/100;
-         // qDebug() << r << g << b << a;
+         // //qDebug() << r << g << b << a;
             glUniform4f(colorUniform,r,g,b,a);
 
         for (;i>0;i--)
@@ -240,15 +240,15 @@ int recordedBrushN = 0;
         }
              int xPos = 0;
              int yPos = 0;
-                // qDebug()<<"mouseRecorder.getBrushBeginings().length():"<<brushes.length();
-                 // qDebug() << "xPos:"<<xPos;
-                 // qDebug() << "yPos:"<<yPos;
+                // //qDebug()<<"mouseRecorder.getBrushBeginings().length():"<<brushes.length();
+                 // //qDebug() << "xPos:"<<xPos;
+                 // //qDebug() << "yPos:"<<yPos;
                  xPos=coords[keyFrame].x();
                  yPos=coords[keyFrame].y();
-                 // qDebug() << "AFTER123";
-               // qDebug() << "x:"<<xPos;
-               // qDebug() << "y:"<<yPos;
-                //qDebug() << "keyFrame:"<<keyFrame;
+                 // //qDebug() << "AFTER123";
+               // //qDebug() << "x:"<<xPos;
+               // //qDebug() << "y:"<<yPos;
+                ////qDebug() << "keyFrame:"<<keyFrame;
                     // if (mousePlayIndex >= coords.length()-1)
                    //  {
                     // isMousePlay=false;
@@ -286,7 +286,7 @@ bool OGLWidget::getShowLastDrawing(){
 
 void OGLWidget::slotBlockEdited()
 {
-    qDebug() << "1234566666666666666";
+    //qDebug() << "1234566666666666666";
  // ms_for_debug.show();
  /*QPoint t = timeLine->getSelectedBlockPoint();
 editingRectangle.rect = timeLine->getDrawRect(t.x(), t.y());
@@ -417,7 +417,7 @@ void OGLWidget::resizeGL(int nWidth, int nHeight)
     glViewport(0, 0, (GLint)nWidth, (GLint)nHeight);
     wax=nWidth;
     way=nHeight;
-    // qDebug() << "CALL RESIZE";
+    // //qDebug() << "CALL RESIZE";
 }
 void OGLWidget::paintBufferOnScreen( int x, int y, int width, int height, int z){
     glColor3f(1.0,1.0,1.0);
@@ -459,16 +459,16 @@ glBindFramebuffer(GL_FRAMEBUFFER , fbo); // Bind our frame buffer for rendering
        // glPointSize(PointSize);
     //glLineWidth(PointSize);
    // glEnable(GL_TEXTURE_2D);
-        //// qDebug() << "before index";
-//// qDebug() << "paint brush in buffer";
+        //// //qDebug() << "before index";
+//// //qDebug() << "paint brush in buffer";
     GLuint texture = brushTexture;
-    //// qDebug()<<"texture:"<<texture;
+    //// //qDebug()<<"texture:"<<texture;
   // if (!ismouseWasPressedBeforeDrag)
 
        /* glBegin (GL_POINTS);
         glColor3f (1.0, 0.4, 0.4);
         glVertex3f (mousePos.x(), mousePos.y(),0.0);
-        // qDebug() << mousePos.x();
+        // //qDebug() << mousePos.x();
         glEnd();*/
     //qglColor(m_manager.getColor());
 //glUseProgram(ShaderProgram);
@@ -493,10 +493,10 @@ glBindFramebuffer(GL_FRAMEBUFFER , fbo); // Bind our frame buffer for rendering
             scaleX=MAX_SCALE/randScalePtX;
         if(randScalePtY!=0)
             scaleY=MAX_SCALE/randScalePtY;
-       // // qDebug() <<"scaleX:"<<scaleX;
-       // // qDebug() <<"scaleY:"<<scaleY;
-        //// qDebug() << "brushSize.width():"<<brushTextureSize.width();
-        //// qDebug() << "brushSize.height():"<<brushTextureSize.height();
+       // // //qDebug() <<"scaleX:"<<scaleX;
+       // // //qDebug() <<"scaleY:"<<scaleY;
+        //// //qDebug() << "brushSize.width():"<<brushTextureSize.width();
+        //// //qDebug() << "brushSize.height():"<<brushTextureSize.height();
 
         double koff = 1;
         if (brushTextureSize.height()>0)koff=brushTextureSize.width()/brushTextureSize.height();
@@ -525,7 +525,7 @@ glBindFramebuffer(GL_FRAMEBUFFER , fbo); // Bind our frame buffer for rendering
               float g = (float)color.green()/255;
               float b = (float)color.blue()/255;
               float a = (float)m_manager.getOpacity()/100;
-             // qDebug() << r << g << b << a;
+             // //qDebug() << r << g << b << a;
                 glUniform4f(colorUniform,r,g,b,a);
             for (;i>0;i--)
             {
@@ -540,7 +540,7 @@ glBindFramebuffer(GL_FRAMEBUFFER , fbo); // Bind our frame buffer for rendering
                   xPos = mousePos.x();
                   yPos = mousePos.y();
 
-//qDebug() <<"mousePos.x() = " << mousePos.x() << " mousePos.y() = " << mousePos.y();
+////qDebug() <<"mousePos.x() = " << mousePos.x() << " mousePos.y() = " << mousePos.y();
 
             drawTexture(xPos-BRUSH_SIZE/2 + dispersX ,yPos-BRUSH_SIZE/koff/2 + dispersY,BRUSH_SIZE,BRUSH_SIZE/koff,
                     texture,angle,scaleX,scaleY);
@@ -552,8 +552,8 @@ glBindFramebuffer(GL_FRAMEBUFFER , fbo); // Bind our frame buffer for rendering
        glBindTexture(GL_TEXTURE_2D,texture);
       QSize brushTextureSize = getTextureSize();
       int BRUSH_SIZE=30;
-      // qDebug() << "brushSize.width():"<<brushTextureSize.width();
-      // qDebug() << "brushSize.height():"<<brushTextureSize.height();
+      // //qDebug() << "brushSize.width():"<<brushTextureSize.width();
+      // //qDebug() << "brushSize.height():"<<brushTextureSize.height();
       double koff = brushTextureSize.width()/brushTextureSize.height();
 
       QPainterPath path;
@@ -601,7 +601,7 @@ void OGLWidget::initShader(){
      {
          QTextStream in(&fragmentShadeFile);
          fragmentShaderCode = in.readAll();
-        // qDebug() << "fragmentShaderCode:"<<fragmentShaderCode;
+         //qDebug() << "fragmentShaderCode:"<<fragmentShaderCode;
      }
     else
          qDebug() << "error on fragmentShader.glsl open path: "<<shaderDir+"/shaders/fragmentShader.glsl";
@@ -613,7 +613,7 @@ void OGLWidget::initShader(){
          vertexShaderCode = in.readAll();
      }
      else
-           qDebug() << "error on vertexShader.glsl open path: "<<shaderDir+"/shaders/vertexShader.glsl";
+           //qDebug() << "error on vertexShader.glsl open path: "<<shaderDir+"/shaders/vertexShader.glsl";
 
       ShaderProgram = glCreateProgram();
       GLuint vertexShaderObj = glCreateShader(GL_VERTEX_SHADER);
@@ -640,13 +640,13 @@ void OGLWidget::initShader(){
       if (!success) {
           GLchar infoLog[1024];
           glGetShaderInfoLog(vertexShaderObj, sizeof(infoLog), NULL, infoLog);
-            qDebug() <<"Error compiling shader type:" << "GL_VERTEX_SHADER" << infoLog;
+            //qDebug() <<"Error compiling shader type:" << "GL_VERTEX_SHADER" << infoLog;
       }
       glGetShaderiv(fragmentShaderObj, GL_COMPILE_STATUS, &success);
       if (!success) {
           GLchar infoLog[1024];
           glGetShaderInfoLog(fragmentShaderObj, sizeof(infoLog), NULL,infoLog);
-          qDebug() <<"Error compiling shader type:" << "GL_FRAGMENT_SHADER" << infoLog;
+          //qDebug() <<"Error compiling shader type:" << "GL_FRAGMENT_SHADER" << infoLog;
       }
 
   glAttachShader(ShaderProgram,vertexShaderObj);
@@ -658,10 +658,10 @@ glGetProgramiv(ShaderProgram, GL_LINK_STATUS, &success);
 GLchar errorLog[1024];
 if (success == 0) {
     glGetProgramInfoLog(ShaderProgram, sizeof(errorLog), NULL, errorLog);
-    qDebug() << "Error linking shader program:" << errorLog;
+    //qDebug() << "Error linking shader program:" << errorLog;
 }
 else
-    qDebug() << "Linking shader program success";
+    //qDebug() << "Linking shader program success";
 glValidateProgram(ShaderProgram);
 
     //glLinkProgram(program);
@@ -676,16 +676,16 @@ void OGLWidget::initFrameBufferDepthBuffer() {
 glGenRenderbuffers(1, &fbo_depth); // Generate one render buffer and store the ID in fbo_depth
 glBindRenderbuffer(GL_RENDERBUFFER , fbo_depth); // Bind the fbo_depth render buffer
 GLenum error = glGetError();
-qDebug() << "GL_ERROR_STATUS glBindRenderbuffer:"<<error;
+//qDebug() << "GL_ERROR_STATUS glBindRenderbuffer:"<<error;
 glRenderbufferStorage(GL_RENDERBUFFER , GL_DEPTH_COMPONENT, wax, way); // Set the render buffer storage to be a depth component, with a width and height of the window
  error = glGetError();
-qDebug() << "GL_ERROR_STATUS glRenderbufferStorage:"<<error;
+//qDebug() << "GL_ERROR_STATUS glRenderbufferStorage:"<<error;
 //glFramebufferRenderbuffer(GL_FRAMEBUFFER , GL_DEPTH_ATTACHMENT , GL_RENDERBUFFER ,fbo_depth); // Set the render buffer of this buffer to the depth buffer
  //error = glGetError();
-//qDebug() << "GL_ERROR_STATUS glFramebufferRenderbuffer:"<<error;
+////qDebug() << "GL_ERROR_STATUS glFramebufferRenderbuffer:"<<error;
 glBindRenderbuffer(GL_RENDERBUFFER , 0); // Unbind the render buffer
  error = glGetError();
-qDebug() << "GL_ERROR_STATUS glBindRenderbuffer:"<<error;
+//qDebug() << "GL_ERROR_STATUS glBindRenderbuffer:"<<error;
 }
 
 void OGLWidget::initFrameBufferTexture() {
@@ -710,30 +710,30 @@ glDisable(GL_TEXTURE_2D);
 
 void OGLWidget::initFrameBuffer() {
     GLenum error = glGetError();
-    qDebug() << "GL_ERROR_STATUS initFrameBuffer:"<<error;
+    //qDebug() << "GL_ERROR_STATUS initFrameBuffer:"<<error;
     glEnable(GL_DEPTH_TEST);
     glGenFramebuffers(1, &fbo); // Generate one frame buffer and store the ID in fbo
 
 initFrameBufferDepthBuffer(); // Initialize our frame buffer depth buffer
  error = glGetError();
-qDebug() << "GL_ERROR_STATUS initFrameBufferDepthBuffer:"<<error;
+//qDebug() << "GL_ERROR_STATUS initFrameBufferDepthBuffer:"<<error;
 glBindFramebuffer(GL_FRAMEBUFFER , fbo); // Bind our frame buffer
 initFrameBufferTexture(); // Initialize our frame buffer texture
 
 error = glGetError();
-qDebug() << "GL_ERROR_STATUS initFrameBufferTexture:"<<error;
+//qDebug() << "GL_ERROR_STATUS initFrameBufferTexture:"<<error;
 
 
 glFramebufferTexture2D(GL_FRAMEBUFFER , GL_COLOR_ATTACHMENT0 , GL_TEXTURE_2D, fbo_texture, 0); // Attach the texture fbo_texture to the color buffer in our frame buffer
 
 //glFramebufferRenderbuffer(GL_FRAMEBUFFER , GL_DEPTH_ATTACHMENT , GL_RENDERBUFFER , fbo_depth); // Attach the depth buffer fbo_depth to our frame buffer
 error = glGetError();
-qDebug() << "GL_ERROR_STATUS:"<<error;
+//qDebug() << "GL_ERROR_STATUS:"<<error;
 GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER ); // Check that status of our generated frame buffer
 
 if (status != GL_FRAMEBUFFER_COMPLETE ) // If the frame buffer does not report back as complete
 {
- qDebug() << "Couldn't create frame buffer\n" ; // Output an error to the console
+ //qDebug() << "Couldn't create frame buffer\n" ; // Output an error to the //console
 exit(0); // Exit the application
 }
 
@@ -786,7 +786,7 @@ void OGLWidget::clearFrameBuffer(){
     //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         isClearFrameBuffer=false;
       glBindFramebuffer(GL_FRAMEBUFFER , 0);
-      // qDebug()<<"clearFrameBuffer";
+      // //qDebug()<<"clearFrameBuffer";
 
 }
 
@@ -795,7 +795,7 @@ void OGLWidget::paintGL()
      glBindFramebuffer(GL_FRAMEBUFFER , 0);
     if(m_encoder->newImage)
         m_encoder->setFrame(grabFrameBuffer());
-    //// qDebug() << "isClearFrameBuffer:"<<isClearFrameBuffer;
+    //// //qDebug() << "isClearFrameBuffer:"<<isClearFrameBuffer;
     if(isClearFrameBuffer)clearFrameBuffer();
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // чистим буфер изображения и буфер глубины
@@ -855,11 +855,11 @@ void OGLWidget::paintGL()
 
 //if (isMousePlay)paintBrushInBuffer(true);
 
- //qDebug() << "PREDRAW";
+ ////qDebug() << "PREDRAW";
 
 for(int i = 0; !timeLine->isBlocked && i < getList().size(); i++)
 {
-    //qDebug() << "draw   " << i;
+    ////qDebug() << "draw   " << i;
     if( getList()[i] != NULL && timeLine->getMaxTrackTime() > 0)
         getList()[i]->paint();
 }
@@ -915,7 +915,7 @@ if(isMousePress) {
  switch(editingRectangle.editingRectangleMode){
 case EDIT_RECTANGLE_MOVE:
      canDrawByMouse=false;
-    // // qDebug()<<"EDIT_RECTANGLE_MOVE width"<<editingRectangle.rect.width();
+    // // //qDebug()<<"EDIT_RECTANGLE_MOVE width"<<editingRectangle.rect.width();
      if (isNotPainting)
      {
      editingRectangle.rect.moveTo(mousePos.x() - mousePressPos.x(), //-editingRectangle.rect.width()/2
@@ -924,14 +924,14 @@ case EDIT_RECTANGLE_MOVE:
 
      //editingRectangle.setX(mousePos.x()-editingRectangle.width()/2);
      //editingRectangle.setY(mousePos.y()-editingRectangle.height()/2);
-    // // qDebug()<< "leftCornerX1:"<<leftCornerX1;
-     //// qDebug()<< "leftCornerY1:"<<leftCornerY1;
-     // // qDebug()<< "leftCornerX2:"<<leftCornerX2;
-     // // qDebug()<< "leftCornerY2:"<<leftCornerY2;
+    // // //qDebug()<< "leftCornerX1:"<<leftCornerX1;
+     //// //qDebug()<< "leftCornerY1:"<<leftCornerY1;
+     // // //qDebug()<< "leftCornerX2:"<<leftCornerX2;
+     // // //qDebug()<< "leftCornerY2:"<<leftCornerY2;
  break;
  case EDIT_RECTANGLE_RESIZE:
      canDrawByMouse=false;
-     // qDebug()<<"EDIT_RECTANGLE_RESIZE";
+     // //qDebug()<<"EDIT_RECTANGLE_RESIZE";
       if (isNotPainting)
      {
          editingRectangle.rect.setX(mousePos.x());
@@ -953,10 +953,10 @@ if (showingLastDrawing )
  int recordedBrushN = 0;
     for (; recordedBrushN < drawBrushElm->getBrushes().length(); )
     {
-        //qDebug() << "brushes["<<recordedBrushN<<"].pointIndex"<<brushes[recordedBrushN].pointIndex;
+        ////qDebug() << "brushes["<<recordedBrushN<<"].pointIndex"<<brushes[recordedBrushN].pointIndex;
      if (drawBrushElm->getBrushes()[recordedBrushN].pointIndex==currentLastDrawingPointIterator){
-      // qDebug() << "KEY_FRAME:"<<keyFrame;
-       // qDebug() << "mouse play index:"<<keyFrame;
+      // //qDebug() << "KEY_FRAME:"<<keyFrame;
+       // //qDebug() << "mouse play index:"<<keyFrame;
 
        currentBrushOfLastDrawing =drawBrushElm->getBrushes()[recordedBrushN].brush;
         brushTexture = loadTexture(drawBrushElm->getBrushes()[recordedBrushN].brush.color_img);
@@ -987,7 +987,7 @@ glFlush();
 
 init = true;
 
-//qDebug() << "GL_ERROR_STATUS end:"<<error;
+////qDebug() << "GL_ERROR_STATUS end:"<<error;
 }
 
 void OGLWidget::paintEvent(QPaintEvent *event)
@@ -1155,7 +1155,7 @@ if (event->buttons() & Qt::LeftButton) {
    mousePos.setY(event->y());
 
    ismouseWasPressedBeforeDrag=true;
-   //// qDebug()<<"mouseRecorderTimer.elapsed():"<<mouseRecorderTimer.elapsed();
+   //// //qDebug()<<"mouseRecorderTimer.elapsed():"<<mouseRecorderTimer.elapsed();
 
 }
 }
@@ -1253,17 +1253,17 @@ bool OGLWidget::drawAnimated(bool record)
 
         if(fileName.size() == 0)
             return false;
-        qDebug() << "OKKKKKKKKKKKKKKKKKKKKKKK";
-      //  qDebug() << "SHOW_FILE_NAME " << fileName;
+        //qDebug() << "OKKKKKKKKKKKKKKKKKKKKKKK";
+      //  //qDebug() << "SHOW_FILE_NAME " << fileName;
         m_encoder->setFileName(fileName);
         m_encoder->setGrabWidget(this);
         m_encoder->startRecord();
-        // qDebug() << "Start record into file";
+        // //qDebug() << "Start record into file";
     }
     curStatus = PLAY;
     bRecord = record;
     //tickTimer.start();
-    // qDebug() << "Start play";
+    // //qDebug() << "Start play";
     emit startSignal();
     return true;
 }
@@ -1292,7 +1292,7 @@ void OGLWidget::stopAnimated()
 */
     bRecord = false;
  //   pause(200);
-     qDebug() << "Stop play" << timeLine->getPlayTime();
+     //qDebug() << "Stop play" << timeLine->getPlayTime();
     emit stopSignal();
 
 }
@@ -1300,7 +1300,7 @@ void OGLWidget::stopAnimated()
 void OGLWidget::pauseAnimated()
 {
     curStatus = PAUSE;
-    // qDebug() << "Pause play";
+    // //qDebug() << "Pause play";
     m_encoder->pause();
     emit pauseSignal();
     //m_recorder->pause();
@@ -1312,7 +1312,7 @@ void OGLWidget::brushParamsChanged()
     m_manager.getCreatedBrush().color_img=BrushPainter::getInstance()->applyColor(m_manager.getCreatedBrush());
     brushTexture = loadTexture(m_manager.getCreatedBrush().color_img);
     drawBrushElm->addBrush(m_manager.getCreatedBrush());
-    qDebug() << "brushParamsChanged";
+    //qDebug() << "brushParamsChanged";
 
 }
 bool OGLWidget::isRecord() const
@@ -1342,7 +1342,7 @@ void OGLWidget::clearCanvas(int m_x, int m_y)
 }
 void OGLWidget::clearBuffer()
 {
-     qDebug() << "CLEAR_TEXT_BUFFER";
+     //qDebug() << "CLEAR_TEXT_BUFFER";
      colors.clear();
      ColorMarker startMarker;
      startMarker.startIndex=0;
@@ -1360,7 +1360,7 @@ void OGLWidget::clearBuffer()
 
 void OGLWidget::drawFigure(int x, int y, int x2, int y2, OGLWidget::FigureType type, bool fill = true, QColor col = "#FF0000", float size = 2)
 {
-    //// qDebug()<<"void OGLWidget::drawFigure";
+    //// //qDebug()<<"void OGLWidget::drawFigure";
     glDisable(GL_BLEND);
     glEnable(GL_LINE_SMOOTH);
     glHint(GL_LINE_SMOOTH_HINT,  GL_NICEST);
@@ -1369,9 +1369,9 @@ void OGLWidget::drawFigure(int x, int y, int x2, int y2, OGLWidget::FigureType t
      glLineWidth(3.0f);
        glVertex2i( x,y);
        glVertex2i( x2,y);
-       // qDebug()<<"x:"<<x;
-        // qDebug()<<"y:"<<y;
-         // qDebug()<<"x2:"<<x2;
+       // //qDebug()<<"x:"<<x;
+        // //qDebug()<<"y:"<<y;
+         // //qDebug()<<"x2:"<<x2;
      //glVertex3f( 0,0,0);
     // glVertex3f( 100,100,0);
        glEnd();
@@ -1410,11 +1410,10 @@ void OGLWidget::drawFigure(int x, int y, int x2, int y2, OGLWidget::FigureType t
 bool OGLWidget::drawAnimationFigure(int x, int y, int width, int height, double persent, OGLWidget::FigureType type, bool fill)
 {
     isCrossingNow=true;
-    qDebug() << "wqweqweqwe "  << persent;
+    //qDebug() << "wqweqweqwe "  << persent;
     if(persent < 0.98f)
     {
-        drawFigure(x, y, x + (width - x)*persent + 1, height, type, fill);
-         //qDebug() << delPos.x() << "             " << delPos.x() + (maxWidth - delPos.x())*persent;
+        drawFigure(x, y, x + (width - x)*persent, height, type, fill);
         //persent += animationPersentOfCross;
        // QThread::currentThread()->msleep(10);
         if(curStatus == STOP )
@@ -1466,7 +1465,7 @@ void OGLWidget::crossOutLastSymbol( int n)
 
 void OGLWidget::crossOutWithAnimation(int n)
 {
-  //  // qDebug() << "URAAAA!!!  " << deleteWT;
+  //  // //qDebug() << "URAAAA!!!  " << deleteWT;
     crossOutLastSymbol(n);
     crossWithAnimation = true;
 }
@@ -1484,7 +1483,7 @@ double OGLWidget::getAnimationPersentOfCross() const
 void OGLWidget::setAnimationPersentOfCross(double value)
 {
     animationPersentOfCross = value;
-    //qDebug() << "QWE    " << value;
+    ////qDebug() << "QWE    " << value;
 }
 
 bool OGLWidget::getIsBrushWindowOpened() const
@@ -1565,7 +1564,7 @@ void  OGLWidget::updateWindow(){
     }
     else
     {
-       // qDebug() << "SBLOCK " << t;
+       // //qDebug() << "SBLOCK " << t;
         selElm = t;
         editingRectangle.isEditingRectangleVisible = false;
     }
@@ -1592,7 +1591,7 @@ void OGLWidget::setDelay(int value)
 {
     delay = value;
     //animationPersentOfCross = (double)1/(value*0.6);
-    // qDebug() << animationPersentOfCross;
+    // //qDebug() << animationPersentOfCross;
 }
 
 int OGLWidget::getCountDeleteWT() const
@@ -1637,7 +1636,7 @@ void OGLWidget::myRenderText( QGLWidget* w, int x, int y,int z, const QString& t
 {
     if (text.isEmpty()) return;
 
-   // qDebug() <<"myRenderText begin";
+   // //qDebug() <<"myRenderText begin";
     /*glMatrixMode( GL_PROJECTION );
     glPushMatrix();
     glLoadIdentity();
@@ -1676,7 +1675,7 @@ void OGLWidget::myRenderText( QGLWidget* w, int x, int y,int z, const QString& t
     glPopMatrix();
     glMatrixMode( GL_MODELVIEW );*/
     glPopMatrix();
-  //  qDebug() <<"myRenderText end";
+  //  //qDebug() <<"myRenderText end";
 
     /*
      *
@@ -1706,16 +1705,16 @@ void OGLWidget::myRenderText( QGLWidget* w, int x, int y,int z, const QString& t
 void OGLWidget::fillText( QString str,QColor color, int x, int y, int z)
 {
 
-   /* // qDebug() << "ARG1:  " << str.size();
-    // qDebug() << "ARG2:  " << arg2;
-    // qDebug() << "ARG3:  " << arg3;
+   /* // //qDebug() << "ARG1:  " << str.size();
+    // //qDebug() << "ARG2:  " << arg2;
+    // //qDebug() << "ARG3:  " << arg3;
     if(arg1.isValid() && arg2.isValid() && arg3.isValid())
        if(canvas != NULL)
    */
 
     qglColor(color);
    // glDisable(GL_DEPTH_TEST);
-  //  qDebug() << "SHOW_Z " << z;
+  //  //qDebug() << "SHOW_Z " << z;
 
 
     //renderText(x, y, str,textFont);
@@ -1744,7 +1743,7 @@ bool OGLWidget::crossTextV2()
     /*
     if(deleteWT != 0 && !symbolPositionList.isEmpty())
     {
-        // qDebug() << deleteWT << "WT == symbolPositionList" << symbolPositionList.size();
+        // //qDebug() << deleteWT << "WT == symbolPositionList" << symbolPositionList.size();
         if(deleteWT > symbolPositionList.length())
             deleteWT = symbolPositionList.length();
 
@@ -1769,7 +1768,7 @@ bool OGLWidget::crossTextV2()
                 {
                     deleteWT--;
                 }
-                // qDebug() << "startNEW with:  "<< hex << listWords[n + 1];
+                // //qDebug() << "startNEW with:  "<< hex << listWords[n + 1];
                 delPos = symbolPositionList.at(m); // -2 is popravka
                 int x2 = delPos.x() + fMetrics->width(listWords[m]);;
                 int y2 = delPos.y() - fMetrics->height()/4;
@@ -1781,7 +1780,7 @@ bool OGLWidget::crossTextV2()
                 int y1 = delPos.y() - fMetrics->height()/4;
                 if(crossWithAnimation)
                 {
-                    // qDebug() << "set animation speed";
+                    // //qDebug() << "set animation speed";
                     drawAnimationFigure(x1, y1, x2, y2, LINE, 0);
                 }
                 else
@@ -1827,7 +1826,7 @@ QPoint OGLWidget::drawWrapText(QString str)
      }
         if(width + x > maxWidth)
         {
-         // qDebug()<<listChars;
+         // //qDebug()<<listChars;
 
                 //fillText("-", x, y);
                 //listChars += str;
@@ -1865,8 +1864,8 @@ QPoint OGLWidget::drawWrapText(QString str)
        qApp->processEvents();
     }*/
     busy = false;
- //   // qDebug() << "Y: " << y;
-   // // qDebug() << "Y: " << y;
+ //   // //qDebug() << "Y: " << y;
+   // // //qDebug() << "Y: " << y;
     return res;
 }
 
@@ -1879,7 +1878,7 @@ void OGLWidget::drawTextBuffer( int m_x, int m_y, int m_width, int m_height, int
 
     clearCanvas(m_x, m_y);
     int maxDrawElm = (m_height/(lineHeight + pt)) - 1;
-    //qDebug() << "DRAW   "   <<  maxDrawElm;
+    ////qDebug() << "DRAW   "   <<  maxDrawElm;
     int CurRow = convertTextBoxToBufferIndex(cursorIndex).y();
     if(CurRow >= indexRowInList + maxDrawElm)
     {
@@ -1898,13 +1897,13 @@ void OGLWidget::drawTextBuffer( int m_x, int m_y, int m_width, int m_height, int
         lastRow = 0;
     indexLastDrawSymbol = getLastSymbolOfString(lastRow, false);
 
-    //qDebug() << "First  " << indexFirstDrawSymbol <<    "   " <<  indexRowInList << "    " << indexLastDrawSymbol;
-  //  // qDebug() << indexRowInList << "   indexFirstDrawSymbol   :           " << indexFirstDrawSymbol << cross;
- //   // qDebug() << "START draw with indexRowInList " << indexRowInList << "MAX elm " << maxElm << "CUR " << CurRow;
+    ////qDebug() << "First  " << indexFirstDrawSymbol <<    "   " <<  indexRowInList << "    " << indexLastDrawSymbol;
+  //  // //qDebug() << indexRowInList << "   indexFirstDrawSymbol   :           " << indexFirstDrawSymbol << cross;
+ //   // //qDebug() << "START draw with indexRowInList " << indexRowInList << "MAX elm " << maxElm << "CUR " << CurRow;
     int i = indexRowInList;
     while( i < stringList.length() && i < indexRowInList + maxDrawElm)
     {
-       //// qDebug() << stringList[i] << "@";
+       //// //qDebug() << stringList[i] << "@";
         QStringList tabulationStr = stringList[i].split("\t");
         //TODO SET TEXT COLOR TO CANVAS COLOR
         setFillColor(fillColor);
@@ -1913,7 +1912,7 @@ void OGLWidget::drawTextBuffer( int m_x, int m_y, int m_width, int m_height, int
         //    fillText(tabulationStr[j], x, y);
        //     x += fMetrics->width(tabulationStr[j] + "\t");
       //  }
-      //  // qDebug() << "C:"<<colors.length();
+      //  // //qDebug() << "C:"<<colors.length();
     for (int k = 0 ; k< colors.length();k++)
     {
         int columnOfColorStrBegin;
@@ -1964,11 +1963,11 @@ void OGLWidget::drawTextBuffer( int m_x, int m_y, int m_width, int m_height, int
             fillText(textToFill,fillColor,x , y, z);
            // localX+=fMetrics->width(textToFill);
             //setFillColor(QColor(255,255,255));//Костиль, удалити, вистачить верхнього setColor, добавити на початок colors колір канви
-           /*  // qDebug() << "columnOfColorStrEnd:" << columnOfColorStrEnd;
-             // qDebug() << "columnOfColorStrBegin:" << columnOfColorStrBegin;
-            // qDebug()<<"textToFill:"<<textToFill;
-              // qDebug()<< "textToWarp:" << textToWarp;
-              // qDebug()<<"rowOfColorStrBegin:"<<rowOfColorStrBegin;*/
+           /*  // //qDebug() << "columnOfColorStrEnd:" << columnOfColorStrEnd;
+             // //qDebug() << "columnOfColorStrBegin:" << columnOfColorStrBegin;
+            // //qDebug()<<"textToFill:"<<textToFill;
+              // //qDebug()<< "textToWarp:" << textToWarp;
+              // //qDebug()<<"rowOfColorStrBegin:"<<rowOfColorStrBegin;*/
     }
 
         y += lineHeight + pt;
@@ -1990,14 +1989,14 @@ void OGLWidget::insertToBuffer(const QChar ch)
    // crossTextDraw();
     while (isCrossingNow);
     QPoint convertedIndex = convertTextBoxToBufferIndex(cursorIndex);
-   // // qDebug() << convertedIndex << " " << stringList.size() << " " << ch;
+   // // //qDebug() << convertedIndex << " " << stringList.size() << " " << ch;
     QString &str =  stringList[convertedIndex.y()];
     if (convertedIndex.x()>=str.length())
         str.append(ch);
     else
         str.insert(convertedIndex.x(), ch);
     cross.insert(cursorIndex - convertTextBoxToBufferIndex(cursorIndex).y(), 0);
-  //  qDebug() << "insert " << cursorIndex - convertTextBoxToBufferIndex(cursorIndex).y() << "        " << cross;
+  //  //qDebug() << "insert " << cursorIndex - convertTextBoxToBufferIndex(cursorIndex).y() << "        " << cross;
 
   //  DrawTextElm(convertedIndex.y());
     listChars.append(ch);
@@ -2011,7 +2010,7 @@ void OGLWidget::insertToBuffer(const QChar ch)
 void OGLWidget::deleteFromBuffer(int n)
 {
 
-    update();
+    crossText();
     int mustDell = qAbs(n);
     int crossCursor = cursorIndex - convertTextBoxToBufferIndex(cursorIndex).y();
     int i = n;
@@ -2046,13 +2045,13 @@ void OGLWidget::deleteFromBuffer(int n)
             i--;
         else
             i++;
-         qDebug() << "REMOVE" << crossCursor + i << "   " << " ::  " << cross;
+         //qDebug() << "REMOVE" << crossCursor + i << "   " << " ::  " << cross;
     }
     while(mustDell > 0)
     {
         QPoint convertedIndex = convertTextBoxToBufferIndex(cursorIndex);
        // cross.insert(cursorIndex - convertedIndex.y(), 0);
-        // qDebug() << convertedIndex << "DELL   " << mustDell;
+        // //qDebug() << convertedIndex << "DELL   " << mustDell;
         QString &str =  stringList[convertedIndex.y()];
         int realDell;
         if(n > 0)
@@ -2114,7 +2113,8 @@ void OGLWidget::deleteFromBuffer(int n)
 
 void OGLWidget::moveCursor(int n, bool withWrapShift)
 {
-    update();
+    //update();
+    crossText();
     int j = 0;
     int shift = 0;
     /*if(withWrapShift)
@@ -2128,7 +2128,7 @@ void OGLWidget::moveCursor(int n, bool withWrapShift)
    /* int maxSymbol = getLastSymbolOfString(stringList.length() - 1, false);
     if( maxSymbol < n)
         n = maxSymbol;*/
-   // qDebug() << "MAX_SYMBOL" << maxSymbol;
+   // //qDebug() << "MAX_SYMBOL" << maxSymbol;
     if(n > 0)
         cursorIndex += n + shift;
     else
@@ -2136,7 +2136,7 @@ void OGLWidget::moveCursor(int n, bool withWrapShift)
     //cursorIndex += n;
     if(cursorIndex < 0)
         cursorIndex = 0;
- //   // qDebug() << "Cursor move to n " << n <<"=== cur state " << cursorIndex << "QPOINT  " << convertTextBoxToBufferIndex(cursorIndex);
+ //   // //qDebug() << "Cursor move to n " << n <<"=== cur state " << cursorIndex << "QPOINT  " << convertTextBoxToBufferIndex(cursorIndex);
 
 }
 int OGLWidget::getCountNullString(int index)
@@ -2159,7 +2159,7 @@ void OGLWidget::storeMousePos()
 
         if (drawBrushElm->getCoords().length()==0)drawBrushElm->addBrush(m_manager.getCreatedBrush());
             drawBrushElm->addCoord(QPoint(mousePos.x(),mousePos.y()));
-   // qDebug()<<"position stored:"<<QCursor::pos();
+   // //qDebug()<<"position stored:"<<QCursor::pos();
     }
 }
 
@@ -2203,16 +2203,16 @@ QPoint OGLWidget::convertTextBoxToBufferIndex(int index, bool symbol)
     int numParagraph = 0;
     while( i < stringList.length())
     {
-      //  // qDebug() <<"stringList:"<<stringList.length();
+      //  // //qDebug() <<"stringList:"<<stringList.length();
         int lenNext;
         if(symbol)
             lenNext = stringList[i].length();
         else
             lenNext = stringList[i].length() + 1;
         sumLength += lenNext;
-     //   // qDebug() <<"sumLength:"<<sumLength;
-//        // qDebug() <<"index:"<<index;
-//        // qDebug() <<"I:"<<i;
+     //   // //qDebug() <<"sumLength:"<<sumLength;
+//        // //qDebug() <<"index:"<<index;
+//        // //qDebug() <<"I:"<<i;
 
         if(sumLength > index)
         {
@@ -2258,14 +2258,14 @@ void OGLWidget::testWrap(int kIndexOfRow)
     {
         QString &str =  stringList[i];
         int width = fMetrics->width(stringList[i]) ;//+ fMetrics->leftBearing(str.at(0)) + fMetrics->rightBearing(str.at(0));
-        ////// qDebug() <<"str:"<< maxWidth;
+        ////// //qDebug() <<"str:"<< maxWidth;
         if(width > maxWidth)
         {
 
             int j = stringList[i].size() - 1;
             while( j >= 0 && str[j] > ' ')
             {
-             //   // qDebug() << str[j];
+             //   // //qDebug() << str[j];
                 j--;
             }
 
@@ -2273,10 +2273,10 @@ void OGLWidget::testWrap(int kIndexOfRow)
             if(j < 0)
                 j = stringList[i].length() - 1;
 
-         //   // qDebug() <<"strSize:    " << stringList.size() << "    SIZE_i    " << stringList[i] << "     " << j;
+         //   // //qDebug() <<"strSize:    " << stringList.size() << "    SIZE_i    " << stringList[i] << "     " << j;
             nextRow(j, i, false);
             wrapShift.append(getFirstSymbolOfString(i + 1));
-                // qDebug() << "WRAPSHIFT"<< wrapShift;
+                // //qDebug() << "WRAPSHIFT"<< wrapShift;
 
         }
         i++;
@@ -2300,7 +2300,7 @@ void OGLWidget::nextRow( int n, int Row, bool wrap)
     int i = convertedIndex.y() + 1;
     QString lastStr = stringList[i - 1].right(stringList[i - 1].length() - convertedIndex.x());
 
-    qDebug() << "           LASTSTR    " << lastStr << "         " << convertedIndex.x();
+    //qDebug() << "           LASTSTR    " << lastStr << "         " << convertedIndex.x();
     if(i >= stringList.length())
         stringList.append(lastStr);
     else
@@ -2324,7 +2324,7 @@ void OGLWidget::isLastRow()
 void OGLWidget::update(){
     busy = true;
     crossText();
-        crossTextDraw();
+       // crossTextDraw();
         moveEvent(NULL);
        // busy = false;
 }
@@ -2337,16 +2337,19 @@ bool OGLWidget::crossTextDraw()
     {
         if(drawAnimationFigure(listOfAnimationFigure[i]))
         {
-                //qDebug() << listOfAnimationFigure[i].start << "     " << listOfAnimationFigure[i].stop << "     " << cross.length();
-            for( int j = listOfAnimationFigure[i].start; listOfAnimationFigure[i].stop; j++) // convert to cross without animation
+         //   qDebug() << "LAST" << listOfAnimationFigure[i].start << "     " << listOfAnimationFigure[i].stop << "     " << cross.length();
+            for( int j = listOfAnimationFigure[i].start; j < listOfAnimationFigure[i].stop; j++) // convert to cross without animation
             {
                 if(j < cross.length())
+                {
                     cross[j] = 1;
+                    qDebug() << cross;
+                }
                 else
                     break;
             }
             listOfAnimationFigure.remove(i);
-            qDebug() << cross;
+            //qDebug() << cross;
         }
 
     }
@@ -2389,29 +2392,37 @@ bool OGLWidget::crossTextDraw()
 
             QPoint conv = convertTextBoxToBufferIndex(i - 1, true);
         //    conv = convertTextBoxToBufferIndex(i + conv.y() + 1);
-            // qDebug() << "YYYYYYYYYYYYYYYYYYYYYYY" << y;
+            // //qDebug() << "YYYYYYYYYYYYYYYYYYYYYYY" << y;
             y -=   indexRowInList;
-            // qDebug() << "YYYYYYYYYYYYYYYYYYYYYYY2" << y;
+            // //qDebug() << "YYYYYYYYYYYYYYYYYYYYYYY2" << y;
             ++y *= lineHeight + pt;
             // QRect rect = fm.boundingRect( text);
             y -= 0.5f * fMetrics->height();// first paid + midle LABEL1
 
             x2 = marginLeft + fMetrics->width(stringList[conv.y()].left(conv.x() + 1));
             y += marginTop;
-            if( cross[i - 1] == -1 && curStatus == PLAY)
+            if( cross[i - 1] == -1 )
             {
-                // qDebug() << "FIRST";
+                // //qDebug() << "FIRST";
                // drawAnimationFigure(x1, y, x2, y, LINE, 0);
                 //drawAnimationFigure(x1, y, x2, y, LINE, 0);
-                listOfAnimationFigure.append(AnimationFigure(QRect(x1, y, x2, y), (int)LINE, x, i));
-            //    qDebug() << "FIRST" << x << "     " << i << "     " << cross.length();
-                for( int j = x; j < i; j++) // convert to cross without animation
-                    cross[j] = 0;
+                if(curStatus == PLAY)
+                {
+                    listOfAnimationFigure.append(AnimationFigure(QRect(x1, y, x2, y), (int)LINE, x, i));
+                //    qDebug() << "FIRST" << x << "     " << i << "     " << cross.length();
+                    for( int j = x; j < i; j++) // convert to cross without animation
+                        cross[j] = 0;
+                }
+                else
+                {
+                    drawFigure(x1,y, x2, y, LINE, 0);
+                }
+
             }
             else{
                 //drawFigure(x1, y, x2, y, LINE, 0);
                 drawFigure(x1,y, x2, y, LINE, 0);
-                 // qDebug() << "SECOND";
+                 // //qDebug() << "SECOND";
             }
             lastGood = false;
             if(needNextRow)
@@ -2423,19 +2434,19 @@ bool OGLWidget::crossTextDraw()
 
 bool OGLWidget::crossText()
 {
-  //  // qDebug() << "www " << deleteWT << cross;
+  //  // //qDebug() << "www " << deleteWT << cross;
     int spacePaid = 1;
     int row = convertTextBoxToBufferIndex(cursorIndex).y();
     while(deleteWT > 0)
     {
-        //// qDebug() << "DW " << deleteWT << convertTextBoxToBufferIndex(cursorIndex);
+        //// //qDebug() << "DW " << deleteWT << convertTextBoxToBufferIndex(cursorIndex);
         int cursor = cursorIndex - row;
        /*   space paid
         *
         *  while( cursor - spacePaid >= 0)
         {
             QPoint convert = convertTextBoxToBufferIndex(cursor - spacePaid, true);
-            //// qDebug() << "\nSYMBOL                 :::" << cursor  - spacePaid <<"         " << stringList[convert.y()][convert.x()];
+            //// //qDebug() << "\nSYMBOL                 :::" << cursor  - spacePaid <<"         " << stringList[convert.y()][convert.x()];
             if(stringList[convert.y()][convert.x()] <= 0x20)
                 spacePaid++;
             else
