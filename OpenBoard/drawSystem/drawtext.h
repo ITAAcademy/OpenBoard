@@ -19,6 +19,7 @@ class DrawTextElm : public DrawElement
     int globalDeltaComandSize = 0;
     int animationDelayCount = 1;
     int animationDelayStart = 1;
+    int curentCh;
 public:
     int curentPauseValue = 0;
     explicit DrawTextElm( OGLWidget *drawWidget, QObject *parent = 0);

@@ -1266,13 +1266,14 @@ bool OGLWidget::drawAnimated(bool record)
 void OGLWidget::stopAnimated()
 {
     //pause(100);
-    clearFrameBuffer();
-    curStatus = STOP;
-    tickTimer.stop();
-    m_encoder->stop();
-
-    // max speed // stop draw function
-    double t_animationPersentOfCross = animationPersentOfCross;
+    if(init)
+    {
+        curStatus = STOP;
+        tickTimer.stop();
+        m_encoder->stop();
+        clearFrameBuffer();
+        double t_animationPersentOfCross = animationPersentOfCross;
+    }
 /*    int t_delay = delay;
 
     animationPersentOfCross = 1;
@@ -2392,13 +2393,13 @@ bool OGLWidget::crossTextDraw()
 
             x2 = marginLeft + fMetrics->width(stringList[conv.y()].left(conv.x() + 1));
             y += marginTop;
-            if( cross[i - 1] == -1)
+            if( cross[i - 1] == -1 && curStatus == PLAY)
             {
                 // qDebug() << "FIRST";
                // drawAnimationFigure(x1, y, x2, y, LINE, 0);
                 //drawAnimationFigure(x1, y, x2, y, LINE, 0);
                 listOfAnimationFigure.append(AnimationFigure(QRect(x1, y, x2, y), (int)LINE, x, i));
-                qDebug() << "FIRST" << x << "     " << i << "     " << cross.length();
+            //    qDebug() << "FIRST" << x << "     " << i << "     " << cross.length();
                 for( int j = x; j < i; j++) // convert to cross without animation
                     cross[j] = 0;
             }

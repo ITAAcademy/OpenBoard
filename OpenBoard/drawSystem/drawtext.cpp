@@ -49,7 +49,7 @@ void DrawTextElm::draw()
     if (current_time > 0 && mUnitList.size() != 0)
     {
        // qDebug() << "startDrawTime:"<<startDrawTime;
-        if(keyCouter == 0 || !bPlay)
+        if((keyCouter == 0 || !bPlay) && curentCh != current_time )
        {
            pDrawWidget->clearCanvas();
            pDrawWidget->clearBuffer();
@@ -57,7 +57,7 @@ void DrawTextElm::draw()
            curentPauseValue = 0;
        }
 
-       int realKeyValue = qFloor((double)(current_time - (curentPauseValue + startDrawTime)) / (double)((lifeTime - globalPauseLifeTime)/(mUnitList.size())));
+       int realKeyValue = qRound((double)(current_time - (curentPauseValue + startDrawTime)) / (double)((lifeTime - globalPauseLifeTime)/(mUnitList.size())));
        //qDebug() << "pDrawWidget->getTimeLine()->getPlayTime()"<< realKeyValue;
       // qDebug() << "cur " << current_time;
        //qDebug() << "start " << startDrawTime;
@@ -98,6 +98,7 @@ void DrawTextElm::draw()
     }
 
     pDrawWidget->drawTextBuffer(x, y, width, height, z);
+    curentCh = current_time;
 }
 
 void DrawTextElm::setLifeTime(int value)

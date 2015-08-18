@@ -536,7 +536,7 @@ case OPENING_PROJECT:
 
 void MainWindow::closeEvent(QCloseEvent*)
 {
-    if(mpOGLWidget != NULL)
+    if(mpOGLWidget != NULL && mpOGLWidget->isVisible())
     {
         on_action_Hide_triggered();
         mpOGLWidget->close();
