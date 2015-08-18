@@ -73,6 +73,7 @@ Rectangle
    property int isPlayPauseStop : 2
    // property int torepainting : 1
     property int saveScrollX : 0
+   property int saveScalePointerX : 0
 
 
    property  bool needToLightSelected : false
@@ -85,6 +86,7 @@ Rectangle
    property int mX : 0
 
    property int prevPlayTime : 0
+   property int play_time : 0
 
 
 
@@ -140,35 +142,47 @@ item_col.width = (timeControll.getMaxTrackTime() + 31) * main222.scaling
             scroll.flickableItem.contentX = 0;
         else if (isPlayPauseStop === 1)
         {
-             scale_pointer.x = timeControll.getPlayTime()/main222.scaling;
+            // scale_pointer.x = timeControll.getPlayTime()/main222.scaling;
+            scale_pointer.x = main222.saveScalePointerX
            scroll.flickableItem.contentX = main222.saveScrollX
         }
-        main222.isPlayPauseStop = 0
+        isPlayPauseStop = 0
 
 
         scroll.enabled = false
          scale_pointer.enabled = false
         tollbar.p_button_RemoveTrack.enabled = false
         tollbar.p_button_AddTrack.enabled = false
+         tollbar.p_button_play.enabled = false
+
+        tollbar.p_button_pause.enabled = true
 
     }
-    function pause()    {
+    function pause()
+    {
         main222.saveScrollX = scroll.flickableItem.contentX
-main222.isPlayPauseStop = 1
+        main222.saveScalePointerX = scale_pointer.x
+isPlayPauseStop = 1
 
         scroll.enabled = true
        scale_pointer.enabled = true
        tollbar.p_button_RemoveTrack.enabled = true
        tollbar.p_button_AddTrack.enabled = true
+        tollbar.p_button_play.enabled = true
+
+         tollbar.p_button_pause.enabled = false
     }
-    function stop()    {
-      //  scale_pointer.x =
-main222.isPlayPauseStop = 2
 
+    function stop()
+    {
+        isPlayPauseStop = 2
         scroll.enabled = true
        scale_pointer.enabled = true
        tollbar.p_button_RemoveTrack.enabled = true
        tollbar.p_button_AddTrack.enabled = true
+        tollbar.p_button_play.enabled = true
+
+        tollbar.p_button_pause.enabled = false
 //scale_pointer.x = timeControll.getMaxTrackTime() + scale_pointer.width/2 - scroll.flickableItem.contentX;
     }
 
@@ -198,7 +212,6 @@ main222.isPlayPauseStop = 2
 
       onPlaySignal: {
             main222.play()
-          scale_pointer.x = 0
 
 
        }
@@ -215,6 +228,7 @@ main222.isPlayPauseStop = 2
        }
 
        onUpdateSignal:  {
+          main222.play_time = timeControll.getPlayTime()
            if (main222.isPlayPauseStop === 0 )
            {
                var play_time = timeControll.getPlayTime();

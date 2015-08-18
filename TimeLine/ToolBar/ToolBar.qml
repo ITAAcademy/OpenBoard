@@ -7,6 +7,10 @@ Rectangle {
     property Repeater globalRep
     property Buutton p_button_RemoveTrack
     property Buutton p_button_AddTrack
+
+    property Buutton p_button_play
+    property Buutton p_button_pause
+    property Buutton p_button_stop
     Column{
         width: parent.width
         height: parent.height
@@ -65,7 +69,10 @@ Rectangle {
             width: parent.width
           icon_source : "qrc:/iphone_toolbar_icons/playG.png"
             onClicked: {
-                    timeControll.play()
+                    timeControll.emitPlaySignal()
+            }
+            Component.onCompleted: {
+                root.p_button_play = butPlay
             }
         }
         Buutton{
@@ -75,7 +82,10 @@ Rectangle {
             width: parent.width
           icon_source : "qrc:/iphone_toolbar_icons/pauseG.png"
             onClicked: {
-                    timeControll.pause()
+                    timeControll.emitPauseSignal()
+            }
+            Component.onCompleted: {
+                root.p_button_pause = butPause
             }
         }
         Buutton{
@@ -85,7 +95,10 @@ Rectangle {
             width: parent.width
           icon_source : "qrc:/iphone_toolbar_icons/stopG.png"
             onClicked: {
-                    timeControll.stop()
+                    timeControll.emitStopSignal()
+            }
+            Component.onCompleted: {
+                root.p_button_stop = butStop
             }
         }
 
