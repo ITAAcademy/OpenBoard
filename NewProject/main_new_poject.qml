@@ -65,15 +65,6 @@ Rectangle{
                         }
                     }
                     Content.MenuItem{
-                        title: "New empty project"
-                        onClicked: {
-                            my_col.clean();
-                           // projectControll.setProjectState(2);
-                            root.project_state = 2
-                            content.next = c2;
-                        }
-                    }
-                    Content.MenuItem{
                         title: "New modeal animation"
                         onClicked: {
                             my_col.clean();

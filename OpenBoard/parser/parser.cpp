@@ -29,12 +29,13 @@ int Parser::MAX_COMMAND_LENGTH = 3;
 quint64 Parser::processTimeOfUnits(QList<Unit*> list, int &globalPause, int &commandSize, int delayMS){
     if(list.isEmpty())return 0;
     quint64 resultTime = 0;
+    delayMS += 10;
     for (Unit *unit : list)
     {
 
       if (unit->unitType == 0){
          // qDebug()<<"contains UnitSumbol";
-          resultTime+=delayMS;
+          resultTime += delayMS;
       }
       else if(unit->unitType == 1)
           {
@@ -108,6 +109,7 @@ int Parser::ParsingLine(QList<Unit*> &list,  QString &str, quint64& timeSpendToD
                 UnitCommand* command = new UnitCommand();
                 command->setUnitCommandType("NextLine");
                 list.push_back(command);
+                command->unitType = 0;
                 state = -1;
                 i++;
                 continue;

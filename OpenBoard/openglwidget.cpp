@@ -2300,7 +2300,7 @@ void OGLWidget::nextRow( int n, int Row, bool wrap)
     int i = convertedIndex.y() + 1;
     QString lastStr = stringList[i - 1].right(stringList[i - 1].length() - convertedIndex.x());
 
- //   // qDebug() << "           LASTSTR    " << lastStr << "         " << convertedIndex.x();
+    qDebug() << "           LASTSTR    " << lastStr << "         " << convertedIndex.x();
     if(i >= stringList.length())
         stringList.append(lastStr);
     else
