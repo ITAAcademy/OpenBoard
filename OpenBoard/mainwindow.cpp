@@ -1229,7 +1229,7 @@ void MainWindow::on_action_New_Project_triggered()
     }
 
      curProjectFile.clear();
-     mpOGLWidget->getTimeLine()->emitResetProject();
+     //mpOGLWidget->getTimeLine()->emitResetProject();
      mpOGLWidget->getTimeLine()->resetProjectToDefault();
      // qDebug() << "AAAAAAAAAAAAAAAAAAAA1";
      mpOGLWidget->getTimeLine()->setIsProjectChanged(false);
