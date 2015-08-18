@@ -1262,8 +1262,8 @@ void MainWindow::on_action_New_Project_triggered()
         setViewState((int)curentState.state);
      else
          setViewState(VIDEO_EDIT_PRO);
- qDebug() << "AAAAAAAAAAAAAAAAAAAA   DAAAAAAAAAAAAAA";
-     //qApp->processEvents(QEventLoop::AllEvents, 1000);
+     qDebug() << "AAAAAAAAAAAAAAAAAAAA   DAAAAAAAAAAAAAA";
+     qApp->processEvents(QEventLoop::AllEvents, 1000);
     // qDebug() << "AAAAAAAAAAAAAAAAAAAAww";
      switch (curentState.state) {
      case VIDEO_EDIT_TEXT:

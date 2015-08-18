@@ -382,7 +382,7 @@ timeControll.setScaleScrollChildren(0) //it have protection from small values, w
                var temp = scroll.width-30    // real_time - scroll.flickableItem.contentX + width
                 if (x  > temp )
                 {
-                  console.log("HAAAAAAAAAAA")
+               //   console.log("HAAAAAAAAAAA")
 
                     scroll.flickableItem.contentX += (x - temp)
                     var sad = real_time - scroll.width +50 // scroll.flickableItem.contentWidth - scroll.width + 10

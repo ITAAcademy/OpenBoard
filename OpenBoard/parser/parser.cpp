@@ -42,6 +42,7 @@ quint64 Parser::processTimeOfUnits(QList<Unit*> list, int &globalPause, int &com
              {
                  unit->delay = delayMS*unit->getUnitData().toInt();
                  resultTime += unit->delay;
+                 globalPause += unit->delay;
              }
              else if (((UnitCommand*)unit)->getUnitCommandType()=="Pause")
              {
@@ -93,6 +94,7 @@ int Parser::ParsingLine(QList<Unit*> &list,  QString &str, quint64& timeSpendToD
         {
             UnitCommand* command = new UnitCommand();
             command->setUnitCommandType("NextLine");
+            command->unitType = 0;
             list.push_back(command);
             state = -1;
             continue;

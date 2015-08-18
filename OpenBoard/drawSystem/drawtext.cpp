@@ -57,7 +57,7 @@ void DrawTextElm::draw()
            curentPauseValue = 0;
        }
 
-       int realKeyValue = qRound((double)(current_time - (curentPauseValue + startDrawTime)) / (double)((lifeTime - globalPauseLifeTime)/(mUnitList.size())));
+       int realKeyValue = qRound((double)(current_time - (curentPauseValue + startDrawTime)) / (double)((lifeTime - globalPauseLifeTime)/(mUnitList.size() - globalDeltaComandSize)));
        //qDebug() << "pDrawWidget->getTimeLine()->getPlayTime()"<< realKeyValue;
       // qDebug() << "cur " << current_time;
        //qDebug() << "start " << startDrawTime;
@@ -65,21 +65,26 @@ void DrawTextElm::draw()
 
    // if (keyCouter < realKeyValue)
 
-        while(keyCouter <= realKeyValue )
+        while( keyCouter < mUnitList.size() && (keyCouter < realKeyValue || mUnitList[keyCouter]->unitType == 1) )
         {
             if(!bPlay)
                 current_time =  pDrawWidget->getTimeLine()->getScalePointerPos();
             else
                 current_time =  pDrawWidget->getTimeLine()->getPlayTime();
 
-            if (keyCouter < mUnitList.size())
+            //if ()
             {
                 mUnitList.at(keyCouter)->draw(pDrawWidget);
                 if(mUnitList.at(keyCouter)->delay > 0)
                 {
                     curentPauseValue += mUnitList.at(keyCouter)->delay;
-                    animationDelayCount = mUnitList.at(keyCouter++)->delay;
-                    animationDelayStart = current_time;
+                    if(mUnitList[keyCouter]->unitType == 1 && ((UnitCommand*) mUnitList[keyCouter])->getUnitCommandType() == "ErasePreChar")
+                    {
+                        animationDelayCount = mUnitList.at(keyCouter)->delay;
+                        animationDelayStart = current_time;
+                        pDrawWidget->update();
+                    }
+                    keyCouter++;
                     break;
                 }
             }

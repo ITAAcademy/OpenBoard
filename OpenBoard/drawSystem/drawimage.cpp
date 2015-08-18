@@ -41,7 +41,7 @@ void DrawImageElm::setDrawImage(QImage img)
 
 bool DrawImageElm::setDrawWidget(OGLWidget *value)
 {
-    if(((!DrawElement::setDrawWidget(value) && textureIndex != -1) || failedLoad < 0) || (!pDrawWidget->isVisible() || !pDrawWidget->isInit()))
+    if(((!DrawElement::setDrawWidget(value) && textureIndex != 4294967295) || failedLoad < 0) || (!pDrawWidget->isVisible() || !pDrawWidget->isInit()))
     {
         return 0;
     }

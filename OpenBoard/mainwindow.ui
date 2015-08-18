@@ -473,7 +473,7 @@
             <number>1</number>
            </property>
            <property name="value">
-            <number>3</number>
+            <number>15</number>
            </property>
            <property name="orientation">
             <enum>Qt::Horizontal</enum>
@@ -498,7 +498,7 @@
             <number>1</number>
            </property>
            <property name="value">
-            <number>3</number>
+            <number>15</number>
            </property>
           </widget>
          </item>
@@ -1206,8 +1206,8 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
-  <include location="../TimeLine/icons_timeLine.qrc"/>
   <include location="icons.qrc"/>
+  <include location="../TimeLine/icons_timeLine.qrc"/>
  </resources>
  <connections>
   <connection>
