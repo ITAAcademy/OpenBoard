@@ -943,8 +943,13 @@ case EDIT_RECTANGLE_MOVE:
  testRectangle();
     if (canDrawByMouse && m_manager.isAbleToDraw()) paintBrushInBuffer();
 }
-if (showingLastDrawing && drawBrushElm->getBrushes().length()>0)
+if (showingLastDrawing )
 {
+    if (drawBrushElm->getBrushes().length()<=0)
+    {
+        stopShowLastDrawing();
+        return;
+    }
  int recordedBrushN = 0;
     for (; recordedBrushN < drawBrushElm->getBrushes().length(); )
     {
