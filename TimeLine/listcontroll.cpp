@@ -193,8 +193,9 @@ void ListControll::loadFromFile()
    temp.draw_element->setLifeTime(life_time);
    temp.draw_element->setStartDraw(start_time);
    temp.draw_element->setZ(p.x());
-
+   calcPointedBlocks();
    emit updateSelectedBlock(selectedBlockPoint);
+   sendUpdateModel();
    setBlocked(false);
   // qApp->processEvents();
    //emit loadFromFileSignal();
@@ -993,12 +994,15 @@ QImage ListControll::requestImage(const QString &id, QSize *size, const QSize &r
 
     void ListControll::convertCurentBlockToText()
     {
+        setBlocked(true);
         Element &elm = tracks[selectedBlockPoint.x()].block[selectedBlockPoint.y()];
         DrawTextElm *text = new DrawTextElm(NULL);
         text->copy(elm.draw_element);
         delete elm.draw_element;
         elm.draw_element = text;
         emit updateSelectedBlock(selectedBlockPoint);
+        calcPointedBlocks();
+        setBlocked(false);
     }
 
 

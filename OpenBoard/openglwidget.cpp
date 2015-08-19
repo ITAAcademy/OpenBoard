@@ -192,8 +192,8 @@ int recordedBrushN = 0;
     float randScalePtY = 0;
     if(currentBrushOfDrawSystem.afinn != 0)
     {
-        randScalePtX = currentBrushOfDrawSystem.afinn/2 - rand() % ((int)currentBrushOfDrawSystem.afinn);
-        randScalePtY = currentBrushOfDrawSystem.afinn/2 - rand() % ((int)currentBrushOfDrawSystem.afinn);
+        randScalePtX = currentBrushOfDrawSystem.afinn/2 - rand() % (qCeil(currentBrushOfDrawSystem.afinn));
+        randScalePtY = currentBrushOfDrawSystem.afinn/2 - rand() % (qCeil(currentBrushOfDrawSystem.afinn));
     }
 
     float MAX_SCALE = 2;
