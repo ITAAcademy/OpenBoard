@@ -91,6 +91,7 @@ public:
 
     bool isAbleToDraw();
     void setAbleToDraw(bool val);
+    bool isActive();
 signals:
 //void colorChanged();
 void currentBrushChanged();

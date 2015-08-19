@@ -46,7 +46,7 @@ void DrawTextElm::draw()
     else
         current_time =  pDrawWidget->getTimeLine()->getPlayTime();
 //    //qDebug() << current_time;
-    if (current_time > 0 && mUnitList.size() != 0)
+    if (current_time > 0 && mUnitList.size() != 1)
     {
        // //qDebug() << "startDrawTime:"<<startDrawTime;
         if((keyCouter == 0 || !bPlay) && curentCh != current_time )
@@ -55,7 +55,7 @@ void DrawTextElm::draw()
            pDrawWidget->clearBuffer();
            keyCouter = 0;
            animationDelayCount = 1;
-                   animationDelayStart = 1;
+           animationDelayStart = 1;
            curentPauseValue = 0;
        }
 
@@ -68,7 +68,7 @@ void DrawTextElm::draw()
 
    // if (keyCouter < realKeyValue)
 
-        while( keyCouter < mUnitList.size() && current_time > animationDelayCount + animationDelayStart && (keyCouter <= realKeyValue || mUnitList[keyCouter]->unitType == 1) )
+        while( keyCouter < mUnitList.size() && pDrawWidget->listOfAnimationFigure.isEmpty() && (keyCouter <= realKeyValue || mUnitList[keyCouter]->unitType == 1) )
         {
             if(!bPlay)
                 current_time =  pDrawWidget->getTimeLine()->getScalePointerPos();
@@ -85,7 +85,7 @@ void DrawTextElm::draw()
                     {
                         animationDelayCount = mUnitList.at(keyCouter)->delay;
                         animationDelayStart = current_time;
-                        pDrawWidget->crossText();
+                        pDrawWidget->crossTextDraw();
                     }
                     keyCouter++;
                     break;

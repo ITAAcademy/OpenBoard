@@ -352,6 +352,9 @@ ui->actionRecord_to_file->setCheckable(true);
         commandTextEdit->setEnabled(false);
         setEnabledToolBar(false);
 
+        onTextChangeUpdateTimer.setInterval(800);
+        connect(&onTextChangeUpdateTimer,SIGNAL(timeout()),this,SLOT(updateBlockFromTextEdit()));
+
 
        //load new style
         QFile file(":/style.txt");
@@ -1417,10 +1420,12 @@ void MainWindow::on_animationBtn_clicked()
     else {
         int delta = commandTextEdit->textCursor().selectionEnd()-commandTextEdit->textCursor().selectionStart();
         if (commandTextEdit->textCursor().position()!=commandTextEdit->textCursor().selectionEnd())
-        { textInField.chop(6);//Видаляємо перехід вліво КОСТИЛЯКА НА ЛОМАЦІ ))
+        {
+            textInField.chop(6);//Видаляємо перехід вліво КОСТИЛЯКА НА ЛОМАЦІ ))
             QTextCursor tCursor = commandTextEdit->textCursor();
             tCursor.clearSelection();
-           commandTextEdit->setTextCursor(tCursor);
+            commandTextEdit->setTextCursor(tCursor);
+            commandTextEdit->setPreviousCursorPosition(tCursor.position() + delta);
         }
         textInField +=QString("\\<%1").arg(delta, 3, 10, QChar('0'));
          textEdit->setPlainText(textInField);
@@ -1529,7 +1534,7 @@ void MainWindow::doUndoRedoEnd()
 void MainWindow::onTextChanged()
 {
     disconnect(textEdit, SIGNAL(textChanged()), this, SLOT(onTextChanged()));
-    // //qDebug() << "onTextChanged";
+  //  qDebug() << "onTextChanged";
     QString str = textEdit->toPlainText();
     /*
      * bida z cursorom
@@ -1590,7 +1595,8 @@ void MainWindow::onTextChanged()
                 a_show->setEnabled(true);
             }
         }
-    updateBlockFromTextEdit();
+    //updateBlockFromTextEdit();
+    onTextChangeUpdateTimer.start();
     textEdit->saveChanges();
     connect(textEdit, SIGNAL(textChanged()), this, SLOT(onTextChanged()));
     /*
@@ -1711,21 +1717,18 @@ void MainWindow::on_action_Play_triggered()
         }
     }
     hideBoardSettings();
-    ui->action_Play->setEnabled(false);
-    a_play->setEnabled(false);
-    ui->action_Pause->setEnabled(true);
-    a_pause->setEnabled(true);
-    ui->action_Undo->setEnabled(false);
-    ui->action_Redo->setEnabled(false);
-    a_undo->setEnabled(false);
-    a_redo->setEnabled(false);
-    /*
-     * costial
-     */
-    textEdit->setEnabled(false);
-    commandTextEdit->setEnabled(false);
-
     updateEditWidgets();
+
+    qDebug() << "PLAY0";
+ui->action_Play->setEnabled(false);
+a_play->setEnabled(false);
+ui->action_Pause->setEnabled(true);
+a_pause->setEnabled(true);
+ui->action_Undo->setEnabled(false);
+ui->action_Redo->setEnabled(false);
+a_undo->setEnabled(false);
+a_redo->setEnabled(false);
+    qDebug() << "PLAY1";
 
 
     /*while( play && mpOGLWidget != 0 && mpOGLWidget->getStatus() != OGLWidget::STOP)

@@ -1166,7 +1166,25 @@ void OGLWidget::keyReleaseEvent(QKeyEvent *event)
      pressedCtrl = false;
     else
         if (event->key () == Qt::Key_Shift )
-         pressedShift = false;
+            pressedShift = false;
+}
+
+bool OGLWidget::event(QEvent *e)
+{
+    switch(e->type())
+    {
+        // ...
+
+        case QEvent::WindowActivate :
+            break ;
+
+        case QEvent::WindowDeactivate :
+            break ;
+        // ...
+
+    } ;
+
+    return QGLWidget::event(e) ;
 }
 
 void OGLWidget::keyPressEvent(QKeyEvent *event)
@@ -2040,7 +2058,10 @@ void OGLWidget::deleteFromBuffer(int n)
 
     while( i != 0)
     {
-        cross.removeAt(crossCursor  + i);
+        if(i > 0)
+            cross.removeAt(crossCursor);
+        else
+            cross.removeAt(crossCursor + n);
         if(i > 0)
             i--;
         else

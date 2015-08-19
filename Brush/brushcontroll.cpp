@@ -179,7 +179,12 @@ void BrushManager::setAbleToDraw(bool isAble){
      if (!isAble)
     {
     //qDebug() << "emit unableToDraw();";
-    }
+     }
+}
+
+bool BrushManager::isActive()
+{
+    return view.isActive();
 }
 
 void BrushManager::setSize(float value)

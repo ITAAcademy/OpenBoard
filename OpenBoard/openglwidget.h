@@ -152,6 +152,7 @@ public:
     void mouseMoveEvent ( QMouseEvent * event );
     void keyPressEvent(QKeyEvent *e);
     void keyReleaseEvent(QKeyEvent *event);
+    bool event(QEvent *e);
     QSize getTextureSize();
     /*
      * |Canvas control

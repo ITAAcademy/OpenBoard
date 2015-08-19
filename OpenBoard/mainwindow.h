@@ -148,6 +148,7 @@ QMessageBox messAbout;
     Parser          mParser;
     MyTextEdit       *textEdit = NULL;
     KeyloggerTE *commandTextEdit = NULL;
+    QTimer onTextChangeUpdateTimer;
    // ListControll timeLine;
     QList <DrawElement*> drawElements;
 
