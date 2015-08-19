@@ -87,7 +87,7 @@ property Repeater globalRep
                 contextMenuItem.visible = false;
                 // //console.log("AFTER 9999999999999999999999");
                 //main222.selectedBlock.repaint();
-                globalRep.updateModel();
+               // globalRep.updateModel();
 
 
 

@@ -18,7 +18,7 @@ enum VIEW_STATE
 
 struct ProjectStartupSetting
 {
-    int state;
+    VIEW_STATE state;
     bool advance_mode;
 
     // text
