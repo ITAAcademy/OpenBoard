@@ -167,11 +167,42 @@ connect(mpOGLWidget,SIGNAL(keyPressSignal(QKeyEvent*)),this,SLOT(keyEventSlot(QK
        toolBarBoard->addAction(a_save_drawing);
 
 
-       toolBar->addAction(QPixmap(":/icons/cut-icon.png").scaled(QSize(16, 16)), "Cut", this, SLOT(on_action_Cut_triggered()));
-       toolBar->addAction(QPixmap(":/icons/Copy-icon.png").scaled(QSize(16, 16)), "Copy", this, SLOT(on_action_Copy_triggered()));
-       toolBar->addAction(QPixmap(":/icons/Paste-icon.png").scaled(QSize(16, 16)), "Paste", this, SLOT(on_action_Paste_triggered()));
-       toolBar->addAction(QPixmap(":/icons/select_all.png").scaled(QSize(16, 16)), "Select all", this, SLOT(on_action_Select_all_triggered()));
-       toolBar->addAction(QPixmap(":/icons/search-icon.png").scaled(QSize(16, 16)), "Search", this, SLOT(on_action_Find_triggered()));
+       a_cut = new QAction(this);
+        a_cut->setEnabled(true);
+         a_cut->setIcon(QPixmap(":/icons/cut-icon.png").scaled(QSize(16, 16)));
+         connect(a_save_drawing,SIGNAL(triggered()), this, SLOT(on_action_Cut_triggered()));
+          a_save_drawing->setToolTip(tr("Cut"));
+
+       a_copy = new QAction(this);
+        a_copy->setEnabled(true);
+        a_copy->setIcon(QPixmap(":/icons/Copy-icon.png").scaled(QSize(16, 16)));
+        connect(a_save_drawing,SIGNAL(triggered()), this, SLOT(on_action_Copy_triggered()));
+         a_save_drawing->setToolTip(tr("Copy"));
+
+       a_paste = new QAction(this);
+        a_paste->setEnabled(true);
+         a_paste->setIcon(QPixmap(":/icons/Paste-icon.png").scaled(QSize(16, 16)));
+         connect(a_save_drawing,SIGNAL(triggered()), this, SLOT(on_action_Paste_triggered()));
+          a_save_drawing->setToolTip(tr("Paste"));
+
+       a_select_all = new QAction(this);
+        a_select_all->setEnabled(true);
+          a_select_all->setIcon(QPixmap(":/icons/select_all.png").scaled(QSize(16, 16)));
+          connect(a_save_drawing,SIGNAL(triggered()), this, SLOT(on_action_Select_all_triggered()));
+           a_select_all->setToolTip(tr("Select all"));
+
+       a_search = new QAction(this);
+        a_search->setEnabled(true);
+           a_search->setIcon(QPixmap(":/icons/search-icon.png").scaled(QSize(16, 16)));
+           connect(a_save_drawing,SIGNAL(triggered()), this, SLOT(on_action_Find_triggered()));
+            a_search->setToolTip(tr("Search"));
+
+
+       toolBar->addAction(a_cut);
+       toolBar->addAction(a_copy);
+       toolBar->addAction(a_paste);
+       toolBar->addAction(a_select_all);
+       toolBar->addAction(a_search);
 
 
        a_clear_textedit = new QAction(this);
@@ -348,8 +379,7 @@ ui->actionRecord_to_file->setCheckable(true);
 
         connect(mpOGLWidget,SIGNAL(stopShowLastDrawingSignal()),this,SLOT(onStopShowLastDrawing()));
 
-        textEdit->setEnabled(false);
-        commandTextEdit->setEnabled(false);
+
         setEnabledToolBar(false);
 
 
@@ -360,8 +390,6 @@ ui->actionRecord_to_file->setCheckable(true);
         qApp->setStyleSheet(styleSheet);
         file.close();
 
-        textEdit->setEnabled(false);
-        commandTextEdit->setEnabled(false);
         updateEditWidgets(true); //instal normal color
 
         on_action_New_Project_triggered();
@@ -736,8 +764,8 @@ void MainWindow::on_action_Hide_triggered()
     ui->actionRecord_to_file->setEnabled(false);
     a_undo->setEnabled(false);
    a_redo->setEnabled(false);
-   textEdit->setEnabled(false);
-   commandTextEdit->setEnabled(false);
+
+   on_block_text_buttons_toolbar(false);
 }
 
 void MainWindow::on_action_Clear_TextEdit_triggered()
@@ -1732,8 +1760,8 @@ void MainWindow::on_action_Play_triggered()
     /*
      * costial
      */
-    textEdit->setEnabled(false);
-    commandTextEdit->setEnabled(false);
+    on_block_text_buttons_toolbar(false);
+
 
     updateEditWidgets();
 
@@ -1918,8 +1946,7 @@ void MainWindow::setEnabledToolBar(bool status)
     ui->spinBox_delayTB->setEnabled(status);
     ui->check_use_speed_value->setEnabled(status);
 
-    commandTextEdit->setEnabled(status);
-    textEdit->setEnabled(status);
+    on_block_text_buttons_toolbar(status);
 
 }
 
@@ -1968,5 +1995,19 @@ void MainWindow::on_actionLoad_drawing_temp_triggered()
 void MainWindow::on_slider_speedTB_sliderReleased()
 {
     updateBlockFromTextEdit();
+}
+
+void MainWindow::on_block_text_buttons_toolbar(bool tt) //445
+{
+    textEdit->setEnabled(tt);
+    commandTextEdit->setEnabled(tt);
+    a_undo->setEnabled(tt);
+    a_redo->setEnabled(tt);
+    a_cut->setEnabled(tt);
+    a_copy->setEnabled(tt);
+    a_paste->setEnabled(tt);
+    a_search->setEnabled(tt);
+    a_undo->setEnabled(tt);
+    a_clear_textedit->setEnabled(tt);
 }
 
