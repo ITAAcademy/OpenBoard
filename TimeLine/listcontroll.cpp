@@ -193,6 +193,7 @@ void ListControll::loadFromFile()
    temp.draw_element->setLifeTime(life_time);
    temp.draw_element->setStartDraw(start_time);
    temp.draw_element->setZ(p.x());
+   //temp.draw_element->setFBOWrapper()
 
    emit updateSelectedBlock(selectedBlockPoint);
    setBlocked(false);

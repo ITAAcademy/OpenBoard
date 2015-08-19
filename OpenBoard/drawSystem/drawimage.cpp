@@ -14,8 +14,8 @@ DrawImageElm::~DrawImageElm()
 
 void DrawImageElm::draw()
 {
-
     pDrawWidget->drawTexture(x, y, width, height, textureIndex, 0, 1 , 1, z);
+
 }
 
 bool DrawImageElm::load_add(QDataStream &stream)

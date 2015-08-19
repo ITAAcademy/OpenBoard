@@ -32,7 +32,7 @@ MainWindow::MainWindow(QWidget *parent) :
     curProjectFile.clear();
 //// qDebug() <<directory;
 //    connect(&drawThread, SIGNAL(started()), this, SLOT(myfunction())); //cant have parameter sorry, when using connect
-
+qDebug () << "before  mpOGLWidget = new OGLWidget();";
     mpOGLWidget = new OGLWidget();
     mpOGLWidget->show();
     mpOGLWidget->setVisible(false);
@@ -1390,7 +1390,7 @@ void MainWindow::onCommandFocusLost(){
 void MainWindow::on_actionClear_drawing_triggered()
 {
 // qDebug() << "on_actionClear_drawing_triggered()";
-mpOGLWidget->clearFrameBuffer();
+mpOGLWidget->clearFrameBuffer(mpOGLWidget->getMainFBO());
 //// qDebug() << mpOGLWidget->isClearFrameBuffer;
 }
 

@@ -181,22 +181,28 @@ void DrawBrushElm::draw()
          // qDebug() << "QQQQQQQQQQQQQQQQQQQQ" << keyCouter;
         if(keyCouter == 0)
         {
-            pDrawWidget->clearFrameBuffer();
+            pDrawWidget->clearFrameBuffer(fboWrapper);
         }
-        qDebug() << "coords.size():"<<coords.size();
-        qDebug() << "lifeTime:"<<lifeTime;
-        qDebug() << "startDrawTime:"<<startDrawTime;
-        qDebug() << "current_time:"<<current_time;
-        qDebug() << "realKeyValue:"<<realKeyValue;
-qDebug() << "keyCouter:"<<keyCouter;
+        //qDebug() << "coords.size():"<<coords.size();
+       // qDebug() << "lifeTime:"<<lifeTime;
+       // qDebug() << "startDrawTime:"<<startDrawTime;
+       // qDebug() << "current_time:"<<current_time;
+       // qDebug() << "realKeyValue:"<<realKeyValue;
+//qDebug() << "keyCouter:"<<keyCouter;
+//qDebug() << "fbo wrapper:"<<fboWrapper.frameBuffer;
         while(keyCouter <realKeyValue && bPlay)
         {
             if (keyCouter < coords.size() )
-                pDrawWidget->paintBrushInBuffer(coords,brushes, keyCouter);
+            {
+
+                pDrawWidget->paintBrushInBuffer(fboWrapper,coords,brushes, keyCouter);
+              //  qDebug() << "pDrawWidget->paintBrushInBuffer";
+            }
                     keyCouter++;
+                    //fboWrapper
         }
     }
-    pDrawWidget->paintBufferOnScreen(x, y, width, height, z);
+    pDrawWidget->paintBufferOnScreen(fboWrapper,x, y, width, height, z);
 
 }
 

@@ -20,6 +20,8 @@
 #include "encoder/videorencoder.h"
 #include "../Brush/brushcontroll.h"
 #include <QGLShader>
+
+
 class ListControll;
 struct BrushBeginingIndex;
 class DrawTextElm;
@@ -81,7 +83,11 @@ struct DrawData{
     bool IsPlay;
 };
 
-
+struct FBOWrapper{
+    GLuint frameBuffer;
+    GLuint bindedTexture;
+    int errorStatus=0;
+};
 class OGLWidget : public QGLWidget, protected QGLFunctions
 {
     Q_OBJECT
@@ -192,20 +198,20 @@ public:
     void drawTexture(int x, int y, int width, int height, int index, int angle=0, float scaleX = 1, float scaleY = 1, int z = 0);
     void drawTexture(int x, int y, int width, int height, GLuint texture, int angle=0, float scaleX = 1, float scaleY = 1, int z = 0);
     void update();
-    void initFrameBufferTexture();
-    void initFrameBufferDepthBuffer();
-    void paintBrushInBuffer();
-    void initFrameBuffer();
+    void initTexture(GLuint &texture);
+    void initFBDepthBuffer(GLuint &fbo_depth);
+    void paintBrushInBuffer(FBOWrapper fboWrapper);
+    FBOWrapper initFboWrapper();
     QList<DrawElement *> &getList();
     void setList(const QList<DrawElement *> &value);
     bool getIsBrushWindowOpened() const;
     void setIsBrushWindowOpened(bool value);
 
-    void paintBufferOnScreen(int x , int y , int width, int height, int z = 0);
-    void clearFrameBuffer();
+    void paintBufferOnScreen(FBOWrapper buffer,int x , int y , int width, int height, int z = 0);
+    void clearFrameBuffer(FBOWrapper fboWrapper);
 
 
-    void paintBrushInBuffer(QVector<QPoint> coords, QVector<BrushBeginingIndex> brushes,int keyFrame);
+    void paintBrushInBuffer(FBOWrapper fboWrapper,QVector<QPoint> coords, QVector<BrushBeginingIndex> brushes,int keyFrame);
     double getAnimationPersentOfCross() const;
     void setAnimationPersentOfCross(double value);
 
@@ -215,6 +221,8 @@ public:
     void setShowLastDrawing(bool val);
     bool getShowLastDrawing();
     void stopShowLastDrawing();
+    FBOWrapper getMainFBO();
+    void bindBuffer(GLuint buffer);
 public slots:
     void slotBlockEdited();
     bool drawAnimated( bool record );
@@ -272,6 +280,8 @@ private slots:
     void storeMousePos();
 
 private:
+    QVector<GLenum> attachment;
+    FBOWrapper mainFBO;
      QMessageBox ms_for_debug;
     bool pressedCtrl = false;
     bool pressedShift = false;
@@ -285,10 +295,10 @@ private:
     ListControll *timeLine = NULL;
          Brush currentBrushOfDrawSystem;
          Brush currentBrushOfLastDrawing;
-    GLuint    fbo,// The frame buffer object
-	fbo_depth, // The depth buffer for the frame buffer object
+   // GLuint    fbo,// The frame buffer object
+    //fbo_depth, // The depth buffer for the frame buffer object
 
-	fbo_texture; // The texture object to write our frame buffer object to
+    //fbo_texture; // The texture object to write our frame buffer object to
     QString drawText;
     bool bRecord;
     void generateFrames();
