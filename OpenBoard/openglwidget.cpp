@@ -190,11 +190,12 @@ int recordedBrushN = 0;
     float scaleX=1,scaleY=1;
     float randScalePtX = 0;
     float randScalePtY = 0;
-    if(currentBrushOfDrawSystem.afinn != 0)
+    if(m_manager.getAffine() != 0)
     {
-        randScalePtX = currentBrushOfDrawSystem.afinn/2 - rand() % (qCeil(currentBrushOfDrawSystem.afinn));
-        randScalePtY = currentBrushOfDrawSystem.afinn/2 - rand() % (qCeil(currentBrushOfDrawSystem.afinn));
+        randScalePtX = currentBrushOfDrawSystem.afinn/2 - rand() % 1 + (currentBrushOfDrawSystem.afinn);
+        randScalePtY = currentBrushOfDrawSystem.afinn/2 - rand() % 1 + (currentBrushOfDrawSystem.afinn);
     }
+   // qDebug() << "randScalePtX_" << m_manager.getAffine() << "__AFTER" << randScalePtX << " " << randScalePtY;
 
     float MAX_SCALE = 2;
     //100 - 2 (MAX_SCALE)
@@ -307,7 +308,7 @@ OGLWidget::OGLWidget(QWidget *parent) :
 
   connect(timeLine,SIGNAL(focusFoundSignal()),this,SLOT(hideBrushManager()));
 
-    isNotPainting = false;
+    isPainting = false;
     selElm = QPoint(-1,-1); //because it undefined
 
     //qRegisterMetaType<DrawData>("DrawData");
@@ -483,9 +484,10 @@ glBindFramebuffer(GL_FRAMEBUFFER , fbo); // Bind our frame buffer for rendering
         float randScalePtY = 0;
         if(m_manager.getAffine() != 0)
         {
-            randScalePtX = m_manager.getAffine()/2 - rand() % (m_manager.getAffine());
-            randScalePtY = m_manager.getAffine()/2 - rand() % (m_manager.getAffine());
+            randScalePtX = m_manager.getAffine()/2 - rand() % 1 + (m_manager.getAffine());
+            randScalePtY = m_manager.getAffine()/2 - rand() % 1 + (m_manager.getAffine());
         }
+       // qDebug() << "randScalePtX_" << m_manager.getAffine() << "__AFTER" << randScalePtX << " " << randScalePtY;
 
         float MAX_SCALE = 2;
         //100 - 2 (MAX_SCALE)
@@ -545,7 +547,7 @@ glBindFramebuffer(GL_FRAMEBUFFER , fbo); // Bind our frame buffer for rendering
 ////qDebug() <<"mousePos.x() = " << mousePos.x() << " mousePos.y() = " << mousePos.y();
 
             drawTexture(xPos-BRUSH_SIZE/2 + dispersX ,yPos-BRUSH_SIZE/koff/2 + dispersY,BRUSH_SIZE,BRUSH_SIZE/koff,
-                    texture,angle,scaleX,scaleY);
+                    texture,angle,scaleX,scaleY, 1000);
             }
               //glUseProgram(NULL);
         /*
@@ -865,7 +867,7 @@ for(int i = 0; !timeLine->isBlocked && i < getList().size(); i++)
         getList()[i]->paint();
 }
 
-if (editingRectangle.isEditingRectangleVisible)
+if (editingRectangle.isEditingRectangleVisible && !forseEditBoxDisable && !isPainting)
 {
    // paintBufferOnScreen(0, 0, wax, way);
     //rectangle
@@ -901,7 +903,7 @@ if(isMousePress) {
     //editingRectangle.setX(0);
    // editingRectangle.setY(0);
 
-        if (editingRectangle.editingRectangleMode==EDIT_RECTANGLE_UNBINDED && editingRectangle.isEditingRectangleVisible)
+        if (editingRectangle.editingRectangleMode==EDIT_RECTANGLE_UNBINDED && editingRectangle.isEditingRectangleVisible && !forseEditBoxDisable && !isPainting)
  if ((mousePos.x() >= leftCornerX1 && mousePos.x() <= leftCornerX2) && (mousePos.y() >= leftCornerY1 && mousePos.y() <= leftCornerY2))
  {
      editingRectangle.editingRectangleMode=EDIT_RECTANGLE_RESIZE;
@@ -917,7 +919,7 @@ if(isMousePress) {
 case EDIT_RECTANGLE_MOVE:
      canDrawByMouse=false;
     // // //qDebug()<<"EDIT_RECTANGLE_MOVE width"<<editingRectangle.rect.width();
-     if (isNotPainting)
+     //if (isPainting)
      {
      editingRectangle.rect.moveTo(mousePos.x() - mousePressPos.x(), //-editingRectangle.rect.width()/2
                             mousePos.y() - mousePressPos.y() ); //-editingRectangle.rect.height()/2
@@ -933,7 +935,7 @@ case EDIT_RECTANGLE_MOVE:
  case EDIT_RECTANGLE_RESIZE:
      canDrawByMouse=false;
      // //qDebug()<<"EDIT_RECTANGLE_RESIZE";
-      if (isNotPainting)
+    //  if (isPainting)
      {
          editingRectangle.rect.setX(mousePos.x());
          editingRectangle.rect.setY(mousePos.y());
@@ -1053,6 +1055,7 @@ getTimeLine()->emitFocusLostSignal();
     if(event->button() == Qt::LeftButton)
     {
         //isMousePlay = false;
+        isPainting = true;
        stopShowLastDrawing();
         if (getIsBrushWindowOpened())
         {
@@ -1074,7 +1077,7 @@ getTimeLine()->emitFocusLostSignal();
        QRect temp = editingRectangle.rect;
        if (temp.x() <= mousePos.x() && temp.x() + temp.width() >= mousePos.x()
              && temp.y() <= mousePos.y() && temp.y() + temp.height() >= mousePos.y()  )
-           isNotPainting = true;
+           isPainting = false;
 
        //for rectangle resize
        GLint x1 = editingRectangle.rect.x();
@@ -1087,7 +1090,7 @@ getTimeLine()->emitFocusLostSignal();
 
      if ((mousePos.x() >= leftCornerX1 && mousePos.x() <= leftCornerX2)
       && (mousePos.y() >= leftCornerY1 && mousePos.y() <= leftCornerY2))
-           isNotPainting = true;
+           isPainting = false;
         }
     }
 
@@ -1151,7 +1154,7 @@ void OGLWidget::mouseReleaseEvent(QMouseEvent *event)
         editingRectangle.rect.setHeight(this->height());
     */
 
-    isNotPainting = false;
+    isPainting = false;
 }
 
 void OGLWidget::mouseMoveEvent ( QMouseEvent * event ){

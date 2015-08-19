@@ -1811,6 +1811,7 @@ void MainWindow::on_action_Stop_triggered()
         a_play->setEnabled(true);
 
         showBoardSettings();
+        updateTextEditFromBlock(mpOGLWidget->getTimeLine()->getSelectedBlockPoint());
 
     }
     updateEditWidgets();
@@ -1990,7 +1991,12 @@ void MainWindow::on_actionLoad_drawing_temp_triggered()
     QString fileName = QFileDialog::getOpenFileName(this, tr("Choose file..."), qApp->applicationDirPath(), tr("Drawing (*.paint)"), 0, QFileDialog::DontUseNativeDialog);
     if(!fileName.size())
         return;
-      mpOGLWidget->drawBrushElm->load(fileName);
+    mpOGLWidget->drawBrushElm->load(fileName);
+}
+
+void MainWindow::on_actionHide_editBox_triggered()
+{
+    mpOGLWidget->forseEditBoxDisable = !mpOGLWidget->forseEditBoxDisable;
 }
 
 void MainWindow::on_slider_speedTB_sliderReleased()

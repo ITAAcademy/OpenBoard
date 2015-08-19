@@ -31,6 +31,9 @@
   <property name="accessibleDescription">
    <string/>
   </property>
+  <property name="styleSheet">
+   <string notr="true"/>
+  </property>
   <property name="locale">
    <locale language="Ukrainian" country="Ukraine"/>
   </property>
@@ -730,9 +733,12 @@
     <addaction name="action_Show"/>
     <addaction name="action_Hide"/>
     <addaction name="separator"/>
+    <addaction name="actionHide_editBox"/>
+    <addaction name="separator"/>
     <addaction name="action_Play"/>
     <addaction name="action_Pause"/>
     <addaction name="action_Stop"/>
+    <addaction name="separator"/>
     <addaction name="actionRecord_to_file"/>
     <addaction name="actionSend_to_youTube"/>
     <addaction name="actionClear_drawing"/>
@@ -1155,8 +1161,8 @@
   </action>
   <action name="actionShow_last_drawing">
    <property name="icon">
-    <iconset resource="icons.qrc">
-     <normaloff>:/icons/ip_icon_04_New.png</normaloff>:/icons/ip_icon_04_New.png</iconset>
+    <iconset resource="../TimeLine/icons_timeLine.qrc">
+     <normaloff>:/iphone_toolbar_icons/forwardtoend.png</normaloff>:/iphone_toolbar_icons/forwardtoend.png</iconset>
    </property>
    <property name="text">
     <string>Show last drawing</string>
@@ -1201,6 +1207,18 @@
   <action name="actionSave">
    <property name="text">
     <string>Save</string>
+   </property>
+  </action>
+  <action name="actionHide_editBox">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../TimeLine/icons_timeLine.qrc">
+     <normaloff>:/iphone_toolbar_icons/photos.png</normaloff>:/iphone_toolbar_icons/photos.png</iconset>
+   </property>
+   <property name="text">
+    <string>Hide editBox</string>
    </property>
   </action>
  </widget>

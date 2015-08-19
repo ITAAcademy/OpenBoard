@@ -76,7 +76,7 @@ background-color: green ;
 
 QWidget:disabled
 {
-    color: #404040;
+    /*color: #404040;*/
     background-color: #323232;
 }
 
@@ -119,7 +119,7 @@ QPushButton:pressed, QToolButton#item:pressed
 }
 
 QPushButton:checked, QToolButton#item:checked{
-background-color : green;
+background : green;
 border : 2px inset gray;
 border-radius : 3px;
 }

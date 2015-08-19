@@ -127,6 +127,8 @@ private slots:
 
     void on_actionLoad_drawing_temp_triggered();
 
+    void on_actionHide_editBox_triggered();
+
     void on_slider_speedTB_sliderReleased();
     void on_block_text_buttons_toolbar(bool tt);
 
@@ -172,7 +174,7 @@ QMessageBox messAbout;
 
     bool play = false;
 
-    volatile bool isActive = true; // active main windows?
+    volatile bool isActive = false; // active main windows?
     ProjectStartupSetting curentState;
     void updateEditWidgets(bool forceEnabled = false);
 public slots:

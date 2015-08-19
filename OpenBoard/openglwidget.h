@@ -117,6 +117,7 @@ public:
 
 //bool isEditingRectangleBindedToCursor = false;
    RectangleEditor editingRectangle;//Draw element layout manager
+   bool forseEditBoxDisable = false;
 
     QList<ColorMarker> colors;
     QImage brushBuffer;
@@ -283,7 +284,7 @@ private:
     int currentLastDrawingPointIterator = 0;
     GLuint ShaderProgram;
        bool firstUpdate = true;
-     bool isNotPainting;
+     bool isPainting;
     QImage img;
     ListControll *timeLine = NULL;
          Brush currentBrushOfDrawSystem;
