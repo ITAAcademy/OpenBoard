@@ -6,7 +6,8 @@ import QtGraphicalEffects 1.0
 import "Block" as ContentBlock
 import "ToolBar" as ContentToolBar
 
-Rectangle {
+
+    Rectangle {
     id: frama
     color: "#333333"
   //  width: 1000 ///main222.width + 20
@@ -20,7 +21,10 @@ MouseAreaForWindowDraging{
 anchors.fill:   frama
 }
 
-
+onActiveFocusChanged: {
+   // context_menu.visible = false
+    console.log("GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG")
+}
 /*
 MouseAreaForWindowDraging{
 anchors.left:   frama.left
@@ -266,6 +270,9 @@ timeControll.setScaleScrollChildren(0) //it have protection from small values, w
            main222.updateTracksModel()
        }
 
+       onFocusLostSignal: {
+           context_menu.visible = false
+       }
 
        }
 

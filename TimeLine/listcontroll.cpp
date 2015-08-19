@@ -962,6 +962,16 @@ QImage ListControll::requestImage(const QString &id, QSize *size, const QSize &r
         emit resetProjectSignel();
     }
 
+    void ListControll::emitFocusLostSignal()
+    {
+        emit focusLostSignal();
+    }
+
+    void ListControll::emitFocusFoundSignal()
+    {
+        emit focusFoundSignal();
+    }
+
     void ListControll::zoomMinus()
     {
         this->changeScaleScrollChildren(-zoom_speed);
