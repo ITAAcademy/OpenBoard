@@ -201,7 +201,7 @@ class ListControll : public QObject, public QQuickImageProvider
     void recountMaxTrackTime();
     ImageClone *cloneImg;
 
-    QTime timer;
+    QElapsedTimer timer;
     qint64 time_sum;
     int isPlayPauseStop = 3;
 

@@ -59,7 +59,7 @@ VideoCodecSettings AV_REncoder::videoCodecSettings() const
     settings.setFlags2(EncoderGlobal::FastPSkip);
     settings.setConstantQuantizerMode(0);
     settings.setPFramePredictionAnalysisMethod(EncoderGlobal::NoWpm);
-    settings.setBitrate(1048000);
+    settings.setBitrate(2048000);
 
     return settings;
 }
@@ -108,10 +108,10 @@ void AV_REncoder::initAudio()
     audioRecorder = new QAudioRecorder(this);
     QAudioEncoderSettings audioSettings;
     audioSettings.setCodec("audio/pcm");
-    audioSettings.setQuality(QMultimedia::HighQuality);
+    audioSettings.setQuality(QMultimedia::NormalQuality);
     audioSettings.setChannelCount(2);
     audioSettings.setSampleRate(44100);
-    audioSettings.setEncodingMode(QMultimedia::ConstantQualityEncoding );
+    audioSettings.setEncodingMode(QMultimedia::ConstantBitRateEncoding );
 
     //audioRecorder->setOutputLocation(QUrl::fromLocalFile("test"));
     QString container = "audio/x-wav";
@@ -169,7 +169,7 @@ void AV_REncoder::run()
     timer.start();
     while(bRun)
     {
-        if(timer.elapsed() >= 40  && !bPause)
+        if(timer.elapsed() >= 40 - delta && !bPause)
         {
       //      // //qDebug() << "SHOW";
             if(!newImage)
