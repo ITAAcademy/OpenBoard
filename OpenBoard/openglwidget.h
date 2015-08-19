@@ -217,6 +217,7 @@ public:
     bool getShowLastDrawing();
     void stopShowLastDrawing();
 public slots:
+    void hideBrushManager();
     void slotBlockEdited();
     bool drawAnimated( bool record );
     void stopAnimated();

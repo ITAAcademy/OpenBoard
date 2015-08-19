@@ -305,6 +305,8 @@ OGLWidget::OGLWidget(QWidget *parent) :
 
     connect(timeLine,SIGNAL(blockEditedSignal()),this,SLOT(slotBlockEdited()));
 
+  connect(timeLine,SIGNAL(focusFoundSignal()),this,SLOT(hideBrushManager()));
+
     isNotPainting = false;
     selElm = QPoint(-1,-1); //because it undefined
 
@@ -769,7 +771,6 @@ void OGLWidget::moveEvent(QMoveEvent *event)
 }
 
 
-
 void OGLWidget::destroy(bool destroyWindow, bool destroySubWindow){
     glDeleteFramebuffers(1,&fbo);
     //glDeleteRenderbuffers(1,&render_buf);
@@ -1026,9 +1027,15 @@ void OGLWidget::closeEvent(QCloseEvent *event)
     m_manager.close();
 }
 
+void OGLWidget::hideBrushManager()
+{
+m_manager.hide();
+setIsBrushWindowOpened(false);
+}
+
 void OGLWidget::mousePressEvent(QMouseEvent *event)
 {
-
+getTimeLine()->emitFocusLostSignal();
     if(event->button() == Qt::RightButton)
     {
         if (getIsBrushWindowOpened()){

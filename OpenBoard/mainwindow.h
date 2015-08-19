@@ -128,6 +128,7 @@ private slots:
     void on_actionLoad_drawing_temp_triggered();
 
     void on_slider_speedTB_sliderReleased();
+    void on_block_text_buttons_toolbar(bool tt);
 
 
 private:
@@ -137,7 +138,8 @@ private:
    QString directory;
 QAction *a_play,*a_clear_textedit,*a_pause,*a_stop,*a_font_canvas,*a_color_canvas,
 *a_record_to_file,*a_undo,*a_redo,*a_show,*a_hide,*a_clear_drawing,*a_clear_drawingBuffer,
-*a_show_last_drawing,*a_save_drawing ,*a_open_project,*a_new_project, *a_save_project,*a_exit;
+*a_show_last_drawing,*a_save_drawing ,*a_open_project,*a_new_project, *a_save_project,*a_exit,
+*a_cut,*a_copy,*a_paste,*a_select_all,*a_search;
     Ui::MainWindow  *ui;
 QMessageBox messAbout;
  //   GLWidget        *mpGLWidget;

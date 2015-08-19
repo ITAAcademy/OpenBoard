@@ -134,6 +134,7 @@ onYChanged: y=0;
        onPressed: {
             if(main222.selectedBlock !== null)
                 main222.selectedBlock.hideMenu();
+            timeControll.emitFocusFoundSignal();
             //console.log("AAAAAAAAAAAAAAA " + timeControll.getBlockStartTime(root.colIndex,root.mIndex))
              main222.p_scale_pointer.x = mouseX + root.x - scroll.flickableItem.contentX + main222.p_scale_pointer.width //1234
             timeControll.setSelectedBlockPoint(root.colIndex,root.mIndex);

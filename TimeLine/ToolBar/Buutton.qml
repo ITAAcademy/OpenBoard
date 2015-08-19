@@ -44,6 +44,7 @@ Rectangle {
             // //console.log("CLICK");
             context_menu.visible = false
             root.clicked();
+            timeControll.emitFocusFoundSignal();
         }
     }
 }

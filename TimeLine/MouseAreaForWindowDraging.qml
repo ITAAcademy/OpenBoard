@@ -15,6 +15,7 @@ MouseArea
     hoverEnabled: true
     acceptedButtons: Qt.LeftButton | Qt.RightButton
     onPressed: {
+        timeControll.emitFocusFoundSignal();
         if (Qt.LeftButton)
         {
             main222.p_context_menu.visible = false

@@ -340,6 +340,9 @@ signals:
     void saveProjectSignel();
     void resetProjectSignel();
 
+    void focusLostSignal();
+    void focusFoundSignal();
+
 //void setScalePointerPosSignal(int value);
 public slots:
 Q_INVOKABLE void emitNewProject();
@@ -350,6 +353,9 @@ Q_INVOKABLE void  emitPlaySignal();
 Q_INVOKABLE void  emitPauseSignal();
 Q_INVOKABLE void  emitStopSignal();
     Q_INVOKABLE   void emitResetProject();
+  Q_INVOKABLE  void emitFocusLostSignal();
+  Q_INVOKABLE  void emitFocusFoundSignal();
+
     Q_INVOKABLE void zoomMinus();
     Q_INVOKABLE void zoomPlus();
 };
