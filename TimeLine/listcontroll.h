@@ -118,6 +118,14 @@ struct Element {
                     delete  draw_element;
                     draw_element = (DrawElement*) elm;
         }
+        else
+        if(typeId == Element_type::Empty)
+        {
+           DrawElement *elm = new DrawElement(NULL,NULL);
+                    elm->loadRest(device);
+                    delete  draw_element;
+                    draw_element = (DrawElement*) elm;
+        }
         return true;
     }
 
@@ -143,8 +151,12 @@ struct Track {
     {
         QDataStream stream(device);
         stream << block.size() << time ;
+         qDebug() << "num of saved blocks " << block.size();
         for (int i=0; i< block.size(); i++)
+        {
+             qDebug() << "block[i]:  " << i;
             block[i].save(device);
+         }
         return true;
     }
 
@@ -155,11 +167,14 @@ struct Track {
         int blocks_size;
         QDataStream stream(device);
         stream >> blocks_size >> time ;
+    qDebug() << "Track::load  blocks_size = " << blocks_size;
+    //return true;
         for (int i=0; i< blocks_size; i++)
         {
             Element temp;
              temp.load(device);
             block.append(temp);
+            qDebug() << "load block[i]:  " << i;
         }
         return true;
     }

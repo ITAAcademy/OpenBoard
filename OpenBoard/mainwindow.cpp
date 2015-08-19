@@ -409,7 +409,7 @@ MainWindow::~MainWindow()
     delete mpOGLWidget;
 }
 
-void MainWindow::setViewState(int state)
+void MainWindow::setViewState(VIEW_STATE state)
 {
     /*
      VIDEO_EDIT_TEXT,
@@ -744,7 +744,6 @@ void MainWindow::on_action_Hide_triggered()
 {
    // if(mpOGLWidget->getStatus() == mpOGLWidget->PLAY || mpOGLWidget->getStatus() == mpOGLWidget->PAUSE)
       //  mpOGLWidget->stopAnimated();
-    on_action_Stop_triggered();
     mpOGLWidget->hide();
     mpOGLWidget->getTimeLine()->hide();
   //  mpOGLWidget->close();*/
@@ -764,9 +763,7 @@ void MainWindow::on_action_Hide_triggered()
     a_font_canvas->setEnabled(false);
     a_color_canvas->setEnabled(false);
     a_record_to_file->setEnabled(false);
-    ui->actionRecord_to_file->setEnabled(false);
-    a_undo->setEnabled(false);
-   a_redo->setEnabled(false);
+    ui->actionRecord_to_file->setEnabled(false);   
 
    on_block_text_buttons_toolbar(false);
 }
@@ -1222,6 +1219,7 @@ void MainWindow::on_action_Open_Project_triggered()
     qApp->processEvents();
     activateWindow();
     QString fileName = QFileDialog::getOpenFileName(this, tr("Open project"), directory, tr("Project file (*.project)"), 0, QFileDialog::DontUseNativeDialog);
+   //qDebug() << "DDDDDDDDDDDDDDDDDDDDDDDDDDD fileName = " <<  fileName;
     isActive = true;
     qApp->processEvents();
     activateWindow();
@@ -1236,12 +1234,13 @@ void MainWindow::on_action_Open_Project_triggered()
 
         mpOGLWidget->getTimeLine()->load(&file);
         QDataStream stream(&file);
-        int state ;//=   static_cast<int>(curentState.state);
+        int state ;
         stream >> curentState.advance_mode >> state ;
        curentState.state = static_cast<VIEW_STATE>(state);
         file.close();
         ui->statusBar->showMessage("project opened");
        mpOGLWidget->getTimeLine()->sendUpdateModel();
+       mpOGLWidget->setList(mpOGLWidget->getTimeLine()->getPointedBlocksDE());
         return ;
     }
     else
@@ -1285,31 +1284,45 @@ void MainWindow::on_action_New_Project_triggered()
      if (firstNewProjectCreating)
      {
          ProjectStartupSetting state = this->getCurentState();
-         state.state = 1;
+         state.state = VIDEO_EDIT_PRO;
          this->setCurentState(state);
          firstNewProjectCreating = false;
      }
- ////qDebug() << "AAAAAAAAAAAAAAAAAAAA5";
+
      if(isVisible())
         this->setCurentState(ProjectCreator::getProjectSetting(false, false));
      else
          this->setCurentState(ProjectCreator::getProjectSetting(true, false));
-
+qDebug() << "111111111 curentState.state " <<(int) curentState.state;
  ////qDebug() << "AAAAAAAAAAAAAAAAAAAA6";
-//if (this->getCurentState().state !=-1)
+
 {
     setEnabledToolBar(false);
+   /* if (curentState.state ==OPENING_PROJECT)
+    {
+        on_action_Open_Project_triggered();
+        if(!isVisible())
+            show();
+        activateWindow();
+        return;
+    }*/
+    VIEW_STATE temp_state = curentState.state;
+
      if(!curentState.advance_mode)
-        setViewState((int)curentState.state);
+        setViewState(curentState.state);
      else
          setViewState(VIDEO_EDIT_PRO);
+
+
+     if (temp_state != OPENING_PROJECT)
+     {
+         qDebug() << "AAAAAAAAAAAAAAAAAAAA8 ";
      //qDebug() << "AAAAAAAAAAAAAAAAAAAA   DAAAAAAAAAAAAAA";
      //qApp->processEvents(QEventLoop::AllEvents, 1000); //this lead to crash
     // //qDebug() << "AAAAAAAAAAAAAAAAAAAAww";
      switch (curentState.state) {
      case VIDEO_EDIT_TEXT:
      {
-         // //qDebug() << "AAAAAAAAAAAAAAAAAAAA8";
          DrawImageElm *first = new DrawImageElm(mpOGLWidget);
          QImage load(curentState.firstImage);
          qApp->processEvents();
@@ -1353,6 +1366,7 @@ void MainWindow::on_action_New_Project_triggered()
 ////qDebug() << "AAAAAAAAAAAAAAAAAAAAqq";
 
    //  qApp->processEvents(QEventLoop::AllEvents, 1000);
+}
      mpOGLWidget->getTimeLine()->sendUpdateModel();
      //qApp->processEvents(QEventLoop::AllEvents, 1000);
 
@@ -1714,6 +1728,10 @@ void MainWindow::updateBlockFromTextEdit()
 
 void MainWindow::on_action_Play_triggered()
 {
+    this->ui->action_Hide->setEnabled(false);
+    a_hide->setEnabled(false);
+
+    a_stop->setEnabled(true);
     if(mpOGLWidget->getStatus() == OGLWidget::PAUSE)
         ui->action_Play->setText("Play");
     else
@@ -1747,10 +1765,14 @@ void MainWindow::on_action_Play_triggered()
     if(mpOGLWidget->getStatus() != OGLWidget::PLAY )
     {
         if(mpOGLWidget->drawAnimated(ui->actionRecord_to_file->isChecked()))
+        {
             mpOGLWidget->getTimeLine()->play(); //off for test
+            qDebug("11111111111111111111111111111111");
+        }
         else
         {
             on_action_Stop_triggered();
+            qDebug("222222222222222222222222222222222");
             return;
         }
     }
@@ -1761,8 +1783,10 @@ void MainWindow::on_action_Play_triggered()
     qDebug() << "PLAY0";
 	ui->action_Play->setEnabled(false);
 	a_play->setEnabled(false);
+
 	ui->action_Pause->setEnabled(true);
 	a_pause->setEnabled(true);
+
     on_block_text_buttons_toolbar(false);
     qDebug() << "PLAY1";
 
@@ -1783,6 +1807,11 @@ void MainWindow::on_action_Play_triggered()
 
 void MainWindow::on_action_Stop_triggered()
 {
+    qDebug() << "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG";
+    this->ui->action_Hide->setEnabled(true);
+    a_hide->setEnabled(true);
+
+    a_stop->setEnabled(false);
     if(mpOGLWidget->getStatus() != OGLWidget::STOP)
     {
         mpOGLWidget->stopAnimated();
@@ -1795,22 +1824,26 @@ void MainWindow::on_action_Stop_triggered()
     a_undo->setEnabled(true);
     a_redo->setEnabled(true);*/
 
-    if(mpOGLWidget->isVisible())
+    if(mpOGLWidget->isVisible()) //445
     {
         /*textEdit->setEnabled(true);
-        commandTextEdit->setEnabled(true);*/
-        ui->action_Undo->setEnabled(true);
-        ui->action_Redo->setEnabled(true);
-        a_undo->setEnabled(true);
-        a_redo->setEnabled(true);
+        commandTextEdit->setEnabled(true);*/   
 
-        ui->action_Play->setText("Play");
+       // on_block_text_buttons_toolbar(true);
         ui->action_Play->setEnabled(true);
         ui->action_Pause->setEnabled(false);
         a_pause->setEnabled(false);
         a_play->setEnabled(true);
+        ui->action_Play->setText("Play");
 
         showBoardSettings();
+
+        //if last selected block dont have text type, text*s toolbar buttons dont must be enabled
+        ListControll *temp_TL = mpOGLWidget->getTimeLine();
+        QPoint sel_block = temp_TL->getSelectedBlockPoint();
+        if (sel_block.x() > -1)
+            if (temp_TL->getBlock(sel_block.x(),sel_block.y()).draw_element->getTypeId() != Element_type::Text)
+                on_block_text_buttons_toolbar(false);
 
     }
     updateEditWidgets();
@@ -1998,7 +2031,7 @@ void MainWindow::on_slider_speedTB_sliderReleased()
     updateBlockFromTextEdit();
 }
 
-void MainWindow::on_block_text_buttons_toolbar(bool tt) //445
+void MainWindow::on_block_text_buttons_toolbar(bool tt)
 {
     textEdit->setEnabled(tt);
     commandTextEdit->setEnabled(tt);
@@ -2010,5 +2043,21 @@ void MainWindow::on_block_text_buttons_toolbar(bool tt) //445
     a_search->setEnabled(tt);
     a_undo->setEnabled(tt);
     a_clear_textedit->setEnabled(tt);
+    a_select_all->setEnabled(tt);
+     updateEditWidgets(tt);
+
+     ui->action_Undo->setEnabled(tt);
+     ui->action_Redo->setEnabled(tt);
+     a_undo->setEnabled(true);
+
+     this->ui->action_Copy->setEnabled(tt);
+     this->ui->action_Cut->setEnabled(tt);
+     this->ui->action_Paste->setEnabled(tt);
+     this->ui->action_Undo->setEnabled(tt);
+     this->ui->action_Redo->setEnabled(tt);
+     this->ui->action_Select_all->setEnabled(tt);
+     this->ui->action_Find->setEnabled(tt);
+     this->ui->action_clearTB->setEnabled(tt);
+
 }
 

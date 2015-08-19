@@ -158,7 +158,7 @@ item_col.width = (timeControll.getMaxTrackTime() + 31) * main222.scaling
         tollbar.p_button_RemoveTrack.enabled = false
         tollbar.p_button_AddTrack.enabled = false
          tollbar.p_button_play.enabled = false
-
+        tollbar.p_button_stop.enabled = true
         tollbar.p_button_pause.enabled = true
 
     }
@@ -185,7 +185,7 @@ isPlayPauseStop = 1
        tollbar.p_button_RemoveTrack.enabled = true
        tollbar.p_button_AddTrack.enabled = true
         tollbar.p_button_play.enabled = true
-
+        tollbar.p_button_stop.enabled = false
         tollbar.p_button_pause.enabled = false
 //scale_pointer.x = timeControll.getMaxTrackTime() + scale_pointer.width/2 - scroll.flickableItem.contentX;
     }

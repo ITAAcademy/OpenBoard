@@ -45,7 +45,7 @@ DrawElement::DrawElement(OGLWidget *drawWidget, QObject *parent) : QObject(paren
     keyCouter = 0;
     lifeTime = -1;
     icon = QImage();
-    typeId = (Element_type)-1;
+    typeId = Element_type::Empty;
 
     if(pDrawWidget != NULL)
     {
@@ -66,6 +66,7 @@ void DrawElement::copy(DrawElement *elm)
     z = elm->getZ();
     width = elm->getSize().width();
     height = elm->getSize().height();
+    typeId = elm->getTypeId();
 }
 
 DrawElement::~DrawElement()
@@ -114,7 +115,6 @@ bool DrawElement::load(QIODevice* device)
 bool DrawElement::loadTypeId(QIODevice* device)
 {
     QDataStream stream(device);
-
     int temp_type;
     stream >> temp_type  ;
    typeId = static_cast<Element_type>(temp_type);
@@ -123,7 +123,8 @@ bool DrawElement::loadRest(QIODevice* device)
 {
     QDataStream stream(device);
     stream  >> key >> lifeTime >> tickTime >> startDrawTime >> x >> y >> z >> width >> height >> keyCouter;
-    icon = load_image(stream);
+    //if (typeId == Element_type::Image)
+        icon = load_image(stream);
     load_add(stream);
 }
 
@@ -133,7 +134,8 @@ bool DrawElement::save(QIODevice* device)
 
     int temp_type = static_cast<int>(typeId);
     stream << temp_type << key << lifeTime << tickTime << startDrawTime << x << y << z << width << height << keyCouter;
-    save_image(stream, icon);
+    //if (typeId == Element_type::Image)
+        save_image(stream, icon);
     save_add(stream);
 }
 

@@ -665,7 +665,10 @@ bool ListControll::save(QIODevice* device)
     QDataStream stream(device);
     stream << tracks.size() ;
     for (int i=0; i< tracks.size(); i++)
+    {
         tracks[i].save(device);
+    }
+   // qDebug() << "Num of saved tracks: " << tracks.size();
     return true;
 }
 
@@ -677,10 +680,12 @@ bool ListControll::load(QIODevice* device)
     int tracks_size;
     QDataStream stream(device);
     stream >> tracks_size ;
+    qDebug() << "Num of loaded tracks: " << tracks_size;
     for (int i=0; i< tracks_size; i++)
     {
         Track temp;
          temp.load(device);
+         qDebug() << "load blocks size in track" << temp.block.size();
          tracks.append(temp);
     }
     recountMaxTrackTime();

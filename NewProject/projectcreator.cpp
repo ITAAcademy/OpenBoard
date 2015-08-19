@@ -44,7 +44,7 @@ ProjectStartupSetting ProjectCreator::getProjectSetting(bool isStart, bool fullS
 
 void ProjectCreator::setProjectState(int state)
 {
-    curent.state =  state;
+    curent.state = (VIEW_STATE) state;
 }
 
 void ProjectCreator::setAdvanceMode(bool state)
