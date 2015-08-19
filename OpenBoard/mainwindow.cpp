@@ -1807,7 +1807,7 @@ void MainWindow::on_action_Play_triggered()
 
 void MainWindow::on_action_Stop_triggered()
 {
-    qDebug() << "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG";
+    qDebug() << "MainWindow::on_action_Stop_triggered()";
     this->ui->action_Hide->setEnabled(true);
     a_hide->setEnabled(true);
 

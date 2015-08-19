@@ -143,7 +143,12 @@ item_col.width = (timeControll.getMaxTrackTime() + 31) * main222.scaling
 
     function play()    {
         if (isPlayPauseStop === 2)
+        {
+            console.log(" if (isPlayPauseStop === 2)  " + timeControll.getPlayTime())
             scroll.flickableItem.contentX = 0;
+            main222.prevPlayTime = 0;
+            scale_pointer.x = 0;
+        }
         else if (isPlayPauseStop === 1)
         {
             // scale_pointer.x = timeControll.getPlayTime()/main222.scaling;
