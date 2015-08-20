@@ -323,6 +323,7 @@ connect(mpOGLWidget,SIGNAL(keyPressSignal(QKeyEvent*)),this,SLOT(keyEventSlot(QK
 
        a_stop = new QAction(this);
        a_stop->setEnabled(false);
+       this->ui->action_Stop->setEnabled(false);
        a_stop->setIcon(QPixmap(":/icons/stop_icon.png").scaled(QSize(16, 16)));
        a_stop->setToolTip(tr("Stop"));
        connect(a_stop,SIGNAL(triggered()),mpOGLWidget->getTimeLine(), SIGNAL(stopSignal()));
@@ -399,6 +400,8 @@ ui->actionRecord_to_file->setCheckable(true);
         updateEditWidgets(true); //instal normal color
 
         on_action_New_Project_triggered();
+
+
 }
 
 MainWindow::~MainWindow()
@@ -712,8 +715,8 @@ void MainWindow::on_action_Show_triggered()
     mpGLWidget->show();
 */
     a_play->setEnabled(true);
-    a_pause->setEnabled(true);
-    a_stop->setEnabled(true);
+    //a_pause->setEnabled(true);
+    //a_stop->setEnabled(true);
     a_font_canvas->setEnabled(true);
     a_color_canvas->setEnabled(true);
     a_record_to_file->setEnabled(true);
@@ -1718,12 +1721,21 @@ void MainWindow::updateVisibleTextEdit(bool state)
 
 void MainWindow::on_action_Play_triggered()
 {
+    ui->action_Play->setEnabled(false);
+    a_play->setEnabled(false);
+
+    mpOGLWidget->setMayShowRedRectangle( false);
+
     this->ui->action_Hide->setEnabled(false);
     a_hide->setEnabled(false);
 
     a_stop->setEnabled(true);
+        this->ui->action_Stop->setEnabled(true);
+
     if(mpOGLWidget->getStatus() == OGLWidget::PAUSE)
+    {
         ui->action_Play->setText("Play");
+    }
     else
     {
         mpOGLWidget->clearCanvas();
@@ -1731,6 +1743,7 @@ void MainWindow::on_action_Play_triggered()
         mpOGLWidget->setFillColor(mpOGLWidget->getMainFillColor());
         drawCounter = 0;
     }
+
 
     onTextChanged();
     // curent
@@ -1756,13 +1769,15 @@ void MainWindow::on_action_Play_triggered()
     {
         if(mpOGLWidget->drawAnimated(ui->actionRecord_to_file->isChecked()))
         {
+            mpOGLWidget->setCurStatus( OGLWidget::PLAY );
             mpOGLWidget->getTimeLine()->play(); //off for test
-            qDebug("11111111111111111111111111111111");
+
+            //qDebug("11111111111111111111111111111111");
         }
         else
         {
             on_action_Stop_triggered();
-            qDebug("222222222222222222222222222222222");
+            //qDebug("222222222222222222222222222222222");
             return;
         }
     }
@@ -1770,16 +1785,11 @@ void MainWindow::on_action_Play_triggered()
 
     updateEditWidgets();
 
-    qDebug() << "PLAY0";
-	ui->action_Play->setEnabled(false);
-	a_play->setEnabled(false);
 
 	ui->action_Pause->setEnabled(true);
 	a_pause->setEnabled(true);
 
     on_block_text_buttons_toolbar(false);
-    qDebug() << "PLAY1";
-
 
     /*while( play && mpOGLWidget != 0 && mpOGLWidget->getStatus() != OGLWidget::STOP)
     {
@@ -1793,15 +1803,22 @@ void MainWindow::on_action_Play_triggered()
     }
     on_action_Stop_triggered();*/
 
+
 }
 
 void MainWindow::on_action_Stop_triggered()
 {
-    qDebug() << "MainWindow::on_action_Stop_triggered()";
+    mpOGLWidget->setMayShowRedRectangle( true);
+    a_stop->setEnabled(false);
+     this->ui->action_Stop->setEnabled(false);
+
+
+
     this->ui->action_Hide->setEnabled(true);
     a_hide->setEnabled(true);
 
-    a_stop->setEnabled(false);
+
+
     if(mpOGLWidget->getStatus() != OGLWidget::STOP)
     {
         mpOGLWidget->stopAnimated();
@@ -1841,6 +1858,7 @@ void MainWindow::on_action_Stop_triggered()
 
     //mpOGLWidget->editingRectangle.isEditingRectangleVisible = true;
     play = false;
+     mpOGLWidget->setCurStatus( OGLWidget::STOP );
 }
 
 void MainWindow::on_action_youTube_triggered()
@@ -1855,6 +1873,9 @@ void MainWindow::on_action_youTube_triggered()
 }
 void MainWindow::on_action_Pause_triggered()
 {
+mpOGLWidget->setMayShowRedRectangle( true);
+    ui->action_Pause->setEnabled(false);
+    a_pause->setEnabled(false);
     ui->action_Play->setText("Resume");
     //mpGLWidget->pauseAnimated();
     ui->action_Play->setEnabled(true);
@@ -1865,10 +1886,12 @@ void MainWindow::on_action_Pause_triggered()
     a_redo->setEnabled(true);
     if (mpOGLWidget->getStatus() != OGLWidget::PAUSE)
     {
-        mpOGLWidget->pauseAnimated();
         mpOGLWidget->getTimeLine()->pause();
+        mpOGLWidget->setCurStatus( OGLWidget::PAUSE );
+        mpOGLWidget->pauseAnimated();
+
     }
-    a_pause->setEnabled(false);
+
 }
 
 

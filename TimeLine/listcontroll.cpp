@@ -873,8 +873,8 @@ void ListControll::calcPointedBlocksAtTime( )
     // // //qDebug() << "FFFFFFFFFFFFFFF  emit playSignal();";
      timer.restart();
     //emit playSignal();
-     if (isPlayPauseStop==3)
-             time_sum = 0;
+    /* if (isPlayPauseStop==3)
+             time_sum = 0;*/
      isPlayPauseStop = 1;
 
  }
@@ -907,6 +907,11 @@ qint64 ListControll::getPlayTime()
         return time_sum ;
             else
                 return 0;
+}
+
+void ListControll::setPlayTime(qint64 value)
+{
+    time_sum = value;
 }
 
 QImage ListControll::requestImage(const QString &id, QSize *size, const QSize &requestedSize)
