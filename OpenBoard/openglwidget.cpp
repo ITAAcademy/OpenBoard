@@ -743,6 +743,7 @@ FBOWrapper OGLWidget::initFboWrapper() {
     qDebug() << "GL_ERROR_STATUS initFrameBuffer:"<<error;
     qDebug() << 1;
     glGenFramebuffers(1, &fbo); // Generate one frame buffer and store the ID in fbo
+
 qDebug() << 2;
 
 qDebug() << 3;
@@ -851,6 +852,14 @@ void OGLWidget::clearFrameBuffer(FBOWrapper fboWrapper){
         isClearFrameBuffer=false;
      // glBindFramebuffer(GL_FRAMEBUFFER , 0);
       // qDebug()<<"clearFrameBuffer";
+
+}
+
+void OGLWidget::deleteFBO(FBOWrapper wrapper)
+{
+
+            glDeleteTextures(1,&wrapper.bindedTexture);
+            glDeleteFramebuffers(1,&wrapper.frameBuffer);
 
 }
 

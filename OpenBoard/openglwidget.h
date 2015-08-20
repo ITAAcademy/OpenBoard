@@ -210,7 +210,7 @@ public:
     int getWay();
     void paintBufferOnScreen(FBOWrapper buffer,int x , int y , int width, int height, int z = 0);
     void clearFrameBuffer(FBOWrapper fboWrapper);
-
+    void deleteFBO(FBOWrapper wrapper);
 
     void paintBrushInBuffer(GLuint& texture,Brush& currentBrushOfDrawSystem,FBOWrapper &fboWrapper,QVector<QPoint> coords, QVector<BrushBeginingIndex> brushes,int keyFrame);
     double getAnimationPersentOfCross() const;

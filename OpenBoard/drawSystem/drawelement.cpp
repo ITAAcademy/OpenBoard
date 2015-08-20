@@ -74,6 +74,9 @@ void DrawElement::copy(DrawElement *elm)
 
 DrawElement::~DrawElement()
 {
+    qDebug() << "delete DrawElement";
+pDrawWidget->deleteFBO(fboWrapper);
+
     if(pDrawWidget != NULL)
     {
         disconnect(pDrawWidget, SIGNAL(startSignal()), this, SLOT(start()));
