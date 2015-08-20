@@ -66,7 +66,7 @@ void DrawElement::copy(DrawElement *elm)
     z = elm->getZ();
     width = elm->getSize().width();
     height = elm->getSize().height();
-    typeId = elm->getTypeId();
+    //typeId = elm->getTypeId();
 }
 
 DrawElement::~DrawElement()
