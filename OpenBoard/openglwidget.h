@@ -211,7 +211,7 @@ public:
     void clearFrameBuffer(FBOWrapper fboWrapper);
 
 
-    void paintBrushInBuffer(FBOWrapper fboWrapper,QVector<QPoint> coords, QVector<BrushBeginingIndex> brushes,int keyFrame);
+    void paintBrushInBuffer( Brush& currentBrushOfDrawSystem,FBOWrapper &fboWrapper,QVector<QPoint> coords, QVector<BrushBeginingIndex> brushes,int keyFrame);
     double getAnimationPersentOfCross() const;
     void setAnimationPersentOfCross(double value);
 
@@ -293,7 +293,7 @@ private:
      bool isNotPainting;
     QImage img;
     ListControll *timeLine = NULL;
-         Brush currentBrushOfDrawSystem;
+
          Brush currentBrushOfLastDrawing;
    // GLuint    fbo,// The frame buffer object
     //fbo_depth, // The depth buffer for the frame buffer object

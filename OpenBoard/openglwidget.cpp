@@ -151,7 +151,7 @@ void OGLWidget::setList(const QList<DrawElement *> &value)
     }
     curentList = !curentList;    
 }
-void OGLWidget::paintBrushInBuffer(FBOWrapper fboWrapper,QVector<QPoint> coords,QVector<BrushBeginingIndex> brushes,int keyFrame){
+void OGLWidget::paintBrushInBuffer(Brush& currentBrushOfDrawSystem,FBOWrapper& fboWrapper,QVector<QPoint> coords,QVector<BrushBeginingIndex> brushes,int keyFrame){
     if (fboWrapper.errorStatus==-1)qDebug() << "BAD BUFFER";
    // qDebug()<<"binded buffer in paint brush:"<< fboWrapper.frameBuffer;
     glBindFramebuffer(GL_FRAMEBUFFER , fboWrapper.frameBuffer); // Bind our frame buffer for rendering
@@ -1029,7 +1029,7 @@ if (showingLastDrawing )
     recordedBrushN++;
     }
 
-    paintBrushInBuffer(mainFBO,drawBrushElm->getCoords(),drawBrushElm->getBrushes(),currentLastDrawingPointIterator);
+    paintBrushInBuffer(currentBrushOfLastDrawing,mainFBO,drawBrushElm->getCoords(),drawBrushElm->getBrushes(),currentLastDrawingPointIterator);
     currentLastDrawingPointIterator++;
     if (currentLastDrawingPointIterator>=drawBrushElm->getCoords().length())
     {
