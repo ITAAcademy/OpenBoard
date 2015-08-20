@@ -319,6 +319,8 @@ public:
     Q_INVOKABLE int  resetProjectToDefault();
     Q_INVOKABLE void convertCurentBlockToText();
 
+    Q_INVOKABLE void addBlockAt(int col, int ind, DrawElement *element = NULL);
+
   void sendUpdateModel();
 
  Q_INVOKABLE  float getScaleScrollChildren() const;
