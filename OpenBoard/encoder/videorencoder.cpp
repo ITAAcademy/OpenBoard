@@ -23,11 +23,11 @@ QImage AV_REncoder::getFrame() const
     return frame;
 }
 
-void AV_REncoder::setFrame(const QImage &value)
+void AV_REncoder::setFrame(QImage value)
 {
-    //// //qDebug() << "NEW IMAGE";
+
     // value.save("we.jpg");
-    if(newImage)
+    if(!bPause)
     {
         //memcpy(data, value.bits(), value.byteCount());
         frame = value;
@@ -86,7 +86,7 @@ void AV_REncoder::setGrabWidget(QGLWidget *widget)
     grabWidget = widget;
     m_encoder->setVideoSize(grabWidget->size());
     frame = QImage(widget->size(), QImage::Format_RGB888);
-    data = new unsigned char[3 * widget->size().height() * widget->size().width()];
+//    data = new unsigned char[3 * widget->size().height() * widget->size().width()];
 }
 
 void AV_REncoder::startRecord()
@@ -141,6 +141,7 @@ void AV_REncoder::initVideo()
 void AV_REncoder::pause()
 {
     bPause = !bPause;
+    newImage = true;
 }
 
 void AV_REncoder::stop()

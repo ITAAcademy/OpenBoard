@@ -265,6 +265,10 @@ scale_pointer.x = 0// timeControll.getMaxTrackTime() + scale_pointer.width/2 - s
            // main222.p_trackbar.globalRep.updateModel()
 
            //repka.updateModel();*/
+           for(var i = 0; i < cool_main.children.length; i++) {
+              console.log("destroying: " + i)
+              cool_main.children[i].destroy();
+            }
            main222.scaling = timeControll.getScaleScrollChildren();
            main222.updateTracksModel();
            //console.log("AAAAAAAAAAAAAAAAAA " +  main222.scaling)
@@ -463,13 +467,13 @@ timeControll.setScaleScrollChildren(0) //it have protection from small values, w
 
 timeControll.setScalePointerPos((x  -20 + scroll.flickableItem.contentX)* main222.scaling);
          //   //console.log("JJJJJJJJJJJJJJJJ " + timeControll.getScalePointerPos())
-            if (main222.isPlayPauseStop !== 0)
+           /* if (main222.isPlayPauseStop !== 0)
             {
-            timeControll.calcPointedBlocks();
+                timeControll.calcPointedBlocks();
                ////console.log("AAAAAAAAAAAWWWWWWWWWWWWWWWWWWWWWWW")
                 ////console.log("getScalePointerPos = " + timeControll.getScalePointerPos())
 
-            }
+            }*/
 
            // // //console.log("x + scroll.flickableItem.contentX = "+x +" + " + scroll.flickableItem.contentX
 

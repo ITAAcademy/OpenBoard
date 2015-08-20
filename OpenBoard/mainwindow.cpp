@@ -1724,7 +1724,7 @@ void MainWindow::on_action_Play_triggered()
     ui->action_Play->setEnabled(false);
     a_play->setEnabled(false);
 
-    mpOGLWidget->setMayShowRedRectangle( false);
+    //mpOGLWidget->setMayShowRedRectangle( false);
 
     this->ui->action_Hide->setEnabled(false);
     a_hide->setEnabled(false);
@@ -1808,7 +1808,7 @@ void MainWindow::on_action_Play_triggered()
 
 void MainWindow::on_action_Stop_triggered()
 {
-    mpOGLWidget->setMayShowRedRectangle( true);
+  //  mpOGLWidget->setMayShowRedRectangle( true);
     a_stop->setEnabled(false);
      this->ui->action_Stop->setEnabled(false);
 
@@ -1847,18 +1847,18 @@ void MainWindow::on_action_Stop_triggered()
         updateTextEditFromBlock(mpOGLWidget->getTimeLine()->getSelectedBlockPoint());
 
         //if last selected block dont have text type, text*s toolbar buttons dont must be enabled
-        ListControll *temp_TL = mpOGLWidget->getTimeLine();
+        /*ListControll *temp_TL = mpOGLWidget->getTimeLine();
         QPoint sel_block = temp_TL->getSelectedBlockPoint();
         if (sel_block.x() > -1)
             if (temp_TL->getBlock(sel_block.x(),sel_block.y()).draw_element->getTypeId() != Element_type::Text)
-                on_block_text_buttons_toolbar(false);
+                on_block_text_buttons_toolbar(false);*/
 
     }
     updateEditWidgets();
 
     //mpOGLWidget->editingRectangle.isEditingRectangleVisible = true;
     play = false;
-     mpOGLWidget->setCurStatus( OGLWidget::STOP );
+
 }
 
 void MainWindow::on_action_youTube_triggered()
@@ -1873,7 +1873,7 @@ void MainWindow::on_action_youTube_triggered()
 }
 void MainWindow::on_action_Pause_triggered()
 {
-mpOGLWidget->setMayShowRedRectangle( true);
+//mpOGLWidget->setMayShowRedRectangle( true);
     ui->action_Pause->setEnabled(false);
     a_pause->setEnabled(false);
     ui->action_Play->setText("Resume");
@@ -1886,10 +1886,8 @@ mpOGLWidget->setMayShowRedRectangle( true);
     a_redo->setEnabled(true);
     if (mpOGLWidget->getStatus() != OGLWidget::PAUSE)
     {
-        mpOGLWidget->getTimeLine()->pause();
-        mpOGLWidget->setCurStatus( OGLWidget::PAUSE );
         mpOGLWidget->pauseAnimated();
-
+        mpOGLWidget->getTimeLine()->pause();
     }
 
 }

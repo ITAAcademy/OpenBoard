@@ -49,7 +49,7 @@ class OGLWidget;
 struct RectangleEditor {
     QRect rect;
     int leftCornerSize;
-    bool isEditingRectangleVisible = true;
+    volatile bool isEditingRectangleVisible = true;
     int editingRectangleMode = EDIT_RECTANGLE_UNBINDED;
 
 };
@@ -208,7 +208,7 @@ public:
     void setIsBrushWindowOpened(bool value);
 
     void paintBufferOnScreen(int x , int y , int width, int height, int z = 0);
-    void clearFrameBuffer();
+
 
 
     void paintBrushInBuffer(QVector<QPoint> coords, QVector<BrushBeginingIndex> brushes,int keyFrame);
@@ -227,10 +227,9 @@ public:
     int getCurStatus() const;
     void setCurStatus(const StatusDraw &value);
 
-    bool getMayShowRedRectangle() const;
-    void setMayShowRedRectangle(bool value);
 
 public slots:
+    void clearFrameBuffer();
     void hideBrushManager();
     void slotBlockEdited();
     bool drawAnimated( bool record );
@@ -310,7 +309,7 @@ private:
     QString drawText;
     bool bRecord;
     void generateFrames();
-    StatusDraw curStatus; // 0 - stop; 1 - play; -1 - pause
+    volatile StatusDraw curStatus; // 0 - stop; 1 - play; -1 - pause
     QThread drawThread;
     AV_REncoder *m_encoder = NULL;
 

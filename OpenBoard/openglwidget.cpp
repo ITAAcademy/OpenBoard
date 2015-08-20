@@ -794,7 +794,9 @@ void OGLWidget::destroy(bool destroyWindow, bool destroySubWindow){
 void OGLWidget::clearFrameBuffer(){
 
     glBindFramebuffer(GL_FRAMEBUFFER , fbo); // Bind our frame buffer for rendering
-   std::vector<GLubyte> emptyData(wax * way * 4, 0);
+    makeCurrent();
+
+    std::vector<GLubyte> emptyData(wax * way * 4, 0);
    glBindTexture(GL_TEXTURE_2D, fbo_texture);
      glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, wax, way, GL_RGBA, GL_UNSIGNED_BYTE, &emptyData[0]);
       glBindTexture(GL_TEXTURE_2D,0);
@@ -808,6 +810,10 @@ void OGLWidget::clearFrameBuffer(){
 
 void OGLWidget::paintGL()
 {
+
+    if(m_encoder->newImage)
+        m_encoder->setFrame(grabFrameBuffer());
+
      glBindFramebuffer(GL_FRAMEBUFFER , 0);
 
     //// //qDebug() << "isClearFrameBuffer:"<<isClearFrameBuffer;
@@ -997,8 +1003,6 @@ glDisable(GL_BLEND);
 GLuint error = glGetError();
 
 glFinish();
-if(m_encoder->newImage)
-    m_encoder->setFrame(grabFrameBuffer());
 //////////////////////////////
 swapBuffers();
 glFlush();
@@ -1011,22 +1015,7 @@ init = true;
 
 void OGLWidget::paintEvent(QPaintEvent *event)
 {
-    if(bRecord)
-    {
-       // m_encoder->mutex.lock();
-        m_encoder->setFrame(grabFrameBuffer());
-        //m_encoder->mutex.unlock();
-    }
- //   if(curStatus == PLAY && bRecord)
-    {
-    //    m_encoder->encodeVideoFrame(this->grabFramebuffer());
-        /*if (fps_stabilitron % 25 == 0) {
-            while (m_encoder->encodedFrameCount() != fps_stabilitron) { qApp->processEvents(); }
-            m_encoder->encodeVideoFrame(this->grabFramebuffer());
 
-        }
-            fps_stabilitron++;*/
-    }
 }
 
 void OGLWidget::resizeEvent(QResizeEvent *envent)
@@ -1283,16 +1272,17 @@ void OGLWidget::setDrawText(QString data)
 bool OGLWidget::drawAnimated(bool record)
 {
 
-    editingRectangle.isEditingRectangleVisible = false;
     if(curStatus == this->PAUSE)
     {
         //m_recorder->resume();
         curStatus = PLAY;
+        pause(300);
         m_encoder->pause();
-        //QTimer::singleShot(1,m_encoder, SLOT(pause() ) );
+
         return true;
     }
-     curStatus = PLAY;
+
+    curStatus = PLAY;
     if(record)
     {
         editingRectangle.isEditingRectangleVisible = false;
@@ -1330,7 +1320,7 @@ void OGLWidget::stopAnimated()
         curStatus = STOP;
         tickTimer.stop();
         m_encoder->stop();
-        clearFrameBuffer();
+           clearFrameBuffer();
         double t_animationPersentOfCross = animationPersentOfCross;
     }
 /*    int t_delay = delay;
@@ -1353,10 +1343,12 @@ void OGLWidget::stopAnimated()
 
 void OGLWidget::pauseAnimated()
 {
-    editingRectangle.isEditingRectangleVisible = false;
-    curStatus = PAUSE;
-    // //qDebug() << "Pause play";
     m_encoder->pause();
+
+    curStatus = PAUSE;
+
+
+    // //qDebug() << "Pause play";
     emit pauseSignal();
     //m_recorder->pause();
 }
@@ -2233,21 +2225,7 @@ void OGLWidget::storeMousePos()
    // //qDebug()<<"position stored:"<<QCursor::pos();
     }
 }
-bool OGLWidget::getMayShowRedRectangle() const
-{
-    return mayShowRedRectangle;
-}
 
-void OGLWidget::setMayShowRedRectangle(bool value)
-{
-    mayShowRedRectangle = value;
-    if (!mayShowRedRectangle)
-    {
-         editingRectangle.isEditingRectangleVisible = false;
-         paintGL();
-
-    }
-}
 
 
 int OGLWidget::getFirstSymbolOfString(int index, bool symbol)

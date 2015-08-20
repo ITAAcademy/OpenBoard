@@ -1,6 +1,6 @@
 QT -= declarative sensors multimedia multimediawidgets printsupport
 
-QT       += qml widgets multimedia quick quickwidgets network webkitwidgets concurrent opengl
+QT       += qml gui widgets multimedia quick quickwidgets network webkitwidgets concurrent opengl
 
 CONFIG += c++11
 QMAKE_CXXFLAGS += "-std=c++11"

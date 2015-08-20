@@ -18,9 +18,14 @@ Rectangle {
     Column{
         parent: cool_main
         width: root_toolbar.width
-        x: mapFromItem(columns, root_toolbar.x, root_toolbar.y).x
-        y: ((mapFromItem(scroll, root_toolbar.parent.x, root_toolbar.parent.y).y + (height/4)))
+        x: 0
+        y: ((mapFromItem(item_col, root_toolbar.parent.x, root_toolbar.parent.y).y + (height/4)))
         height: root_toolbar.height
+        function restore()
+        {
+            parent = root_toolbar;
+        }
+
         z: 100
         Buutton{
             id: butAdd

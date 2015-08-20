@@ -765,6 +765,7 @@ bool ListControll::isActiveWindow()
  void ListControll::setScalePointerPos( int x)
  {
      scale_pointer_pos = x;
+     calcPointedBlocks();
  //// //qDebug() << "RRRRRRRRRRRRRRR scale_pointer_pos=" << scale_pointer_pos;
  }
 
@@ -802,7 +803,7 @@ bool ListControll::isActiveWindow()
                  {
                      pointed_block.append(tracks[i].block[y]);
                      // //qDebug() << "POP: " << i<< " "<<y;
-                 break;
+                     break;
                  }
                   blockXstart = blockXend;
              }
@@ -895,6 +896,7 @@ void  ListControll::stop()
    time_sum = 0;
     isPlayPauseStop = 3;
     calcPointedBlocks();
+    qDebug() << "stop                       TIMELINE";
 
 }
 

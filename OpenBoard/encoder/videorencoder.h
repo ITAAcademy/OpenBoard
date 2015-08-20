@@ -58,7 +58,7 @@ public:
 
 
     QImage getFrame() const;
-    void setFrame(const QImage &value);
+    void setFrame(QImage value);
 
 private slots:
     void encodeAudioData(QByteArray array);
