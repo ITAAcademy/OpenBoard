@@ -195,7 +195,7 @@ void DrawBrushElm::draw()
             if (keyCouter < coords.size() )
             {
 
-                pDrawWidget->paintBrushInBuffer(brush,fboWrapper,coords,brushes, keyCouter);
+                pDrawWidget->paintBrushInBuffer(currentTexture,brush,fboWrapper,coords,brushes, keyCouter);
               //  qDebug() << "pDrawWidget->paintBrushInBuffer";
             }
                     keyCouter++;

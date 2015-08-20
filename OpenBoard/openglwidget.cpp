@@ -151,7 +151,7 @@ void OGLWidget::setList(const QList<DrawElement *> &value)
     }
     curentList = !curentList;    
 }
-void OGLWidget::paintBrushInBuffer(Brush& currentBrushOfDrawSystem,FBOWrapper& fboWrapper,QVector<QPoint> coords,QVector<BrushBeginingIndex> brushes,int keyFrame){
+void OGLWidget::paintBrushInBuffer(GLuint& texture,Brush& currentBrushOfDrawSystem,FBOWrapper& fboWrapper,QVector<QPoint> coords,QVector<BrushBeginingIndex> brushes,int keyFrame){
     if (fboWrapper.errorStatus==-1)qDebug() << "BAD BUFFER";
    // qDebug()<<"binded buffer in paint brush:"<< fboWrapper.frameBuffer;
     glBindFramebuffer(GL_FRAMEBUFFER , fboWrapper.frameBuffer); // Bind our frame buffer for rendering
@@ -177,7 +177,7 @@ glBegin(GL_TRIANGLES);
        // qDebug() << "mouse play index:"<<keyFrame;
 
         currentBrushOfDrawSystem = brushes[recordedBrushN].brush;
-        brushTextureCurrentPlayed = loadTexture(currentBrushOfDrawSystem.color_img);
+        texture = loadTexture(currentBrushOfDrawSystem.color_img);
         qDebug() << "recordedBrushN:"<<recordedBrushN;
        // isBrushUsed=true;
      //qDebug() << "recordedBrushN:"<<recordedBrushN;
@@ -187,7 +187,7 @@ glBegin(GL_TRIANGLES);
     }
 
     //glUseProgram(ShaderProgram);
-    glBindTexture(GL_TEXTURE_2D,brushTextureCurrentPlayed);
+    glBindTexture(GL_TEXTURE_2D,texture);
    // if (isBrushUsed) {
      //   qDebug() << "recordedBrushN:" << recordedBrushN;
       //  currentBrushOfDrawSystem = brushes[recordedBrushN].brush;
@@ -275,7 +275,7 @@ glBegin(GL_TRIANGLES);
 
 
         drawTexture(xPos-BRUSH_SIZE/2 + dispersX ,yPos-BRUSH_SIZE/koff/2 + dispersY,BRUSH_SIZE,BRUSH_SIZE/koff,
-                brushTextureCurrentPlayed,angle,scaleX,scaleY);
+                texture,angle,scaleX,scaleY);
         }
 // glUseProgram(NULL);
 
@@ -1029,7 +1029,7 @@ if (showingLastDrawing )
     recordedBrushN++;
     }
 
-    paintBrushInBuffer(currentBrushOfLastDrawing,mainFBO,drawBrushElm->getCoords(),drawBrushElm->getBrushes(),currentLastDrawingPointIterator);
+    paintBrushInBuffer(brushTextureCurrentPlayed,currentBrushOfLastDrawing,mainFBO,drawBrushElm->getCoords(),drawBrushElm->getBrushes(),currentLastDrawingPointIterator);
     currentLastDrawingPointIterator++;
     if (currentLastDrawingPointIterator>=drawBrushElm->getCoords().length())
     {

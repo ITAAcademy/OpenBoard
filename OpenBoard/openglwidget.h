@@ -211,7 +211,7 @@ public:
     void clearFrameBuffer(FBOWrapper fboWrapper);
 
 
-    void paintBrushInBuffer( Brush& currentBrushOfDrawSystem,FBOWrapper &fboWrapper,QVector<QPoint> coords, QVector<BrushBeginingIndex> brushes,int keyFrame);
+    void paintBrushInBuffer(GLuint& texture,Brush& currentBrushOfDrawSystem,FBOWrapper &fboWrapper,QVector<QPoint> coords, QVector<BrushBeginingIndex> brushes,int keyFrame);
     double getAnimationPersentOfCross() const;
     void setAnimationPersentOfCross(double value);
 
