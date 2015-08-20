@@ -151,6 +151,30 @@ void ListControll::addNewBlock(int col, QString str, DrawElement *element)
 }
 
 
+
+ void ListControll::addBlockAt(int col, int ind,  DrawElement *element)
+ {
+     setSelectedBlockPoint(QPoint(-1,-1));
+     Element temp;
+     temp.key = QString("block" + QString::number(qrand()));
+     if(element != NULL)
+     {
+         temp.draw_element = element;
+     }
+     if(temp.draw_element->getLifeTime() < def_min_block_width)
+         temp.draw_element->setLifeTime(def_min_block_width);
+     temp.draw_element->setZ(col);
+     tracks[col].block.insert(ind,temp);
+
+     tracks[col].time += temp.draw_element->getLifeTime();
+     if (maxTrackTime <  tracks[col].time)
+         maxTrackTime =  tracks[col].time;
+     calcPointedBlocks();
+ }
+
+
+
+
 void ListControll::addNewTrack( )
 {
     QList <Element>  temp;

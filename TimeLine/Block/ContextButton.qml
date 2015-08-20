@@ -46,7 +46,7 @@ Rectangle {
             enabled: enable
             onClicked:  {
 
-                context_menu.visible = false
+
                 viewButton.state = "clicked";
                 buttonClicked();
             }
