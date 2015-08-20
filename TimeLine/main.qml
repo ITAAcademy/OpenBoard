@@ -46,6 +46,15 @@ property Rectangle p_main222
 
 Rectangle
 {
+    Rectangle{
+        id: cool_main
+        y: -scroll.flickableItem.contentY
+        z: 1000
+        height: scroll.height + scroll.flickableItem.contentY
+        clip: true
+        width: childrenRect.width
+        color: "black"
+    }
 
     id:main222
 

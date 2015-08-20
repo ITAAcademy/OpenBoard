@@ -3,7 +3,7 @@ import QtQuick 2.0
 
 
 Rectangle {
-    id: root
+    id: root_toolbar
     color: "black"
     property int num : 0
      property Repeater globalRep
@@ -12,13 +12,16 @@ Rectangle {
     //anchors.bottom: parent.bottom
     //anchors.top : parent.top
     Component.onCompleted: {
-        var ss = "E:/Adele - Someone Like You.mp4"
-       timeControll. videoSignalHAHAHAA(ss)
+
     }
 
     Column{
-        width: parent.width
-        height: parent.height
+        parent: cool_main
+        width: root_toolbar.width
+        x: mapFromItem(columns, root_toolbar.x, root_toolbar.y).x
+        y: ((mapFromItem(scroll, root_toolbar.parent.x, root_toolbar.parent.y).y + (height/4)))
+        height: root_toolbar.height
+        z: 100
         Buutton{
             id: butAdd
             title_text: ""
