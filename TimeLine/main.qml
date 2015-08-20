@@ -142,18 +142,23 @@ item_col.width = (timeControll.getMaxTrackTime() + 31) * main222.scaling
     }
 
     function play()    {
+
         if (isPlayPauseStop === 2)
         {
-            console.log(" if (isPlayPauseStop === 2)  " + timeControll.getPlayTime())
             scroll.flickableItem.contentX = 0;
             main222.prevPlayTime = 0;
-            scale_pointer.x = 0;
+            //scale_pointer.x = 0;
         }
         else if (isPlayPauseStop === 1)
         {
+
+            timeControll.setPlayTime((scale_pointer.x  /*- scale_pointer.width/2*/ +
+                                      scroll.flickableItem.contentX /*+ scroll.width*/)* main222.scaling);
+            main222.prevPlayTime = timeControll.getPlayTime()
             // scale_pointer.x = timeControll.getPlayTime()/main222.scaling;
-            scale_pointer.x = main222.saveScalePointerX
-           scroll.flickableItem.contentX = main222.saveScrollX
+           // scale_pointer.x = main222.saveScalePointerX
+          // scroll.flickableItem.contentX = main222.saveScrollX
+
         }
         isPlayPauseStop = 0
 
@@ -192,7 +197,9 @@ isPlayPauseStop = 1
         tollbar.p_button_play.enabled = true
         tollbar.p_button_stop.enabled = false
         tollbar.p_button_pause.enabled = false
-//scale_pointer.x = timeControll.getMaxTrackTime() + scale_pointer.width/2 - scroll.flickableItem.contentX;
+
+        scroll.flickableItem.contentX = 0
+scale_pointer.x = 0// timeControll.getMaxTrackTime() + scale_pointer.width/2 - scroll.flickableItem.contentX;
     }
 
     function setScalePointerPos(xx)    {
@@ -241,7 +248,8 @@ isPlayPauseStop = 1
            if (main222.isPlayPauseStop === 0 )
            {
                var play_time = timeControll.getPlayTime();
-     scale_pointer.x += (play_time - main222.prevPlayTime)/main222.scaling;
+    scale_pointer.x += (play_time - main222.prevPlayTime)/main222.scaling;
+              // scale_pointer.x = timeControll.getPlayTime()/main222.scaling;
                main222.prevPlayTime = play_time;
    //  (timeControll.getPlayTime() - scroll.flickableItem.contentX)/main222.scaling + 15 ;
                timeControll.calcPointedBlocksAtTime()
@@ -507,7 +515,7 @@ timeControll.setScalePointerPos((x  -20 + scroll.flickableItem.contentX)* main22
               property int verticalY: flickableItem.contentY
              //property int baba: scroll.flickableItem.contentWidth
               onHorizontalXChanged:  {
-               time_scale.x = -horizontalX + 30
+               time_scale.x = -flickableItem.contentX + 30
                   context_menu.visible = false
               }
               onVerticalYChanged:  {
@@ -665,8 +673,7 @@ timeControll.setScalePointerPos((x  -20 + scroll.flickableItem.contentX)* main22
                                           }
                                      Component.onCompleted: {
                                     trackbar.globalRep = repka
-                                         main222.p_trackbar = trackbar
-                                          time_scale.x = trackbar.width + trackbar.x
+                                         main222.p_trackbar = trackbar                                          
                                      }
                                  }
                                  }    //
@@ -722,6 +729,9 @@ Rectangle {
     color: "transparent"
     radius: 10
     border.width: main222.margin_value
+}
+Component.onCompleted: {
+     time_scale.x = trackbar.width + trackbar.x
 }
 }
 

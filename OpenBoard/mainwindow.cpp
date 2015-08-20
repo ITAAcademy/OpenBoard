@@ -1767,12 +1767,12 @@ void MainWindow::on_action_Play_triggered()
         if(mpOGLWidget->drawAnimated(ui->actionRecord_to_file->isChecked()))
         {
             mpOGLWidget->getTimeLine()->play(); //off for test
-            qDebug("11111111111111111111111111111111");
+            //qDebug("11111111111111111111111111111111");
         }
         else
         {
             on_action_Stop_triggered();
-            qDebug("222222222222222222222222222222222");
+            //qDebug("222222222222222222222222222222222");
             return;
         }
     }

@@ -881,6 +881,11 @@ qint64 ListControll::getPlayTime()
                 return 0;
 }
 
+void ListControll::setPlayTime(qint64 value)
+{
+    time_sum = value;
+}
+
 QImage ListControll::requestImage(const QString &id, QSize *size, const QSize &requestedSize)
 {
 

@@ -301,6 +301,7 @@ public:
     Q_INVOKABLE void  pause();
     Q_INVOKABLE void  stop();
     Q_INVOKABLE qint64 getPlayTime();
+     Q_INVOKABLE void setPlayTime(qint64);
 
     QImage requestImage(const QString & id, QSize * size, const QSize & requestedSize);
 
