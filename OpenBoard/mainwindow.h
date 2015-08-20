@@ -174,7 +174,7 @@ QMessageBox messAbout;
 
     bool play = false;
 
-    volatile bool isActive = false; // active main windows?
+    volatile bool isActive = true; // active main windows?
     ProjectStartupSetting curentState;
     void updateEditWidgets(bool forceEnabled = false);
 public slots:

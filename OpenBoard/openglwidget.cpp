@@ -299,7 +299,7 @@ OGLWidget::OGLWidget(QWidget *parent) :
     QGLWidget(parent)
 {
     init = false;
-    timeLine = new ListControll;
+    timeLine = new ListControll(this);
     connect(timeLine,SIGNAL(stopSignal()),this,SIGNAL(stopSignal()));
     connect(timeLine,SIGNAL(playSignal()),this,SIGNAL(startSignal()));
     connect(timeLine,SIGNAL(pauseSignal()),this,SIGNAL(pauseSignal()));
@@ -321,7 +321,7 @@ OGLWidget::OGLWidget(QWidget *parent) :
     editingRectangle.rect.setY(50);
     editingRectangle.leftCornerSize=10;
     bRecord = false;
-    this->setWindowFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint | Qt::WindowTitleHint);
+    this->setWindowFlags(Qt::CustomizeWindowHint | Qt::Dialog | Qt::FramelessWindowHint | Qt::WindowTitleHint);
 
     //this->setResizeMode(QQuickWidget::SizeRootObjectToView ); //TODO
     /*
@@ -1186,6 +1186,7 @@ bool OGLWidget::event(QEvent *e)
         // ...
 
         case QEvent::WindowActivate :
+         timeLine->setFocus();
             break ;
 
         case QEvent::WindowDeactivate :

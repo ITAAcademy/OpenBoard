@@ -58,6 +58,7 @@ int main(int argc, char *argv[])
    // qApp->addLibraryPath(qApp->applicationDirPath() + "/SSL");
 
     MainWindow window;
+    window.resize(0, 500);
   //  QtAV::Widgets::registerRenderers();
     //window.show();
 

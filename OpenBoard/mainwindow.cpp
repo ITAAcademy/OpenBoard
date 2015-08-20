@@ -33,7 +33,10 @@ MainWindow::MainWindow(QWidget *parent) :
 //// //qDebug() <<directory;
 //    connect(&drawThread, SIGNAL(started()), this, SLOT(myfunction())); //cant have parameter sorry, when using connect
 
-    mpOGLWidget = new OGLWidget();
+    mpOGLWidget = new OGLWidget(this);
+   // gs(Qt::CustomizeWindowHint | Qt::FramelessWindowHint | Qt::WindowTitleHint);
+    //mpOGLWidget->setAttribute(Qt::WA_ShowModal);
+    //mpOGLWidget->setWindowFlags (Qt::CustomizeWindowHint | Qt::FramelessWindowHint | Qt::WindowTitleHint);
     mpOGLWidget->show();
     mpOGLWidget->setVisible(false);
      //qDebug() << "connect unableToDraw";
@@ -602,21 +605,12 @@ bool MainWindow::event(QEvent * e) // overloading event(QEvent*) method of QMain
         // ...
 
         case QEvent::WindowActivate : {
-            if(!isActive)
-            {
+
                 if(mpOGLWidget->isVisible()) // get focus for windows
                 {
-                    mpOGLWidget->setVisible(false);
-                    mpOGLWidget->setWindowState(Qt::WindowNoState);
-                    mpOGLWidget->setVisible(true);
                     mpOGLWidget->getTimeLine()->setFocus();
-                    //childIsActive = true;
                 }
-                isActive = true;
-               qApp->processEvents();
-               activateWindow();
-                isActive = true;
-            }
+
             mpOGLWidget->getTimeLine()->emitFocusLostSignal();
             mpOGLWidget->hideBrushManager();
             QPoint current_pos = mpOGLWidget->pos();
@@ -628,13 +622,8 @@ bool MainWindow::event(QEvent * e) // overloading event(QEvent*) method of QMain
 
         case QEvent::WindowDeactivate :
             // lost focus
-            bool activeOther = false;
-            if(mpOGLWidget->isActiveWindow())
-                activeOther = true;
-            if(mpOGLWidget->getTimeLine()->isActiveWindow())
-                activeOther = true;
-            if(!activeOther)
-                isActive = false;
+            isActive = false;
+
             //qDebug() << "LOSE_ACTIVE_MAIN_WINDOW";
             break ;
         // ...
