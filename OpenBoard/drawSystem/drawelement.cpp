@@ -335,10 +335,19 @@ void DrawElement::stop()
 
 void DrawElement::start()
 {
+
     keyCouter = 0;
     bPause = false;
     bPlay = true;
-    reloadLastDone();
+
+    /*
+     * NOT NEED SLOW
+     *
+     * reloadLastDone();
+     *
+     */
+
+
     //qDebug() << "START" << lastPath;
 }
 

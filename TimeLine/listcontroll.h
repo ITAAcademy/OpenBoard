@@ -240,8 +240,8 @@ public:
     bool isActiveWindow();
     Q_INVOKABLE  bool isProjectChanged();
     Q_INVOKABLE  void setIsProjectChanged(bool);
-    Q_INVOKABLE int getTrackSize(int col) const;
-    Q_INVOKABLE QString getBlockKey(int col, int i) const;
+    Q_INVOKABLE int getTrackSize(int col);
+    Q_INVOKABLE QString getBlockKey(int col, int i) ;
     Q_INVOKABLE void addNewBlock(int col, QString str , DrawElement *element = NULL);
     Q_INVOKABLE void addNewTrack( );
     Q_INVOKABLE void loadFromFile();
@@ -254,13 +254,13 @@ public:
     Q_INVOKABLE void setBlockTime(int col, int i, int value);
     Q_INVOKABLE void setBlockStartTime(int col, int i, int value);
     Q_INVOKABLE int getBlockStartTime(int col, int i);
-    Q_INVOKABLE void setBlockDrawElemet(DrawElement *elm, int col, int i);
+    Q_INVOKABLE bool setBlockDrawElemet(DrawElement *elm, int col, int i);
     Q_INVOKABLE   void removeBlock(int col, int i);
-    Q_INVOKABLE int getBlockTime(int col, int i) const;
-    Q_INVOKABLE Element getBlock(int col, int i) const;
-    Q_INVOKABLE Element getBlock(QPoint point) const;
-    Q_INVOKABLE int getTrackTime(int col) const;
-    Q_INVOKABLE int getMaxTrackTime( ) const;
+    Q_INVOKABLE int getBlockTime(int col, int i) ;
+    Q_INVOKABLE Element getBlock(int col, int i) ;
+    Q_INVOKABLE Element getBlock(QPoint point) ;
+    Q_INVOKABLE int getTrackTime(int col) ;
+    Q_INVOKABLE int getMaxTrackTime( ) ;
 
     Q_INVOKABLE void moveWindow( ) ;
     Q_INVOKABLE void resizeWindowWidth(bool left) ;
@@ -373,6 +373,7 @@ Q_INVOKABLE void  emitStopSignal();
 
     Q_INVOKABLE void zoomMinus();
     Q_INVOKABLE void zoomPlus();
+    Q_INVOKABLE bool testIndexs(const int col, const int index);
 };
 
 #endif // LISTCONTROLL_H

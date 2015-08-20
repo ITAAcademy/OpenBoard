@@ -14,6 +14,7 @@ class DrawTextElm : public DrawElement
     QString unParsestring;
     Parser myParser;
     int textCursor = 0;
+    int prevTextCursor = 0;
     quint64 drawTime;
     int globalPauseLifeTime = 0;
     int globalDeltaComandSize = 0;
@@ -38,6 +39,9 @@ public:
 
     int getTextCursor() const;
     void setTextCursor(const int &value);
+
+    int getPrevTextCursor() const;
+    void setPrevTextCursor(int value);
 
 private:
     void setTickTime(int value);

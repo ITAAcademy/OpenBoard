@@ -77,8 +77,10 @@ void ListControll::recountMaxTrackTime()
             maxTrackTime = tracks[i].time;
 }
 
-QString ListControll::getBlockKey(int col, int i) const
+QString ListControll::getBlockKey(int col, int i)
 {
+    if(!testIndexs(col, i))
+        return QString();
     return tracks[col].block[i].key;
 }
 
@@ -326,12 +328,18 @@ void ListControll::setBlockStartTime(int col, int i,int value)
 
 int ListControll::getBlockStartTime(int col, int i)
 {
+    if(!testIndexs(col, i))
+        return NULL;
     return tracks[col].block[i].draw_element->getStartDrawTime();
 }
 
-void ListControll::setBlockDrawElemet(DrawElement *elm, int col, int i)
+bool ListControll::setBlockDrawElemet(DrawElement *elm, int col, int i)
 {
+    if(!testIndexs(col, i))
+        return false;
+
     tracks[col].block[i].draw_element = elm;
+    return true;
 }
 
 void ListControll::setBlockIcon(int col, int i, QImage icon)
@@ -341,6 +349,8 @@ void ListControll::setBlockIcon(int col, int i, QImage icon)
 
 QImage ListControll::getBlockIcon(int col, int i)
 {
+    if(!testIndexs(col, i))
+        return QImage();
     return   tracks[col].block[i].draw_element->getIcon();
 }
 
@@ -354,6 +364,8 @@ QImage ListControll::getBlockIcon(int col, int i)
 
  int ListControll::getDrawX(int col, int i)
  {
+     if(!testIndexs(col, i))
+         return NULL;
      return tracks[col].block[i].draw_element->getX() ;
  }
 
@@ -364,6 +376,8 @@ QImage ListControll::getBlockIcon(int col, int i)
 
  int ListControll::getDrawY(int col, int i)
  {
+     if(!testIndexs(col, i))
+         return NULL;
      return tracks[col].block[i].draw_element->getY();
  }
 
@@ -374,6 +388,8 @@ QImage ListControll::getBlockIcon(int col, int i)
 
  int ListControll::getDrawZ(int col, int i)
  {
+     if(!testIndexs(col, i))
+         return NULL;
      return tracks[col].block[i].draw_element->getZ() ;
  }
 
@@ -403,46 +419,58 @@ QImage ListControll::getBlockIcon(int col, int i)
 
  QSize ListControll::getDrawSize(int col, int i)
  {
+     if(!testIndexs(col, i))
+         return QSize(0, 0);
      return tracks[col].block[i].draw_element->getSize() ;
  }
 
  QRect ListControll::getDrawRect(int col, int i)
  {
+     if(!testIndexs(col, i))
+         return QRect();
      return tracks[col].block[i].draw_element->getRect();
  }
 
 
 
 
-int ListControll::getBlockTime(int col, int i ) const
+int ListControll::getBlockTime(int col, int i )
 {
+    if(!testIndexs(col, i))
+        return NULL;
     return tracks[col].block[i].draw_element->getLifeTime();
 }
 
-Element ListControll::getBlock(int col, int i) const
+Element ListControll::getBlock(int col, int i)
 {
     // //qDebug() << "getBlock(int col, int i)" << col << " " << i;
+    if(!testIndexs(col, i))
+        return Element();
     return tracks[col].block[i];
 }
 
-Element ListControll::getBlock(QPoint point) const
+Element ListControll::getBlock(QPoint point)
 {
-    return tracks[point.x()].block[point.y()];
+    return getBlock(point.x(), point.y());
 }
 
-int ListControll::getTrackTime( int col) const
+int ListControll::getTrackTime( int col)
 {
-
+    if(!testIndexs(col, -1))
+        return NULL;
     return tracks[col].time;
 }
 
-int ListControll::getMaxTrackTime( ) const
+int ListControll::getMaxTrackTime( )
 {
     return maxTrackTime;
 }
 
-int ListControll::getTrackSize(int col) const
+int ListControll::getTrackSize(int col)
 {
+    if(!testIndexs(col, -1))
+        return NULL;
+
     int temp = tracks[col].block.size();
     // //qDebug()  << "FHFHHFHFHFHFH getTrackSize = " << temp;
     return temp;
@@ -1018,6 +1046,14 @@ QImage ListControll::requestImage(const QString &id, QSize *size, const QSize &r
         emit updateSelectedBlock(selectedBlockPoint);
         calcPointedBlocks();
         setBlocked(false);
+    }
+
+    bool ListControll::testIndexs(const int col, const int index)
+    {
+        if(col < tracks.size() && (index < tracks[col].block.size() || index == -1))
+            return true;
+
+        return false;
     }
 
 

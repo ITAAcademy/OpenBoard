@@ -27,6 +27,16 @@ void DrawTextElm::setTextCursor(const int &value)
     //qDebug() << "LAST_CURSOR    " << textCursor;
     textCursor = value;
 }
+
+int DrawTextElm::getPrevTextCursor() const
+{
+    return prevTextCursor;
+}
+
+void DrawTextElm::setPrevTextCursor(int value)
+{
+    prevTextCursor = value;
+}
 DrawTextElm::DrawTextElm(OGLWidget *drawWidget, QObject *parent) : DrawElement(drawWidget, parent)
 {
     setType("text");
@@ -171,7 +181,7 @@ void DrawTextElm::setTickTime(int value)
 
 bool DrawTextElm::load_add(QDataStream &stream)
 {
-    stream >> unParsestring >> loggerText >> textCursor;
+    stream >> unParsestring >> loggerText >> textCursor >> prevTextCursor;
     setUnParsestring(unParsestring, loggerText);
     /*int sizeOfString = 0;
     stream >> sizeOfString;
@@ -189,5 +199,5 @@ bool DrawTextElm::save_add(QDataStream &stream)
  /*   stream << unParsestring.length();
     // //qDebug() << "IN " << unParsestring.length();
     stream.writeRawData(unParsestring.toLatin1().data(), unParsestring.length());*/
-    stream << unParsestring << loggerText << textCursor;
+    stream << unParsestring << loggerText << textCursor << prevTextCursor;
 }

@@ -274,8 +274,8 @@ ApplicationWindow  {
                  timeControll.setDrawSize(mainwindow.columnIndex,mainwindow.blockIndex,block_Width_value.text,block_Height_value.text)
 
                 timeControll.emitBlockEditedSignal()
-                 globalRep.updateModel()
-                 close();
+                mainwindow.globalRep.updateModel()
+                close();
              }
          }
          Button {

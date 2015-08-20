@@ -820,7 +820,7 @@ void OGLWidget::paintGL()
       // glEnable(GL_MULTISAMPLE);
 
        glLoadIdentity(); // загружаем матрицу
-       glOrtho(0,wax,way,0, 1000000, -200000); // подготавливаем плоскости для матрицы
+       glOrtho(0,wax,way,0, -1000000, 200000); // подготавливаем плоскости для матрицы
        glEnable(GL_BLEND);
        glEnable(GL_ALPHA_TEST);
 
@@ -837,7 +837,7 @@ void OGLWidget::paintGL()
 //WRITE TO FRAME BUFER FROM HERE
    // glBindFramebuffer(GL_FRAMEBUFFER,0);
     qglColor(Qt::white);
-    drawTexture(0, 0, wax, way, backGroundTexture, 0, 1, 1, 100000);
+    drawTexture(0, 0, wax, way, backGroundTexture, 0, 1, 1, -100000);
 //WRITE TO SCREEN FROM HERE
 //drawTextBuffer(10,10,400,400);
 
@@ -874,17 +874,17 @@ if (editingRectangle.isEditingRectangleVisible && !forseEditBoxDisable && !isPai
     glLineWidth(3);
     glColor3f(1.0f, 0.0f, 0.0f);
     glBegin(GL_LINES);
-    glVertex3i(x1,y1, -10);
-    glVertex3i(x2,y1, -10);
+    glVertex3i(x1,y1, 100);
+    glVertex3i(x2,y1, 100);
 
-    glVertex3i(x2,y1, -10);
-    glVertex3i(x2,y2, -10);
+    glVertex3i(x2,y1, 100);
+    glVertex3i(x2,y2, 100);
 
-    glVertex3i(x2,y2, -10);
-    glVertex3i(x1,y2, -10);
+    glVertex3i(x2,y2, 100);
+    glVertex3i(x1,y2, 100);
 
-    glVertex3i(x1,y2, -10);
-    glVertex3i(x1,y1, -10);
+    glVertex3i(x1,y2, 100);
+    glVertex3i(x1,y1, 100);
     glEnd();
 
     //left corner
@@ -892,10 +892,10 @@ if (editingRectangle.isEditingRectangleVisible && !forseEditBoxDisable && !isPai
      glLineWidth(3);
      glBegin(GL_QUADS);   //We want to draw a quad, i.e. shape with four sides
           // glColor3i(1, 0, 0); //Set the colour to red
-       glVertex3i(leftCornerX1, leftCornerY1, -10);            //Draw the four corners of the rectangle
-       glVertex3i(leftCornerX2, leftCornerY1, -10);
-       glVertex3i(leftCornerX2, leftCornerY2, -10);
-       glVertex3i(leftCornerX1, leftCornerY2, -10);
+       glVertex3i(leftCornerX1, leftCornerY1, 100);            //Draw the four corners of the rectangle
+       glVertex3i(leftCornerX2, leftCornerY1, 100);
+       glVertex3i(leftCornerX2, leftCornerY2, 100);
+       glVertex3i(leftCornerX1, leftCornerY2, 100);
      glEnd();
 }
 //glDisable(GL_DEPTH_TEST);
@@ -979,7 +979,7 @@ if (showingLastDrawing )
 }
 
 if(curStatus == STOP)
-    paintBufferOnScreen(0, 0, wax, way,-100);
+    paintBufferOnScreen(0, 0, wax, way, 100);
 
 glDisable(GL_BLEND);
 GLuint error = glGetError();

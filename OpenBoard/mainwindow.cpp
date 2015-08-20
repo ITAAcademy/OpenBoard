@@ -1681,7 +1681,8 @@ void MainWindow::updateTextEditFromBlock(QPoint point)
             textEdit->newText();
             commandTextEdit->newText();
             commandTextEdit->setPlainText(text_elm->getLoggerText());
-            commandTextEdit->setPreviousCursorPosition(text_elm->getTextCursor());
+            commandTextEdit->setPreviousCursorPosition(text_elm->getPrevTextCursor());
+            commandTextEdit->textCursor().setPosition(text_elm->getTextCursor());
             textEdit->setPlainText(text_elm->getUnParsestring());
             connect(textEdit, SIGNAL(textChanged()), this, SLOT(onTextChanged()));
             return;
@@ -1692,13 +1693,6 @@ void MainWindow::updateTextEditFromBlock(QPoint point)
     commandTextEdit->newText();
     setEnabledToolBar(false);
 }
-
-void MainWindow::updateVisibleTextEdit(bool state)
-{
-    updateTextEditFromBlock(mpOGLWidget->getTimeLine()->getSelectedBlockPoint());
-    commandTextEdit->textCursor().setPosition(commandTextEdit->getPreviousCursorPosition());
-}
-
 
 void MainWindow::updateBlockFromTextEdit()
 {
@@ -1712,6 +1706,7 @@ void MainWindow::updateBlockFromTextEdit()
             DrawTextElm *text_elm = (DrawTextElm *)elm.draw_element;
             text_elm->setDelay(ui->slider_speedTB->value()*10);
             text_elm->setUnParsestring(textEdit->toPlainText(), commandTextEdit->toPlainText());
+            text_elm->setPrevTextCursor(commandTextEdit->getPreviousCursorPosition());
             text_elm->setTextCursor(commandTextEdit->textCursor().position());
             int change_time = text_elm->getDrawTime();
             if(change_time < 100)
@@ -1724,6 +1719,12 @@ void MainWindow::updateBlockFromTextEdit()
             }
         }
     }
+}
+
+void MainWindow::updateVisibleTextEdit(bool state)
+{
+    updateTextEditFromBlock(mpOGLWidget->getTimeLine()->getSelectedBlockPoint());
+    commandTextEdit->textCursor().setPosition(commandTextEdit->getPreviousCursorPosition());
 }
 
 void MainWindow::on_action_Play_triggered()
