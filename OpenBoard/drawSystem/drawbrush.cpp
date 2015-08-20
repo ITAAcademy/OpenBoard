@@ -202,7 +202,7 @@ void DrawBrushElm::draw()
                     //fboWrapper
         }
     }
-    pDrawWidget->paintBufferOnScreen(fboWrapper,x, y, width, height, z);
+
 
 }
 

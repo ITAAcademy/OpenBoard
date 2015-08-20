@@ -206,7 +206,8 @@ public:
     void setList(const QList<DrawElement *> &value);
     bool getIsBrushWindowOpened() const;
     void setIsBrushWindowOpened(bool value);
-
+    int getWax();
+    int getWay();
     void paintBufferOnScreen(FBOWrapper buffer,int x , int y , int width, int height, int z = 0);
     void clearFrameBuffer(FBOWrapper fboWrapper);
 

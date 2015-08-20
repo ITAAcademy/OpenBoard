@@ -84,7 +84,10 @@ DrawElement::~DrawElement()
 
 void DrawElement::paint()
 {
+    pDrawWidget->bindBuffer(fboWrapper.frameBuffer);
     draw();
+     pDrawWidget->bindBuffer(0);
+     pDrawWidget->paintBufferOnScreen(fboWrapper,x, y, width, height, z);
 }
 
 void DrawElement::draw()

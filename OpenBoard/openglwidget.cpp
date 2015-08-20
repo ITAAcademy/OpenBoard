@@ -88,12 +88,13 @@ int OGLWidget::loadTextureFromFile(QString path)
 
 }
 
-void OGLWidget::drawTexture( int x, int y, int width, int height, GLuint texture,int angle,float scaleX,float scaleY, int z){
+void OGLWidget::drawTexture(int x, int y, int width, int height, GLuint texture,int angle,float scaleX,float scaleY, int z){
 //loadTextures();
   // glLoadIdentity();
     glEnable(GL_TEXTURE_2D);
     qglColor(Qt::white);
     glBindTexture(GL_TEXTURE_2D, texture);
+
     int cx=x+width/2,cy=y+height/2;
 
     glPushMatrix();
@@ -154,7 +155,7 @@ void OGLWidget::setList(const QList<DrawElement *> &value)
 void OGLWidget::paintBrushInBuffer(GLuint& texture,Brush& currentBrushOfDrawSystem,FBOWrapper& fboWrapper,QVector<QPoint> coords,QVector<BrushBeginingIndex> brushes,int keyFrame){
     if (fboWrapper.errorStatus==-1)qDebug() << "BAD BUFFER";
    // qDebug()<<"binded buffer in paint brush:"<< fboWrapper.frameBuffer;
-    glBindFramebuffer(GL_FRAMEBUFFER , fboWrapper.frameBuffer); // Bind our frame buffer for rendering
+   // glBindFramebuffer(GL_FRAMEBUFFER , fboWrapper.frameBuffer); // Bind our frame buffer for rendering
 int recordedBrushN = 0;
 
 //qDebug() << "keyFrame:"<<keyFrame;
@@ -281,7 +282,7 @@ glBegin(GL_TRIANGLES);
 
 
 glBindTexture(GL_TEXTURE_2D,0);
-glBindFramebuffer(GL_FRAMEBUFFER , 0); // Unbind our texture
+//glBindFramebuffer(GL_FRAMEBUFFER , 0); // Unbind our texture
 }
 bool OGLWidget::isShowLastDrawing(){
     return showingLastDrawing;
@@ -839,16 +840,16 @@ FBOWrapper OGLWidget::getMainFBO(){
 
 void OGLWidget::clearFrameBuffer(FBOWrapper fboWrapper){
 
-    glBindFramebuffer(GL_FRAMEBUFFER , fboWrapper.frameBuffer); // Bind our frame buffer for rendering
+  //  glBindFramebuffer(GL_FRAMEBUFFER , fboWrapper.frameBuffer); // Bind our frame buffer for rendering
    // glClearColor(0.1f, 0.0f, 0.0f, 0.0f); // устанавливаем фоновый цвет
-   //std::vector<GLubyte> emptyData(wax * way * 4, 0);
-  // glBindTexture(GL_TEXTURE_2D, fboWrapper.bindedTexture);
-    // glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, wax, way, GL_RGBA, GL_UNSIGNED_BYTE, &emptyData[0]);
+   std::vector<GLubyte> emptyData(wax * way * 4, 0);
+   glBindTexture(GL_TEXTURE_2D, fboWrapper.bindedTexture);
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, wax, way, GL_RGBA, GL_UNSIGNED_BYTE, &emptyData[0]);
      // glBindTexture(GL_TEXTURE_2D,0);
 
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         isClearFrameBuffer=false;
-      glBindFramebuffer(GL_FRAMEBUFFER , 0);
+     // glBindFramebuffer(GL_FRAMEBUFFER , 0);
       // qDebug()<<"clearFrameBuffer";
 
 }
@@ -1275,11 +1276,12 @@ void OGLWidget::keyPressEvent(QKeyEvent *event)
 
 QSize OGLWidget::getTextureSize()
 {
+    glEnable(GL_TEXTURE_2D);
     QSize textureSize;
     GLint width;
     GLint height;
     glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &width);
-      glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &height);
+      glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &height);
    textureSize.setWidth(width);
     textureSize.setHeight(height);
     return textureSize;
@@ -1559,6 +1561,16 @@ bool OGLWidget::getIsBrushWindowOpened() const
 void OGLWidget::setIsBrushWindowOpened(bool value)
 {
     isBrushWindowOpened = value;
+}
+
+int OGLWidget::getWax()
+{
+    return wax;
+}
+
+int OGLWidget::getWay()
+{
+    return way;
 }
 
 
