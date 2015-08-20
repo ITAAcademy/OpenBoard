@@ -295,6 +295,17 @@ editingRectangle.rect = timeLine->getDrawRect(t.x(), t.y());
 selElm = QPoint(-1,-1);
 }
 
+
+RectangleEditor* OGLWidget::getEditingRectangle()
+{
+    return &editingRectangle;
+}
+
+void OGLWidget::setEditingRectangle(const RectangleEditor &value)
+{
+    editingRectangle = value;
+}
+
 OGLWidget::OGLWidget(QWidget *parent) :
     QGLWidget(parent)
 {
@@ -303,6 +314,8 @@ OGLWidget::OGLWidget(QWidget *parent) :
     connect(timeLine,SIGNAL(stopSignal()),this,SIGNAL(stopSignal()));
     connect(timeLine,SIGNAL(playSignal()),this,SIGNAL(startSignal()));
     connect(timeLine,SIGNAL(pauseSignal()),this,SIGNAL(pauseSignal()));
+
+
 
     connect(timeLine,SIGNAL(blockEditedSignal()),this,SLOT(slotBlockEdited()));
 
@@ -796,8 +809,7 @@ void OGLWidget::clearFrameBuffer(){
 void OGLWidget::paintGL()
 {
      glBindFramebuffer(GL_FRAMEBUFFER , 0);
-    if(m_encoder->newImage)
-        m_encoder->setFrame(grabFrameBuffer());
+
     //// //qDebug() << "isClearFrameBuffer:"<<isClearFrameBuffer;
     if(isClearFrameBuffer)clearFrameBuffer();
 
@@ -867,7 +879,7 @@ for(int i = 0; !timeLine->isBlocked && i < getList().size(); i++)
         getList()[i]->paint();
 }
 
-if (editingRectangle.isEditingRectangleVisible && !forseEditBoxDisable && !isPainting)
+if (editingRectangle.isEditingRectangleVisible && !forseEditBoxDisable && !isPainting && getStatus()!= PLAY)
 {
    // paintBufferOnScreen(0, 0, wax, way);
     //rectangle
@@ -985,10 +997,14 @@ glDisable(GL_BLEND);
 GLuint error = glGetError();
 
 glFinish();
+if(m_encoder->newImage)
+    m_encoder->setFrame(grabFrameBuffer());
+//////////////////////////////
 swapBuffers();
 glFlush();
 
 init = true;
+
 
 ////qDebug() << "GL_ERROR_STATUS end:"<<error;
 }
@@ -1034,6 +1050,8 @@ void OGLWidget::hideBrushManager()
 m_manager.hide();
 setIsBrushWindowOpened(false);
 }
+
+
 
 void OGLWidget::mousePressEvent(QMouseEvent *event)
 {
@@ -1263,15 +1281,20 @@ void OGLWidget::setDrawText(QString data)
 
 bool OGLWidget::drawAnimated(bool record)
 {
+
+    editingRectangle.isEditingRectangleVisible = false;
     if(curStatus == this->PAUSE)
     {
         //m_recorder->resume();
         curStatus = PLAY;
         m_encoder->pause();
+        //QTimer::singleShot(1,m_encoder, SLOT(pause() ) );
         return true;
     }
+     curStatus = PLAY;
     if(record)
     {
+        editingRectangle.isEditingRectangleVisible = false;
         //QString fileName = QFileDialog::getSaveFileName(this, tr("Choose file..."), qApp->applicationDirPath(), tr("Videos (*.avi *.mp4)"), 0, QFileDialog::DontUseNativeDialog);
 
         QString suf;
@@ -1285,10 +1308,12 @@ bool OGLWidget::drawAnimated(bool record)
       //  //qDebug() << "SHOW_FILE_NAME " << fileName;
         m_encoder->setFileName(fileName);
         m_encoder->setGrabWidget(this);
-        m_encoder->startRecord();
+
+         m_encoder->startRecord();
+        // QTimer::singleShot(1,m_encoder, SLOT(startRecord() ) );
         // //qDebug() << "Start record into file";
     }
-    curStatus = PLAY;
+
     bRecord = record;
     //tickTimer.start();
     // //qDebug() << "Start play";
@@ -1327,6 +1352,7 @@ void OGLWidget::stopAnimated()
 
 void OGLWidget::pauseAnimated()
 {
+    editingRectangle.isEditingRectangleVisible = false;
     curStatus = PAUSE;
     // //qDebug() << "Pause play";
     m_encoder->pause();
@@ -1502,6 +1528,16 @@ void OGLWidget::generateFrames()
 {
 
 }
+ int OGLWidget::getCurStatus() const
+{
+    return (int) curStatus;
+}
+
+void OGLWidget::setCurStatus(const StatusDraw &value)
+{
+    curStatus = value;
+}
+
 
 double OGLWidget::getAnimationPersentOfCross() const
 {
@@ -1568,7 +1604,9 @@ void  OGLWidget::updateWindow(){
 
     if(curStatus != PLAY && t.x() >= 0)
     {
-        editingRectangle.isEditingRectangleVisible = true;
+        if (mayShowRedRectangle)
+            editingRectangle.isEditingRectangleVisible = true;
+
         if(t != selElm )
         {
             //clearBuffer();
@@ -1595,6 +1633,7 @@ void  OGLWidget::updateWindow(){
        // //qDebug() << "SBLOCK " << t;
         selElm = t;
         editingRectangle.isEditingRectangleVisible = false;
+
     }
     updateGL();
 }
@@ -2193,6 +2232,22 @@ void OGLWidget::storeMousePos()
    // //qDebug()<<"position stored:"<<QCursor::pos();
     }
 }
+bool OGLWidget::getMayShowRedRectangle() const
+{
+    return mayShowRedRectangle;
+}
+
+void OGLWidget::setMayShowRedRectangle(bool value)
+{
+    mayShowRedRectangle = value;
+    if (!mayShowRedRectangle)
+    {
+         editingRectangle.isEditingRectangleVisible = false;
+         paintGL();
+
+    }
+}
+
 
 int OGLWidget::getFirstSymbolOfString(int index, bool symbol)
 {

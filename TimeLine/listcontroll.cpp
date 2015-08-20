@@ -845,8 +845,8 @@ void ListControll::calcPointedBlocksAtTime( )
     // // //qDebug() << "FFFFFFFFFFFFFFF  emit playSignal();";
      timer.restart();
     //emit playSignal();
-     if (isPlayPauseStop==3)
-             time_sum = 0;
+    /* if (isPlayPauseStop==3)
+             time_sum = 0;*/
      isPlayPauseStop = 1;
 
  }

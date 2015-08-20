@@ -73,6 +73,7 @@ struct AnimationFigure
     int stop = -1;
 };
 
+
 class Encoder;
 
 struct DrawData{
@@ -155,6 +156,9 @@ public:
     void keyReleaseEvent(QKeyEvent *event);
     bool event(QEvent *e);
     QSize getTextureSize();
+
+
+
     /*
      * |Canvas control
      */
@@ -217,6 +221,15 @@ public:
     void setShowLastDrawing(bool val);
     bool getShowLastDrawing();
     void stopShowLastDrawing();
+    RectangleEditor * getEditingRectangle();
+    void setEditingRectangle(const RectangleEditor &value);
+
+    int getCurStatus() const;
+    void setCurStatus(const StatusDraw &value);
+
+    bool getMayShowRedRectangle() const;
+    void setMayShowRedRectangle(bool value);
+
 public slots:
     void hideBrushManager();
     void slotBlockEdited();
@@ -276,6 +289,7 @@ private slots:
     void storeMousePos();
 
 private:
+       bool mayShowRedRectangle = true;
      QMessageBox ms_for_debug;
     bool pressedCtrl = false;
     bool pressedShift = false;
@@ -363,6 +377,7 @@ private:
     bool isClose = false;
     bool curentList = false;
     bool init;
+
 
 
 

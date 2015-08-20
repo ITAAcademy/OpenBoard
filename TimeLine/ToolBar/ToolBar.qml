@@ -77,6 +77,7 @@ Rectangle {
         }
         Buutton{
             id: butPause
+            enabled: false
             title_text: ""
             height: parent.width
             width: parent.width
@@ -90,6 +91,7 @@ Rectangle {
         }
         Buutton{
             id: butStop
+            enabled: false
             title_text: ""
             height: parent.width
             width: parent.width

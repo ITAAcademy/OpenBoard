@@ -53,15 +53,16 @@ public:
     QGLWidget *grabWidget;
     void setFileName( QString path);
     void setGrabWidget( QGLWidget *widget);
-    void startRecord();
-    void pause();
-    void stop();
-    void encodeAudioData(QByteArray array);
-    void run();
+
+
+
+
     QImage getFrame() const;
     void setFrame(const QImage &value);
 
 private slots:
+    void encodeAudioData(QByteArray array);
+     void run();
     void onStart();
     void displayErrorMessage();
     void processAudioBuffer(const QAudioBuffer& buffer);
@@ -69,6 +70,9 @@ private slots:
     void initAudio();
     void initVideo();
 public slots:
+     void startRecord();
+     void pause();
+     void stop();
 
 signals:
 

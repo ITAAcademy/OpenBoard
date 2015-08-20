@@ -143,23 +143,14 @@ item_col.width = (timeControll.getMaxTrackTime() + 31) * main222.scaling
 
     function play()    {
 
-        if (isPlayPauseStop === 2)
-        {
-            scroll.flickableItem.contentX = 0;
-            main222.prevPlayTime = 0;
-            //scale_pointer.x = 0;
-        }
-        else if (isPlayPauseStop === 1)
-        {
+        var temp_time = (scale_pointer.x   +
+                         scroll.flickableItem.contentX )* main222.scaling
+        timeControll.setPlayTime(temp_time);
+        main222.prevPlayTime = temp_time
+        main222.play_time =  temp_time
+        main222.saveScrollX = scroll.flickableItem.contentX
+        main222.saveScalePointerX = scale_pointer.x
 
-            timeControll.setPlayTime((scale_pointer.x  /*- scale_pointer.width/2*/ +
-                                      scroll.flickableItem.contentX /*+ scroll.width*/)* main222.scaling);
-            main222.prevPlayTime = timeControll.getPlayTime()
-            // scale_pointer.x = timeControll.getPlayTime()/main222.scaling;
-           // scale_pointer.x = main222.saveScalePointerX
-          // scroll.flickableItem.contentX = main222.saveScrollX
-
-        }
         isPlayPauseStop = 0
 
 
@@ -245,6 +236,7 @@ scale_pointer.x = 0// timeControll.getMaxTrackTime() + scale_pointer.width/2 - s
 
        onUpdateSignal:  {
           main222.play_time = timeControll.getPlayTime()
+           //console.log("AAAAAAAAAAAAAA play_time = "+  main222.play_time)
            if (main222.isPlayPauseStop === 0 )
            {
                var play_time = timeControll.getPlayTime();
@@ -708,6 +700,9 @@ ContentBlock.ContextMenu {
     visible: false
     Component.onCompleted: {
         main222.p_context_menu = context_menu
+       // Component.onCompleted:
+        time_scale.x = -scroll.flickableItem.contentX + 30//trackbar.width + trackbar.x //12345
+
     }
 
     columnIndex : main222.selectedBlockCol
@@ -730,9 +725,7 @@ Rectangle {
     radius: 10
     border.width: main222.margin_value
 }
-Component.onCompleted: {
-     time_scale.x = trackbar.width + trackbar.x
-}
+
 }
 
   /*
