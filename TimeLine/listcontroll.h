@@ -236,6 +236,7 @@ public:
     void hide();
     void setFocus();
     void setViewPosition(QPoint pos); //1234
+    Q_INVOKABLE QPoint getViewPosition();
     bool isVisible();
     bool isActiveWindow();
     Q_INVOKABLE  bool isProjectChanged();
@@ -268,6 +269,8 @@ public:
 
     Q_INVOKABLE void  setFramaMousePosition( const int x,const int y) ;
     Q_INVOKABLE void setFramaMousePosition( const QPoint x);
+
+     Q_INVOKABLE QPoint  getMousePosition();
 
   //  Q_INVOKABLE void setSelectedBlock(int col, int i);
    // Q_INVOKABLE Element getSelectedBlock() ;
