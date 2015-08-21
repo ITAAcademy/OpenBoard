@@ -151,7 +151,14 @@ item_col.width = (timeControll.getMaxTrackTime() + 31) * main222.scaling
     }
 
     function play()    {
-
+        if (isPlayPauseStop === 1)
+        {
+            console.log("playyyyyyyyy   main222.saveScalePointerX = " + main222.saveScalePointerX)
+           scroll.flickableItem.contentX =  main222.saveScrollX
+           scale_pointer.x = main222.saveScalePointerX
+        }
+        else
+        {
         var temp_time = (scale_pointer.x   +
                          scroll.flickableItem.contentX )* main222.scaling
         timeControll.setPlayTime(temp_time);
@@ -159,6 +166,7 @@ item_col.width = (timeControll.getMaxTrackTime() + 31) * main222.scaling
         main222.play_time =  temp_time
         main222.saveScrollX = scroll.flickableItem.contentX
         main222.saveScalePointerX = scale_pointer.x
+        }
 
         isPlayPauseStop = 0
 
