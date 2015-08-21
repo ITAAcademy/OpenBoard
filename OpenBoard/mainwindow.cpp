@@ -142,22 +142,22 @@ connect(mpOGLWidget,SIGNAL(keyPressSignal(QKeyEvent*)),this,SLOT(keyEventSlot(QK
    //    toolBar->addAction(QPixmap(":/icons/redo-icon.png").scaled(QSize(16, 16)), "Redo", this, SLOT(on_action_Redo_triggered()));
 
        a_clear_drawing = new QAction(this);
-       a_clear_drawing->setEnabled(true);
+       a_clear_drawing->setEnabled(false);
        a_clear_drawing->setIcon(QPixmap(":/icons/Oxygen-Icons.org-Oxygen-Actions-edit-clear.ico").scaled(QSize(16, 16)));
        a_clear_drawing->setToolTip(tr("Clear drawing"));
        connect(a_clear_drawing,SIGNAL(triggered()),this,  SLOT(on_actionClear_drawing_triggered()));
        toolBarBoard->addAction(a_clear_drawing);
 
        a_clear_drawingBuffer = new QAction(this);
-       a_clear_drawingBuffer->setEnabled(true);
-       a_clear_drawingBuffer->setIcon(QPixmap(":/icons/Oxygen-Icons.org-Oxygen-Actions-edit-clear.ico").scaled(QSize(16, 16)));
-       a_clear_drawingBuffer->setToolTip(tr("Clear drawing BUFFER"));
+       a_clear_drawingBuffer->setEnabled(false);
+       a_clear_drawingBuffer->setIcon(QPixmap(":/iphone_toolbar_icons/refresh.png").scaled(QSize(16, 16)));
+       a_clear_drawingBuffer->setToolTip(tr("Clear drawing history"));
        connect(a_clear_drawingBuffer,SIGNAL(triggered()),this,  SLOT(on_actionClear_drawingBuffer_triggered()));
        toolBarBoard->addAction(a_clear_drawingBuffer);
 
        a_show_last_drawing = new QAction(this);
-       a_show_last_drawing->setEnabled(true);
-       a_show_last_drawing->setIcon(QPixmap(":/icons/ip_icon_04_New.png").scaled(QSize(16, 16)));
+       a_show_last_drawing->setEnabled(false);
+       a_show_last_drawing->setIcon(QPixmap(":/iphone_toolbar_icons/forwardtoend.png").scaled(QSize(16, 16)));
        a_show_last_drawing->setToolTip(tr("Show last drawing"));
        connect(a_show_last_drawing,SIGNAL(triggered()),this,  SLOT(on_actionShow_last_drawing_triggered()));
        toolBarBoard->addAction(a_show_last_drawing);
@@ -173,31 +173,31 @@ connect(mpOGLWidget,SIGNAL(keyPressSignal(QKeyEvent*)),this,SLOT(keyEventSlot(QK
        a_cut = new QAction(this);
         a_cut->setEnabled(true);
          a_cut->setIcon(QPixmap(":/icons/cut-icon.png").scaled(QSize(16, 16)));
-         connect(a_save_drawing,SIGNAL(triggered()), this, SLOT(on_action_Cut_triggered()));
-          a_save_drawing->setToolTip(tr("Cut"));
+         connect(a_cut,SIGNAL(triggered()), this, SLOT(on_action_Cut_triggered()));
+          a_cut->setToolTip(tr("Cut"));
 
        a_copy = new QAction(this);
         a_copy->setEnabled(true);
         a_copy->setIcon(QPixmap(":/icons/Copy-icon.png").scaled(QSize(16, 16)));
-        connect(a_save_drawing,SIGNAL(triggered()), this, SLOT(on_action_Copy_triggered()));
-         a_save_drawing->setToolTip(tr("Copy"));
+        connect(a_copy,SIGNAL(triggered()), this, SLOT(on_action_Copy_triggered()));
+         a_copy->setToolTip(tr("Copy"));
 
        a_paste = new QAction(this);
         a_paste->setEnabled(true);
          a_paste->setIcon(QPixmap(":/icons/Paste-icon.png").scaled(QSize(16, 16)));
-         connect(a_save_drawing,SIGNAL(triggered()), this, SLOT(on_action_Paste_triggered()));
-          a_save_drawing->setToolTip(tr("Paste"));
+         connect(a_paste,SIGNAL(triggered()), this, SLOT(on_action_Paste_triggered()));
+          a_paste->setToolTip(tr("Paste"));
 
        a_select_all = new QAction(this);
         a_select_all->setEnabled(true);
           a_select_all->setIcon(QPixmap(":/icons/select_all.png").scaled(QSize(16, 16)));
-          connect(a_save_drawing,SIGNAL(triggered()), this, SLOT(on_action_Select_all_triggered()));
+          connect(a_select_all,SIGNAL(triggered()), this, SLOT(on_action_Select_all_triggered()));
            a_select_all->setToolTip(tr("Select all"));
 
        a_search = new QAction(this);
         a_search->setEnabled(true);
            a_search->setIcon(QPixmap(":/icons/search-icon.png").scaled(QSize(16, 16)));
-           connect(a_save_drawing,SIGNAL(triggered()), this, SLOT(on_action_Find_triggered()));
+           connect(a_search,SIGNAL(triggered()), this, SLOT(on_action_Find_triggered()));
             a_search->setToolTip(tr("Search"));
 
 
@@ -341,8 +341,14 @@ connect(mpOGLWidget,SIGNAL(keyPressSignal(QKeyEvent*)),this,SLOT(keyEventSlot(QK
         connect(ui->actionRecord_to_file,SIGNAL(triggered()),this,  SLOT(on_action_Record_to_file_triggered()));
 ui->actionRecord_to_file->setCheckable(true);
 
+a_send_to_youtube = new QAction(this);
+ a_send_to_youtube->setEnabled(true);
+ a_send_to_youtube->setIcon(QPixmap(":/icons/youtube_icon.png").scaled(QSize(16, 16)));
+ a_send_to_youtube->setToolTip(tr("Send to YouTube"));
+ connect(a_send_to_youtube,SIGNAL(triggered()),this,  SLOT(on_action_youTube_triggered()));
+ toolBar->addAction(a_send_to_youtube);
 
-       toolBar->addAction(QPixmap(":/icons/youtube_icon.png").scaled(QSize(16, 16)), "Send to YouTube", this, SLOT(on_action_youTube_triggered()));
+
        toolBar->addAction(QPixmap(":/icons/info.png").scaled(QSize(16, 16)), "About", this, SLOT(on_action_About_triggered()));
        toolBar->setMovable(false);
        toolBarBoard->setMovable(false);
@@ -677,6 +683,11 @@ void MainWindow::focusInEvent(QFocusEvent * event)
 
 void MainWindow::on_action_Show_triggered()
 {
+    a_clear_drawing->setEnabled(true);
+    a_clear_drawingBuffer->setEnabled(true);
+    a_show_last_drawing->setEnabled(true);
+    a_save_drawing->setEnabled(true);
+
     showBoardSettings();
     a_show->setEnabled(false);
     ui->action_Show->setEnabled(false);
@@ -742,6 +753,10 @@ void MainWindow::on_action_Show_triggered()
 
 void MainWindow::on_action_Hide_triggered()
 {
+    a_clear_drawing->setEnabled(false);
+    a_clear_drawingBuffer->setEnabled(false);
+    a_show_last_drawing->setEnabled(false);
+    a_save_drawing->setEnabled(false);
    // if(mpOGLWidget->getStatus() == mpOGLWidget->PLAY || mpOGLWidget->getStatus() == mpOGLWidget->PAUSE)
       //  mpOGLWidget->stopAnimated();
     mpOGLWidget->hide();
@@ -1715,7 +1730,8 @@ void MainWindow::updateBlockFromTextEdit()
             if(ui->check_use_speed_value->isChecked())
             {
                 mpOGLWidget->getTimeLine()->setBlockTime(point.x(), point.y(), change_time);
-                mpOGLWidget->getTimeLine()->sendUpdateModel();
+                mpOGLWidget->getTimeLine()->emitUpdateTrackAt(point.x());
+                //mpOGLWidget->getTimeLine()->sendUpdateModel();
             }
         }
     }
@@ -1729,6 +1745,7 @@ void MainWindow::updateVisibleTextEdit(bool state)
 
 void MainWindow::on_action_Play_triggered()
 {
+    on_blockRightToolbar_exceptPlayPauseStop(false);
     ui->action_Play->setEnabled(false);
     a_play->setEnabled(false);
 
@@ -1818,6 +1835,7 @@ void MainWindow::on_action_Play_triggered()
 
 void MainWindow::on_action_Stop_triggered()
 {
+    on_blockRightToolbar_exceptPlayPauseStop(true);
   //  mpOGLWidget->setMayShowRedRectangle( true);
     a_stop->setEnabled(false);
      this->ui->action_Stop->setEnabled(false);
@@ -2085,6 +2103,32 @@ void MainWindow::on_block_text_buttons_toolbar(bool tt)
      this->ui->action_Select_all->setEnabled(tt);
      this->ui->action_Find->setEnabled(tt);
      this->ui->action_clearTB->setEnabled(tt);
+     this->ui->action_Font->setEnabled(tt);
+      this->ui->action_Color->setEnabled(tt);
 
+}
+
+void MainWindow::on_blockRightToolbar_exceptPlayPauseStop(bool tt)
+{
+    a_font_canvas->setEnabled(tt);
+    a_color_canvas->setEnabled(tt);
+    a_record_to_file->setEnabled(tt);
+    a_clear_drawing->setEnabled(tt);
+    a_clear_drawingBuffer->setEnabled(tt);
+    a_show_last_drawing->setEnabled(tt);
+    a_save_drawing->setEnabled(tt);
+    a_open_project->setEnabled(tt);
+    a_new_project->setEnabled(tt);
+    a_save_project->setEnabled(tt);
+    a_send_to_youtube->setEnabled(tt);
+
+     this->ui->actionClear_drawing->setEnabled(tt);
+    this->ui->actionLoad_drawing_temp->setEnabled(tt);
+    this->ui->actionRecord_to_file->setEnabled(tt);
+    this->ui->actionSave_drawing->setEnabled(tt);
+    this->ui->actionShow_last_drawing->setEnabled(tt);
+    this->ui->action_Board_Color->setEnabled(tt);
+    this->ui->action_Board_Font->setEnabled(tt);
+    ui->actionSend_to_youTube->setEnabled(tt);
 }
 

@@ -17,6 +17,11 @@ property Repeater globalRep
      color: "gray"
      property color text_color: "white"
 
+     onVisibleChanged: {
+         if (!visible)
+             appen_block_items.visible = false
+     }
+
      Rectangle {
          border {width: 5; color: "black" }
          x: parent.width*0.6
@@ -102,11 +107,12 @@ property Repeater globalRep
             button_text: "Edit block"
             index: 1
             onButtonClicked: {
+                contextMenuItem.visible = false
+                contextMenuItem.showEditBlock()
                  but_append.color = contextMenuItem.color
                 appen_block_items.visible = false
 
-                contextMenuItem.visible = false
-                contextMenuItem.showEditBlock()
+
             }
         }
 
@@ -135,6 +141,7 @@ property Repeater globalRep
             button_text: "Remove block"
             index: 2
             onButtonClicked: {
+                 contextMenuItem.visible = false;
                  but_append.color = contextMenuItem.color
                  appen_block_items.visible = false
 
@@ -143,7 +150,7 @@ property Repeater globalRep
                 timeControll.removeBlock(col,id);
                 main222.needToLightSelected = false;
                 globalRep.updateModel();
-                contextMenuItem.visible = false;
+
 
                 // //console.log(" contextMenuItem.visible = false;")
             }
@@ -155,13 +162,14 @@ property Repeater globalRep
             button_text: "Load from file"
             index: 3
             onButtonClicked: {
+                contextMenuItem.visible = false;
                  but_append.color = contextMenuItem.color
                 appen_block_items.visible = false
 
                 /*var col= contextMenuItem.columnIndex;
                 var id = contextMenuItem.blockIndex;*/
                 timeControll.loadFromFile();//removeBlock(col,id)
-                contextMenuItem.visible = false;
+
                 // //console.log("AFTER 9999999999999999999999");
                 //main222.selectedBlock.repaint();
                // globalRep.updateModel();
@@ -177,12 +185,13 @@ property Repeater globalRep
             button_text: "Convert to text block"
             index: 3
             onButtonClicked: {
+                contextMenuItem.visible = false;
                 appen_block_items.visible = false
 
                 /*var col= contextMenuItem.columnIndex;
                 var id = contextMenuItem.blockIndex;*/
                 timeControll.convertCurentBlockToText();//removeBlock(col,id)
-                contextMenuItem.visible = false;
+
                 // //console.log("AFTER 9999999999999999999999");
                 //main222.selectedBlock.repaint();
                 globalRep.updateModel();

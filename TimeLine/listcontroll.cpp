@@ -431,6 +431,10 @@ QImage ListControll::getBlockIcon(int col, int i)
   {
       emit playSignal();
   }
+  void  ListControll::emitUpdateTrackAt(int col)
+  {
+   emit updateTrackAt(col);
+  }
 
   void  ListControll::emitPauseSignal()
   {
@@ -993,6 +997,11 @@ QImage ListControll::requestImage(const QString &id, QSize *size, const QSize &r
 
      }
  }
+
+  void ListControll:: emitUpdateSignal()
+  {
+      emit updateSignal();
+  }
 
 
 
