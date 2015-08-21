@@ -890,9 +890,9 @@ void OGLWidget::clearFrameBuffer(FBOWrapper fboWrapper){
 
 void OGLWidget::deleteFBO(FBOWrapper wrapper)
 {
-
-            glDeleteTextures(1,&wrapper.bindedTexture);
-            glDeleteFramebuffers(1,&wrapper.frameBuffer);
+    makeCurrent();
+    glDeleteTextures(1,&wrapper.bindedTexture);
+    glDeleteFramebuffers(1,&wrapper.frameBuffer);
 
 }
 
