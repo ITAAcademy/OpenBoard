@@ -1362,9 +1362,9 @@ qDebug() << "111111111 curentState.state " <<(int) curentState.state;
          first->setLifeTime(curentState.firsTime);
          last->setLifeTime(curentState.lastTime);
 
-         first->setSize(width(), height());
-         last->setSize(width(), height());
-         text->setSize(width(), height());
+         first->setSize(mpOGLWidget->width(), mpOGLWidget->height());
+         last->setSize(mpOGLWidget->width(), mpOGLWidget->height());
+         text->setSize(mpOGLWidget->width(), mpOGLWidget->height());
 
 
 
@@ -1472,6 +1472,7 @@ mpOGLWidget->clearFrameBuffer();
 void MainWindow::on_actionClear_drawingBuffer_triggered()
 {
     mpOGLWidget->drawBrushElm->clear();
+    on_actionClear_drawing_triggered();
 }
 
 void MainWindow::on_animationBtn_clicked()

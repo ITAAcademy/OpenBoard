@@ -60,6 +60,9 @@ public:
     QImage getFrame() const;
     void setFrame(QImage value);
 
+    bool getBPause() const;
+    void setBPause(bool value);
+
 private slots:
     void encodeAudioData(QByteArray array);
      void run();

@@ -310,7 +310,7 @@ OGLWidget::OGLWidget(QWidget *parent) :
     QGLWidget(parent)
 {
     init = false;
-    timeLine = new ListControll(this);
+    timeLine = new ListControll();
     connect(timeLine,SIGNAL(stopSignal()),this,SIGNAL(stopSignal()));
     connect(timeLine,SIGNAL(playSignal()),this,SIGNAL(startSignal()));
     connect(timeLine,SIGNAL(pauseSignal()),this,SIGNAL(pauseSignal()));
@@ -1276,6 +1276,8 @@ bool OGLWidget::drawAnimated(bool record)
     {
         //m_recorder->resume();
         curStatus = PLAY;
+        if(bRecord)
+            timeLine->hide();
         pause(300);
         m_encoder->pause();
 
@@ -1303,6 +1305,7 @@ bool OGLWidget::drawAnimated(bool record)
          m_encoder->startRecord();
         // QTimer::singleShot(1,m_encoder, SLOT(startRecord() ) );
         // //qDebug() << "Start record into file";
+         timeLine->hide();
     }
 
     bRecord = record;
@@ -1317,12 +1320,21 @@ void OGLWidget::stopAnimated()
     //pause(100);
     if(init)
     {
+        if(bRecord)
+        {
+            if(m_encoder->getBPause())
+               m_encoder->pause();
+            m_encoder->stop();
+            timeLine->show();
+        }
+
         curStatus = STOP;
         tickTimer.stop();
-        m_encoder->stop();
            clearFrameBuffer();
         double t_animationPersentOfCross = animationPersentOfCross;
+
     }
+
 /*    int t_delay = delay;
 
     animationPersentOfCross = 1;
@@ -1335,6 +1347,7 @@ void OGLWidget::stopAnimated()
     delay = t_delay;
 */
     bRecord = false;
+
  //   pause(200);
      //qDebug() << "Stop play" << timeLine->getPlayTime();
     emit stopSignal();
@@ -1348,8 +1361,11 @@ void OGLWidget::pauseAnimated()
     curStatus = PAUSE;
 
 
+
     // //qDebug() << "Pause play";
     emit pauseSignal();
+    if(bRecord)
+        timeLine->show();
     //m_recorder->pause();
 }
 

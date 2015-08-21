@@ -518,6 +518,7 @@ int ListControll::getTrackSize(int col)
 ListControll::ListControll(QObject *parent) : QObject(parent), QQuickImageProvider(QQuickImageProvider::Image)
 {
    resetProjectToDefault();
+
    /* QList <QString>  temp;
         temp.append("1");
         temp.append("2");
@@ -552,7 +553,7 @@ ListControll::ListControll(QObject *parent) : QObject(parent), QQuickImageProvid
     view.engine()->addImageProvider("imageProvider", cloneImg);//&image_provider);
     view.setSource(QUrl("qrc:/main.qml")); \
     view.setResizeMode(QQuickView::SizeRootObjectToView);
-    view.setPersistentOpenGLContext(true);
+    view.setPersistentOpenGLContext(false);
     view.setColor("transparent");
     view.setMinimumHeight(205);
     view.setMinimumWidth(500);
@@ -711,7 +712,8 @@ void ListControll::show()
           QGuiApplication::platformName() == QLatin1String("eglfs")) {\
         view.showFullScreen();\
     } else {\
-        view.show();\
+        view.show();
+        \
     }\
 }
 
@@ -816,27 +818,8 @@ bool ListControll::isActiveWindow()
 
  void ListControll::calcPointedBlocks( )
  {
-     pointed_block.clear();
-   //  //qDebug() << "SIZE          " << tracks[0].block.size();
-     if(!isBlocked)
-     {
-         for (int i=0; i<tracks.size(); i++)
-         {
-             int blockXstart = 0;
-             for (int y=0; y<tracks[i].block.size(); y++ )
-             {
-                 int blockXend =blockXstart + tracks[i].block[y].draw_element->getLifeTime();
-                 if (scale_pointer_pos <= blockXend)
-                 {
-                     pointed_block.append(tracks[i].block[y]);
-                     // //qDebug() << "POP: " << i<< " "<<y;
-                     break;
-                 }
-                  blockXstart = blockXend;
-             }
 
-         }
-     }
+     calcPointedBlocksAtTime(scale_pointer_pos);
       //  //qDebug() << "qweqweqweqweqweqw";
 /*
 	*		show curent play element
@@ -863,32 +846,16 @@ bool ListControll::isActiveWindow()
              {
                  pointed_block.append(tracks[i].block[y]);
                  //// //qDebug() << "POP: " << i<< " "<<y;
-             break;
+                break;
              }
-              blockXstart = blockXend;
+             blockXstart = blockXend;
          }
      }
  }
 
 void ListControll::calcPointedBlocksAtTime( )
  {
-     int ms = getPlayTime();
-     pointed_block.clear();
-     for (int i=0; i<tracks.size(); i++)
-     {
-         int blockXstart = 0;
-         for (int y=0; y<tracks[i].block.size(); y++ )
-         {
-             int blockXend =blockXstart + tracks[i].block[y].draw_element->getLifeTime();
-             if (ms <= blockXend)
-             {
-                 pointed_block.append(tracks[i].block[y]);
-                 //// //qDebug() << "POP: " << i<< " "<<y;
-             break;
-             }
-              blockXstart = blockXend;
-         }
-     }
+     calcPointedBlocksAtTime(getPlayTime());
  }
 
  QList <Element> ListControll::getPointedBlocksAtTime( )
