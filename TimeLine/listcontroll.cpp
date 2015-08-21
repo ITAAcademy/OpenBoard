@@ -219,7 +219,9 @@ void ListControll::loadFromFile()
    temp.draw_element->setLifeTime(life_time);
    temp.draw_element->setStartDraw(start_time);
    temp.draw_element->setZ(p.x());
+
    calcPointedBlocks();
+
    emit updateSelectedBlock(selectedBlockPoint);
    sendUpdateModel();
    setBlocked(false);

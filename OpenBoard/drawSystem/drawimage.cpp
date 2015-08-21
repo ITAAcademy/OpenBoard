@@ -14,8 +14,11 @@ DrawImageElm::~DrawImageElm()
 
 void DrawImageElm::draw()
 {
+// QSize brushTextureSize = pDrawWidget->getTextureSize();
+// qDebug () << "W:"<< brushTextureSize.width();
+ // qDebug () << "H:"<< brushTextureSize.height();
+    pDrawWidget->drawTexture(0, 0, pDrawWidget->getWax(), pDrawWidget->getWay(), textureIndex, 0, 1 , 1, z);
 
-    pDrawWidget->drawTexture(x, y, width, height, textureIndex, 0, 1 , 1, z);
 }
 
 bool DrawImageElm::load_add(QDataStream &stream)

@@ -113,7 +113,7 @@ void DrawTextElm::draw()
            // //qDebug() << realKeyValue <<"    KEY    " << keyCouter;
     }
 
-    pDrawWidget->drawTextBuffer(x, y, width, height, z);
+    pDrawWidget->drawTextBuffer(x, y, pDrawWidget->getWax(), pDrawWidget->getWay(), z);
     curentCh = current_time;
 }
 

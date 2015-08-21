@@ -37,6 +37,7 @@ MainWindow::MainWindow(QWidget *parent) :
    // gs(Qt::CustomizeWindowHint | Qt::FramelessWindowHint | Qt::WindowTitleHint);
     //mpOGLWidget->setAttribute(Qt::WA_ShowModal);
     //mpOGLWidget->setWindowFlags (Qt::CustomizeWindowHint | Qt::FramelessWindowHint | Qt::WindowTitleHint);
+
     mpOGLWidget->show();
     mpOGLWidget->setVisible(false);
      //qDebug() << "connect unableToDraw";
@@ -1436,9 +1437,11 @@ void MainWindow::onCommandFocusLost(){
 
 void MainWindow::on_actionClear_drawing_triggered()
 {
-// //qDebug() << "on_actionClear_drawing_triggered()";
-mpOGLWidget->clearFrameBuffer();
-//// //qDebug() << mpOGLWidget->isClearFrameBuffer;
+
+// qDebug() << "on_actionClear_drawing_triggered()";
+mpOGLWidget->clearFrameBuffer(mpOGLWidget->getMainFBO());
+//// qDebug() << mpOGLWidget->isClearFrameBuffer;
+
 }
 
 void MainWindow::on_actionClear_drawingBuffer_triggered()
