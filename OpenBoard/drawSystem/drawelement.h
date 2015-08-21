@@ -28,6 +28,7 @@ protected:
     int startDrawTime;
     int x, y, z, width, height;
     int keyCouter;
+    bool aspectRatio = false;
     QTimer lifeTimer;
     QElapsedTimer tickTimer;
     char type[50];

@@ -41,6 +41,7 @@ DrawTextElm::DrawTextElm(OGLWidget *drawWidget, QObject *parent) : DrawElement(d
 {
     setType("text");
     setTypeId(Element_type::Text);
+    aspectRatio = true;
 }
 
 DrawTextElm::~DrawTextElm()
@@ -50,6 +51,7 @@ DrawTextElm::~DrawTextElm()
 
 void DrawTextElm::draw()
 {
+    pDrawWidget->clearFrameBuffer(fboWrapper);
     int current_time;
     if(!bPlay)
         current_time =  pDrawWidget->getTimeLine()->getScalePointerPos();
@@ -113,7 +115,7 @@ void DrawTextElm::draw()
            // //qDebug() << realKeyValue <<"    KEY    " << keyCouter;
     }
 
-    pDrawWidget->drawTextBuffer(x, y, pDrawWidget->getWax(), pDrawWidget->getWay(), z);
+    pDrawWidget->drawTextBuffer(0, 0, pDrawWidget->getWax(), pDrawWidget->getWay(), z, true, (float)pDrawWidget->getWax()/width);
     curentCh = current_time;
 }
 

@@ -907,7 +907,8 @@ void OGLWidget::paintGL()
      glBindFramebuffer(GL_FRAMEBUFFER , 0);
 
     //// qDebug() << "isClearFrameBuffer:"<<isClearFrameBuffer;
-    if(isClearFrameBuffer)clearFrameBuffer(mainFBO);
+    if(isClearFrameBuffer)
+        clearFrameBuffer(mainFBO);
 //glDrawBuffer(GL_COLOR_ATTACHMENT0);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // чистим буфер изображения и буфер глубины
@@ -1766,12 +1767,12 @@ int OGLWidget::getCountDeleteWT() const
 
 QFont OGLWidget::getTextFont() const
 {
-    return textFont;
+    return mainTextFont;
 }
 
 void OGLWidget::setTextFont(const QFont &value)
 {
-    textFont = value;
+    mainTextFont = value;
     if(fMetrics != NULL)
         delete fMetrics;
     fMetrics = new QFontMetrics(value);
@@ -1797,8 +1798,9 @@ void OGLWidget::recreate()
 void OGLWidget::clear(int x,int y,int width,int height){
 
 }
-void OGLWidget::myRenderText( QGLWidget* w, int x, int y,int z, const QString& text, const QColor& col , const QFont& font  )
+void OGLWidget::myRenderText( QGLWidget* w, int x, int y,int z, const QString& text, const QColor& col , const QFont& font , float scale )
 {
+         qDebug() << scale;
     if (text.isEmpty()) return;
 
    // //qDebug() <<"myRenderText begin";
@@ -1809,8 +1811,12 @@ void OGLWidget::myRenderText( QGLWidget* w, int x, int y,int z, const QString& t
     glMatrixMode( GL_MODELVIEW );
     glPushMatrix();
     //glLoadIdentity();*/
+    glPushMatrix();
 
     QFontMetrics fm(font);
+
+
+
     QRect rect = fm.boundingRect( text);
     if (rect.width()>wax)rect.setWidth(wax);
     if (rect.height()>way)rect.setHeight(way);
@@ -1834,12 +1840,14 @@ void OGLWidget::myRenderText( QGLWidget* w, int x, int y,int z, const QString& t
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glRasterPos3i( x, y, z );
+    //glScalef(getWax()/rect.width(), getWay()/rect.height(), 0);
+    //glPixelZoom(getWax()/rect.width(), getWax()/rect.width());
     glDrawPixels( rect.width(), rect.height(), GL_RGBA, GL_UNSIGNED_BYTE, img.bits() );
     glDisable(GL_BLEND);
     /*glMatrixMode( GL_PROJECTION );
     glPopMatrix();
     glMatrixMode( GL_MODELVIEW );*/
-    glPopMatrix();
+  //  glPopMatrix();
   //  //qDebug() <<"myRenderText end";
 
     /*
@@ -1867,7 +1875,7 @@ void OGLWidget::myRenderText( QGLWidget* w, int x, int y,int z, const QString& t
      */
 
 }
-void OGLWidget::fillText( QString str,QColor color, int x, int y, int z)
+void OGLWidget::fillText( QString str,QColor color, int x, int y, int z, float scale)
 {
 
    /* // //qDebug() << "ARG1:  " << str.size();
@@ -1883,7 +1891,7 @@ void OGLWidget::fillText( QString str,QColor color, int x, int y, int z)
 
 
     //renderText(x, y, str,textFont);
-    myRenderText(this,x,y,z,str,color,textFont);
+    myRenderText(this,x,y,z,str,color,textFont, scale);
     //displayText(str, color);
 
     //glEnable(GL_DEPTH_TEST);
@@ -2034,12 +2042,17 @@ QPoint OGLWidget::drawWrapText(QString str)
     return res;
 }
 
-void OGLWidget::drawTextBuffer( int m_x, int m_y, int m_width, int m_height, int z, bool cross)
+void OGLWidget::drawTextBuffer( int m_x, int m_y, int m_width, int m_height, int z, bool cross, float scale)
 {
      busy = true;
     //if(!crossTextV2())
      //   return QPoint(0, 0);
     //int width = fMetrics->width(str)*1.125 ;//+ fMetrics->leftBearing(str.at(0)) + fMetrics->rightBearing(str.at(0));
+     textFont.setPointSize(mainTextFont.pointSize() * scale);
+     if(fMetrics != NULL)
+         delete fMetrics;
+     fMetrics = new QFontMetrics(textFont);
+     pt = textFont.pointSize();
 
     clearCanvas(m_x, m_y);
     int maxDrawElm = (m_height/(lineHeight + pt)) - 1;
@@ -2125,7 +2138,7 @@ void OGLWidget::drawTextBuffer( int m_x, int m_y, int m_width, int m_height, int
             x+=fMetrics->width(textToWarp);
             setFillColor(colors[k].value);
             QString textToFill = stringList[i].mid(columnOfColorStrBegin,columnOfColorStrEnd-columnOfColorStrBegin);
-            fillText(textToFill,fillColor,x , y, z);
+            fillText(textToFill,fillColor,x , y, z,(float) scale);
            // localX+=fMetrics->width(textToFill);
             //setFillColor(QColor(255,255,255));//Костиль, удалити, вистачить верхнього setColor, добавити на початок colors колір канви
            /*  // //qDebug() << "columnOfColorStrEnd:" << columnOfColorStrEnd;
