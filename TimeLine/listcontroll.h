@@ -313,6 +313,8 @@ public:
     Q_INVOKABLE void  setPrevMousePosition();
     Q_INVOKABLE QPoint  getPrevMousePosition();
     Q_INVOKABLE void  update();
+   Q_INVOKABLE void emitUpdateSignal();
+   Q_INVOKABLE void  emitUpdateTrackAt(int col);
 
     Q_INVOKABLE int  getTracksNumber();
 
@@ -348,6 +350,7 @@ signals:
   void pauseSignal();
   void stopSignal();
     void updateSignal();
+    void updateTrackAt(int);
     void updateModel();
     void blockEditedSignal();
 

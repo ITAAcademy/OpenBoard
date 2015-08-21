@@ -1170,8 +1170,8 @@
   </action>
   <action name="actionSave_drawing">
    <property name="icon">
-    <iconset resource="../TimeLine/icons_timeLine.qrc">
-     <normaloff>:/iphone_toolbar_icons/disk.png</normaloff>:/iphone_toolbar_icons/disk.png</iconset>
+    <iconset resource="icons.qrc">
+     <normaloff>:/icons/Save-icon.png</normaloff>:/icons/Save-icon.png</iconset>
    </property>
    <property name="text">
     <string>Save drawing</string>
@@ -1224,8 +1224,8 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
-  <include location="icons.qrc"/>
   <include location="../TimeLine/icons_timeLine.qrc"/>
+  <include location="icons.qrc"/>
  </resources>
  <connections>
   <connection>

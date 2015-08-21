@@ -153,7 +153,6 @@ item_col.width = (timeControll.getMaxTrackTime() + 31) * main222.scaling
     function play()    {
         if (isPlayPauseStop === 1)
         {
-            console.log("playyyyyyyyy   main222.saveScalePointerX = " + main222.saveScalePointerX)
            scroll.flickableItem.contentX =  main222.saveScrollX
            scale_pointer.x = main222.saveScalePointerX
         }
@@ -226,6 +225,7 @@ scale_pointer.x = 0// timeControll.getMaxTrackTime() + scale_pointer.width/2 - s
             rep_columns.itemAt(main222.selectedBlockCol).setColorize(main222.selectedBlockIndex,"#8000FF00")
         }
         main222.p_trackbar.globalRep.updateModel()
+        console.log("DDDDDDDDDDAAAAAAAAAAAAA")
 
         //repka.updateModel();
 
@@ -265,6 +265,9 @@ scale_pointer.x = 0// timeControll.getMaxTrackTime() + scale_pointer.width/2 - s
               // //console.log("timer value: " +timeControll.getPlayTime())
            }
        }
+       onUpdateTrackAt: {
+           main222.p_trackbar.globalRep.updateModel()
+       }
 
        onUpdateModel: {
            /*rep_columns.model = 0
@@ -277,7 +280,6 @@ scale_pointer.x = 0// timeControll.getMaxTrackTime() + scale_pointer.width/2 - s
               console.log("destroying: " + i)
               cool_main.children[i].destroy();
             }
-           main222.scaling = timeControll.getScaleScrollChildren();
            main222.updateTracksModel();
            //console.log("AAAAAAAAAAAAAAAAAA " +  main222.scaling)
        }
