@@ -561,7 +561,6 @@ ListControll::ListControll(QObject *parent) : QObject(parent), QQuickImageProvid
     view.setFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint | Qt::WindowTitleHint);
 
 
-
 //view.setMaximumHeight(215);
     //loadCurrentTextInTheFirstBlockWhenInit();
 

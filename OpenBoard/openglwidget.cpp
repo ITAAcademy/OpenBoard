@@ -1726,11 +1726,11 @@ void OGLWidget::myRenderText( QGLWidget* w, int x, int y,int z, const QString& t
     }
     img = QGLWidget::convertToGLFormat(img);
 
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+   // glEnable(GL_BLEND);
+ //   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glRasterPos3i( x, y, z );
     glDrawPixels( rect.width(), rect.height(), GL_RGBA, GL_UNSIGNED_BYTE, img.bits() );
-    glDisable(GL_BLEND);
+    //glDisable(GL_BLEND);
     /*glMatrixMode( GL_PROJECTION );
     glPopMatrix();
     glMatrixMode( GL_MODELVIEW );*/
@@ -1779,6 +1779,7 @@ void OGLWidget::fillText( QString str,QColor color, int x, int y, int z)
 
     //renderText(x, y, str,textFont);
     myRenderText(this,x,y,z,str,color,textFont);
+    qglColor(Qt::white);
     //displayText(str, color);
 
     //glEnable(GL_DEPTH_TEST);
