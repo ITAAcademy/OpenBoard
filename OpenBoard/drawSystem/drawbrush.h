@@ -18,6 +18,8 @@ class DrawBrushElm  : public DrawElement
      Q_OBJECT
     int currentPointsGroup = 0;
 QVector<QPoint> coords;
+Brush brush;
+GLuint currentTexture;
 //QVector <QPoint> mouseCoord;
 QVector<BrushBeginingIndex> brushes;
 QStringList brushesPaths;

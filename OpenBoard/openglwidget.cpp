@@ -12,17 +12,22 @@ canvas->setProperty("scroll", k);
 */
 
 GLuint OGLWidget::loadTexture(QImage img){
-    makeCurrent();
+
     if(img.isNull()) // QCoreApplication::applicationDirPath()+"/star.png"
     {
         //loads correctly
         qWarning() << "ERROR LOADING IMAGE";// + QCoreApplication::applicationDirPath()+"/star.png";
         return -1;
     }
+
     ////qDebug() << "GL_ERROR_STATUS LOAD_TEXTURE:   "<< glGetError();
-    QImage GL_formatted_image = convertToGLFormat(img);
+
     ////qDebug() << "GL_ERROR_STATUS LOAD_TEXTURE:   "<< glGetError();
     // //qDebug() << "image converted to GL format";
+
+    QImage GL_formatted_image = convertToGLFormat(img);
+
+
     if(GL_formatted_image.isNull())
         qWarning() << "IMAGE IS NULL";
     else
@@ -34,8 +39,7 @@ GLuint OGLWidget::loadTexture(QImage img){
     GLuint texture;
 
        glGenTextures(1, &texture); // Obtain an id for the texture
-      // //qDebug() << "GL_ERROR_STATUS LOAD_TEXTURE:   "<< glGetError();
-    //   //qDebug() << texture;
+
        glBindTexture(GL_TEXTURE_2D, texture); // Set as the current texture
  //qDebug(" after  glBindTexture(GL_TEXTURE_2D, texture);");
        //glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
@@ -43,13 +47,12 @@ GLuint OGLWidget::loadTexture(QImage img){
 
 
        glTexImage2D(GL_TEXTURE_2D, 0, 4, GL_formatted_image.width(), GL_formatted_image.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, GL_formatted_image.bits());
-  //     //qDebug() << "GL_ERROR_STATUS LOAD_TEXTURE:   "<< glGetError();
-      //// //qDebug() <<
+
        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-      // //qDebug() << "GL_ERROR_STATUS LOAD_TEXTURE:   "<< glGetError();
+
      //  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 
        glBindTexture(GL_TEXTURE_2D, 0);
@@ -62,7 +65,6 @@ GLuint OGLWidget::loadTexture(QImage img){
         else
            sucsessLoadTexture = false;
 */
-       ////qDebug() << "GL_ERROR_STATUS LOAD_TEXTURE:   "<< glGetError();
        //if(glGetError())
           // return -1;
 
@@ -88,12 +90,13 @@ int OGLWidget::loadTextureFromFile(QString path)
 
 }
 
-void OGLWidget::drawTexture( int x, int y, int width, int height, GLuint texture,int angle,float scaleX,float scaleY, int z){
+void OGLWidget::drawTexture(int x, int y, int width, int height, GLuint texture,int angle,float scaleX,float scaleY, int z){
 //loadTextures();
   // glLoadIdentity();
     glEnable(GL_TEXTURE_2D);
     qglColor(Qt::white);
     glBindTexture(GL_TEXTURE_2D, texture);
+
     int cx=x+width/2,cy=y+height/2;
 
     glPushMatrix();
@@ -134,7 +137,10 @@ void OGLWidget::setList(const QList<DrawElement *> &value)
    for( DrawElement* elm : value)
     {
         if(elm != NULL && !timeLine->isBlocked)//&& timeLine->getMaxTrackTime() > 0)
+        {
             elm->setDrawWidget(this);   //12345
+
+        }
         else
             break;
     }
@@ -148,13 +154,24 @@ void OGLWidget::setList(const QList<DrawElement *> &value)
     }
     curentList = !curentList;    
 }
-void OGLWidget::paintBrushInBuffer(QVector<QPoint> coords,QVector<BrushBeginingIndex> brushes,int keyFrame){
-    glBindFramebuffer(GL_FRAMEBUFFER , fbo); // Bind our frame buffer for rendering
+void OGLWidget::paintBrushInBuffer(GLuint& texture,Brush& currentBrushOfDrawSystem,FBOWrapper& fboWrapper,QVector<QPoint> coords,QVector<BrushBeginingIndex> brushes,int keyFrame){
+    if (fboWrapper.errorStatus==-1)qDebug() << "BAD BUFFER";
+   // qDebug()<<"binded buffer in paint brush:"<< fboWrapper.frameBuffer;
+   // glBindFramebuffer(GL_FRAMEBUFFER , fboWrapper.frameBuffer); // Bind our frame buffer for rendering
 int recordedBrushN = 0;
 
 ////qDebug() << "keyFrame:"<<keyFrame;
 
 //bool isBrushUsed = false;
+//TEST
+glBegin(GL_TRIANGLES);
+
+    glVertex2f(-1.0f, -0.5f);    // lower left vertex
+    glVertex2f( 1.0f, -0.5f);    // lower right vertex
+    glVertex2f( 0.0f,  0.5f);    // upper vertex
+
+    glEnd();
+
     for (; recordedBrushN < brushes.length(); )
     {
         ////qDebug() << "brushes["<<recordedBrushN<<"].pointIndex"<<brushes[recordedBrushN].pointIndex;
@@ -163,8 +180,10 @@ int recordedBrushN = 0;
        // //qDebug() << "mouse play index:"<<keyFrame;
 
         currentBrushOfDrawSystem = brushes[recordedBrushN].brush;
-        brushTextureCurrentPlayed = loadTexture(currentBrushOfDrawSystem.color_img);
-        //qDebug() << "recordedBrushN:"<<recordedBrushN;
+
+        texture = loadTexture(currentBrushOfDrawSystem.color_img);
+        qDebug() << "recordedBrushN:"<<recordedBrushN;
+
        // isBrushUsed=true;
      ////qDebug() << "recordedBrushN:"<<recordedBrushN;
      break;
@@ -173,7 +192,7 @@ int recordedBrushN = 0;
     }
 
     //glUseProgram(ShaderProgram);
-    glBindTexture(GL_TEXTURE_2D,brushTextureCurrentPlayed);
+    glBindTexture(GL_TEXTURE_2D,texture);
    // if (isBrushUsed) {
      //   //qDebug() << "recordedBrushN:" << recordedBrushN;
       //  currentBrushOfDrawSystem = brushes[recordedBrushN].brush;
@@ -192,8 +211,10 @@ int recordedBrushN = 0;
     float randScalePtY = 0;
     if(m_manager.getAffine() != 0)
     {
+
         randScalePtX = currentBrushOfDrawSystem.afinn/2 - rand() % 1 + (currentBrushOfDrawSystem.afinn);
         randScalePtY = currentBrushOfDrawSystem.afinn/2 - rand() % 1 + (currentBrushOfDrawSystem.afinn);
+
     }
    // qDebug() << "randScalePtX_" << m_manager.getAffine() << "__AFTER" << randScalePtX << " " << randScalePtY;
 
@@ -261,13 +282,13 @@ int recordedBrushN = 0;
 
 
         drawTexture(xPos-BRUSH_SIZE/2 + dispersX ,yPos-BRUSH_SIZE/koff/2 + dispersY,BRUSH_SIZE,BRUSH_SIZE/koff,
-                brushTextureCurrentPlayed,angle,scaleX,scaleY);
+                texture,angle,scaleX,scaleY);
         }
 // glUseProgram(NULL);
 
 
 glBindTexture(GL_TEXTURE_2D,0);
-glBindFramebuffer(GL_FRAMEBUFFER , 0); // Unbind our texture
+//glBindFramebuffer(GL_FRAMEBUFFER , 0); // Unbind our texture
 }
 bool OGLWidget::isShowLastDrawing(){
     return showingLastDrawing;
@@ -377,7 +398,7 @@ OGLWidget::OGLWidget(QWidget *parent) :
     indexRowInList = 0;
     cursorIndex = 0;
     isCrossingNow = false;
-     drawBrushElm = new DrawBrushElm(this,this);//record mouse movement
+
     //OPENGL
    //setFormat(QGLFormat(QGL::SampleBuffers | QGL::DoubleBuffer | QGL::DepthBuffer)); // Двойная буферизация
      QGLFormat format;
@@ -391,7 +412,7 @@ OGLWidget::OGLWidget(QWidget *parent) :
    timer->start(5);
    connect(&mouseTimer, SIGNAL(timeout()), this, SLOT(storeMousePos()));
    mouseTimer.start();
-   connect(&m_manager,SIGNAL(currentBrushChanged()),this,SLOT(brushParamsChanged()));
+
 
 
    //for loading current text in to fist init block
@@ -407,7 +428,9 @@ OGLWidget::OGLWidget(QWidget *parent) :
 */
    getTimeLine()->setIsProjectChanged(false);
 }
-
+void OGLWidget::bindBuffer(GLuint buffer){
+    glBindFramebuffer(GL_FRAMEBUFFER,buffer);
+}
 
 OGLWidget::~OGLWidget()
 {
@@ -435,11 +458,12 @@ void OGLWidget::resizeGL(int nWidth, int nHeight)
     way=nHeight;
     // //qDebug() << "CALL RESIZE";
 }
-void OGLWidget::paintBufferOnScreen( int x, int y, int width, int height, int z){
+void OGLWidget::paintBufferOnScreen( FBOWrapper buffer,int x, int y, int width, int height, int z){
+     if (buffer.errorStatus==-1)qDebug() << "BAD BUFFER";
     glColor3f(1.0,1.0,1.0);
     glEnable(GL_TEXTURE_2D);
 
-    glBindTexture(GL_TEXTURE_2D,fbo_texture);
+    glBindTexture(GL_TEXTURE_2D,buffer.bindedTexture);
    // qglColor(Qt::green);//TO SEE TEXTURE
     glBegin(GL_QUADS);
             //Draw Picture
@@ -460,8 +484,8 @@ void OGLWidget::paintBufferOnScreen( int x, int y, int width, int height, int z)
     glDisable(GL_TEXTURE_2D);
 }
 
-void OGLWidget::paintBrushInBuffer() {
-glBindFramebuffer(GL_FRAMEBUFFER , fbo); // Bind our frame buffer for rendering
+void OGLWidget::paintBrushInBuffer(FBOWrapper fboWrapper) {
+glBindFramebuffer(GL_FRAMEBUFFER , fboWrapper.frameBuffer); // Bind our frame buffer for rendering
 //glPushAttrib(GL_VIEWPORT_BIT | GL_ENABLE_BIT); // Push our glEnable and glViewport states
 //glViewport(0, 0, window_width, window_height); // Set the size of the frame buffer view port
 
@@ -597,7 +621,6 @@ glBindFramebuffer(GL_FRAMEBUFFER , 0); // Unbind our texture
    //FRAMEBUFFER PART
 
 
-
 //saveFrameBufferToTexture();
 
 
@@ -689,14 +712,17 @@ glValidateProgram(ShaderProgram);
 
 
 
-void OGLWidget::initFrameBufferDepthBuffer() {
+void OGLWidget::initFBDepthBuffer(GLuint &fbo_depth) {
 glGenRenderbuffers(1, &fbo_depth); // Generate one render buffer and store the ID in fbo_depth
 glBindRenderbuffer(GL_RENDERBUFFER , fbo_depth); // Bind the fbo_depth render buffer
 GLenum error = glGetError();
-//qDebug() << "GL_ERROR_STATUS glBindRenderbuffer:"<<error;
-glRenderbufferStorage(GL_RENDERBUFFER , GL_DEPTH_COMPONENT, wax, way); // Set the render buffer storage to be a depth component, with a width and height of the window
- error = glGetError();
-//qDebug() << "GL_ERROR_STATUS glRenderbufferStorage:"<<error;
+
+qDebug() << "GL_ERROR_STATUS glBindRenderbuffer:"<<error;
+//glRenderbufferStorage(GL_RENDERBUFFER , GL_DEPTH_COMPONENT, wax, way); // Set the render buffer storage to be a depth component, with a width and height of the window
+
+error = glGetError();
+qDebug() << "GL_ERROR_STATUS glRenderbufferStorage:"<<error;
+
 //glFramebufferRenderbuffer(GL_FRAMEBUFFER , GL_DEPTH_ATTACHMENT , GL_RENDERBUFFER ,fbo_depth); // Set the render buffer of this buffer to the depth buffer
  //error = glGetError();
 ////qDebug() << "GL_ERROR_STATUS glFramebufferRenderbuffer:"<<error;
@@ -705,11 +731,12 @@ glBindRenderbuffer(GL_RENDERBUFFER , 0); // Unbind the render buffer
 //qDebug() << "GL_ERROR_STATUS glBindRenderbuffer:"<<error;
 }
 
-void OGLWidget::initFrameBufferTexture() {
+void OGLWidget::initTexture(GLuint &texture) {
     glEnable(GL_TEXTURE_2D);
     //glDeleteTextures(1,&fbo_texture);
-glGenTextures(1, &fbo_texture); // Generate one texture
-glBindTexture(GL_TEXTURE_2D, fbo_texture); // Bind the texture fbo_texture
+glGenTextures(1, &texture); // Generate one texture
+
+glBindTexture(GL_TEXTURE_2D, texture); // Bind the texture fbo_texture
 
 glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, wax, way, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL); // Create a standard texture with the width and height of our window
 
@@ -725,54 +752,101 @@ glDisable(GL_TEXTURE_2D);
 }
 
 
-void OGLWidget::initFrameBuffer() {
+FBOWrapper OGLWidget::initFboWrapper() {
+
+    qDebug () << "INIT FBO";
+    FBOWrapper fboWrapper;
+     fboWrapper.errorStatus=0;
+    GLuint fbo=0;
+    GLuint depth_buffer=0;
+    GLuint fbo_texture=0;
+    qDebug() << "fbo:"<<fbo;
+    qDebug()<< "depth_buffer:"<<depth_buffer;
+    qDebug() << "fbo_texture:"<<fbo_texture;
     GLenum error = glGetError();
+
     //qDebug() << "GL_ERROR_STATUS initFrameBuffer:"<<error;
-    glEnable(GL_DEPTH_TEST);
+  //  glEnable(GL_DEPTH_TEST);
+
+    qDebug() << "GL_ERROR_STATUS initFrameBuffer:"<<error;
+    qDebug() << 1;
+
     glGenFramebuffers(1, &fbo); // Generate one frame buffer and store the ID in fbo
 
-initFrameBufferDepthBuffer(); // Initialize our frame buffer depth buffer
+qDebug() << 2;
+
+qDebug() << 3;
  error = glGetError();
-//qDebug() << "GL_ERROR_STATUS initFrameBufferDepthBuffer:"<<error;
+
+//initFBDepthBuffer(depth_buffer); // Initialize our frame buffer depth buffer
+initTexture(fbo_texture); // Initialize our frame buffer texture
+
 glBindFramebuffer(GL_FRAMEBUFFER , fbo); // Bind our frame buffer
-initFrameBufferTexture(); // Initialize our frame buffer texture
+qDebug () << "texture inited id:"<<fbo_texture;
 
 error = glGetError();
-//qDebug() << "GL_ERROR_STATUS initFrameBufferTexture:"<<error;
 
+qDebug() << "GL_ERROR_STATUS initFrameBufferTexture:"<<error;
+qDebug() << "attachment.count():"<<attachment.count();
+//attachment.append(GL_COLOR_ATTACHMENT0+attachment.count());
+attachment.append(GL_COLOR_ATTACHMENT0);
+glFramebufferTexture2D(GL_FRAMEBUFFER , attachment.last() , GL_TEXTURE_2D, fbo_texture, 0); // Attach the texture fbo_texture to the color buffer in our frame buffer
+//glDrawBuffer(GL_COLOR_ATTACHMENT1);
 
-glFramebufferTexture2D(GL_FRAMEBUFFER , GL_COLOR_ATTACHMENT0 , GL_TEXTURE_2D, fbo_texture, 0); // Attach the texture fbo_texture to the color buffer in our frame buffer
-
-//glFramebufferRenderbuffer(GL_FRAMEBUFFER , GL_DEPTH_ATTACHMENT , GL_RENDERBUFFER , fbo_depth); // Attach the depth buffer fbo_depth to our frame buffer
+//glFramebufferRenderbuffer(GL_FRAMEBUFFER , GL_DEPTH_ATTACHMENT , GL_RENDERBUFFER , depth_buffer); // Attach the depth buffer fbo_depth to our frame buffer
 error = glGetError();
 //qDebug() << "GL_ERROR_STATUS:"<<error;
 GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER ); // Check that status of our generated frame buffer
 
 if (status != GL_FRAMEBUFFER_COMPLETE ) // If the frame buffer does not report back as complete
 {
- //qDebug() << "Couldn't create frame buffer\n" ; // Output an error to the //console
-exit(0); // Exit the application
+
+ qDebug() << "Couldn't create frame buffer\n" ; // Output an error to the console
+//exit(0); // Exit the application
+ fboWrapper.errorStatus=-1;
+
 }
 
+
 glBindFramebuffer(GL_FRAMEBUFFER , 0); // Unbind our frame buffer
+
+fboWrapper.bindedTexture=fbo_texture;
+fboWrapper.frameBuffer=fbo;
+GLenum err = glCheckFramebufferStatus(GL_FRAMEBUFFER);
+    if (err != GL_FRAMEBUFFER_COMPLETE) {
+        qWarning() << "Can't create framebuffer:" << err;
+         fboWrapper.errorStatus=-1;
+    }
+
+
+
+return fboWrapper;
 }
 
 void OGLWidget::initializeGL()
 {
+     qDebug() << "initializeGL";
+
     initializeGLFunctions();
+glEnable(GL_DEPTH_TEST);
     qglClearColor(Qt::black); // Черный цвет фона
+    qDebug() << "initializeGLFunctions";
      //glEnable(GL_TEXTURE_2D);
     backGroundTexture = loadTextureFromFile(":/ThirdPart/images/start.png");
     m_manager.getCreatedBrush().color_img=BrushPainter::getInstance()->applyColor(m_manager.getCreatedBrush());
     brushTexture = loadTexture(m_manager.getCreatedBrush().color_img);
     //loadTextureFromFile(":/ThirdPart/images/brush.png");
-    initFrameBuffer(); // Create our frame buffer object
+    //initFrameBuffer(); // Create our frame buffer object
+    mainFBO=initFboWrapper();
      initShader();
     setAutoBufferSwap(false);
     qApp->processEvents(QEventLoop::AllEvents, 1000);
+    qDebug() << "A";
+    drawBrushElm = new DrawBrushElm(this,this);//record mouse movement
+    qDebug() << "B";
    /* list_1.append(GenerationDrawElement("kaka.text", this, 0));
     list_1.append(GenerationDrawElement("brush.png", this, 0));*/
-
+   connect(&m_manager,SIGNAL(currentBrushChanged()),this,SLOT(brushParamsChanged()));
 }
 
 void OGLWidget::moveEvent(QMoveEvent *event)
@@ -787,24 +861,38 @@ void OGLWidget::moveEvent(QMoveEvent *event)
 
 
 void OGLWidget::destroy(bool destroyWindow, bool destroySubWindow){
-    glDeleteFramebuffers(1,&fbo);
+    glDeleteFramebuffers(1,&mainFBO.frameBuffer);
+    glDeleteTextures(1,&mainFBO.bindedTexture);
     //glDeleteRenderbuffers(1,&render_buf);
+
+}
+FBOWrapper OGLWidget::getMainFBO(){
+    return mainFBO;
 }
 
-void OGLWidget::clearFrameBuffer(){
+void OGLWidget::clearFrameBuffer(FBOWrapper fboWrapper){
 
-    glBindFramebuffer(GL_FRAMEBUFFER , fbo); // Bind our frame buffer for rendering
     makeCurrent();
-
-    std::vector<GLubyte> emptyData(wax * way * 4, 0);
-   glBindTexture(GL_TEXTURE_2D, fbo_texture);
-     glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, wax, way, GL_RGBA, GL_UNSIGNED_BYTE, &emptyData[0]);
-      glBindTexture(GL_TEXTURE_2D,0);
+  //  glBindFramebuffer(GL_FRAMEBUFFER , fboWrapper.frameBuffer); // Bind our frame buffer for rendering
+   // glClearColor(0.1f, 0.0f, 0.0f, 0.0f); // устанавливаем фоновый цвет
+   std::vector<GLubyte> emptyData(wax * way * 4, 0);
+   glBindTexture(GL_TEXTURE_2D, fboWrapper.bindedTexture);
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, wax, way, GL_RGBA, GL_UNSIGNED_BYTE, &emptyData[0]);
+     // glBindTexture(GL_TEXTURE_2D,0);
 
     //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         isClearFrameBuffer=false;
-      glBindFramebuffer(GL_FRAMEBUFFER , 0);
-      // //qDebug()<<"clearFrameBuffer";
+     // glBindFramebuffer(GL_FRAMEBUFFER , 0);
+      // qDebug()<<"clearFrameBuffer";
+
+
+}
+
+void OGLWidget::deleteFBO(FBOWrapper wrapper)
+{
+
+            glDeleteTextures(1,&wrapper.bindedTexture);
+            glDeleteFramebuffers(1,&wrapper.frameBuffer);
 
 }
 
@@ -814,10 +902,13 @@ void OGLWidget::paintGL()
     if(m_encoder->newImage)
         m_encoder->setFrame(grabFrameBuffer());
 
+
+    //glDrawBuffer(GL_COLOR_ATTACHMENT1);
      glBindFramebuffer(GL_FRAMEBUFFER , 0);
 
-    //// //qDebug() << "isClearFrameBuffer:"<<isClearFrameBuffer;
-    if(isClearFrameBuffer)clearFrameBuffer();
+    //// qDebug() << "isClearFrameBuffer:"<<isClearFrameBuffer;
+    if(isClearFrameBuffer)clearFrameBuffer(mainFBO);
+//glDrawBuffer(GL_COLOR_ATTACHMENT0);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // чистим буфер изображения и буфер глубины
     glClearColor(0.0,0.0,0.0,0.0);
@@ -962,7 +1053,7 @@ case EDIT_RECTANGLE_MOVE:
     break;
  }
  testRectangle();
-    if (canDrawByMouse && m_manager.isAbleToDraw()) paintBrushInBuffer();
+    if (canDrawByMouse && m_manager.isAbleToDraw()) paintBrushInBuffer(mainFBO);
 }
 if (showingLastDrawing )
 {
@@ -985,8 +1076,9 @@ if (showingLastDrawing )
     }
     recordedBrushN++;
     }
-
-    paintBrushInBuffer(drawBrushElm->getCoords(),drawBrushElm->getBrushes(),currentLastDrawingPointIterator);
+glBindFramebuffer(GL_FRAMEBUFFER , mainFBO.frameBuffer);
+    paintBrushInBuffer(brushTextureCurrentPlayed,currentBrushOfLastDrawing,mainFBO,drawBrushElm->getCoords(),drawBrushElm->getBrushes(),currentLastDrawingPointIterator);
+    glBindFramebuffer(GL_FRAMEBUFFER ,0);
     currentLastDrawingPointIterator++;
     if (currentLastDrawingPointIterator>=drawBrushElm->getCoords().length())
     {
@@ -997,7 +1089,7 @@ if (showingLastDrawing )
 }
 
 if(curStatus == STOP)
-    paintBufferOnScreen(0, 0, wax, way, 100);
+    paintBufferOnScreen(mainFBO,0, 0, wax, way,-100);
 
 glDisable(GL_BLEND);
 GLuint error = glGetError();
@@ -1010,7 +1102,6 @@ glFlush();
 init = true;
 
 
-////qDebug() << "GL_ERROR_STATUS end:"<<error;
 }
 
 void OGLWidget::paintEvent(QPaintEvent *event)
@@ -1247,11 +1338,12 @@ void OGLWidget::keyPressEvent(QKeyEvent *event)
 
 QSize OGLWidget::getTextureSize()
 {
+    glEnable(GL_TEXTURE_2D);
     QSize textureSize;
     GLint width;
     GLint height;
     glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &width);
-      glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_WIDTH, &height);
+      glGetTexLevelParameteriv(GL_TEXTURE_2D, 0, GL_TEXTURE_HEIGHT, &height);
    textureSize.setWidth(width);
     textureSize.setHeight(height);
     return textureSize;
@@ -1320,7 +1412,8 @@ void OGLWidget::stopAnimated()
         curStatus = STOP;
         tickTimer.stop();
         m_encoder->stop();
-           clearFrameBuffer();
+        clearFrameBuffer(mainFBO);
+
         double t_animationPersentOfCross = animationPersentOfCross;
     }
 /*    int t_delay = delay;
@@ -1358,6 +1451,8 @@ void OGLWidget::brushParamsChanged()
     if (!m_manager.isAbleToDraw())return;
     m_manager.getCreatedBrush().color_img=BrushPainter::getInstance()->applyColor(m_manager.getCreatedBrush());
     brushTexture = loadTexture(m_manager.getCreatedBrush().color_img);
+    while (!isInit())
+        qDebug() << "waiting for init";
     drawBrushElm->addBrush(m_manager.getCreatedBrush());
     //qDebug() << "brushParamsChanged";
 
@@ -1551,6 +1646,16 @@ bool OGLWidget::getIsBrushWindowOpened() const
 void OGLWidget::setIsBrushWindowOpened(bool value)
 {
     isBrushWindowOpened = value;
+}
+
+int OGLWidget::getWax()
+{
+    return wax;
+}
+
+int OGLWidget::getWay()
+{
+    return way;
 }
 
 

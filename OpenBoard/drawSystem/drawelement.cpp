@@ -17,6 +17,7 @@ bool DrawElement::setDrawWidget(OGLWidget *value)
         disconnect(pDrawWidget, SIGNAL(pauseSignal()), this, SLOT(pause()));
     }
     pDrawWidget = value;
+    setFBOWrapper(pDrawWidget->initFboWrapper());//TODO
     connect(pDrawWidget, SIGNAL(startSignal()), this, SLOT(start()));
     connect(pDrawWidget, SIGNAL(stopSignal()), this, SLOT(stop()));
     connect(pDrawWidget, SIGNAL(pauseSignal()), this, SLOT(pause()));
@@ -53,7 +54,10 @@ DrawElement::DrawElement(OGLWidget *drawWidget, QObject *parent) : QObject(paren
         connect(pDrawWidget, SIGNAL(stopSignal()), this, SLOT(stop()));
         connect(pDrawWidget, SIGNAL(pauseSignal()), this, SLOT(pause()));
     }
-
+    qDebug() << "RRRR BEFORE";
+   // if (pDrawWidget)
+//fboWrapper=pDrawWidget->initFboWrapper();
+ qDebug() << "RRRR AFTER";
 }
 
 void DrawElement::copy(DrawElement *elm)
@@ -71,6 +75,9 @@ void DrawElement::copy(DrawElement *elm)
 
 DrawElement::~DrawElement()
 {
+    qDebug() << "delete DrawElement";
+pDrawWidget->deleteFBO(fboWrapper);
+
     if(pDrawWidget != NULL)
     {
         disconnect(pDrawWidget, SIGNAL(startSignal()), this, SLOT(start()));
@@ -81,12 +88,24 @@ DrawElement::~DrawElement()
 
 void DrawElement::paint()
 {
+    pDrawWidget->bindBuffer(fboWrapper.frameBuffer);
     draw();
+     pDrawWidget->bindBuffer(0);
+     pDrawWidget->paintBufferOnScreen(fboWrapper,x, y, width, height, z);
 }
 
 void DrawElement::draw()
 {
 
+}
+
+FBOWrapper DrawElement::getFBOWrapper()
+{
+ return fboWrapper;
+}
+DrawElement::setFBOWrapper(FBOWrapper wrapper)
+{
+this->fboWrapper=wrapper;
 }
 
 bool DrawElement::load(QString path)
@@ -98,6 +117,7 @@ bool DrawElement::load(QString path)
     appFile.open(QFile::ReadOnly);
     this->load(&appFile);
     appFile.close();
+
 }
 
 bool DrawElement::load(QIODevice* device)
