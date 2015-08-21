@@ -1193,7 +1193,7 @@ bool OGLWidget::event(QEvent *e)
         // ...
 
         case QEvent::WindowActivate :
-         timeLine->setFocus();
+   //      timeLine->setFocus();
             break ;
 
         case QEvent::WindowDeactivate :

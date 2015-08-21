@@ -387,6 +387,7 @@ ui->actionRecord_to_file->setCheckable(true);
         setEnabledToolBar(false);
 
         onTextChangeUpdateTimer.setInterval(800);
+        onTextChangeUpdateTimer.setSingleShot(true);
         connect(&onTextChangeUpdateTimer,SIGNAL(timeout()),this,SLOT(updateBlockFromTextEdit()));
 
 
@@ -608,23 +609,30 @@ bool MainWindow::event(QEvent * e) // overloading event(QEvent*) method of QMain
         // ...
 
         case QEvent::WindowActivate : {
+            if(!isActive)
+            {
 
                 if(mpOGLWidget->isVisible()) // get focus for windows
                 {
                     mpOGLWidget->getTimeLine()->setFocus();
                 }
 
-            mpOGLWidget->getTimeLine()->emitFocusLostSignal();
-            mpOGLWidget->hideBrushManager();
-            QPoint current_pos = mpOGLWidget->pos();
-            current_pos.setY(current_pos.y() + mpOGLWidget->height());
-            mpOGLWidget->getTimeLine()->setViewPosition(current_pos);
-            //qDebug() << "SET_ACTIVE_MAIN_WINDOW";
-            break ;
+                mpOGLWidget->getTimeLine()->emitFocusLostSignal();
+                mpOGLWidget->hideBrushManager();
+                QPoint current_pos = mpOGLWidget->pos();
+                current_pos.setY(current_pos.y() + mpOGLWidget->height());
+                mpOGLWidget->getTimeLine()->setViewPosition(current_pos);
+                qApp->processEvents();
+                isActive = true;
+                isActiveWindow();
+                //qDebug() << "SET_ACTIVE_MAIN_WINDOW";
+                break ;
+            }
         }
 
         case QEvent::WindowDeactivate :
             // lost focus
+
             isActive = false;
 
             //qDebug() << "LOSE_ACTIVE_MAIN_WINDOW";
