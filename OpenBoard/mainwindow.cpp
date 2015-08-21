@@ -1754,6 +1754,7 @@ void MainWindow::on_action_Play_triggered()
 
 
     onTextChanged();
+    updateBlockFromTextEdit();
     // curent
     //((DrawTextElm*)drawElements[0])->setUnitList(mUnitList);
     //((DrawTextElm*)drawElements[0])->setUnParsestring(textEdit->toPlainText());
@@ -1785,6 +1786,7 @@ void MainWindow::on_action_Play_triggered()
         else
         {
             on_action_Stop_triggered();
+            mpOGLWidget->getTimeLine()->stop();
             //qDebug("222222222222222222222222222222222");
             return;
         }
