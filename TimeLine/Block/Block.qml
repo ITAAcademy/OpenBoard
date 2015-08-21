@@ -28,13 +28,9 @@ Rectangle{
 
     function hideMenu()
     {
-        context_menu.visible = false;
+        context_menu.closeIt()
     }
-    function showMenu()
-    {
-        context_menu.visible = true;
 
-    }
 
     function repaint()
     {
@@ -100,7 +96,7 @@ onYChanged: y=0;
            }
 
         onMouseXChanged: {
-            if (context_menu.visible === false)
+           // if (context_menu.visible === false) //123rr
             {
             if(globalRep.isDrag === false &&  mouseX > root.width * 0.9) //mouseX < root.width * 0.1 ||/
             {
@@ -132,6 +128,7 @@ onYChanged: y=0;
 
 
        onPressed: {
+           context_menu.globalRep = root.globalRep
             if(main222.selectedBlock !== null)
                 main222.selectedBlock.hideMenu();
             timeControll.emitFocusFoundSignal();
@@ -152,8 +149,8 @@ onYChanged: y=0;
             // //console.log("onPressed: mIndex="+mIndex+" colIndex="+ colIndex + " time = " + timeControll.getBlockTime(colIndex,mIndex))
             if (mouse.button == Qt.RightButton)
             {
-               context_menu.show(main222.p_scale_pointer.x, mouseY + root.colIndex * (root.height + 2)
-                                 - scroll.flickableItem.contentY,root.globalRep)
+               context_menu.showIt(main222.p_scale_pointer.x, mouseY + root.colIndex * (root.height + 2)
+                                 - scroll.flickableItem.contentY,root)
                 drag.target = null
             }
         else
@@ -169,7 +166,7 @@ onYChanged: y=0;
                      root.double_click = true
                     double_click_timer.running = true
 
-                context_menu.visible = false
+                    context_menu.closeIt()
                 drag.target = root
     // //console.log("onPressed");
             drop.visible = false;
@@ -194,7 +191,7 @@ onYChanged: y=0;
         }
         onReleased: {
            // main222.p_scale_pointer.x = mouseX + root.x
-            if (context_menu.visible === false)
+           // if (context_menu.visible === false) //123rr
             {
             // //console.log("RELEASE");
             if (globalRep.isDrag)

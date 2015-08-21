@@ -670,6 +670,11 @@ void ListControll::moveWindow()
      prevMousePosition = QCursor::pos();
  }
 
+ QPoint  ListControll::getMousePosition()
+ {
+    return QCursor::pos();
+ }
+
     QPoint  ListControll::getPrevMousePosition()
     {
         return prevMousePosition;
@@ -777,6 +782,11 @@ void ListControll::setViewPosition(QPoint pos)
 {
     if(view.isVisible())
         view.setPosition(pos);
+}
+
+QPoint ListControll::getViewPosition()
+{
+    return view.position();
 }
 
 bool ListControll::isVisible()

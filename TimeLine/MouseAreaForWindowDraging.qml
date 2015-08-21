@@ -15,11 +15,10 @@ MouseArea
     hoverEnabled: true
     acceptedButtons: Qt.LeftButton | Qt.RightButton
     onPressed: {
+        context_menu.closeIt()
         timeControll.emitFocusFoundSignal();
         if (Qt.LeftButton)
         {
-            main222.p_context_menu.visible = false
-             //// //console.log("mouseX ="+mouseX+" mouseY ="+mouseY)
             timeControll.setFramaMousePosition(mouseX, mouseY)
             timeControll.setPrevMousePosition()
             var div=5
