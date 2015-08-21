@@ -615,35 +615,39 @@ bool MainWindow::event(QEvent * e) // overloading event(QEvent*) method of QMain
         // ...
 
         case QEvent::WindowActivate : {
-            if(!isActive)
-            {
+        if(!isActive)
+          {
+              if(mpOGLWidget->isVisible()) // get focus for windows
+              {
+                  mpOGLWidget->getTimeLine()->setFocus();
+                  //childIsActive = true;
+              }
+              isActive = true;
+             qApp->processEvents();
+             activateWindow();
+              isActive = true;
+          }
+          mpOGLWidget->getTimeLine()->emitFocusLostSignal();
+          mpOGLWidget->hideBrushManager();
+          QPoint current_pos = mpOGLWidget->pos();
+          current_pos.setY(current_pos.y() + mpOGLWidget->height());
+          mpOGLWidget->getTimeLine()->setViewPosition(current_pos);
+          updateBlockFromTextEdit();
+          //qDebug() << "SET_ACTIVE_MAIN_WINDOW";
+          break ;
+      }
 
-                if(mpOGLWidget->isVisible()) // get focus for windows
-                {
-                    mpOGLWidget->getTimeLine()->setFocus();
-                }
-
-                mpOGLWidget->getTimeLine()->emitFocusLostSignal();
-                mpOGLWidget->hideBrushManager();
-                QPoint current_pos = mpOGLWidget->pos();
-                current_pos.setY(current_pos.y() + mpOGLWidget->height());
-                mpOGLWidget->getTimeLine()->setViewPosition(current_pos);
-                qApp->processEvents();
-                isActive = true;
-                isActiveWindow();
-                //qDebug() << "SET_ACTIVE_MAIN_WINDOW";
-                break ;
-            }
-        }
-
-        case QEvent::WindowDeactivate :
-            // lost focus
-
-            isActive = false;
-
-            //qDebug() << "LOSE_ACTIVE_MAIN_WINDOW";
-            break ;
-        // ...
+      case QEvent::WindowDeactivate :
+          // lost focus
+          bool activeOther = false;
+          if(mpOGLWidget->isActiveWindow())
+              activeOther = true;
+          if(mpOGLWidget->getTimeLine()->isActiveWindow())
+              activeOther = true;
+          if(!activeOther)
+              isActive = false;
+          //qDebug() << "LOSE_ACTIVE_MAIN_WINDOW";
+          break ;
 
     } ;
 
@@ -1450,6 +1454,7 @@ void MainWindow::on_backBtn_clicked()
 }
 void MainWindow::onCommandFocusSet(){
     isCommandTextEditFocused=true;
+
     // //qDebug() << "focus changed"<<isCommandTextEditFocused;
 }
 void MainWindow::onCommandFocusLost(){
