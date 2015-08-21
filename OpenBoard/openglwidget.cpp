@@ -412,7 +412,7 @@ OGLWidget::OGLWidget(QWidget *parent) :
    timer->start(5);
    connect(&mouseTimer, SIGNAL(timeout()), this, SLOT(storeMousePos()));
    mouseTimer.start();
-   connect(&m_manager,SIGNAL(currentBrushChanged()),this,SLOT(brushParamsChanged()));
+
 
 
    //for loading current text in to fist init block
@@ -846,7 +846,7 @@ glEnable(GL_DEPTH_TEST);
     qDebug() << "B";
    /* list_1.append(GenerationDrawElement("kaka.text", this, 0));
     list_1.append(GenerationDrawElement("brush.png", this, 0));*/
-
+   connect(&m_manager,SIGNAL(currentBrushChanged()),this,SLOT(brushParamsChanged()));
 }
 
 void OGLWidget::moveEvent(QMoveEvent *event)
@@ -1076,8 +1076,9 @@ if (showingLastDrawing )
     }
     recordedBrushN++;
     }
-
+glBindFramebuffer(GL_FRAMEBUFFER , mainFBO.frameBuffer);
     paintBrushInBuffer(brushTextureCurrentPlayed,currentBrushOfLastDrawing,mainFBO,drawBrushElm->getCoords(),drawBrushElm->getBrushes(),currentLastDrawingPointIterator);
+    glBindFramebuffer(GL_FRAMEBUFFER ,0);
     currentLastDrawingPointIterator++;
     if (currentLastDrawingPointIterator>=drawBrushElm->getCoords().length())
     {
@@ -1088,7 +1089,6 @@ if (showingLastDrawing )
 }
 
 if(curStatus == STOP)
-
     paintBufferOnScreen(mainFBO,0, 0, wax, way,-100);
 
 glDisable(GL_BLEND);
@@ -1451,6 +1451,8 @@ void OGLWidget::brushParamsChanged()
     if (!m_manager.isAbleToDraw())return;
     m_manager.getCreatedBrush().color_img=BrushPainter::getInstance()->applyColor(m_manager.getCreatedBrush());
     brushTexture = loadTexture(m_manager.getCreatedBrush().color_img);
+    while (!isInit())
+        qDebug() << "waiting for init";
     drawBrushElm->addBrush(m_manager.getCreatedBrush());
     //qDebug() << "brushParamsChanged";
 

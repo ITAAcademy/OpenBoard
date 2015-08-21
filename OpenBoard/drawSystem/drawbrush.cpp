@@ -155,8 +155,8 @@ void DrawBrushElm::addCoord( QPoint pt)
 
 void DrawBrushElm::clear()
 {
-    coords.clear();
-    brushes.clear();
+   // coords.clear();
+  //  brushes.clear();
 }
 void DrawBrushElm::setLifeTime(int value)
 {
@@ -236,7 +236,8 @@ QDataStream &operator >> ( QDataStream &st, BrushBeginingIndex &data )
 */
 void DrawBrushElm::addBrush(Brush brush)
 {
-    //qDebug() << "brushes.length():"<<brushes.length();
+   qDebug() << "brushes.length():"<<brushes.length();
+   // if (brushes==NULL)return;
     for (int i=0;i<brushes.length();i++){
    // //qDebug() << "i:"<<i;
     //qDebug() << "pointIndex         :   "<<brushes[i].pointIndex;
