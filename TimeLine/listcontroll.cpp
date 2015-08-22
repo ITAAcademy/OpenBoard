@@ -323,8 +323,8 @@ bool ListControll::removeTrack(int col)
  void ListControll::reverseBlocks(int col, int init_pos, int end_pos)
  {
    Element temp = tracks[col].block[init_pos];
+
    tracks[col].block[init_pos] = tracks[col].block[end_pos];
-  //   testWidth[col][init_pos] = testWidth[col][end_pos];
      tracks[col].block[end_pos] = temp;
  }
 
