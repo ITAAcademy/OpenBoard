@@ -23,6 +23,10 @@ Rectangle{
     border { color: "white" ; width: 2 }
 
 
+    function updateTrackWhereIsBlock()
+    {
+        globalRep.updateModel()
+    }
 
 
 
@@ -128,21 +132,27 @@ onYChanged: y=0;
 
 
        onPressed: {
+           timeControll.setSelectedBlockPoint(root.colIndex,root.mIndex);
+           main222.selectedBlockCol = root.colIndex
+           main222.selectedBlockIndex = root.mIndex
+
+          main222.selectedBlock = root;
            context_menu.globalRep = root.globalRep
+
+           // console.log("AAAAAAAAAAAAAAAAAA "+ main222.selectedBlockCol +" " + main222.selectedBlockIndex)
             if(main222.selectedBlock !== null)
                 main222.selectedBlock.hideMenu();
             timeControll.emitFocusFoundSignal();
             //console.log("AAAAAAAAAAAAAAA " + timeControll.getBlockStartTime(root.colIndex,root.mIndex))
              main222.p_scale_pointer.x = mouseX + root.x - scroll.flickableItem.contentX + main222.p_scale_pointer.width //1234
-            timeControll.setSelectedBlockPoint(root.colIndex,root.mIndex);
+
             main222.p_scale_pointer.x+=1
-            main222.selectedBlock = root;
+
 
             main222.needToLightSelected = true
             for (var y=0; y< rep_columns.model; y++)
                  rep_columns.itemAt(y).abortColorize()
-            main222.selectedBlockCol = root.colIndex
-            main222.selectedBlockIndex = root.mIndex
+
             icon_coloroverlay.color = "#8000FF00"  //1234
            // blocks.itemAt(i).icon_coloroverlay.color = "#00000000"
             //columns.childAt()
@@ -190,6 +200,7 @@ onYChanged: y=0;
         }
         }
         onReleased: {
+            main222.p_scale_pointer.x = mouseX + root.x - scroll.flickableItem.contentX + main222.p_scale_pointer.width //1234
            // main222.p_scale_pointer.x = mouseX + root.x
            // if (context_menu.visible === false) //123rr
             {
@@ -309,13 +320,14 @@ onYChanged: y=0;
 
     }
     onExited: {
-         // //console.log( " DropArea onExited main_root.maIsPressed="+main222.maIsPressed)
         icon_coloroverlay.color = "#00000000"
  main222.dropEntered = 0
         if (main222.maIsPressed === 0)        {
             timeControll.reverseBlocks(root.colIndex,root.mIndex,main222.clicked_blockId)
             main222.selectedBlockCol = root.colIndex
             main222.selectedBlockIndex = root.mIndex
+            timeControll.setSelectedBlockPoint(root.colIndex,root.mIndex)
+
               globalRep.updateModel();
         }
             }

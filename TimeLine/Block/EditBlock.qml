@@ -7,6 +7,7 @@ ApplicationWindow  {
     property int blockIndex: 0
     property int columnIndex: 0
      property int   minBlockWidth : 1000
+    property Item selectedBlock
 
     property Repeater globalRep
 
@@ -274,7 +275,9 @@ ApplicationWindow  {
                  timeControll.setDrawSize(mainwindow.columnIndex,mainwindow.blockIndex,block_Width_value.text,block_Height_value.text)
 
                 timeControll.emitBlockEditedSignal()
-                mainwindow.globalRep.updateModel()
+               // mainwindow.globalRep.updateModel()
+                 //console.log("AAAAAAAAAAAAAAAAAAAA "+ mainwindow.columnIndex +" " + mainwindow.blockIndex)
+                 mainwindow.selectedBlock.updateTrackWhereIsBlock()
                 close();
              }
          }

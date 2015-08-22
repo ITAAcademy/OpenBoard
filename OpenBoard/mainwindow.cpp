@@ -1331,14 +1331,12 @@ qDebug() << "111111111 curentState.state " <<(int) curentState.state;
         setViewState(curentState.state);
      else
          setViewState(VIDEO_EDIT_PRO);
-
+if (a_hide->isEnabled())
+    on_blockRightToolbar_exceptPlayPauseStop(true);
 
      if (temp_state != OPENING_PROJECT)
      {
-         qDebug() << "AAAAAAAAAAAAAAAAAAAA8 ";
-     //qDebug() << "AAAAAAAAAAAAAAAAAAAA   DAAAAAAAAAAAAAA";
      //qApp->processEvents(QEventLoop::AllEvents, 1000); //this lead to crash
-    // //qDebug() << "AAAAAAAAAAAAAAAAAAAAww";
      switch (curentState.state) {
      case VIDEO_EDIT_TEXT:
      {
@@ -1752,6 +1750,7 @@ void MainWindow::updateVisibleTextEdit(bool state)
 void MainWindow::on_action_Play_triggered()
 {
     on_blockRightToolbar_exceptPlayPauseStop(false);
+
     ui->action_Play->setEnabled(false);
     a_play->setEnabled(false);
 
@@ -1969,9 +1968,13 @@ void MainWindow::updateCurrentTxt()
 void MainWindow::onStopShowLastDrawing()
 {
     ui->actionShow_last_drawing->setText("show last drawing");
+
+    if (mpOGLWidget->getStatus() == OGLWidget::STOP)
+    {
     ui->actionClear_drawing->setEnabled(true);
     a_clear_drawing->setEnabled(true);
     a_clear_drawingBuffer->setEnabled(true);
+    }
 }
 void MainWindow::on_speedBtn_pressed()
 {

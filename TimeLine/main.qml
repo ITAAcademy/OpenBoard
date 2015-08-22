@@ -225,7 +225,6 @@ scale_pointer.x = 0// timeControll.getMaxTrackTime() + scale_pointer.width/2 - s
             rep_columns.itemAt(main222.selectedBlockCol).setColorize(main222.selectedBlockIndex,"#8000FF00")
         }
         main222.p_trackbar.globalRep.updateModel()
-        console.log("DDDDDDDDDDAAAAAAAAAAAAA")
 
         //repka.updateModel();
 
@@ -522,7 +521,7 @@ timeControll.setScalePointerPos((x  -20 + scroll.flickableItem.contentX)* main22
         y : time_scale.height
 
 
-         ScrollView {
+         ScrollView  {
               id: scroll
               width: parent.width - tollbar.width
               height: parent.height

@@ -55,6 +55,45 @@ ApplicationWindow  {
         }
 
               }
+    function showEditBlock()
+    {
+        var window2    = Qt.createComponent("EditBlock.qml").createObject(contextMenuItem)
+        window2.modality = Qt.WindowModal
+
+
+        window2.blockIndex = main222.selectedBlockIndex//contextMenuFrame.blockIndex
+        window2.columnIndex = main222.selectedBlockCol  // contextMenuFrame.columnIndex
+        window2.show()
+        var temp = 400
+        window2.maximumHeight = temp
+        window2.maximumWidth = temp
+        window2.minimumHeight = temp
+        window2.minimumWidth = temp
+        window2.selectedBlock = main222.selectedBlock
+
+        window2.globalRep = contextMenuFrame.globalRep
+         window2.minBlockWidth = contextMenuFrame.minBlockWidth
+        var mouse_pos = timeControll.getMousePosition()
+        window2.x = mouse_pos.x - temp/2
+        window2.y = mouse_pos.y - temp/2
+        if (window2.x < 30)
+            window2.x = 30;
+        else
+        {
+            var screen_width =Screen.desktopAvailableWidth - window2.width - 5
+            if (window2.x  > screen_width)
+                window2.x  = screen_width
+        }
+        if (window2.y < 50)
+            window2.y = 50;
+        else
+        {
+            var screen_height =Screen.desktopAvailableHeight - window2.height - 5
+            if (window2.y  > screen_height)
+                window2.y  = screen_height
+        }
+
+    }
 property int   minBlockWidth : 0
     Rectangle
     {
@@ -121,43 +160,7 @@ property int   minBlockWidth : 0
          }
           height: but_edit.height*2.5
      }
-     function showEditBlock()
-     {
-         var window2    = Qt.createComponent("EditBlock.qml").createObject(contextMenuItem)
-         window2.modality = Qt.WindowModal
 
-
-         window2.blockIndex = contextMenuFrame.blockIndex
-         window2.columnIndex = contextMenuFrame.columnIndex
-         window2.show()
-         var temp = 400
-         window2.maximumHeight = temp
-         window2.maximumWidth = temp
-         window2.minimumHeight = temp
-         window2.minimumWidth = temp
-
-         window2.globalRep = contextMenuFrame.globalRep
-          window2.minBlockWidth = contextMenuFrame.minBlockWidth
-
-
-         if (window2.x < 30)
-             window2.x = 30;
-         else
-         {
-             var screen_width =Screen.desktopAvailableWidth - window2.width - 5
-             if (window2.x  > screen_width)
-                 window2.x  = screen_width
-         }
-         if (window2.y < 50)
-             window2.y = 50;
-         else
-         {
-             var screen_height =Screen.desktopAvailableHeight - window2.height - 5
-             if (window2.y  > screen_height)
-                 window2.y  = screen_height
-         }
-
-     }
 
 
 
@@ -178,7 +181,7 @@ property int   minBlockWidth : 0
             index: 1
             onButtonClicked: {
                 context_menu.closeIt()
-                contextMenuItem.showEditBlock()
+                context_menu.showEditBlock()
                  but_append.color = contextMenuItem.color
                 appen_block_items.visible = false
 
@@ -242,7 +245,7 @@ property int   minBlockWidth : 0
 
                 // //console.log("AFTER 9999999999999999999999");
                 //main222.selectedBlock.repaint();
-               contextMenuFrame. globalRep.updateModel();
+               //contextMenuFrame. globalRep.updateModel();
 
 
 
