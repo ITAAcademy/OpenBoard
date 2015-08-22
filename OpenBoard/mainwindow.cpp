@@ -1734,7 +1734,7 @@ void MainWindow::updateBlockFromTextEdit()
             if(ui->check_use_speed_value->isChecked() && isActiveWindow())
             {
                 mpOGLWidget->getTimeLine()->setBlockTime(point.x(), point.y(), change_time);
-                mpOGLWidget->getTimeLine()->emitUpdateTrackAt(point.x());
+                mpOGLWidget->getTimeLine()-> sendUpdateModel();
                 //mpOGLWidget->getTimeLine()->sendUpdateModel();
             }
         }
