@@ -1731,7 +1731,7 @@ void MainWindow::updateBlockFromTextEdit()
             if(change_time < 100)
                 change_time = 100;
             ui->expected_time->setText("EXPECTED TIME:  " + QString::number(change_time) + " ms");
-            if(ui->check_use_speed_value->isChecked())
+            if(ui->check_use_speed_value->isChecked() && isActiveWindow())
             {
                 mpOGLWidget->getTimeLine()->setBlockTime(point.x(), point.y(), change_time);
                 mpOGLWidget->getTimeLine()->emitUpdateTrackAt(point.x());
