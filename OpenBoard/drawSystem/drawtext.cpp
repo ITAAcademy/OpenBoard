@@ -68,7 +68,7 @@ void DrawTextElm::draw()
            animationDelayStart = 1;
            curentPauseValue = 0;
        }
-       int realKeyValue = qCeil((double)(current_time - (curentPauseValue + startDrawTime)) / (double)((lifeTime - globalPauseLifeTime)/(mUnitList.size() - 1)));
+       int realKeyValue = qRound((double)(current_time - (curentPauseValue + startDrawTime)) / (double)((lifeTime - globalPauseLifeTime)/(mUnitList.size() - 1)));
        //qDebug() << mUnitList.size() << "            qwe         "<< realKeyValue;
       // //qDebug() << "cur " << current_time;
        ////qDebug() << "start " << startDrawTime;

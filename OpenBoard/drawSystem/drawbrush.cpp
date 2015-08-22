@@ -195,8 +195,9 @@ void DrawBrushElm::draw()
                 pDrawWidget->paintBrushInBuffer(coords,brushes, keyCouter);
                     keyCouter++;
         }
+        pDrawWidget->paintBufferOnScreen(x, y, width, height, z);
     }
-    pDrawWidget->paintBufferOnScreen(x, y, width, height, z);
+
 
 }
 

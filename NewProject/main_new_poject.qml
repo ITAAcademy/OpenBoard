@@ -73,7 +73,7 @@ Rectangle{
                             content.next = c3;
                         }
                     }
-                    Content.MenuItem{
+                /*    Content.MenuItem{
                         title: "New visual effect"
                         onClicked: {
                             my_col.clean();
@@ -81,7 +81,7 @@ Rectangle{
                             root.project_state = 4
                             content.next = c4;
                         }
-                    }
+                    }*/
                     Content.MenuItem{
                         id: open
                         title: "Open project"

@@ -392,7 +392,7 @@ a_send_to_youtube = new QAction(this);
 
         setEnabledToolBar(false);
 
-        onTextChangeUpdateTimer.setInterval(800);
+        onTextChangeUpdateTimer.setInterval(300);
         onTextChangeUpdateTimer.setSingleShot(true);
         connect(&onTextChangeUpdateTimer,SIGNAL(timeout()),this,SLOT(updateBlockFromTextEdit()));
 
