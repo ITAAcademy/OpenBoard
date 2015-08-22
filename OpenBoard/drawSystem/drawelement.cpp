@@ -36,7 +36,7 @@ DrawElement::DrawElement(OGLWidget *drawWidget, QObject *parent) : QObject(paren
 {
     pDrawWidget = drawWidget;
     bPause = false;
-    bPlay = false;
+    bPlay = true;
     x = 0;
     y = 0;
     z = 0;
