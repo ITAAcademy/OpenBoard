@@ -42,7 +42,8 @@ void DrawTextElm::setPrevTextCursor(int value)
 void DrawTextElm::start()
 {
     DrawElement::start();
-        pDrawWidget->clearBuffer();
+    pDrawWidget->clearBuffer();
+    pDrawWidget->clearCanvas();
 }
 DrawTextElm::DrawTextElm(OGLWidget *drawWidget, QObject *parent) : DrawElement(drawWidget, parent)
 {

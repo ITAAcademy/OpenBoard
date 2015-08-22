@@ -773,6 +773,29 @@ void OGLWidget::initializeGL()
    /* list_1.append(GenerationDrawElement("kaka.text", this, 0));
     list_1.append(GenerationDrawElement("brush.png", this, 0));*/
 
+    glMatrixMode(GL_PROJECTION); // устанавливаем матрицу
+     //  glShadeModel(GL_SMOOTH);
+       // Сглаживание точек
+      // glEnable(GL_POINT_SMOOTH);
+      // glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
+       // Сглаживание линий
+       //glEnable(GL_LINE_SMOOTH);
+       //glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+
+      // glEnable(GL_POLYGON_SMOOTH);
+      // glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+      // glEnable(GL_MULTISAMPLE);
+
+       glLoadIdentity(); // загружаем матрицу
+       glOrtho(0,wax,way,0, -1000000, 200000); // подготавливаем плоскости для матрицы
+       glEnable(GL_BLEND);
+       glEnable(GL_ALPHA_TEST);
+
+      // glDepthMask(false);
+       glDepthFunc(GL_LEQUAL); // this maybe problem
+       glAlphaFunc(GL_GREATER,0);
+       glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE);
+
 }
 
 void OGLWidget::moveEvent(QMoveEvent *event)
