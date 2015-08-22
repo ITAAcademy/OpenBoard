@@ -2141,3 +2141,8 @@ void MainWindow::on_blockRightToolbar_exceptPlayPauseStop(bool tt)
     ui->actionSend_to_youTube->setEnabled(tt);
 }
 
+
+void MainWindow::on_actionAbout_Qt_triggered()
+{
+   QApplication::aboutQt();
+}

@@ -185,6 +185,7 @@ public slots:
 
 private slots:
     void updateBlockFromTextEdit();
+    void on_actionAbout_Qt_triggered();
 };
 
 #endif // MAINWINDOW_H
