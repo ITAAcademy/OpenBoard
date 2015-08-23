@@ -1212,9 +1212,11 @@ bool MainWindow::on_action_Save_Project_triggered()
 
 void MainWindow::on_action_Open_Project_triggered()
 {   
+
     isActive = true;
     qApp->processEvents();
     activateWindow();
+
     if (mpOGLWidget->getTimeLine()->isProjectChanged())
     {
     QMessageBox::StandardButton reply;
@@ -1234,9 +1236,12 @@ void MainWindow::on_action_Open_Project_triggered()
     isActive = false;
     qApp->processEvents();
     activateWindow();
+    mpOGLWidget->show();
     QString fileName = QFileDialog::getOpenFileName(this, tr("Open project"), directory, tr("Project file (*.project)"), 0, QFileDialog::DontUseNativeDialog);
+    //mpOGLWidget->hide();
    //qDebug() << "DDDDDDDDDDDDDDDDDDDDDDDDDDD fileName = " <<  fileName;
     isActive = true;
+
     qApp->processEvents();
     activateWindow();
     if(fileName.isEmpty())   return;
@@ -1249,6 +1254,7 @@ void MainWindow::on_action_Open_Project_triggered()
 
 
         mpOGLWidget->getTimeLine()->load(&file);
+
         QDataStream stream(&file);
         int state ;
         stream >> curentState.advance_mode >> state ;

@@ -75,11 +75,12 @@ void DrawElement::copy(DrawElement *elm)
 
 DrawElement::~DrawElement()
 {
-    qDebug() << "delete DrawElement";
-pDrawWidget->deleteFBO(fboWrapper);
 
+
+ qDebug() << "delete DrawElement";
     if(pDrawWidget != NULL)
     {
+        pDrawWidget->deleteFBO(fboWrapper);
         disconnect(pDrawWidget, SIGNAL(startSignal()), this, SLOT(start()));
         disconnect(pDrawWidget, SIGNAL(stopSignal()), this, SLOT(stop()));
         disconnect(pDrawWidget, SIGNAL(pauseSignal()), this, SLOT(pause()));
