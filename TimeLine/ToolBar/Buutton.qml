@@ -42,7 +42,7 @@ Rectangle {
         }
         onPressed:  {
             // //console.log("CLICK");
-            context_menu.visible = false
+            context_menu.closeIt()
             root.clicked();
             timeControll.emitFocusFoundSignal();
         }

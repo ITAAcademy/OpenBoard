@@ -209,12 +209,11 @@ glBegin(GL_TRIANGLES);
     float scaleX=1,scaleY=1;
     float randScalePtX = 0;
     float randScalePtY = 0;
-    if(m_manager.getAffine() != 0)
+    if(currentBrushOfDrawSystem.afinn != 0)
     {
 
-        randScalePtX = currentBrushOfDrawSystem.afinn/2 - rand() % 1 + (currentBrushOfDrawSystem.afinn);
-        randScalePtY = currentBrushOfDrawSystem.afinn/2 - rand() % 1 + (currentBrushOfDrawSystem.afinn);
-
+        randScalePtX = (int)currentBrushOfDrawSystem.afinn/2 - rand() % (1 + (int)currentBrushOfDrawSystem.afinn);
+        randScalePtY = (int)currentBrushOfDrawSystem.afinn/2 - rand() % (1 + (int)currentBrushOfDrawSystem.afinn);
     }
    // qDebug() << "randScalePtX_" << m_manager.getAffine() << "__AFTER" << randScalePtX << " " << randScalePtY;
 
@@ -331,7 +330,7 @@ OGLWidget::OGLWidget(QWidget *parent) :
     QGLWidget(parent)
 {
     init = false;
-    timeLine = new ListControll(this);
+    timeLine = new ListControll();
     connect(timeLine,SIGNAL(stopSignal()),this,SIGNAL(stopSignal()));
     connect(timeLine,SIGNAL(playSignal()),this,SIGNAL(startSignal()));
     connect(timeLine,SIGNAL(pauseSignal()),this,SIGNAL(pauseSignal()));
@@ -521,8 +520,8 @@ glBindFramebuffer(GL_FRAMEBUFFER , fboWrapper.frameBuffer); // Bind our frame bu
         float randScalePtY = 0;
         if(m_manager.getAffine() != 0)
         {
-            randScalePtX = m_manager.getAffine()/2 - rand() % 1 + (m_manager.getAffine());
-            randScalePtY = m_manager.getAffine()/2 - rand() % 1 + (m_manager.getAffine());
+            randScalePtX = m_manager.getAffine()/2 - rand() % (1 + (m_manager.getAffine()));
+            randScalePtY = m_manager.getAffine()/2 - rand() % (1 + (m_manager.getAffine()));
         }
        // qDebug() << "randScalePtX_" << m_manager.getAffine() << "__AFTER" << randScalePtX << " " << randScalePtY;
 
@@ -534,6 +533,8 @@ glBindFramebuffer(GL_FRAMEBUFFER , fboWrapper.frameBuffer); // Bind our frame bu
             scaleX=MAX_SCALE/randScalePtX;
         if(randScalePtY!=0)
             scaleY=MAX_SCALE/randScalePtY;
+        qDebug() << "scale x:"<<scaleX;
+                    qDebug () << "scale y:"<<scaleY;
        // // //qDebug() <<"scaleX:"<<scaleX;
        // // //qDebug() <<"scaleY:"<<scaleY;
         //// //qDebug() << "brushSize.width():"<<brushTextureSize.width();
@@ -1285,7 +1286,7 @@ bool OGLWidget::event(QEvent *e)
         // ...
 
         case QEvent::WindowActivate :
-   //      timeLine->setFocus();
+         timeLine->setFocus();
             break ;
 
         case QEvent::WindowDeactivate :
@@ -1369,6 +1370,8 @@ bool OGLWidget::drawAnimated(bool record)
     {
         //m_recorder->resume();
         curStatus = PLAY;
+        if(bRecord)
+            timeLine->hide();
         pause(300);
         m_encoder->pause();
 
@@ -1396,6 +1399,7 @@ bool OGLWidget::drawAnimated(bool record)
          m_encoder->startRecord();
         // QTimer::singleShot(1,m_encoder, SLOT(startRecord() ) );
         // //qDebug() << "Start record into file";
+         timeLine->hide();
     }
 
     bRecord = record;
@@ -1410,13 +1414,25 @@ void OGLWidget::stopAnimated()
     //pause(100);
     if(init)
     {
+        if(bRecord)
+        {
+            if(m_encoder->getBPause())
+               m_encoder->pause();
+            m_encoder->stop();
+            timeLine->show();
+        }
+
         curStatus = STOP;
         tickTimer.stop();
-        m_encoder->stop();
+
+        //m_encoder->stop();
         clearFrameBuffer(mainFBO);
 
+
         double t_animationPersentOfCross = animationPersentOfCross;
+
     }
+
 /*    int t_delay = delay;
 
     animationPersentOfCross = 1;
@@ -1429,6 +1445,7 @@ void OGLWidget::stopAnimated()
     delay = t_delay;
 */
     bRecord = false;
+
  //   pause(200);
      //qDebug() << "Stop play" << timeLine->getPlayTime();
     emit stopSignal();
@@ -1442,8 +1459,11 @@ void OGLWidget::pauseAnimated()
     curStatus = PAUSE;
 
 
+
     // //qDebug() << "Pause play";
     emit pauseSignal();
+    if(bRecord)
+        timeLine->show();
     //m_recorder->pause();
 }
 
@@ -1837,13 +1857,13 @@ void OGLWidget::myRenderText( QGLWidget* w, int x, int y,int z, const QString& t
     }
     img = QGLWidget::convertToGLFormat(img);
 
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+   // glEnable(GL_BLEND);
+ //   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glRasterPos3i( x, y, z );
     //glScalef(getWax()/rect.width(), getWay()/rect.height(), 0);
     //glPixelZoom(getWax()/rect.width(), getWax()/rect.width());
     glDrawPixels( rect.width(), rect.height(), GL_RGBA, GL_UNSIGNED_BYTE, img.bits() );
-    glDisable(GL_BLEND);
+    //glDisable(GL_BLEND);
     /*glMatrixMode( GL_PROJECTION );
     glPopMatrix();
     glMatrixMode( GL_MODELVIEW );*/
@@ -1892,6 +1912,9 @@ void OGLWidget::fillText( QString str,QColor color, int x, int y, int z, float s
 
     //renderText(x, y, str,textFont);
     myRenderText(this,x,y,z,str,color,textFont, scale);
+//=======
+    qglColor(Qt::white);
+//>>>>>>> romaFix_lastGood
     //displayText(str, color);
 
     //glEnable(GL_DEPTH_TEST);

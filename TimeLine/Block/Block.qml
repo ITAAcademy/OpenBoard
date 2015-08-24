@@ -23,18 +23,18 @@ Rectangle{
     border { color: "white" ; width: 2 }
 
 
+    function updateTrackWhereIsBlock()
+    {
+        globalRep.updateModel()
+    }
 
 
 
     function hideMenu()
     {
-        context_menu.visible = false;
+        context_menu.closeIt()
     }
-    function showMenu()
-    {
-        context_menu.visible = true;
 
-    }
 
     function repaint()
     {
@@ -100,7 +100,7 @@ onYChanged: y=0;
            }
 
         onMouseXChanged: {
-            if (context_menu.visible === false)
+           // if (context_menu.visible === false) //123rr
             {
             if(globalRep.isDrag === false &&  mouseX > root.width * 0.9) //mouseX < root.width * 0.1 ||/
             {
@@ -132,28 +132,35 @@ onYChanged: y=0;
 
 
        onPressed: {
+           timeControll.setSelectedBlockPoint(root.colIndex,root.mIndex);
+           main222.selectedBlockCol = root.colIndex
+           main222.selectedBlockIndex = root.mIndex
+
+          main222.selectedBlock = root;
+           context_menu.globalRep = root.globalRep
+
+           // console.log("AAAAAAAAAAAAAAAAAA "+ main222.selectedBlockCol +" " + main222.selectedBlockIndex)
             if(main222.selectedBlock !== null)
                 main222.selectedBlock.hideMenu();
             timeControll.emitFocusFoundSignal();
             //console.log("AAAAAAAAAAAAAAA " + timeControll.getBlockStartTime(root.colIndex,root.mIndex))
              main222.p_scale_pointer.x = mouseX + root.x - scroll.flickableItem.contentX + main222.p_scale_pointer.width //1234
-            timeControll.setSelectedBlockPoint(root.colIndex,root.mIndex);
+
             main222.p_scale_pointer.x+=1
-            main222.selectedBlock = root;
+
 
             main222.needToLightSelected = true
             for (var y=0; y< rep_columns.model; y++)
                  rep_columns.itemAt(y).abortColorize()
-            main222.selectedBlockCol = root.colIndex
-            main222.selectedBlockIndex = root.mIndex
+
             icon_coloroverlay.color = "#8000FF00"  //1234
            // blocks.itemAt(i).icon_coloroverlay.color = "#00000000"
             //columns.childAt()
             // //console.log("onPressed: mIndex="+mIndex+" colIndex="+ colIndex + " time = " + timeControll.getBlockTime(colIndex,mIndex))
             if (mouse.button == Qt.RightButton)
             {
-               context_menu.show(main222.p_scale_pointer.x, mouseY + root.colIndex * (root.height + 2)
-                                 - scroll.flickableItem.contentY,root.globalRep)
+               context_menu.showIt(main222.p_scale_pointer.x, mouseY + root.colIndex * (root.height + 2)
+                                 - scroll.flickableItem.contentY,root)
                 drag.target = null
             }
         else
@@ -169,7 +176,7 @@ onYChanged: y=0;
                      root.double_click = true
                     double_click_timer.running = true
 
-                context_menu.visible = false
+                    context_menu.closeIt()
                 drag.target = root
     // //console.log("onPressed");
             drop.visible = false;
@@ -193,8 +200,9 @@ onYChanged: y=0;
         }
         }
         onReleased: {
+            main222.p_scale_pointer.x = mouseX + root.x - scroll.flickableItem.contentX + main222.p_scale_pointer.width //1234
            // main222.p_scale_pointer.x = mouseX + root.x
-            if (context_menu.visible === false)
+           // if (context_menu.visible === false) //123rr
             {
             // //console.log("RELEASE");
             if (globalRep.isDrag)
@@ -312,13 +320,14 @@ onYChanged: y=0;
 
     }
     onExited: {
-         // //console.log( " DropArea onExited main_root.maIsPressed="+main222.maIsPressed)
         icon_coloroverlay.color = "#00000000"
  main222.dropEntered = 0
         if (main222.maIsPressed === 0)        {
             timeControll.reverseBlocks(root.colIndex,root.mIndex,main222.clicked_blockId)
             main222.selectedBlockCol = root.colIndex
             main222.selectedBlockIndex = root.mIndex
+            timeControll.setSelectedBlockPoint(root.colIndex,root.mIndex)
+
               globalRep.updateModel();
         }
             }

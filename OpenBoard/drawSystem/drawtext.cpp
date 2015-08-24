@@ -9,6 +9,7 @@ QString DrawTextElm::getLoggerText() const
 void DrawTextElm::setLoggerText(const QString &value)
 {
     loggerText = value;
+    qDebug() << "DrawTextElm::setLoggerText " << value;
 }
 
 quint64 DrawTextElm::getDrawTime() const
@@ -36,6 +37,12 @@ int DrawTextElm::getPrevTextCursor() const
 void DrawTextElm::setPrevTextCursor(int value)
 {
     prevTextCursor = value;
+}
+
+void DrawTextElm::start()
+{
+    DrawElement::start();
+        pDrawWidget->clearBuffer();
 }
 DrawTextElm::DrawTextElm(OGLWidget *drawWidget, QObject *parent) : DrawElement(drawWidget, parent)
 {
@@ -70,7 +77,7 @@ void DrawTextElm::draw()
            animationDelayStart = 1;
            curentPauseValue = 0;
        }
-       int realKeyValue = qCeil((double)(current_time - (curentPauseValue + startDrawTime)) / (double)((lifeTime - globalPauseLifeTime)/(mUnitList.size() - 1)));
+       int realKeyValue = qRound((double)(current_time - (curentPauseValue + startDrawTime)) / (double)((lifeTime - globalPauseLifeTime)/(mUnitList.size() - 1)));
        //qDebug() << mUnitList.size() << "            qwe         "<< realKeyValue;
       // //qDebug() << "cur " << current_time;
        ////qDebug() << "start " << startDrawTime;

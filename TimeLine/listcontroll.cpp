@@ -325,8 +325,8 @@ bool ListControll::removeTrack(int col)
  void ListControll::reverseBlocks(int col, int init_pos, int end_pos)
  {
    Element temp = tracks[col].block[init_pos];
+
    tracks[col].block[init_pos] = tracks[col].block[end_pos];
-  //   testWidth[col][init_pos] = testWidth[col][end_pos];
      tracks[col].block[end_pos] = temp;
  }
 
@@ -520,6 +520,7 @@ int ListControll::getTrackSize(int col)
 ListControll::ListControll(QObject *parent) : QObject(parent), QQuickImageProvider(QQuickImageProvider::Image)
 {
    resetProjectToDefault();
+
    /* QList <QString>  temp;
         temp.append("1");
         temp.append("2");
@@ -554,14 +555,13 @@ ListControll::ListControll(QObject *parent) : QObject(parent), QQuickImageProvid
     view.engine()->addImageProvider("imageProvider", cloneImg);//&image_provider);
     view.setSource(QUrl("qrc:/main.qml")); \
     view.setResizeMode(QQuickView::SizeRootObjectToView);
-    view.setPersistentOpenGLContext(true);
+    view.setPersistentOpenGLContext(false);
     view.setColor("transparent");
     view.setMinimumHeight(205);
     view.setMinimumWidth(500);
     view.setHeight(view.minimumHeight());
     view.setWidth(800);
     view.setFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint | Qt::WindowTitleHint);
-
 
 
 //view.setMaximumHeight(215);
@@ -672,6 +672,11 @@ void ListControll::moveWindow()
      prevMousePosition = QCursor::pos();
  }
 
+ QPoint  ListControll::getMousePosition()
+ {
+    return QCursor::pos();
+ }
+
     QPoint  ListControll::getPrevMousePosition()
     {
         return prevMousePosition;
@@ -714,7 +719,8 @@ void ListControll::show()
           QGuiApplication::platformName() == QLatin1String("eglfs")) {\
         view.showFullScreen();\
     } else {\
-        view.show();\
+        view.show();
+        \
     }\
 }
 
@@ -780,6 +786,11 @@ void ListControll::setViewPosition(QPoint pos)
         view.setPosition(pos);
 }
 
+QPoint ListControll::getViewPosition()
+{
+    return view.position();
+}
+
 bool ListControll::isVisible()
 {
     return view.isVisible();
@@ -819,27 +830,8 @@ bool ListControll::isActiveWindow()
 
  void ListControll::calcPointedBlocks( )
  {
-     pointed_block.clear();
-   //  //qDebug() << "SIZE          " << tracks[0].block.size();
-     if(!isBlocked)
-     {
-         for (int i=0; i<tracks.size(); i++)
-         {
-             int blockXstart = 0;
-             for (int y=0; y<tracks[i].block.size(); y++ )
-             {
-                 int blockXend =blockXstart + tracks[i].block[y].draw_element->getLifeTime();
-                 if (scale_pointer_pos <= blockXend)
-                 {
-                     pointed_block.append(tracks[i].block[y]);
-                     // //qDebug() << "POP: " << i<< " "<<y;
-                     break;
-                 }
-                  blockXstart = blockXend;
-             }
 
-         }
-     }
+     calcPointedBlocksAtTime(scale_pointer_pos);
       //  //qDebug() << "qweqweqweqweqweqw";
 /*
 	*		show curent play element
@@ -866,32 +858,16 @@ bool ListControll::isActiveWindow()
              {
                  pointed_block.append(tracks[i].block[y]);
                  //// //qDebug() << "POP: " << i<< " "<<y;
-             break;
+                break;
              }
-              blockXstart = blockXend;
+             blockXstart = blockXend;
          }
      }
  }
 
 void ListControll::calcPointedBlocksAtTime( )
  {
-     int ms = getPlayTime();
-     pointed_block.clear();
-     for (int i=0; i<tracks.size(); i++)
-     {
-         int blockXstart = 0;
-         for (int y=0; y<tracks[i].block.size(); y++ )
-         {
-             int blockXend =blockXstart + tracks[i].block[y].draw_element->getLifeTime();
-             if (ms <= blockXend)
-             {
-                 pointed_block.append(tracks[i].block[y]);
-                 //// //qDebug() << "POP: " << i<< " "<<y;
-             break;
-             }
-              blockXstart = blockXend;
-         }
-     }
+     calcPointedBlocksAtTime(getPlayTime());
  }
 
  QList <Element> ListControll::getPointedBlocksAtTime( )

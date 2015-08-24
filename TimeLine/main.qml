@@ -67,7 +67,7 @@ Rectangle
     Component.onCompleted: {
     frama.p_main222 = main222
      //timeControll.loadCurrentTextInTheFirstBlockWhenInit()
-         p_context_menu.globalRep.updateModel();
+        // p_context_menu.globalRep.updateModel(); //123rr
     }
     width: childrenRect.width ///main222.width + 20
    height: childrenRect.height //main222.height + 20
@@ -225,7 +225,6 @@ scale_pointer.x = 0// timeControll.getMaxTrackTime() + scale_pointer.width/2 - s
             rep_columns.itemAt(main222.selectedBlockCol).setColorize(main222.selectedBlockIndex,"#8000FF00")
         }
         main222.p_trackbar.globalRep.updateModel()
-        console.log("DDDDDDDDDDAAAAAAAAAAAAA")
 
         //repka.updateModel();
 
@@ -299,7 +298,7 @@ timeControll.setScaleScrollChildren(0) //it have protection from small values, w
        }
 
        onFocusLostSignal: {
-           context_menu.visible = false
+           context_menu.closeIt()
        }
 
        }
@@ -496,7 +495,7 @@ timeControll.setScalePointerPos((x  -20 + scroll.flickableItem.contentX)* main22
             anchors.fill: parent
             drag.target : scale_pointer
             onPressed: {
-                 context_menu.visible = false
+                 //context_menu.visible = false //123rr
             }
         }
     }
@@ -522,7 +521,7 @@ timeControll.setScalePointerPos((x  -20 + scroll.flickableItem.contentX)* main22
         y : time_scale.height
 
 
-         ScrollView {
+         ScrollView  {
               id: scroll
               width: parent.width - tollbar.width
               height: parent.height
@@ -531,10 +530,10 @@ timeControll.setScalePointerPos((x  -20 + scroll.flickableItem.contentX)* main22
              //property int baba: scroll.flickableItem.contentWidth
               onHorizontalXChanged:  {
                time_scale.x = -flickableItem.contentX + 30
-                  context_menu.visible = false
+                  //context_menu.visible = false //123rr
               }
               onVerticalYChanged:  {
-                  context_menu.visible = false
+                  //context_menu.visible = false //123rr
 
               }
 
@@ -719,26 +718,15 @@ ContentBlock.ContextMenu {
     id: context_menu
     x: 20
     y: 0
-    z: 500
-    visible: false
+   // z: 500
+   // visible: false
     Component.onCompleted: {
-        main222.p_context_menu = context_menu
+        //main222.p_context_menu = context_menu //123rr
        // Component.onCompleted:
         time_scale.x = -scroll.flickableItem.contentX + 30//trackbar.width + trackbar.x //12345
 
     }
 
-    columnIndex : main222.selectedBlockCol
-    blockIndex: main222.selectedBlockIndex
-
-
-    /*onXChanged: {
-            x = root.x + root.width/2;
-        z:500
-
-    }*/
-    globalRep: main222.p_trackbar.globalRep
-    minBlockWidth : main222.minBlockWidth
 }
 
 Rectangle {

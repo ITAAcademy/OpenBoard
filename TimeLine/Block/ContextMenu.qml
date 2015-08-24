@@ -1,30 +1,120 @@
 import QtQuick 2.4
 import QtGraphicalEffects 1.0
+import QtQuick.Controls 1.2
+import QtQuick.Window 2.2
 
-Rectangle {
-    id: contextMenuItem
-property Repeater globalRep
+ApplicationWindow  {
+    id: contextMenuFrame
+
+    property Repeater globalRep
     property int blockIndex: 0
-    property int columnIndex: 0    
-    property int   minBlockWidth : 0
+    property int columnIndex: 0
+    property var p_window
+    function closeIt()
+    {
+        if (p_window)
+        p_window.close();
+        appen_block_items.visible = false
+    }
+    function showIt(a,b, globRepa)
+              {
+       // closeIt()
+        //var window = Qt.createComponent("ContextMenu.qml").component.createObject(contextMenuItem)
+        var component = Qt.createComponent("ContextMenu.qml")
+       var window    = component.createObject(contextMenuItem)
+            window.height = 148
+           window.flags = Qt.MSWindowsFixedSizeDialogHint | Qt.CustomizeWindowHint | Qt.FramelessWindowHint
+        var v_point = timeControll.getViewPosition()
+          contextMenuFrame.globalRep = globRepa.globalRep
+        window.show()
+                  var tint = main222.selectedBlockIndex
+                         window.blockIndex = tint
+             window.x = a + v_point.x
+             window.y = b + v_point.y
+                         window.columnIndex = main222.selectedBlockCol
+
+                         window.globalRep =  globRepa.globalRep
+                          window.minBlockWidth = context_menu.minBlockWidth
+       p_window = window
+
+        if (window.x < 5)
+            window.x = 5;
+        else
+        {
+            var screen_width =Screen.desktopAvailableWidth - window.width - 5
+            if (window.x  > screen_width)
+                window.x  = screen_width
+        }
+        if (window.y < 5)
+            window.y = 5;
+        else
+        {
+            var screen_height =Screen.desktopAvailableHeight - window.height - 5
+            if (window.y  > screen_height)
+                window.y  = screen_height
+        }
+
+              }
+    function showEditBlock()
+    {
+        var window2    = Qt.createComponent("EditBlock.qml").createObject(contextMenuItem)
+        window2.modality = Qt.WindowModal
+
+
+        window2.blockIndex = main222.selectedBlockIndex//contextMenuFrame.blockIndex
+        window2.columnIndex = main222.selectedBlockCol  // contextMenuFrame.columnIndex
+        window2.show()
+        var temp = 400
+        window2.maximumHeight = temp
+        window2.maximumWidth = temp
+        window2.minimumHeight = temp
+        window2.minimumWidth = temp
+        window2.selectedBlock = main222.selectedBlock
+
+        window2.globalRep = contextMenuFrame.globalRep
+         window2.minBlockWidth = contextMenuFrame.minBlockWidth
+        var mouse_pos = timeControll.getMousePosition()
+        window2.x = mouse_pos.x - temp/2
+        window2.y = mouse_pos.y - temp/2
+        if (window2.x < 30)
+            window2.x = 30;
+        else
+        {
+            var screen_width =Screen.desktopAvailableWidth - window2.width - 5
+            if (window2.x  > screen_width)
+                window2.x  = screen_width
+        }
+        if (window2.y < 50)
+            window2.y = 50;
+        else
+        {
+            var screen_height =Screen.desktopAvailableHeight - window2.height - 5
+            if (window2.y  > screen_height)
+                window2.y  = screen_height
+        }
+
+    }
+property int   minBlockWidth : 0
+    Rectangle
+    {
+    id: contextMenuItem
+
+
+
   //  signal menuSelected(int index) // index{1: Select All, 2: Remove Selected}
-    property bool isOpen: false
     width: 150
     height: menuHolder.height + 20
-    visible: isOpen
-    focus: isOpen
     border { width: 2; color: "black" }
      color: "gray"
      property color text_color: "white"
 
-     onVisibleChanged: {
-         if (!visible)
-             appen_block_items.visible = false
-     }
+
+
 
      Rectangle {
+
          border {width: 5; color: "black" }
-         x: parent.width*0.6
+         x: parent.width*0.5
          y: but_append.y
          z: 5
          id: appen_block_items
@@ -41,11 +131,11 @@ property Repeater globalRep
              button_text: "left"
              height: parent.height/3
              onButtonClicked: {
-                contextMenuItem.visible = false
+                context_menu.closeIt()
                 timeControll.addBlockAt(columnIndex,blockIndex)
                  appen_block_items.visible = false
                  main222.needToLightSelected = false;
-                 globalRep.updateModel();
+                 contextMenuFrame.globalRep.updateModel();
                   but_append.color = contextMenuItem.color
              }
          }
@@ -60,36 +150,19 @@ property Repeater globalRep
               height: parent.height/3
              onButtonClicked: {
 
-                 contextMenuItem.visible = false
+                 context_menu.closeIt()
                 timeControll.addBlockAt(columnIndex,blockIndex+1)
                   appen_block_items.visible = false
                  main222.needToLightSelected = false;
-                 globalRep.updateModel();
+                 contextMenuFrame.globalRep.updateModel();
                   but_append.color = contextMenuItem.color
              }
          }
           height: but_edit.height*2.5
      }
-     function showEditBlock()
-     {
-         var window    = Qt.createComponent("EditBlock.qml").createObject(contextMenuItem)
-         window.modality = Qt.WindowModal
-        // window.flags =  Qt.WindowMinimizeButtonHint| Qt.WindowMaximizeButtonHint | Qt.CustomizeWindowHint
-        // Qt.WindowCloseButtonHint
 
-         window.blockIndex = contextMenuItem.blockIndex
-         window.columnIndex = contextMenuItem.columnIndex
-         window.show()
-         var temp = 400
-         window.maximumHeight = temp
-         window.maximumWidth = temp
-         window.minimumHeight = temp
-         window.minimumWidth = temp
 
-         window.globalRep = contextMenuItem.globalRep
-          window.minBlockWidth = contextMenuItem.minBlockWidth
 
-     }
 
     Column {
         id: menuHolder
@@ -107,8 +180,8 @@ property Repeater globalRep
             button_text: "Edit block"
             index: 1
             onButtonClicked: {
-                contextMenuItem.visible = false
-                contextMenuItem.showEditBlock()
+                context_menu.closeIt()
+                context_menu.showEditBlock()
                  but_append.color = contextMenuItem.color
                 appen_block_items.visible = false
 
@@ -141,7 +214,7 @@ property Repeater globalRep
             button_text: "Remove block"
             index: 2
             onButtonClicked: {
-                 contextMenuItem.visible = false;
+                 context_menu.closeIt()
                  but_append.color = contextMenuItem.color
                  appen_block_items.visible = false
 
@@ -149,7 +222,7 @@ property Repeater globalRep
                 var id = contextMenuItem.blockIndex;
                 timeControll.removeBlock(col,id);
                 main222.needToLightSelected = false;
-                globalRep.updateModel();
+                contextMenuFrame.globalRep.updateModel();
 
 
                 // //console.log(" contextMenuItem.visible = false;")
@@ -162,7 +235,7 @@ property Repeater globalRep
             button_text: "Load from file"
             index: 3
             onButtonClicked: {
-                contextMenuItem.visible = false;
+                context_menu.closeIt()
                  but_append.color = contextMenuItem.color
                 appen_block_items.visible = false
 
@@ -172,7 +245,7 @@ property Repeater globalRep
 
                 // //console.log("AFTER 9999999999999999999999");
                 //main222.selectedBlock.repaint();
-               // globalRep.updateModel();
+               //contextMenuFrame. globalRep.updateModel();
 
 
 
@@ -185,7 +258,7 @@ property Repeater globalRep
             button_text: "Convert to text block"
             index: 3
             onButtonClicked: {
-                contextMenuItem.visible = false;
+                context_menu.closeIt()
                 appen_block_items.visible = false
 
                 /*var col= contextMenuItem.columnIndex;
@@ -194,19 +267,14 @@ property Repeater globalRep
 
                 // //console.log("AFTER 9999999999999999999999");
                 //main222.selectedBlock.repaint();
-                globalRep.updateModel();
+                contextMenuFrame.globalRep.updateModel();
 
 
 
             }
         }
     }
-    function show(a,b, globRep)
-    {
-        contextMenuItem.globalRep = globRep
-        x = a
-      y = b
-        context_menu.visible = true
-    }
 
+
+}
 }

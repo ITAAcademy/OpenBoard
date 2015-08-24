@@ -1,5 +1,15 @@
 #include "videorencoder.h"
 
+
+bool AV_REncoder::getBPause() const
+{
+    return bPause;
+}
+
+void AV_REncoder::setBPause(bool value)
+{
+    bPause = value;
+}
 AV_REncoder::AV_REncoder(QObject *parent) : QThread(parent)
 {
     bRun = false;
@@ -58,7 +68,7 @@ VideoCodecSettings AV_REncoder::videoCodecSettings() const
     settings.setDirectMvPredictionMode(EncoderGlobal::SpatialMode);
     settings.setFlags2(EncoderGlobal::FastPSkip);
     settings.setConstantQuantizerMode(0);
-    settings.setPFramePredictionAnalysisMethod(EncoderGlobal::NoWpm);
+    settings.setPFramePredictionAnalysisMethod(EncoderGlobal::FastBlindMethod);
     settings.setBitrate(2048000);
 
     return settings;

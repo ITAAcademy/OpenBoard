@@ -203,6 +203,7 @@ void DrawBrushElm::draw()
                     keyCouter++;
                     //fboWrapper
         }
+       // pDrawWidget->paintBufferOnScreen(pDrawWidget->getMainFBO(),x, y, width, height, z);
     }
 
 

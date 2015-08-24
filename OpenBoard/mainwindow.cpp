@@ -393,7 +393,7 @@ a_send_to_youtube = new QAction(this);
 
         setEnabledToolBar(false);
 
-        onTextChangeUpdateTimer.setInterval(800);
+        onTextChangeUpdateTimer.setInterval(300);
         onTextChangeUpdateTimer.setSingleShot(true);
         connect(&onTextChangeUpdateTimer,SIGNAL(timeout()),this,SLOT(updateBlockFromTextEdit()));
 
@@ -616,35 +616,39 @@ bool MainWindow::event(QEvent * e) // overloading event(QEvent*) method of QMain
         // ...
 
         case QEvent::WindowActivate : {
-            if(!isActive)
-            {
+        if(!isActive)
+          {
+              if(mpOGLWidget->isVisible()) // get focus for windows
+              {
+                  mpOGLWidget->getTimeLine()->setFocus();
+                  //childIsActive = true;
+              }
+              isActive = true;
+             qApp->processEvents();
+             activateWindow();
+              isActive = true;
+          }
+          mpOGLWidget->getTimeLine()->emitFocusLostSignal();
+          mpOGLWidget->hideBrushManager();
+          QPoint current_pos = mpOGLWidget->pos();
+          current_pos.setY(current_pos.y() + mpOGLWidget->height());
+          mpOGLWidget->getTimeLine()->setViewPosition(current_pos);
+          updateBlockFromTextEdit();
+          //qDebug() << "SET_ACTIVE_MAIN_WINDOW";
+          break ;
+      }
 
-                if(mpOGLWidget->isVisible()) // get focus for windows
-                {
-                    mpOGLWidget->getTimeLine()->setFocus();
-                }
-
-                mpOGLWidget->getTimeLine()->emitFocusLostSignal();
-                mpOGLWidget->hideBrushManager();
-                QPoint current_pos = mpOGLWidget->pos();
-                current_pos.setY(current_pos.y() + mpOGLWidget->height());
-                mpOGLWidget->getTimeLine()->setViewPosition(current_pos);
-                qApp->processEvents();
-                isActive = true;
-                isActiveWindow();
-                //qDebug() << "SET_ACTIVE_MAIN_WINDOW";
-                break ;
-            }
-        }
-
-        case QEvent::WindowDeactivate :
-            // lost focus
-
-            isActive = false;
-
-            //qDebug() << "LOSE_ACTIVE_MAIN_WINDOW";
-            break ;
-        // ...
+      case QEvent::WindowDeactivate :
+          // lost focus
+          bool activeOther = false;
+          if(mpOGLWidget->isActiveWindow())
+              activeOther = true;
+          if(mpOGLWidget->getTimeLine()->isActiveWindow())
+              activeOther = true;
+          if(!activeOther)
+              isActive = false;
+          //qDebug() << "LOSE_ACTIVE_MAIN_WINDOW";
+          break ;
 
     } ;
 
@@ -1334,14 +1338,12 @@ qDebug() << "111111111 curentState.state " <<(int) curentState.state;
         setViewState(curentState.state);
      else
          setViewState(VIDEO_EDIT_PRO);
-
+if (a_hide->isEnabled())
+    on_blockRightToolbar_exceptPlayPauseStop(true);
 
      if (temp_state != OPENING_PROJECT)
      {
-         qDebug() << "AAAAAAAAAAAAAAAAAAAA8 ";
-     //qDebug() << "AAAAAAAAAAAAAAAAAAAA   DAAAAAAAAAAAAAA";
      //qApp->processEvents(QEventLoop::AllEvents, 1000); //this lead to crash
-    // //qDebug() << "AAAAAAAAAAAAAAAAAAAAww";
      switch (curentState.state) {
      case VIDEO_EDIT_TEXT:
      {
@@ -1365,9 +1367,9 @@ qDebug() << "111111111 curentState.state " <<(int) curentState.state;
          first->setLifeTime(curentState.firsTime);
          last->setLifeTime(curentState.lastTime);
 
-         first->setSize(width(), height());
-         last->setSize(width(), height());
-         text->setSize(width(), height());
+         first->setSize(mpOGLWidget->width(), mpOGLWidget->height());
+         last->setSize(mpOGLWidget->width(), mpOGLWidget->height());
+         text->setSize(mpOGLWidget->width(), mpOGLWidget->height());
 
 
 
@@ -1457,6 +1459,7 @@ void MainWindow::on_backBtn_clicked()
 }
 void MainWindow::onCommandFocusSet(){
     isCommandTextEditFocused=true;
+
     // //qDebug() << "focus changed"<<isCommandTextEditFocused;
 }
 void MainWindow::onCommandFocusLost(){
@@ -1476,6 +1479,7 @@ void MainWindow::on_actionClear_drawing_triggered()
 void MainWindow::on_actionClear_drawingBuffer_triggered()
 {
     mpOGLWidget->drawBrushElm->clear();
+    on_actionClear_drawing_triggered();
 }
 
 void MainWindow::on_animationBtn_clicked()
@@ -1736,10 +1740,10 @@ void MainWindow::updateBlockFromTextEdit()
             if(change_time < 100)
                 change_time = 100;
             ui->expected_time->setText("EXPECTED TIME:  " + QString::number(change_time) + " ms");
-            if(ui->check_use_speed_value->isChecked())
+            if(ui->check_use_speed_value->isChecked() && isActiveWindow())
             {
                 mpOGLWidget->getTimeLine()->setBlockTime(point.x(), point.y(), change_time);
-                mpOGLWidget->getTimeLine()->emitUpdateTrackAt(point.x());
+                mpOGLWidget->getTimeLine()-> sendUpdateModel();
                 //mpOGLWidget->getTimeLine()->sendUpdateModel();
             }
         }
@@ -1755,6 +1759,7 @@ void MainWindow::updateVisibleTextEdit(bool state)
 void MainWindow::on_action_Play_triggered()
 {
     on_blockRightToolbar_exceptPlayPauseStop(false);
+
     ui->action_Play->setEnabled(false);
     a_play->setEnabled(false);
 
@@ -1972,9 +1977,13 @@ void MainWindow::updateCurrentTxt()
 void MainWindow::onStopShowLastDrawing()
 {
     ui->actionShow_last_drawing->setText("show last drawing");
+
+    if (mpOGLWidget->getStatus() == OGLWidget::STOP)
+    {
     ui->actionClear_drawing->setEnabled(true);
     a_clear_drawing->setEnabled(true);
     a_clear_drawingBuffer->setEnabled(true);
+    }
 }
 void MainWindow::on_speedBtn_pressed()
 {
@@ -2141,3 +2150,8 @@ void MainWindow::on_blockRightToolbar_exceptPlayPauseStop(bool tt)
     ui->actionSend_to_youTube->setEnabled(tt);
 }
 
+
+void MainWindow::on_actionAbout_Qt_triggered()
+{
+   QApplication::aboutQt();
+}

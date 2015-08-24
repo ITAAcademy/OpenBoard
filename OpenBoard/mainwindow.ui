@@ -751,6 +751,7 @@
      <string>&amp;Help</string>
     </property>
     <addaction name="action_About"/>
+    <addaction name="actionAbout_Qt"/>
    </widget>
    <addaction name="menu_File"/>
    <addaction name="menu_Edit"/>
@@ -1219,6 +1220,11 @@
    </property>
    <property name="text">
     <string>Hide editBox</string>
+   </property>
+  </action>
+  <action name="actionAbout_Qt">
+   <property name="text">
+    <string>About Qt</string>
    </property>
   </action>
  </widget>
