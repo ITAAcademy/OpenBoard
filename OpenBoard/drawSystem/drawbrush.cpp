@@ -155,8 +155,8 @@ void DrawBrushElm::addCoord( QPoint pt)
 
 void DrawBrushElm::clear()
 {
-   // coords.clear();
-  //  brushes.clear();
+    coords.clear();
+    brushes.clear();
 }
 void DrawBrushElm::setLifeTime(int value)
 {
