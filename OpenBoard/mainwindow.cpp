@@ -3,7 +3,7 @@
 #include "../TimeLine/listcontroll.h"
 
 #define TIMER_VALUE         300
-#define GLWIDGET_SIZE       640,480
+
 #define WINDOW_POS          80,100,760,560
 #define WINDOW_MARGING          20
                    //CENTER 335,100,760,558
@@ -47,7 +47,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     qApp->processEvents(QEventLoop::AllEvents, 1000);
 */
-    mpOGLWidget->setFixedSize(GLWIDGET_SIZE);
+   // mpOGLWidget->setFixedSize(GLWIDGET_SIZE);
     mpOGLWidget->move(pos().x() + width() + WINDOW_MARGING, pos().y());
 
    // mpOGLWidget->moveToThread(&drawThread);
@@ -719,7 +719,7 @@ void MainWindow::on_action_Show_triggered()
     //mpOGLWidget->pause(100);// wait for show window
 
    mpOGLWidget->setDelay(1000/lastInpuDelay);
-    mpOGLWidget->setFixedSize(GLWIDGET_SIZE);
+   // mpOGLWidget->setFixedSize(GLWIDGET_SIZE);
     mpOGLWidget->move(pos().x() + width() + WINDOW_MARGING, pos().y());
 
     ui->action_Pause->setEnabled(true);

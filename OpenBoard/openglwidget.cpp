@@ -3,7 +3,7 @@
 #include <qglfunctions.h>
 #include "drawSystem/drawsystem.h"
 #include "../TimeLine/listcontroll.h"
-
+#define GLWIDGET_SIZE       640,480
 /*
  *scroll
  *
@@ -329,6 +329,8 @@ void OGLWidget::setEditingRectangle(const RectangleEditor &value)
 OGLWidget::OGLWidget(QWidget *parent) :
     QGLWidget(parent)
 {
+    setFixedSize(GLWIDGET_SIZE);
+     wax=width(); way=height(); // начальный размер окна
     init = false;
     timeLine = new ListControll();
     connect(timeLine,SIGNAL(stopSignal()),this,SIGNAL(stopSignal()));
@@ -373,7 +375,7 @@ OGLWidget::OGLWidget(QWidget *parent) :
     pt = 36;
     font = "LC Chalk";
     isWord  =  true;
-    wax=500; way=500; // начальный размер окна
+
     x = marginLeft;
     y = lineHeight + pt;
     indexW = 1;
