@@ -1280,6 +1280,8 @@ void MainWindow::on_action_Open_Project_triggered()
 
 void MainWindow::on_action_New_Project_triggered()
 {
+    mpOGLWidget->show();
+
     //qDebug() << "NEW_PROJECT";
     if (mpOGLWidget->getTimeLine()->isProjectChanged())
     {
@@ -1347,17 +1349,26 @@ if (a_hide->isEnabled())
      switch (curentState.state) {
      case VIDEO_EDIT_TEXT:
      {
+         qDebug () << "VIDEO_EDIT_TEXT BEGIN";
          DrawImageElm *first = new DrawImageElm(mpOGLWidget);
+         //qDebug() << "mpOGLWidget:"<<mpOGLWidget;
+
+        first->setFBOWrapper(mpOGLWidget->initFboWrapper());
+
          QImage load(curentState.firstImage);
-         qApp->processEvents();
+qDebug () << "VIDEO_EDIT_TEXT BEGIN-1";
+        // qApp->processEvents();
+qDebug () << "VIDEO_EDIT_TEXT BEGIN-2";
          first->setDrawImage(load);
+         qDebug () << "VIDEO_EDIT_TEXT BEGIN-3";
 
-
+qDebug () << "VIDEO_EDIT_TEXT MID";
 
          DrawImageElm *last = new DrawImageElm(mpOGLWidget);
          QImage load2(curentState.lastImage);
-         qApp->processEvents();
+         //qApp->processEvents();
          last->setDrawImage(load2);
+       last->setFBOWrapper(mpOGLWidget->initFboWrapper());
 
          first->setTypeId(Element_type::Image);
          last->setTypeId(Element_type::Image);
@@ -1370,13 +1381,15 @@ if (a_hide->isEnabled())
          first->setSize(mpOGLWidget->width(), mpOGLWidget->height());
          last->setSize(mpOGLWidget->width(), mpOGLWidget->height());
          text->setSize(mpOGLWidget->width(), mpOGLWidget->height());
-
+       text->setFBOWrapper(mpOGLWidget->initFboWrapper());
 
 
          mpOGLWidget->getTimeLine()->addNewBlock(0, "NEW4", first);
          mpOGLWidget->getTimeLine()->addNewBlock(0, "NEW3", text);
          mpOGLWidget->getTimeLine()->addNewBlock(0, "NEW2", last);
          mpOGLWidget->getTimeLine()->setSelectedBlockPoint(0, 1);
+    qApp->processEvents();
+         qDebug () << "VIDEO_EDIT_TEXT END";
          // //qDebug() << "AAAAAAAAAAAAAAAAAAAA9";
          break;
      }

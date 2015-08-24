@@ -126,6 +126,7 @@ void OGLWidget::drawTexture(int x, int y, int width, int height, int index, int 
 
 QList<DrawElement *> &OGLWidget::getList()
 {
+    //qDebug () << "get list";
     if(!curentList)
         return list_1;
     else
