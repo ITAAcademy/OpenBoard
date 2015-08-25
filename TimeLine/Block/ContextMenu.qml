@@ -220,7 +220,7 @@ property int   minBlockWidth : 0
 
                 var col= contextMenuItem.columnIndex;
                 var id = contextMenuItem.blockIndex;
-                timeControll.removeBlock(col,id);
+                timeControll.removeBlock(main222.selectedBlockCol,main222.selectedBlockIndex);
                 main222.needToLightSelected = false;
                 contextMenuFrame.globalRep.updateModel();
 
