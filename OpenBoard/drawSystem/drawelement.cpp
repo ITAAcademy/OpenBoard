@@ -370,7 +370,14 @@ bool DrawElement::save_add( QDataStream &stream)
 bool DrawElement::save_image(QDataStream &stream, QImage img)
 {
     stream << img.size().width() << img.size().height() << (int)img.format();
-    stream.writeRawData((const char*)img.bits(), img.byteCount());
+
+    QByteArray ba;
+    QBuffer buffer(&ba); // QBuffer inherits QIODevice
+    buffer.open(QIODevice::WriteOnly);
+    img.save(&buffer, "PNG");
+    buffer.close();
+    stream << ba.length() << ba;
+    //stream.writeRawData((const char*)img.bits(), img.byteCount());
     //qDebug() <<"image saved:"<<img.byteCount();
 }
 
@@ -378,9 +385,16 @@ QImage DrawElement::load_image(QDataStream &stream)
 {
     int w, h, format;
     stream >> w >> h >> format;
+    QByteArray ba;
+    int baLength=0;
+    stream >> baLength;
+    stream >> ba;
     QImage img_temp(w, h, (QImage::Format)format);
-
-    stream.readRawData((char*)img_temp.bits(), img_temp.byteCount());
+    QBuffer buffer(&ba); // QBuffer inherits QIODevice
+    buffer.open(QIODevice::ReadOnly);
+img_temp.load(&buffer,"PNG");
+buffer.close();
+    //stream.readRawData((char*)img_temp.bits(), img_temp.byteCount());
     return img_temp;
 }
 
