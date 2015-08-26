@@ -629,9 +629,9 @@ bool MainWindow::event(QEvent * e) // overloading event(QEvent*) method of QMain
           }
           mpOGLWidget->getTimeLine()->emitFocusLostSignal();
           mpOGLWidget->hideBrushManager();
-          QPoint current_pos = mpOGLWidget->pos();
+         /* QPoint current_pos = mpOGLWidget->pos();
           current_pos.setY(current_pos.y() + mpOGLWidget->height());
-          mpOGLWidget->getTimeLine()->setViewPosition(current_pos);
+          mpOGLWidget->getTimeLine()->setViewPosition(current_pos);*/
           updateBlockFromTextEdit();
           //qDebug() << "SET_ACTIVE_MAIN_WINDOW";
           break ;
@@ -703,6 +703,7 @@ void MainWindow::on_action_Show_triggered()
         ui->actionSave_drawing->setEnabled(false);
     }
 
+
 /*
  * QML
 */
@@ -713,8 +714,9 @@ void MainWindow::on_action_Show_triggered()
         mpOGLWidget = NULL;
     }*/
     //mpOGLWidget = new OGLWidget();
-    mpOGLWidget->getTimeLine()->show();
+
     mpOGLWidget->show();
+     mpOGLWidget->getTimeLine()->show();
     //mpOGLWidget->pause(100);// wait for show window
 
    mpOGLWidget->setDelay(1000/lastInpuDelay);
@@ -752,6 +754,10 @@ void MainWindow::on_action_Show_triggered()
     updateTextEditFromBlock(mpOGLWidget->getTimeLine()->getSelectedBlockPoint());
     mpOGLWidget->update();
     activateWindow();
+
+    QPoint curentPos = mpOGLWidget->pos();
+    curentPos.setY(curentPos.y() + mpOGLWidget->height());
+    mpOGLWidget->getTimeLine()->setViewPosition(curentPos);
 
 }
 

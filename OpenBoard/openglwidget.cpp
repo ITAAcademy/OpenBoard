@@ -800,12 +800,12 @@ void OGLWidget::initializeGL()
 
 void OGLWidget::moveEvent(QMoveEvent *event)
 {
-    if(isVisible())
+    /*if(isVisible())
     {
         QPoint curentPos = this->pos();
         curentPos.setY(curentPos.y() + this->height());
         timeLine->setViewPosition(curentPos);
-    }
+    }*/
 }
 
 
