@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>837</width>
-    <height>454</height>
+    <width>372</width>
+    <height>333</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -462,7 +462,7 @@
           <widget class="QSlider" name="slider_speedTB">
            <property name="minimumSize">
             <size>
-             <width>330</width>
+             <width>100</width>
              <height>25</height>
             </size>
            </property>
@@ -599,7 +599,7 @@
           <widget class="QSlider" name="slider_delayTB">
            <property name="minimumSize">
             <size>
-             <width>330</width>
+             <width>100</width>
              <height>25</height>
             </size>
            </property>
@@ -687,7 +687,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>837</width>
+     <width>372</width>
      <height>21</height>
     </rect>
    </property>
@@ -1230,8 +1230,8 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
-  <include location="../TimeLine/icons_timeLine.qrc"/>
   <include location="icons.qrc"/>
+  <include location="../TimeLine/icons_timeLine.qrc"/>
  </resources>
  <connections>
   <connection>

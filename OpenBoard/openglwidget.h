@@ -216,6 +216,7 @@ public:
     void setAnimationPersentOfCross(double value);
 
     void myRenderText(QGLWidget *w, int x, int y,int z, const QString &text, const QColor &col = Qt::white, const QFont &font = QFont());
+    void drawQImage(int x, int y, QImage img, int z = 0);
     void initShader();
     bool isShowLastDrawing();
     void setShowLastDrawing(bool val);

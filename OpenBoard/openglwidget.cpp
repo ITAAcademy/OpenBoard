@@ -1803,6 +1803,23 @@ void OGLWidget::myRenderText( QGLWidget* w, int x, int y,int z, const QString& t
      */
 
 }
+
+void OGLWidget::drawQImage(int x, int y, QImage img, int z)
+{
+    glPushMatrix();
+    QImage res = img.convertToFormat(QImage::Format_ARGB32);
+    res = QGLWidget::convertToGLFormat(res);
+
+   // glEnable(GL_BLEND);
+ //   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    glRasterPos3i( x, y + res.height(), z );
+    glDrawPixels( res.width(), res.height(), GL_RGBA, GL_UNSIGNED_BYTE, res.bits() );
+    //glDisable(GL_BLEND);
+    /*glMatrixMode( GL_PROJECTION );
+    glPopMatrix();
+    glMatrixMode( GL_MODELVIEW );*/
+    glPopMatrix();
+}
 void OGLWidget::fillText( QString str,QColor color, int x, int y, int z)
 {
 

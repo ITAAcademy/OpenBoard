@@ -1,9 +1,31 @@
 #include "drawImage.h"
 
+
+bool DrawImageElm::isBGIF() const
+{
+    return bGIF;
+}
+
+void DrawImageElm::setGIF(bool value)
+{
+    bGIF = value;
+}
+
+QMovie *DrawImageElm::getGif() const
+{
+    return gif;
+}
+
+void DrawImageElm::setGif(QMovie *value)
+{
+    gif = value;
+}
 DrawImageElm::DrawImageElm(OGLWidget *drawWidget, QObject *parent) : DrawElement(drawWidget, parent)
 {
     setType("image");
     setTypeId(Element_type::Image);
+    if(gif != NULL)
+        delete gif;
 }
 
 DrawImageElm::~DrawImageElm()
@@ -14,8 +36,14 @@ DrawImageElm::~DrawImageElm()
 
 void DrawImageElm::draw()
 {
-
-    pDrawWidget->drawTexture(x, y, width, height, textureIndex, 0, 1 , 1, z);
+    if(bGIF)
+    {
+        if(gif->state() != QMovie::Running)
+            gif->start();
+        pDrawWidget->drawQImage(x, y, gif->currentImage().scaled(width, height));
+    }
+    else
+        pDrawWidget->drawTexture(x, y, width, height, textureIndex, 0, 1 , 1, z);
 }
 
 bool DrawImageElm::load_add(QDataStream &stream)
