@@ -759,6 +759,7 @@ return glGetError();
 
 
 FBOWrapper OGLWidget::initFboWrapper(bool visibleOnly) {
+    glGetError();
 
     makeCurrent();
     qDebug () << "                                                                  INIT FBO";
