@@ -190,10 +190,10 @@ int recordedBrushN = 0;
     float scaleX=1,scaleY=1;
     float randScalePtX = 0;
     float randScalePtY = 0;
-    if(m_manager.getAffine() != 0)
+    if(currentBrushOfDrawSystem.afinn != 0)
     {
-        randScalePtX = currentBrushOfDrawSystem.afinn/2 - rand() % 1 + (currentBrushOfDrawSystem.afinn);
-        randScalePtY = currentBrushOfDrawSystem.afinn/2 - rand() % 1 + (currentBrushOfDrawSystem.afinn);
+        randScalePtX = (int)currentBrushOfDrawSystem.afinn/2 - rand() % (1 + (int)currentBrushOfDrawSystem.afinn);
+        randScalePtY = (int)currentBrushOfDrawSystem.afinn/2 - rand() % (1 + (int)currentBrushOfDrawSystem.afinn);
     }
    // qDebug() << "randScalePtX_" << m_manager.getAffine() << "__AFTER" << randScalePtX << " " << randScalePtY;
 
@@ -497,8 +497,8 @@ glBindFramebuffer(GL_FRAMEBUFFER , fbo); // Bind our frame buffer for rendering
         float randScalePtY = 0;
         if(m_manager.getAffine() != 0)
         {
-            randScalePtX = m_manager.getAffine()/2 - rand() % 1 + (m_manager.getAffine());
-            randScalePtY = m_manager.getAffine()/2 - rand() % 1 + (m_manager.getAffine());
+            randScalePtX = m_manager.getAffine()/2 - rand() % (1 + (m_manager.getAffine()));
+            randScalePtY = m_manager.getAffine()/2 - rand() % (1 + (m_manager.getAffine()));
         }
        // qDebug() << "randScalePtX_" << m_manager.getAffine() << "__AFTER" << randScalePtX << " " << randScalePtY;
 
@@ -510,6 +510,8 @@ glBindFramebuffer(GL_FRAMEBUFFER , fbo); // Bind our frame buffer for rendering
             scaleX=MAX_SCALE/randScalePtX;
         if(randScalePtY!=0)
             scaleY=MAX_SCALE/randScalePtY;
+        qDebug() << "scale x:"<<scaleX;
+                    qDebug () << "scale y:"<<scaleY;
        // // //qDebug() <<"scaleX:"<<scaleX;
        // // //qDebug() <<"scaleY:"<<scaleY;
         //// //qDebug() << "brushSize.width():"<<brushTextureSize.width();
