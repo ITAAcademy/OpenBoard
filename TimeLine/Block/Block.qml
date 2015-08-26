@@ -16,6 +16,8 @@ Rectangle{
     property string colorKey : "green"
     property ColorOverlay p_color_overlay
     property bool double_click : false
+
+
     radius: 3
     clip: true
     color: "transparent"
@@ -132,8 +134,17 @@ onYChanged: y=0;
 
 
        onPressed: {
+
+           divider.y = (root.height + columns.spacing) * root.colIndex
+                   + time_scale.height - scroll.flickableItem.contentY
+
+           divider.pos_to_append.x = root.colIndex
+           divider.pos_to_append.y =  root.mIndex
+
+           main222.dropEnteredBlockIndex = -1
            timeControll.setSelectedBlockPoint(root.colIndex,root.mIndex);
            main222.selectedBlockCol = root.colIndex
+
            main222.selectedBlockIndex = root.mIndex
 
           main222.selectedBlock = root;
@@ -153,7 +164,9 @@ onYChanged: y=0;
             for (var y=0; y< rep_columns.model; y++)
                  rep_columns.itemAt(y).abortColorize()
 
-            icon_coloroverlay.color = "#8000FF00"  //1234
+            icon_coloroverlay.color = "#8000FF00"
+
+
            // blocks.itemAt(i).icon_coloroverlay.color = "#00000000"
             //columns.childAt()
             // //console.log("onPressed: mIndex="+mIndex+" colIndex="+ colIndex + " time = " + timeControll.getBlockTime(colIndex,mIndex))
@@ -189,6 +202,11 @@ onYChanged: y=0;
             else
             {
             globalRep.isDrag = true;
+
+
+              /*   mouseY + root.colIndex * (root.height + 2)
+                                                 - scroll.flickableItem.contentY  */
+
                  main222.maIsPressed = 1
                 main222.clicked_blockId = root.mIndex
                 main222.clicked_blockX = root.x
@@ -200,41 +218,56 @@ onYChanged: y=0;
         }
         }
         onReleased: {
+
             main222.p_scale_pointer.x = mouseX + root.x - scroll.flickableItem.contentX + main222.p_scale_pointer.width //1234
-           // main222.p_scale_pointer.x = mouseX + root.x
-           // if (context_menu.visible === false) //123rr
-            {
-            // //console.log("RELEASE");
+
+
+
             if (globalRep.isDrag)
+            {
                        root.z -= 200
- globalRep.isDrag = false
-            if(bChangeSize)
+              divider.visible = false
+              //  if (main222.dropEnteredBlockIndex !== -1)
+                {
+                   if (main222.dropEntered)
+                    {
+                      // root.p_main222.maIsPressed = 0
+                        //timeControll.reverseBlocks(root.colIndex,root.mIndex,main222.clicked_blockId)
+        if (main222.selectedBlockIndex ===  divider.pos_to_append.y - 1 && !main222.left_rigth_entered)
+          console.log("main222.selectedBlockIndex ===  divider.pos_to_append.y - 1 && main222.left_rigth_entered)")
+
+
+    else
+        {
+            if (main222.selectedBlockIndex > divider.pos_to_append.y  && main222.left_rigth_entered)
+                divider.pos_to_append.y += 1
+            timeControll.moveBlockFromTo(main222.selectedBlockCol,
+                                         main222.selectedBlockIndex,  divider.pos_to_append.y)
+           console.log("moveBlock From " + main222.selectedBlockIndex + " To " +
+                      divider.pos_to_append.y );
+            main222.selectedBlockCol = root.colIndex
+            main222.selectedBlockIndex =  divider.pos_to_append.y
+            timeControll.setSelectedBlockPoint(main222.selectedBlockCol,main222.selectedBlockIndex)
+        }
+            }
+                }
+                globalRep.updateModel();
+                 globalRep.isDrag = false
+            }
+            else
+             if(bChangeSize)
             {
                 mouseArea.drag.target = root;
                  timeControll.setBlockTime(colIndex, mIndex,root.width * main222.scaling);
-
-                // item_col.width = timeControll.getMaxTrackTime()// item_col.childrenRect.width
-                // //console.log("118 item_col.width="+  item_col.width )
-                // //console.log("119 timeControll.getMaxTrackTime="+  timeControll.getMaxTrackTime() )
+                // item_col.width = timeControll.getMaxTrackTime()// item_col.childrenRect.width             
                  globalRep.updateModel();
-
+                 bChangeSize = false;
+    ///console.log("2222222222222");
             }
-             bChangeSize = false;
 
-            if (root.p_main222.maIsPressed && root.p_main222.dropEntered === 0) {
-                root.x = main222.clicked_blockX
-                root.y = main222.clicked_blockY
-        // if (globalRep.isDrag)
-            //   rep_columns.itemAt(main222.selectedBlockCol).setColorize(main222.selectedBlockIndex,"#8000FF00")
-
-            }
-         root.p_main222.maIsPressed = 0
              drop.visible = true;
              drop.enabled = true;
-//globalRep.updateModel()
 
-// //console.log(" reles  root.z= " +   root.z)
-        }
         }
         onEntered: {
            // // //console.log(mouseX + " YY " + mouseY)
@@ -264,27 +297,11 @@ onYChanged: y=0;
         x:root.border.width + 1
         y:root.border.width + 1
         visible:  true
-       /* onSourceChanged: {
-            if (main222.selectedBlockCol === root.colIndex &&
-                    main222.selectedBlockIndex === root.mIndex)
-          //console.log("  AAAAAAAAAAAAAAAAAA " + root.colIndex + " " + root.mIndex);
-        }*/
+
 
 
             // timeControll.getBlockIcon(colIndex,mIndex)
     }
-
-
-
-
-
-
-       /* OpacityMask {
-            source: background
-            maskSource: root
-            anchors.fill: root
-
-        }*/
 
     ColorOverlay {
         id: icon_coloroverlay
@@ -315,22 +332,50 @@ onYChanged: y=0;
         visible: true
          anchors.fill: parent
     onEntered: {
+         main222.dropEnteredBlockIndex = root.mIndex
+        main222.left_rigth_entered = false
         main222.dropEntered = 1
-     icon_coloroverlay.color = "#80900000"
+        var temp = main222.selectedBlock.x - root.x - root.width/2
+        if (temp > 0 )
+            main222.block_zayshow_sprava = true
+        else
+            main222.block_zayshow_sprava = false
+        divider.pos_to_append.x = root.colIndex
+
+
 
     }
     onExited: {
+        if (root.mIndex === 1)
+        main222.dropEnteredBlockIndex = main222.selectedBlockIndex
         icon_coloroverlay.color = "#00000000"
- main222.dropEntered = 0
-        if (main222.maIsPressed === 0)        {
-            timeControll.reverseBlocks(root.colIndex,root.mIndex,main222.clicked_blockId)
-            main222.selectedBlockCol = root.colIndex
-            main222.selectedBlockIndex = root.mIndex
-            timeControll.setSelectedBlockPoint(root.colIndex,root.mIndex)
-
-              globalRep.updateModel();
-        }
             }
+    onPositionChanged: {
+          {
+            divider.visible = true
+            var temp = main222.selectedBlock.x - root.x - root.width/2
+              if (temp > 0  )
+              {
+                main222.block_zayshow_sprava = true
+                    divider.x = root.x + root.width - divider.width/2 + tollbar.width
+                  main222.left_rigth_entered = true
+                  divider.pos_to_append.y = root.mIndex
+                  console.log("onPositionChanged: right " + divider.pos_to_append.y)
+              }
+              else
+              {
+                  if (temp <= 0   )
+                  {
+                      main222.block_zayshow_sprava = false
+                  divider.x = root.x - divider.width/2 + tollbar.width
+                main222.left_rigth_entered = false
+                divider.pos_to_append.y = root.mIndex
+                console.log("onPositionChanged: left " + divider.pos_to_append.y)
+                  }
+              }
+          }
+    }
+
     }
     Component.onCompleted: {
         root.p_color_overlay = icon_coloroverlay
