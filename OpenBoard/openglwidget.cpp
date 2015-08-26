@@ -735,7 +735,8 @@ glBindRenderbuffer(GL_RENDERBUFFER , 0); // Unbind the render buffer
 //qDebug() << "GL_ERROR_STATUS glBindRenderbuffer:"<<error;
 }
 
-void OGLWidget::initTexture(GLuint &texture) {
+int OGLWidget::initTexture(GLuint &texture) {
+    makeCurrent();
     glEnable(GL_TEXTURE_2D);
     //glDeleteTextures(1,&fbo_texture);
 glGenTextures(1, &texture); // Generate one texture
@@ -753,14 +754,16 @@ glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 // Unbind the texture
 glBindTexture(GL_TEXTURE_2D, 0);
 glDisable(GL_TEXTURE_2D);
+return glGetError();
 }
 
 
 FBOWrapper OGLWidget::initFboWrapper() {
 
-    qDebug () << "INIT FBO";
+    makeCurrent();
+    qDebug () << "                                                                  INIT FBO";
     FBOWrapper fboWrapper;
-     fboWrapper.errorStatus=0;
+    fboWrapper.errorStatus=0;
     GLuint fbo=0;
     GLuint depth_buffer=0;
     GLuint fbo_texture=0;
@@ -773,23 +776,45 @@ FBOWrapper OGLWidget::initFboWrapper() {
   //  glEnable(GL_DEPTH_TEST);
 
     qDebug() << "GL_ERROR_STATUS initFrameBuffer:"<<error;
+    if(error != 0)
+    {
+        fboWrapper.errorStatus = error;
+        return fboWrapper;
+    }
     qDebug() << 1;
+    if(!isVisible() || !isInit())
+    {
+        fboWrapper.errorStatus = -1;
+        return fboWrapper;
+    }
 
     glGenFramebuffers(1, &fbo); // Generate one frame buffer and store the ID in fbo
 
 qDebug() << 2;
 
 qDebug() << 3;
- error = glGetError();
-
+     error = glGetError();
+     if(error != NULL)
+     {
+         fboWrapper.errorStatus = error;
+         return fboWrapper;
+     }
 //initFBDepthBuffer(depth_buffer); // Initialize our frame buffer depth buffer
-initTexture(fbo_texture); // Initialize our frame buffer texture
-
+ error = initTexture(fbo_texture); // Initialize our frame buffer texture
+ if(error != NULL)
+ {
+     fboWrapper.errorStatus = error;
+     return fboWrapper;
+ }
 glBindFramebuffer(GL_FRAMEBUFFER , fbo); // Bind our frame buffer
 qDebug () << "texture inited id:"<<fbo_texture;
 
 error = glGetError();
-
+if(error != NULL)
+{
+    fboWrapper.errorStatus = error;
+    return fboWrapper;
+}
 qDebug() << "GL_ERROR_STATUS initFrameBufferTexture:"<<error;
 qDebug() << "attachment.count():"<<attachment.count();
 //attachment.append(GL_COLOR_ATTACHMENT0+attachment.count());
@@ -799,6 +824,11 @@ glFramebufferTexture2D(GL_FRAMEBUFFER , attachment.last() , GL_TEXTURE_2D, fbo_t
 
 //glFramebufferRenderbuffer(GL_FRAMEBUFFER , GL_DEPTH_ATTACHMENT , GL_RENDERBUFFER , depth_buffer); // Attach the depth buffer fbo_depth to our frame buffer
 error = glGetError();
+if(error != NULL)
+{
+    fboWrapper.errorStatus = error;
+    return fboWrapper;
+}
 //qDebug() << "GL_ERROR_STATUS:"<<error;
 GLenum status = glCheckFramebufferStatus(GL_FRAMEBUFFER ); // Check that status of our generated frame buffer
 

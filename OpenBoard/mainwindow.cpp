@@ -1240,7 +1240,7 @@ void MainWindow::on_action_Open_Project_triggered()
     isActive = false;
     qApp->processEvents();
     activateWindow();
-    mpOGLWidget->show();
+  //  mpOGLWidget->show();
     QString fileName = QFileDialog::getOpenFileName(this, tr("Open project"), directory, tr("Project file (*.project)"), 0, QFileDialog::DontUseNativeDialog);
     //mpOGLWidget->hide();
    //qDebug() << "DDDDDDDDDDDDDDDDDDDDDDDDDDD fileName = " <<  fileName;
@@ -1280,7 +1280,7 @@ void MainWindow::on_action_Open_Project_triggered()
 
 void MainWindow::on_action_New_Project_triggered()
 {
-    mpOGLWidget->show();
+   // mpOGLWidget->show();
 
     //qDebug() << "NEW_PROJECT";
     if (mpOGLWidget->getTimeLine()->isProjectChanged())

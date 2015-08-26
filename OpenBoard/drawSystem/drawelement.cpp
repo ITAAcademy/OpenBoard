@@ -8,8 +8,16 @@ OGLWidget *DrawElement::getDrawWidget() const
 
 bool DrawElement::setDrawWidget(OGLWidget *value)
 {
+
+
     if(value == pDrawWidget && value != NULL)
+    {
+        qDebug() << "VALUE  " << fboWrapper.errorStatus;
+        if(fboWrapper.errorStatus != 0)
+            setFBOWrapper(pDrawWidget->initFboWrapper());//TODO
         return false;
+    }
+
     if(pDrawWidget != NULL)
     {
         disconnect(pDrawWidget, SIGNAL(startSignal()), this, SLOT(start()));
@@ -17,7 +25,8 @@ bool DrawElement::setDrawWidget(OGLWidget *value)
         disconnect(pDrawWidget, SIGNAL(pauseSignal()), this, SLOT(pause()));
     }
     pDrawWidget = value;
-    setFBOWrapper(pDrawWidget->initFboWrapper());//TODO
+    if(fboWrapper.errorStatus != 0)
+        setFBOWrapper(pDrawWidget->initFboWrapper());//TODO
     connect(pDrawWidget, SIGNAL(startSignal()), this, SLOT(start()));
     connect(pDrawWidget, SIGNAL(stopSignal()), this, SLOT(stop()));
     connect(pDrawWidget, SIGNAL(pauseSignal()), this, SLOT(pause()));
@@ -89,7 +98,7 @@ DrawElement::~DrawElement()
 
 void DrawElement::paint()
 {
-    qDebug() << "paint on buffer:"<<fboWrapper.frameBuffer;
+  //  qDebug() << "paint on buffer:"<<fboWrapper.frameBuffer;
     pDrawWidget->bindBuffer(fboWrapper.frameBuffer);
     draw();
     pDrawWidget->bindBuffer(0);
@@ -110,7 +119,7 @@ FBOWrapper DrawElement::getFBOWrapper()
 }
 DrawElement::setFBOWrapper(FBOWrapper wrapper)
 {
-this->fboWrapper=wrapper;
+    this->fboWrapper=wrapper;
 }
 
 bool DrawElement::load(QString path)

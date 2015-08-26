@@ -87,7 +87,7 @@ struct DrawData{
 struct FBOWrapper{
     GLuint frameBuffer;
     GLuint bindedTexture;
-    int errorStatus=0;
+    int errorStatus= -1;
 };
 class OGLWidget : public QGLWidget, protected QGLFunctions
 {
@@ -204,7 +204,7 @@ public:
     void drawTexture(int x, int y, int width, int height, int index, int angle=0, float scaleX = 1, float scaleY = 1, int z = 0);
     void drawTexture(int x, int y, int width, int height, GLuint texture, int angle=0, float scaleX = 1, float scaleY = 1, int z = 0);
     void update();
-    void initTexture(GLuint &texture);
+    int initTexture(GLuint &texture);
     void initFBDepthBuffer(GLuint &fbo_depth);
     void paintBrushInBuffer(FBOWrapper fboWrapper);
     FBOWrapper initFboWrapper();
