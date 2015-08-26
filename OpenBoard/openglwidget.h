@@ -207,7 +207,7 @@ public:
     int initTexture(GLuint &texture);
     void initFBDepthBuffer(GLuint &fbo_depth);
     void paintBrushInBuffer(FBOWrapper fboWrapper);
-    FBOWrapper initFboWrapper();
+    FBOWrapper initFboWrapper(bool visibleOnly=true);
     QList<DrawElement *> &getList();
     void setList(const QList<DrawElement *> &value);
     bool getIsBrushWindowOpened() const;

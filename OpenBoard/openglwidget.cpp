@@ -758,10 +758,11 @@ return glGetError();
 }
 
 
-FBOWrapper OGLWidget::initFboWrapper() {
+FBOWrapper OGLWidget::initFboWrapper(bool visibleOnly) {
 
     makeCurrent();
     qDebug () << "                                                                  INIT FBO";
+
     FBOWrapper fboWrapper;
     fboWrapper.errorStatus=0;
     GLuint fbo=0;
@@ -782,6 +783,7 @@ FBOWrapper OGLWidget::initFboWrapper() {
         return fboWrapper;
     }
     qDebug() << 1;
+    if(visibleOnly)
     if(!isVisible() || !isInit())
     {
         fboWrapper.errorStatus = -1;
@@ -862,6 +864,7 @@ void OGLWidget::initializeGL()
      qDebug() << "initializeGL";
 
     initializeGLFunctions();
+    makeCurrent();
 glEnable(GL_DEPTH_TEST);
     qglClearColor(Qt::black); // Черный цвет фона
     qDebug() << "initializeGLFunctions";
@@ -871,7 +874,7 @@ glEnable(GL_DEPTH_TEST);
     brushTexture = loadTexture(m_manager.getCreatedBrush().color_img);
     //loadTextureFromFile(":/ThirdPart/images/brush.png");
     //initFrameBuffer(); // Create our frame buffer object
-    mainFBO=initFboWrapper();
+    mainFBO=initFboWrapper(false);
      initShader();
     setAutoBufferSwap(false);
     qApp->processEvents(QEventLoop::AllEvents, 1000);
@@ -913,7 +916,7 @@ void OGLWidget::clearFrameBuffer(FBOWrapper fboWrapper){
    glBindTexture(GL_TEXTURE_2D, fboWrapper.bindedTexture);
     glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, wax, way, GL_RGBA, GL_UNSIGNED_BYTE, &emptyData[0]);
      // glBindTexture(GL_TEXTURE_2D,0);
-
+  glBindTexture(GL_TEXTURE_2D, 0);
     //glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         isClearFrameBuffer=false;
      // glBindFramebuffer(GL_FRAMEBUFFER , 0);
