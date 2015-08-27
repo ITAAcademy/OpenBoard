@@ -292,6 +292,7 @@ public slots:
     int getLastSymbolOfString(int index, bool symbol);
     bool crossText();
 signals:
+    void windowUpdating(int frameRate);
     void drawTextChanged();
     void pauseSignal();
     void stopSignal();

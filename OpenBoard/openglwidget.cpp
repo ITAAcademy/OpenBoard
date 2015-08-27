@@ -343,6 +343,7 @@ OGLWidget::OGLWidget(QWidget *parent) :
     connect(timeLine,SIGNAL(playSignal()),this,SIGNAL(startSignal()));
     connect(timeLine,SIGNAL(pauseSignal()),this,SIGNAL(pauseSignal()));
 
+    connect(this,SIGNAL(windowUpdating(int)),timeLine,SLOT(addMsToTimerValue(int)));
 
 
     connect(timeLine,SIGNAL(blockEditedSignal()),this,SLOT(slotBlockEdited()));
@@ -1766,6 +1767,7 @@ void  OGLWidget::updateWindow(){
      current_millisecs = QDateTime::currentMSecsSinceEpoch();
    if ((current_millisecs - last_milisecs_drawn) >= 1000/frameRate)
    {
+       emit windowUpdating(1000/frameRate);
    last_milisecs_drawn = QDateTime::currentMSecsSinceEpoch();
 
    setList(timeLine->getPointedBlocksDE());
