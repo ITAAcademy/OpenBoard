@@ -72,9 +72,13 @@ void ListControll::setIsEditBlockShow(bool value)
 void ListControll::recountMaxTrackTime()
 {
     maxTrackTime = 0;
-    for (int i=0; i< tracks.size(); i++)
+    for (int i=0; i < tracks.size(); i++)
+    {
         if (maxTrackTime < tracks[i].time)
+        {
             maxTrackTime = tracks[i].time;
+        }
+    }
 }
 
 QString ListControll::getBlockKey(int col, int i)
@@ -211,7 +215,7 @@ void ListControll::loadFromFile()
 
    Element &temp = tracks[p.x()].block[p.y()];
    int life_time = temp.draw_element->getLifeTime();
-   //int new_life_time = elm->getLifeTime();
+   int new_life_time = elm->getLifeTime();
    int start_time = temp.draw_element->getStartDrawTime();
    delete temp.draw_element;
    temp.key = elm->getKey();
@@ -223,7 +227,9 @@ void ListControll::loadFromFile()
    calcPointedBlocks();
 
    emit updateSelectedBlock(selectedBlockPoint);
+   setBlockTime(p.x(), p.y(), new_life_time);
    sendUpdateModel();
+
    setBlocked(false);
   // qApp->processEvents();
    //emit loadFromFileSignal();
@@ -348,7 +354,7 @@ void ListControll::setBlockTime(int col, int i,int value)
 
         tracks[col].time += value - tracks[col].block[i].draw_element->getLifeTime();  ;
       tracks[col].block[i].draw_element->setLifeTime(value);    
-    recountMaxTrackTime();
+      recountMaxTrackTime();
     // //qDebug() << "DDDDD  tracks[col].block[i].draw_element->getLifeTime()=" <<   tracks[col].block[i].draw_element->getLifeTime();
 }
 

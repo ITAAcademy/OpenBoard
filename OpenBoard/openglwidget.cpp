@@ -876,7 +876,7 @@ glEnable(GL_DEPTH_TEST);
     //loadTextureFromFile(":/ThirdPart/images/brush.png");
     //initFrameBuffer(); // Create our frame buffer object
     mainFBO=initFboWrapper(false);
-     initShader();
+     //initShader();
     setAutoBufferSwap(false);
     qApp->processEvents(QEventLoop::AllEvents, 1000);
     qDebug() << "A";

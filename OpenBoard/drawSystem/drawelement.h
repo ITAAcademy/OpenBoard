@@ -11,7 +11,7 @@
 #include <QRect>
 #include "../openglwidget.h"
 
-enum Element_type { Text,Image,Brushh,Empty};
+enum Element_type { Text, Video, Image,Brushh,Empty};
 
 class DrawElement : public QObject
 {

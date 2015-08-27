@@ -28,7 +28,11 @@ SOURCES += main.cpp\
     drawSystem/drawimage.cpp \
     ../Brush/imageclone.cpp \
     drawSystem/drawbrush.cpp \
-    ../NewProject/projectcreator.cpp
+    ../NewProject/projectcreator.cpp \
+    encoder/videodecoder.cpp \
+    encoder/ffmpeghelp.cpp \
+    drawSystem/drawvideo.cpp \
+    encoder/audiodecoder.cpp
     drawSystem/drawbrush.cpp
 
 
@@ -56,7 +60,12 @@ HEADERS  += mainwindow.h \
     drawSystem/drawimage.h \
     ../Brush/imageclone.h \
     drawSystem/drawbrush.h \
-    ../NewProject/projectcreator.h
+    ../NewProject/projectcreator.h \
+    encoder/videodecoder.h \
+    encoder/ffmpeg.h \
+    encoder/ffmpeghelp.h \
+    drawSystem/drawvideo.h \
+    encoder/audiodecoder.h
     drawSystem/drawbrush.h
 
 
@@ -105,5 +114,8 @@ QMAKE_TARGET_COPYRIGHT = @@@
 
 INCLUDEPATH += $$PWD/ThirdPart/include
 DEPENDPATH += $$PWD/ThirdPart/include
+
+INCLUDEPATH += $$PWD\include
+LIBS += "$$PWD/bin/*.dll"
 
 RCC_DIR = ../

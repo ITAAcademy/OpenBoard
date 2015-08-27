@@ -40,6 +40,12 @@ int main(int argc, char *argv[])
     FILE *file = fopen(DEBUG_TO_FILE, "w");
     fclose(file);
 #endif
+    QString executable = argv[0];
+    QString executablePath = executable.mid(0,executable.lastIndexOf("\\"));
+    QString installPathPlugins = QLibraryInfo::location(QLibraryInfo::PluginsPath);
+    QCoreApplication::removeLibraryPath(installPathPlugins);
+    QCoreApplication::addLibraryPath(installPathPlugins);
+    QCoreApplication::addLibraryPath(executablePath);
 
     QStringList paths = QCoreApplication::libraryPaths();
     paths.append(".");

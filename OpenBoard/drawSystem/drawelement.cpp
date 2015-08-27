@@ -99,13 +99,18 @@ DrawElement::~DrawElement()
 void DrawElement::paint()
 {
   //  qDebug() << "paint on buffer:"<<fboWrapper.frameBuffer;
-    pDrawWidget->bindBuffer(fboWrapper.frameBuffer);
-    draw();
-    pDrawWidget->bindBuffer(0);
-    if(aspectRatio)
-        pDrawWidget->paintBufferOnScreen(fboWrapper,x, y, width, width, z);
+    if(fboWrapper.errorStatus == 0)
+    {
+        pDrawWidget->bindBuffer(fboWrapper.frameBuffer);
+        draw();
+        pDrawWidget->bindBuffer(0);
+        if(aspectRatio)
+            pDrawWidget->paintBufferOnScreen(fboWrapper,x, y, width, width, z);
+        else
+            pDrawWidget->paintBufferOnScreen(fboWrapper,x, y, width, height, z);
+    }
     else
-        pDrawWidget->paintBufferOnScreen(fboWrapper,x, y, width, height, z);
+        qWarning() << "In curent draw element fboWraper is not init!!!";
 }
 
 void DrawElement::draw()

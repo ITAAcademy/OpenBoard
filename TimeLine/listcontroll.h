@@ -132,7 +132,7 @@ struct Element {
 };
 
 struct Track {
-    int time;
+    unsigned int time;
     QList <Element> block;
     Track() { }
     Track( int time ,QList <Element> block ) {
@@ -196,7 +196,7 @@ class ListControll : public QObject, public QQuickImageProvider
 
     bool isEditBlockShow = false;
     bool isProjectChange = false;
-    int maxTrackTime ;
+    unsigned long int maxTrackTime ;
     float scale_scroll_children = 10.0;
     float zoom_speed = 1.0;
     QQuickView view;

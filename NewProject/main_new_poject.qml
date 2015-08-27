@@ -234,7 +234,7 @@ Rectangle{
                     title: "Create"
                     rotation_animation: false
                     checkable: false
-                    onClicked: {                        
+                    onClicked: {
                         projectControll.setProjectState(root.project_state);
                         projectControll.close();
                     }

@@ -4,6 +4,7 @@
 #include "drawtext.h"
 #include "drawimage.h"
 #include "drawbrush.h"
+#include "drawvideo.h"
 
 static inline QString mSuffixFromFilter(const QString &filter, QString name)
 {
@@ -85,6 +86,14 @@ static DrawElement *GenerationDrawElement( QString path, OGLWidget *drawWidget =
         elm->load(path);
         elm->setTypeId(Element_type::Brushh);
         elm->setKey(target.baseName());
+        return (DrawElement*) elm;
+    }
+    if(format == "avi" || format == "mp4" || format == "mkv")
+    {
+        DrawVideoElm *elm = new DrawVideoElm(drawWidget, parent);
+        elm->setVideoFile(path);
+        elm->setTypeId(Element_type::Video);
+        qDebug() << "Create video object successful";
         return (DrawElement*) elm;
     }
     return NULL;
