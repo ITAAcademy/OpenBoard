@@ -327,6 +327,11 @@ void OGLWidget::setEditingRectangle(const RectangleEditor &value)
     editingRectangle = value;
 }
 
+void OGLWidget::setFrameRate(int fps)
+{
+frameRate=fps;
+}
+
 OGLWidget::OGLWidget(QWidget *parent) :
     QGLWidget(parent)
 {
@@ -388,8 +393,8 @@ OGLWidget::OGLWidget(QWidget *parent) :
     deleteWT = 0;
     fMetrics = new QFontMetrics(QFont(font));
     curStatus = STOP;
-    tickTimer.setSingleShot(false);
-    tickTimer.setInterval(1000/25);
+    //tickTimer.setSingleShot(false);
+   // tickTimer.setInterval(1000/25);
     mouseTimer.setInterval(drawBrushElm->SPEED_OF_RECORDING_MS);
     mouseTimer.setSingleShot(false);
     realDelay = 0;
@@ -411,7 +416,7 @@ OGLWidget::OGLWidget(QWidget *parent) :
    glDepthFunc(GL_LEQUAL); // Буфер глубины
    QTimer *timer = new QTimer(this);
    connect(timer, SIGNAL(timeout()), this, SLOT(updateWindow()));
-   timer->start(5);
+   timer->start(0);
    connect(&mouseTimer, SIGNAL(timeout()), this, SLOT(storeMousePos()));
    mouseTimer.start();
 
@@ -1462,7 +1467,7 @@ void OGLWidget::stopAnimated()
         }
 
         curStatus = STOP;
-        tickTimer.stop();
+        //tickTimer.stop();
 
         //m_encoder->stop();
         clearFrameBuffer(mainFBO);
@@ -1756,44 +1761,53 @@ void  OGLWidget::updateWindow(){
     //isCrossingNow=true;
     //if (timeLine->getPointedBlocks().size())
    /// if(!timeLine->isBlocked)
-    setList(timeLine->getPointedBlocksDE());
+   ///
 
-    QPoint t = timeLine->getSelectedBlockPoint();
+     current_millisecs = QDateTime::currentMSecsSinceEpoch();
+   if ((current_millisecs - last_milisecs_drawn) >= 1000/frameRate)
+   {
+   last_milisecs_drawn = QDateTime::currentMSecsSinceEpoch();
 
-    if(curStatus != PLAY && t.x() >= 0)
-    {
-        if (mayShowRedRectangle)
-            editingRectangle.isEditingRectangleVisible = true;
+   setList(timeLine->getPointedBlocksDE());
 
-        if(t != selElm )
-        {
-            //clearBuffer();
-            selElm = t;
-            editingRectangle.rect = timeLine->getDrawRect(t.x(), t.y());
-        }
-        else
-        {
+   QPoint t = timeLine->getSelectedBlockPoint();
 
-           // if (!timeLine->getIsEditBlockShow())
-            {
-            QRect t2 = editingRectangle.rect;
-            timeLine->setDrawX(selElm.x(), selElm.y(), t2.x());
-            timeLine->setDrawY(selElm.x(), selElm.y(), t2.y());
-            timeLine->setDrawSize(selElm.x(), selElm.y(), t2.width(), t2.height());
-            }
+   if(curStatus != PLAY && t.x() >= 0)
+   {
+       if (mayShowRedRectangle)
+           editingRectangle.isEditingRectangleVisible = true;
+
+       if(t != selElm )
+       {
+           //clearBuffer();
+           selElm = t;
+           editingRectangle.rect = timeLine->getDrawRect(t.x(), t.y());
+       }
+       else
+       {
+
+          // if (!timeLine->getIsEditBlockShow())
+           {
+           QRect t2 = editingRectangle.rect;
+           timeLine->setDrawX(selElm.x(), selElm.y(), t2.x());
+           timeLine->setDrawY(selElm.x(), selElm.y(), t2.y());
+           timeLine->setDrawSize(selElm.x(), selElm.y(), t2.width(), t2.height());
+           }
 
 
 
-        }
-    }
-    else
-    {
-       // //qDebug() << "SBLOCK " << t;
-        selElm = t;
-        editingRectangle.isEditingRectangleVisible = false;
+       }
+   }
+   else
+   {
+      // //qDebug() << "SBLOCK " << t;
+       selElm = t;
+       editingRectangle.isEditingRectangleVisible = false;
 
-    }
+   }
+
     updateGL();
+   }
 }
 
 QColor OGLWidget::getMainFillColor() const
@@ -2112,7 +2126,7 @@ QPoint OGLWidget::drawWrapText(QString str)
     x += width;
     widthToClean+=width;
     symbolPositionList.push_back(res);
-    tickTimer.start(delay);
+    //tickTimer.start(delay);
     /*while (tickTimer.isActive()) {
        qApp->processEvents();
     }*/

@@ -99,6 +99,7 @@ signals:
 public:
     BrushManager m_manager;
     bool sucsessLoadTexture;
+    void setFrameRate(int frameRate);
     void keyEventSignal(QKeyEvent *event);
     /*
      * |Future gradient
@@ -214,6 +215,7 @@ public:
     void setIsBrushWindowOpened(bool value);
     int getWax();
     int getWay();
+
     void paintBufferOnScreen(FBOWrapper buffer,int x , int y , int width, int height, int z = 0);
 
     void deleteFBO(FBOWrapper wrapper);
@@ -304,9 +306,10 @@ private slots:
     void storeMousePos();
 
 private:
-
+         int frameRate = 25;
        bool mayShowRedRectangle = true;
-
+    unsigned int current_millisecs =0;
+    unsigned int last_milisecs_drawn = 0;
     QVector<GLenum> attachment;
     FBOWrapper mainFBO;
 
@@ -391,7 +394,7 @@ private:
 
     double timer_test;
     double animationPersentOfCross = 0.01;
-    QTimer tickTimer;
+    //QTimer tickTimer;
     QTimer mouseTimer;
 
     bool busy = false;
