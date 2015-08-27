@@ -935,11 +935,6 @@ void OGLWidget::deleteFBO(FBOWrapper wrapper)
 
 void OGLWidget::paintGL()
 {
-
-    if(m_encoder->newImage)
-        m_encoder->setFrame(grabFrameBuffer());
-
-
     //glDrawBuffer(GL_COLOR_ATTACHMENT1);
      glBindFramebuffer(GL_FRAMEBUFFER , 0);
 
@@ -1136,6 +1131,10 @@ glFinish();
 //////////////////////////////
 swapBuffers();
 glFlush();
+
+if(bRecord)
+    m_encoder->setFrame(grabFrameBuffer());
+
 
 init = true;
 

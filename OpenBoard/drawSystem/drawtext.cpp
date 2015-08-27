@@ -418,8 +418,8 @@ void DrawTextElm::clearCanvas(int m_x, int m_y)
     indexW = 1;
     marginLeft = m_x;
     marginTop = m_y;
-    x = m_x;
-    y = m_y + lineHeight + pt;
+    line_x = m_x;
+    line_y = m_y + lineHeight + pt;
     scroll = 0;
     //listStr[0] = 0;
 }
@@ -603,7 +603,7 @@ void DrawTextElm::drawTextBuffer( int m_x, int m_y, int m_width, int m_height, i
                     columnOfColorStrBeginPrev=convertTextBoxToBufferIndex(colors[k-1].startIndex ).x();
                 textToWarp= stringList[i].mid(columnOfColorStrBeginPrev,columnOfColorStrBegin-columnOfColorStrBeginPrev);
             }
-            x+=fMetrics->width(textToWarp);
+            line_x += fMetrics->width(textToWarp);
             //setFillColor(colors[k].value);
             fillColor = colors[k].value;
             QString textToFill = stringList[i].mid(columnOfColorStrBegin,columnOfColorStrEnd-columnOfColorStrBegin);
@@ -617,8 +617,8 @@ void DrawTextElm::drawTextBuffer( int m_x, int m_y, int m_width, int m_height, i
               // //qDebug()<<"rowOfColorStrBegin:"<<rowOfColorStrBegin;*/
     }
 
-        y += lineHeight + pt;
-        x = m_x;
+        line_y += lineHeight + pt;
+        line_x = m_x;
        // localX=marginLeft;
         i++;
     }

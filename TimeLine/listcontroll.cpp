@@ -617,9 +617,9 @@ void ListControll::setBlocked(volatile bool value)
 
 void ListControll::addMsToTimerValue(int ms)
 {
-    qDebug() << "SLOT addMsToTimerValue:"<<ms;
+  //  qDebug() << "SLOT addMsToTimerValue:"<<ms;
 timerValue+=ms;
-qDebug() << "timerValue:"<<timerValue;
+//qDebug() << "timerValue:"<<timerValue;
 }
 
 

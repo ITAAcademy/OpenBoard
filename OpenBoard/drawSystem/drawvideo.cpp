@@ -27,21 +27,18 @@ void DrawVideoElm::draw()
   //  int k = qFloor(pDrawWidget->getTimeLine()->getScalePointerPos()/(1000/40));
    // qDebug () << k << " " << keyCouter;
    // while( k > keyCouter)
-    if((40 + delta) <= 0)
-        delta = -1;
-
-    int k = qCeil(pDrawWidget->getTimeLine()->getScalePointerPos()/((40 + delta)));
-    if(bPlay && keyCouter < k) /// NEED FIX FOR SECOND BLOCK
+    int k = 0;
+    while(bPlay ) /// NEED FIX FOR SECOND BLOCK
     {
         pDrawWidget->clearFrameBuffer(fboWrapper);
         pDrawWidget->drawQImage(0, 0, decoder.getNextFrame());
         qDebug() << keyCouter;
         keyCouter++;
+        double qwe = (double)keyCouter/(decoder.getPTS() + 1);
+        qDebug() << qwe;
+        if(k++ >= qCeil(qwe))
+            break;
     }
-    if(keyCouter > decoder.getPTS())
-        delta--;
-    else
-        delta++;
 
 }
 

@@ -38,13 +38,13 @@ class BrushPainter : public QObject
 
 private:
      QGraphicsScene scene;
-  static BrushPainter * p_instance;
+  static BrushPainter *p_instance;
   // Конструкторы и оператор присваивания недоступны клиентам
-  BrushPainter(QObject * parent = 0) {}
+  BrushPainter(QObject *parent = 0) {}
   BrushPainter( const BrushPainter& );
   BrushPainter& operator=( BrushPainter& );
 public:
-  static BrushPainter * getInstance() {
+  static BrushPainter *getInstance() {
       if(!p_instance)
           p_instance = new BrushPainter();
       return p_instance;

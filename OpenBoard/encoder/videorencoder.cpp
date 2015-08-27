@@ -180,7 +180,7 @@ void AV_REncoder::run()
     timer.start();
     while(bRun)
     {
-        if(timer.elapsed() >= 40 - delta && !bPause)
+     //   if(timer.elapsed() >= 40 - delta && !bPause)
         {
       //      // //qDebug() << "SHOW";
             if(!newImage)
@@ -188,10 +188,10 @@ void AV_REncoder::run()
                 m_encoder->encodeVideoFrame(frame);
                 newImage = true;
             }
-            int k = timer.elapsed() - (40 - delta);
+       /*     int k = timer.elapsed() - (40 - delta);
             if(k > 0)
                 delta = k;
-            timer.restart();
+            timer.restart();*/
 
 
         }

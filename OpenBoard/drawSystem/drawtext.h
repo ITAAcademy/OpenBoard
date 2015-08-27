@@ -37,27 +37,29 @@ class DrawTextElm : public DrawElement
     int cursorIndex;
     QList<short int> cross;
     QList<QString> stringList;
-     bool crossWithAnimation = false;
-     QList <QPoint> symbolPositionList;
-     QString listWords; // вся стрічка
-         QString listChars; // останнє введене слово
-         QList<int> listStr; // номер з якої починається і-та стрічка
-     int indexW ;
-         int indexRow;
-         int indexFirstDrawSymbol = 0;
-         int indexLastDrawSymbol = 0;
-         int marginLeft;
-         int marginTop;
-         int x ,y ;
+    bool crossWithAnimation = false;
+    QList <QPoint> symbolPositionList;
+    QString listWords; // вся стрічка
+    QString listChars; // останнє введене слово
+    QList<int> listStr; // номер з якої починається і-та стрічка
+    int indexW ;
+    int indexRow;
+    int indexFirstDrawSymbol = 0;
+    int indexLastDrawSymbol = 0;
+    int marginLeft;
+    int marginTop;
+    int line_x ,line_y ;
 
-         int lineHeight;
-         int pt;
-          int scroll;
-           volatile bool isCrossingNow;
-            QColor fillColor;
-            QVector <AnimationFigure> listOfAnimationFigure; // now use only for cross animation
+    int lineHeight;
+    int pt;
+    int scroll;
+    volatile bool isCrossingNow;
+    QColor fillColor;
+    QVector <AnimationFigure> listOfAnimationFigure; // now use only for cross animation
 
-            double animationPersentOfCross = 0.01;
+    double animationPersentOfCross = 0.01;
+    QFont getTextFont() const;
+    void setTextFont(const QFont &value);
 
 public:
     QList<ColorMarker> colors;
@@ -65,8 +67,6 @@ public:
     explicit DrawTextElm( OGLWidget *drawWidget, QObject *parent = 0);
     ~DrawTextElm();
     void clearBuffer();
-    QFont getTextFont() const;
-    void setTextFont(const QFont &value);
     void draw();
     void setLifeTime(int value);
     QList<Unit *> unitList() const;
