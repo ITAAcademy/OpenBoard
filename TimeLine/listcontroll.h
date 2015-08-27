@@ -216,7 +216,8 @@ class ListControll : public QObject, public QQuickImageProvider
     void recountMaxTrackTime();
     ImageClone *cloneImg;
 
-    QElapsedTimer timer;
+    //QElapsedTimer timer;
+      qint64 timerValue;
     qint64 time_sum;
     int isPlayPauseStop = 3;
 
@@ -371,6 +372,7 @@ signals:
 
 //void setScalePointerPosSignal(int value);
 public slots:
+    void addMsToTimerValue(int ms);
 Q_INVOKABLE void emitNewProject();
   Q_INVOKABLE void emitOpenProject();
   Q_INVOKABLE void emitSaveProject();

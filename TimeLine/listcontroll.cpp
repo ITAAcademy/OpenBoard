@@ -615,6 +615,13 @@ void ListControll::setBlocked(volatile bool value)
         isBlocked = value;
 }
 
+void ListControll::addMsToTimerValue(int ms)
+{
+    qDebug() << "SLOT addMsToTimerValue:"<<ms;
+timerValue+=ms;
+qDebug() << "timerValue:"<<timerValue;
+}
+
 
 void ListControll::moveWindow()
 {
@@ -889,7 +896,8 @@ void ListControll::calcPointedBlocksAtTime( )
  void  ListControll::play()
  {
     // // //qDebug() << "FFFFFFFFFFFFFFF  emit playSignal();";
-     timer.restart();
+     //timer.restart();
+     timerValue=0;
     //emit playSignal();
     /* if (isPlayPauseStop==3)
              time_sum = 0;*/
@@ -920,7 +928,8 @@ void  ListControll::stop()
 qint64 ListControll::getPlayTime()
 {
     if (isPlayPauseStop ==1 )
-        return timer.elapsed() + time_sum;
+        //return timer.elapsed() + time_sum;
+        return timerValue + time_sum;
     else
         if (isPlayPauseStop ==2 )
         return time_sum ;

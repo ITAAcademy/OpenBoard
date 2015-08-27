@@ -172,9 +172,16 @@ bool DrawElement::save(QIODevice* device)
     QDataStream stream(device);
 
     int temp_type = static_cast<int>(typeId);
+    int resultStatus=0;
     stream << temp_type << key << lifeTime << tickTime << startDrawTime << x << y << z << width << height << keyCouter;
     //if (typeId == Element_type::Image)
-        save_image(stream, icon);
+        //save_image(stream, icon);
+    qDebug() << "last path:"<<lastPath;
+    if (!lastPath.isEmpty())
+       resultStatus = save_image(stream,lastPath,icon.format());
+    else
+    save_image(stream, icon );
+
     save_add(stream);
 }
 
@@ -216,6 +223,11 @@ bool DrawElement::reloadLastDone()
     load(lastPath);
     stream >> key >> lifeTime >> tickTime >> startDrawTime >> x >> y >> z >> width >> height >> keyCouter;
     //qDebug() << "MY2" << lifeTime;
+}
+
+void DrawElement::setLastPath(QString path)
+{
+    lastPath=path;
 }
 
 QRect DrawElement::getRect()
@@ -374,7 +386,7 @@ void DrawElement::stop()
 
 void DrawElement::start()
 {
-
+    if (!bPause)
     keyCouter = 0;
     bPause = false;
     bPlay = true;
@@ -414,8 +426,23 @@ bool DrawElement::save_image(QDataStream &stream, QImage img)
     QBuffer buffer(&ba); // QBuffer inherits QIODevice
     buffer.open(QIODevice::WriteOnly);
     img.save(&buffer, "PNG");
+
     buffer.close();
     stream << ba.length() << ba;
+    //stream.writeRawData((const char*)img.bits(), img.byteCount());
+    //qDebug() <<"image saved:"<<img.byteCount();
+}
+bool DrawElement::save_image(QDataStream &stream, QString filePath,QImage::Format format)
+{
+    stream << (int)0 << (int)0 << (int)0;
+QFile file(filePath);
+file.open(QIODevice::ReadOnly);
+if (filePath.isEmpty())return -1;
+    QByteArray ba = file.readAll();
+
+    stream << ba.length() << ba;
+    file.close();
+    qDebug() << "SAVE_IMAGE";
     //stream.writeRawData((const char*)img.bits(), img.byteCount());
     //qDebug() <<"image saved:"<<img.byteCount();
 }
@@ -431,7 +458,8 @@ QImage DrawElement::load_image(QDataStream &stream)
     QImage img_temp(w, h, (QImage::Format)format);
     QBuffer buffer(&ba); // QBuffer inherits QIODevice
     buffer.open(QIODevice::ReadOnly);
-img_temp.load(&buffer,"PNG");
+//img_temp.load(&buffer,"PNG");
+    img_temp.loadFromData(ba);
 buffer.close();
     //stream.readRawData((char*)img_temp.bits(), img_temp.byteCount());
     return img_temp;

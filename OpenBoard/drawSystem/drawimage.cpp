@@ -1,5 +1,5 @@
 #include "drawImage.h"
-
+#include "../TimeLine/listcontroll.h"
 
 bool DrawImageElm::isBGIF() const
 {
@@ -36,15 +36,26 @@ DrawImageElm::~DrawImageElm()
 
 void DrawImageElm::draw()
 {
+
     if(bGIF)
     {
         pDrawWidget->clearFrameBuffer(fboWrapper);
-        if(gif->state() != QMovie::Running)
-            gif->start();
+        if(keyCouter==0)
+        {
+
+           qDebug() << "RESET GIF";
+                gif->stop();
+                gif->start();
+        }
+        if (bPause){
+                gif->setPaused(true);
+        }
+        else    gif->setPaused(false);
         pDrawWidget->drawQImage(0, 0, gif->currentImage().scaled(pDrawWidget->getWax(), pDrawWidget->getWay()));
     }
     else
         pDrawWidget->drawTexture(0, 0, pDrawWidget->getWax(), pDrawWidget->getWay(), textureIndex, 0, 1 , 1, z);
+     keyCouter++;
 
 }
 
