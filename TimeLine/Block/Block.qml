@@ -24,7 +24,6 @@ Rectangle{
     anchors.leftMargin: 15
     border { color: "white" ; width: 2 }
 
-
     function updateTrackWhereIsBlock()
     {
         globalRep.updateModel()

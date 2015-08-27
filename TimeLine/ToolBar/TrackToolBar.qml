@@ -40,8 +40,9 @@ Rectangle {
                 var ss = num
                timeControll.addNewBlock(bar_track.mIndex,"Block_" + ss);
                 num +=1
-                // item_col.globalRep.updateModel() ;
-                globalRep.updateModel()
+                 //item_col.globalRep.updateModel() ;
+                  //  main222.selectedBlock.updateTrackWhereIsBlock()
+                   main222.updateTracksModel();
               //  //console.log("AAAAAAAAAAAAding blocks num : "  + timeControll.getTrackSize(main222.selectedBlockCol))
                     }
 
@@ -54,7 +55,6 @@ Rectangle {
                 if (timeControll.getTestWidth() >= scroll.width)
                 track.width  = timeControll.getTestWidth();
                 // //console.log("track " +  track.width)
-                 globalRep.updateModel() ;
                  // //console.log(track.width)*/
               //  // //console.log("CLICK2 bar_track.index = " + bar_track.mIndex)
             }
@@ -71,20 +71,8 @@ Rectangle {
                 {
                     for (var y = 0; y < rep_columns.model; y++)
                          rep_columns.itemAt(y).abortColorize()
-                    globalRep.updateModel()
-
-                // track.width -=track.height
-
-                /*    var timeControlWidth =blocks.childrenRect.width //  timeControll.getTestWidth() //
-                    if (timeControlWidth >= scroll.width)
-                    track.width  = timeControlWidth;
-                    else  track.width = scroll.width ;
-*/
-                   /* if (track.width < scroll.width)
-                        track.width = scroll.width*/
-                  //  item_col.globalRep.updateModel();
-                    // item_col.p_columns.columns.globalRep.updateModel();
-
+                   // globalRep.updateModel()
+                     main222.updateTracksModel();
                 }
 
                // scroll.moveSliderFor(-1 )

@@ -66,8 +66,6 @@ Rectangle
 
     Component.onCompleted: {
     frama.p_main222 = main222
-     //timeControll.loadCurrentTextInTheFirstBlockWhenInit()
-        // p_context_menu.globalRep.updateModel(); //123rr
     }
     width: childrenRect.width ///main222.width + 20
    height: childrenRect.height //main222.height + 20
@@ -95,6 +93,7 @@ Rectangle
    property  bool needToLightSelected : false
   property Repeater p_rep_columns
     property Item p_item_col
+    property Item p_timeControll
   property Item  p_trackbar
    property Item  p_scale_pointer
    property Item  p_context_menu
@@ -223,12 +222,14 @@ scale_pointer.x = 0// timeControll.getMaxTrackTime() + scale_pointer.width/2 - s
         scaling = timeControll.getScaleScrollChildren()
         rep_columns.model = 0
          rep_columns.model =  timeControll.getTracksNumber()
-        item_col.width = timeControll.getMaxTrackTime()
+        // main222.p_trackbar.globalRep.updateModel()
+      //  item_col.width = timeControll.getMaxTrackTime()
+        item_col.width = (timeControll.getMaxTrackTime()) / main222.scaling + 31
         if (main222.needToLightSelected  && main222.selectedBlockIndex !== -1)
         {
             rep_columns.itemAt(main222.selectedBlockCol).setColorize(main222.selectedBlockIndex,"#8000FF00")
         }
-        main222.p_trackbar.globalRep.updateModel()
+
 
         //repka.updateModel();
 
@@ -667,9 +668,10 @@ timeControll.setScalePointerPos((x  -20 + scroll.flickableItem.contentX)* main22
                                            model:  timeControll.getTrackSize(trackbar.mIndex)//     bar_track.mIndex)
     function updateModel()      {
         model = 0
-        item_col.width = (timeControll.getMaxTrackTime()) / main222.scaling + 31
+
             //timeControll.update();
         model =  timeControll.getTrackSize(main222.selectedBlockCol)
+         item_col.width = (timeControll.getMaxTrackTime()) / main222.scaling + 31
         if (main222.needToLightSelected && main222.selectedBlockIndex !== -1 )
         {
             rep_columns.itemAt(main222.selectedBlockCol).setColorize(main222.selectedBlockIndex,"#8000FF00")
@@ -678,9 +680,11 @@ timeControll.setScalePointerPos((x  -20 + scroll.flickableItem.contentX)* main22
        //main222.mX//
 
         }
-        //console.log("6666666666666666666")
+        //columns.width =  timeControll.getMaxTrackTime()
+       // item_col.width = timeControll.getMaxTrackTime()
+        //console.log("6666666666666666666 trackbar.mIndex = " + trackbar.mIndex)
         timeControll.calcPointedBlocks();
-        //console.log("77777777777777777" )
+        console.log("77777777777777777 " + trackbar.mIndex)
         timeControll.setIsProjectChanged(true)
     }
                                            delegate:

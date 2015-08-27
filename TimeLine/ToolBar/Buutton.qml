@@ -43,8 +43,9 @@ Rectangle {
         onPressed:  {
             // //console.log("CLICK");
             context_menu.closeIt()
-            root.clicked();
             timeControll.emitFocusFoundSignal();
+            root.clicked();
+
         }
     }
 }
