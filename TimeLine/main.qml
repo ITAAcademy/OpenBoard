@@ -78,9 +78,12 @@ Rectangle
     property int drop_blockY : -1
     property int maIsPressed: 0
     property int dropEntered: 0
+   property bool left_rigth_entered : false
+   property bool block_zayshow_sprava : false
    property Item selectedBlock: null
    property int selectedBlockCol : 0
    property int selectedBlockIndex : 0
+   property int dropEnteredBlockIndex : 0
     property real scaling :  timeControll.getScaleScrollChildren()
    property int minBlockWidth : 1000 / scaling
    property int isPlayPauseStop : 2
@@ -95,6 +98,7 @@ Rectangle
   property Item  p_trackbar
    property Item  p_scale_pointer
    property Item  p_context_menu
+   property Item  p_divider
 
    property int mX : 0
 
@@ -220,7 +224,7 @@ scale_pointer.x = 0// timeControll.getMaxTrackTime() + scale_pointer.width/2 - s
         rep_columns.model = 0
          rep_columns.model =  timeControll.getTracksNumber()
         item_col.width = timeControll.getMaxTrackTime()
-        if (main222.needToLightSelected)
+        if (main222.needToLightSelected  && main222.selectedBlockIndex !== -1)
         {
             rep_columns.itemAt(main222.selectedBlockCol).setColorize(main222.selectedBlockIndex,"#8000FF00")
         }
@@ -376,6 +380,43 @@ timeControll.setScaleScrollChildren(0) //it have protection from small values, w
         }
         }
     }
+
+    Rectangle {
+        id : divider
+        color: "transparent"
+        property point pos_to_append
+        property string d_color: "red"
+        border { width: 3; color: d_color }
+        Component.onCompleted: {
+            main222.p_divider = divider
+        }
+
+visible : false
+        height : 100
+        width : 30
+        z: 600
+        x: 100
+        y: 20
+       /* Image {
+        source: "qrc:/iphone_toolbar_icons/arrowup.png"
+        width: parent.width
+        height: width
+        }
+        Rectangle {
+            color: divider.d_color
+            height: parent.height - 2*parent.width
+            y: parent.width
+            width: parent.width*0.5
+            x: width/2
+        }
+        Image {
+        source: "qrc:/iphone_toolbar_icons/arrowdown.png"
+        width: parent.width
+        height: width
+        anchors.bottom: parent.bottom
+        }*/
+    }
+
     Image{
         id: scale_pointer
         source: "qrc:/iphone_toolbar_icons/arrow.png"
@@ -628,15 +669,13 @@ timeControll.setScalePointerPos((x  -20 + scroll.flickableItem.contentX)* main22
         model = 0
         item_col.width = (timeControll.getMaxTrackTime()) / main222.scaling + 31
             //timeControll.update();
-        model =  timeControll.getTrackSize(bar_track.mIndex)
-
-        if (main222.needToLightSelected)
+        model =  timeControll.getTrackSize(main222.selectedBlockCol)
+        if (main222.needToLightSelected && main222.selectedBlockIndex !== -1 )
         {
             rep_columns.itemAt(main222.selectedBlockCol).setColorize(main222.selectedBlockIndex,"#8000FF00")
             // //console.log("selectedBlockIndex=" + main222.selectedBlockIndex)
        // main222.p_scale_pointer.x =rep_columns.itemAt(main222.selectedBlockCol).getBlockX(main222.selectedBlockIndex)
        //main222.mX//
-
 
         }
         //console.log("6666666666666666666")
