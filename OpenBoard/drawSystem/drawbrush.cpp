@@ -116,6 +116,11 @@ bool DrawBrushElm::save_add(QDataStream &stream)
             QImage img = QImage(new_path + "\\" + pDrawWidget->m_manager.brushPathsList[brushImageIndex]);
             //brushImages.push_back();
             stream <<usedImageIndexes.values()[i];
+            int resultStatus = 0;
+            qDebug() << "last path:"<<lastPath;
+            if (!lastPath.isEmpty())
+               resultStatus = save_image(stream,lastPath,img.format());
+            else
             save_image(stream, img );
          }
 

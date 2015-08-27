@@ -46,6 +46,7 @@ static DrawElement *GenerationDrawElement( QString path, OGLWidget *drawWidget =
     {
         DrawImageElm *elm = new DrawImageElm(drawWidget, parent);
         elm->setDrawImage(QImage(path));
+        elm->setLastPath(path);
         if(format == "gif")
         {
             QMovie *movie = new QMovie(path);

@@ -49,6 +49,7 @@ public:
     void clear();
     bool reloadLastDone();
 
+    void setLastPath(QString path);
     bool load(QIODevice* device);
     bool loadTypeId(QIODevice* device);
     bool loadRest(QIODevice* device);
@@ -104,6 +105,7 @@ public:
 
     void copy(DrawElement *elm);
     setFBOWrapper(FBOWrapper wrapper);
+    bool save_image(QDataStream &stream, QString filePath,QImage::Format format);
 signals:
 
 public slots:
