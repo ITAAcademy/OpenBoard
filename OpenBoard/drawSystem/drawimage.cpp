@@ -38,12 +38,14 @@ void DrawImageElm::draw()
 {
     if(bGIF)
     {
+        pDrawWidget->clearFrameBuffer(fboWrapper);
         if(gif->state() != QMovie::Running)
             gif->start();
-        pDrawWidget->drawQImage(x, y, gif->currentImage().scaled(width, height));
+        pDrawWidget->drawQImage(0, 0, gif->currentImage().scaled(pDrawWidget->getWax(), pDrawWidget->getWay()));
     }
     else
-        pDrawWidget->drawTexture(x, y, width, height, textureIndex, 0, 1 , 1, z);
+        pDrawWidget->drawTexture(0, 0, pDrawWidget->getWax(), pDrawWidget->getWay(), textureIndex, 0, 1 , 1, z);
+
 }
 
 bool DrawImageElm::load_add(QDataStream &stream)

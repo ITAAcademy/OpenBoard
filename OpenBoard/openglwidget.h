@@ -20,6 +20,8 @@
 #include "encoder/videorencoder.h"
 #include "../Brush/brushcontroll.h"
 #include <QGLShader>
+
+
 class ListControll;
 struct BrushBeginingIndex;
 class DrawTextElm;
@@ -82,7 +84,11 @@ struct DrawData{
     bool IsPlay;
 };
 
-
+struct FBOWrapper{
+    GLuint frameBuffer;
+    GLuint bindedTexture;
+    int errorStatus= -1;
+};
 class OGLWidget : public QGLWidget, protected QGLFunctions
 {
     Q_OBJECT
@@ -171,7 +177,7 @@ public:
     void crossOutWithAnimation(int n = 1);
     QPoint drawWrapText( QString str ); // main draw function
     void setFillColor( QColor col);
-    void fillText(QString str, QColor color, int x, int y, int z = 0);
+    void fillText(QString str, QColor color, int x, int y, int z = 0, float scale = 1);
     void isLastRow();
     void pause(int ms);
 
@@ -198,39 +204,48 @@ public:
     void drawTexture(int x, int y, int width, int height, int index, int angle=0, float scaleX = 1, float scaleY = 1, int z = 0);
     void drawTexture(int x, int y, int width, int height, GLuint texture, int angle=0, float scaleX = 1, float scaleY = 1, int z = 0);
     void update();
-    void initFrameBufferTexture();
-    void initFrameBufferDepthBuffer();
-    void paintBrushInBuffer();
-    void initFrameBuffer();
+    int initTexture(GLuint &texture);
+    void initFBDepthBuffer(GLuint &fbo_depth);
+    void paintBrushInBuffer(FBOWrapper fboWrapper);
+    FBOWrapper initFboWrapper(bool visibleOnly=true);
     QList<DrawElement *> &getList();
     void setList(const QList<DrawElement *> &value);
     bool getIsBrushWindowOpened() const;
     void setIsBrushWindowOpened(bool value);
+    int getWax();
+    int getWay();
+    void paintBufferOnScreen(FBOWrapper buffer,int x , int y , int width, int height, int z = 0);
 
-    void paintBufferOnScreen(int x , int y , int width, int height, int z = 0);
+    void deleteFBO(FBOWrapper wrapper);
 
+    void paintBrushInBuffer(GLuint& texture,Brush& currentBrushOfDrawSystem,FBOWrapper &fboWrapper,QVector<QPoint> coords, QVector<BrushBeginingIndex> brushes,int keyFrame);
 
-
-    void paintBrushInBuffer(QVector<QPoint> coords, QVector<BrushBeginingIndex> brushes,int keyFrame);
     double getAnimationPersentOfCross() const;
     void setAnimationPersentOfCross(double value);
 
-    void myRenderText(QGLWidget *w, int x, int y,int z, const QString &text, const QColor &col = Qt::white, const QFont &font = QFont());
+
     void drawQImage(int x, int y, QImage img, int z = 0);
+
+    void myRenderText(QGLWidget *w, int x, int y, int z, const QString &text, const QColor &col = Qt::white, const QFont &font = QFont(), float scale = 1);
+
     void initShader();
     bool isShowLastDrawing();
     void setShowLastDrawing(bool val);
     bool getShowLastDrawing();
     void stopShowLastDrawing();
+
     RectangleEditor * getEditingRectangle();
     void setEditingRectangle(const RectangleEditor &value);
 
     int getCurStatus() const;
     void setCurStatus(const StatusDraw &value);
 
+    FBOWrapper getMainFBO();
+    void bindBuffer(GLuint buffer);
 
 public slots:
-    void clearFrameBuffer();
+   // void clearFrameBuffer();
+        void clearFrameBuffer(FBOWrapper fboWrapper);
     void hideBrushManager();
     void slotBlockEdited();
     bool drawAnimated( bool record );
@@ -252,7 +267,7 @@ public slots:
      */
     void insertToBuffer(const QChar ch);
     QPoint convertTextBoxToBufferIndex(int index, bool symbol = false);
-    void drawTextBuffer(int m_x, int m_y, int m_width, int m_height, int z = 0, bool cross = true);
+    void drawTextBuffer(int m_x, int m_y, int m_width, int m_height, int z = 0, bool cross = true, float scale = 1);
     void moveCursor(int n = 1, bool withWrapShift = true);
     void clearBuffer();
     void testWrap(int kIndexOfRow);
@@ -289,7 +304,12 @@ private slots:
     void storeMousePos();
 
 private:
+
        bool mayShowRedRectangle = true;
+
+    QVector<GLenum> attachment;
+    FBOWrapper mainFBO;
+
      QMessageBox ms_for_debug;
     bool pressedCtrl = false;
     bool pressedShift = false;
@@ -301,12 +321,12 @@ private:
      bool isPainting;
     QImage img;
     ListControll *timeLine = NULL;
-         Brush currentBrushOfDrawSystem;
-         Brush currentBrushOfLastDrawing;
-    GLuint    fbo,// The frame buffer object
-	fbo_depth, // The depth buffer for the frame buffer object
 
-	fbo_texture; // The texture object to write our frame buffer object to
+         Brush currentBrushOfLastDrawing;
+   // GLuint    fbo,// The frame buffer object
+    //fbo_depth, // The depth buffer for the frame buffer object
+
+    //fbo_texture; // The texture object to write our frame buffer object to
     QString drawText;
     bool bRecord;
     void generateFrames();
@@ -335,6 +355,7 @@ private:
      * |not use
     */
     QFont textFont;
+    QFont mainTextFont;
     QFontMetrics *fMetrics;
     int indexInList;
     int deleteWT;

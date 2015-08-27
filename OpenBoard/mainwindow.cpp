@@ -3,7 +3,7 @@
 #include "../TimeLine/listcontroll.h"
 
 #define TIMER_VALUE         300
-#define GLWIDGET_SIZE       640,480
+
 #define WINDOW_POS          80,100,760,560
 #define WINDOW_MARGING          20
                    //CENTER 335,100,760,558
@@ -37,6 +37,7 @@ MainWindow::MainWindow(QWidget *parent) :
    // gs(Qt::CustomizeWindowHint | Qt::FramelessWindowHint | Qt::WindowTitleHint);
     //mpOGLWidget->setAttribute(Qt::WA_ShowModal);
     //mpOGLWidget->setWindowFlags (Qt::CustomizeWindowHint | Qt::FramelessWindowHint | Qt::WindowTitleHint);
+
     mpOGLWidget->show();
     mpOGLWidget->setVisible(false);
      //qDebug() << "connect unableToDraw";
@@ -46,7 +47,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     qApp->processEvents(QEventLoop::AllEvents, 1000);
 */
-    mpOGLWidget->setFixedSize(GLWIDGET_SIZE);
+   // mpOGLWidget->setFixedSize(GLWIDGET_SIZE);
     mpOGLWidget->move(pos().x() + width() + WINDOW_MARGING, pos().y());
 
    // mpOGLWidget->moveToThread(&drawThread);
@@ -720,7 +721,7 @@ void MainWindow::on_action_Show_triggered()
     //mpOGLWidget->pause(100);// wait for show window
 
    mpOGLWidget->setDelay(1000/lastInpuDelay);
-    mpOGLWidget->setFixedSize(GLWIDGET_SIZE);
+   // mpOGLWidget->setFixedSize(GLWIDGET_SIZE);
     mpOGLWidget->move(pos().x() + width() + WINDOW_MARGING, pos().y());
 
     ui->action_Pause->setEnabled(true);
@@ -1221,9 +1222,11 @@ bool MainWindow::on_action_Save_Project_triggered()
 
 void MainWindow::on_action_Open_Project_triggered()
 {   
+
     isActive = true;
     qApp->processEvents();
     activateWindow();
+
     if (mpOGLWidget->getTimeLine()->isProjectChanged())
     {
     QMessageBox::StandardButton reply;
@@ -1243,9 +1246,12 @@ void MainWindow::on_action_Open_Project_triggered()
     isActive = false;
     qApp->processEvents();
     activateWindow();
+  //  mpOGLWidget->show();
     QString fileName = QFileDialog::getOpenFileName(this, tr("Open project"), directory, tr("Project file (*.project)"), 0, QFileDialog::DontUseNativeDialog);
+    //mpOGLWidget->hide();
    //qDebug() << "DDDDDDDDDDDDDDDDDDDDDDDDDDD fileName = " <<  fileName;
     isActive = true;
+
     qApp->processEvents();
     activateWindow();
     if(fileName.isEmpty())   return;
@@ -1258,6 +1264,7 @@ void MainWindow::on_action_Open_Project_triggered()
 
 
         mpOGLWidget->getTimeLine()->load(&file);
+
         QDataStream stream(&file);
         int state ;
         stream >> curentState.advance_mode >> state ;
@@ -1279,6 +1286,8 @@ void MainWindow::on_action_Open_Project_triggered()
 
 void MainWindow::on_action_New_Project_triggered()
 {
+   // mpOGLWidget->show();
+
     //qDebug() << "NEW_PROJECT";
     if (mpOGLWidget->getTimeLine()->isProjectChanged())
     {
@@ -1346,17 +1355,26 @@ if (a_hide->isEnabled())
      switch (curentState.state) {
      case VIDEO_EDIT_TEXT:
      {
+         qDebug () << "VIDEO_EDIT_TEXT BEGIN";
          DrawImageElm *first = new DrawImageElm(mpOGLWidget);
+         //qDebug() << "mpOGLWidget:"<<mpOGLWidget;
+
+        first->setFBOWrapper(mpOGLWidget->initFboWrapper());
+
          QImage load(curentState.firstImage);
-         qApp->processEvents();
+qDebug () << "VIDEO_EDIT_TEXT BEGIN-1";
+        // qApp->processEvents();
+qDebug () << "VIDEO_EDIT_TEXT BEGIN-2";
          first->setDrawImage(load);
+         qDebug () << "VIDEO_EDIT_TEXT BEGIN-3";
 
-
+qDebug () << "VIDEO_EDIT_TEXT MID";
 
          DrawImageElm *last = new DrawImageElm(mpOGLWidget);
          QImage load2(curentState.lastImage);
-         qApp->processEvents();
+         //qApp->processEvents();
          last->setDrawImage(load2);
+       last->setFBOWrapper(mpOGLWidget->initFboWrapper());
 
          first->setTypeId(Element_type::Image);
          last->setTypeId(Element_type::Image);
@@ -1369,13 +1387,15 @@ if (a_hide->isEnabled())
          first->setSize(mpOGLWidget->width(), mpOGLWidget->height());
          last->setSize(mpOGLWidget->width(), mpOGLWidget->height());
          text->setSize(mpOGLWidget->width(), mpOGLWidget->height());
-
+       text->setFBOWrapper(mpOGLWidget->initFboWrapper());
 
 
          mpOGLWidget->getTimeLine()->addNewBlock(0, "NEW4", first);
          mpOGLWidget->getTimeLine()->addNewBlock(0, "NEW3", text);
          mpOGLWidget->getTimeLine()->addNewBlock(0, "NEW2", last);
          mpOGLWidget->getTimeLine()->setSelectedBlockPoint(0, 1);
+    qApp->processEvents();
+         qDebug () << "VIDEO_EDIT_TEXT END";
          // //qDebug() << "AAAAAAAAAAAAAAAAAAAA9";
          break;
      }
@@ -1468,9 +1488,11 @@ void MainWindow::onCommandFocusLost(){
 
 void MainWindow::on_actionClear_drawing_triggered()
 {
-// //qDebug() << "on_actionClear_drawing_triggered()";
-mpOGLWidget->clearFrameBuffer();
-//// //qDebug() << mpOGLWidget->isClearFrameBuffer;
+
+// qDebug() << "on_actionClear_drawing_triggered()";
+    mpOGLWidget->clearFrameBuffer(mpOGLWidget->getMainFBO());
+//// qDebug() << mpOGLWidget->isClearFrameBuffer;
+
 }
 
 void MainWindow::on_actionClear_drawingBuffer_triggered()

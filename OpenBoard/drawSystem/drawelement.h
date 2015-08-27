@@ -19,7 +19,7 @@ class DrawElement : public QObject
     Q_OBJECT
 
 protected:
-
+    FBOWrapper fboWrapper;
     QImage icon;
     QString key;
     int lifeTime = 0;
@@ -28,6 +28,7 @@ protected:
     int startDrawTime;
     int x, y, z, width, height;
     int keyCouter;
+    bool aspectRatio = false;
     QTimer lifeTimer;
     QElapsedTimer tickTimer;
     char type[50];
@@ -39,7 +40,7 @@ protected:
     QString lastPath;
     virtual void draw();
 public:
-
+    FBOWrapper getFBOWrapper();
     explicit DrawElement(OGLWidget *drawWidget, QObject *parent);
     virtual ~DrawElement();
     void paint(); //new use
@@ -102,6 +103,7 @@ public:
     void setKey(const QString &value);
 
     void copy(DrawElement *elm);
+    setFBOWrapper(FBOWrapper wrapper);
 signals:
 
 public slots:
