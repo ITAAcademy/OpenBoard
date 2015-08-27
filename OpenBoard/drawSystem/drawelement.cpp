@@ -381,7 +381,7 @@ void DrawElement::stop()
 
 void DrawElement::start()
 {
-
+    if (!bPause)
     keyCouter = 0;
     bPause = false;
     bPlay = true;
