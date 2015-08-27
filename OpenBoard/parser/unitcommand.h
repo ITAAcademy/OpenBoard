@@ -1,7 +1,9 @@
 #ifndef UNITCOMMAND
 #define UNITCOMMAND
-
+#pragma once
 #include "unit.h"
+
+
 
 class UnitCommand : public Unit
 {
@@ -10,21 +12,21 @@ private:
 public:
     UnitCommand();
     virtual ~UnitCommand();
-    void moveLeft(OGLWidget* canvas, int n);
-    void moveRight(OGLWidget* canvas, int n);
+    void moveLeft( DrawTextElm  *canvas, int n);
+    void moveRight( DrawTextElm  *  canvas, int n);
     void setUnitCommandType(QString str);
-    void changeColor(OGLWidget* canvas);
-    void nextLine(OGLWidget* canvas);
-    void boardClean(OGLWidget* canvas);
-    void deletePreChar(OGLWidget* canvas);
-    void deleteLeft(OGLWidget* canvas, int n);
-    void deleteRight(OGLWidget* canvas, int n);
-    void erasePreChar(OGLWidget* canvas,int n);
-    void pause(OGLWidget* canvas);
-    void backSlash(OGLWidget* canvas);
-    void draw(OGLWidget *canvas);
-    void clearPreChar(OGLWidget* canvas, int n);
-    void update(OGLWidget* canvas);
+    void changeColor(DrawTextElm * canvas);
+    void nextLine(DrawTextElm * canvas);
+    void boardClean(DrawTextElm * canvas);
+    void deletePreChar(DrawTextElm * canvas);
+    void deleteLeft(DrawTextElm * canvas, int n);
+    void deleteRight(DrawTextElm * canvas, int n);
+    void erasePreChar(DrawTextElm * canvas,int n);
+    void pause(DrawTextElm * canvas);
+    void backSlash(DrawTextElm * canvas);
+    void draw( DrawTextElm  * canvas);
+    void clearPreChar(DrawTextElm * canvas, int n);
+    void update(DrawTextElm * canvas);
     QString getUnitCommandType();
 };
 

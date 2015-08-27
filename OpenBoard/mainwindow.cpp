@@ -733,8 +733,8 @@ void MainWindow::on_action_Show_triggered()
      * init
      */
 
-    mpOGLWidget->setTextFont(mSettings.getBoardFont());
-    mpOGLWidget->setMainFillColor(mSettings.getBoardFontColor());
+   // mpOGLWidget->setTextFont(mSettings.getBoardFont());
+    //mpOGLWidget->setMainFillColor(mSettings.getBoardFontColor());
 /*
     mpGLWidget->setFixedSize(GLWIDGET_SIZE);
     mpGLWidget->move(pos().x() + width(), pos().y());
@@ -828,18 +828,19 @@ void MainWindow::on_action_Font_triggered()
 //!
 void MainWindow::on_action_Board_Font_triggered()
 {
-    bool ok;
+    /*bool ok;
     QFont font;
     font = QFontDialog::getFont(&ok, mpOGLWidget->getTextFont(), this);
     if (!ok)
         return;
 
+    mpOGLWidget->setTextFont(font);
+   mSettings.setBoardFont(font);*/
+
  /*   QString qmlFont;
     QFontInfo fontInf(font);
     qmlFont = QString::number(fontInf.pointSize()) + "pt \"" + font.family() + "\"";*/
-    mpOGLWidget->setTextFont(font);
-   // mSettings.setBoardFont(font);
-   mSettings.setBoardFont(font);
+
 }
 
 void MainWindow::on_action_Reset_default_triggered()
@@ -887,12 +888,21 @@ void MainWindow::on_action_Color_triggered()
  void MainWindow::on_action_Board_Color_triggered()
 {
     QColor colorm;
-    colorm = QColorDialog::getColor(mpOGLWidget->getMainFillColor(), this);
+
+QPoint selected_block_point = mpOGLWidget->getTimeLine()->getSelectedBlockPoint();
+if (selected_block_point.x() < 0)
+    return;
+DrawTextElm* draw_element =(DrawTextElm*) mpOGLWidget->getTimeLine()->getBlock(selected_block_point).draw_element;
+if (draw_element->getTypeId() != Element_type::Text)
+    return;
+
+ colorm = QColorDialog::getColor(draw_element->getMainFillColor(), this);
 
    // QString col = colorm.name();
     if(colorm.isValid())
     {
-        mpOGLWidget->setMainFillColor(colorm);
+       // mpOGLWidget->setMainFillColor(colorm);
+        draw_element->setMainFillColor(colorm);
         mSettings.setBoardFontColor(colorm);
     }
 
@@ -1571,8 +1581,16 @@ void MainWindow::on_crossBtn_clicked()
 
 void MainWindow::on_colorBtn_pressed()
 {
+    QPoint selected_block_point = mpOGLWidget->getTimeLine()->getSelectedBlockPoint();
+    if (selected_block_point.x() < 0)
+        return;
+    DrawTextElm* draw_element =(DrawTextElm*) mpOGLWidget->getTimeLine()->getBlock(selected_block_point).draw_element;
+    if (draw_element->getTypeId() != Element_type::Text)
+        return;
+
+
     QTextCursor prev_cursor = textEdit->textCursor();
-    colorPkr = QColorDialog::getColor(mpOGLWidget->getMainFillColor(), this);
+    colorPkr = QColorDialog::getColor(draw_element->getMainFillColor(), this);
     textEdit->setTextCursor(prev_cursor);
     if(colorPkr.isValid())
     {
@@ -1796,9 +1814,9 @@ void MainWindow::on_action_Play_triggered()
     }
     else
     {
-        mpOGLWidget->clearCanvas();
+       // mpOGLWidget->clearCanvas();
         mpOGLWidget->clearBuffer();
-        mpOGLWidget->setFillColor(mpOGLWidget->getMainFillColor());
+        //mpOGLWidget->setFillColor(mpOGLWidget->getMainFillColor());
         drawCounter = 0;
     }
 

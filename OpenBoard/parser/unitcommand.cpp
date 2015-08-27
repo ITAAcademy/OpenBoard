@@ -1,5 +1,5 @@
 #include "unitcommand.h"
-
+#include "drawSystem/drawtext.h"
 
 
 UnitCommand::UnitCommand() : Unit()
@@ -22,10 +22,10 @@ bool isLower(const ColorMarker &c1,const ColorMarker &c2)
     return c1.startIndex < c2.startIndex;
 }
 
-void UnitCommand::changeColor(OGLWidget *canvas)
+void UnitCommand::changeColor(DrawTextElm *canvas)
 {
    // canvas->setFillColor(QColor(unit_data));
-    // //qDebug() << "void UnitCommand::changeColor(OGLWidget *canvas)";
+    // //qDebug() << "void UnitCommand::changeColor(DrawTextElm *canvas)";
     ColorMarker marker;
     marker.startIndex=canvas->getCursorIndex();
     marker.value=unit_data;
@@ -33,51 +33,51 @@ void UnitCommand::changeColor(OGLWidget *canvas)
     qSort(canvas->colors.begin(),canvas->colors.end(),isLower);
 }
 
-void UnitCommand::nextLine(OGLWidget *canvas)
+void UnitCommand::nextLine(DrawTextElm *canvas)
 {
     canvas->nextRow();
 }
 
-void UnitCommand::boardClean(OGLWidget *canvas)
+void UnitCommand::boardClean(DrawTextElm *canvas)
 {
     canvas->clearBuffer();
     canvas->clearCanvas();
 }
 
-void UnitCommand::moveLeft(OGLWidget *canvas, int n){
+void UnitCommand::moveLeft(DrawTextElm *canvas, int n){
     canvas->moveCursor(-n);
 // //qDebug() <<"Moved left";
 
 //INSERT CODE
 }
-void UnitCommand::moveRight(OGLWidget* canvas, int n){
+void UnitCommand::moveRight(DrawTextElm* canvas, int n){
 // //qDebug() <<"Moved right " << n;
 canvas->moveCursor(n);
 //INSERT CODE
 }
 
-void UnitCommand::deletePreChar(OGLWidget *canvas)
+void UnitCommand::deletePreChar(DrawTextElm *canvas)
 {
-    canvas->crossOutLastSymbol();
+    canvas->crossOutLastSymbol(1);
 }
-void UnitCommand::deleteLeft(OGLWidget *canvas, int n){
+void UnitCommand::deleteLeft(DrawTextElm *canvas, int n){
 //INSERT CODE
     canvas->deleteFromBuffer(-n);
 }
-void UnitCommand::deleteRight(OGLWidget* canvas, int n){
+void UnitCommand::deleteRight(DrawTextElm* canvas, int n){
 //INSERT CODE
     canvas->deleteFromBuffer(n);
 }
 
 
-void UnitCommand::erasePreChar(OGLWidget *canvas,int n)
+void UnitCommand::erasePreChar(DrawTextElm *textElement,int n)
 {
     //canvas->crossOutLastSymbol();
   //  unitType = 2;
-    canvas->crossOutWithAnimation(n);
-    canvas->crossText();
+    textElement->crossOutWithAnimation(n);
+    textElement->crossText();
 }
-void UnitCommand::clearPreChar(OGLWidget *canvas, int n)
+void UnitCommand::clearPreChar(DrawTextElm *canvas, int n)
 {
     //canvas->crossOutLastSymbol();
    canvas->crossOutLastSymbol(n);
@@ -85,13 +85,13 @@ void UnitCommand::clearPreChar(OGLWidget *canvas, int n)
    // //qDebug() << "cross" << n;
 }
 
-void UnitCommand::update(OGLWidget *canvas)
+void UnitCommand::update(DrawTextElm *canvas)
 {
     canvas->update();
    // //qDebug() << "UPDATEEEEEEEEE";
 }
 
-void UnitCommand::pause(OGLWidget *canvas)
+void UnitCommand::pause(DrawTextElm *canvas)
 {
     //QThread::msleep(unit_data.toULong()*100);
    // canvas->update();
@@ -100,14 +100,14 @@ void UnitCommand::pause(OGLWidget *canvas)
     //canvas->pause(unit_data.toULong()*1000);
 }
 
-void UnitCommand::backSlash(OGLWidget *canvas)
+void UnitCommand::backSlash(DrawTextElm *canvas)
 {
     canvas->insertToBuffer('\\');
     canvas->moveCursor();
   //  canvas->update();
 }
 
-void UnitCommand::draw(OGLWidget *canvas)
+void UnitCommand::draw(DrawTextElm *canvas)
 {
     if (Type == "ChangeColor")
     {

@@ -15,7 +15,7 @@ public:
     UnitSumbol();
     virtual ~UnitSumbol();
 
-    void draw(OGLWidget* canvas);
+    void draw(DrawTextElm* canvas);
     void setUnitSumbolType(QString str);
     void setUnitSumbolSize(int size);
     void setUnitSumbolColor(QString color);
