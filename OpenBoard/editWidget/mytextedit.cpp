@@ -35,6 +35,9 @@ void MyTextEdit::focusInEvent( QFocusEvent * ev )
     emit MyTextEdit::setFocus() ;
     QPlainTextEdit::focusInEvent(ev);
 }
+
+
+
  void MyTextEdit::mergeFormatOnWordOrSelection(int position)
  {
     if (charCount==document()->characterCount()) return;

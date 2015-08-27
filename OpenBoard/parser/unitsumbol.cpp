@@ -1,4 +1,5 @@
 #include "unitsumbol.h"
+#include "drawSystem/drawtext.h"
 
 UnitSumbol::UnitSumbol() : Unit()
 {
@@ -13,7 +14,7 @@ UnitSumbol::~UnitSumbol()
 
 }
 
-void UnitSumbol::draw(OGLWidget *canvas)
+void UnitSumbol::draw(DrawTextElm *canvas)
 {
    // canvas->update();
 

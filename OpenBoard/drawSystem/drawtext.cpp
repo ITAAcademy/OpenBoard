@@ -43,18 +43,214 @@ void DrawTextElm::start()
 {
     DrawElement::start();
     pDrawWidget->clearBuffer();
-    pDrawWidget->clearCanvas();
+    clearCanvas();
 }
+
+
+int DrawTextElm::getFirstSymbolOfString(int index, bool symbol)
+{
+    int i = 0;
+    int sumLength = 0;
+    while( i < index)
+    {
+        int nextLen = stringList[i].length();
+        if(!symbol)
+            nextLen++;
+        sumLength +=  nextLen;
+        i++;
+    }
+    //if(sumLength != 0)
+      //  sumLength++;
+                return sumLength;
+}
+int DrawTextElm::getLastSymbolOfString(int index, bool symbol)
+{
+    int i = 0;
+    int sumLength = 0;
+    while( i <= index)
+    {
+        int nextLen = stringList[i].length();
+        if(!symbol)
+            nextLen++;
+        sumLength +=  nextLen;
+        i++;
+    }
+    //if(sumLength != 0)
+      //  sumLength++;
+    return sumLength + 1;
+}
+
+QPoint DrawTextElm::convertTextBoxToBufferIndex(int index, bool symbol)
+{
+    int i = 0;
+    int sumLength = 0;
+    int numParagraph = 0;
+    while( i < stringList.length())
+    {
+      //  // //qDebug() <<"stringList:"<<stringList.length();
+        int lenNext;
+        if(symbol)
+            lenNext = stringList[i].length();
+        else
+            lenNext = stringList[i].length() + 1;
+        sumLength += lenNext;
+     //   // //qDebug() <<"sumLength:"<<sumLength;
+//        // //qDebug() <<"index:"<<index;
+//        // //qDebug() <<"I:"<<i;
+
+        if(sumLength > index)
+        {
+            int colum = index - (sumLength - lenNext);
+            int row = i;
+           return QPoint( colum, row);
+        }
+        i++;
+    }
+    return QPoint(stringList[i - 1].length(), i - 1);
+}
+
+
+bool DrawTextElm::drawAnimationFigure(AnimationFigure &figure)
+{
+    return drawAnimationFigure(figure.rect.x(), figure.rect.y(), figure.rect.width(), figure.rect.height(), animationPersentOfCross, (OGLWidget::FigureType)figure.type, figure.fill);
+}
+
+
+bool DrawTextElm::drawAnimationFigure(int x, int y, int width, int height, double persent, OGLWidget::FigureType type, bool fill)
+{
+    isCrossingNow=true;
+    //qDebug() << "wqweqweqwe "  << persent;
+    if(persent < 0.98f)
+    {
+
+   //     drawFigure(int x, int y, int x2, int y2,
+  //                 OGLWidget::FigureType type, bool fill = true, QColor col = "#FF0000", float size = 2)
+       // pDrawWidget->drawFigure(x, y, x + (width - x)*persent, height, type, fill);
+
+
+
+       // pDrawWidget->drawFigure(x,y,x + (width - x)*persent,height,type,fill);
+          pDrawWidget->drawFigure(x, y, x + (width - x)*persent, height, type, fill);
+        //persent += animationPersentOfCross;
+       // QThread::currentThread()->msleep(10);
+        if(pDrawWidget->getStatus() == OGLWidget::STOP )
+        {
+            isCrossingNow=false;
+            return true;
+        }
+        isCrossingNow=false;
+        return false;
+    }
+    else
+    {
+        pDrawWidget->drawFigure(x, y, width, height, type, fill);
+        isCrossingNow=false;
+        return true;
+    }
+
+}
+
+double DrawTextElm::getAnimationPersentOfCross() const
+{
+    return animationPersentOfCross;
+}
+
+void DrawTextElm::setAnimationPersentOfCross(double value)
+{
+    animationPersentOfCross = value;
+    ////qDebug() << "QWE    " << value;
+}
+
+int DrawTextElm::getRowFromTextBoxIndex(int index, bool symbol)
+{
+    int i = 0;
+    int sumLength = 0;
+    while( i < stringList.length())
+    {
+        int lenNext;
+        if(symbol)
+            lenNext = stringList[i].length();
+        else
+            lenNext = stringList[i].length() + 1;
+        sumLength += lenNext;
+        if(sumLength > index)
+        {
+           return i;
+        }
+        i++;
+    }
+}
+
+int DrawTextElm::getCountNullString(int index)
+{
+    int i = 0;
+    int sumLength = 0;
+    while( i <= index)
+    {
+        int nextLen = stringList[i].length();
+        if(nextLen == 0)
+            sumLength++;
+        i++;
+    }
+    return sumLength;
+}
+
 DrawTextElm::DrawTextElm(OGLWidget *drawWidget, QObject *parent) : DrawElement(drawWidget, parent)
 {
     setType("text");
     setTypeId(Element_type::Text);
     aspectRatio = true;
+
+    indexInList = 1;
+    deleteWT = 0;
+    fMetrics = new QFontMetrics(QFont(font));
+
+    font = "LC Chalk";
+    isWord  =  true;
+
+    indexInList = 1;
+    indexRowInList = 0;
+    cursorIndex = 0;
+     stringList.append("");
+
+     indexW = 1;
+     indexRow = 0;
+     marginLeft = 20;
+     marginTop = 40;
+
+     x = marginLeft;
+     y = lineHeight + pt;
+
+     pt = 36;
+     lineHeight = 25;
+
+     isCrossingNow = false;
+     scroll = 0;
+
+
 }
 
 DrawTextElm::~DrawTextElm()
 {
+    if(fMetrics != NULL)
+      delete fMetrics;
+}
 
+void DrawTextElm::clearBuffer()
+{
+     //qDebug() << "CLEAR_TEXT_BUFFER";
+     colors.clear();
+     ColorMarker startMarker;
+     startMarker.startIndex=0;
+     startMarker.value=getMainFillColor();
+     colors.append(startMarker);
+    cross.clear();
+    cross.append(0); // для визова зачеркування якщо стрічка зацінчується
+    stringList.clear();
+    stringList.append("");
+    cursorIndex = 0;
+    deleteWT = 0;
+    crossWithAnimation = false;
 }
 
 void DrawTextElm::draw()
@@ -71,7 +267,7 @@ void DrawTextElm::draw()
        // //qDebug() << "startDrawTime:"<<startDrawTime;
         if((keyCouter == 0 || !bPlay) && curentCh != current_time )
        {
-           pDrawWidget->clearCanvas();
+           clearCanvas();
            pDrawWidget->clearBuffer();
            keyCouter = 0;
            animationDelayCount = 1;
@@ -86,7 +282,7 @@ void DrawTextElm::draw()
 
    // if (keyCouter < realKeyValue)
 
-        while( keyCouter < mUnitList.size() && pDrawWidget->listOfAnimationFigure.isEmpty() && (keyCouter <= realKeyValue || mUnitList[keyCouter]->unitType == 1) )
+        while( keyCouter < mUnitList.size() && listOfAnimationFigure.isEmpty() && (keyCouter <= realKeyValue || mUnitList[keyCouter]->unitType == 1) )
         {
             if(!bPlay)
                 current_time =  pDrawWidget->getTimeLine()->getScalePointerPos();
@@ -103,7 +299,7 @@ void DrawTextElm::draw()
                     {
                         animationDelayCount = mUnitList.at(keyCouter)->delay;
                         animationDelayStart = current_time;
-                        pDrawWidget->crossTextDraw();
+                        crossTextDraw();
                     }
                     keyCouter++;
                     break;
@@ -119,11 +315,11 @@ void DrawTextElm::draw()
         if(mUnitList.size() != 0 && (mUnitList.size() - globalDeltaComandSize  - 1) != 0)
             tickTime = ((lifeTime - globalPauseLifeTime)/(mUnitList.size()  - 1));
        // //qDebug() << "                                                                           HHHH" << animationDelayCount - current_time;
-        pDrawWidget->setAnimationPersentOfCross( (double)(current_time - animationDelayStart)/animationDelayCount);
+       setAnimationPersentOfCross( (double)(current_time - animationDelayStart)/animationDelayCount);
            // //qDebug() << realKeyValue <<"    KEY    " << keyCouter;
     }
 
-    pDrawWidget->drawTextBuffer(0, 0, pDrawWidget->getWax(), pDrawWidget->getWay(), z, true, (float)pDrawWidget->getWax()/width);
+    drawTextBuffer(0, 0, pDrawWidget->getWax(), pDrawWidget->getWay(), z, true, (float)pDrawWidget->getWax()/width);
     curentCh = current_time;
 }
 
@@ -210,4 +406,567 @@ bool DrawTextElm::save_add(QDataStream &stream)
     // //qDebug() << "IN " << unParsestring.length();
     stream.writeRawData(unParsestring.toLatin1().data(), unParsestring.length());*/
     stream << unParsestring << loggerText << textCursor << prevTextCursor;
+}
+
+void DrawTextElm::clearCanvas(int m_x, int m_y)
+{
+    //QMetaObject::invokeMethod(canvas, "clear");
+    symbolPositionList.clear();
+    listWords.clear();
+    listStr.clear();
+    indexRow = 0;
+    indexW = 1;
+    marginLeft = m_x;
+    marginTop = m_y;
+    x = m_x;
+    y = m_y + lineHeight + pt;
+    scroll = 0;
+    //listStr[0] = 0;
+}
+
+void DrawTextElm::insertToBuffer(const QChar ch)
+{
+    crossText();
+   // crossTextDraw();
+    while (isCrossingNow);
+    QPoint convertedIndex = convertTextBoxToBufferIndex(cursorIndex);
+   // // //qDebug() << convertedIndex << " " << stringList.size() << " " << ch;
+    QString &str =  stringList[convertedIndex.y()];
+    if (convertedIndex.x()>=str.length())
+        str.append(ch);
+    else
+        str.insert(convertedIndex.x(), ch);
+    cross.insert(cursorIndex - convertTextBoxToBufferIndex(cursorIndex).y(), 0);
+  //  //qDebug() << "insert " << cursorIndex - convertTextBoxToBufferIndex(cursorIndex).y() << "        " << cross;
+
+  //  DrawTextElm(convertedIndex.y());
+    listChars.append(ch);
+
+    emit drawTextChanged();
+
+   // pause(delay);
+
+}
+
+void DrawTextElm::moveCursor(int n, bool withWrapShift)
+{
+    //update();
+    crossText();
+    int j = 0;
+    int shift = 0;
+    /*if(withWrapShift)
+    {
+        int max = qAbs (convertTextBoxToBufferIndex(cursorIndex).y() - convertTextBoxToBufferIndex(cursorIndex + n).y());
+        while( j < wrapShift.size() && j < max) //bhfhfghfghfghfghfghfghfghfghfghfghgf\ml0011
+            if(wrapShift[j++] <= cursorIndex)
+                shift = j;
+    }
+    */
+   /* int maxSymbol = getLastSymbolOfString(stringList.length() - 1, false);
+    if( maxSymbol < n)
+        n = maxSymbol;*/
+   // //qDebug() << "MAX_SYMBOL" << maxSymbol;
+    if(n > 0)
+        cursorIndex += n + shift;
+    else
+        cursorIndex += n -  shift;
+    //cursorIndex += n;
+    if(cursorIndex < 0)
+        cursorIndex = 0;
+ //   // //qDebug() << "Cursor move to n " << n <<"=== cur state " << cursorIndex << "QPOINT  " << convertTextBoxToBufferIndex(cursorIndex);
+
+}
+
+void DrawTextElm::nextRow( int n, int Row, bool wrap)
+{
+    //isLastRow();
+    QPoint convertedIndex;
+    if(Row == -1)
+    {
+        if( n == -1)
+            convertedIndex = convertTextBoxToBufferIndex(cursorIndex);
+        else
+            convertedIndex = convertTextBoxToBufferIndex(n);
+    }
+    else
+        convertedIndex = QPoint(n, Row);
+
+    int i = convertedIndex.y() + 1;
+    QString lastStr = stringList[i - 1].right(stringList[i - 1].length() - convertedIndex.x());
+
+    //qDebug() << "           LASTSTR    " << lastStr << "         " << convertedIndex.x();
+    if(i >= stringList.length())
+        stringList.append(lastStr);
+    else
+        stringList.insert(i, lastStr);
+    stringList[i - 1].resize(convertedIndex.x());
+    moveCursor(1, false );
+    /* last work
+    moveCursor(lastStr.length() + 1);
+    */
+   /* if(wrap)
+        testWrap(i);*/
+    emit drawTextChanged();
+
+}
+
+void DrawTextElm::drawTextBuffer( int m_x, int m_y, int m_width, int m_height, int z, bool cross, float scale)
+{
+     pDrawWidget->setBusy(true);
+    //if(!crossTextV2())
+     //   return QPoint(0, 0);
+    //int width = fMetrics->width(str)*1.125 ;//+ fMetrics->leftBearing(str.at(0)) + fMetrics->rightBearing(str.at(0));
+     textFont.setPointSize(mainTextFont.pointSize() * scale);
+     if(fMetrics != NULL)
+         delete fMetrics;
+     fMetrics = new QFontMetrics(textFont);
+     pt = textFont.pointSize();
+
+    clearCanvas(m_x, m_y);
+    int maxDrawElm = (m_height/(lineHeight + pt)) - 1;
+    ////qDebug() << "DRAW   "   <<  maxDrawElm;
+    int CurRow = convertTextBoxToBufferIndex(cursorIndex).y();
+    if(CurRow >= indexRowInList + maxDrawElm)
+    {
+        indexRowInList += CurRow - (indexRowInList + maxDrawElm) + 1;
+    }
+    if(CurRow < indexRowInList)
+    {
+        indexRowInList = CurRow;
+    }
+    indexFirstDrawSymbol = getFirstSymbolOfString(indexRowInList, false);
+
+    int lastRow = indexRowInList + maxDrawElm - 1;
+    if(lastRow >= stringList.length())
+        lastRow = stringList.length() - 1;
+    if(lastRow < 0)
+        lastRow = 0;
+    indexLastDrawSymbol = getLastSymbolOfString(lastRow, false);
+
+    ////qDebug() << "First  " << indexFirstDrawSymbol <<    "   " <<  indexRowInList << "    " << indexLastDrawSymbol;
+  //  // //qDebug() << indexRowInList << "   indexFirstDrawSymbol   :           " << indexFirstDrawSymbol << cross;
+ //   // //qDebug() << "START draw with indexRowInList " << indexRowInList << "MAX elm " << maxElm << "CUR " << CurRow;
+    int i = indexRowInList;
+    while( i < stringList.length() && i < indexRowInList + maxDrawElm)
+    {
+       //// //qDebug() << stringList[i] << "@";
+        QStringList tabulationStr = stringList[i].split("\t");
+        //TODO SET TEXT COLOR TO CANVAS COLOR
+        //setFillColor(fillColor); /12345
+       // for(int j = 0; j < tabulationStr.size(); j++)
+       // {
+        //    fillText(tabulationStr[j], x, y);
+       //     x += fMetrics->width(tabulationStr[j] + "\t");
+      //  }
+      //  // //qDebug() << "C:"<<colors.length();
+    for (int k = 0 ; k< colors.length();k++)
+    {
+        int columnOfColorStrBegin;
+        int columnOfColorStrEnd;
+
+           int rowOfColorStrBegin =  convertTextBoxToBufferIndex(colors[k].startIndex).y();//Рядок в якому починається стрічка з кольором
+           int rowOfColorStrEnd = 0;
+           //Якщо не дійшли до останнього кольору, то встановл. рядок кінця стрічи з початку наступної кольорової
+           if (k<colors.length()-1)rowOfColorStrEnd=convertTextBoxToBufferIndex(colors[k+1].startIndex ).y();
+           //Якщо останній колір, то така стрічка закінчується в останньому рядку
+           else rowOfColorStrEnd=stringList.length()-1;
+           //Якщо ColorIndex в цій стрічці відсутній, то переходим на інший ColorIndex
+             if (!(i>=rowOfColorStrBegin && i<=rowOfColorStrEnd))
+                 continue;
+           //Якщо на рядку, в якому починається кольорова стрічка — то стовпчик початку берем одразу з QList<ColorIndex> colors
+           if (i==rowOfColorStrBegin)
+               columnOfColorStrBegin =  convertTextBoxToBufferIndex(colors[k].startIndex ).x();
+           //Інакше стовпчик початку - нульовий стовпчик . Інфа 100%
+           else columnOfColorStrBegin = 0;
+           //Якщо на останньому кольорі, то стовпчик кінця — індекс останнього символу стрічки.
+             if (k==colors.length()-1) columnOfColorStrEnd =  stringList[i].length();
+             else
+                 //якщо не останній колір і на останній стрічці, то стовпчик кінця — стовпчик початку наступної стрічки з кольором
+           if (i==stringList.length()-1)  columnOfColorStrEnd =  convertTextBoxToBufferIndex(colors[k+1].startIndex ).x();
+            //Якщо не останній колір і не остання стрічка, то стовпчик кінця —
+           else
+           {
+               //Якщо в цій самій стрічці починається інша кольорова стрічка то кінцевий стовпчик поточної
+               //Кольорової стрічки - це почато наступної
+               if (convertTextBoxToBufferIndex(colors[k+1].startIndex ).y()==i)
+               columnOfColorStrEnd =  convertTextBoxToBufferIndex(colors[k+1].startIndex ).x();
+               //Інакше КС(кінцевий стовпчик) — це кінець стрічки
+               else columnOfColorStrEnd =  stringList[i].length();
+           }
+             QString textToWarp;
+            //Якщо перша кольорова стрічка, то додаєм до локального Х ширину стрічки, що йшла до кольорової стрічки
+            if (k==0)
+           textToWarp= stringList[i].mid(0,columnOfColorStrBegin);
+           else  {
+                int  columnOfColorStrBeginPrev=0;
+                if (convertTextBoxToBufferIndex(colors[k-1].startIndex ).y()==i)
+                    columnOfColorStrBeginPrev=convertTextBoxToBufferIndex(colors[k-1].startIndex ).x();
+                textToWarp= stringList[i].mid(columnOfColorStrBeginPrev,columnOfColorStrBegin-columnOfColorStrBeginPrev);
+            }
+            x+=fMetrics->width(textToWarp);
+            //setFillColor(colors[k].value);
+            fillColor = colors[k].value;
+            QString textToFill = stringList[i].mid(columnOfColorStrBegin,columnOfColorStrEnd-columnOfColorStrBegin);
+            pDrawWidget->fillText(textToFill,fillColor,textFont, x , y, z,(float) scale);
+           // localX+=fMetrics->width(textToFill);
+            //setFillColor(QColor(255,255,255));//Костиль, удалити, вистачить верхнього setColor, добавити на початок colors колір канви
+           /*  // //qDebug() << "columnOfColorStrEnd:" << columnOfColorStrEnd;
+             // //qDebug() << "columnOfColorStrBegin:" << columnOfColorStrBegin;
+            // //qDebug()<<"textToFill:"<<textToFill;
+              // //qDebug()<< "textToWarp:" << textToWarp;
+              // //qDebug()<<"rowOfColorStrBegin:"<<rowOfColorStrBegin;*/
+    }
+
+        y += lineHeight + pt;
+        x = m_x;
+       // localX=marginLeft;
+        i++;
+    }
+    if(cross)
+        crossTextDraw();
+    pDrawWidget->setBusy(false);
+
+   // updateGL();
+
+}
+
+bool DrawTextElm::crossText()
+{
+  //  // //qDebug() << "www " << deleteWT << cross;
+    int spacePaid = 1;
+    int row = convertTextBoxToBufferIndex(cursorIndex).y();
+    while(deleteWT > 0)
+    {
+        //// //qDebug() << "DW " << deleteWT << convertTextBoxToBufferIndex(cursorIndex);
+        int cursor = cursorIndex - row;
+       /*   space paid
+        *
+        *  while( cursor - spacePaid >= 0)
+        {
+            QPoint convert = convertTextBoxToBufferIndex(cursor - spacePaid, true);
+            //// //qDebug() << "\nSYMBOL                 :::" << cursor  - spacePaid <<"         " << stringList[convert.y()][convert.x()];
+            if(stringList[convert.y()][convert.x()] <= 0x20)
+                spacePaid++;
+            else
+                break;
+        }*/
+        cursor -= spacePaid;
+        if(cursor >= 0 && cursor < cross.length())
+        {
+            if(crossWithAnimation)
+                cross[cursor] = -1;
+            else
+                cross[cursor] = 1;
+        }
+
+        deleteWT--;
+        spacePaid++;
+    }
+
+
+}
+
+int DrawTextElm::getCursorIndex() const
+{
+    return cursorIndex;
+}
+
+void DrawTextElm::setCursorIndex(int value)
+{
+    cursorIndex = value;
+}
+
+
+void DrawTextElm::crossOutWithAnimation(int n)
+{
+  //  // //qDebug() << "URAAAA!!!  " << deleteWT;
+    crossOutLastSymbol(n);
+    crossWithAnimation = true;
+}
+
+void DrawTextElm::update(){
+     pDrawWidget->setBusy(true);
+    crossText();
+       // crossTextDraw();
+        pDrawWidget->moveEvent(NULL);
+       //  pDrawWidget->setBusy(false);
+}
+
+QColor DrawTextElm::getMainFillColor() const
+{
+    return mainFillColor;
+}
+
+void DrawTextElm::setMainFillColor(const QColor &value)
+{
+    mainFillColor = value;
+    setFillColor(value);
+}
+
+
+int DrawTextElm::getCountDeleteWT() const
+{
+    return deleteWT;
+}
+
+QFont DrawTextElm::getTextFont() const
+{
+    return mainTextFont;
+}
+
+void DrawTextElm::setTextFont(const QFont &value)
+{
+    mainTextFont = value;
+    if(fMetrics != NULL)
+        delete fMetrics;
+    fMetrics = new QFontMetrics(value);
+    pt = value.pointSize();
+
+}
+
+void DrawTextElm::deleteFromBuffer(int n)
+{
+
+    crossText();
+    int mustDell = qAbs(n);
+    int crossCursor = cursorIndex - convertTextBoxToBufferIndex(cursorIndex).y();
+    int i = n;
+    int deletePositionBegin = cursorIndex;
+    QStack<int> colorsToDelete;
+    for (int numOfColor = 0; numOfColor < colors.length();numOfColor++){
+        ColorMarker& colorMarker = colors[numOfColor];
+        bool isLast = numOfColor==colors.length()-1;
+        int& startIndex = colorMarker.startIndex;
+        if (deletePositionBegin+n<startIndex)startIndex-=n-deletePositionBegin;
+        else if (!isLast)
+        {
+            int nextColorStartIndex = colors[numOfColor+1].startIndex;
+            if ( deletePositionBegin+n < nextColorStartIndex )
+            {
+                startIndex -=n-deletePositionBegin;
+            }
+            else colorsToDelete.push(numOfColor);
+        }
+       // {
+       // colorsToDelete.push(startIndex);
+       // }
+    }
+    while (!colorsToDelete.isEmpty()){
+        colors.removeAt(colorsToDelete.pop());
+    }
+
+    while( i != 0)
+    {
+        if(i > 0)
+            cross.removeAt(crossCursor);
+        else
+            cross.removeAt(crossCursor + n);
+        if(i > 0)
+            i--;
+        else
+            i++;
+         //qDebug() << "REMOVE" << crossCursor + i << "   " << " ::  " << cross;
+    }
+    while(mustDell > 0)
+    {
+        QPoint convertedIndex = convertTextBoxToBufferIndex(cursorIndex);
+       // cross.insert(cursorIndex - convertedIndex.y(), 0);
+        // //qDebug() << convertedIndex << "DELL   " << mustDell;
+        QString &str =  stringList[convertedIndex.y()];
+        int realDell;
+        if(n > 0)
+        {
+            if(mustDell > str.length() - convertedIndex.x())
+                realDell = str.length() - convertedIndex.x();
+            else
+                realDell = mustDell;
+            str.remove(convertedIndex.x(), realDell);
+            mustDell -= realDell;
+            if(mustDell > 0)
+            {
+                if(convertedIndex.y() + 1 < stringList.length())
+                {
+                  //  cursorIndex--;
+                    mustDell--;
+                    stringList[convertedIndex.y()].append(stringList[convertedIndex.y() + 1]);
+                    stringList.removeAt(convertedIndex.y() + 1);
+                }
+                else
+                    break;
+            }
+        }
+        else
+        {
+            if(mustDell > convertedIndex.x())
+                realDell = convertedIndex.x();
+            else
+                realDell = mustDell;
+            str.remove(convertedIndex.x() - realDell, realDell);
+            cursorIndex -= realDell;
+            mustDell -= realDell;
+            if(mustDell > 0)
+            {
+                if(convertedIndex.y() != 0)
+                {
+                    cursorIndex--;
+                    mustDell--;
+                    stringList[convertedIndex.y() - 1].append(str);
+                    stringList.removeAt(convertedIndex.y());
+                }
+                else
+                    break;
+            }
+        }
+
+    }
+    /*
+    if (convertedIndex.x()>=str.length())
+        str.append(ch);
+    else
+
+    DrawTextElm(convertedIndex.y());
+    listChars.append(ch);
+*/
+    emit drawTextChanged();
+   // pause(delay);
+}
+
+void DrawTextElm::crossOutLastSymbol( int n)
+{
+   // QPoint delPos = symbolPositionList.at(symbolPositionList.length() - 1 - deleteWT);
+    //int k = 0;
+    //QString str = listWords.right(1 + deleteWT);
+
+    /*int widht = fMetrics->width(str)*1.5;
+    int deltaY = deltaY = (widht - x) /(maxWidth - marginLeft);
+
+    if(x - widht <= marginLeft)
+    {
+        deltaY++;
+    }
+
+    tx = maxWidth *deltaY - (widht - x + marginLeft);
+
+    ty -= (lineHeight + pt)*deltaY;
+
+    fillText("/", delPos.x(), delPos.y());
+    fillText("\\", delPos.x(), delPos.y());*/
+    //if()
+    deleteWT += n;
+
+}
+
+bool DrawTextElm::crossTextDraw()
+{
+    glDisable(GL_DEPTH);
+
+    for( int i = 0; i < listOfAnimationFigure.length(); i++)
+    {
+        if(drawAnimationFigure(listOfAnimationFigure[i]))
+        {
+         //   qDebug() << "LAST" << listOfAnimationFigure[i].start << "     " << listOfAnimationFigure[i].stop << "     " << cross.length();
+            for( int j = listOfAnimationFigure[i].start; j < listOfAnimationFigure[i].stop; j++) // convert to cross without animation
+            {
+                if(j < cross.length())
+                {
+                    cross[j] = 1;
+                    qDebug() << cross;
+                }
+                else
+                    break;
+            }
+            listOfAnimationFigure.remove(i);
+            //qDebug() << cross;
+        }
+
+    }
+
+    glEnable(GL_DEPTH);
+    int y;
+    int x1, x2, x;
+    bool lastGood = false;
+    bool needNextRow = false;
+    int last = cross.length();
+    if(indexLastDrawSymbol != 0)
+        last = indexLastDrawSymbol;
+
+    for(int i = indexFirstDrawSymbol; i < cross.length(); i++)
+    {
+
+        if(cross[i] != 0)
+        {
+            QPoint conv = convertTextBoxToBufferIndex(i, true);
+        //    conv = convertTextBoxToBufferIndex(i + conv.y());
+            if(!lastGood)
+            {
+                x1 = marginLeft + fMetrics->width(stringList[conv.y()].left(conv.x()));
+                x = i;
+                y = /*(lineHeight + pt)* */  convertTextBoxToBufferIndex(i, true).y();
+                lastGood = true;
+                continue;
+            }
+            if(conv.y() == y)
+            {
+                if(i != cross.length() - 1)
+                    continue;
+            }
+            {
+                needNextRow = true;
+            }
+        }
+        if(lastGood)
+        {
+
+            QPoint conv = convertTextBoxToBufferIndex(i - 1, true);
+        //    conv = convertTextBoxToBufferIndex(i + conv.y() + 1);
+            // //qDebug() << "YYYYYYYYYYYYYYYYYYYYYYY" << y;
+            y -=   indexRowInList;
+            // //qDebug() << "YYYYYYYYYYYYYYYYYYYYYYY2" << y;
+            ++y *= lineHeight + pt;
+            // QRect rect = fm.boundingRect( text);
+            y -= 0.5f * fMetrics->height();// first paid + midle LABEL1
+
+            x2 = marginLeft + fMetrics->width(stringList[conv.y()].left(conv.x() + 1));
+            y += marginTop;
+            if( cross[i - 1] == -1 )
+            {
+                // //qDebug() << "FIRST";
+               // drawAnimationFigure(x1, y, x2, y, LINE, 0);
+                //drawAnimationFigure(x1, y, x2, y, LINE, 0);
+                if(pDrawWidget->getStatus()  == OGLWidget::PLAY) //curStatus
+                {
+                    listOfAnimationFigure.append(AnimationFigure(QRect(x1, y, x2, y), (int)OGLWidget::LINE, x, i));
+                //    qDebug() << "FIRST" << x << "     " << i << "     " << cross.length();
+                    for( int j = x; j < i; j++) // convert to cross without animation
+                        cross[j] = 0;
+                }
+                else
+                {
+                    pDrawWidget->drawFigure(x1,y, x2, y, OGLWidget::LINE, false);
+                }
+
+            }
+            else{
+                //drawFigure(x1, y, x2, y, LINE, 0);
+                pDrawWidget->drawFigure(x1,y, x2, y, OGLWidget::LINE, false);
+                 // //qDebug() << "SECOND";
+            }
+            lastGood = false;
+            if(needNextRow)
+                i--;
+        }
+    }
+
+}
+
+void DrawTextElm::isLastRow()
+{
+    //int maxElm = (height()/lineHeight + pt);
+
+}
+
+void DrawTextElm::setFillColor(QColor col)
+{
+    QString sColor = QString("rgba(%1, %2, %3, %4)").arg(col.red()).arg(col.green()).arg(col.blue()).arg(col.alpha());
+    fillColor = col;
 }
