@@ -39,6 +39,7 @@ QVector<QPoint> getCoords();
    void setLifeTime(int value);
 
 
+   bool setDrawWidget(OGLWidget *value);
 };
 
 
