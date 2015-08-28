@@ -3,7 +3,7 @@
 varying vec2 vUV;
 uniform sampler2D textureSampler;
 uniform vec4 toColor;
-uniform float radial_blur=0.15;   // blur factor
+uniform float radial_blur;   // blur factor
 //uniform int bloorStep;
 /*vec4 smoothing(vec2 tc,sampler2D u_texture,vec2 u_Scale);
 
@@ -18,11 +18,11 @@ uniform float radial_blur=0.15;   // blur factor
         vec2(3.0,	0.015625)
 };*/
 vec2 Center=vec2(0.5, 0.5 ); ///center of the screen (could be any place)
-float BlurStart = 0.1f; /// blur offset
+float BlurStart = 0f; /// blur offset
 //float BlurWidth = 0.1; ///how big it should be
 //float nsamples = 10;
 
- float BlurWidth=0.1;
+ float BlurWidth=0;
 vec4 PS_RadialBlur(vec2 UV );
 void main(void) {
     vec4 resultColor;
@@ -52,7 +52,7 @@ vec4 PS_RadialBlur(vec2 UV )
 
       for (int i = 0; i < 12; i++)
       {
-        float scale = 1.0 - radial_blur * (float(i) / 11.0);
+        float scale = 1.0 - radial_blur * 3*(float(i) / 11.0);
         SumColor += texture2D(textureSampler, TexCoord * scale + Center);
       }
 

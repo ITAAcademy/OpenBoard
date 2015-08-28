@@ -11,8 +11,8 @@ int k = canvas->property("scroll").toInt() - 10;
 canvas->setProperty("scroll", k);
 */
 
-GLuint OGLWidget::loadTexture(QImage img){
-
+GLuint OGLWidget::loadTexture(QImage img,bool doubleSize){
+if (doubleSize)img = twiceImageSizeWithouScaling(img);
     if(img.isNull()) // QCoreApplication::applicationDirPath()+"/star.png"
     {
         //loads correctly
@@ -153,7 +153,7 @@ void OGLWidget::setList(const QList<DrawElement *> &value)
     {
         list_2 = value;
     }
-    curentList = !curentList;    
+    curentList = !curentList;
 }
 void OGLWidget::paintBrushInBuffer(GLuint& texture,Brush& currentBrushOfDrawSystem,FBOWrapper& fboWrapper,QVector<QPoint> coords,QVector<BrushBeginingIndex> brushes,int keyFrame){
     if (fboWrapper.errorStatus==-1)qDebug() << "BAD BUFFER";
@@ -182,9 +182,9 @@ glBegin(GL_TRIANGLES);
 
         currentBrushOfDrawSystem = brushes[recordedBrushN].brush;
         if (shaderSupported)
-            texture = loadTexture(currentBrushOfDrawSystem.img);
+            texture = loadTexture(currentBrushOfDrawSystem.img,true);
         else
-        texture = loadTexture(currentBrushOfDrawSystem.color_img);
+        texture = loadTexture(currentBrushOfDrawSystem.color_img,true);
         qDebug() << "recordedBrushN:"<<recordedBrushN;
 
        // isBrushUsed=true;
@@ -242,8 +242,11 @@ glBegin(GL_TRIANGLES);
         if (maxDispers>0 && currentBrushOfDrawSystem.count>0) i=currentBrushOfDrawSystem.count;
         int imgUniform = glGetUniformLocation(ShaderProgram,"vUV");
           glUniform2i(imgUniform,0,0);
-          int bloorStepUnifrom = glGetUniformLocation(ShaderProgram,"bloorStep");
-           glUniform1i(bloorStepUnifrom,currentBrushOfDrawSystem.blur);
+
+
+
+          int bloorStepUnifrom = glGetUniformLocation(ShaderProgram,"radial_blur");
+           glUniform1f(bloorStepUnifrom,currentBrushOfDrawSystem.blur/100);
 
           int colorUniform = glGetUniformLocation(ShaderProgram,"toColor");
           QColor color = currentBrushOfDrawSystem.color_main;
@@ -569,8 +572,9 @@ glBindFramebuffer(GL_FRAMEBUFFER , fboWrapper.frameBuffer); // Bind our frame bu
             int imgUniform = glGetUniformLocation(ShaderProgram,"vUV");
               glUniform2i(imgUniform,0,0);
 
-              int bloorStepUnifrom = glGetUniformLocation(ShaderProgram,"bloorStep");
-               glUniform1i(bloorStepUnifrom,m_manager.getCreatedBrush().blur);
+
+              int bloorStepUnifrom = glGetUniformLocation(ShaderProgram,"radial_blur");
+               glUniform1f(bloorStepUnifrom,m_manager.getCreatedBrush().blur/100);
 
 
 
@@ -647,12 +651,23 @@ glBindFramebuffer(GL_FRAMEBUFFER , 0); // Unbind our texture
 
 
 }
+QImage OGLWidget::twiceImageSizeWithouScaling(QImage img)
+{
+    QSize originSize = img.size();
+    QImage result(originSize.width()*2,originSize.height()*2,img.format());
+    QPoint destPos(originSize.width()/2, originSize.height()/2);
+    result.fill(QColor(0,0,0,0));
+    QPainter painter(&result);
+    painter.drawImage(destPos, img);
+    painter.end();
+    return result;
+}
 
 void OGLWidget::initShader(){
     QString fragmentShaderCode;
     QString vertexShaderCode;
     QString shaderDir = QDir::currentPath();
-     QFile fragmentShadeFile(":/openGL/shaders/fragmentShader.glsl");
+     QFile fragmentShadeFile(":/staticShaders/openGL/shaders/fragmentShader.glsl");
      if(fragmentShadeFile.open(QIODevice::ReadOnly | QIODevice::Text))
      {
          QTextStream in(&fragmentShadeFile);
@@ -662,10 +677,10 @@ void OGLWidget::initShader(){
     else
      {
          shaderSupported=false;
-         qDebug() << "error on fragmentShader.glsl open path: "<<shaderDir+"/shaders/fragmentShader.glsl";
+         qDebug() << "error on fragmentShader.glsl resource open";
      }
 
-     QFile vertexShaderFile(":/openGL/shaders/vertexShader.glsl");
+     QFile vertexShaderFile(":/staticShaders/openGL/shaders/vertexShader.glsl");
      if(vertexShaderFile.open(QIODevice::ReadOnly | QIODevice::Text))
      {
          QTextStream in(&vertexShaderFile);
@@ -674,7 +689,7 @@ void OGLWidget::initShader(){
      else
      {
          shaderSupported=false;
-           qDebug() << "error on vertexShader.glsl open path: "<<shaderDir+"/shaders/vertexShader.glsl";
+           qDebug() << "error on vertexShader.glsl resource open";
      }
 
       ShaderProgram = glCreateProgram();
@@ -899,9 +914,9 @@ glEnable(GL_DEPTH_TEST);
     else
         m_manager.getCreatedBrush().color_img=BrushPainter::getInstance()->applyColor(m_manager.getCreatedBrush());
     if (shaderSupported)
-         brushTexture = loadTexture(m_manager.getCreatedBrush().img);
+         brushTexture = loadTexture(m_manager.getCreatedBrush().img,true);
     else
-    brushTexture = loadTexture(m_manager.getCreatedBrush().color_img);
+    brushTexture = loadTexture(m_manager.getCreatedBrush().color_img,true);
     //loadTextureFromFile(":/ThirdPart/images/brush.png");
     //initFrameBuffer(); // Create our frame buffer object
     mainFBO=initFboWrapper(false);
@@ -1138,9 +1153,9 @@ if (showingLastDrawing )
 
        currentBrushOfLastDrawing =drawBrushElm->getBrushes()[recordedBrushN].brush;
        if (shaderSupported)
-           brushTexture = loadTexture(drawBrushElm->getBrushes()[recordedBrushN].brush.img);
+           brushTexture = loadTexture(drawBrushElm->getBrushes()[recordedBrushN].brush.img,true);
        else
-        brushTexture = loadTexture(drawBrushElm->getBrushes()[recordedBrushN].brush.color_img);
+        brushTexture = loadTexture(drawBrushElm->getBrushes()[recordedBrushN].brush.color_img,true);
      break;
     }
     recordedBrushN++;
@@ -1151,7 +1166,7 @@ glBindFramebuffer(GL_FRAMEBUFFER , mainFBO.frameBuffer);
     currentLastDrawingPointIterator++;
     if (currentLastDrawingPointIterator>=drawBrushElm->getCoords().length())
     {
-       stopShowLastDrawing();     
+       stopShowLastDrawing();
     }
    // currentLastDrawingPointIterator++;
 
@@ -1544,7 +1559,7 @@ void OGLWidget::brushParamsChanged()
          m_manager.getCreatedBrush().color_img=m_manager.getCreatedBrush().img;
     else
     m_manager.getCreatedBrush().color_img=BrushPainter::getInstance()->applyColor(m_manager.getCreatedBrush());
-    brushTexture = loadTexture(m_manager.getCreatedBrush().color_img);
+    brushTexture = loadTexture(m_manager.getCreatedBrush().color_img,true);
     while (!isInit())
         qDebug() << "waiting for init";
     drawBrushElm->addBrush(m_manager.getCreatedBrush());

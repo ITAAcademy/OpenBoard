@@ -241,6 +241,7 @@ public:
     FBOWrapper getMainFBO();
     void bindBuffer(GLuint buffer);
 
+    QImage twiceImageSizeWithouScaling(QImage img);
 public slots:
    // void clearFrameBuffer();
         void clearFrameBuffer(FBOWrapper fboWrapper);
@@ -268,7 +269,7 @@ public slots:
 
     void clearBuffer();
     void testWrap(int kIndexOfRow);
-    GLuint loadTexture(QImage img);
+    GLuint loadTexture(QImage img,bool doubleSize=false);
     void deleteTexture(GLuint index); // gl_only delete only from video memory, can reload
     int loadTextureFromFile(QString path); // return index for reload + texture indefication
     /*
