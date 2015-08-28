@@ -87,6 +87,8 @@ Rectangle
    property int selectedBlockCol : 0
    property int selectedBlockIndex : 0
    property int dropEnteredBlockIndex : 0
+   property Item dropEnteredBlockItemGlobalRep
+   property int dropEnteredTrackIndex : 0
     property real scaling :  timeControll.getScaleScrollChildren()
    property int minBlockWidth : 1000 / scaling
    property int isPlayPauseStop : 2
@@ -104,7 +106,7 @@ Rectangle
    property Item  p_context_menu
    property Item  p_divider
    property Item  p_columns
-
+property Item  p_trackbar_which_block_dragged
 
    property int mX : 0
 
@@ -237,9 +239,6 @@ scale_pointer.x = 0// timeControll.getMaxTrackTime() + scale_pointer.width/2 - s
             rep_columns.itemAt(main222.selectedBlockCol).setColorize(main222.selectedBlockIndex,"#8000FF00")
         }
 
-
-        //repka.updateModel();
-
     }
 
      Connections {
@@ -281,12 +280,6 @@ scale_pointer.x = 0// timeControll.getMaxTrackTime() + scale_pointer.width/2 - s
        }
 
        onUpdateModel: {
-           /*rep_columns.model = 0
-            rep_columns.model =  timeControll.getTracksNumber();
-           item_col.width = timeControll.getMaxTrackTime()
-           // main222.p_trackbar.globalRep.updateModel()
-
-           //repka.updateModel();*/
            for(var i = 0; i < cool_main.children.length; i++) {
               console.log("destroying: " + i)
               cool_main.children[i].destroy();
@@ -409,7 +402,7 @@ timeControll.setScaleScrollChildren(0) //it have protection from small values, w
             id: animation_move_x;
             running: false;
             to: divider.anim_x_value
-            duration: 50
+            duration: 100
         }
         NumberAnimation {
             target: divider
@@ -417,7 +410,7 @@ timeControll.setScaleScrollChildren(0) //it have protection from small values, w
             id: animation_move_y;
             running: false;
             to: divider.anim_y_value
-            duration: 200
+            duration: 100
         }
         }
         function moveTo( xx,  yy)
@@ -721,6 +714,7 @@ timeControll.setScalePointerPos((x  -20 + scroll.flickableItem.contentX)* main22
                                            ContentBlock.Block{
                                                id: cool
                                                globalRep : repka
+                                               p_trackbar : trackbar
                                                height:  100
                                                mIndex: index
                                                 colIndex:  bar_track.mIndex

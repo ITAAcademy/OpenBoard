@@ -265,6 +265,7 @@ public:
     Q_INVOKABLE int getMaxTrackTime( ) ;
 
   Q_INVOKABLE void moveBlockFromTo(int col,int ind0, int ind1);
+    Q_INVOKABLE void  moveBlockFromTo(int col0,int ind0,int col1, int ind1);
 
     Q_INVOKABLE void moveWindow( ) ;
     Q_INVOKABLE void resizeWindowWidth(bool left) ;

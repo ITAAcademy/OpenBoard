@@ -56,12 +56,8 @@ Rectangle {
                 {
                     for (var y = 0; y < rep_columns.model; y++)
                          rep_columns.itemAt(y).abortColorize()
-                   // globalRep.updateModel()
-                     main222.updateTracksModel();
+                    globalRep.updateModel()
                 }
-
-               // scroll.moveSliderFor(-1 )
-                // //console.log("CLICK2")
             }
         }
     }

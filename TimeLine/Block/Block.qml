@@ -16,6 +16,7 @@ Rectangle{
     property string colorKey : "green"
     property ColorOverlay p_color_overlay
     property bool double_click : false
+    property Item p_trackbar
 
 
     RectangularGlow {
@@ -219,7 +220,7 @@ z: 0
     Drag.active: mouseArea.drag.active
     Drag.hotSpot.x: 10
     Drag.hotSpot.y: 10
-onYChanged: y=0;
+//onYChanged: y=0;
 
     MouseArea {
         id: mouseArea
@@ -357,10 +358,12 @@ onYChanged: y=0;
                 main222.clicked_blockX = root.x
                 main222.clicked_blockY = root.y
                 root.z += 200
+                 root.globalRep.z += 200
+                //main222.p_trackbar_which_block_dragged = root.p_trackbar
+                //globalRep.z += 200
 
             }
             }
-            // //console.log("   root.z= " +   root.z)
         }
         }
         onReleased: {
@@ -372,27 +375,44 @@ onYChanged: y=0;
             if (globalRep.isDrag)
             {
                        root.z -= 200
+                //main222.p_trackbar_which_block_dragged
+                root.globalRep.z -= 200
               divider.visible = false
               //  if (main222.dropEnteredBlockIndex !== -1)
                 {
                    if (main222.dropEntered)
                     {
-                      // root.p_main222.maIsPressed = 0
                         //timeControll.reverseBlocks(root.colIndex,root.mIndex,main222.clicked_blockId)
-        if (main222.selectedBlockIndex ===  divider.pos_to_append.y - 1 && !main222.left_rigth_entered)
+       /* if (main222.selectedBlockIndex ===  divider.pos_to_append.y - 1 && !main222.left_rigth_entered)
           console.log("main222.selectedBlockIndex ===  divider.pos_to_append.y - 1 && main222.left_rigth_entered)")
+*/
 
-
-    else
+   // else
         {
+                          if (main222.selectedBlockIndex < divider.pos_to_append.y)
+                               divider.pos_to_append.y -=1 //!!!!!!!!!!*/
             if (main222.selectedBlockIndex > divider.pos_to_append.y  && main222.left_rigth_entered)
                 divider.pos_to_append.y += 1
-            timeControll.moveBlockFromTo(main222.selectedBlockCol,
-                                         main222.selectedBlockIndex,  divider.pos_to_append.y)
-           console.log("moveBlock From " + main222.selectedBlockIndex + " To " +
-                      divider.pos_to_append.y );
-            main222.selectedBlockCol = root.colIndex
-            main222.selectedBlockIndex =  divider.pos_to_append.y
+            if (main222.selectedBlockCol == main222.dropEnteredTrackIndex)
+            {
+                  timeControll.moveBlockFromTo(main222.selectedBlockCol,
+                                         main222.selectedBlockIndex,  divider.pos_to_append.y);
+                console.log("11111111111111111111111111111111")
+                main222.selectedBlockIndex =  divider.pos_to_append.y
+               // frama.p_main222.selectedBlockCol = root.colIndex
+            }
+            else
+            {
+                //divider.pos_to_append.y +=2
+                timeControll.moveBlockFromTo(main222.selectedBlockCol,
+                  main222.selectedBlockIndex,main222.dropEnteredTrackIndex,  divider.pos_to_append.y);
+                main222.dropEnteredBlockItemGlobalRep.updateModel();
+                console.log("22222222222222222222222222222222222222")
+                 main222.selectedBlockIndex =  divider.pos_to_append.y //333
+            }
+            frama.p_main222.selectedBlockCol = main222.dropEnteredTrackIndex
+
+
             timeControll.setSelectedBlockPoint(main222.selectedBlockCol,main222.selectedBlockIndex)
         }
             }
@@ -436,6 +456,8 @@ onYChanged: y=0;
          anchors.fill: parent
     onEntered: {
          main222.dropEnteredBlockIndex = root.mIndex
+        main222.dropEnteredTrackIndex = root.colIndex
+        main222.dropEnteredBlockItemGlobalRep = root.globalRep
         main222.left_rigth_entered = false
         main222.dropEntered = 1
         var temp = main222.selectedBlock.x - root.x - root.width/2
@@ -450,8 +472,9 @@ onYChanged: y=0;
     }
     onExited: {
         if (root.mIndex === 1)
-        main222.dropEnteredBlockIndex = main222.selectedBlockIndex
+            main222.dropEnteredBlockIndex = main222.selectedBlockIndex
         icon_coloroverlay.color = "#00000000"
+
             }
     onPositionChanged: {
           {
@@ -470,7 +493,6 @@ onYChanged: y=0;
 
                  divider.moveTo(root.x + root.width - divider.width/2 + tollbar.width,
                            move_y_pos )
-                  console.log("OOOOOOOOOOOOOOOOOOOOOOOOO " + move_y_pos)
 
                   main222.left_rigth_entered = true
                   divider.pos_to_append.y = root.mIndex
@@ -482,7 +504,6 @@ onYChanged: y=0;
                   //divider.x = root.x - divider.width/2 + tollbar.width
                      divider.moveTo(root.x - divider.width/2 + tollbar.width,
                                move_y_pos )
-                      console.log("OOOOOOOOOOOOOOOOOOOOOOOOO " + move_y_pos)
 
                 main222.left_rigth_entered = false
                 divider.pos_to_append.y = root.mIndex

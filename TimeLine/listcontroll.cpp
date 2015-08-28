@@ -341,6 +341,14 @@ bool ListControll::removeTrack(int col)
     tracks[col0].block.move(ind0,ind1);
  }
 
+ void  ListControll::moveBlockFromTo(int col0,int ind0,int col1, int ind1)
+ {
+     Element temp =  tracks[col0].block[ind0];
+    tracks[col0].block.removeAt(ind0);
+            tracks[col1].block.append(temp);
+            tracks[col1].block.move(tracks[col1].block.size()-1,ind1);
+ }
+
 void ListControll::setBlocks(int col,const QList <Element> &value)
 {
     tracks[col].block = value;
