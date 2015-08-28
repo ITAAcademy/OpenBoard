@@ -18,11 +18,147 @@ Rectangle{
     property bool double_click : false
 
 
+    RectangularGlow {
+       id: shadow
+       height: root.height
+       width: height
+      /* x:root.border.width*1.2
+       y:x*/
+       //anchors.right: root.right
+       x:root.width -height -  4*root.border.width
+        y: x
+       visible: false
+       color: "black"
+       opacity: 0.5
+      // scale: 0.8
+       z: 1
+       glowRadius: 5
+       spread: 0.00002
+       // cornerRadius: shadow.radius + glowRadius
+    }
+   /* RectangularGlow {
+          id: effect
+          anchors.fill: shadow
+          glowRadius: 10
+          spread: 0.00002
+          color: "black"
+         // opacity: 0.5
+          cornerRadius: shadow.radius + glowRadius
+      }*/
+
+    Rectangle
+    {
+        id: background_rec
+        z: 2
+        property int  border_width : 5
+    // border { color: "white" ; width: 2 }
+     height: root.height// - 2*background_rec.border.width
+     width: root.width
+     color: "green"
+
+    Image {
+        id: background
+//         x:root.border.width + 1
+//         y:x
+         //anchors.margins: background_rec.border.width
+
+         height: root.height// - 2*background_rec.border.width
+         width: height
+       fillMode: Image.TileHorizontally
+       source: "qrc:/iphone_toolbar_icons/black_tree.png"
+       visible: true
+
+       Image {
+           id: icon
+           source:  "image://imageProvider/" + root.colIndex + "+" + root.mIndex + "+ " + (Math.round(Math.random(9999999) * 10000));
+           height: parent.height//root.height - root.border.width*2 - 1
+           width: height
+          // x:root.border.width + 1
+           //y:root.border.width + 1
+           visible:  true
+          // anchors.fill: parent
+
+           ColorOverlay {
+               id: icon_coloroverlay
+                  anchors.fill: icon
+                  source: icon
+                  color: "#00000000"
+                  z: 1
+                  enabled: false
+              }
+           BorderImage {
+               width: root.height; height: width
+               border { left: background_rec.border_width; top: background_rec.border_width;
+                   right: background_rec.border_width; bottom: background_rec.border_width }
+               horizontalTileMode: BorderImage.Stretch
+               verticalTileMode: BorderImage.Stretch
+               source: "qrc:/рамка.png"
+               z: 2
+           }
+           Text {
+               id: name
+               anchors.margins: 3
+               anchors.centerIn: parent
+               text: root.title
+               font.pixelSize: 1
+               color: "white"
+               style: Text.Outline;
+               styleColor: "black"
+               onTextChanged: {
+                   name.font.pixelSize = (root.width*1.2)/text.length;
+                   if(name.font.pixelSize > root.height*0.7)
+                       name.font.pixelSize = root.height*0.7
+
+               }
+               z: 3
+           }
+
+           //z:1
+       }
+
+    }
+    onScaleChanged: {
+        shadow.height  = root.height*scale
+    }
+    NumberAnimation on scale {
+        id:animation_scale_small;
+         property int anim_time : 200
+        running: false;
+        to: 0.8;
+        duration: anim_time
+    }
+    NumberAnimation on x {
+        id: animation_scale_x;
+        running: false;
+        to: root.border.width  - width * 0.05;
+        duration: animation_scale_small.duration
+    }
+    NumberAnimation on y {
+        id: animation_scale_y;
+        running: false;
+        to: root.border.width  - height * 0.05;
+        duration: animation_scale_x.duration
+    }
+    NumberAnimation on scale {
+        id:animation_scale_normal;
+        running: false;
+        to: 1;
+        duration: animation_scale_y.duration
+    }
+    }
+
+
+
+
     radius: 3
     clip: true
     color: "transparent"
     anchors.leftMargin: 15
-    border { color: "white" ; width: 2 }
+
+
+
+
+
 
     function updateTrackWhereIsBlock()
     {
@@ -43,7 +179,7 @@ Rectangle{
     }
 
 
-     property Item  p_main222
+    // property Item  p_main222
 
 
  //   property int time_scale_valueRecX
@@ -134,8 +270,9 @@ onYChanged: y=0;
 
        onPressed: {
 
-           divider.y = (root.height + columns.spacing) * root.colIndex
+           divider.y = (root.height + main222.p_columns.spacing) * root.colIndex
                    + time_scale.height - scroll.flickableItem.contentY
+          divider.x =  root.x + root.width - divider.width/2 + tollbar.width
 
            divider.pos_to_append.x = root.colIndex
            divider.pos_to_append.y =  root.mIndex
@@ -200,7 +337,16 @@ onYChanged: y=0;
             }
             else
             {
-            globalRep.isDrag = true;
+            globalRep.isDrag = true;                
+                cursorShape = Qt.OpenHandCursor
+                animation_scale_small.running = true
+                animation_scale_x.running = true
+                animation_scale_y.running = true
+                shadow.visible = true
+                //root.border.color  = "transparent"
+
+
+
 
 
               /*   mouseY + root.colIndex * (root.height + 2)
@@ -211,15 +357,16 @@ onYChanged: y=0;
                 main222.clicked_blockX = root.x
                 main222.clicked_blockY = root.y
                 root.z += 200
+
             }
             }
             // //console.log("   root.z= " +   root.z)
         }
         }
         onReleased: {
-
+//root.border.color = "white"
             main222.p_scale_pointer.x = mouseX + root.x - scroll.flickableItem.contentX + main222.p_scale_pointer.width //1234
-
+            animation_scale_normal.running = true
 
 
             if (globalRep.isDrag)
@@ -266,6 +413,10 @@ onYChanged: y=0;
 
              drop.visible = true;
              drop.enabled = true;
+            shadow.visible = false
+
+             cursorShape = Qt.ArrowCursor;
+
 
         }
         onEntered: {
@@ -273,58 +424,11 @@ onYChanged: y=0;
         }
     }
 
-    Image {
-         parent : root
-        id: background
-       anchors.fill: parent
-       anchors.margins: 3
-
-       fillMode: Image.TileHorizontally
-       source: "qrc:/iphone_toolbar_icons/black_tree.png"
-       visible: true
-
-    }
-
-    Image {
-        id: icon
-
-        //anchors.fill: parent
-      //  source: "qrc:/Block/file.png"
-        source:  "image://imageProvider/" + root.colIndex + "+" + root.mIndex + "+ " + (Math.round(Math.random(9999999) * 10000));
-        height: root.height - root.border.width*2 - 1
-        width: height
-        x:root.border.width + 1
-        y:root.border.width + 1
-        visible:  true
 
 
 
-            // timeControll.getBlockIcon(colIndex,mIndex)
-    }
 
-    ColorOverlay {
-        id: icon_coloroverlay
-           anchors.fill: icon
-           source: icon
-           color: "#00000000"
-       }
 
-    Text {
-        id: name
-        anchors.margins: 3
-        anchors.centerIn: parent
-        text: root.title
-        font.pixelSize: 1
-        color: "white"
-        style: Text.Outline;
-        styleColor: "black"
-        onTextChanged: {
-            name.font.pixelSize = (root.width*1.2)/text.length;
-            if(name.font.pixelSize > root.height*0.7)
-                name.font.pixelSize = root.height*0.7
-
-        }
-    }
     DropArea {
         id: drop
         enabled : true
@@ -353,24 +457,37 @@ onYChanged: y=0;
           {
             divider.visible = true
             var temp = main222.selectedBlock.x - root.x - root.width/2
+            var move_y_pos = (root.height + main222.p_columns.spacing) * root.colIndex
+                    + time_scale.height - scroll.flickableItem.contentY
+
               if (temp > 0  )
               {
                 main222.block_zayshow_sprava = true
-                    divider.x = root.x + root.width - divider.width/2 + tollbar.width
+                    //divider.x = root.x + root.width - divider.width/2 + tollbar.width
+                 /* divider.y = root.height + columns.spacing) * root.colIndex
+                          + time_scale.height - scroll.flickableItem.contentY*/
+
+
+                 divider.moveTo(root.x + root.width - divider.width/2 + tollbar.width,
+                           move_y_pos )
+                  console.log("OOOOOOOOOOOOOOOOOOOOOOOOO " + move_y_pos)
+
                   main222.left_rigth_entered = true
                   divider.pos_to_append.y = root.mIndex
                   console.log("onPositionChanged: right " + divider.pos_to_append.y)
               }
               else
               {
-                  if (temp <= 0   )
-                  {
                       main222.block_zayshow_sprava = false
-                  divider.x = root.x - divider.width/2 + tollbar.width
+                  //divider.x = root.x - divider.width/2 + tollbar.width
+                     divider.moveTo(root.x - divider.width/2 + tollbar.width,
+                               move_y_pos )
+                      console.log("OOOOOOOOOOOOOOOOOOOOOOOOO " + move_y_pos)
+
                 main222.left_rigth_entered = false
                 divider.pos_to_append.y = root.mIndex
                 console.log("onPositionChanged: left " + divider.pos_to_append.y)
-                  }
+
               }
           }
     }

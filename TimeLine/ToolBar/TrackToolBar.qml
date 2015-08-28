@@ -5,7 +5,7 @@ import QtQuick 2.0
 Rectangle {
     id: root_toolbar
     color: "black"
-    property int num : 0
+
      property Repeater globalRep
     //anchors.left: parent.left
     height: parent.height
@@ -37,26 +37,11 @@ Rectangle {
                 main222.needToLightSelected = false
                // for (var i=0; i< 30; i++)
                 {
-                var ss = num
+                var ss = main222.blocks_num
                timeControll.addNewBlock(bar_track.mIndex,"Block_" + ss);
-                num +=1
-                 //item_col.globalRep.updateModel() ;
-                  //  main222.selectedBlock.updateTrackWhereIsBlock()
-                   main222.updateTracksModel();
-              //  //console.log("AAAAAAAAAAAAding blocks num : "  + timeControll.getTrackSize(main222.selectedBlockCol))
-                    }
-
-               /* item_col.p_columns.columns.globalRep.updateModel();
-                 item_col.p_columns.rep_columns.globalRep.updateModel();*/
-               // main222.p_item_col.p
-
-               /* var timeControlWidth = blocks.childrenRect.width                    //timeControll.getTestWidth()
-                // //console.log("time " + timeControlWidth)
-                if (timeControll.getTestWidth() >= scroll.width)
-                track.width  = timeControll.getTestWidth();
-                // //console.log("track " +  track.width)
-                 // //console.log(track.width)*/
-              //  // //console.log("CLICK2 bar_track.index = " + bar_track.mIndex)
+                main222.blocks_num +=1
+                    globalRep.updateModel()
+             }
             }
         }
         Buutton{

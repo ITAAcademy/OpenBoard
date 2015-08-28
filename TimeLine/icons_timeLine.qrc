@@ -76,5 +76,6 @@
         <file>iphone_toolbar_icons/Open_.png</file>
         <file>iphone_toolbar_icons/save.png</file>
         <file>iphone_toolbar_icons/Document-Icon.png</file>
+        <file>рамка.png</file>
     </qresource>
 </RCC>
