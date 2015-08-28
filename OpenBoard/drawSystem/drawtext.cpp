@@ -226,7 +226,7 @@ DrawTextElm::DrawTextElm(OGLWidget *drawWidget, QObject *parent) : DrawElement(d
 
      isCrossingNow = false;
      scroll = 0;
-
+    clearBuffer();
 
 }
 
@@ -238,7 +238,7 @@ DrawTextElm::~DrawTextElm()
 
 void DrawTextElm::clearBuffer()
 {
-     //qDebug() << "CLEAR_TEXT_BUFFER";
+     qDebug() << "CLEAR_TEXT_BUFFER";
      colors.clear();
      ColorMarker startMarker;
      startMarker.startIndex=0;
@@ -255,6 +255,7 @@ void DrawTextElm::clearBuffer()
 
 void DrawTextElm::draw()
 {
+    qDebug() << "void DrawTextElm::draw()";
     pDrawWidget->clearFrameBuffer(fboWrapper);
     int current_time;
     if(!bPlay)
@@ -291,7 +292,7 @@ void DrawTextElm::draw()
 
             //if ()
             {
-                mUnitList.at(keyCouter)->draw(pDrawWidget);
+                mUnitList.at(keyCouter)->draw(this);
                 if( bPlay && mUnitList.at(keyCouter)->delay > 0)
                 {
                     curentPauseValue += mUnitList.at(keyCouter)->delay;
@@ -343,6 +344,7 @@ QString DrawTextElm::getUnParsestring() const
 
 void DrawTextElm::setUnParsestring(const QString &valueUnParss, const QString &valueLogger)
 {
+    qDebug() << " DrawTextElm::setUnParsestring:"<<unParsestring;
     unParsestring = valueUnParss;
     loggerText = valueLogger;
     // //qDebug() << value;
@@ -356,6 +358,7 @@ void DrawTextElm::setUnParsestring(const QString &valueUnParss, const QString &v
     command->setUnitData("1");
    // command->unitType = 2;
     mUnitList.append(command);
+
     /*if (needToSaveLifeTime)
         lifeTime=drawTime;*/
     if(mUnitList.size() > 0 && (mUnitList.size() - globalDeltaComandSize  - 1) != 0)
@@ -389,6 +392,7 @@ bool DrawTextElm::load_add(QDataStream &stream)
 {
     stream >> unParsestring >> loggerText >> textCursor >> prevTextCursor;
     setUnParsestring(unParsestring, loggerText);
+
     /*int sizeOfString = 0;
     stream >> sizeOfString;
     QByteArray data;
@@ -441,7 +445,7 @@ void DrawTextElm::insertToBuffer(const QChar ch)
 
   //  DrawTextElm(convertedIndex.y());
     listChars.append(ch);
-
+//qDebug() << "1234567890             " << str;
     emit drawTextChanged();
 
    // pause(delay);
@@ -512,6 +516,8 @@ void DrawTextElm::nextRow( int n, int Row, bool wrap)
 
 void DrawTextElm::drawTextBuffer( int m_x, int m_y, int m_width, int m_height, int z, bool cross, float scale)
 {
+
+   // qDebug() << "stringList:"<<stringList;
      pDrawWidget->setBusy(true);
     //if(!crossTextV2())
      //   return QPoint(0, 0);
@@ -559,6 +565,7 @@ void DrawTextElm::drawTextBuffer( int m_x, int m_y, int m_width, int m_height, i
        //     x += fMetrics->width(tabulationStr[j] + "\t");
       //  }
       //  // //qDebug() << "C:"<<colors.length();
+        qDebug() << "colors.length()"<<colors.length();
     for (int k = 0 ; k< colors.length();k++)
     {
         int columnOfColorStrBegin;
@@ -607,7 +614,8 @@ void DrawTextElm::drawTextBuffer( int m_x, int m_y, int m_width, int m_height, i
             //setFillColor(colors[k].value);
             fillColor = colors[k].value;
             QString textToFill = stringList[i].mid(columnOfColorStrBegin,columnOfColorStrEnd-columnOfColorStrBegin);
-            pDrawWidget->fillText(textToFill,fillColor,textFont, x , y, z,(float) scale);
+
+            pDrawWidget->fillText(textToFill,fillColor,textFont, line_x , line_x, z,(float) scale);
            // localX+=fMetrics->width(textToFill);
             //setFillColor(QColor(255,255,255));//Костиль, удалити, вистачить верхнього setColor, добавити на початок colors колір канви
            /*  // //qDebug() << "columnOfColorStrEnd:" << columnOfColorStrEnd;

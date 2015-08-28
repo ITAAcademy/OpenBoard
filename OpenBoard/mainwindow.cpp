@@ -1771,6 +1771,7 @@ void MainWindow::updateBlockFromTextEdit()
             DrawTextElm *text_elm = (DrawTextElm *)elm.draw_element;
             text_elm->setDelay(ui->slider_speedTB->value()*10);
             text_elm->setUnParsestring(textEdit->toPlainText(), commandTextEdit->toPlainText());
+             //qDebug() << "mUnitList.length after append:"<< mUnitList.length();
             text_elm->setPrevTextCursor(commandTextEdit->getPreviousCursorPosition());
             text_elm->setTextCursor(commandTextEdit->textCursor().position());
             int change_time = text_elm->getDrawTime();

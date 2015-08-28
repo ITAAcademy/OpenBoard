@@ -17,7 +17,7 @@ UnitSumbol::~UnitSumbol()
 void UnitSumbol::draw(DrawTextElm *canvas)
 {
    // canvas->update();
-
+   // qDebug() << "                       INSWER";
     canvas->insertToBuffer(unit_data[0]);
     canvas->moveCursor();
 

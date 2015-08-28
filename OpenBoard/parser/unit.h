@@ -19,7 +19,7 @@ public:
 public:
     Unit();
     virtual ~Unit();
-    virtual void draw(OGLWidget* canvas);
+    virtual void draw(DrawTextElm *canvas);
 
     void setUnitData(QString str);
     void setPosition(int x, int y);

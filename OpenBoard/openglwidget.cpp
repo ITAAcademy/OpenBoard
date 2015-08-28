@@ -1841,7 +1841,7 @@ void OGLWidget::drawQImage(int x, int y, QImage img, int z)
 
 void OGLWidget::fillText( QString str,QColor color,QFont textFont, int x, int y, int z, float scale)
 {
-
+ qDebug() << "IN FILL TEXT:"<< x << "   " << y;
    /* // //qDebug() << "ARG1:  " << str.size();
     // //qDebug() << "ARG2:  " << arg2;
     // //qDebug() << "ARG3:  " << arg3;
@@ -1855,7 +1855,7 @@ void OGLWidget::fillText( QString str,QColor color,QFont textFont, int x, int y,
 
 
     //renderText(x, y, str,textFont);
-    myRenderText(this,x,y,z,str,color,textFont, scale);
+    myRenderText(this,x,y,z,str,Qt::red,QFont(), 1);
 //=======
     qglColor(Qt::white);
 //>>>>>>> romaFix_lastGood
