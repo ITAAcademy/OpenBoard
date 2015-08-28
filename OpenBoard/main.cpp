@@ -59,12 +59,12 @@ int main(int argc, char *argv[])
 
     QApplication app(argc, argv);
 
+    MainWindow window;
+    window.resize(0, 500);
    // app.addLibraryPath("/SSL");
   //  // // //qDebug() << app.libraryPaths();
    // qApp->addLibraryPath(qApp->applicationDirPath() + "/SSL");
 
-    MainWindow window;
-    window.resize(0, 500);
   //  QtAV::Widgets::registerRenderers();
     //window.show();
 

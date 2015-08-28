@@ -182,7 +182,7 @@ void DrawBrushElm::draw()
           int realKeyValue = 0;
           if (coords.size()>0)
           //realKeyValue=qFloor((double)((current_time - startDrawTime) / ((double)(lifeTime/coords.size()))));
-         realKeyValue = (current_time-startDrawTime)*coords.size()/lifeTime;
+         realKeyValue = qCeil((double)((current_time-startDrawTime)*coords.size()/lifeTime));
          // //qDebug() << "QQQQQQQQQQQQQQQQQQQQ" << keyCouter;
         if(keyCouter == 0)
         {

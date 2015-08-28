@@ -296,10 +296,10 @@ private slots:
     void storeMousePos();
 
 private:
-         int frameRate = 25;
-       bool mayShowRedRectangle = true;
-    unsigned int current_millisecs =0;
-    unsigned int last_milisecs_drawn = 0;
+    int frameRate = 25;
+    bool mayShowRedRectangle = true;
+    qint64 current_millisecs =0;
+    qint64 last_milisecs_drawn = 0;
     QVector<GLenum> attachment;
     FBOWrapper mainFBO;
 

@@ -988,7 +988,8 @@ QImage ListControll::requestImage(const QString &id, QSize *size, const QSize &r
  void ListControll::update()
  {
      emit updateSignal();
-     if (this->getMaxTrackTime() < getPlayTime() && getPlayTime() != 0) //1234
+  //   qDebug() << getPlayTime()  << "        " << getMaxTrackTime();
+     if (this->getMaxTrackTime() < getPlayTime()-40 && getPlayTime() != 0) //1234
      {
          emit stopSignal();
          isPlayPauseStop = 3;

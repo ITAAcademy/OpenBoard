@@ -1,9 +1,10 @@
-QT -= declarative sensors multimedia multimediawidgets printsupport
-
-QT       += qml widgets multimedia quick quickwidgets network webkitwidgets concurrent opengl
+QT       += qml core widgets multimedia quick quickwidgets network webkitwidgets concurrent opengl
 
 CONFIG += c++11
 QMAKE_CXXFLAGS += "-std=c++11"
+
+TEMPLATE = app
+
 #CONFIG(release, debug|release):DEFINES += QT_NO_DEBUG_OUTPUT
 SOURCES += main.cpp\
     mainwindow.cpp \
@@ -94,6 +95,7 @@ OTHER_FILES += \
 #   @ROMA
 #
  LIBS += -lopengl32
+
 #win32:CONFIG(release, debug|release): LIBS += -LC:/Users/roma/Documents/OpenBoad/OpenBoard/ThirdPart/lib/lib/ -lqtmel1
 #else:win32:CONFIG(debug, debug|release): LIBS += -LC:/Users/roma/Documents/OpenBoad/OpenBoard/ThirdPart/lib/lib/ -lqtmel1
 #win32:CONFIG(release, debug|release): LIBS += -LC:/Qt/Qt5.5.0/5.5/mingw492_32/bin/

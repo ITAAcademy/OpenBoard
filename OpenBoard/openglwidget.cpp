@@ -329,7 +329,7 @@ void OGLWidget::setEditingRectangle(const RectangleEditor &value)
 
 void OGLWidget::setFrameRate(int fps)
 {
-frameRate=fps;
+    frameRate=fps;
 }
 
 OGLWidget::OGLWidget(QWidget *parent) :
@@ -1129,12 +1129,12 @@ GLuint error = glGetError();
 
 glFinish();
 //////////////////////////////
-swapBuffers();
+
 glFlush();
+swapBuffers();
 
 if(bRecord)
     m_encoder->setFrame(grabFrameBuffer());
-
 
 init = true;
 
@@ -1667,9 +1667,8 @@ void  OGLWidget::updateWindow(){
      current_millisecs = QDateTime::currentMSecsSinceEpoch();
    if ((current_millisecs - last_milisecs_drawn) >= 1000/frameRate)
    {
-       emit windowUpdating(1000/frameRate);
-   last_milisecs_drawn = QDateTime::currentMSecsSinceEpoch();
-
+   last_milisecs_drawn = current_millisecs;
+    emit windowUpdating(1000/frameRate);
    setList(timeLine->getPointedBlocksDE());
 
    QPoint t = timeLine->getSelectedBlockPoint();
@@ -1709,6 +1708,7 @@ void  OGLWidget::updateWindow(){
    }
 
     updateGL();
+
    }
 }
 

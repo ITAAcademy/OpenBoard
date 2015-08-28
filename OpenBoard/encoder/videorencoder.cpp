@@ -126,7 +126,7 @@ void AV_REncoder::initAudio()
     //audioRecorder->setOutputLocation(QUrl::fromLocalFile("test"));
     QString container = "audio/x-wav";
     audioRecorder->setEncodingSettings(audioSettings, QVideoEncoderSettings(), container);
-    audioRecorder->setAudioInput(audioRecorder->audioInputs().at(0));
+    audioRecorder->setAudioInput(audioRecorder->defaultAudioInput());
     probe = new QAudioProbe;
     connect(probe, SIGNAL(audioBufferProbed(QAudioBuffer)),
             this, SLOT(processAudioBuffer(QAudioBuffer)));

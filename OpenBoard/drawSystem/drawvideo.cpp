@@ -34,9 +34,9 @@ void DrawVideoElm::draw()
         pDrawWidget->drawQImage(0, 0, decoder.getNextFrame());
         qDebug() << keyCouter;
         keyCouter++;
-        double qwe = (double)keyCouter/(decoder.getPTS() + 1);
+        double qwe = (double)keyCouter/(decoder.getPTS() + 1);// for test :)
         qDebug() << qwe;
-        if(k++ >= qCeil(qwe))
+        if(k++ >= qFloor(qwe))
             break;
     }
 
