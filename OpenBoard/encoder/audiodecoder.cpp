@@ -18,6 +18,11 @@ void AudioDecoder::setAudioPacket(const AVPacket &value)
     audioPacket = value;
 }
 
+void AudioDecoder::seekFile(int ms)
+{
+    qDebug() << "seekFile();";
+    avformat_seek_file(formatContext, audioStream,INT64_MIN, ms, INT64_MAX, 0 );
+}
 void AudioDecoder::stateChanged(QAudio::State state)
 {
     //qDebug() << "State Change ::: " << state;
@@ -63,11 +68,11 @@ AudioDecoder::~AudioDecoder()
     myFile.close();
 }
 
-void AudioDecoder::nextFrame()
+QByteArray AudioDecoder::nextFrame()
 {
     if( av_read_frame(formatContext,&audioPacket) >= 0 )
     {
-        nextFrame(audioPacket);
+        return nextFrame(audioPacket);
     }
 
 }
@@ -237,8 +242,8 @@ int AudioDecoder::resample2()
                              out_samples,
                              AV_SAMPLE_FMT_S16,
                              0);*/
-        av_frame_set_channels(out, 1);
-        av_frame_set_channel_layout(out, AV_CH_LAYOUT_MONO);
+        av_frame_set_channels(out, 2);
+        av_frame_set_channel_layout(out, AV_CH_LAYOUT_STEREO);
         av_frame_set_sample_rate(out, 44100);
 
         int max_dst_nb_samples = av_rescale_rnd(audioFrame->nb_samples, audioCodecContext->sample_rate, audioCodecContext->sample_rate, AV_ROUND_UP);
@@ -247,7 +252,7 @@ int AudioDecoder::resample2()
                                         audioFrame->nb_samples, 44100, audioCodecContext->sample_rate, AV_ROUND_UP);
 
             av_freep(out->extended_data);
-            av_samples_alloc(out->extended_data, out->linesize, 1,
+            av_samples_alloc(out->extended_data, out->linesize, 2,
                                    dst_nb_samples, AV_SAMPLE_FMT_S16, 1);
             max_dst_nb_samples = dst_nb_samples;
 
@@ -255,11 +260,12 @@ int AudioDecoder::resample2()
     out->nb_samples = swr_convert(swr, out->extended_data, dst_nb_samples, (const uint8_t **) audioFrame->extended_data, audioFrame->nb_samples);
 }
 
-void AudioDecoder::nextFrame(AVPacket &audioPacket)
+QByteArray AudioDecoder::nextFrame(AVPacket &audioPacket)
 {
     qint64 written=0;
     frameFinished = 0;
     int data_size;
+    QByteArray res;
     if( audioPacket.stream_index == audioStream)
     {
         while(audioPacket.size > 0)
@@ -275,12 +281,14 @@ void AudioDecoder::nextFrame(AVPacket &audioPacket)
                     resample2();
                 if(audioFrame != NULL)
                 {
-                    data_size = av_samples_get_buffer_size(out->linesize, 1,
+                    data_size = av_samples_get_buffer_size(out->linesize, 2,
                                                                            out->nb_samples,
                                                                            AV_SAMPLE_FMT_S16, 1);
                     /*if(data_size > audio->bytesFree())
                         data_size = audio->bytesFree();*/
                     m_output->write((const char*)out->data[0], data_size);
+                    res = QByteArray((const char*)out->data[0], data_size);
+                    qDebug() << data_size;
 
 
                     /*int chunks = audio->bytesFree()/audio->periodSize();
@@ -303,6 +311,7 @@ void AudioDecoder::nextFrame(AVPacket &audioPacket)
 
 
         }
+    return res;
 }
 
 void AudioDecoder::initFormat()
@@ -324,10 +333,10 @@ void AudioDecoder::initFormat()
     }
     */
     format.setSampleRate(44100);
-    format.setChannelCount(1);
+    format.setChannelCount(2);
     format.setSampleSize(16);
     format.setCodec("audio/pcm");
-    format.setByteOrder(QAudioFormat::LittleEndian);
+    format.setByteOrder(QAudioFormat::BigEndian);
     format.setSampleType(QAudioFormat::SignedInt);
 
     QAudioDeviceInfo info(QAudioDeviceInfo::defaultOutputDevice());
@@ -372,7 +381,7 @@ void AudioDecoder::initFormat()
     //qDebug() << "start create context";
 
     swr = swr_alloc_set_opts(NULL,  // we're allocating a new context
-                       AV_CH_LAYOUT_MONO,  // out_ch_layout
+                       AV_CH_LAYOUT_STEREO,  // out_ch_layout
                        AV_SAMPLE_FMT_S16,    // out_sample_fmt
                        44100,                // out_sample_rate
                        audioCodecContext->channel_layout, // in_ch_layout

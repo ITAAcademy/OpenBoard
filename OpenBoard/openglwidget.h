@@ -21,6 +21,8 @@
 #include "../Brush/brushcontroll.h"
 #include <QGLShader>
 
+#include <QMap>
+#include <QList>
 
 class ListControll;
 struct BrushBeginingIndex;
@@ -168,7 +170,8 @@ public:
     /*
      * |Canvas control
      */
-
+    void addAudioToList(QByteArray arr);
+    void clearAudioList();
     void drawFigure (int x, int y, int width, int height, FigureType type, bool fill = true, QColor col = "#FF0000", float size = 2);
 
 
@@ -297,6 +300,8 @@ private slots:
 
 private:
     int frameRate = 25;
+  //  QMap <void* , QList<QByteArray>>  audioList;
+    QList<QByteArray>  audioList;
     bool mayShowRedRectangle = true;
     qint64 current_millisecs =0;
     qint64 last_milisecs_drawn = 0;

@@ -10,6 +10,8 @@
 #include <QMutex>
 #include <QMutexLocker>
 #include <QLockFile>
+#include <QUrl>
+#include <QDir>
 
 #include <QtMultimedia/QAudioRecorder>
 #include <QtMultimedia/QAudioProbe>
@@ -32,7 +34,8 @@ class AV_REncoder : public QThread
 
     QAudioRecorder *audioRecorder = NULL;
     QAudioProbe *probe = NULL;
-
+    //QMap <void* , QList<QByteArray>> audioBuffer;
+    QList<QByteArray> audioBuffer;
     QElapsedTimer tick;
 
     QMutex mutex;
@@ -59,6 +62,7 @@ public:
 
     QImage getFrame() const;
     void setFrame(QImage value);
+    void addToAudioBuffer(QList<QByteArray> array);
 
     bool getBPause() const;
     void setBPause(bool value);

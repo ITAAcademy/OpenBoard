@@ -70,11 +70,9 @@ class AudioDecoder : public QObject
     QAudioFormat format;
     QAudioOutput *audio;
     QBuffer buffer;
-    QByteArray buffer2;
 
     QTimer *m_pullTimer;
     QIODevice *m_output;
-    QIODevice *m_output2;
     unsigned int buffSize;
     fstream myFile;
 
@@ -82,13 +80,14 @@ public:
     explicit AudioDecoder(QObject * parent, AVFormatContext *formatContext );
     void initAudioDecoder();
     ~AudioDecoder();
-    void nextFrame();
-    void nextFrame(AVPacket &value);
+    QByteArray nextFrame();
+    QByteArray nextFrame(AVPacket &value);
     void setAudioPacket(const AVPacket &value);
 public slots:
     void stateChanged(QAudio::State state);
     void pullTimerExpired();
 
+    void seekFile(int ms);
 private:
     void initFormat();
     int getSampleFormatSize(AVSampleFormat frm);

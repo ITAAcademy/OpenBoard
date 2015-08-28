@@ -15,13 +15,14 @@ public:
     explicit DrawVideoElm( OGLWidget *drawWidget, QObject *parent = 0);
     ~DrawVideoElm();
     void draw();
-    void stop();
+
     void setVideoFile( QString path);
     bool load_add(QDataStream &stream);
     bool save_add(QDataStream &stream);
     bool setDrawWidget(OGLWidget *value);
 protected slots:
     void start();
+    void stop();
 
 };
 

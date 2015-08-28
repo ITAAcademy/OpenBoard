@@ -22,28 +22,31 @@ int FFmpegHelp::initFF(QString path)
     return 1;
 }
 
-QImage FFmpegHelp::getNextFrame()
+FFmpegHelp::Frame FFmpegHelp::getNextFrame()
 {
     AVPacket Packet;
-    QImage next;
+    QImage vNext;
+    QByteArray aNext;
     while( av_read_frame(formatContext,&Packet) >= 0 )
     {
-        next = QImage(vDecoder->getNextFrame(Packet));
-        aDecoder->nextFrame(Packet);
+        vNext = QImage(vDecoder->getNextFrame(Packet));
+        aNext += aDecoder->nextFrame(Packet);
         av_free_packet(&Packet);
         if(vDecoder->getFrameFinished())
             break;
         //aDecoder->nextFrame(Packet);
     }
-    if(next.isNull())
-        return QImage(800,600, QImage::Format_RGBA8888_Premultiplied);
-    return next;
+    if(vNext.isNull())
+        vNext =  QImage(800,600, QImage::Format_RGBA8888_Premultiplied);
+    return Frame(vNext, aNext);
 
 }
 
 void FFmpegHelp::restart()
 {
     vDecoder->seekFile(0);
+    aDecoder->seekFile(0);
+    getNextFrame();
 }
 
 long FFmpegHelp::getDuration()

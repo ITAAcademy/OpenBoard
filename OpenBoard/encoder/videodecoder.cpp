@@ -126,7 +126,7 @@ int VideoDecoder::initVideoDecoder()
 
     // Read frames and save first five frames to disk
     pts = videoFormatContext->streams[videoStream]->avg_frame_rate.num/100000;
-    if(pts == 0)
+    if(pts < 25)
         pts = 25;
     qDebug() << "INFO:  " << "FPS   " <<pts;
     duration = videoFormatContext->streams[videoStream]->nb_frames/pts;

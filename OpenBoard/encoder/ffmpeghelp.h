@@ -18,9 +18,19 @@ class FFmpegHelp : public QObject
     AudioDecoder *aDecoder = NULL;
     AVFormatContext *formatContext = NULL;
 public:
+    struct Frame{
+        QImage videoFrame;
+        QByteArray audioFrame;
+        Frame( QImage img, QByteArray arr)
+        {
+            videoFrame = img;
+            audioFrame = arr;
+        }
+    };
+
     explicit FFmpegHelp(QObject *parent = 0);
 
-    QImage getNextFrame();
+    Frame getNextFrame();
     void restart();
     long int getDuration();
     long int getPTS();

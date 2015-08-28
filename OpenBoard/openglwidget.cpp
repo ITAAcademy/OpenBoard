@@ -1134,7 +1134,11 @@ glFlush();
 swapBuffers();
 
 if(bRecord)
+{
+    m_encoder->addToAudioBuffer(audioList);
     m_encoder->setFrame(grabFrameBuffer());
+    audioList.clear();
+}
 
 init = true;
 
@@ -1385,6 +1389,30 @@ QSize OGLWidget::getTextureSize()
     return textureSize;
 }
 
+void OGLWidget::clearAudioList()
+{
+    audioList.clear();
+}
+/*
+void OGLWidget::addAudioToList(QByteArray arr, void *obj)
+{
+    QMutableMapIterator i = audioList.find();
+    if(i != QMap::end())
+        ((QList <QByteArray>)i.value()).append(arr);
+    else
+    {
+        QList <QByteArray> listArr;
+        listArr.append(arr);
+        audioList.insert(obj, listArr);
+    }
+    //audioList.append(arr);
+
+}
+*/
+void OGLWidget::addAudioToList(QByteArray arr)
+{
+   audioList.append(arr);
+}
 QString OGLWidget::getDrawText()
 {
     return drawText;
@@ -1412,7 +1440,7 @@ bool OGLWidget::drawAnimated(bool record)
         return true;
     }
 
-    curStatus = PLAY;
+
     if(record)
     {
         editingRectangle.isEditingRectangleVisible = false;
@@ -1435,7 +1463,7 @@ bool OGLWidget::drawAnimated(bool record)
         // //qDebug() << "Start record into file";
          timeLine->hide();
     }
-
+    curStatus = PLAY;
     bRecord = record;
     //tickTimer.start();
     // //qDebug() << "Start play";
