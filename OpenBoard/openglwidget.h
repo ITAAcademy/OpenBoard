@@ -264,7 +264,7 @@ public slots:
 
 
 
-    void clearBuffer();
+    //void clearBuffer();
     void testWrap(int kIndexOfRow);
     GLuint loadTexture(QImage img);
     void deleteTexture(GLuint index); // gl_only delete only from video memory, can reload

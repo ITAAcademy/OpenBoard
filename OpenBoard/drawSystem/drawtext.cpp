@@ -42,7 +42,7 @@ void DrawTextElm::setPrevTextCursor(int value)
 void DrawTextElm::start()
 {
     DrawElement::start();
-    pDrawWidget->clearBuffer();
+    clearBuffer();
     clearCanvas();
 }
 
@@ -228,6 +228,9 @@ DrawTextElm::DrawTextElm(OGLWidget *drawWidget, QObject *parent) : DrawElement(d
      scroll = 0;
     clearBuffer();
 
+    setTextFont(QFont("Arial Narrow",20,20)); //444
+    mainFillColor = QColor("white");
+
 }
 
 DrawTextElm::~DrawTextElm()
@@ -253,6 +256,8 @@ void DrawTextElm::clearBuffer()
     crossWithAnimation = false;
 }
 
+
+
 void DrawTextElm::draw()
 {
     qDebug() << "void DrawTextElm::draw()";
@@ -269,7 +274,7 @@ void DrawTextElm::draw()
         if((keyCouter == 0 || !bPlay) && curentCh != current_time )
        {
            clearCanvas();
-           pDrawWidget->clearBuffer();
+           clearBuffer();
            keyCouter = 0;
            animationDelayCount = 1;
            animationDelayStart = 1;
@@ -523,6 +528,10 @@ void DrawTextElm::drawTextBuffer( int m_x, int m_y, int m_width, int m_height, i
      //   return QPoint(0, 0);
     //int width = fMetrics->width(str)*1.125 ;//+ fMetrics->leftBearing(str.at(0)) + fMetrics->rightBearing(str.at(0));
      textFont.setPointSize(mainTextFont.pointSize() * scale);
+     //1234
+    // textFont.setPointSize(20);
+     textFont.setFamily(mainTextFont.family());
+
      if(fMetrics != NULL)
          delete fMetrics;
      fMetrics = new QFontMetrics(textFont);
@@ -558,7 +567,7 @@ void DrawTextElm::drawTextBuffer( int m_x, int m_y, int m_width, int m_height, i
        //// //qDebug() << stringList[i] << "@";
         QStringList tabulationStr = stringList[i].split("\t");
         //TODO SET TEXT COLOR TO CANVAS COLOR
-        //setFillColor(fillColor); /12345
+        //setFillColor(fillColor);
        // for(int j = 0; j < tabulationStr.size(); j++)
        // {
         //    fillText(tabulationStr[j], x, y);
@@ -615,7 +624,11 @@ void DrawTextElm::drawTextBuffer( int m_x, int m_y, int m_width, int m_height, i
             fillColor = colors[k].value;
             QString textToFill = stringList[i].mid(columnOfColorStrBegin,columnOfColorStrEnd-columnOfColorStrBegin);
 
-            pDrawWidget->fillText(textToFill,fillColor,textFont, line_x , line_x, z,(float) scale);
+
+           pDrawWidget->fillText(textToFill,fillColor,textFont, line_x , line_y, z,(float) scale);
+            //1234
+        // pDrawWidget->fillText(textToFill,QColor("red"),fontishche, line_x , line_x, z,(float) scale);
+           //  pDrawWidget->fillText("eeeeeeeeeeeeeeeeeeee",QColor("red"), QFont("Helvetica",40,40), 50 , 50, 0,(float) 1);
            // localX+=fMetrics->width(textToFill);
             //setFillColor(QColor(255,255,255));//Костиль, удалити, вистачить верхнього setColor, добавити на початок colors колір канви
            /*  // //qDebug() << "columnOfColorStrEnd:" << columnOfColorStrEnd;

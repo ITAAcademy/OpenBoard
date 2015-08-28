@@ -391,6 +391,8 @@ a_send_to_youtube = new QAction(this);
         connect(mpOGLWidget,SIGNAL(stopShowLastDrawingSignal()),this,SLOT(onStopShowLastDrawing()));
 
 
+        connect(mpOGLWidget->getTimeLine(),SIGNAL(updateSelectedBlock(QPoint)),this,SLOT(enablingBoardFontColor(QPoint)));
+
         setEnabledToolBar(false);
 
         onTextChangeUpdateTimer.setInterval(300);
@@ -410,6 +412,10 @@ a_send_to_youtube = new QAction(this);
         on_action_New_Project_triggered();
 
 
+        a_font_canvas->setEnabled(false);
+        a_color_canvas->setEnabled(false);
+        this->ui->action_Board_Color->setEnabled(false);
+        this->ui->action_Board_Font->setEnabled(false);
 }
 
 MainWindow::~MainWindow()
@@ -693,7 +699,10 @@ void MainWindow::on_action_Show_triggered()
     a_show_last_drawing->setEnabled(true);
     a_save_drawing->setEnabled(true);
 
-    showBoardSettings();
+   // showBoardSettings();
+
+    setEnabledToolBar(true);
+
     a_show->setEnabled(false);
     ui->action_Show->setEnabled(false);
     a_hide->setEnabled(true);
@@ -743,12 +752,14 @@ void MainWindow::on_action_Show_triggered()
     a_play->setEnabled(true);
     //a_pause->setEnabled(true);
     //a_stop->setEnabled(true);
-    a_font_canvas->setEnabled(true);
-    a_color_canvas->setEnabled(true);
-    a_record_to_file->setEnabled(true);
-    ui->actionRecord_to_file->setEnabled(true);
-    a_undo->setEnabled(true);
-    a_redo->setEnabled(true);
+//    a_font_canvas->setEnabled(true);
+//    a_color_canvas->setEnabled(true);
+//    a_record_to_file->setEnabled(true);
+//    ui->actionRecord_to_file->setEnabled(true);
+//    a_undo->setEnabled(true);
+//    a_redo->setEnabled(true);
+
+    on_blockRightToolbar_exceptPlayPauseStop(true);
 
     ui->action_Pause->setEnabled(false);
     a_pause->setEnabled(false);
@@ -777,21 +788,18 @@ void MainWindow::on_action_Hide_triggered()
     ui->action_Pause->setEnabled(false);
     ui->action_Play->setEnabled(false);
     ui->action_Stop->setEnabled(false);
-    hideBoardSettings();
-
-    a_hide->setEnabled(false);
-    ui->action_Hide->setEnabled(false);
-    a_show->setEnabled(true);
-    ui->action_Show->setEnabled(true);
-    a_play->setEnabled(false);
-    a_pause->setEnabled(false);
-    a_stop->setEnabled(false);
-    a_font_canvas->setEnabled(false);
-    a_color_canvas->setEnabled(false);
-    a_record_to_file->setEnabled(false);
-    ui->actionRecord_to_file->setEnabled(false);   
+   // hideBoardSettings();
+    on_blockRightToolbar_exceptPlayPauseStop(false);
 
    on_block_text_buttons_toolbar(false);
+
+   a_show->setEnabled(true);
+   a_hide->setEnabled(false);
+   ui->action_Show->setEnabled(true);
+    ui->action_Hide->setEnabled(false);
+
+    may_to_enable_BoardFontColor = false;
+    setEnabledBoardFontColor(false);
 }
 
 void MainWindow::on_action_Clear_TextEdit_triggered()
@@ -828,14 +836,26 @@ void MainWindow::on_action_Font_triggered()
 //!
 void MainWindow::on_action_Board_Font_triggered()
 {
-    /*bool ok;
+    bool ok;
     QFont font;
-    font = QFontDialog::getFont(&ok, mpOGLWidget->getTextFont(), this);
+
+
+
+    QPoint selected_block_point = mpOGLWidget->getTimeLine()->getSelectedBlockPoint();
+    if (selected_block_point.x() < 0)
+        return;
+    DrawTextElm* draw_element =(DrawTextElm*) mpOGLWidget->getTimeLine()->getBlock(selected_block_point).draw_element;
+    if (draw_element->getTypeId() != Element_type::Text)
+        return;
+
+    font = QFontDialog::getFont(&ok, draw_element->getTextFont(), this);
     if (!ok)
         return;
 
-    mpOGLWidget->setTextFont(font);
-   mSettings.setBoardFont(font);*/
+    draw_element->setTextFont(font);
+   mSettings.setBoardFont(font);
+
+
 
  /*   QString qmlFont;
     QFontInfo fontInf(font);
@@ -1816,7 +1836,7 @@ void MainWindow::on_action_Play_triggered()
     else
     {
        // mpOGLWidget->clearCanvas();
-        mpOGLWidget->clearBuffer();
+        //mpOGLWidget->clearBuffer();
         //mpOGLWidget->setFillColor(mpOGLWidget->getMainFillColor());
         drawCounter = 0;
     }
@@ -1860,7 +1880,7 @@ void MainWindow::on_action_Play_triggered()
             return;
         }
     }
-    hideBoardSettings();
+    //hideBoardSettings();
 
     updateEditWidgets();
 
@@ -1869,6 +1889,7 @@ void MainWindow::on_action_Play_triggered()
 	a_pause->setEnabled(true);
 
     on_block_text_buttons_toolbar(false);
+    on_blockRightToolbar_exceptPlayPauseStop(false);
 
     /*while( play && mpOGLWidget != 0 && mpOGLWidget->getStatus() != OGLWidget::STOP)
     {
@@ -1881,7 +1902,6 @@ void MainWindow::on_action_Play_triggered()
             qApp->processEvents();
     }
     on_action_Stop_triggered();*/
-
 
 }
 
@@ -2045,6 +2065,7 @@ void MainWindow::hideBoardSettings()
        ui->action_Board_Font->setEnabled(false);
     a_color_canvas->setEnabled(false);
     a_font_canvas->setEnabled(false);
+
     setEnabledToolBar(false);
 }
 
@@ -2166,8 +2187,8 @@ void MainWindow::on_block_text_buttons_toolbar(bool tt)
 
 void MainWindow::on_blockRightToolbar_exceptPlayPauseStop(bool tt)
 {
-    a_font_canvas->setEnabled(tt);
-    a_color_canvas->setEnabled(tt);
+    may_to_enable_BoardFontColor = tt;
+
     a_record_to_file->setEnabled(tt);
     a_clear_drawing->setEnabled(tt);
     a_clear_drawingBuffer->setEnabled(tt);
@@ -2183,8 +2204,7 @@ void MainWindow::on_blockRightToolbar_exceptPlayPauseStop(bool tt)
     this->ui->actionRecord_to_file->setEnabled(tt);
     this->ui->actionSave_drawing->setEnabled(tt);
     this->ui->actionShow_last_drawing->setEnabled(tt);
-    this->ui->action_Board_Color->setEnabled(tt);
-    this->ui->action_Board_Font->setEnabled(tt);
+
     ui->actionSend_to_youTube->setEnabled(tt);
 }
 
@@ -2193,3 +2213,31 @@ void MainWindow::on_actionAbout_Qt_triggered()
 {
    QApplication::aboutQt();
 }
+
+void MainWindow::enablingBoardFontColor(QPoint selected_block_point)
+{
+    bool set_enabled = true;
+    if (!may_to_enable_BoardFontColor)
+       set_enabled =  false;
+    else
+
+    if (selected_block_point.x() < 0)
+        set_enabled = false;
+    else
+    {
+    DrawTextElm* draw_element =(DrawTextElm*) mpOGLWidget->getTimeLine()->getBlock(selected_block_point).draw_element;
+    if (draw_element->getTypeId() != Element_type::Text)
+        set_enabled = false;
+    }
+
+    if (a_font_canvas->isEnabled() != set_enabled)
+        setEnabledBoardFontColor(set_enabled);
+}
+
+ void MainWindow::setEnabledBoardFontColor(bool set_enabled)
+ {
+     a_font_canvas->setEnabled(set_enabled);
+     a_color_canvas->setEnabled(set_enabled);
+     this->ui->action_Board_Color->setEnabled(set_enabled);
+     this->ui->action_Board_Font->setEnabled(set_enabled);
+ }

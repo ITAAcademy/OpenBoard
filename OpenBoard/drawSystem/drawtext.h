@@ -58,10 +58,11 @@ class DrawTextElm : public DrawElement
     QVector <AnimationFigure> listOfAnimationFigure; // now use only for cross animation
 
     double animationPersentOfCross = 0.01;
-    QFont getTextFont() const;
-    void setTextFont(const QFont &value);
+
 
 public:
+    QFont getTextFont() const;
+    void setTextFont(const QFont &value);
     QList<ColorMarker> colors;
     int curentPauseValue = 0;
     explicit DrawTextElm( OGLWidget *drawWidget, QObject *parent = 0);
