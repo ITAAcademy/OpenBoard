@@ -3,6 +3,7 @@
 varying vec2 vUV;
 uniform sampler2D textureSampler;
 uniform vec4 toColor;
+uniform float radial_blur = 0.15;
 //uniform int bloorStep;
 /*vec4 smoothing(vec2 tc,sampler2D u_texture,vec2 u_Scale);
 

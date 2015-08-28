@@ -97,6 +97,8 @@ class OGLWidget : public QGLWidget, protected QGLFunctions
 signals:
         void stopShowLastDrawingSignal();
 public:
+        bool isShaderSupported();
+        void setShaderSupported(bool value);
     BrushManager m_manager;
     bool sucsessLoadTexture;
     void setFrameRate(int frameRate);
@@ -296,6 +298,7 @@ private slots:
     void storeMousePos();
 
 private:
+    bool shaderSupported = true;
          int frameRate = 25;
        bool mayShowRedRectangle = true;
     unsigned int current_millisecs =0;
