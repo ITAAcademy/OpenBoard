@@ -32,7 +32,8 @@ SOURCES += main.cpp\
     encoder/videodecoder.cpp \
     encoder/ffmpeghelp.cpp \
     drawSystem/drawvideo.cpp \
-    encoder/audiodecoder.cpp
+    encoder/audiodecoder.cpp \
+    shaderprogramwrapper.cpp
     drawSystem/drawbrush.cpp
 
 
@@ -65,7 +66,8 @@ HEADERS  += mainwindow.h \
     encoder/ffmpeg.h \
     encoder/ffmpeghelp.h \
     drawSystem/drawvideo.h \
-    encoder/audiodecoder.h
+    encoder/audiodecoder.h \
+    shaderprogramwrapper.h
     drawSystem/drawbrush.h
 
 

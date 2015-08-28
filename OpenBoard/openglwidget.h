@@ -20,14 +20,14 @@
 #include "encoder/videorencoder.h"
 #include "../Brush/brushcontroll.h"
 #include <QGLShader>
-
+#include "shaderprogramwrapper.h"
 
 class ListControll;
 struct BrushBeginingIndex;
 class DrawTextElm;
 class DrawBrushElm;
 class DrawElement;
-
+class ShaderProgramWrapper;
 
 
 /*
@@ -226,7 +226,7 @@ public:
 
     void myRenderText(QGLWidget *w, int x, int y, int z, const QString &text, const QColor &col = Qt::white, const QFont &font = QFont(), float scale = 1);
 
-    void initShader();
+
     bool isShowLastDrawing();
     void setShowLastDrawing(bool val);
     bool getShowLastDrawing();
@@ -300,6 +300,7 @@ private slots:
 
 private:
     bool shaderSupported = true;
+    ShaderProgramWrapper *mainShader;//Color,alpha,blur;
          int frameRate = 25;
        bool mayShowRedRectangle = true;
     unsigned int current_millisecs =0;
@@ -313,7 +314,7 @@ private:
 
     bool showingLastDrawing = false;
     int currentLastDrawingPointIterator = 0;
-    GLuint ShaderProgram;
+    //GLuint ShaderProgram;
        bool firstUpdate = true;
      bool isPainting;
     QImage img;
