@@ -123,3 +123,9 @@ INCLUDEPATH += $$PWD\include
 LIBS += "$$PWD/bin/*.dll"
 
 RCC_DIR = ../
+
+DISTFILES += \
+    frag_alpha.fsh \
+    frag_alpha.frag \
+    alpha.frag \
+    alpha.vert

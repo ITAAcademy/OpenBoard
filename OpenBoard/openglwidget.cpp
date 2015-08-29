@@ -6,6 +6,8 @@
 #define GLWIDGET_SIZE       640,480
 #define MAIN_FRAGMENT_SHADER_PATH ":/staticShaders/openGL/shaders/fragmentShader.glsl"
 #define MAIN_VERTEX_SHADER_PATH ":/staticShaders/openGL/shaders/vertexShader.glsl"
+#define ALPHA_FRAGMENT_SHADER_PATH ":/dynamic/openGL/shaders/alpha.frag"
+#define ALPHA_VERTEX_SHADER_PATH ":/dynamic/openGL/shaders/alpha.vert"
 /*
  *scroll
  *
@@ -335,6 +337,21 @@ void OGLWidget::setEditingRectangle(const RectangleEditor &value)
     editingRectangle = value;
 }
 
+void OGLWidget::initShaderPrograms()
+{
+    mainShader = new ShaderProgramWrapper(this);
+    if (mainShader->initShader(MAIN_FRAGMENT_SHADER_PATH,MAIN_VERTEX_SHADER_PATH)==0)shaderSupported=true;
+
+    ShaderProgramWrapper alphaShader(this);
+    if(alphaShader.initShader(ALPHA_FRAGMENT_SHADER_PATH,ALPHA_VERTEX_SHADER_PATH)!=0)shaderSupported=true;
+    shaderPrograms.push_back(alphaShader);
+}
+
+QVector<ShaderProgramWrapper> OGLWidget::getShaderPrograms()
+{
+    return shaderPrograms;
+}
+
 bool OGLWidget::isShaderSupported()
 {
     return shaderSupported;
@@ -462,6 +479,8 @@ OGLWidget::~OGLWidget()
 
     if (drawBrushElm !=NULL)
         delete drawBrushElm;
+
+    delete mainShader;
 }
 
 
@@ -847,8 +866,9 @@ glEnable(GL_DEPTH_TEST);
     qDebug() << "B";
    /* list_1.append(GenerationDrawElement("kaka.text", this, 0));
     list_1.append(GenerationDrawElement("brush.png", this, 0));*/
-    mainShader = new ShaderProgramWrapper(this);
-    if (mainShader->initShader(MAIN_FRAGMENT_SHADER_PATH,MAIN_VERTEX_SHADER_PATH)==0)shaderSupported=true;
+    initShaderPrograms();
+
+
    connect(&m_manager,SIGNAL(currentBrushChanged()),this,SLOT(brushParamsChanged()));
 
 }

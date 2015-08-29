@@ -6,6 +6,11 @@ ShaderProgramWrapper::ShaderProgramWrapper(OGLWidget *pWidget)
     glf=parentWidget->context()->functions();
 }
 
+ShaderProgramWrapper::ShaderProgramWrapper()
+{
+
+}
+
 ShaderProgramWrapper::~ShaderProgramWrapper()
 {
     glf->glDeleteShader(ShaderProgram);

@@ -16,6 +16,7 @@ OGLWidget *parentWidget;
 QGLFunctions *glf;
 public:
     ShaderProgramWrapper(OGLWidget *pWidget);
+    ShaderProgramWrapper();
     ~ShaderProgramWrapper();
    int initShader(QString fragmentShaderCode,QString vertexShaderCode);
    GLuint getShaderProgram();

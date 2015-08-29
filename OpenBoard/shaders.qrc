@@ -3,4 +3,8 @@
         <file>openGL/shaders/fragmentShader.glsl</file>
         <file>openGL/shaders/vertexShader.glsl</file>
     </qresource>
+    <qresource prefix="/dynamic">
+        <file>openGL/shaders/alpha.frag</file>
+        <file>openGL/shaders/alpha.vert</file>
+    </qresource>
 </RCC>

@@ -1,6 +1,6 @@
 #include "drawElement.h"
-
-
+#include "../TimeLine/listcontroll.h"
+class ListControll;
 OGLWidget *DrawElement::getDrawWidget() const
 {
     return pDrawWidget;
@@ -104,10 +104,22 @@ void DrawElement::paint()
         pDrawWidget->bindBuffer(fboWrapper.frameBuffer);
         draw();
         pDrawWidget->bindBuffer(0);
+
+
+        int keyUnifrom = pDrawWidget->context()->functions()->glGetUniformLocation(
+                    pDrawWidget->getShaderPrograms()[0].getShaderProgram(),"animationKey");
+        float keyFrame = (float)(pDrawWidget->getTimeLine()->getPlayTime()-startDrawTime)/lifeTime;
+        qDebug() << "KEY FRAME:"<<keyFrame;
+
+
+        pDrawWidget->context()->functions()->glUseProgram( pDrawWidget->getShaderPrograms()[0].getShaderProgram());
+        pDrawWidget->context()->functions()->glUniform1f(keyUnifrom,keyFrame);
+
         if(aspectRatio)
             pDrawWidget->paintBufferOnScreen(fboWrapper,x, y, width, width, z);
         else
             pDrawWidget->paintBufferOnScreen(fboWrapper,x, y, width, height, z);
+         pDrawWidget->context()->functions()->glUseProgram(0);
     }
     else
         qWarning() << "In curent draw element fboWraper is not init!!!";
