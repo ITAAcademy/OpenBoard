@@ -626,8 +626,9 @@ void ListControll::setBlocked(volatile bool value)
 void ListControll::addMsToTimerValue(int ms)
 {
   //  qDebug() << "SLOT addMsToTimerValue:"<<ms;
-timerValue+=ms;
-//qDebug() << "timerValue:"<<timerValue;
+    if(isPlayPauseStop == 1)
+        timerValue+=ms;
+qDebug() << "timerValue:"<<ms;
 }
 
 
@@ -905,10 +906,10 @@ void ListControll::calcPointedBlocksAtTime( )
  {
     // // //qDebug() << "FFFFFFFFFFFFFFF  emit playSignal();";
      //timer.restart();
-     timerValue=0;
-    //emit playSignal();
-    /* if (isPlayPauseStop==3)
-             time_sum = 0;*/
+     //timerValue=0;
+    emit playSignal();
+     if (isPlayPauseStop==3)
+             time_sum = 0;
      isPlayPauseStop = 1;
 
  }
@@ -927,6 +928,7 @@ void ListControll::calcPointedBlocksAtTime( )
 void  ListControll::stop()
 {
    time_sum = 0;
+   timerValue=0;
     isPlayPauseStop = 3;
     calcPointedBlocks();
     qDebug() << "stop                       TIMELINE";
@@ -937,7 +939,7 @@ qint64 ListControll::getPlayTime()
 {
     if (isPlayPauseStop ==1 )
         //return timer.elapsed() + time_sum;
-        return timerValue + time_sum;
+        return timerValue;
     else
         if (isPlayPauseStop ==2 )
         return time_sum ;
@@ -947,7 +949,8 @@ qint64 ListControll::getPlayTime()
 
 void ListControll::setPlayTime(qint64 value)
 {
-    time_sum = value;
+    //time_sum = value;
+    timerValue = value;
 }
 
 QImage ListControll::requestImage(const QString &id, QSize *size, const QSize &requestedSize)
@@ -983,7 +986,10 @@ QImage ListControll::requestImage(const QString &id, QSize *size, const QSize &r
             if(elm.draw_element->getTypeId() == Text)
                 return QImage(":/iphone_toolbar_icons/Document-Icon.png");
 
-            return QImage(":/icons/12video icon.png");
+            if(elm.draw_element->getTypeId() == Video)
+                return QImage(":/iphone_toolbar_icons/Video.png");
+
+            return QImage(":/iphone_toolbar_icons/0.png");
         }
 
 

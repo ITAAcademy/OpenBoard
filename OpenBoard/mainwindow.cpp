@@ -1868,14 +1868,14 @@ void MainWindow::on_action_Play_triggered()
         if(mpOGLWidget->drawAnimated(ui->actionRecord_to_file->isChecked()))
         {
            // mpOGLWidget->setCurStatus( OGLWidget::PLAY );
-            mpOGLWidget->getTimeLine()->play(); //off for test
+             //off for test
 
             //qDebug("11111111111111111111111111111111");
         }
         else
         {
             on_action_Stop_triggered();
-            mpOGLWidget->getTimeLine()->stop();
+
             //qDebug("222222222222222222222222222222222");
             return;
         }

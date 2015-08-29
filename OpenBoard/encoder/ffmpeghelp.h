@@ -17,6 +17,7 @@ class FFmpegHelp : public QObject
     VideoDecoder *vDecoder = NULL;
     AudioDecoder *aDecoder = NULL;
     AVFormatContext *formatContext = NULL;
+    QVector <AVPacket> bufferPacket;
 public:
     struct Frame{
         QImage videoFrame;

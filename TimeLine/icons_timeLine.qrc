@@ -71,11 +71,11 @@
         <file>iphone_toolbar_icons/pauseG.png</file>
         <file>iphone_toolbar_icons/playG.png</file>
         <file>iphone_toolbar_icons/stopG.png</file>
-        <file>0.png</file>
         <file>iphone_toolbar_icons/New Folder.png</file>
         <file>iphone_toolbar_icons/Open_.png</file>
         <file>iphone_toolbar_icons/save.png</file>
         <file>iphone_toolbar_icons/Document-Icon.png</file>
-        <file>рамка.png</file>
+        <file>iphone_toolbar_icons/0.png</file>
+        <file>iphone_toolbar_icons/Video.png</file>
     </qresource>
 </RCC>

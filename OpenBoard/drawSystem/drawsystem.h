@@ -94,6 +94,7 @@ static DrawElement *GenerationDrawElement( QString path, OGLWidget *drawWidget =
         DrawVideoElm *elm = new DrawVideoElm(drawWidget, parent);
         elm->setVideoFile(path);
         elm->setTypeId(Element_type::Video);
+        elm->setKey(target.baseName());
         qDebug() << "Create video object successful";
         return (DrawElement*) elm;
     }

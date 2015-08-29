@@ -173,11 +173,12 @@ item_col.width = (timeControll.getMaxTrackTime() + 31) * main222.scaling
             //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! NEED RESTORE IN FUTURE CONVERT THIS TIME TO FPS
 
 
-        /*var temp_time = (scale_pointer.x   +
-                         scroll.flickableItem.contentX )* main222.scaling
+       var temp_time = (scale_pointer.x   +
+                         scroll.flickableItem.contentX - 20 )* main222.scaling // -20 is left border
+          //  console.log("qqqqqqqqqqqqqqqqqqqqqqq    " + temp_time)
         timeControll.setPlayTime(temp_time);
         main222.prevPlayTime = temp_time
-        main222.play_time =  temp_time*/
+        main222.play_time =  temp_time
         main222.saveScrollX = scroll.flickableItem.contentX
         main222.saveScalePointerX = scale_pointer.x
         }

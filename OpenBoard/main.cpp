@@ -60,7 +60,7 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
 
     MainWindow window;
-    window.resize(0, 500);
+    window.resize(500, 500);
    // app.addLibraryPath("/SSL");
   //  // // //qDebug() << app.libraryPaths();
    // qApp->addLibraryPath(qApp->applicationDirPath() + "/SSL");

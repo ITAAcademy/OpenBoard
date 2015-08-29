@@ -260,7 +260,7 @@ void DrawTextElm::clearBuffer()
 
 void DrawTextElm::draw()
 {
-    qDebug() << "void DrawTextElm::draw()";
+    qDebug() << "void DrawTextElm::draw()" << pDrawWidget->getTimeLine()->getPlayTime();
     pDrawWidget->clearFrameBuffer(fboWrapper);
     int current_time;
     if(!bPlay)
@@ -395,7 +395,7 @@ void DrawTextElm::setTickTime(int value)
 
 bool DrawTextElm::load_add(QDataStream &stream)
 {
-    stream >> unParsestring >> loggerText >> textCursor >> prevTextCursor;
+    stream >> unParsestring >> loggerText >> textCursor >> prevTextCursor >> mainTextFont >> mainFillColor;
     setUnParsestring(unParsestring, loggerText);
 
     /*int sizeOfString = 0;
@@ -414,7 +414,7 @@ bool DrawTextElm::save_add(QDataStream &stream)
  /*   stream << unParsestring.length();
     // //qDebug() << "IN " << unParsestring.length();
     stream.writeRawData(unParsestring.toLatin1().data(), unParsestring.length());*/
-    stream << unParsestring << loggerText << textCursor << prevTextCursor;
+    stream << unParsestring << loggerText << textCursor << prevTextCursor << mainTextFont << mainFillColor;
 }
 
 void DrawTextElm::clearCanvas(int m_x, int m_y)

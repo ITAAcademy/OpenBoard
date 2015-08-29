@@ -849,7 +849,7 @@ glEnable(GL_DEPTH_TEST);
     list_1.append(GenerationDrawElement("brush.png", this, 0));*/
     mainShader = new ShaderProgramWrapper(this);
     if (mainShader->initShader(MAIN_FRAGMENT_SHADER_PATH,MAIN_VERTEX_SHADER_PATH)==0)shaderSupported=true;
-   connect(&m_manager,SIGNAL(currentBrushChanged()),this,SLOT(brushParamsChanged()));
+         connect(&m_manager,SIGNAL(currentBrushChanged()),this,SLOT(brushParamsChanged()));
 
 }
 
@@ -1438,6 +1438,7 @@ bool OGLWidget::drawAnimated(bool record)
     //tickTimer.start();
     // //qDebug() << "Start play";
     emit startSignal();
+    getTimeLine()->play();
     return true;
 }
 
@@ -1459,6 +1460,7 @@ void OGLWidget::stopAnimated()
 
         //m_encoder->stop();
         clearFrameBuffer(mainFBO);
+        getTimeLine()->stop();
 
 
        // double t_animationPersentOfCross = animationPersentOfCross;

@@ -309,7 +309,7 @@ private:
   //  QMap <void* , QList<QByteArray>>  audioList;
     QList<QByteArray>  audioList;
 
-    bool shaderSupported = true;
+    bool shaderSupported = false;
     ShaderProgramWrapper *mainShader;//Color,alpha,blur;
          int frameRate = 25;
        bool mayShowRedRectangle = true;
