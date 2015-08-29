@@ -22,12 +22,12 @@ Rectangle{
     RectangularGlow {
        id: shadow
        height: root.height
-       width: height
+       width: root.width
       /* x:root.border.width*1.2
        y:x*/
        //anchors.right: root.right
-       x:root.width -height -  4*root.border.width
-        y: x
+       x:root.width -width -  4*root.border.width
+        y: root.height -height -  4*root.border.width
        visible: false
        color: "black"
        opacity: 0.5
@@ -51,11 +51,12 @@ Rectangle{
     {
         id: background_rec
         z: 2
-        property int  border_width : 5
+        property real  border_width : 2
     // border { color: "white" ; width: 2 }
      height: root.height// - 2*background_rec.border.width
      width: root.width
      color: "green"
+
 
     Image {
         id: background
@@ -63,17 +64,17 @@ Rectangle{
 //         y:x
          //anchors.margins: background_rec.border.width
 
-         height: root.height// - 2*background_rec.border.width
-         width: height
+        width: root.width; height: root.height
        fillMode: Image.TileHorizontally
        source: "qrc:/iphone_toolbar_icons/black_tree.png"
        visible: true
 
+
        Image {
            id: icon
            source:  "image://imageProvider/" + root.colIndex + "+" + root.mIndex + "+ " + (Math.round(Math.random(9999999) * 10000));
-           height: parent.height//root.height - root.border.width*2 - 1
-           width: height
+           width: background.width;
+           height: background.height
           // x:root.border.width + 1
            //y:root.border.width + 1
            visible:  true
@@ -87,19 +88,19 @@ Rectangle{
                   z: 1
                   enabled: false
               }
-           BorderImage {
-               width: root.height; height: width
-               border { left: background_rec.border_width; top: background_rec.border_width;
-                   right: background_rec.border_width; bottom: background_rec.border_width }
-               horizontalTileMode: BorderImage.Stretch
-               verticalTileMode: BorderImage.Stretch
-               source: "qrc:/рамка.png"
+           Rectangle {
+               id: border_image
+               width: background.width; height: background.height
+               border.width:  background_rec.border_width  ;
+             border.color: "white"
+             color: "transparent"
                z: 2
            }
            Text {
                id: name
                anchors.margins: 3
-               anchors.centerIn: parent
+               anchors.centerIn: border_image
+              // x: icon.width/2 - width/2
                text: root.title
                font.pixelSize: 1
                color: "white"
@@ -119,7 +120,9 @@ Rectangle{
 
     }
     onScaleChanged: {
-        shadow.height  = root.height*scale
+        shadow.height  = root.height * scale
+        shadow.width  = root.width * scale
+
     }
     NumberAnimation on scale {
         id:animation_scale_small;
@@ -389,15 +392,83 @@ z: 0
 
    // else
         {
-                          if (main222.selectedBlockIndex < divider.pos_to_append.y)
-                               divider.pos_to_append.y -=1 //!!!!!!!!!!*/
+           if (main222.selectedBlockIndex < divider.pos_to_append.y)
+           {
+               if (main222.block_zayshow_sprava)
+               {
+                   if (main222.left_rigth_entered)
+                   {
+                        //console.log("111111111111111")
+                        divider.pos_to_append.y +=1
+                   }
+                   else
+                   {
+                        //console.log("22222222222222")
+
+                   }
+               }
+               else
+               {
+                   if (main222.left_rigth_entered)
+                   {
+
+                       if (main222.selectedBlockCol > divider.pos_to_append.x)
+                       {
+                       divider.pos_to_append.y +=1
+                           //console.log("3333333333333333")
+                       }
+                       else
+                       {
+                           //console.log("666666666666666666")
+                           //divider.pos_to_append.y +=1
+                           // //ok
+                       }
+
+
+                   } // move from rigth to left
+                   else
+                   {
+                       if ( main222.selectedBlockIndex + 1 === divider.pos_to_append.y)
+                       {
+                           if (main222.selectedBlockCol > divider.pos_to_append.x)
+                           {
+                               //console.log("88888888888888888888")
+                           }
+                           else
+                           {
+                               //console.log("44444444444444")
+                               divider.pos_to_append.y -=1
+                           }
+                       }
+                       else
+                       {
+
+                           if (main222.selectedBlockCol > divider.pos_to_append.x)
+                           {
+                              // console.log("7777777777777777")
+                           }
+                           else
+                               if (main222.selectedBlockCol === divider.pos_to_append.x)
+                               {
+                                   divider.pos_to_append.y -=1
+                                  // console.log("99999999999999999999999")
+                               }
+                           else
+                               {
+                                   //console.log("101010101010101010")
+                               }
+                       }
+                   }
+               }
+           }
+
             if (main222.selectedBlockIndex > divider.pos_to_append.y  && main222.left_rigth_entered)
                 divider.pos_to_append.y += 1
             if (main222.selectedBlockCol == main222.dropEnteredTrackIndex)
             {
                   timeControll.moveBlockFromTo(main222.selectedBlockCol,
                                          main222.selectedBlockIndex,  divider.pos_to_append.y);
-                console.log("11111111111111111111111111111111")
+                //console.log("11111111111111111111111111111111")
                 main222.selectedBlockIndex =  divider.pos_to_append.y
                // frama.p_main222.selectedBlockCol = root.colIndex
             }
@@ -407,7 +478,7 @@ z: 0
                 timeControll.moveBlockFromTo(main222.selectedBlockCol,
                   main222.selectedBlockIndex,main222.dropEnteredTrackIndex,  divider.pos_to_append.y);
                 main222.dropEnteredBlockItemGlobalRep.updateModel();
-                console.log("22222222222222222222222222222222222222")
+                //console.log("22222222222222222222222222222222222222")
                  main222.selectedBlockIndex =  divider.pos_to_append.y //333
             }
             frama.p_main222.selectedBlockCol = main222.dropEnteredTrackIndex
@@ -485,7 +556,7 @@ z: 0
 
               if (temp > 0  )
               {
-                main222.block_zayshow_sprava = true
+                //main222.block_zayshow_sprava = true
                     //divider.x = root.x + root.width - divider.width/2 + tollbar.width
                  /* divider.y = root.height + columns.spacing) * root.colIndex
                           + time_scale.height - scroll.flickableItem.contentY*/
@@ -496,18 +567,18 @@ z: 0
 
                   main222.left_rigth_entered = true
                   divider.pos_to_append.y = root.mIndex
-                  console.log("onPositionChanged: right " + divider.pos_to_append.y)
+                 // console.log("onPositionChanged: right " + divider.pos_to_append.y)
               }
               else
               {
-                      main222.block_zayshow_sprava = false
+                      //main222.block_zayshow_sprava = false
                   //divider.x = root.x - divider.width/2 + tollbar.width
                      divider.moveTo(root.x - divider.width/2 + tollbar.width,
                                move_y_pos )
 
                 main222.left_rigth_entered = false
                 divider.pos_to_append.y = root.mIndex
-                console.log("onPositionChanged: left " + divider.pos_to_append.y)
+                //console.log("onPositionChanged: left " + divider.pos_to_append.y)
 
               }
           }
