@@ -17,6 +17,7 @@ Rectangle{
     property ColorOverlay p_color_overlay
     property bool double_click : false
     property Item p_trackbar
+    property Item p_bar_track
 
 
     RectangularGlow {
@@ -223,7 +224,7 @@ z: 0
     Drag.active: mouseArea.drag.active
     Drag.hotSpot.x: 10
     Drag.hotSpot.y: 10
-//onYChanged: y=0;
+onYChanged: y=0;
 
     MouseArea {
         id: mouseArea
@@ -249,14 +250,7 @@ z: 0
 //            drop.visible = false;
 //                drop.enabled = false;
             //    root.Drag.active =  false
-                if (shadow.visible)
-                {
-                    cursorShape = Qt.OpenHandCursor
-                    animation_scale_small.running = true
-                    animation_scale_x.running = true
-                    animation_scale_y.running = true
-                    shadow.visible = true
-                }
+
               }
             else
             {
@@ -350,7 +344,14 @@ z: 0
             else
             {
             globalRep.isDrag = true;                
-
+               // if (shadow.visible)
+                {
+                    cursorShape = Qt.OpenHandCursor
+                    animation_scale_small.running = true
+                    animation_scale_x.running = true
+                    animation_scale_y.running = true
+                    shadow.visible = true
+                }
                 //root.border.color  = "transparent"
 
 
@@ -365,7 +366,7 @@ z: 0
                 main222.clicked_blockX = root.x
                 main222.clicked_blockY = root.y
                 root.z += 200
-                 root.globalRep.z += 200
+                 root.p_bar_track.z += 200
                 //main222.p_trackbar_which_block_dragged = root.p_trackbar
                 //globalRep.z += 200
 
@@ -381,7 +382,7 @@ z: 0
 
             if (globalRep.isDrag)
             {
-                       root.z -= 200
+                       root.p_bar_track.z -= 200 //888
                 //main222.p_trackbar_which_block_dragged
                 root.globalRep.z -= 200
               divider.visible = false
@@ -476,7 +477,7 @@ z: 0
 
             if (main222.selectedBlockIndex > divider.pos_to_append.y  && main222.left_rigth_entered)
                 divider.pos_to_append.y += 1
-            if (main222.selectedBlockCol == main222.dropEnteredTrackIndex)
+            if (main222.selectedBlockCol === main222.dropEnteredTrackIndex)
             {
                   timeControll.moveBlockFromTo(main222.selectedBlockCol,
                                          main222.selectedBlockIndex,  divider.pos_to_append.y);
@@ -492,8 +493,9 @@ z: 0
                 main222.dropEnteredBlockItemGlobalRep.updateModel();
                 //console.log("22222222222222222222222222222222222222")
                  main222.selectedBlockIndex =  divider.pos_to_append.y //333
+                frama.p_main222.selectedBlockCol = main222.dropEnteredTrackIndex
             }
-            frama.p_main222.selectedBlockCol = main222.dropEnteredTrackIndex
+
 
 
             timeControll.setSelectedBlockPoint(main222.selectedBlockCol,main222.selectedBlockIndex)
