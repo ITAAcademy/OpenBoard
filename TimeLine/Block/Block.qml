@@ -249,6 +249,14 @@ z: 0
 //            drop.visible = false;
 //                drop.enabled = false;
             //    root.Drag.active =  false
+                if (shadow.visible)
+                {
+                    cursorShape = Qt.OpenHandCursor
+                    animation_scale_small.running = true
+                    animation_scale_x.running = true
+                    animation_scale_y.running = true
+                    shadow.visible = true
+                }
               }
             else
             {
@@ -342,11 +350,7 @@ z: 0
             else
             {
             globalRep.isDrag = true;                
-                cursorShape = Qt.OpenHandCursor
-                animation_scale_small.running = true
-                animation_scale_x.running = true
-                animation_scale_y.running = true
-                shadow.visible = true
+
                 //root.border.color  = "transparent"
 
 
@@ -392,18 +396,26 @@ z: 0
 
    // else
         {
+                           var out_console = false
            if (main222.selectedBlockIndex < divider.pos_to_append.y)
            {
                if (main222.block_zayshow_sprava)
                {
                    if (main222.left_rigth_entered)
                    {
-                        //console.log("111111111111111")
-                        divider.pos_to_append.y +=1
+                       if ( main222.selectedBlockIndex + 1 === divider.pos_to_append.y)
+                       {
+                            if(out_console) console.log("111111111111111")
+                       }
+                       else
+                       {
+                            divider.pos_to_append.y +=1
+                           if(out_console) console.log("AAAAAAAAAAAAAAAAAA")
+                       }
                    }
                    else
                    {
-                        //console.log("22222222222222")
+                        if(out_console) console.log("22222222222222")
 
                    }
                }
@@ -415,11 +427,11 @@ z: 0
                        if (main222.selectedBlockCol > divider.pos_to_append.x)
                        {
                        divider.pos_to_append.y +=1
-                           //console.log("3333333333333333")
+                           if(out_console) console.log("3333333333333333")
                        }
                        else
                        {
-                           //console.log("666666666666666666")
+                           if(out_console) console.log("666666666666666666")
                            //divider.pos_to_append.y +=1
                            // //ok
                        }
@@ -432,11 +444,11 @@ z: 0
                        {
                            if (main222.selectedBlockCol > divider.pos_to_append.x)
                            {
-                               //console.log("88888888888888888888")
+                               if(out_console) console.log("88888888888888888888")
                            }
                            else
                            {
-                               //console.log("44444444444444")
+                               if(out_console) console.log("44444444444444")
                                divider.pos_to_append.y -=1
                            }
                        }
@@ -445,17 +457,17 @@ z: 0
 
                            if (main222.selectedBlockCol > divider.pos_to_append.x)
                            {
-                              // console.log("7777777777777777")
+                              if(out_console) console.log("7777777777777777")
                            }
                            else
                                if (main222.selectedBlockCol === divider.pos_to_append.x)
                                {
                                    divider.pos_to_append.y -=1
-                                  // console.log("99999999999999999999999")
+                                  if(out_console) console.log("99999999999999999999999")
                                }
                            else
                                {
-                                   //console.log("101010101010101010")
+                                  if(out_console) console.log("101010101010101010")
                                }
                        }
                    }
