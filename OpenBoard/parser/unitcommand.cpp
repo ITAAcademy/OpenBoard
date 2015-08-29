@@ -109,6 +109,7 @@ void UnitCommand::backSlash(DrawTextElm *canvas)
 
 void UnitCommand::draw(DrawTextElm *canvas)
 {
+    qDebug() << "UnitCommand::draw(DrawTextElm *canvas)";
     if (Type == "ChangeColor")
     {
         changeColor(canvas);

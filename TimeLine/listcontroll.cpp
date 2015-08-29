@@ -208,7 +208,7 @@ void ListControll::loadFromFile()
    DrawElement *elm = GenerationDrawElement(open);
    if(elm == NULL)
    {
-       //qDebug() << "loadFromFile(): elm == NULL";
+       qDebug() << "loadFromFile(): elm == NULL";
        return;
    }
    // //qDebug() << "9999999999999999999999999999999999999999999999" << elm->getType();

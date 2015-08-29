@@ -20,16 +20,19 @@
 #include "encoder/videorencoder.h"
 #include "../Brush/brushcontroll.h"
 #include <QGLShader>
+#include "shaderprogramwrapper.h"
 
 #include <QMap>
 #include <QList>
+
+
 
 class ListControll;
 struct BrushBeginingIndex;
 class DrawTextElm;
 class DrawBrushElm;
 class DrawElement;
-
+class ShaderProgramWrapper;
 
 
 /*
@@ -99,6 +102,8 @@ class OGLWidget : public QGLWidget, protected QGLFunctions
 signals:
         void stopShowLastDrawingSignal();
 public:
+        bool isShaderSupported();
+        void setShaderSupported(bool value);
     BrushManager m_manager;
     bool sucsessLoadTexture;
     void setFrameRate(int frameRate);
@@ -227,7 +232,7 @@ public:
 
     void myRenderText(QGLWidget *w, int x, int y, int z, const QString &text, const QColor &col = Qt::white, const QFont &font = QFont(), float scale = 1);
 
-    void initShader();
+
     bool isShowLastDrawing();
     void setShowLastDrawing(bool val);
     bool getShowLastDrawing();
@@ -242,6 +247,7 @@ public:
     FBOWrapper getMainFBO();
     void bindBuffer(GLuint buffer);
 
+    QImage twiceImageSizeWithouScaling(QImage img);
 public slots:
    // void clearFrameBuffer();
         void clearFrameBuffer(FBOWrapper fboWrapper);
@@ -269,7 +275,7 @@ public slots:
 
     void clearBuffer();
     void testWrap(int kIndexOfRow);
-    GLuint loadTexture(QImage img);
+    GLuint loadTexture(QImage img,bool doubleSize=false);
     void deleteTexture(GLuint index); // gl_only delete only from video memory, can reload
     int loadTextureFromFile(QString path); // return index for reload + texture indefication
     /*
@@ -299,12 +305,18 @@ private slots:
     void storeMousePos();
 
 private:
+
     int frameRate = 25;
   //  QMap <void* , QList<QByteArray>>  audioList;
     QList<QByteArray>  audioList;
-    bool mayShowRedRectangle = true;
-    qint64 current_millisecs =0;
-    qint64 last_milisecs_drawn = 0;
+
+    bool shaderSupported = true;
+    ShaderProgramWrapper *mainShader;//Color,alpha,blur;
+         int frameRate = 25;
+       bool mayShowRedRectangle = true;
+    unsigned int current_millisecs =0;
+    unsigned int last_milisecs_drawn = 0;
+
     QVector<GLenum> attachment;
     FBOWrapper mainFBO;
 
@@ -314,7 +326,7 @@ private:
 
     bool showingLastDrawing = false;
     int currentLastDrawingPointIterator = 0;
-    GLuint ShaderProgram;
+    //GLuint ShaderProgram;
        bool firstUpdate = true;
      bool isPainting;
     QImage img;

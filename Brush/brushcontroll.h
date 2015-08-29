@@ -32,6 +32,7 @@ class BrushManager : public QObject, public QQuickImageProvider
     int curentBrush;
     Brush createdBrush;
     ImageClone *cloneImg;
+    bool colorize = true;
 
     /*
      *
@@ -39,6 +40,7 @@ class BrushManager : public QObject, public QQuickImageProvider
     int size;
 public:
     QDir getBrushDir();
+    void setColorize(bool val);
       QStringList brushPathsList;
     explicit BrushManager(QObject *parent = 0);
     ~BrushManager();

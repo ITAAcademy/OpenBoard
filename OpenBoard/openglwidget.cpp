@@ -4,6 +4,8 @@
 #include "drawSystem/drawsystem.h"
 #include "../TimeLine/listcontroll.h"
 #define GLWIDGET_SIZE       640,480
+#define MAIN_FRAGMENT_SHADER_PATH ":/staticShaders/openGL/shaders/fragmentShader.glsl"
+#define MAIN_VERTEX_SHADER_PATH ":/staticShaders/openGL/shaders/vertexShader.glsl"
 /*
  *scroll
  *
@@ -11,8 +13,8 @@ int k = canvas->property("scroll").toInt() - 10;
 canvas->setProperty("scroll", k);
 */
 
-GLuint OGLWidget::loadTexture(QImage img){
-
+GLuint OGLWidget::loadTexture(QImage img,bool doubleSize){
+if (doubleSize)img = twiceImageSizeWithouScaling(img);
     if(img.isNull()) // QCoreApplication::applicationDirPath()+"/star.png"
     {
         //loads correctly
@@ -153,7 +155,7 @@ void OGLWidget::setList(const QList<DrawElement *> &value)
     {
         list_2 = value;
     }
-    curentList = !curentList;    
+    curentList = !curentList;
 }
 void OGLWidget::paintBrushInBuffer(GLuint& texture,Brush& currentBrushOfDrawSystem,FBOWrapper& fboWrapper,QVector<QPoint> coords,QVector<BrushBeginingIndex> brushes,int keyFrame){
     if (fboWrapper.errorStatus==-1)qDebug() << "BAD BUFFER";
@@ -181,8 +183,10 @@ glBegin(GL_TRIANGLES);
        // //qDebug() << "mouse play index:"<<keyFrame;
 
         currentBrushOfDrawSystem = brushes[recordedBrushN].brush;
-
-        texture = loadTexture(currentBrushOfDrawSystem.color_img);
+        if (shaderSupported)
+            texture = loadTexture(currentBrushOfDrawSystem.img,true);
+        else
+        texture = loadTexture(currentBrushOfDrawSystem.color_img,true);
         qDebug() << "recordedBrushN:"<<recordedBrushN;
 
        // isBrushUsed=true;
@@ -191,8 +195,8 @@ glBegin(GL_TRIANGLES);
     }
     recordedBrushN++;
     }
-
-    //glUseProgram(ShaderProgram);
+    if (shaderSupported)
+    glUseProgram(mainShader->getShaderProgram());
     glBindTexture(GL_TEXTURE_2D,texture);
    // if (isBrushUsed) {
      //   //qDebug() << "recordedBrushN:" << recordedBrushN;
@@ -238,12 +242,15 @@ glBegin(GL_TRIANGLES);
         int maxDispers = (int)currentBrushOfDrawSystem.dispers;
         int i=1;
         if (maxDispers>0 && currentBrushOfDrawSystem.count>0) i=currentBrushOfDrawSystem.count;
-        int imgUniform = glGetUniformLocation(ShaderProgram,"vUV");
+        if (shaderSupported)
+        {
+        int imgUniform = glGetUniformLocation(mainShader->getShaderProgram(),"vUV");
           glUniform2i(imgUniform,0,0);
-         // int bloorStepUnifrom = glGetUniformLocation(ShaderProgram,"bloorStep");
-           // glUniform1i(bloorStepUnifrom,currentBrushOfDrawSystem.blur);
 
-          int colorUniform = glGetUniformLocation(ShaderProgram,"toColor");
+          int bloorStepUnifrom = glGetUniformLocation(mainShader->getShaderProgram(),"radial_blur");
+           glUniform1f(bloorStepUnifrom,currentBrushOfDrawSystem.blur/100);
+
+          int colorUniform = glGetUniformLocation(mainShader->getShaderProgram(),"toColor");
           QColor color = currentBrushOfDrawSystem.color_main;
           float r = (float)color.red()/255;
           float g = (float)color.green()/255;
@@ -251,7 +258,7 @@ glBegin(GL_TRIANGLES);
           float a = (float)currentBrushOfDrawSystem.opacity/100;
          // //qDebug() << r << g << b << a;
             glUniform4f(colorUniform,r,g,b,a);
-
+    }
         for (;i>0;i--)
         {
              int dispersX = 0;
@@ -284,7 +291,8 @@ glBegin(GL_TRIANGLES);
         drawTexture(xPos-BRUSH_SIZE/2 + dispersX ,yPos-BRUSH_SIZE/koff/2 + dispersY,BRUSH_SIZE,BRUSH_SIZE/koff,
                 texture,angle,scaleX,scaleY);
         }
-// glUseProgram(NULL);
+         if (shaderSupported)
+ glUseProgram(NULL);
 
 
 glBindTexture(GL_TEXTURE_2D,0);
@@ -325,6 +333,16 @@ RectangleEditor* OGLWidget::getEditingRectangle()
 void OGLWidget::setEditingRectangle(const RectangleEditor &value)
 {
     editingRectangle = value;
+}
+
+bool OGLWidget::isShaderSupported()
+{
+    return shaderSupported;
+}
+
+void OGLWidget::setShaderSupported(bool value)
+{
+    shaderSupported=value;
 }
 
 void OGLWidget::setFrameRate(int fps)
@@ -510,7 +528,8 @@ glBindFramebuffer(GL_FRAMEBUFFER , fboWrapper.frameBuffer); // Bind our frame bu
         // //qDebug() << mousePos.x();
         glEnd();*/
     //qglColor(m_manager.getColor());
-//glUseProgram(ShaderProgram);
+    if (shaderSupported)
+    glUseProgram(mainShader->getShaderProgram());
 
          glBindTexture(GL_TEXTURE_2D,texture);
         QSize brushTextureSize = getTextureSize();
@@ -533,8 +552,8 @@ glBindFramebuffer(GL_FRAMEBUFFER , fboWrapper.frameBuffer); // Bind our frame bu
             scaleX=MAX_SCALE/randScalePtX;
         if(randScalePtY!=0)
             scaleY=MAX_SCALE/randScalePtY;
-        qDebug() << "scale x:"<<scaleX;
-                    qDebug () << "scale y:"<<scaleY;
+       // qDebug() << "scale x:"<<scaleX;
+                   // qDebug () << "scale y:"<<scaleY;
        // // //qDebug() <<"scaleX:"<<scaleX;
        // // //qDebug() <<"scaleY:"<<scaleY;
         //// //qDebug() << "brushSize.width():"<<brushTextureSize.width();
@@ -552,16 +571,19 @@ glBindFramebuffer(GL_FRAMEBUFFER , fboWrapper.frameBuffer); // Bind our frame bu
             int i=1;
             if (maxDispers>0 && m_manager.getCount()>0) i=m_manager.getCount();
 
-            int imgUniform = glGetUniformLocation(ShaderProgram,"vUV");
+            if (shaderSupported)
+            {
+            int imgUniform = glGetUniformLocation(mainShader->getShaderProgram(),"vUV");
               glUniform2i(imgUniform,0,0);
 
-              //int bloorStepUnifrom = glGetUniformLocation(ShaderProgram,"bloorStep");
-              // glUniform1i(bloorStepUnifrom,m_manager.getCreatedBrush().blur);
+
+              int bloorStepUnifrom = glGetUniformLocation(mainShader->getShaderProgram(),"radial_blur");
+               glUniform1f(bloorStepUnifrom,m_manager.getCreatedBrush().blur/100);
 
 
 
 
-              int colorUniform = glGetUniformLocation(ShaderProgram,"toColor");
+              int colorUniform = glGetUniformLocation(mainShader->getShaderProgram(),"toColor");
               QColor color = m_manager.getColor();
               float r = (float)color.red()/255;
               float g = (float)color.green()/255;
@@ -569,6 +591,8 @@ glBindFramebuffer(GL_FRAMEBUFFER , fboWrapper.frameBuffer); // Bind our frame bu
               float a = (float)m_manager.getOpacity()/100;
              // //qDebug() << r << g << b << a;
                 glUniform4f(colorUniform,r,g,b,a);
+
+            }
             for (;i>0;i--)
             {
                  int dispersX = 0;
@@ -587,7 +611,8 @@ glBindFramebuffer(GL_FRAMEBUFFER , fboWrapper.frameBuffer); // Bind our frame bu
             drawTexture(xPos-BRUSH_SIZE/2 + dispersX ,yPos-BRUSH_SIZE/koff/2 + dispersY,BRUSH_SIZE,BRUSH_SIZE/koff,
                     texture,angle,scaleX,scaleY, 1000);
             }
-              //glUseProgram(NULL);
+            if (shaderSupported)
+            glUseProgram(NULL);
         /*
     else{
       glEnable(GL_TEXTURE_2D);
@@ -632,84 +657,17 @@ glBindFramebuffer(GL_FRAMEBUFFER , 0); // Unbind our texture
 
 
 }
-
-void OGLWidget::initShader(){
-    QString fragmentShaderCode;
-    QString vertexShaderCode;
-    QString shaderDir = QDir::currentPath();
-     QFile fragmentShadeFile(":/openGL/shaders/fragmentShader.glsl");
-     if(fragmentShadeFile.open(QIODevice::ReadOnly | QIODevice::Text))
-     {
-         QTextStream in(&fragmentShadeFile);
-         fragmentShaderCode = in.readAll();
-         //qDebug() << "fragmentShaderCode:"<<fragmentShaderCode;
-     }
-    else
-         qDebug() << "error on fragmentShader.glsl open path: "<<shaderDir+"/shaders/fragmentShader.glsl";
-
-     QFile vertexShaderFile(":/openGL/shaders/vertexShader.glsl");
-     if(vertexShaderFile.open(QIODevice::ReadOnly | QIODevice::Text))
-     {
-         QTextStream in(&vertexShaderFile);
-         vertexShaderCode = in.readAll();
-     }
-     else
-           //qDebug() << "error on vertexShader.glsl open path: "<<shaderDir+"/shaders/vertexShader.glsl";
-
-      ShaderProgram = glCreateProgram();
-      GLuint vertexShaderObj = glCreateShader(GL_VERTEX_SHADER);
-      GLuint fragmentShaderObj = glCreateShader(GL_FRAGMENT_SHADER);
-
-      const GLchar* p[1];
-      p[0] = vertexShaderCode.toLatin1().constData();
-      GLint Lengths[1];
-      Lengths[0]= vertexShaderCode.length();
-      glShaderSource(vertexShaderObj, 1, p, Lengths);
-
-      const GLchar* p2[1];
-      p2[0] = fragmentShaderCode.toLatin1().constData();
-      GLint Lengths2[1];
-      Lengths2[0]= fragmentShaderCode.length();
-      glShaderSource(fragmentShaderObj, 1, p2, Lengths2);
-
-      glCompileShader(vertexShaderObj);
-      glCompileShader(fragmentShaderObj);
-
-      //Get compile status and errors detected by compiler
-      GLint success;
-      glGetShaderiv(vertexShaderObj, GL_COMPILE_STATUS, &success);
-      if (!success) {
-          GLchar infoLog[1024];
-          glGetShaderInfoLog(vertexShaderObj, sizeof(infoLog), NULL, infoLog);
-            //qDebug() <<"Error compiling shader type:" << "GL_VERTEX_SHADER" << infoLog;
-      }
-      glGetShaderiv(fragmentShaderObj, GL_COMPILE_STATUS, &success);
-      if (!success) {
-          GLchar infoLog[1024];
-          glGetShaderInfoLog(fragmentShaderObj, sizeof(infoLog), NULL,infoLog);
-          //qDebug() <<"Error compiling shader type:" << "GL_FRAGMENT_SHADER" << infoLog;
-      }
-
-  glAttachShader(ShaderProgram,vertexShaderObj);
-  glAttachShader(ShaderProgram,fragmentShaderObj);
-glLinkProgram(ShaderProgram);
-glDeleteShader(vertexShaderObj);
-glDeleteShader(fragmentShaderObj);
-glGetProgramiv(ShaderProgram, GL_LINK_STATUS, &success);
-GLchar errorLog[1024];
-if (success == 0) {
-    glGetProgramInfoLog(ShaderProgram, sizeof(errorLog), NULL, errorLog);
-    //qDebug() << "Error linking shader program:" << errorLog;
+QImage OGLWidget::twiceImageSizeWithouScaling(QImage img)
+{
+    QSize originSize = img.size();
+    QImage result(originSize.width()*2,originSize.height()*2,img.format());
+    QPoint destPos(originSize.width()/2, originSize.height()/2);
+    result.fill(QColor(0,0,0,0));
+    QPainter painter(&result);
+    painter.drawImage(destPos, img);
+    painter.end();
+    return result;
 }
-else
-    //qDebug() << "Linking shader program success";
-glValidateProgram(ShaderProgram);
-
-    //glLinkProgram(program);
-    //glUseProgram(program);
-}
-
-
 
 
 
@@ -868,12 +826,20 @@ glEnable(GL_DEPTH_TEST);
     qDebug() << "initializeGLFunctions";
      //glEnable(GL_TEXTURE_2D);
     backGroundTexture = loadTextureFromFile(":/ThirdPart/images/start.png");
-    m_manager.getCreatedBrush().color_img=BrushPainter::getInstance()->applyColor(m_manager.getCreatedBrush());
-    brushTexture = loadTexture(m_manager.getCreatedBrush().color_img);
+
+    if (isShaderSupported())
+         m_manager.getCreatedBrush().color_img=m_manager.getCreatedBrush().img;
+    else
+        m_manager.getCreatedBrush().color_img=BrushPainter::getInstance()->applyColor(m_manager.getCreatedBrush());
+    if (shaderSupported)
+         brushTexture = loadTexture(m_manager.getCreatedBrush().img,true);
+    else
+    brushTexture = loadTexture(m_manager.getCreatedBrush().color_img,true);
     //loadTextureFromFile(":/ThirdPart/images/brush.png");
     //initFrameBuffer(); // Create our frame buffer object
     mainFBO=initFboWrapper(false);
      //initShader();
+
     setAutoBufferSwap(false);
     qApp->processEvents(QEventLoop::AllEvents, 1000);
     qDebug() << "A";
@@ -881,7 +847,8 @@ glEnable(GL_DEPTH_TEST);
     qDebug() << "B";
    /* list_1.append(GenerationDrawElement("kaka.text", this, 0));
     list_1.append(GenerationDrawElement("brush.png", this, 0));*/
-
+    mainShader = new ShaderProgramWrapper(this);
+    if (mainShader->initShader(MAIN_FRAGMENT_SHADER_PATH,MAIN_VERTEX_SHADER_PATH)==0)shaderSupported=true;
    connect(&m_manager,SIGNAL(currentBrushChanged()),this,SLOT(brushParamsChanged()));
 
 }
@@ -1104,7 +1071,10 @@ if (showingLastDrawing )
        // //qDebug() << "mouse play index:"<<keyFrame;
 
        currentBrushOfLastDrawing =drawBrushElm->getBrushes()[recordedBrushN].brush;
-        brushTexture = loadTexture(drawBrushElm->getBrushes()[recordedBrushN].brush.color_img);
+       if (shaderSupported)
+           brushTexture = loadTexture(drawBrushElm->getBrushes()[recordedBrushN].brush.img,true);
+       else
+        brushTexture = loadTexture(drawBrushElm->getBrushes()[recordedBrushN].brush.color_img,true);
      break;
     }
     recordedBrushN++;
@@ -1115,7 +1085,7 @@ glBindFramebuffer(GL_FRAMEBUFFER , mainFBO.frameBuffer);
     currentLastDrawingPointIterator++;
     if (currentLastDrawingPointIterator>=drawBrushElm->getCoords().length())
     {
-       stopShowLastDrawing();     
+       stopShowLastDrawing();
     }
    // currentLastDrawingPointIterator++;
 
@@ -1532,8 +1502,11 @@ void OGLWidget::pauseAnimated()
 void OGLWidget::brushParamsChanged()
 {
     if (!m_manager.isAbleToDraw())return;
+    if (isShaderSupported())
+         m_manager.getCreatedBrush().color_img=m_manager.getCreatedBrush().img;
+    else
     m_manager.getCreatedBrush().color_img=BrushPainter::getInstance()->applyColor(m_manager.getCreatedBrush());
-    brushTexture = loadTexture(m_manager.getCreatedBrush().color_img);
+    brushTexture = loadTexture(m_manager.getCreatedBrush().color_img,true);
     while (!isInit())
         qDebug() << "waiting for init";
     drawBrushElm->addBrush(m_manager.getCreatedBrush());
@@ -1869,7 +1842,7 @@ void OGLWidget::drawQImage(int x, int y, QImage img, int z)
 
 void OGLWidget::fillText( QString str,QColor color,QFont textFont, int x, int y, int z, float scale)
 {
-
+ qDebug() << "IN FILL TEXT:"<< x << "   " << y;
    /* // //qDebug() << "ARG1:  " << str.size();
     // //qDebug() << "ARG2:  " << arg2;
     // //qDebug() << "ARG3:  " << arg3;
@@ -1883,7 +1856,7 @@ void OGLWidget::fillText( QString str,QColor color,QFont textFont, int x, int y,
 
 
     //renderText(x, y, str,textFont);
-    myRenderText(this,x,y,z,str,color,textFont, scale);
+    myRenderText(this,x,y,z,str,color,textFont, 1);
 //=======
     qglColor(Qt::white);
 //>>>>>>> romaFix_lastGood

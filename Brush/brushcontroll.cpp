@@ -14,7 +14,11 @@ void BrushManager::setCurentBrush(int value)
     createdBrush.imageIndex=value;
   //  createdBrush.patchToImage = brushPathsList[value];
    //createdBrush.color_img = BrushPainter::getInstance()->applyColor(createdBrush);
-    createdBrush.color_img = BrushPainter::getInstance()->applyColor(createdBrush);
+    if (colorize)
+        createdBrush.color_img = BrushPainter::getInstance()->applyColor(createdBrush);
+    else
+        createdBrush.color_img=createdBrush.img;
+
     //emit currentBrushChanged();
 }
 
@@ -62,6 +66,11 @@ void BrushManager::update()
 }
 QDir BrushManager::getBrushDir(){
     return brushDir;
+}
+
+void BrushManager::setColorize(bool val)
+{
+    colorize=val;
 }
 
 BrushManager::BrushManager(QObject *parent) : QObject(parent), QQuickImageProvider(QQuickImageProvider::Image)

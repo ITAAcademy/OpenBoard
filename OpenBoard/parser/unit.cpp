@@ -13,7 +13,7 @@ Unit::~Unit()
 
 }
 
-void Unit::draw(OGLWidget *canvas)
+void Unit::draw(DrawTextElm *canvas)
 {
 }
 

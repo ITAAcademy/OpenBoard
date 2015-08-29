@@ -61,14 +61,17 @@ bool DrawBrushElm::load_add(QDataStream &stream)
         stream >> data.imageIndex >> brushBeginingIndex.pointIndex;
         qDebug() << "loaded:"<< data.size << data.opacity << data.blur << data.color_main << data.dispers <<
                     data.delta_count << data.count << data.size_delta << data.angle_delta << data.afinn<< data.imageIndex << brushBeginingIndex.pointIndex;
-        if (data.imageIndex==-1){
+        /*if (data.imageIndex==-1){
             data.img = QImage(1,1,QImage::Format_ARGB32_Premultiplied);
             data.img.fill(Qt::black);
             //data.color_img = BrushPainter::getInstance()->applyColor(data);
+            if (pDrawWidget!=NULL && pDrawWidget->isShaderSupported())
+                 data.color_img = data.img;
+            else
              data.color_img = BrushPainter::getInstance()->applyColor(data);
             //qDebug() <<"DEFAULT INDEX";
         }
-        else
+        else*/
         for (int j = 0 ; j < imagesIndexed.length();j++)
         {
             if (data.imageIndex==imagesIndexed[j])
@@ -77,7 +80,12 @@ bool DrawBrushElm::load_add(QDataStream &stream)
                          <<imagesIndexed[j]<<"=="<<data.imageIndex;
         data.img = images[j];
        // data.color_img = BrushPainter::getInstance()->applyColor(data);
+        /*
+        if (pDrawWidget!=NULL && pDrawWidget->isShaderSupported())
+             data.color_img = data.img;
+        else
          data.color_img = BrushPainter::getInstance()->applyColor(data);
+         */
 
             }
                 }
@@ -87,6 +95,20 @@ bool DrawBrushElm::load_add(QDataStream &stream)
 
     if(coords.size() > 0)
         tickTime = lifeTime/coords.size();
+}
+bool DrawBrushElm::setDrawWidget(OGLWidget *value){
+   if (DrawElement::setDrawWidget(value))
+   {
+       for (int i=0;i<brushes.length();i++)
+       {
+       if (pDrawWidget!=NULL && pDrawWidget->isShaderSupported())
+            brushes[i].brush.color_img = brushes[i].brush.img;
+       else
+        brushes[i].brush.color_img = BrushPainter::getInstance()->applyColor(brushes[i].brush);
+       }
+
+   }
+
 }
 
 bool DrawBrushElm::save_add(QDataStream &stream)
