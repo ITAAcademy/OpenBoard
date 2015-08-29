@@ -719,6 +719,7 @@ timeControll.setScalePointerPos((x  -20 + scroll.flickableItem.contentX)* main22
                                                id: cool
                                                globalRep : repka
                                                p_trackbar : trackbar
+                                               p_bar_track : bar_track
                                                height:  100
                                                mIndex: index
                                                 colIndex:  bar_track.mIndex
