@@ -76,12 +76,19 @@ Rectangle
     property int drop_blockY : -1
     property int maIsPressed: 0
     property int dropEntered: 0
+     property int blocks_num : 0
    property bool left_rigth_entered : false
    property bool block_zayshow_sprava : false
+   onBlock_zayshow_spravaChanged: {
+      // anim_
+   }
+
    property Item selectedBlock: null
    property int selectedBlockCol : 0
    property int selectedBlockIndex : 0
    property int dropEnteredBlockIndex : 0
+   property Item dropEnteredBlockItemGlobalRep
+   property int dropEnteredTrackIndex : 0
     property real scaling :  timeControll.getScaleScrollChildren()
    property int minBlockWidth : 1000 / scaling
    property int isPlayPauseStop : 2
@@ -98,6 +105,8 @@ Rectangle
    property Item  p_scale_pointer
    property Item  p_context_menu
    property Item  p_divider
+   property Item  p_columns
+property Item  p_trackbar_which_block_dragged
 
    property int mX : 0
 
@@ -233,9 +242,6 @@ scale_pointer.x = 0// timeControll.getMaxTrackTime() + scale_pointer.width/2 - s
             rep_columns.itemAt(main222.selectedBlockCol).setColorize(main222.selectedBlockIndex,"#8000FF00")
         }
 
-
-        //repka.updateModel();
-
     }
 
      Connections {
@@ -277,12 +283,6 @@ scale_pointer.x = 0// timeControll.getMaxTrackTime() + scale_pointer.width/2 - s
        }
 
        onUpdateModel: {
-           /*rep_columns.model = 0
-            rep_columns.model =  timeControll.getTracksNumber();
-           item_col.width = timeControll.getMaxTrackTime()
-           // main222.p_trackbar.globalRep.updateModel()
-
-           //repka.updateModel();*/
            for(var i = 0; i < cool_main.children.length; i++) {
               console.log("destroying: " + i)
               cool_main.children[i].destroy();
@@ -389,10 +389,38 @@ timeControll.setScaleScrollChildren(0) //it have protection from small values, w
         id : divider
         color: "transparent"
         property point pos_to_append
+        property int anim_x_value : 0
+        property int anim_y_value : 0
         property string d_color: "red"
         border { width: 3; color: d_color }
         Component.onCompleted: {
             main222.p_divider = divider
+        }
+        ParallelAnimation  {
+            id: animation_move
+               running: false
+        NumberAnimation  {
+            target: divider
+            property: "x";
+            id: animation_move_x;
+            running: false;
+            to: divider.anim_x_value
+            duration: 100
+        }
+        NumberAnimation {
+            target: divider
+            property: "y";
+            id: animation_move_y;
+            running: false;
+            to: divider.anim_y_value
+            duration: 100
+        }
+        }
+        function moveTo( xx,  yy)
+        {
+            divider.anim_x_value = xx
+            divider.anim_y_value = yy
+            animation_move.restart()
         }
 
 visible : false
@@ -604,11 +632,15 @@ timeControll.setScalePointerPos((x  -20 + scroll.flickableItem.contentX)* main22
                         }
                          ////console.log("122  item_col.width=" + item_col.width)
                     }
+
                     Column {
                           id: columns
                           width:  timeControll.getMaxTrackTime()
                           property Repeater globalRep
                           spacing: 2
+                          Component.onCompleted: {
+                          main222.p_columns = columns
+                          }
                           Repeater {
                           id: rep_columns
                           model: timeControll.getTracksNumber()
@@ -664,41 +696,33 @@ timeControll.setScalePointerPos((x  -20 + scroll.flickableItem.contentX)* main22
                                      //  height: 220
                                        Repeater {
                                            id: repka
-
-
-
+                                           Component.onCompleted: {
+                                               trackbar.globalRep = repka
+                                           }
                                            property bool isDrag : false
                                            model:  timeControll.getTrackSize(trackbar.mIndex)//     bar_track.mIndex)
     function updateModel()      {
-        model = 0
-
-            //timeControll.update();
-        model =  timeControll.getTrackSize(main222.selectedBlockCol)
+       model = 0
+        model =  timeControll.getTrackSize(bar_track.mIndex)
          item_col.width = (timeControll.getMaxTrackTime()) / main222.scaling + 31
         if (main222.needToLightSelected && main222.selectedBlockIndex !== -1 )
         {
             rep_columns.itemAt(main222.selectedBlockCol).setColorize(main222.selectedBlockIndex,"#8000FF00")
-            // //console.log("selectedBlockIndex=" + main222.selectedBlockIndex)
-       // main222.p_scale_pointer.x =rep_columns.itemAt(main222.selectedBlockCol).getBlockX(main222.selectedBlockIndex)
-       //main222.mX//
 
         }
-        //columns.width =  timeControll.getMaxTrackTime()
-       // item_col.width = timeControll.getMaxTrackTime()
-        //console.log("6666666666666666666 trackbar.mIndex = " + trackbar.mIndex)
         timeControll.calcPointedBlocks();
-        console.log("77777777777777777 " + trackbar.mIndex)
         timeControll.setIsProjectChanged(true)
     }
                                            delegate:
                                            ContentBlock.Block{
                                                id: cool
                                                globalRep : repka
+                                               p_trackbar : trackbar
                                                height:  100
                                                mIndex: index
                                                 colIndex:  bar_track.mIndex
                                    width:  timeControll.getBlockTime(colIndex, mIndex) / main222.scaling
-                                    p_main222: main222
+                                    //p_main222: main222
 
                                                title: timeControll.getBlockKey(colIndex,mIndex)
 

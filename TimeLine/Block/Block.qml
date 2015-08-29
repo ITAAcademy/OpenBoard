@@ -16,13 +16,150 @@ Rectangle{
     property string colorKey : "green"
     property ColorOverlay p_color_overlay
     property bool double_click : false
+    property Item p_trackbar
+
+
+    RectangularGlow {
+       id: shadow
+       height: root.height
+       width: height
+      /* x:root.border.width*1.2
+       y:x*/
+       //anchors.right: root.right
+       x:root.width -height -  4*root.border.width
+        y: x
+       visible: false
+       color: "black"
+       opacity: 0.5
+      // scale: 0.8
+       z: 1
+       glowRadius: 5
+       spread: 0.00002
+       // cornerRadius: shadow.radius + glowRadius
+    }
+   /* RectangularGlow {
+          id: effect
+          anchors.fill: shadow
+          glowRadius: 10
+          spread: 0.00002
+          color: "black"
+         // opacity: 0.5
+          cornerRadius: shadow.radius + glowRadius
+      }*/
+
+    Rectangle
+    {
+        id: background_rec
+        z: 2
+        property int  border_width : 5
+    // border { color: "white" ; width: 2 }
+     height: root.height// - 2*background_rec.border.width
+     width: root.width
+     color: "green"
+
+    Image {
+        id: background
+//         x:root.border.width + 1
+//         y:x
+         //anchors.margins: background_rec.border.width
+
+         height: root.height// - 2*background_rec.border.width
+         width: height
+       fillMode: Image.TileHorizontally
+       source: "qrc:/iphone_toolbar_icons/black_tree.png"
+       visible: true
+
+       Image {
+           id: icon
+           source:  "image://imageProvider/" + root.colIndex + "+" + root.mIndex + "+ " + (Math.round(Math.random(9999999) * 10000));
+           height: parent.height//root.height - root.border.width*2 - 1
+           width: height
+          // x:root.border.width + 1
+           //y:root.border.width + 1
+           visible:  true
+          // anchors.fill: parent
+
+           ColorOverlay {
+               id: icon_coloroverlay
+                  anchors.fill: icon
+                  source: icon
+                  color: "#00000000"
+                  z: 1
+                  enabled: false
+              }
+           BorderImage {
+               width: root.height; height: width
+               border { left: background_rec.border_width; top: background_rec.border_width;
+                   right: background_rec.border_width; bottom: background_rec.border_width }
+               horizontalTileMode: BorderImage.Stretch
+               verticalTileMode: BorderImage.Stretch
+               source: "qrc:/рамка.png"
+               z: 2
+           }
+           Text {
+               id: name
+               anchors.margins: 3
+               anchors.centerIn: parent
+               text: root.title
+               font.pixelSize: 1
+               color: "white"
+               style: Text.Outline;
+               styleColor: "black"
+               onTextChanged: {
+                   name.font.pixelSize = (root.width*1.2)/text.length;
+                   if(name.font.pixelSize > root.height*0.7)
+                       name.font.pixelSize = root.height*0.7
+
+               }
+               z: 3
+           }
+
+           //z:1
+       }
+
+    }
+    onScaleChanged: {
+        shadow.height  = root.height*scale
+    }
+    NumberAnimation on scale {
+        id:animation_scale_small;
+         property int anim_time : 200
+        running: false;
+        to: 0.8;
+        duration: anim_time
+    }
+    NumberAnimation on x {
+        id: animation_scale_x;
+        running: false;
+        to: root.border.width  - width * 0.05;
+        duration: animation_scale_small.duration
+    }
+    NumberAnimation on y {
+        id: animation_scale_y;
+        running: false;
+        to: root.border.width  - height * 0.05;
+        duration: animation_scale_x.duration
+    }
+    NumberAnimation on scale {
+        id:animation_scale_normal;
+        running: false;
+        to: 1;
+        duration: animation_scale_y.duration
+    }
+    }
+
+
 
 
     radius: 3
     clip: true
     color: "transparent"
     anchors.leftMargin: 15
-    border { color: "white" ; width: 2 }
+
+
+
+
+
 
     function updateTrackWhereIsBlock()
     {
@@ -43,7 +180,7 @@ Rectangle{
     }
 
 
-     property Item  p_main222
+    // property Item  p_main222
 
 
  //   property int time_scale_valueRecX
@@ -83,7 +220,7 @@ z: 0
     Drag.active: mouseArea.drag.active
     Drag.hotSpot.x: 10
     Drag.hotSpot.y: 10
-onYChanged: y=0;
+//onYChanged: y=0;
 
     MouseArea {
         id: mouseArea
@@ -134,8 +271,9 @@ onYChanged: y=0;
 
        onPressed: {
 
-           divider.y = (root.height + columns.spacing) * root.colIndex
+           divider.y = (root.height + main222.p_columns.spacing) * root.colIndex
                    + time_scale.height - scroll.flickableItem.contentY
+          divider.x =  root.x + root.width - divider.width/2 + tollbar.width
 
            divider.pos_to_append.x = root.colIndex
            divider.pos_to_append.y =  root.mIndex
@@ -200,7 +338,16 @@ onYChanged: y=0;
             }
             else
             {
-            globalRep.isDrag = true;
+            globalRep.isDrag = true;                
+                cursorShape = Qt.OpenHandCursor
+                animation_scale_small.running = true
+                animation_scale_x.running = true
+                animation_scale_y.running = true
+                shadow.visible = true
+                //root.border.color  = "transparent"
+
+
+
 
 
               /*   mouseY + root.colIndex * (root.height + 2)
@@ -211,41 +358,61 @@ onYChanged: y=0;
                 main222.clicked_blockX = root.x
                 main222.clicked_blockY = root.y
                 root.z += 200
+                 root.globalRep.z += 200
+                //main222.p_trackbar_which_block_dragged = root.p_trackbar
+                //globalRep.z += 200
+
             }
             }
-            // //console.log("   root.z= " +   root.z)
         }
         }
         onReleased: {
-
+//root.border.color = "white"
             main222.p_scale_pointer.x = mouseX + root.x - scroll.flickableItem.contentX + main222.p_scale_pointer.width //1234
-
+            animation_scale_normal.running = true
 
 
             if (globalRep.isDrag)
             {
                        root.z -= 200
+                //main222.p_trackbar_which_block_dragged
+                root.globalRep.z -= 200
               divider.visible = false
               //  if (main222.dropEnteredBlockIndex !== -1)
                 {
                    if (main222.dropEntered)
                     {
-                      // root.p_main222.maIsPressed = 0
                         //timeControll.reverseBlocks(root.colIndex,root.mIndex,main222.clicked_blockId)
-        if (main222.selectedBlockIndex ===  divider.pos_to_append.y - 1 && !main222.left_rigth_entered)
+       /* if (main222.selectedBlockIndex ===  divider.pos_to_append.y - 1 && !main222.left_rigth_entered)
           console.log("main222.selectedBlockIndex ===  divider.pos_to_append.y - 1 && main222.left_rigth_entered)")
+*/
 
-
-    else
+   // else
         {
+                          if (main222.selectedBlockIndex < divider.pos_to_append.y)
+                               divider.pos_to_append.y -=1 //!!!!!!!!!!*/
             if (main222.selectedBlockIndex > divider.pos_to_append.y  && main222.left_rigth_entered)
                 divider.pos_to_append.y += 1
-            timeControll.moveBlockFromTo(main222.selectedBlockCol,
-                                         main222.selectedBlockIndex,  divider.pos_to_append.y)
-           console.log("moveBlock From " + main222.selectedBlockIndex + " To " +
-                      divider.pos_to_append.y );
-            main222.selectedBlockCol = root.colIndex
-            main222.selectedBlockIndex =  divider.pos_to_append.y
+            if (main222.selectedBlockCol == main222.dropEnteredTrackIndex)
+            {
+                  timeControll.moveBlockFromTo(main222.selectedBlockCol,
+                                         main222.selectedBlockIndex,  divider.pos_to_append.y);
+                console.log("11111111111111111111111111111111")
+                main222.selectedBlockIndex =  divider.pos_to_append.y
+               // frama.p_main222.selectedBlockCol = root.colIndex
+            }
+            else
+            {
+                //divider.pos_to_append.y +=2
+                timeControll.moveBlockFromTo(main222.selectedBlockCol,
+                  main222.selectedBlockIndex,main222.dropEnteredTrackIndex,  divider.pos_to_append.y);
+                main222.dropEnteredBlockItemGlobalRep.updateModel();
+                console.log("22222222222222222222222222222222222222")
+                 main222.selectedBlockIndex =  divider.pos_to_append.y //333
+            }
+            frama.p_main222.selectedBlockCol = main222.dropEnteredTrackIndex
+
+
             timeControll.setSelectedBlockPoint(main222.selectedBlockCol,main222.selectedBlockIndex)
         }
             }
@@ -266,6 +433,10 @@ onYChanged: y=0;
 
              drop.visible = true;
              drop.enabled = true;
+            shadow.visible = false
+
+             cursorShape = Qt.ArrowCursor;
+
 
         }
         onEntered: {
@@ -273,58 +444,11 @@ onYChanged: y=0;
         }
     }
 
-    Image {
-         parent : root
-        id: background
-       anchors.fill: parent
-       anchors.margins: 3
-
-       fillMode: Image.TileHorizontally
-       source: "qrc:/iphone_toolbar_icons/black_tree.png"
-       visible: true
-
-    }
-
-    Image {
-        id: icon
-
-        //anchors.fill: parent
-      //  source: "qrc:/Block/file.png"
-        source:  "image://imageProvider/" + root.colIndex + "+" + root.mIndex + "+ " + (Math.round(Math.random(9999999) * 10000));
-        height: root.height - root.border.width*2 - 1
-        width: height
-        x:root.border.width + 1
-        y:root.border.width + 1
-        visible:  true
 
 
 
-            // timeControll.getBlockIcon(colIndex,mIndex)
-    }
 
-    ColorOverlay {
-        id: icon_coloroverlay
-           anchors.fill: icon
-           source: icon
-           color: "#00000000"
-       }
 
-    Text {
-        id: name
-        anchors.margins: 3
-        anchors.centerIn: parent
-        text: root.title
-        font.pixelSize: 1
-        color: "white"
-        style: Text.Outline;
-        styleColor: "black"
-        onTextChanged: {
-            name.font.pixelSize = (root.width*1.2)/text.length;
-            if(name.font.pixelSize > root.height*0.7)
-                name.font.pixelSize = root.height*0.7
-
-        }
-    }
     DropArea {
         id: drop
         enabled : true
@@ -332,6 +456,8 @@ onYChanged: y=0;
          anchors.fill: parent
     onEntered: {
          main222.dropEnteredBlockIndex = root.mIndex
+        main222.dropEnteredTrackIndex = root.colIndex
+        main222.dropEnteredBlockItemGlobalRep = root.globalRep
         main222.left_rigth_entered = false
         main222.dropEntered = 1
         var temp = main222.selectedBlock.x - root.x - root.width/2
@@ -346,31 +472,43 @@ onYChanged: y=0;
     }
     onExited: {
         if (root.mIndex === 1)
-        main222.dropEnteredBlockIndex = main222.selectedBlockIndex
+            main222.dropEnteredBlockIndex = main222.selectedBlockIndex
         icon_coloroverlay.color = "#00000000"
+
             }
     onPositionChanged: {
           {
             divider.visible = true
             var temp = main222.selectedBlock.x - root.x - root.width/2
+            var move_y_pos = (root.height + main222.p_columns.spacing) * root.colIndex
+                    + time_scale.height - scroll.flickableItem.contentY
+
               if (temp > 0  )
               {
                 main222.block_zayshow_sprava = true
-                    divider.x = root.x + root.width - divider.width/2 + tollbar.width
+                    //divider.x = root.x + root.width - divider.width/2 + tollbar.width
+                 /* divider.y = root.height + columns.spacing) * root.colIndex
+                          + time_scale.height - scroll.flickableItem.contentY*/
+
+
+                 divider.moveTo(root.x + root.width - divider.width/2 + tollbar.width,
+                           move_y_pos )
+
                   main222.left_rigth_entered = true
                   divider.pos_to_append.y = root.mIndex
                   console.log("onPositionChanged: right " + divider.pos_to_append.y)
               }
               else
               {
-                  if (temp <= 0   )
-                  {
                       main222.block_zayshow_sprava = false
-                  divider.x = root.x - divider.width/2 + tollbar.width
+                  //divider.x = root.x - divider.width/2 + tollbar.width
+                     divider.moveTo(root.x - divider.width/2 + tollbar.width,
+                               move_y_pos )
+
                 main222.left_rigth_entered = false
                 divider.pos_to_append.y = root.mIndex
                 console.log("onPositionChanged: left " + divider.pos_to_append.y)
-                  }
+
               }
           }
     }

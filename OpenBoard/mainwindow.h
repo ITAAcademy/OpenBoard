@@ -132,9 +132,12 @@ private slots:
     void on_slider_speedTB_sliderReleased();
     void on_block_text_buttons_toolbar(bool tt);
     void on_blockRightToolbar_exceptPlayPauseStop(bool tt);
+    void enablingBoardFontColor(QPoint);
+    void setEnabledBoardFontColor(bool);
 
 
 private:
+    bool may_to_enable_BoardFontColor;
       bool firstNewProjectCreating = true;
     bool isRecordToFile = false;
     bool changeone;

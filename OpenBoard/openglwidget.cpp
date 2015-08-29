@@ -1520,23 +1520,7 @@ bool OGLWidget::isRecord() const
 
 
 
-void OGLWidget::clearBuffer()
-{
-    /* //qDebug() << "CLEAR_TEXT_BUFFER";
-     colors.clear();
-     ColorMarker startMarker;
-     startMarker.startIndex=0;
-     startMarker.value=getMainFillColor();
-     colors.append(startMarker);
-    cross.clear();
-    cross.append(0); // для визова зачеркування якщо стрічка зацінчується
-    stringList.clear();
-    stringList.append("");
-    cursorIndex = 0;
-    wrapShift;
-    deleteWT = 0;
-    crossWithAnimation = false;*/
-}
+
 
 void OGLWidget::drawFigure(int x, int y, int x2, int y2, /*OGLWidget::*/FigureType type, bool fill , QColor col , float size )
 {
@@ -1854,9 +1838,11 @@ void OGLWidget::fillText( QString str,QColor color,QFont textFont, int x, int y,
    // glDisable(GL_DEPTH_TEST);
   //  //qDebug() << "SHOW_Z " << z;
 
-
+//fillText("eeeeeeeeeeeeeeeeeeee",QColor("red"), QFont("Helvetica",40), 10 , 10, 0,(float) 100);
     //renderText(x, y, str,textFont);
-    myRenderText(this,x,y,z,str,color,textFont, 1);
+
+    myRenderText(this,x,y,z,str,color,textFont, scale);
+
 //=======
     qglColor(Qt::white);
 //>>>>>>> romaFix_lastGood
