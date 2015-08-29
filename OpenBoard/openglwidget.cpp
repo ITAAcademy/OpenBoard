@@ -918,8 +918,8 @@ void OGLWidget::paintGL()
     glMatrixMode(GL_PROJECTION); // устанавливаем матрицу
      //  glShadeModel(GL_SMOOTH);
        // Сглаживание точек
-      // glEnable(GL_POINT_SMOOTH);
-      // glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
+       glEnable(GL_POINT_SMOOTH);
+       glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
        // Сглаживание линий
        //glEnable(GL_LINE_SMOOTH);
        //glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);

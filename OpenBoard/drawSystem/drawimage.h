@@ -9,7 +9,7 @@ class DrawImageElm  :public DrawElement
     GLuint textureIndex = -1;
     int failedLoad = 10;
     bool bGIF = false;
-    QMovie *gif = NULL;
+    QMovie *gif = new QMovie();
 public:
     explicit DrawImageElm( OGLWidget *drawWidget, QObject *parent = 0);
     ~DrawImageElm();

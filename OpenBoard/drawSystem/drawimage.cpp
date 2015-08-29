@@ -61,17 +61,33 @@ void DrawImageElm::draw()
 
 bool DrawImageElm::load_add(QDataStream &stream)
 {
+    stream >> bGIF >> lastPath;
+qDebug() << "qwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww" + lastPath;
+    if(bGIF)
+    {
 
+        gif = new QMovie(lastPath);
+        if(!gif->isValid())
+            bGIF = false;
+    }
+    qDebug() << "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww" + bGIF;
 }
 
 bool DrawImageElm::save_add(QDataStream &stream)
 {
+    stream << bGIF << lastPath;
+    qDebug() << "qwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww" + lastPath;
+    if(bGIF)
+    {
+        save_image(stream, lastPath);
+    }
 
 }
 
 void DrawImageElm::setDrawImage(QImage img)
 {
     image = img;
+//    new QMovie()
     icon = img;
     //image.save("12334243534534534.png");
     if(pDrawWidget != NULL && pDrawWidget->isVisible())

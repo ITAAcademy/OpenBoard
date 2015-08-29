@@ -425,7 +425,7 @@ bool DrawElement::save_image(QDataStream &stream, QImage img)
     QByteArray ba;
     QBuffer buffer(&ba); // QBuffer inherits QIODevice
     buffer.open(QIODevice::WriteOnly);
-    img.save(&buffer, "PNG");
+    img.save(&buffer);
 
     buffer.close();
     stream << ba.length() << ba;
@@ -447,6 +447,25 @@ if (filePath.isEmpty())return -1;
     //qDebug() <<"image saved:"<<img.byteCount();
 }
 
+QMovie *DrawElement::load_Movie(QDataStream &stream)
+{
+    int w, h, format;
+    stream >> w >> h >> format;
+    QByteArray ba;
+    int baLength=0;
+    stream >> baLength;
+    stream >> ba;
+    QMovie *mov;
+    QBuffer buffer(&ba); // QBuffer inherits QIODevice
+    buffer.open(QIODevice::ReadOnly);
+    mov = new QMovie(&buffer, ba);
+//img_temp.load(&buffer,"PNG");
+
+buffer.close();
+    //stream.readRawData((char*)img_temp.bits(), img_temp.byteCount());
+    return mov;
+}
+
 QImage DrawElement::load_image(QDataStream &stream)
 {
     int w, h, format;
@@ -464,6 +483,7 @@ buffer.close();
     //stream.readRawData((char*)img_temp.bits(), img_temp.byteCount());
     return img_temp;
 }
+
 
 int DrawElement::getTickTime() const
 {

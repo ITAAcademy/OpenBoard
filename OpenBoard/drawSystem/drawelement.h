@@ -105,12 +105,13 @@ public:
 
     void copy(DrawElement *elm);
     setFBOWrapper(FBOWrapper wrapper);
-    bool save_image(QDataStream &stream, QString filePath,QImage::Format format);
+    bool save_image(QDataStream &stream, QString filePath,QImage::Format format = QImage::Format_ARGB32);
 signals:
 
 public slots:
 
 
+    QMovie *load_Movie(QDataStream &stream);
 protected slots:
     void pause();
     void stop();
