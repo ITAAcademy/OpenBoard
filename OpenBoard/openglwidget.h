@@ -306,7 +306,6 @@ private slots:
 
 private:
 
-    int frameRate = 25;
   //  QMap <void* , QList<QByteArray>>  audioList;
     QList<QByteArray>  audioList;
 
