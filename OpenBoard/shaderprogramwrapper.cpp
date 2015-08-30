@@ -3,7 +3,7 @@
 ShaderProgramWrapper::ShaderProgramWrapper(OGLWidget *pWidget)
 {
     parentWidget=pWidget;
-    glf=parentWidget->context()->functions();
+    glf=parentWidget->getOglFuncs();
 }
 
 ShaderProgramWrapper::ShaderProgramWrapper()

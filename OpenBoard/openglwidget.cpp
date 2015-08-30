@@ -1,6 +1,6 @@
 
 #include "openglwidget.h"
-#include <qglfunctions.h>
+//#include <qglfunctions.h>
 #include "drawSystem/drawsystem.h"
 #include "../TimeLine/listcontroll.h"
 #define GLWIDGET_SIZE       640,480
@@ -16,6 +16,8 @@ canvas->setProperty("scroll", k);
 */
 
 GLuint OGLWidget::loadTexture(QImage img,bool doubleSize){
+    int nextIndex = 0;
+        int index = 0;
 if (doubleSize)img = twiceImageSizeWithouScaling(img);
     if(img.isNull()) // QCoreApplication::applicationDirPath()+"/star.png"
     {
@@ -45,12 +47,40 @@ if (doubleSize)img = twiceImageSizeWithouScaling(img);
        glGenTextures(1, &texture); // Obtain an id for the texture
 
        glBindTexture(GL_TEXTURE_2D, texture); // Set as the current texture
- //qDebug(" after  glBindTexture(GL_TEXTURE_2D, texture);");
+       // glBindBuffer(GL_PIXEL_UNPACK_BUFFER_ARB, pixelBufferIDs[index]);
+
+       //qDebug(" after  glBindTexture(GL_TEXTURE_2D, texture);");
        //glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
       // glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+//int DATA_SIZE =  GL_formatted_image.width() *  GL_formatted_image.height() * 4 ;
+
+glTexImage2D(GL_TEXTURE_2D, 0, 4, GL_formatted_image.width(), GL_formatted_image.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, GL_formatted_image.bits());
+     //   glTexImage2D(GL_TEXTURE_2D, 0, 4, GL_formatted_image.width(), GL_formatted_image.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
 
 
-       glTexImage2D(GL_TEXTURE_2D, 0, 4, GL_formatted_image.width(), GL_formatted_image.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, GL_formatted_image.bits());
+        //glBindBuffer(GL_PIXEL_UNPACK_BUFFER_ARB, pixelBufferIDs[nextIndex]);
+
+        // map the buffer object into client's memory
+                      // Note that glMapBufferARB() causes sync issue.
+                      // If GPU is working with this buffer, glMapBufferARB() will wait(stall)
+                      // for GPU to finish its job. To avoid waiting (stall), you can call
+                      // first glBufferDataARB() with NULL pointer before glMapBufferARB().
+                      // If you do that, the previous data in PBO will be discarded and
+                      // glMapBufferARB() returns a new allocated pointer immediately
+                      // even if GPU is still working with the previous data.
+               /*glBufferData(GL_PIXEL_UNPACK_BUFFER_ARB, DATA_SIZE, 0, GL_STREAM_DRAW_ARB);
+                      GLubyte* ptr = (GLubyte*)glMapBuffer(GL_PIXEL_UNPACK_BUFFER_ARB, GL_WRITE_ONLY_ARB);
+
+                      if(ptr)
+                              {
+                                  // update data directly on the mapped buffer
+                                  //updatePixels(ptr, DATA_SIZE);
+                                  memcpy(ptr,GL_formatted_image.bits(),DATA_SIZE);
+                                  glUnmapBuffer(GL_PIXEL_UNPACK_BUFFER_ARB); // release pointer to mapping buffer
+                              }
+                      glBindBuffer(GL_PIXEL_UNPACK_BUFFER_ARB, 0);*/
+
+
 
        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
@@ -337,6 +367,11 @@ void OGLWidget::setEditingRectangle(const RectangleEditor &value)
     editingRectangle = value;
 }
 
+void OGLWidget::initPBO()
+{
+    glGenBuffers(2, pixelBufferIDs);
+}
+
 void OGLWidget::initShaderPrograms()
 {
     mainShader = new ShaderProgramWrapper(this);
@@ -370,6 +405,7 @@ void OGLWidget::setFrameRate(int fps)
 OGLWidget::OGLWidget(QWidget *parent) :
     QGLWidget(parent)
 {
+    qDebug() <<  "OGL WIDGET COnstructor start";
     setFixedSize(GLWIDGET_SIZE);
      wax=width(); way=height(); // начальный размер окна
     init = false;
@@ -398,7 +434,7 @@ OGLWidget::OGLWidget(QWidget *parent) :
     editingRectangle.leftCornerSize=10;
     bRecord = false;
     this->setWindowFlags(Qt::CustomizeWindowHint | Qt::Dialog | Qt::FramelessWindowHint | Qt::WindowTitleHint);
-
+qDebug() <<  "OGL WIDGET MID";
     //this->setResizeMode(QQuickWidget::SizeRootObjectToView ); //TODO
     /*
      * init
@@ -435,12 +471,14 @@ OGLWidget::OGLWidget(QWidget *parent) :
 
     //OPENGL
    //setFormat(QGLFormat(QGL::SampleBuffers | QGL::DoubleBuffer | QGL::DepthBuffer)); // Двойная буферизация
-     QGLFormat format;
+
+   /*  QGLFormat format;
      format.setProfile(QGLFormat::CompatibilityProfile);
      format.setVersion(3,0);
      format.setDoubleBuffer(true);
-     setFormat(format);
-   glDepthFunc(GL_LEQUAL); // Буфер глубины
+     setFormat(format); */
+
+   //glDepthFunc(GL_LEQUAL); // Буфер глубины
    QTimer *timer = new QTimer(this);
    connect(timer, SIGNAL(timeout()), this, SLOT(updateWindow()));
    timer->start(0);
@@ -461,10 +499,15 @@ OGLWidget::OGLWidget(QWidget *parent) :
  // timeLine->loadCurrentTextInTheFirstBlockWhenInit();
 */
    getTimeLine()->setIsProjectChanged(false);
+   oglFuncs=this;
+   qDebug() <<  "OGL WIDGET COnstructor end";
 }
 void OGLWidget::bindBuffer(GLuint buffer){
     glBindFramebuffer(GL_FRAMEBUFFER,buffer);
 }
+ QOpenGLFunctions_3_0* OGLWidget::getOglFuncs(){
+     return oglFuncs;
+ }
 
 OGLWidget::~OGLWidget()
 {
@@ -487,12 +530,16 @@ OGLWidget::~OGLWidget()
 
 void OGLWidget::resizeGL(int nWidth, int nHeight)
 {
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glViewport(0, 0, (GLint)nWidth, (GLint)nHeight);
+    qDebug()<<"resize";
+    if(isInit()){
+      //  makeCurrent();
+    //glMatrixMode(GL_PROJECTION);
+   // glLoadIdentity();
+    //glViewport(0, 0, (GLint)nWidth, (GLint)nHeight);
+    }
     wax=nWidth;
     way=nHeight;
-    // //qDebug() << "CALL RESIZE";
+  qDebug() << "end resize";
 }
 void OGLWidget::paintBufferOnScreen( FBOWrapper buffer,int x, int y, int width, int height, int z){
      if (buffer.errorStatus==-1)qDebug() << "BAD BUFFER";
@@ -838,7 +885,7 @@ void OGLWidget::initializeGL()
 {
      qDebug() << "initializeGL";
 
-    initializeGLFunctions();
+    initializeOpenGLFunctions();
     makeCurrent();
 glEnable(GL_DEPTH_TEST);
     qglClearColor(Qt::black); // Черный цвет фона
@@ -857,8 +904,9 @@ glEnable(GL_DEPTH_TEST);
     //loadTextureFromFile(":/ThirdPart/images/brush.png");
     //initFrameBuffer(); // Create our frame buffer object
     mainFBO=initFboWrapper(false);
+    initPBO();
      //initShader();
-
+glViewport(0, 0, (GLint)wax, (GLint)way);
     setAutoBufferSwap(false);
     qApp->processEvents(QEventLoop::AllEvents, 1000);
     qDebug() << "A";

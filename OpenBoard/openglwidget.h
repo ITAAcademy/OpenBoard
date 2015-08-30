@@ -21,7 +21,7 @@
 #include "../Brush/brushcontroll.h"
 #include <QGLShader>
 #include "shaderprogramwrapper.h"
-
+#include <QOpenGLFunctions_3_0>
 #include <QMap>
 #include <QList>
 
@@ -94,7 +94,7 @@ struct FBOWrapper{
     GLuint bindedTexture;
     int errorStatus= -1;
 };
-class OGLWidget : public QGLWidget, protected QGLFunctions
+class OGLWidget : public QGLWidget, protected QOpenGLFunctions_3_0
 {
     Q_OBJECT
    // Q_PROPERTY(QString  drawText READ getDrawText WRITE setDrawText NOTIFY drawTextChanged)
@@ -102,6 +102,7 @@ class OGLWidget : public QGLWidget, protected QGLFunctions
 signals:
         void stopShowLastDrawingSignal();
 public:
+        void initPBO();
         void initShaderPrograms();
         QVector<ShaderProgramWrapper> getShaderPrograms();
         bool isShaderSupported();
@@ -250,6 +251,7 @@ public:
     void bindBuffer(GLuint buffer);
 
     QImage twiceImageSizeWithouScaling(QImage img);
+    QOpenGLFunctions_3_0 *getOglFuncs();
 public slots:
    // void clearFrameBuffer();
         void clearFrameBuffer(FBOWrapper fboWrapper);
@@ -309,7 +311,10 @@ private slots:
 private:
 //enum shaderEnum {ALPHA_SHADER=0};
   //  QMap <void* , QList<QByteArray>>  audioList;
+    GLuint pixelBufferIDs[2];
+
     QList<QByteArray>  audioList;
+    QOpenGLFunctions_3_0 *oglFuncs;
 
      QVector<ShaderProgramWrapper> shaderPrograms;
 
@@ -396,7 +401,7 @@ private:
     bool busy = false;
     bool isClose = false;
     bool curentList = false;
-    bool init;
+    bool init = false;
 
 
 
