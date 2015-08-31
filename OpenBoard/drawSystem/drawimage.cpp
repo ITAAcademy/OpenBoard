@@ -54,6 +54,7 @@ void DrawImageElm::draw()
         pDrawWidget->drawQImage(0, 0, gif->currentImage().scaled(pDrawWidget->getWax(), pDrawWidget->getWay()));
     }
     else
+        if (keyCouter==0)pDrawWidget->clearFrameBuffer(fboWrapper);
         pDrawWidget->drawTexture(0, 0, pDrawWidget->getWax(), pDrawWidget->getWay(), textureIndex, 0, 1 , 1, z);
      keyCouter++;
 

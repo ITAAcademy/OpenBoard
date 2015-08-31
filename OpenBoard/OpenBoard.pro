@@ -34,7 +34,8 @@ SOURCES += main.cpp\
     encoder/ffmpeghelp.cpp \
     drawSystem/drawvideo.cpp \
     encoder/audiodecoder.cpp \
-    shaderprogramwrapper.cpp
+    shaderprogramwrapper.cpp \
+    shadereffect.cpp
     drawSystem/drawbrush.cpp
 
 
@@ -68,7 +69,8 @@ HEADERS  += mainwindow.h \
     encoder/ffmpeghelp.h \
     drawSystem/drawvideo.h \
     encoder/audiodecoder.h \
-    shaderprogramwrapper.h
+    shaderprogramwrapper.h \
+    shadereffect.h
     drawSystem/drawbrush.h
 
 
@@ -128,4 +130,6 @@ DISTFILES += \
     frag_alpha.fsh \
     frag_alpha.frag \
     alpha.frag \
-    alpha.vert
+    alpha.vert \
+    spiral.frag \
+    spiral.vert

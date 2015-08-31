@@ -6,5 +6,7 @@
     <qresource prefix="/dynamic">
         <file>openGL/shaders/alpha.frag</file>
         <file>openGL/shaders/alpha.vert</file>
+        <file>openGL/shaders/spiral.vert</file>
+        <file>openGL/shaders/spiral.frag</file>
     </qresource>
 </RCC>

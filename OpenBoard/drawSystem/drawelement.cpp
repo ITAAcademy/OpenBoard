@@ -18,6 +18,7 @@ bool DrawElement::setDrawWidget(OGLWidget *value)
         return false;
     }
 
+
     if(pDrawWidget != NULL)
     {
         disconnect(pDrawWidget, SIGNAL(startSignal()), this, SLOT(start()));
@@ -25,11 +26,24 @@ bool DrawElement::setDrawWidget(OGLWidget *value)
         disconnect(pDrawWidget, SIGNAL(pauseSignal()), this, SLOT(pause()));
     }
     pDrawWidget = value;
+    qDebug() << "before alpha effect created";
+    qDebug() << "pDrawWidget->getShaderPrograms().length:"<<pDrawWidget->getShaderPrograms().length();
+
+
+
     if(fboWrapper.errorStatus != 0)
         setFBOWrapper(pDrawWidget->initFboWrapper());//TODO
     connect(pDrawWidget, SIGNAL(startSignal()), this, SLOT(start()));
     connect(pDrawWidget, SIGNAL(stopSignal()), this, SLOT(stop()));
     connect(pDrawWidget, SIGNAL(pauseSignal()), this, SLOT(pause()));
+
+    ShaderEffect alphaEffect(pDrawWidget->getShaderPrograms()[OGLWidget::ALPHA_SHADER]);
+    ShaderEffect spiralEffect(pDrawWidget->getShaderPrograms()[OGLWidget::SPIRAL_SHADER]);
+
+    qDebug() << "alpha effect created";
+    effects.push_back(alphaEffect); //ADD DEFAULT EFFECT
+    effects.push_back(spiralEffect); //ADD DEFAULT EFFECT
+
     return true;
 }
 
@@ -102,19 +116,36 @@ void DrawElement::paint()
     if(fboWrapper.errorStatus == 0)
     {
         pDrawWidget->bindBuffer(fboWrapper.frameBuffer);
-        draw();
+        if (effects.isEmpty())
+        {
+        draw();//Draw original image one time without any effects
+        qDebug() << "EFFECTS EMPTY !!!";
+        }
+        else
+        {
+
+        for (int i=0;i<effects.length();i++)
+            {
+            qDebug() << "Shader program ("<<i<<"):"<<effects[i].getShaderWrapper()->getShaderProgram();
+                pDrawWidget->getOglFuncs()->glUseProgram(effects[i].getShaderWrapper()->getShaderProgram());
+                float keyFrame = (float)(pDrawWidget->getTimeLine()->getPlayTime()-startDrawTime)/lifeTime;
+               ShaderEffect::setUniformAnimationKey(pDrawWidget,effects[i],keyFrame);
+                draw();
+            }
+        }
+        pDrawWidget->getOglFuncs()->glUseProgram(0);
         pDrawWidget->bindBuffer(0);
 
-
-        int keyUnifrom = pDrawWidget->context()->functions()->glGetUniformLocation(
+       /* int keyUnifrom = pDrawWidget->context()->functions()->glGetUniformLocation(
                     pDrawWidget->getShaderPrograms()[0].getShaderProgram(),"animationKey");
         float keyFrame = (float)(pDrawWidget->getTimeLine()->getPlayTime()-startDrawTime)/lifeTime;
+
         qDebug() << "KEY FRAME:"<<keyFrame;
 
 
         pDrawWidget->context()->functions()->glUseProgram( pDrawWidget->getShaderPrograms()[0].getShaderProgram());
         pDrawWidget->context()->functions()->glUniform1f(keyUnifrom,keyFrame);
-
+*/
         if(aspectRatio)
             pDrawWidget->paintBufferOnScreen(fboWrapper,x, y, width, width, z);
         else

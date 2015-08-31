@@ -102,10 +102,11 @@ class OGLWidget : public QGLWidget, protected QOpenGLFunctions_3_0
 signals:
         void stopShowLastDrawingSignal();
 public:
+        enum shaderEnum {ALPHA_SHADER=0,SPIRAL_SHADER=1};
         void processMouse();
         void initPBO();
         void initShaderPrograms();
-        QVector<ShaderProgramWrapper> getShaderPrograms();
+        QVector<ShaderProgramWrapper*> getShaderPrograms();
         bool isShaderSupported();
         void setShaderSupported(bool value);
     BrushManager m_manager;
@@ -310,14 +311,14 @@ private slots:
     void storeMousePos();
 
 private:
-//enum shaderEnum {ALPHA_SHADER=0};
+
   //  QMap <void* , QList<QByteArray>>  audioList;
     GLuint pixelBufferIDs[2];
 
     QList<QByteArray>  audioList;
     QOpenGLFunctions_3_0 *oglFuncs;
 
-     QVector<ShaderProgramWrapper> shaderPrograms;
+     QVector<ShaderProgramWrapper*> shaderPrograms;
 
     bool shaderSupported = true;
     ShaderProgramWrapper *mainShader;//Color,alpha,blur;

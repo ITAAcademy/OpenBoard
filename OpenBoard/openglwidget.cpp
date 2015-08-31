@@ -8,6 +8,8 @@
 #define MAIN_VERTEX_SHADER_PATH ":/staticShaders/openGL/shaders/vertexShader.glsl"
 #define ALPHA_FRAGMENT_SHADER_PATH ":/dynamic/openGL/shaders/alpha.frag"
 #define ALPHA_VERTEX_SHADER_PATH ":/dynamic/openGL/shaders/alpha.vert"
+#define SPIRAL_FRAGMENT_SHADER_PATH ":/dynamic/openGL/shaders/spiral.frag"
+#define SPIRAL_VERTEX_SHADER_PATH ":/dynamic/openGL/shaders/spiral.vert"
 /*
  *scroll
  *
@@ -439,12 +441,16 @@ void OGLWidget::initShaderPrograms()
     mainShader = new ShaderProgramWrapper(this);
     if (mainShader->initShader(MAIN_FRAGMENT_SHADER_PATH,MAIN_VERTEX_SHADER_PATH)==0)shaderSupported=true;
 
-    ShaderProgramWrapper alphaShader(this);
-    if(alphaShader.initShader(ALPHA_FRAGMENT_SHADER_PATH,ALPHA_VERTEX_SHADER_PATH)!=0)shaderSupported=true;
+    ShaderProgramWrapper *alphaShader = new ShaderProgramWrapper(this);
+    if(alphaShader->initShader(ALPHA_FRAGMENT_SHADER_PATH,ALPHA_VERTEX_SHADER_PATH)!=0)shaderSupported=true;
+    shaderPrograms.push_back(alphaShader);
+
+    ShaderProgramWrapper *spiralShader = new ShaderProgramWrapper(this);
+    if(alphaShader->initShader(SPIRAL_FRAGMENT_SHADER_PATH,SPIRAL_VERTEX_SHADER_PATH)!=0)shaderSupported=true;
     shaderPrograms.push_back(alphaShader);
 }
 
-QVector<ShaderProgramWrapper> OGLWidget::getShaderPrograms()
+QVector<ShaderProgramWrapper*> OGLWidget::getShaderPrograms()
 {
     return shaderPrograms;
 }
@@ -584,6 +590,9 @@ OGLWidget::~OGLWidget()
 
     if (drawBrushElm !=NULL)
         delete drawBrushElm;
+
+    for (int i =0;i<shaderPrograms.length();i++)
+        delete shaderPrograms[i];
 
     delete mainShader;
 }
