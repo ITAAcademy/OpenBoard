@@ -367,6 +367,68 @@ void OGLWidget::setEditingRectangle(const RectangleEditor &value)
     editingRectangle = value;
 }
 
+void OGLWidget::processMouse()
+{
+
+
+    if(isMousePress) {
+        GLint x1 = editingRectangle.rect.x();
+          GLint y1 = editingRectangle.rect.y();
+            GLint x2 = editingRectangle.rect.x()+editingRectangle.rect.width();
+            GLint y2 = editingRectangle.rect.y()+editingRectangle.rect.height();
+            m_manager.setAbleToDraw(true);
+
+            int leftCornerX1=x1-editingRectangle.leftCornerSize/2;
+             int leftCornerY1=y1-editingRectangle.leftCornerSize/2;
+                     int leftCornerX2=x1 + editingRectangle.leftCornerSize/2;
+                      int leftCornerY2=y1 + editingRectangle.leftCornerSize/2;
+
+
+
+
+        //editingRectangle.setX(0);
+       // editingRectangle.setY(0);
+
+            if (editingRectangle.editingRectangleMode==EDIT_RECTANGLE_UNBINDED && editingRectangle.isEditingRectangleVisible && !forseEditBoxDisable && !isPainting)
+     if ((mousePos.x() >= leftCornerX1 && mousePos.x() <= leftCornerX2) && (mousePos.y() >= leftCornerY1 && mousePos.y() <= leftCornerY2))
+     {
+         editingRectangle.editingRectangleMode=EDIT_RECTANGLE_RESIZE;
+     }
+     else if ((mousePos.x() >= x1) && (mousePos.x() <= x2) &&
+              (mousePos.y() >= y1) && (mousePos.y() <= y2))
+     {
+         editingRectangle.editingRectangleMode=EDIT_RECTANGLE_MOVE;
+     }
+
+
+     switch(editingRectangle.editingRectangleMode){
+    case EDIT_RECTANGLE_MOVE:
+         m_manager.setAbleToDraw(false);
+        // // //qDebug()<<"EDIT_RECTANGLE_MOVE width"<<editingRectangle.rect.width();
+         //if (isPainting)
+         {
+         editingRectangle.rect.moveTo(mousePos.x() - mousePressPos.x(), //-editingRectangle.rect.width()/2
+                                mousePos.y() - mousePressPos.y() ); //-editingRectangle.rect.height()/2
+         }
+
+
+     break;
+     case EDIT_RECTANGLE_RESIZE:
+          m_manager.setAbleToDraw(false);
+         // //qDebug()<<"EDIT_RECTANGLE_RESIZE";
+        //  if (isPainting)
+         {
+             editingRectangle.rect.setX(mousePos.x());
+             editingRectangle.rect.setY(mousePos.y());
+         }
+
+        break;
+     }
+     testRectangle();
+        if ( m_manager.isAbleToDraw()) paintBrushInBuffer(mainFBO);
+    }
+}
+
 void OGLWidget::initPBO()
 {
     glGenBuffers(2, pixelBufferIDs);
@@ -1018,19 +1080,51 @@ void OGLWidget::paintGL()
 //WRITE TO SCREEN FROM HERE
 //drawTextBuffer(10,10,400,400);
 
-
-
     GLint x1 = editingRectangle.rect.x();
       GLint y1 = editingRectangle.rect.y();
         GLint x2 = editingRectangle.rect.x()+editingRectangle.rect.width();
         GLint y2 = editingRectangle.rect.y()+editingRectangle.rect.height();
-        bool canDrawByMouse = true;
+        m_manager.setAbleToDraw(true);
 
         int leftCornerX1=x1-editingRectangle.leftCornerSize/2;
          int leftCornerY1=y1-editingRectangle.leftCornerSize/2;
                  int leftCornerX2=x1 + editingRectangle.leftCornerSize/2;
                   int leftCornerY2=y1 + editingRectangle.leftCornerSize/2;
 
+
+                  if (editingRectangle.isEditingRectangleVisible && !forseEditBoxDisable && !isPainting && getStatus()!= PLAY)
+                  {
+
+                      qDebug () << "DRAW RECTANGLE";
+                     // paintBufferOnScreen(0, 0, wax, way);
+                      //rectangle
+                      glLineWidth(3);
+                      glColor3f(1.0f, 0.0f, 0.0f);
+                      glBegin(GL_LINES);
+                      glVertex3i(x1,y1, 100);
+                      glVertex3i(x2,y1, 100);
+
+                      glVertex3i(x2,y1, 100);
+                      glVertex3i(x2,y2, 100);
+
+                      glVertex3i(x2,y2, 100);
+                      glVertex3i(x1,y2, 100);
+
+                      glVertex3i(x1,y2, 100);
+                      glVertex3i(x1,y1, 100);
+                      glEnd();
+
+                      //left corner
+                       glColor3f(0.0f, 1.0f, 0.0f);
+                       glLineWidth(3);
+                       glBegin(GL_QUADS);   //We want to draw a quad, i.e. shape with four sides
+                            // glColor3i(1, 0, 0); //Set the colour to red
+                         glVertex3i(leftCornerX1, leftCornerY1, 100);            //Draw the four corners of the rectangle
+                         glVertex3i(leftCornerX2, leftCornerY1, 100);
+                         glVertex3i(leftCornerX2, leftCornerY2, 100);
+                         glVertex3i(leftCornerX1, leftCornerY2, 100);
+                       glEnd();
+                  }
 
 
 //if (isMousePlay)paintBrushInBuffer(true);
@@ -1044,85 +1138,9 @@ for(int i = 0; !timeLine->isBlocked && i < getList().size(); i++)
         getList()[i]->paint();
 }
 
-if (editingRectangle.isEditingRectangleVisible && !forseEditBoxDisable && !isPainting && getStatus()!= PLAY)
-{
-   // paintBufferOnScreen(0, 0, wax, way);
-    //rectangle
-    glLineWidth(3);
-    glColor3f(1.0f, 0.0f, 0.0f);
-    glBegin(GL_LINES);
-    glVertex3i(x1,y1, 100);
-    glVertex3i(x2,y1, 100);
 
-    glVertex3i(x2,y1, 100);
-    glVertex3i(x2,y2, 100);
-
-    glVertex3i(x2,y2, 100);
-    glVertex3i(x1,y2, 100);
-
-    glVertex3i(x1,y2, 100);
-    glVertex3i(x1,y1, 100);
-    glEnd();
-
-    //left corner
-     glColor3f(0.0f, 1.0f, 0.0f);
-     glLineWidth(3);
-     glBegin(GL_QUADS);   //We want to draw a quad, i.e. shape with four sides
-          // glColor3i(1, 0, 0); //Set the colour to red
-       glVertex3i(leftCornerX1, leftCornerY1, 100);            //Draw the four corners of the rectangle
-       glVertex3i(leftCornerX2, leftCornerY1, 100);
-       glVertex3i(leftCornerX2, leftCornerY2, 100);
-       glVertex3i(leftCornerX1, leftCornerY2, 100);
-     glEnd();
-}
 //glDisable(GL_DEPTH_TEST);
-if(isMousePress) {
-    //editingRectangle.setX(0);
-   // editingRectangle.setY(0);
 
-        if (editingRectangle.editingRectangleMode==EDIT_RECTANGLE_UNBINDED && editingRectangle.isEditingRectangleVisible && !forseEditBoxDisable && !isPainting)
- if ((mousePos.x() >= leftCornerX1 && mousePos.x() <= leftCornerX2) && (mousePos.y() >= leftCornerY1 && mousePos.y() <= leftCornerY2))
- {
-     editingRectangle.editingRectangleMode=EDIT_RECTANGLE_RESIZE;
- }
- else if ((mousePos.x() >= x1) && (mousePos.x() <= x2) &&
-          (mousePos.y() >= y1) && (mousePos.y() <= y2))
- {
-     editingRectangle.editingRectangleMode=EDIT_RECTANGLE_MOVE;
- }
-
-
- switch(editingRectangle.editingRectangleMode){
-case EDIT_RECTANGLE_MOVE:
-     canDrawByMouse=false;
-    // // //qDebug()<<"EDIT_RECTANGLE_MOVE width"<<editingRectangle.rect.width();
-     //if (isPainting)
-     {
-     editingRectangle.rect.moveTo(mousePos.x() - mousePressPos.x(), //-editingRectangle.rect.width()/2
-                            mousePos.y() - mousePressPos.y() ); //-editingRectangle.rect.height()/2
-     }
-
-     //editingRectangle.setX(mousePos.x()-editingRectangle.width()/2);
-     //editingRectangle.setY(mousePos.y()-editingRectangle.height()/2);
-    // // //qDebug()<< "leftCornerX1:"<<leftCornerX1;
-     //// //qDebug()<< "leftCornerY1:"<<leftCornerY1;
-     // // //qDebug()<< "leftCornerX2:"<<leftCornerX2;
-     // // //qDebug()<< "leftCornerY2:"<<leftCornerY2;
- break;
- case EDIT_RECTANGLE_RESIZE:
-     canDrawByMouse=false;
-     // //qDebug()<<"EDIT_RECTANGLE_RESIZE";
-    //  if (isPainting)
-     {
-         editingRectangle.rect.setX(mousePos.x());
-         editingRectangle.rect.setY(mousePos.y());
-     }
-
-    break;
- }
- testRectangle();
-    if (canDrawByMouse && m_manager.isAbleToDraw()) paintBrushInBuffer(mainFBO);
-}
 if (showingLastDrawing )
 {
     if (drawBrushElm->getBrushes().length()<=0)
@@ -1716,50 +1734,51 @@ void  OGLWidget::updateWindow(){
     //if (timeLine->getPointedBlocks().size())
    /// if(!timeLine->isBlocked)
    ///
+processMouse();
+    setList(timeLine->getPointedBlocksDE());
+
+    QPoint t = timeLine->getSelectedBlockPoint();
+
+    if(curStatus != PLAY && t.x() >= 0)
+    {
+        if (mayShowRedRectangle)
+            editingRectangle.isEditingRectangleVisible = true;
+
+        if(t != selElm )
+        {
+            //clearBuffer();
+            selElm = t;
+            editingRectangle.rect = timeLine->getDrawRect(t.x(), t.y());
+        }
+        else
+        {
+
+           // if (!timeLine->getIsEditBlockShow())
+            {
+            QRect t2 = editingRectangle.rect;
+            timeLine->setDrawX(selElm.x(), selElm.y(), t2.x());
+            timeLine->setDrawY(selElm.x(), selElm.y(), t2.y());
+            timeLine->setDrawSize(selElm.x(), selElm.y(), t2.width(), t2.height());
+            }
+
+
+
+        }
+    }
+    else
+    {
+       // //qDebug() << "SBLOCK " << t;
+        selElm = t;
+        editingRectangle.isEditingRectangleVisible = false;
+
+    }
+
 
      current_millisecs = QDateTime::currentMSecsSinceEpoch();
    if ((current_millisecs - last_milisecs_drawn) >= 1000/frameRate)
    {
-   last_milisecs_drawn = current_millisecs;
-    emit windowUpdating(1000/frameRate);
-   setList(timeLine->getPointedBlocksDE());
-
-   QPoint t = timeLine->getSelectedBlockPoint();
-
-   if(curStatus != PLAY && t.x() >= 0)
-   {
-       if (mayShowRedRectangle)
-           editingRectangle.isEditingRectangleVisible = true;
-
-       if(t != selElm )
-       {
-           //clearBuffer();
-           selElm = t;
-           editingRectangle.rect = timeLine->getDrawRect(t.x(), t.y());
-       }
-       else
-       {
-
-          // if (!timeLine->getIsEditBlockShow())
-           {
-           QRect t2 = editingRectangle.rect;
-           timeLine->setDrawX(selElm.x(), selElm.y(), t2.x());
-           timeLine->setDrawY(selElm.x(), selElm.y(), t2.y());
-           timeLine->setDrawSize(selElm.x(), selElm.y(), t2.width(), t2.height());
-           }
-
-
-
-       }
-   }
-   else
-   {
-      // //qDebug() << "SBLOCK " << t;
-       selElm = t;
-       editingRectangle.isEditingRectangleVisible = false;
-
-   }
-
+       last_milisecs_drawn = current_millisecs;
+        emit windowUpdating(1000/frameRate);
     updateGL();
 
    }

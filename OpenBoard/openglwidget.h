@@ -102,6 +102,7 @@ class OGLWidget : public QGLWidget, protected QOpenGLFunctions_3_0
 signals:
         void stopShowLastDrawingSignal();
 public:
+        void processMouse();
         void initPBO();
         void initShaderPrograms();
         QVector<ShaderProgramWrapper> getShaderPrograms();
@@ -323,6 +324,7 @@ private:
          int frameRate = 25;
        bool mayShowRedRectangle = true;
     unsigned int current_millisecs =0;
+    unsigned int last_milisecs_update = 0;
     unsigned int last_milisecs_drawn = 0;
 
     QVector<GLenum> attachment;
