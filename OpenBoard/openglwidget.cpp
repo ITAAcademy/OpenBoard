@@ -717,28 +717,28 @@ FBOWrapper OGLWidget::initFboWrapper(bool visibleOnly) {
     glGetError();
 
     makeCurrent();
-    qDebug () << "                                                                  INIT FBO";
+    //qDebug () << "                                                                  INIT FBO";
 
     FBOWrapper fboWrapper;
     fboWrapper.errorStatus=0;
     GLuint fbo=0;
     GLuint depth_buffer=0;
     GLuint fbo_texture=0;
-    qDebug() << "fbo:"<<fbo;
-    qDebug()<< "depth_buffer:"<<depth_buffer;
-    qDebug() << "fbo_texture:"<<fbo_texture;
+   // qDebug() << "fbo:"<<fbo;
+    //qDebug()<< "depth_buffer:"<<depth_buffer;
+   // qDebug() << "fbo_texture:"<<fbo_texture;
     GLenum error = glGetError();
 
     //qDebug() << "GL_ERROR_STATUS initFrameBuffer:"<<error;
   //  glEnable(GL_DEPTH_TEST);
 
-    qDebug() << "GL_ERROR_STATUS initFrameBuffer:"<<error;
+   // qDebug() << "GL_ERROR_STATUS initFrameBuffer:"<<error;
     if(error != 0)
     {
         fboWrapper.errorStatus = error;
         return fboWrapper;
     }
-    qDebug() << 1;
+    //qDebug() << 1;
     if(visibleOnly)
     if(!isVisible() || !isInit())
     {
@@ -748,9 +748,9 @@ FBOWrapper OGLWidget::initFboWrapper(bool visibleOnly) {
 
     glGenFramebuffers(1, &fbo); // Generate one frame buffer and store the ID in fbo
 
-qDebug() << 2;
+//qDebug() << 2;
 
-qDebug() << 3;
+//qDebug() << 3;
      error = glGetError();
      if(error != NULL)
      {
@@ -765,7 +765,7 @@ qDebug() << 3;
      return fboWrapper;
  }
 glBindFramebuffer(GL_FRAMEBUFFER , fbo); // Bind our frame buffer
-qDebug () << "texture inited id:"<<fbo_texture;
+//qDebug () << "texture inited id:"<<fbo_texture;
 
 error = glGetError();
 if(error != NULL)
@@ -773,8 +773,8 @@ if(error != NULL)
     fboWrapper.errorStatus = error;
     return fboWrapper;
 }
-qDebug() << "GL_ERROR_STATUS initFrameBufferTexture:"<<error;
-qDebug() << "attachment.count():"<<attachment.count();
+//qDebug() << "GL_ERROR_STATUS initFrameBufferTexture:"<<error;
+//qDebug() << "attachment.count():"<<attachment.count();
 //attachment.append(GL_COLOR_ATTACHMENT0+attachment.count());
 attachment.append(GL_COLOR_ATTACHMENT0);
 glFramebufferTexture2D(GL_FRAMEBUFFER , attachment.last() , GL_TEXTURE_2D, fbo_texture, 0); // Attach the texture fbo_texture to the color buffer in our frame buffer

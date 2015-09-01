@@ -628,7 +628,7 @@ void ListControll::addMsToTimerValue(int ms)
   //  qDebug() << "SLOT addMsToTimerValue:"<<ms;
     if(isPlayPauseStop == 1)
         timerValue+=ms;
-qDebug() << "timerValue:"<<ms;
+//qDebug() << "timerValue:"<<ms;
 }
 
 

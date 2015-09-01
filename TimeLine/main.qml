@@ -79,14 +79,18 @@ Rectangle
      property int blocks_num : 0
    property bool left_rigth_entered : false
    property bool block_zayshow_sprava : false
+   property bool exitedFromDropArea : false
    onBlock_zayshow_spravaChanged: {
       // anim_
+       block_zayshow_sprava || left_rigth_entered
    }
 
    property Item selectedBlock: null
    property int selectedBlockCol : 0
    property int selectedBlockIndex : 0
-   property int dropEnteredBlockIndex : 0
+   property int dropEnteredBlockIndex : -1
+    property int zdvigWhenNormalAnim : 0
+   property Item dropEnteredBlock
    property Item dropEnteredBlockItemGlobalRep
    property int dropEnteredTrackIndex : 0
     property real scaling :  timeControll.getScaleScrollChildren()
@@ -109,9 +113,11 @@ Rectangle
 property Item  p_trackbar_which_block_dragged
 
    property int mX : 0
+    property bool needUpdateModelWhereBlockDroped : false
 
    property int prevPlayTime : 0
    property int play_time : 0
+
 
 
 
@@ -241,7 +247,9 @@ scale_pointer.x = 0// timeControll.getMaxTrackTime() + scale_pointer.width/2 - s
         if (main222.needToLightSelected  && main222.selectedBlockIndex !== -1)
         {
             rep_columns.itemAt(main222.selectedBlockCol).setColorize(main222.selectedBlockIndex,"#8000FF00")
+           // main222.selectedBlock
         }
+
 
     }
 
@@ -665,7 +673,8 @@ timeControll.setScalePointerPos((x  -20 + scroll.flickableItem.contentX)* main22
                                }
                                function setColorize(indexa, color)
                                {
-                                       repka.itemAt(indexa).p_color_overlay.color = color
+                                   main222.selectedBlock = repka.itemAt(indexa)
+                                        main222.selectedBlock.p_color_overlay.color = color
                                   //  // //console.log("GGGGGGGGGG " + repka.itemAt(indexa).mX)
                                   // // //console.log("GGGGGGGGGG " + repka.itemAt(indexa).x)
                                    //main222.p_scale_pointer.x = repka.itemAt(indexa).x
@@ -710,9 +719,23 @@ timeControll.setScalePointerPos((x  -20 + scroll.flickableItem.contentX)* main22
         {
             rep_columns.itemAt(main222.selectedBlockCol).setColorize(main222.selectedBlockIndex,"#8000FF00")
 
+
+
         }
         timeControll.calcPointedBlocks();
         timeControll.setIsProjectChanged(true)
+    }
+
+    function moveBlocksForAnim( from, to,   value) //left_right -1 or 1
+    {
+        for (var i = from; i <= to; i++)
+        {
+            repka.itemAt(i).animRunX( value)
+        }
+    }
+    function moveBlockForAnim(ind,   value) //left_right -1 or 1
+    {
+            repka.itemAt(ind).animRunX( value)
     }
                                            delegate:
                                            ContentBlock.Block{
@@ -720,6 +743,7 @@ timeControll.setScalePointerPos((x  -20 + scroll.flickableItem.contentX)* main22
                                                globalRep : repka
                                                p_trackbar : trackbar
                                                p_bar_track : bar_track
+                                               p_main222 : main222
                                                height:  100
                                                mIndex: index
                                                 colIndex:  bar_track.mIndex
