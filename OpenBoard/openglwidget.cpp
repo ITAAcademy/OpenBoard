@@ -446,8 +446,8 @@ void OGLWidget::initShaderPrograms()
     shaderPrograms.push_back(alphaShader);
 
     ShaderProgramWrapper *spiralShader = new ShaderProgramWrapper(this);
-    if(alphaShader->initShader(SPIRAL_FRAGMENT_SHADER_PATH,SPIRAL_VERTEX_SHADER_PATH)!=0)shaderSupported=true;
-    shaderPrograms.push_back(alphaShader);
+    if(spiralShader->initShader(SPIRAL_FRAGMENT_SHADER_PATH,SPIRAL_VERTEX_SHADER_PATH)!=0)shaderSupported=true;
+    shaderPrograms.push_back(spiralShader);
 }
 
 QVector<ShaderProgramWrapper*> OGLWidget::getShaderPrograms()
@@ -827,7 +827,7 @@ glBindRenderbuffer(GL_RENDERBUFFER , 0); // Unbind the render buffer
 //qDebug() << "GL_ERROR_STATUS glBindRenderbuffer:"<<error;
 }
 
-int OGLWidget::initTexture(GLuint &texture) {
+int OGLWidget::initTexture(GLuint &texture,int width,int height) {
     makeCurrent();
     glEnable(GL_TEXTURE_2D);
     //glDeleteTextures(1,&fbo_texture);
@@ -835,7 +835,7 @@ glGenTextures(1, &texture); // Generate one texture
 
 glBindTexture(GL_TEXTURE_2D, texture); // Bind the texture fbo_texture
 
-glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, wax, way, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL); // Create a standard texture with the width and height of our window
+glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL); // Create a standard texture with the width and height of our window
 
 // Setup the basic texture parameters
 glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -850,7 +850,7 @@ return glGetError();
 }
 
 
-FBOWrapper OGLWidget::initFboWrapper(bool visibleOnly) {
+FBOWrapper OGLWidget::initFboWrapper(int width, int height, bool visibleOnly) {
     glGetError();
 
     makeCurrent();
@@ -858,6 +858,8 @@ FBOWrapper OGLWidget::initFboWrapper(bool visibleOnly) {
 
     FBOWrapper fboWrapper;
     fboWrapper.errorStatus=0;
+    fboWrapper.tWidth=width;
+     fboWrapper.tHeight=height;
     GLuint fbo=0;
     GLuint depth_buffer=0;
     GLuint fbo_texture=0;
@@ -895,7 +897,7 @@ qDebug() << 3;
          return fboWrapper;
      }
 //initFBDepthBuffer(depth_buffer); // Initialize our frame buffer depth buffer
- error = initTexture(fbo_texture); // Initialize our frame buffer texture
+ error = initTexture(fbo_texture,width,height); // Initialize our frame buffer texture
  if(error != NULL)
  {
      fboWrapper.errorStatus = error;
@@ -974,7 +976,8 @@ glEnable(GL_DEPTH_TEST);
     brushTexture = loadTexture(m_manager.getCreatedBrush().color_img,true);
     //loadTextureFromFile(":/ThirdPart/images/brush.png");
     //initFrameBuffer(); // Create our frame buffer object
-    mainFBO=initFboWrapper(false);
+    mainFBO=initFboWrapper(wax,way,false);
+    pingpongFBO=initFboWrapper(wax,way,false);
     initPBO();
      //initShader();
 glViewport(0, 0, (GLint)wax, (GLint)way);
@@ -1011,6 +1014,9 @@ void OGLWidget::destroy(bool destroyWindow, bool destroySubWindow){
 }
 FBOWrapper OGLWidget::getMainFBO(){
     return mainFBO;
+}
+FBOWrapper OGLWidget::getPingPongFBO(){
+    return pingpongFBO;
 }
 
 void OGLWidget::clearFrameBuffer(FBOWrapper fboWrapper){

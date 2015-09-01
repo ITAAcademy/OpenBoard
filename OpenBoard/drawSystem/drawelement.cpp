@@ -14,7 +14,7 @@ bool DrawElement::setDrawWidget(OGLWidget *value)
     {
       //  qDebug() << "VALUE  " << fboWrapper.errorStatus;
         if(fboWrapper.errorStatus != 0)
-            setFBOWrapper(pDrawWidget->initFboWrapper());//TODO
+            setFBOWrapper(pDrawWidget->initFboWrapper(pDrawWidget->getWax(),pDrawWidget->getWay()));//TODO
         return false;
     }
 
@@ -32,17 +32,22 @@ bool DrawElement::setDrawWidget(OGLWidget *value)
 
 
     if(fboWrapper.errorStatus != 0)
-        setFBOWrapper(pDrawWidget->initFboWrapper());//TODO
+        setFBOWrapper(pDrawWidget->initFboWrapper(pDrawWidget->getWax(),pDrawWidget->getWay()));//TODO
     connect(pDrawWidget, SIGNAL(startSignal()), this, SLOT(start()));
     connect(pDrawWidget, SIGNAL(stopSignal()), this, SLOT(stop()));
     connect(pDrawWidget, SIGNAL(pauseSignal()), this, SLOT(pause()));
 
     ShaderEffect alphaEffect(pDrawWidget->getShaderPrograms()[OGLWidget::ALPHA_SHADER]);
     ShaderEffect spiralEffect(pDrawWidget->getShaderPrograms()[OGLWidget::SPIRAL_SHADER]);
+    alphaEffect.setEffectTimeHowLong(100);
+    spiralEffect.setEffectTimeHowLong(100);
 
     qDebug() << "alpha effect created";
-    effects.push_back(alphaEffect); //ADD DEFAULT EFFECT
-    effects.push_back(spiralEffect); //ADD DEFAULT EFFECT
+
+     effects.push_back(alphaEffect); //ADD DEFAULT EFFECT
+     effects.push_back(spiralEffect); //ADD DEFAULT EFFECT
+
+
 
     return true;
 }
@@ -115,26 +120,83 @@ void DrawElement::paint()
   //  qDebug() << "paint on buffer:"<<fboWrapper.frameBuffer;
     if(fboWrapper.errorStatus == 0)
     {
-        pDrawWidget->bindBuffer(fboWrapper.frameBuffer);
+      bool drawToSecondBuffer=false;
+     // bool currentDrawToSecondBuffer=false;
         if (effects.isEmpty())
         {
+              pDrawWidget->bindBuffer(fboWrapper.frameBuffer);
         draw();//Draw original image one time without any effects
         qDebug() << "EFFECTS EMPTY !!!";
         }
         else
         {
-
+    if (effects.length()>1)
+    {
+        drawToSecondBuffer=true;
+        pDrawWidget->clearFrameBuffer(pDrawWidget->getPingPongFBO());
+        //pDrawWidget->clearFrameBuffer(pDrawWidget->getMainFBO());
+    }
+ float keyFrame = (float)(pDrawWidget->getTimeLine()->getPlayTime()-startDrawTime)/lifeTime;
+ glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); glEnable( GL_BLEND );
         for (int i=0;i<effects.length();i++)
-            {
-            qDebug() << "Shader program ("<<i<<"):"<<effects[i].getShaderWrapper()->getShaderProgram();
+           {
+            if(drawToSecondBuffer)
+                    {
+                qDebug() << "FIRST DRAW TO PING-PONG FRAME BUFFER";
+                pDrawWidget->bindBuffer(pDrawWidget->getPingPongFBO().frameBuffer);
+                qDebug() << "Shader program ("<<i<<"):"<<effects[i].getShaderWrapper()->getShaderProgram();
                 pDrawWidget->getOglFuncs()->glUseProgram(effects[i].getShaderWrapper()->getShaderProgram());
-                float keyFrame = (float)(pDrawWidget->getTimeLine()->getPlayTime()-startDrawTime)/lifeTime;
-               ShaderEffect::setUniformAnimationKey(pDrawWidget,effects[i],keyFrame);
+              //  float keyFrame = (float)(pDrawWidget->getTimeLine()->getPlayTime()-startDrawTime)/lifeTime;//MOVE UP LATER
+                ShaderEffect::setUniformAnimationKey(pDrawWidget,effects[i],keyFrame);
+                ShaderEffect::setUniformResolution(pDrawWidget,effects[i],fboWrapper.tWidth,fboWrapper.tHeight);
+                if (i==0)
                 draw();
+                else
+                    pDrawWidget->drawTexture(0,0,fboWrapper.tWidth,fboWrapper.tHeight,
+                                            fboWrapper.bindedTexture,0,1,1,z );
+                    }
+            else if (!drawToSecondBuffer)
+                {
+                qDebug() << "FIRST DRAW TO MAIN FRAME BUFFER";
+                pDrawWidget->bindBuffer(fboWrapper.frameBuffer);
+                qDebug() << "Shader program ("<<i<<"):"<<effects[i].getShaderWrapper()->getShaderProgram();
+                pDrawWidget->getOglFuncs()->glUseProgram(effects[i].getShaderWrapper()->getShaderProgram());
+               // float keyFrame = (float)(pDrawWidget->getTimeLine()->getPlayTime()-startDrawTime)/lifeTime;//MOVE UP LATER
+                ShaderEffect::setUniformAnimationKey(pDrawWidget,effects[i],keyFrame);
+                ShaderEffect::setUniformResolution(pDrawWidget,effects[i],
+                                                   pDrawWidget->getPingPongFBO().tWidth,pDrawWidget->getPingPongFBO().tHeight);
+                if (i==0)
+                draw();
+                else
+                pDrawWidget->drawTexture(0,0,pDrawWidget->getPingPongFBO().tWidth,
+                                         pDrawWidget->getPingPongFBO().tHeight,
+                                        pDrawWidget->getPingPongFBO().bindedTexture,0,1,1,z );
+
+
+                }
+
+drawToSecondBuffer=!drawToSecondBuffer;
             }
+
+        if (!drawToSecondBuffer)
+                        {
+                        qDebug() << "FIRST DRAW TO MAIN FRAME BUFFER";
+                        pDrawWidget->bindBuffer(fboWrapper.frameBuffer);
+                       // float keyFrame = (float)(pDrawWidget->getTimeLine()->getPlayTime()-startDrawTime)/lifeTime;//MOVE UP LATER
+                        pDrawWidget->drawTexture(0,0,pDrawWidget->getPingPongFBO().tWidth,
+                                                 pDrawWidget->getPingPongFBO().tHeight,
+                                                pDrawWidget->getPingPongFBO().bindedTexture,0,1,1,z );
+
+
+                        }
+
+
+
         }
+         pDrawWidget->getOglFuncs()->glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE);
         pDrawWidget->getOglFuncs()->glUseProgram(0);
         pDrawWidget->bindBuffer(0);
+
 
        /* int keyUnifrom = pDrawWidget->context()->functions()->glGetUniformLocation(
                     pDrawWidget->getShaderPrograms()[0].getShaderProgram(),"animationKey");
@@ -150,7 +212,7 @@ void DrawElement::paint()
             pDrawWidget->paintBufferOnScreen(fboWrapper,x, y, width, width, z);
         else
             pDrawWidget->paintBufferOnScreen(fboWrapper,x, y, width, height, z);
-         pDrawWidget->context()->functions()->glUseProgram(0);
+        // pDrawWidget->context()->functions()->glUseProgram(0);
     }
     else
         qWarning() << "In curent draw element fboWraper is not init!!!";

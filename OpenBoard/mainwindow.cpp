@@ -1389,7 +1389,7 @@ if (a_hide->isEnabled())
          DrawImageElm *first = new DrawImageElm(mpOGLWidget);
          //qDebug() << "mpOGLWidget:"<<mpOGLWidget;
 
-        first->setFBOWrapper(mpOGLWidget->initFboWrapper());
+        first->setFBOWrapper(mpOGLWidget->initFboWrapper(mpOGLWidget->getWax(),mpOGLWidget->getWay()));
 
          QImage load(curentState.firstImage);
 qDebug () << "VIDEO_EDIT_TEXT BEGIN-1";
@@ -1404,7 +1404,7 @@ qDebug () << "VIDEO_EDIT_TEXT MID";
          QImage load2(curentState.lastImage);
          //qApp->processEvents();
          last->setDrawImage(load2);
-       last->setFBOWrapper(mpOGLWidget->initFboWrapper());
+       last->setFBOWrapper(mpOGLWidget->initFboWrapper(mpOGLWidget->getWax(),mpOGLWidget->getWay()));
 
          first->setTypeId(Element_type::Image);
          last->setTypeId(Element_type::Image);
@@ -1417,7 +1417,7 @@ qDebug () << "VIDEO_EDIT_TEXT MID";
          first->setSize(mpOGLWidget->width(), mpOGLWidget->height());
          last->setSize(mpOGLWidget->width(), mpOGLWidget->height());
          text->setSize(mpOGLWidget->width(), mpOGLWidget->height());
-       text->setFBOWrapper(mpOGLWidget->initFboWrapper());
+       text->setFBOWrapper(mpOGLWidget->initFboWrapper(mpOGLWidget->getWax(),mpOGLWidget->getWay()));
 
 
          mpOGLWidget->getTimeLine()->addNewBlock(0, "NEW4", first);

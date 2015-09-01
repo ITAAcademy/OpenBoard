@@ -1,10 +1,9 @@
 
 uniform sampler2D textureSampler;
 uniform float animationKey;
-vec2 resolution;
+uniform vec2 resolution;
 void main(void)
 {
-    resolution=vec2(800,600);
     vec4 col = texture2D(textureSampler, vec2(gl_TexCoord[0]));
 
 
@@ -33,9 +32,10 @@ void main(void)
             }
             vec2 texPos = vec2(gl_FragCoord.xy/resolution);
             /* The final color, calculated by multiplying the light color with the alpha value */
-            vec4 final_color = vec4(light_color, 1.0)*vec4(alpha, alpha, alpha, 1.0);
+            vec4 final_color = vec4(light_color, col.a)*vec4(alpha, alpha, alpha, col.a);
 
-            gl_FragColor = final_color + texture2D(textureSampler, texPos)*(.95);;
+            gl_FragColor = final_color + texture2D(textureSampler, texPos)*(.95);
+             //gl_FragColor =col;
     }
 
 

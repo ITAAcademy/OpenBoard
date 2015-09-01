@@ -31,3 +31,18 @@ Makefile*
 *.qmlproject.user.*
 
 build-OpenBoard-Desktop_Qt_5_3_0_GCC_64bit-Debug/OpenBoard
+OpenBoard/drawSystem/drawelement.cpp.qM1540
+build-OpenBoard-Desktop_Qt_5_5_0_MinGW_32bit-Release/Preset/Brushes/database.png
+build-OpenBoard-Desktop_Qt_5_5_0_MinGW_32bit-Release/Preset/Brushes/delete.png
+build-OpenBoard-Desktop_Qt_5_5_0_MinGW_32bit-Release/Preset/Brushes/delivery.png
+build-OpenBoard-Desktop_Qt_5_5_0_MinGW_32bit-Release/Preset/Brushes/disk.png
+build-OpenBoard-Desktop_Qt_5_5_0_MinGW_32bit-Release/Preset/Brushes/eject.png
+build-OpenBoard-Desktop_Qt_5_5_0_MinGW_32bit-Release/Preset/Brushes/fastforward.png
+build-OpenBoard-Desktop_Qt_5_5_0_MinGW_32bit-Release/Preset/Brushes/filter.png
+build-OpenBoard-Desktop_Qt_5_5_0_MinGW_32bit-Release/Preset/Brushes/fire.png
+build-OpenBoard-Desktop_Qt_5_5_0_MinGW_32bit-Release/Preset/Brushes/first_aid.png
+build-OpenBoard-Desktop_Qt_5_5_0_MinGW_32bit-Release/Preset/Brushes/forwardtoend.png
+build-OpenBoard-Desktop_Qt_5_5_0_MinGW_32bit-Release/Preset/Brushes/games.png
+build-OpenBoard-Desktop_Qt_5_5_0_MinGW_32bit-Release/Preset/Brushes/graph.png
+build-OpenBoard-Desktop_Qt_5_5_0_MinGW_32bit-Release/Preset/*
+build-OpenBoard-Desktop_Qt_5_5_0_MinGW_32bit-Debug/Preset/*

@@ -93,6 +93,7 @@ struct FBOWrapper{
     GLuint frameBuffer;
     GLuint bindedTexture;
     int errorStatus= -1;
+    int tWidth=0,tHeight=0;
 };
 class OGLWidget : public QGLWidget, protected QOpenGLFunctions_3_0
 {
@@ -213,10 +214,10 @@ public:
     void drawTexture(int x, int y, int width, int height, int index, int angle=0, float scaleX = 1, float scaleY = 1, int z = 0);
     void drawTexture(int x, int y, int width, int height, GLuint texture, int angle=0, float scaleX = 1, float scaleY = 1, int z = 0);
 
-    int initTexture(GLuint &texture);
+    int initTexture(GLuint &texture, int width, int height);
     void initFBDepthBuffer(GLuint &fbo_depth);
     void paintBrushInBuffer(FBOWrapper fboWrapper);
-    FBOWrapper initFboWrapper(bool visibleOnly=true);
+    FBOWrapper initFboWrapper( int width, int height,bool visibleOnly=true);
     QList<DrawElement *> &getList();
     void setList(const QList<DrawElement *> &value);
     bool getIsBrushWindowOpened() const;
@@ -254,6 +255,7 @@ public:
 
     QImage twiceImageSizeWithouScaling(QImage img);
     QOpenGLFunctions_3_0 *getOglFuncs();
+    FBOWrapper getPingPongFBO();
 public slots:
    // void clearFrameBuffer();
         void clearFrameBuffer(FBOWrapper fboWrapper);
@@ -329,7 +331,7 @@ private:
     unsigned int last_milisecs_drawn = 0;
 
     QVector<GLenum> attachment;
-    FBOWrapper mainFBO;
+    FBOWrapper mainFBO,pingpongFBO;
 
      QMessageBox ms_for_debug;
     bool pressedCtrl = false;
