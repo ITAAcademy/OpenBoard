@@ -39,8 +39,8 @@ bool DrawElement::setDrawWidget(OGLWidget *value)
 
     ShaderEffect alphaEffect(pDrawWidget->getShaderPrograms()[OGLWidget::ALPHA_SHADER]);
     ShaderEffect spiralEffect(pDrawWidget->getShaderPrograms()[OGLWidget::SPIRAL_SHADER]);
-    alphaEffect.setEffectTimeHowLong(100);
-    spiralEffect.setEffectTimeHowLong(100);
+    alphaEffect.setEffectTimeHowLong(1000);
+    spiralEffect.setEffectTimeHowLong(1000);
 
     qDebug() << "alpha effect created";
 
@@ -136,15 +136,24 @@ void DrawElement::paint()
         pDrawWidget->clearFrameBuffer(pDrawWidget->getPingPongFBO());
         //pDrawWidget->clearFrameBuffer(pDrawWidget->getMainFBO());
     }
- float keyFrame = (float)(pDrawWidget->getTimeLine()->getPlayTime()-startDrawTime)/lifeTime;
+     unsigned int playTime = pDrawWidget->getTimeLine()->getPlayTime();
+
+ int effectsUsedInOneTime=0;
  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); glEnable( GL_BLEND );
         for (int i=0;i<effects.length();i++)
            {
+            unsigned int beginAtTime = effects[i].getStartTimeMS()+ startDrawTime ;
+            unsigned int endAtTime = beginAtTime + effects[i].getEffectTimeHowLong();
+             float keyFrame = 0;
+             if(endAtTime-beginAtTime!=0)keyFrame=(float)(playTime-beginAtTime)/(endAtTime-beginAtTime);
+
+            if (playTime>=beginAtTime && playTime<=endAtTime)
+            {
             if(drawToSecondBuffer)
                     {
-                qDebug() << "FIRST DRAW TO PING-PONG FRAME BUFFER";
+                //qDebug() << "FIRST DRAW TO PING-PONG FRAME BUFFER";
                 pDrawWidget->bindBuffer(pDrawWidget->getPingPongFBO().frameBuffer);
-                qDebug() << "Shader program ("<<i<<"):"<<effects[i].getShaderWrapper()->getShaderProgram();
+               // qDebug() << "Shader program ("<<i<<"):"<<effects[i].getShaderWrapper()->getShaderProgram();
                 pDrawWidget->getOglFuncs()->glUseProgram(effects[i].getShaderWrapper()->getShaderProgram());
               //  float keyFrame = (float)(pDrawWidget->getTimeLine()->getPlayTime()-startDrawTime)/lifeTime;//MOVE UP LATER
                 ShaderEffect::setUniformAnimationKey(pDrawWidget,effects[i],keyFrame);
@@ -157,9 +166,8 @@ void DrawElement::paint()
                     }
             else if (!drawToSecondBuffer)
                 {
-                qDebug() << "FIRST DRAW TO MAIN FRAME BUFFER";
+               // qDebug() << "FIRST DRAW TO MAIN FRAME BUFFER";
                 pDrawWidget->bindBuffer(fboWrapper.frameBuffer);
-                qDebug() << "Shader program ("<<i<<"):"<<effects[i].getShaderWrapper()->getShaderProgram();
                 pDrawWidget->getOglFuncs()->glUseProgram(effects[i].getShaderWrapper()->getShaderProgram());
                // float keyFrame = (float)(pDrawWidget->getTimeLine()->getPlayTime()-startDrawTime)/lifeTime;//MOVE UP LATER
                 ShaderEffect::setUniformAnimationKey(pDrawWidget,effects[i],keyFrame);
@@ -174,13 +182,21 @@ void DrawElement::paint()
 
 
                 }
-
-drawToSecondBuffer=!drawToSecondBuffer;
+            effectsUsedInOneTime++;
+            drawToSecondBuffer=!drawToSecondBuffer;
             }
 
+
+            }
+
+        if (effectsUsedInOneTime==0){
+            pDrawWidget->bindBuffer(fboWrapper.frameBuffer);
+            draw();//Draw original image one time without any effects
+
+        }
+        else
         if (!drawToSecondBuffer)
                         {
-                        qDebug() << "FIRST DRAW TO MAIN FRAME BUFFER";
                         pDrawWidget->bindBuffer(fboWrapper.frameBuffer);
                        // float keyFrame = (float)(pDrawWidget->getTimeLine()->getPlayTime()-startDrawTime)/lifeTime;//MOVE UP LATER
                         pDrawWidget->drawTexture(0,0,pDrawWidget->getPingPongFBO().tWidth,
@@ -281,7 +297,6 @@ bool DrawElement::save(QIODevice* device)
     stream << temp_type << key << lifeTime << tickTime << startDrawTime << x << y << z << width << height << keyCouter;
     //if (typeId == Element_type::Image)
         //save_image(stream, icon);
-    qDebug() << "last path:"<<lastPath;
     if (!lastPath.isEmpty())
        resultStatus = save_image(stream,lastPath,icon.format());
     else
