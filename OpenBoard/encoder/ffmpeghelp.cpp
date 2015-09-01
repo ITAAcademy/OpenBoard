@@ -22,18 +22,26 @@ int FFmpegHelp::initFF(QString path)
     return 1;
 }
 
-FFmpegHelp::Frame FFmpegHelp::getNextFrame()
+QSize FFmpegHelp::getSize()
+{
+    return vDecoder->getSize();
+}
+
+FFmpegHelp::Frame FFmpegHelp::getNextFrame(qint64 time)
 {
     AVPacket Packet;
     QImage vNext;
     QByteArray aNext;
     while( av_read_frame(formatContext,&Packet) >= 0 )
     {
+        int dts = Packet.dts;
         vNext = QImage(vDecoder->getNextFrame(Packet));
-        aNext += aDecoder->nextFrame(Packet);
+        if(aDecoder->getDTSFromMS(time) < dts)
+            aNext += aDecoder->nextFrame(Packet);
         av_free_packet(&Packet);
-        if(vDecoder->getFrameFinished())
+        if(vDecoder->getFrameFinished() && vDecoder->getDTSFromMS(time) <= dts)
             break;
+
         //aDecoder->nextFrame(Packet);
     }
     if(vNext.isNull())
@@ -46,7 +54,7 @@ void FFmpegHelp::restart()
 {
     vDecoder->seekFile(0);
     aDecoder->seekFile(0);
-    getNextFrame();
+    getNextFrame(1000);
 }
 
 long FFmpegHelp::getDuration()

@@ -18,6 +18,8 @@ class FFmpegHelp : public QObject
     AudioDecoder *aDecoder = NULL;
     AVFormatContext *formatContext = NULL;
     QVector <AVPacket> bufferPacket;
+
+    QList <QByteArray> audioBuffer;
 public:
     struct Frame{
         QImage videoFrame;
@@ -31,7 +33,7 @@ public:
 
     explicit FFmpegHelp(QObject *parent = 0);
 
-    Frame getNextFrame();
+    Frame getNextFrame(qint64 time);
     void restart();
     long int getDuration();
     long int getPTS();
@@ -45,6 +47,7 @@ private:
 signals:
 
 public slots:
+    QSize getSize();
 };
 
 #endif // FFMPEGHELP_H

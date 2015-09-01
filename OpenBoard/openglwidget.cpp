@@ -1812,13 +1812,38 @@ void OGLWidget::myRenderText( QGLWidget* w, int x, int y,int z, const QString& t
 void OGLWidget::drawQImage(int x, int y, QImage img, int z)
 {
     glPushMatrix();
-    QImage res = img.convertToFormat(QImage::Format_ARGB32);
-    res = QGLWidget::convertToGLFormat(res);
+    QImage res = QGLWidget::convertToGLFormat(img);
 
    // glEnable(GL_BLEND);
  //   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     glRasterPos3i( x, y + res.height(), z );
     glDrawPixels( res.width(), res.height(), GL_RGBA, GL_UNSIGNED_BYTE, res.bits() );
+    //glDisable(GL_BLEND);
+    /*glMatrixMode( GL_PROJECTION );
+    glPopMatrix();
+    glMatrixMode( GL_MODELVIEW );*/
+    glPopMatrix();
+}
+
+void OGLWidget::drawQImageFromTexture(int x, int y, QImage img, GLuint index, int z)
+{
+    glPushMatrix();
+    QImage res = img;
+    res = QGLWidget::convertToGLFormat(res);
+
+    makeCurrent();
+  //  glBindFramebuffer(GL_FRAMEBUFFER , fboWrapper.frameBuffer); // Bind our frame buffer for rendering
+   // glClearColor(0.1f, 0.0f, 0.0f, 0.0f); // устанавливаем фоновый цвет
+
+   glBindTexture(GL_TEXTURE_2D, index);
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, img.width(), img.height(), GL_RGBA, GL_UNSIGNED_BYTE, res.bits());
+    drawTexture(0,0,wax, way, index, 0, 1, 1, z);
+     // glBindTexture(GL_TEXTURE_2D,0);
+    glBindTexture(GL_TEXTURE_2D, 0);
+   // glEnable(GL_BLEND);
+ //   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    //glRasterPos3i( x, y + res.height(), z );
+    //glDrawPixels( res.width(), res.height(), GL_RGBA, GL_UNSIGNED_BYTE, res.bits() );
     //glDisable(GL_BLEND);
     /*glMatrixMode( GL_PROJECTION );
     glPopMatrix();

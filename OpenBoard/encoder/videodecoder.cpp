@@ -20,6 +20,11 @@ int VideoDecoder::getFrameFinished() const
 {
     return frameFinished;
 }
+
+QSize VideoDecoder::getSize()
+{
+    return QSize(videoCodecContext->width, videoCodecContext->height);
+}
 VideoDecoder::VideoDecoder(QObject *parent, AVFormatContext *formatContext) :QObject(parent)
 {
     videoFormatContext = formatContext;
@@ -146,9 +151,9 @@ QImage VideoDecoder::getNextFrame()
     {
  //   //qDebug() << "out" << i << "\n";
     if(av_read_frame(videoFormatContext, &videoPacket)>=0) {
-        qDebug() << "PTS" << videoPacket.pts;
-        qDebug() << "DTS" << videoPacket.dts;
-        QImage res =  getNextFrame(videoPacket);
+      //  qDebug() << "PTS" << videoPacket.pts;
+        //qDebug() << "DTS" << videoPacket.dts;
+       QImage res =  getNextFrame(videoPacket);
         //av_free_packet(&videoPacket);
         return res;
     }
@@ -164,20 +169,22 @@ QImage VideoDecoder::getNextFrame(AVPacket &videoPacket)
     // Is this a packet from the video stream?
 //    //qDebug() << "SIZE   " << videoPacket.size;
    // qDebug() << "PTS" << videoPacket.pts;
-    qDebug() << "DTS" << videoPacket.dts;
+   // qDebug() << "DTS" << videoPacket.dts;
 
     int len;
+    int finish = 0;
+    frameFinished = false;
     if(videoPacket.stream_index==videoStream) {
 //         //qDebug() << "stream index   " << videoPacket.stream_index;
       // Decode video frame truble
         while (videoPacket.size > 0)
         {
-            int len = avcodec_decode_video2(videoCodecContext, videoFrame, &frameFinished, &videoPacket);
-             qDebug() << "DTS" << videoFrame->best_effort_timestamp;
+            int len = avcodec_decode_video2(videoCodecContext, videoFrame, &finish, &videoPacket);
+           //  qDebug() << "DTS" << videoFrame->best_effort_timestamp;
             baseTime =  videoFrame->best_effort_timestamp;
 
             // Did we get a video frame?
-            if(frameFinished) {
+            if(finish) {
           // Convert the image from its native format to RGB
               sws_scale
               (
@@ -189,6 +196,10 @@ QImage VideoDecoder::getNextFrame(AVPacket &videoPacket)
                   videoFrameRGB->data,
                   videoFrameRGB->linesize
               );
+              frameFinished = true;
+              AVStream *stream = videoFormatContext->streams[videoStream];
+              double seconds= (videoPacket.dts - stream->start_time) * av_q2d(stream->time_base)*1000;
+              qDebug() << "V_SECONDS    " <<seconds;
             }
             videoPacket.size -= len;
             videoPacket.data += len;
@@ -200,4 +211,9 @@ QImage VideoDecoder::getNextFrame(AVPacket &videoPacket)
 
 }
 
-
+qint64 VideoDecoder::getDTSFromMS(qint64 ms)
+{
+    AVStream *stream = videoFormatContext->streams[videoStream];
+    //double seconds = (audioPacket.dts - stream->start_time) * av_q2d(stream->time_base)*1000;
+    return (qint64) qCeil((double)(ms/(av_q2d(stream->time_base)*1000)) + stream->start_time);
+}

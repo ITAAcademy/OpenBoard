@@ -89,7 +89,7 @@ static DrawElement *GenerationDrawElement( QString path, OGLWidget *drawWidget =
         elm->setKey(target.baseName());
         return (DrawElement*) elm;
     }
-   /* if(format == "avi" || format == "mp4" || format == "mkv")
+    if(format == "avi" || format == "mp4" || format == "mkv")
     {
         DrawVideoElm *elm = new DrawVideoElm(drawWidget, parent);
         elm->setVideoFile(path);
@@ -97,7 +97,7 @@ static DrawElement *GenerationDrawElement( QString path, OGLWidget *drawWidget =
         elm->setKey(target.baseName());
         qDebug() << "Create video object successful";
         return (DrawElement*) elm;
-    }*/
+    }
     return NULL;
 }
 

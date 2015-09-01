@@ -291,6 +291,7 @@ public slots:
     bool isInit();
 
 
+    void drawQImageFromTexture(int x, int y, QImage img, GLuint index, int z);
 signals:
     void windowUpdating(int frameRate);
     void pauseSignal();

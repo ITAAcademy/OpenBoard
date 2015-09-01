@@ -42,6 +42,39 @@ void AV_REncoder::setFrame(QImage value)
         //memcpy(data, value.bits(), value.byteCount());
         frame = value;
         newImage = false;
+
+
+/*
+        if(audioBuffer.size() > 0)
+        {
+            QList<QByteArray> array;
+            QMutableMapIterator it = audioBuffer.first();
+            while (it != QMap::end() > 0)
+            {
+                QByteArray arr;
+                while (it.value().size > 0)
+                {
+
+//                           m_encoder->encodeAudioData(audioBuffer.first());
+                    arr.append(it.value().first());
+                    it.value().pop_front();
+                }
+                array.append(arr);
+                it.next();
+            }
+            QByteArray res;
+            for(int i = 0; i < array.length(); i++)
+            {
+                if(res.size() < array[i].length())
+                    res.resize(array[i].length());
+                for(int j = 0; j < array[i].length(); j++)
+                {
+                    res[j] += array[i][j]/array.length();
+                }
+            }
+            m_encoder->encodeAudioData(res);
+        }*/
+
     }
 }
 /*
@@ -114,7 +147,8 @@ void AV_REncoder::startRecord()
     bRun = true;
     bPause = false;
     m_encoder->start();
-    audioRecorder->record();
+    audioBuffer.clear();
+   // audioRecorder->record();
     start();
 }
 
@@ -173,7 +207,7 @@ void AV_REncoder::stop()
 {
     if(bRun)
     {
-        audioRecorder->stop();
+       // audioRecorder->stop();
         m_encoder->stop();
         bRun = false;
         frame = QImage(grabWidget->size(), QImage::Format_RGB888);
@@ -209,36 +243,6 @@ void AV_REncoder::run()
                         audioBuffer.pop_front();
                     }
                 }
-/*
-                if(audioBuffer.size() > 0)
-                {
-                    QList<QByteArray> array;
-                    QMutableMapIterator it = audioBuffer.first();
-                    while (it != QMap::end() > 0)
-                    {
-                        QByteArray arr;
-                        while (it.value().size > 0)
-                        {
-
-//                           m_encoder->encodeAudioData(audioBuffer.first());
-                            arr.append(it.value().first());
-                            it.value().pop_front();
-                        }
-                        array.append(arr);
-                        it.next();
-                    }
-                    QByteArray res;
-                    for(int i = 0; i < array.length(); i++)
-                    {
-                        if(res.size() < array[i].length())
-                            res.resize(array[i].length());
-                        for(int j = 0; j < array[i].length(); j++)
-                        {
-                            res[j] += array[i][j]/array.length();
-                        }
-                    }
-                    m_encoder->encodeAudioData(res);
-                }*/
                 else
                 {
                     QByteArray bytes;
@@ -246,7 +250,6 @@ void AV_REncoder::run()
                     bytes.fill(0,5644);
                     m_encoder->encodeAudioData(bytes);
                 }
-
                 newImage = true;
             }
        /*     int k = timer.elapsed() - (40 - delta);
@@ -261,7 +264,7 @@ void AV_REncoder::run()
 
 void AV_REncoder::processAudioBuffer(const QAudioBuffer& buffer)
 {
-
+/*
     if(!bPause)
     {
         QByteArray arr;
@@ -282,11 +285,10 @@ void AV_REncoder::processAudioBuffer(const QAudioBuffer& buffer)
             audioBuffer.pop_front();
         }
 
-
         m_encoder->encodeAudioData(arr);
 
-      //  // //qDebug() << "AUDIO";
-    }
+
+    }*/
    // // //qDebug() << "AUDIO";
 }
 
@@ -294,3 +296,4 @@ void AV_REncoder::displayErrorMessage()
 {
     qDebug() << "AUDIO_ERRRRRRRRRRRRRR" << (audioRecorder->errorString());
 }
+

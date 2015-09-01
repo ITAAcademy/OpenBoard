@@ -18,6 +18,13 @@ void AudioDecoder::setAudioPacket(const AVPacket &value)
     audioPacket = value;
 }
 
+qint64 AudioDecoder::getDTSFromMS(int ms)
+{
+    AVStream *stream = formatContext->streams[audioStream];
+    //double seconds = (audioPacket.dts - stream->start_time) * av_q2d(stream->time_base)*1000;
+    return (qint64) qCeil((double)(ms/(av_q2d(stream->time_base)*1000)) + stream->start_time);
+}
+
 void AudioDecoder::seekFile(int ms)
 {
     qDebug() << "seekFile();";
@@ -263,8 +270,8 @@ int AudioDecoder::resample2()
 QByteArray AudioDecoder::nextFrame(AVPacket &audioPacket)
 {
     qint64 written=0;
+    qint64 data_size;
     frameFinished = 0;
-    int data_size;
     QByteArray res;
     if( audioPacket.stream_index == audioStream)
     {
@@ -275,7 +282,7 @@ QByteArray AudioDecoder::nextFrame(AVPacket &audioPacket)
 
             len = avcodec_decode_audio4(audioCodecContext, audioFrame, &frameFinished, &audioPacket);
 
-            if(frameFinished )
+            if(frameFinished)
             {
                 if(bSwr_init)
                     resample2();
@@ -287,8 +294,13 @@ QByteArray AudioDecoder::nextFrame(AVPacket &audioPacket)
                     /*if(data_size > audio->bytesFree())
                         data_size = audio->bytesFree();*/
                     m_output->write((const char*)out->data[0], data_size);
-                    res = QByteArray((const char*)out->data[0], data_size);
-                    qDebug() << data_size;
+                    res += QByteArray((const char*)out->data[0], data_size);
+                  //  qDebug() << data_size;
+//                    qDebug() << "NEED" << audioPacket.dts - audioFrame->best_effort_timestamp;
+                 //   qDebug() << "IS" << data_size;
+                    AVStream *stream = formatContext->streams[audioStream];
+                    double seconds= (audioPacket.dts - stream->start_time) * av_q2d(stream->time_base)*1000;
+                    qDebug() << "A_SECONDS    " <<seconds;
 
 
                     /*int chunks = audio->bytesFree()/audio->periodSize();

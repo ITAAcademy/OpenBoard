@@ -8,6 +8,7 @@
 #include <QTimer>
 #include <QThread>
 #include <QImage>
+#include <QtCore>
 
 using namespace ffmpeg;
 
@@ -31,6 +32,7 @@ class VideoDecoder : public QObject
     int pts;
 
 
+
 public:
     bool init;
     int64_t duration;
@@ -46,7 +48,10 @@ public:
     void seekFile(int ms);
 
     int getFrameFinished() const;
+    QSize getSize();
 
+public slots:
+    qint64 getDTSFromMS(qint64 ms);
 private:
     int initVideoDecoder();
 };

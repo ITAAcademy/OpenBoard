@@ -10,6 +10,8 @@ class DrawVideoElm  :public DrawElement
     QImage image;
     FFmpegHelp decoder;
     int delta;
+    GLuint textureIndex = -1;
+    int failedLoad = 10;
 
 public:
     explicit DrawVideoElm( OGLWidget *drawWidget, QObject *parent = 0);

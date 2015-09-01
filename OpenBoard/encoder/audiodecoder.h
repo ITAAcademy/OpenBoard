@@ -3,6 +3,7 @@
 
 #include "ffmpeg.h"
 #include <QAudioFormat>
+#include <QtCore>
 #include <QAudioOutput>
 #include <QObject>
 #include <QBuffer>
@@ -70,6 +71,8 @@ class AudioDecoder : public QObject
     QAudioFormat format;
     QAudioOutput *audio;
     QBuffer buffer;
+    qint64 th_data_size;
+    QByteArray audioThBuff;
 
     QTimer *m_pullTimer;
     QIODevice *m_output;
@@ -83,6 +86,7 @@ public:
     QByteArray nextFrame();
     QByteArray nextFrame(AVPacket &value);
     void setAudioPacket(const AVPacket &value);
+    qint64 getDTSFromMS(int ms);
 public slots:
     void stateChanged(QAudio::State state);
     void pullTimerExpired();
