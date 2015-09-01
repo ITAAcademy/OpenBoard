@@ -208,6 +208,7 @@ void DrawBrushElm::draw()
          // //qDebug() << "QQQQQQQQQQQQQQQQQQQQ" << keyCouter;
         if(keyCouter == 0)
         {
+            qDebug()<<"CLEAR FRAME BUFFER";
             pDrawWidget->clearFrameBuffer(fboWrapper);
         }
         //qDebug() << "coords.size():"<<coords.size();

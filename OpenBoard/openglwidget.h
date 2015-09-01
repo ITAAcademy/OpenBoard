@@ -21,7 +21,7 @@
 #include "../Brush/brushcontroll.h"
 #include <QGLShader>
 #include "shaderprogramwrapper.h"
-
+#include <QOpenGLFunctions_3_0>
 #include <QMap>
 #include <QList>
 
@@ -93,8 +93,9 @@ struct FBOWrapper{
     GLuint frameBuffer;
     GLuint bindedTexture;
     int errorStatus= -1;
+    int tWidth=0,tHeight=0;
 };
-class OGLWidget : public QGLWidget, protected QGLFunctions
+class OGLWidget : public QGLWidget, protected QOpenGLFunctions_3_0
 {
     Q_OBJECT
    // Q_PROPERTY(QString  drawText READ getDrawText WRITE setDrawText NOTIFY drawTextChanged)
@@ -102,6 +103,11 @@ class OGLWidget : public QGLWidget, protected QGLFunctions
 signals:
         void stopShowLastDrawingSignal();
 public:
+        enum shaderEnum {ALPHA_SHADER=0,SPIRAL_SHADER=1};
+        void processMouse();
+        void initPBO();
+        void initShaderPrograms();
+        QVector<ShaderProgramWrapper*> getShaderPrograms();
         bool isShaderSupported();
         void setShaderSupported(bool value);
     BrushManager m_manager;
@@ -208,10 +214,10 @@ public:
     void drawTexture(int x, int y, int width, int height, int index, int angle=0, float scaleX = 1, float scaleY = 1, int z = 0);
     void drawTexture(int x, int y, int width, int height, GLuint texture, int angle=0, float scaleX = 1, float scaleY = 1, int z = 0);
 
-    int initTexture(GLuint &texture);
+    int initTexture(GLuint &texture, int width, int height);
     void initFBDepthBuffer(GLuint &fbo_depth);
     void paintBrushInBuffer(FBOWrapper fboWrapper);
-    FBOWrapper initFboWrapper(bool visibleOnly=true);
+    FBOWrapper initFboWrapper( int width, int height,bool visibleOnly=true);
     QList<DrawElement *> &getList();
     void setList(const QList<DrawElement *> &value);
     bool getIsBrushWindowOpened() const;
@@ -248,6 +254,8 @@ public:
     void bindBuffer(GLuint buffer);
 
     QImage twiceImageSizeWithouScaling(QImage img);
+    QOpenGLFunctions_3_0 *getOglFuncs();
+    FBOWrapper getPingPongFBO();
 public slots:
    // void clearFrameBuffer();
         void clearFrameBuffer(FBOWrapper fboWrapper);
@@ -308,17 +316,23 @@ private slots:
 private:
 
   //  QMap <void* , QList<QByteArray>>  audioList;
+    GLuint pixelBufferIDs[2];
+
     QList<QByteArray>  audioList;
+    QOpenGLFunctions_3_0 *oglFuncs;
+
+     QVector<ShaderProgramWrapper*> shaderPrograms;
 
     bool shaderSupported = false;
     ShaderProgramWrapper *mainShader;//Color,alpha,blur;
          int frameRate = 25;
        bool mayShowRedRectangle = true;
     unsigned int current_millisecs =0;
+    unsigned int last_milisecs_update = 0;
     unsigned int last_milisecs_drawn = 0;
 
     QVector<GLenum> attachment;
-    FBOWrapper mainFBO;
+    FBOWrapper mainFBO,pingpongFBO;
 
      QMessageBox ms_for_debug;
     bool pressedCtrl = false;
@@ -393,7 +407,7 @@ private:
     bool busy = false;
     bool isClose = false;
     bool curentList = false;
-    bool init;
+    bool init = false;
 
 
 

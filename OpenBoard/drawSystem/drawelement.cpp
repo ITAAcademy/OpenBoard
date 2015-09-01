@@ -1,6 +1,6 @@
 #include "drawElement.h"
-
-
+#include "../TimeLine/listcontroll.h"
+class ListControll;
 OGLWidget *DrawElement::getDrawWidget() const
 {
     return pDrawWidget;
@@ -14,9 +14,10 @@ bool DrawElement::setDrawWidget(OGLWidget *value)
     {
       //  qDebug() << "VALUE  " << fboWrapper.errorStatus;
         if(fboWrapper.errorStatus != 0)
-            setFBOWrapper(pDrawWidget->initFboWrapper());//TODO
+            setFBOWrapper(pDrawWidget->initFboWrapper(pDrawWidget->getWax(),pDrawWidget->getWay()));//TODO
         return false;
     }
+
 
     if(pDrawWidget != NULL)
     {
@@ -25,11 +26,29 @@ bool DrawElement::setDrawWidget(OGLWidget *value)
         disconnect(pDrawWidget, SIGNAL(pauseSignal()), this, SLOT(pause()));
     }
     pDrawWidget = value;
+    qDebug() << "before alpha effect created";
+    qDebug() << "pDrawWidget->getShaderPrograms().length:"<<pDrawWidget->getShaderPrograms().length();
+
+
+
     if(fboWrapper.errorStatus != 0)
-        setFBOWrapper(pDrawWidget->initFboWrapper());//TODO
+        setFBOWrapper(pDrawWidget->initFboWrapper(pDrawWidget->getWax(),pDrawWidget->getWay()));//TODO
     connect(pDrawWidget, SIGNAL(startSignal()), this, SLOT(start()));
     connect(pDrawWidget, SIGNAL(stopSignal()), this, SLOT(stop()));
     connect(pDrawWidget, SIGNAL(pauseSignal()), this, SLOT(pause()));
+
+    ShaderEffect alphaEffect(pDrawWidget->getShaderPrograms()[OGLWidget::ALPHA_SHADER]);
+    ShaderEffect spiralEffect(pDrawWidget->getShaderPrograms()[OGLWidget::SPIRAL_SHADER]);
+    alphaEffect.setEffectTimeHowLong(1000);
+    spiralEffect.setEffectTimeHowLong(1000);
+
+    qDebug() << "alpha effect created";
+
+     effects.push_back(alphaEffect); //ADD DEFAULT EFFECT
+     effects.push_back(spiralEffect); //ADD DEFAULT EFFECT
+
+
+
     return true;
 }
 
@@ -101,13 +120,115 @@ void DrawElement::paint()
   //  qDebug() << "paint on buffer:"<<fboWrapper.frameBuffer;
     if(fboWrapper.errorStatus == 0)
     {
-        pDrawWidget->bindBuffer(fboWrapper.frameBuffer);
-        draw();
+      bool drawToSecondBuffer=false;
+     // bool currentDrawToSecondBuffer=false;
+        if (effects.isEmpty())
+        {
+              pDrawWidget->bindBuffer(fboWrapper.frameBuffer);
+        draw();//Draw original image one time without any effects
+        qDebug() << "EFFECTS EMPTY !!!";
+        }
+        else
+        {
+    if (effects.length()>1)
+    {
+        drawToSecondBuffer=true;
+        pDrawWidget->clearFrameBuffer(pDrawWidget->getPingPongFBO());
+        //pDrawWidget->clearFrameBuffer(pDrawWidget->getMainFBO());
+    }
+     unsigned int playTime = pDrawWidget->getTimeLine()->getPlayTime();
+
+ int effectsUsedInOneTime=0;
+ glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); glEnable( GL_BLEND );
+        for (int i=0;i<effects.length();i++)
+           {
+            unsigned int beginAtTime = effects[i].getStartTimeMS()+ startDrawTime ;
+            unsigned int endAtTime = beginAtTime + effects[i].getEffectTimeHowLong();
+             float keyFrame = 0;
+             if(endAtTime-beginAtTime!=0)keyFrame=(float)(playTime-beginAtTime)/(endAtTime-beginAtTime);
+
+            if (playTime>=beginAtTime && playTime<=endAtTime)
+            {
+            if(drawToSecondBuffer)
+                    {
+                //qDebug() << "FIRST DRAW TO PING-PONG FRAME BUFFER";
+                pDrawWidget->bindBuffer(pDrawWidget->getPingPongFBO().frameBuffer);
+               // qDebug() << "Shader program ("<<i<<"):"<<effects[i].getShaderWrapper()->getShaderProgram();
+                pDrawWidget->getOglFuncs()->glUseProgram(effects[i].getShaderWrapper()->getShaderProgram());
+              //  float keyFrame = (float)(pDrawWidget->getTimeLine()->getPlayTime()-startDrawTime)/lifeTime;//MOVE UP LATER
+                ShaderEffect::setUniformAnimationKey(pDrawWidget,effects[i],keyFrame);
+                ShaderEffect::setUniformResolution(pDrawWidget,effects[i],fboWrapper.tWidth,fboWrapper.tHeight);
+                if (i==0)
+                draw();
+                else
+                    pDrawWidget->drawTexture(0,0,fboWrapper.tWidth,fboWrapper.tHeight,
+                                            fboWrapper.bindedTexture,0,1,1,z );
+                    }
+            else if (!drawToSecondBuffer)
+                {
+               // qDebug() << "FIRST DRAW TO MAIN FRAME BUFFER";
+                pDrawWidget->bindBuffer(fboWrapper.frameBuffer);
+                pDrawWidget->getOglFuncs()->glUseProgram(effects[i].getShaderWrapper()->getShaderProgram());
+               // float keyFrame = (float)(pDrawWidget->getTimeLine()->getPlayTime()-startDrawTime)/lifeTime;//MOVE UP LATER
+                ShaderEffect::setUniformAnimationKey(pDrawWidget,effects[i],keyFrame);
+                ShaderEffect::setUniformResolution(pDrawWidget,effects[i],
+                                                   pDrawWidget->getPingPongFBO().tWidth,pDrawWidget->getPingPongFBO().tHeight);
+                if (i==0)
+                draw();
+                else
+                pDrawWidget->drawTexture(0,0,pDrawWidget->getPingPongFBO().tWidth,
+                                         pDrawWidget->getPingPongFBO().tHeight,
+                                        pDrawWidget->getPingPongFBO().bindedTexture,0,1,1,z );
+
+
+                }
+            effectsUsedInOneTime++;
+            drawToSecondBuffer=!drawToSecondBuffer;
+            }
+
+
+            }
+
+        if (effectsUsedInOneTime==0){
+            pDrawWidget->bindBuffer(fboWrapper.frameBuffer);
+            draw();//Draw original image one time without any effects
+
+        }
+        else
+        if (!drawToSecondBuffer)
+                        {
+                        pDrawWidget->bindBuffer(fboWrapper.frameBuffer);
+                       // float keyFrame = (float)(pDrawWidget->getTimeLine()->getPlayTime()-startDrawTime)/lifeTime;//MOVE UP LATER
+                        pDrawWidget->drawTexture(0,0,pDrawWidget->getPingPongFBO().tWidth,
+                                                 pDrawWidget->getPingPongFBO().tHeight,
+                                                pDrawWidget->getPingPongFBO().bindedTexture,0,1,1,z );
+
+
+                        }
+
+
+
+        }
+         pDrawWidget->getOglFuncs()->glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE);
+        pDrawWidget->getOglFuncs()->glUseProgram(0);
         pDrawWidget->bindBuffer(0);
+
+
+       /* int keyUnifrom = pDrawWidget->context()->functions()->glGetUniformLocation(
+                    pDrawWidget->getShaderPrograms()[0].getShaderProgram(),"animationKey");
+        float keyFrame = (float)(pDrawWidget->getTimeLine()->getPlayTime()-startDrawTime)/lifeTime;
+
+        qDebug() << "KEY FRAME:"<<keyFrame;
+
+
+        pDrawWidget->context()->functions()->glUseProgram( pDrawWidget->getShaderPrograms()[0].getShaderProgram());
+        pDrawWidget->context()->functions()->glUniform1f(keyUnifrom,keyFrame);
+*/
         if(aspectRatio)
             pDrawWidget->paintBufferOnScreen(fboWrapper,x, y, width, width, z);
         else
             pDrawWidget->paintBufferOnScreen(fboWrapper,x, y, width, height, z);
+        // pDrawWidget->context()->functions()->glUseProgram(0);
     }
     else
         qWarning() << "In curent draw element fboWraper is not init!!!";
@@ -176,7 +297,6 @@ bool DrawElement::save(QIODevice* device)
     stream << temp_type << key << lifeTime << tickTime << startDrawTime << x << y << z << width << height << keyCouter;
     //if (typeId == Element_type::Image)
         //save_image(stream, icon);
-    qDebug() << "last path:"<<lastPath;
     if (!lastPath.isEmpty())
        resultStatus = save_image(stream,lastPath,icon.format());
     else

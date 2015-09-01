@@ -9,6 +9,8 @@
 #include <QPoint>
 #include <QSize>
 #include <QRect>
+#include <qvector.h>
+#include <shadereffect.h>
 #include "../openglwidget.h"
 
 enum Element_type { Text, Video, Image,Brushh,Empty};
@@ -22,6 +24,7 @@ protected:
     FBOWrapper fboWrapper;
     QImage icon;
     QString key;
+    QVector<ShaderEffect> effects;
     int lifeTime = 0;
     int tickTime;
     int delay;

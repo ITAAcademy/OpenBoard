@@ -34,7 +34,8 @@ SOURCES += main.cpp\
     encoder/ffmpeghelp.cpp \
     drawSystem/drawvideo.cpp \
     encoder/audiodecoder.cpp \
-    shaderprogramwrapper.cpp
+    shaderprogramwrapper.cpp \
+    shadereffect.cpp
     drawSystem/drawbrush.cpp
 
 
@@ -68,7 +69,8 @@ HEADERS  += mainwindow.h \
     encoder/ffmpeghelp.h \
     drawSystem/drawvideo.h \
     encoder/audiodecoder.h \
-    shaderprogramwrapper.h
+    shaderprogramwrapper.h \
+    shadereffect.h
     drawSystem/drawbrush.h
 
 
@@ -123,3 +125,11 @@ INCLUDEPATH += $$PWD\include
 LIBS += "$$PWD/bin/*.dll"
 
 RCC_DIR = ../
+
+DISTFILES += \
+    frag_alpha.fsh \
+    frag_alpha.frag \
+    alpha.frag \
+    alpha.vert \
+    spiral.frag \
+    spiral.vert

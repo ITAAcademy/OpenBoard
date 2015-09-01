@@ -1,11 +1,15 @@
 
 #include "openglwidget.h"
-#include <qglfunctions.h>
+//#include <qglfunctions.h>
 #include "drawSystem/drawsystem.h"
 #include "../TimeLine/listcontroll.h"
 #define GLWIDGET_SIZE       640,480
 #define MAIN_FRAGMENT_SHADER_PATH ":/staticShaders/openGL/shaders/fragmentShader.glsl"
 #define MAIN_VERTEX_SHADER_PATH ":/staticShaders/openGL/shaders/vertexShader.glsl"
+#define ALPHA_FRAGMENT_SHADER_PATH ":/dynamic/openGL/shaders/alpha.frag"
+#define ALPHA_VERTEX_SHADER_PATH ":/dynamic/openGL/shaders/alpha.vert"
+#define SPIRAL_FRAGMENT_SHADER_PATH ":/dynamic/openGL/shaders/spiral.frag"
+#define SPIRAL_VERTEX_SHADER_PATH ":/dynamic/openGL/shaders/spiral.vert"
 /*
  *scroll
  *
@@ -14,6 +18,8 @@ canvas->setProperty("scroll", k);
 */
 
 GLuint OGLWidget::loadTexture(QImage img,bool doubleSize){
+    int nextIndex = 0;
+        int index = 0;
 if (doubleSize)img = twiceImageSizeWithouScaling(img);
     if(img.isNull()) // QCoreApplication::applicationDirPath()+"/star.png"
     {
@@ -43,12 +49,40 @@ if (doubleSize)img = twiceImageSizeWithouScaling(img);
        glGenTextures(1, &texture); // Obtain an id for the texture
 
        glBindTexture(GL_TEXTURE_2D, texture); // Set as the current texture
- //qDebug(" after  glBindTexture(GL_TEXTURE_2D, texture);");
+       // glBindBuffer(GL_PIXEL_UNPACK_BUFFER_ARB, pixelBufferIDs[index]);
+
+       //qDebug(" after  glBindTexture(GL_TEXTURE_2D, texture);");
        //glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
       // glTexEnvf(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_DECAL);
+//int DATA_SIZE =  GL_formatted_image.width() *  GL_formatted_image.height() * 4 ;
+
+glTexImage2D(GL_TEXTURE_2D, 0, 4, GL_formatted_image.width(), GL_formatted_image.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, GL_formatted_image.bits());
+     //   glTexImage2D(GL_TEXTURE_2D, 0, 4, GL_formatted_image.width(), GL_formatted_image.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, 0);
 
 
-       glTexImage2D(GL_TEXTURE_2D, 0, 4, GL_formatted_image.width(), GL_formatted_image.height(), 0, GL_RGBA, GL_UNSIGNED_BYTE, GL_formatted_image.bits());
+        //glBindBuffer(GL_PIXEL_UNPACK_BUFFER_ARB, pixelBufferIDs[nextIndex]);
+
+        // map the buffer object into client's memory
+                      // Note that glMapBufferARB() causes sync issue.
+                      // If GPU is working with this buffer, glMapBufferARB() will wait(stall)
+                      // for GPU to finish its job. To avoid waiting (stall), you can call
+                      // first glBufferDataARB() with NULL pointer before glMapBufferARB().
+                      // If you do that, the previous data in PBO will be discarded and
+                      // glMapBufferARB() returns a new allocated pointer immediately
+                      // even if GPU is still working with the previous data.
+               /*glBufferData(GL_PIXEL_UNPACK_BUFFER_ARB, DATA_SIZE, 0, GL_STREAM_DRAW_ARB);
+                      GLubyte* ptr = (GLubyte*)glMapBuffer(GL_PIXEL_UNPACK_BUFFER_ARB, GL_WRITE_ONLY_ARB);
+
+                      if(ptr)
+                              {
+                                  // update data directly on the mapped buffer
+                                  //updatePixels(ptr, DATA_SIZE);
+                                  memcpy(ptr,GL_formatted_image.bits(),DATA_SIZE);
+                                  glUnmapBuffer(GL_PIXEL_UNPACK_BUFFER_ARB); // release pointer to mapping buffer
+                              }
+                      glBindBuffer(GL_PIXEL_UNPACK_BUFFER_ARB, 0);*/
+
+
 
        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER,GL_NEAREST);
        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
@@ -335,6 +369,92 @@ void OGLWidget::setEditingRectangle(const RectangleEditor &value)
     editingRectangle = value;
 }
 
+void OGLWidget::processMouse()
+{
+
+
+    if(isMousePress) {
+        GLint x1 = editingRectangle.rect.x();
+          GLint y1 = editingRectangle.rect.y();
+            GLint x2 = editingRectangle.rect.x()+editingRectangle.rect.width();
+            GLint y2 = editingRectangle.rect.y()+editingRectangle.rect.height();
+            m_manager.setAbleToDraw(true);
+
+            int leftCornerX1=x1-editingRectangle.leftCornerSize/2;
+             int leftCornerY1=y1-editingRectangle.leftCornerSize/2;
+                     int leftCornerX2=x1 + editingRectangle.leftCornerSize/2;
+                      int leftCornerY2=y1 + editingRectangle.leftCornerSize/2;
+
+
+
+
+        //editingRectangle.setX(0);
+       // editingRectangle.setY(0);
+
+            if (editingRectangle.editingRectangleMode==EDIT_RECTANGLE_UNBINDED && editingRectangle.isEditingRectangleVisible && !forseEditBoxDisable && !isPainting)
+     if ((mousePos.x() >= leftCornerX1 && mousePos.x() <= leftCornerX2) && (mousePos.y() >= leftCornerY1 && mousePos.y() <= leftCornerY2))
+     {
+         editingRectangle.editingRectangleMode=EDIT_RECTANGLE_RESIZE;
+     }
+     else if ((mousePos.x() >= x1) && (mousePos.x() <= x2) &&
+              (mousePos.y() >= y1) && (mousePos.y() <= y2))
+     {
+         editingRectangle.editingRectangleMode=EDIT_RECTANGLE_MOVE;
+     }
+
+
+     switch(editingRectangle.editingRectangleMode){
+    case EDIT_RECTANGLE_MOVE:
+         m_manager.setAbleToDraw(false);
+        // // //qDebug()<<"EDIT_RECTANGLE_MOVE width"<<editingRectangle.rect.width();
+         //if (isPainting)
+         {
+         editingRectangle.rect.moveTo(mousePos.x() - mousePressPos.x(), //-editingRectangle.rect.width()/2
+                                mousePos.y() - mousePressPos.y() ); //-editingRectangle.rect.height()/2
+         }
+
+
+     break;
+     case EDIT_RECTANGLE_RESIZE:
+          m_manager.setAbleToDraw(false);
+         // //qDebug()<<"EDIT_RECTANGLE_RESIZE";
+        //  if (isPainting)
+         {
+             editingRectangle.rect.setX(mousePos.x());
+             editingRectangle.rect.setY(mousePos.y());
+         }
+
+        break;
+     }
+     testRectangle();
+        if ( m_manager.isAbleToDraw()) paintBrushInBuffer(mainFBO);
+    }
+}
+
+void OGLWidget::initPBO()
+{
+    glGenBuffers(2, pixelBufferIDs);
+}
+
+void OGLWidget::initShaderPrograms()
+{
+    mainShader = new ShaderProgramWrapper(this);
+    if (mainShader->initShader(MAIN_FRAGMENT_SHADER_PATH,MAIN_VERTEX_SHADER_PATH)==0)shaderSupported=true;
+
+    ShaderProgramWrapper *alphaShader = new ShaderProgramWrapper(this);
+    if(alphaShader->initShader(ALPHA_FRAGMENT_SHADER_PATH,ALPHA_VERTEX_SHADER_PATH)!=0)shaderSupported=true;
+    shaderPrograms.push_back(alphaShader);
+
+    ShaderProgramWrapper *spiralShader = new ShaderProgramWrapper(this);
+    if(spiralShader->initShader(SPIRAL_FRAGMENT_SHADER_PATH,SPIRAL_VERTEX_SHADER_PATH)!=0)shaderSupported=true;
+    shaderPrograms.push_back(spiralShader);
+}
+
+QVector<ShaderProgramWrapper*> OGLWidget::getShaderPrograms()
+{
+    return shaderPrograms;
+}
+
 bool OGLWidget::isShaderSupported()
 {
     return shaderSupported;
@@ -353,6 +473,7 @@ void OGLWidget::setFrameRate(int fps)
 OGLWidget::OGLWidget(QWidget *parent) :
     QGLWidget(parent)
 {
+    qDebug() <<  "OGL WIDGET COnstructor start";
     setFixedSize(GLWIDGET_SIZE);
      wax=width(); way=height(); // начальный размер окна
     init = false;
@@ -381,7 +502,7 @@ OGLWidget::OGLWidget(QWidget *parent) :
     editingRectangle.leftCornerSize=10;
     bRecord = false;
     this->setWindowFlags(Qt::CustomizeWindowHint | Qt::Dialog | Qt::FramelessWindowHint | Qt::WindowTitleHint);
-
+qDebug() <<  "OGL WIDGET MID";
     //this->setResizeMode(QQuickWidget::SizeRootObjectToView ); //TODO
     /*
      * init
@@ -418,12 +539,14 @@ OGLWidget::OGLWidget(QWidget *parent) :
 
     //OPENGL
    //setFormat(QGLFormat(QGL::SampleBuffers | QGL::DoubleBuffer | QGL::DepthBuffer)); // Двойная буферизация
-     QGLFormat format;
+
+   /*  QGLFormat format;
      format.setProfile(QGLFormat::CompatibilityProfile);
      format.setVersion(3,0);
      format.setDoubleBuffer(true);
-     setFormat(format);
-   glDepthFunc(GL_LEQUAL); // Буфер глубины
+     setFormat(format); */
+
+   //glDepthFunc(GL_LEQUAL); // Буфер глубины
    QTimer *timer = new QTimer(this);
    connect(timer, SIGNAL(timeout()), this, SLOT(updateWindow()));
    timer->start(0);
@@ -444,10 +567,15 @@ OGLWidget::OGLWidget(QWidget *parent) :
  // timeLine->loadCurrentTextInTheFirstBlockWhenInit();
 */
    getTimeLine()->setIsProjectChanged(false);
+   oglFuncs=this;
+   qDebug() <<  "OGL WIDGET COnstructor end";
 }
 void OGLWidget::bindBuffer(GLuint buffer){
     glBindFramebuffer(GL_FRAMEBUFFER,buffer);
 }
+ QOpenGLFunctions_3_0* OGLWidget::getOglFuncs(){
+     return oglFuncs;
+ }
 
 OGLWidget::~OGLWidget()
 {
@@ -462,18 +590,27 @@ OGLWidget::~OGLWidget()
 
     if (drawBrushElm !=NULL)
         delete drawBrushElm;
+
+    for (int i =0;i<shaderPrograms.length();i++)
+        delete shaderPrograms[i];
+
+    delete mainShader;
 }
 
 
 
 void OGLWidget::resizeGL(int nWidth, int nHeight)
 {
-    glMatrixMode(GL_PROJECTION);
-    glLoadIdentity();
-    glViewport(0, 0, (GLint)nWidth, (GLint)nHeight);
+    qDebug()<<"resize";
+    if(isInit()){
+      //  makeCurrent();
+    //glMatrixMode(GL_PROJECTION);
+   // glLoadIdentity();
+    //glViewport(0, 0, (GLint)nWidth, (GLint)nHeight);
+    }
     wax=nWidth;
     way=nHeight;
-    // //qDebug() << "CALL RESIZE";
+  qDebug() << "end resize";
 }
 void OGLWidget::paintBufferOnScreen( FBOWrapper buffer,int x, int y, int width, int height, int z){
      if (buffer.errorStatus==-1)qDebug() << "BAD BUFFER";
@@ -690,7 +827,7 @@ glBindRenderbuffer(GL_RENDERBUFFER , 0); // Unbind the render buffer
 //qDebug() << "GL_ERROR_STATUS glBindRenderbuffer:"<<error;
 }
 
-int OGLWidget::initTexture(GLuint &texture) {
+int OGLWidget::initTexture(GLuint &texture,int width,int height) {
     makeCurrent();
     glEnable(GL_TEXTURE_2D);
     //glDeleteTextures(1,&fbo_texture);
@@ -698,7 +835,7 @@ glGenTextures(1, &texture); // Generate one texture
 
 glBindTexture(GL_TEXTURE_2D, texture); // Bind the texture fbo_texture
 
-glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, wax, way, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL); // Create a standard texture with the width and height of our window
+glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL); // Create a standard texture with the width and height of our window
 
 // Setup the basic texture parameters
 glTexParameterf(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
@@ -713,7 +850,7 @@ return glGetError();
 }
 
 
-FBOWrapper OGLWidget::initFboWrapper(bool visibleOnly) {
+FBOWrapper OGLWidget::initFboWrapper(int width, int height, bool visibleOnly) {
     glGetError();
 
     makeCurrent();
@@ -721,6 +858,8 @@ FBOWrapper OGLWidget::initFboWrapper(bool visibleOnly) {
 
     FBOWrapper fboWrapper;
     fboWrapper.errorStatus=0;
+    fboWrapper.tWidth=width;
+     fboWrapper.tHeight=height;
     GLuint fbo=0;
     GLuint depth_buffer=0;
     GLuint fbo_texture=0;
@@ -758,7 +897,7 @@ qDebug() << 3;
          return fboWrapper;
      }
 //initFBDepthBuffer(depth_buffer); // Initialize our frame buffer depth buffer
- error = initTexture(fbo_texture); // Initialize our frame buffer texture
+ error = initTexture(fbo_texture,width,height); // Initialize our frame buffer texture
  if(error != NULL)
  {
      fboWrapper.errorStatus = error;
@@ -819,7 +958,7 @@ void OGLWidget::initializeGL()
 {
      qDebug() << "initializeGL";
 
-    initializeGLFunctions();
+    initializeOpenGLFunctions();
     makeCurrent();
 glEnable(GL_DEPTH_TEST);
     qglClearColor(Qt::black); // Черный цвет фона
@@ -837,9 +976,11 @@ glEnable(GL_DEPTH_TEST);
     brushTexture = loadTexture(m_manager.getCreatedBrush().color_img,true);
     //loadTextureFromFile(":/ThirdPart/images/brush.png");
     //initFrameBuffer(); // Create our frame buffer object
-    mainFBO=initFboWrapper(false);
+    mainFBO=initFboWrapper(wax,way,false);
+    pingpongFBO=initFboWrapper(wax,way,false);
+    initPBO();
      //initShader();
-
+glViewport(0, 0, (GLint)wax, (GLint)way);
     setAutoBufferSwap(false);
     qApp->processEvents(QEventLoop::AllEvents, 1000);
     qDebug() << "A";
@@ -847,9 +988,12 @@ glEnable(GL_DEPTH_TEST);
     qDebug() << "B";
    /* list_1.append(GenerationDrawElement("kaka.text", this, 0));
     list_1.append(GenerationDrawElement("brush.png", this, 0));*/
-    mainShader = new ShaderProgramWrapper(this);
-    if (mainShader->initShader(MAIN_FRAGMENT_SHADER_PATH,MAIN_VERTEX_SHADER_PATH)==0)shaderSupported=true;
-         connect(&m_manager,SIGNAL(currentBrushChanged()),this,SLOT(brushParamsChanged()));
+
+
+    initShaderPrograms();
+
+   connect(&m_manager,SIGNAL(currentBrushChanged()),this,SLOT(brushParamsChanged()));
+
 
 }
 
@@ -872,6 +1016,9 @@ void OGLWidget::destroy(bool destroyWindow, bool destroySubWindow){
 }
 FBOWrapper OGLWidget::getMainFBO(){
     return mainFBO;
+}
+FBOWrapper OGLWidget::getPingPongFBO(){
+    return pingpongFBO;
 }
 
 void OGLWidget::clearFrameBuffer(FBOWrapper fboWrapper){
@@ -950,19 +1097,51 @@ void OGLWidget::paintGL()
 //WRITE TO SCREEN FROM HERE
 //drawTextBuffer(10,10,400,400);
 
-
-
     GLint x1 = editingRectangle.rect.x();
       GLint y1 = editingRectangle.rect.y();
         GLint x2 = editingRectangle.rect.x()+editingRectangle.rect.width();
         GLint y2 = editingRectangle.rect.y()+editingRectangle.rect.height();
-        bool canDrawByMouse = true;
+        m_manager.setAbleToDraw(true);
 
         int leftCornerX1=x1-editingRectangle.leftCornerSize/2;
          int leftCornerY1=y1-editingRectangle.leftCornerSize/2;
                  int leftCornerX2=x1 + editingRectangle.leftCornerSize/2;
                   int leftCornerY2=y1 + editingRectangle.leftCornerSize/2;
 
+
+                  if (editingRectangle.isEditingRectangleVisible && !forseEditBoxDisable && !isPainting && getStatus()!= PLAY)
+                  {
+
+                      qDebug () << "DRAW RECTANGLE";
+                     // paintBufferOnScreen(0, 0, wax, way);
+                      //rectangle
+                      glLineWidth(3);
+                      glColor3f(1.0f, 0.0f, 0.0f);
+                      glBegin(GL_LINES);
+                      glVertex3i(x1,y1, 100);
+                      glVertex3i(x2,y1, 100);
+
+                      glVertex3i(x2,y1, 100);
+                      glVertex3i(x2,y2, 100);
+
+                      glVertex3i(x2,y2, 100);
+                      glVertex3i(x1,y2, 100);
+
+                      glVertex3i(x1,y2, 100);
+                      glVertex3i(x1,y1, 100);
+                      glEnd();
+
+                      //left corner
+                       glColor3f(0.0f, 1.0f, 0.0f);
+                       glLineWidth(3);
+                       glBegin(GL_QUADS);   //We want to draw a quad, i.e. shape with four sides
+                            // glColor3i(1, 0, 0); //Set the colour to red
+                         glVertex3i(leftCornerX1, leftCornerY1, 100);            //Draw the four corners of the rectangle
+                         glVertex3i(leftCornerX2, leftCornerY1, 100);
+                         glVertex3i(leftCornerX2, leftCornerY2, 100);
+                         glVertex3i(leftCornerX1, leftCornerY2, 100);
+                       glEnd();
+                  }
 
 
 //if (isMousePlay)paintBrushInBuffer(true);
@@ -976,85 +1155,9 @@ for(int i = 0; !timeLine->isBlocked && i < getList().size(); i++)
         getList()[i]->paint();
 }
 
-if (editingRectangle.isEditingRectangleVisible && !forseEditBoxDisable && !isPainting && getStatus()!= PLAY)
-{
-   // paintBufferOnScreen(0, 0, wax, way);
-    //rectangle
-    glLineWidth(3);
-    glColor3f(1.0f, 0.0f, 0.0f);
-    glBegin(GL_LINES);
-    glVertex3i(x1,y1, 100);
-    glVertex3i(x2,y1, 100);
 
-    glVertex3i(x2,y1, 100);
-    glVertex3i(x2,y2, 100);
-
-    glVertex3i(x2,y2, 100);
-    glVertex3i(x1,y2, 100);
-
-    glVertex3i(x1,y2, 100);
-    glVertex3i(x1,y1, 100);
-    glEnd();
-
-    //left corner
-     glColor3f(0.0f, 1.0f, 0.0f);
-     glLineWidth(3);
-     glBegin(GL_QUADS);   //We want to draw a quad, i.e. shape with four sides
-          // glColor3i(1, 0, 0); //Set the colour to red
-       glVertex3i(leftCornerX1, leftCornerY1, 100);            //Draw the four corners of the rectangle
-       glVertex3i(leftCornerX2, leftCornerY1, 100);
-       glVertex3i(leftCornerX2, leftCornerY2, 100);
-       glVertex3i(leftCornerX1, leftCornerY2, 100);
-     glEnd();
-}
 //glDisable(GL_DEPTH_TEST);
-if(isMousePress) {
-    //editingRectangle.setX(0);
-   // editingRectangle.setY(0);
 
-        if (editingRectangle.editingRectangleMode==EDIT_RECTANGLE_UNBINDED && editingRectangle.isEditingRectangleVisible && !forseEditBoxDisable && !isPainting)
- if ((mousePos.x() >= leftCornerX1 && mousePos.x() <= leftCornerX2) && (mousePos.y() >= leftCornerY1 && mousePos.y() <= leftCornerY2))
- {
-     editingRectangle.editingRectangleMode=EDIT_RECTANGLE_RESIZE;
- }
- else if ((mousePos.x() >= x1) && (mousePos.x() <= x2) &&
-          (mousePos.y() >= y1) && (mousePos.y() <= y2))
- {
-     editingRectangle.editingRectangleMode=EDIT_RECTANGLE_MOVE;
- }
-
-
- switch(editingRectangle.editingRectangleMode){
-case EDIT_RECTANGLE_MOVE:
-     canDrawByMouse=false;
-    // // //qDebug()<<"EDIT_RECTANGLE_MOVE width"<<editingRectangle.rect.width();
-     //if (isPainting)
-     {
-     editingRectangle.rect.moveTo(mousePos.x() - mousePressPos.x(), //-editingRectangle.rect.width()/2
-                            mousePos.y() - mousePressPos.y() ); //-editingRectangle.rect.height()/2
-     }
-
-     //editingRectangle.setX(mousePos.x()-editingRectangle.width()/2);
-     //editingRectangle.setY(mousePos.y()-editingRectangle.height()/2);
-    // // //qDebug()<< "leftCornerX1:"<<leftCornerX1;
-     //// //qDebug()<< "leftCornerY1:"<<leftCornerY1;
-     // // //qDebug()<< "leftCornerX2:"<<leftCornerX2;
-     // // //qDebug()<< "leftCornerY2:"<<leftCornerY2;
- break;
- case EDIT_RECTANGLE_RESIZE:
-     canDrawByMouse=false;
-     // //qDebug()<<"EDIT_RECTANGLE_RESIZE";
-    //  if (isPainting)
-     {
-         editingRectangle.rect.setX(mousePos.x());
-         editingRectangle.rect.setY(mousePos.y());
-     }
-
-    break;
- }
- testRectangle();
-    if (canDrawByMouse && m_manager.isAbleToDraw()) paintBrushInBuffer(mainFBO);
-}
 if (showingLastDrawing )
 {
     if (drawBrushElm->getBrushes().length()<=0)
@@ -1650,50 +1753,51 @@ void  OGLWidget::updateWindow(){
     //if (timeLine->getPointedBlocks().size())
    /// if(!timeLine->isBlocked)
    ///
+processMouse();
+    setList(timeLine->getPointedBlocksDE());
+
+    QPoint t = timeLine->getSelectedBlockPoint();
+
+    if(curStatus != PLAY && t.x() >= 0)
+    {
+        if (mayShowRedRectangle)
+            editingRectangle.isEditingRectangleVisible = true;
+
+        if(t != selElm )
+        {
+            //clearBuffer();
+            selElm = t;
+            editingRectangle.rect = timeLine->getDrawRect(t.x(), t.y());
+        }
+        else
+        {
+
+           // if (!timeLine->getIsEditBlockShow())
+            {
+            QRect t2 = editingRectangle.rect;
+            timeLine->setDrawX(selElm.x(), selElm.y(), t2.x());
+            timeLine->setDrawY(selElm.x(), selElm.y(), t2.y());
+            timeLine->setDrawSize(selElm.x(), selElm.y(), t2.width(), t2.height());
+            }
+
+
+
+        }
+    }
+    else
+    {
+       // //qDebug() << "SBLOCK " << t;
+        selElm = t;
+        editingRectangle.isEditingRectangleVisible = false;
+
+    }
+
 
      current_millisecs = QDateTime::currentMSecsSinceEpoch();
    if ((current_millisecs - last_milisecs_drawn) >= 1000/frameRate)
    {
-   last_milisecs_drawn = current_millisecs;
-    emit windowUpdating(1000/frameRate);
-   setList(timeLine->getPointedBlocksDE());
-
-   QPoint t = timeLine->getSelectedBlockPoint();
-
-   if(curStatus != PLAY && t.x() >= 0)
-   {
-       if (mayShowRedRectangle)
-           editingRectangle.isEditingRectangleVisible = true;
-
-       if(t != selElm )
-       {
-           //clearBuffer();
-           selElm = t;
-           editingRectangle.rect = timeLine->getDrawRect(t.x(), t.y());
-       }
-       else
-       {
-
-          // if (!timeLine->getIsEditBlockShow())
-           {
-           QRect t2 = editingRectangle.rect;
-           timeLine->setDrawX(selElm.x(), selElm.y(), t2.x());
-           timeLine->setDrawY(selElm.x(), selElm.y(), t2.y());
-           timeLine->setDrawSize(selElm.x(), selElm.y(), t2.width(), t2.height());
-           }
-
-
-
-       }
-   }
-   else
-   {
-      // //qDebug() << "SBLOCK " << t;
-       selElm = t;
-       editingRectangle.isEditingRectangleVisible = false;
-
-   }
-
+       last_milisecs_drawn = current_millisecs;
+        emit windowUpdating(1000/frameRate);
     updateGL();
 
    }
