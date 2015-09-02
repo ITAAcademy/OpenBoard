@@ -1367,6 +1367,7 @@ var tempo_y_zdvig = (root.height+ main222.p_columns.spacing ) *num_of_blocks_bee
                 // item_col.width = timeControll.getMaxTrackTime()// item_col.childrenRect.width
 
                  bChangeSize = false;
+                  root.globalRep.updateModel();
     ///console.log("2222222222222");
             }
 
