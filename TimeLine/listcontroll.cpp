@@ -347,6 +347,7 @@ bool ListControll::removeTrack(int col)
     tracks[col0].block.removeAt(ind0);
             tracks[col1].block.append(temp);
             tracks[col1].block.move(tracks[col1].block.size()-1,ind1);
+            qDebug() << "moveBlockFromTo : ind1=" << ind1 << " trackMaxEl=" <<  tracks[col1].block.size() -1;
  }
 
 void ListControll::setBlocks(int col,const QList <Element> &value)
@@ -628,7 +629,7 @@ void ListControll::addMsToTimerValue(int ms)
   //  qDebug() << "SLOT addMsToTimerValue:"<<ms;
     if(isPlayPauseStop == 1)
         timerValue+=ms;
-    //qDebug() << "timerValue:"<<ms;
+
 }
 
 
