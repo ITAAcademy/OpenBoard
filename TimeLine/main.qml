@@ -91,6 +91,7 @@ Rectangle
    property int dropEnteredBlockIndex : -1
     property int zdvigWhenNormalAnim : 0
    property Item dropEnteredBlock
+   property int dropEnteredBlockY : 0
    property Item dropEnteredBlockItemGlobalRep
    property int dropEnteredTrackIndex : 0
     property real scaling :  timeControll.getScaleScrollChildren()
@@ -408,6 +409,10 @@ timeControll.setScaleScrollChildren(0) //it have protection from small values, w
         ParallelAnimation  {
             id: animation_move
                running: false
+               onStopped: {
+                   divider.y = divider.anim_y_value
+               }
+
         NumberAnimation  {
             target: divider
             property: "x";
@@ -708,7 +713,7 @@ timeControll.setScalePointerPos((x  -20 + scroll.flickableItem.contentX)* main22
                                            id: repka
                                            Component.onCompleted: {
                                                trackbar.globalRep = repka
-                                           }
+                                           }                                          
                                            property bool isDrag : false
                                            model:  timeControll.getTrackSize(trackbar.mIndex)//     bar_track.mIndex)
     function updateModel()      {
@@ -726,6 +731,7 @@ timeControll.setScalePointerPos((x  -20 + scroll.flickableItem.contentX)* main22
         timeControll.setIsProjectChanged(true)
     }
 
+
     function moveBlocksForAnim( from, to,   value) //left_right -1 or 1
     {
         for (var i = from; i <= to; i++)
@@ -737,6 +743,14 @@ timeControll.setScalePointerPos((x  -20 + scroll.flickableItem.contentX)* main22
     {
             repka.itemAt(ind).animRunX( value)
     }
+    function moveBlockForAnimLast(  value) //left_right -1 or 1
+    {
+            repka.itemAt(repka.count - 1).animRunX( value)
+      //  repka.itemAt(repka.count - 1).x += 100
+    }
+
+
+
                                            delegate:
                                            ContentBlock.Block{
                                                id: cool
