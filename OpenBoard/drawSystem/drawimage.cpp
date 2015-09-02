@@ -19,6 +19,7 @@ QMovie *DrawImageElm::getGif() const
 void DrawImageElm::setGif(QMovie *value)
 {
     gif = value;
+    gif->setCacheMode(QMovie::CacheAll);
 }
 DrawImageElm::DrawImageElm(OGLWidget *drawWidget, QObject *parent) : DrawElement(drawWidget, parent)
 {
@@ -40,22 +41,31 @@ void DrawImageElm::draw()
     if(bGIF)
     {
         pDrawWidget->clearFrameBuffer(fboWrapper);
+        //pDrawWidget->bindBuffer(fboWrapper.frameBuffer);
         if(keyCouter==0)
-        {
+                {
 
-           qDebug() << "RESET GIF";
-                gif->stop();
-                gif->start();
+                   qDebug() << "RESET GIF";
+                        gif->stop();
+                        gif->start();
+
+    int playTime = pDrawWidget->getTimeLine()->getPlayTime();
+             int keyFrame = (playTime-startDrawTime)*gif->frameCount()/lifeTime;
+gif->jumpToFrame(keyFrame);
+              gif->start();
+
         }
         if (bPause){
                 gif->setPaused(true);
         }
         else    gif->setPaused(false);
-        pDrawWidget->drawQImage(0, 0, gif->currentImage().scaled(pDrawWidget->getWax(), pDrawWidget->getWay()));
+        pDrawWidget->drawQImageFromTexture(0, 0, gif->currentImage(),textureIndex,z);
     }
     else
+    {
         if (keyCouter==0)pDrawWidget->clearFrameBuffer(fboWrapper);
         pDrawWidget->drawTexture(0, 0, pDrawWidget->getWax(), pDrawWidget->getWay(), textureIndex, 0, 1 , 1, z);
+    }
      keyCouter++;
 
 }
