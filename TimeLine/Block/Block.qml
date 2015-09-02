@@ -353,14 +353,13 @@ z: 0
                 root.animation_scale_normal_toXpos = main222.dropEnteredBlock.x +
                                     main222.zdvigWhenNormalAnim
 
+                    var num_of_blocks_beetwen = main222.dropEnteredBlock.colIndex - root.colIndex
+                     var tempo_y_zdvig = (root.height+ main222.p_columns.spacing ) *num_of_blocks_beetwen
+                    root.animation_scale_normal_toYpos = tempo_y_zdvig // divider.y
+
                 }
-                var num_of_blocks_beetwen = main222.dropEnteredBlock.colIndex - root.colIndex
-               // if (num_of_blocks_beetwen > 0)
-                {
-var tempo_y_zdvig = (root.height+ main222.p_columns.spacing ) *num_of_blocks_beetwen
-                root.animation_scale_normal_toYpos = tempo_y_zdvig // divider.y
-                //console.log("root.animation_scale_normal_toYpos = " + root.animation_scale_normal_toYpos)
-                }
+
+
 
 
                 root.p_bar_track.z += 200 //888

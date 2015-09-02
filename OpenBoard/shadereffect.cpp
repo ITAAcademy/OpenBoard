@@ -48,7 +48,7 @@ void ShaderEffect::setUniformAnimationKey(OGLWidget *oglWidget,ShaderEffect shad
     //oglWidget->getShaderPrograms()[OGLWidget::ALPHA_SHADER].getShaderProgram()
          //   float keyFrame = (float)(pDrawWidget->getTimeLine()->getPlayTime()-startDrawTime)/lifeTime;
 
-            qDebug() << "KEY FRAME:"<<keyFrame<<"keyuniform:"<<keyUnifrom;
+           // qDebug() << "KEY FRAME:"<<keyFrame<<"keyuniform:"<<keyUnifrom;
             //oglWidget->context()->functions()->glUseProgram( oglWidget->getShaderPrograms()[0].getShaderProgram());
             oglWidget->context()->functions()->glUniform1f(keyUnifrom,keyFrame);
 }

@@ -1112,7 +1112,7 @@ void OGLWidget::paintGL()
                   if (editingRectangle.isEditingRectangleVisible && !forseEditBoxDisable && !isPainting && getStatus()!= PLAY)
                   {
 
-                      qDebug () << "DRAW RECTANGLE";
+                     // qDebug () << "DRAW RECTANGLE";
                      // paintBufferOnScreen(0, 0, wax, way);
                       //rectangle
                       glLineWidth(3);
@@ -1510,6 +1510,7 @@ bool OGLWidget::drawAnimated(bool record)
         pause(300);
         m_encoder->pause();
 
+        getTimeLine()->play();
         return true;
     }
 
@@ -1797,8 +1798,8 @@ processMouse();
    if ((current_millisecs - last_milisecs_drawn) >= 1000/frameRate)
    {
        last_milisecs_drawn = current_millisecs;
-        emit windowUpdating(1000/frameRate);
-    updateGL();
+       emit windowUpdating(1000/frameRate);
+       updateGL();
 
    }
 }
@@ -1957,7 +1958,7 @@ void OGLWidget::drawQImageFromTexture(int x, int y, QImage img, GLuint index, in
 
 void OGLWidget::fillText( QString str,QColor color,QFont textFont, int x, int y, int z, float scale)
 {
- qDebug() << "IN FILL TEXT:"<< x << "   " << y;
+ //qDebug() << "IN FILL TEXT:"<< x << "   " << y;
    /* // //qDebug() << "ARG1:  " << str.size();
     // //qDebug() << "ARG2:  " << arg2;
     // //qDebug() << "ARG3:  " << arg3;
