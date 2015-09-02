@@ -29,10 +29,16 @@ void AudioDecoder::seekFile(int ms)
 {
     qDebug() << "seekFile();";
     avformat_seek_file(formatContext, audioStream,INT64_MIN, ms, INT64_MAX, 0 );
+    audioBuffer.clear();
 }
 void AudioDecoder::stateChanged(QAudio::State state)
 {
     //qDebug() << "State Change ::: " << state;
+}
+
+int AudioDecoder::getFrameFinished() const
+{
+    return frameFinished;
 }
 AudioDecoder::AudioDecoder(QObject * parent, AVFormatContext *formatContext ): QObject( parent ),  m_pullTimer(new QTimer(this))
 {
@@ -75,11 +81,11 @@ AudioDecoder::~AudioDecoder()
     myFile.close();
 }
 
-QByteArray AudioDecoder::nextFrame()
+QByteArray AudioDecoder::nextFrame(qint64 time)
 {
     if( av_read_frame(formatContext,&audioPacket) >= 0 )
     {
-        return nextFrame(audioPacket);
+        return nextFrame(audioPacket, time);
     }
 
 }
@@ -267,10 +273,11 @@ int AudioDecoder::resample2()
     out->nb_samples = swr_convert(swr, out->extended_data, dst_nb_samples, (const uint8_t **) audioFrame->extended_data, audioFrame->nb_samples);
 }
 
-QByteArray AudioDecoder::nextFrame(AVPacket &audioPacket)
+QByteArray AudioDecoder::nextFrame(AVPacket &audioPacket, qint64 time)
 {
     qint64 written=0;
     qint64 data_size;
+    qint64 currentDts = getDTSFromMS(time);
     frameFinished = 0;
     QByteArray res;
     if( audioPacket.stream_index == audioStream)
@@ -293,13 +300,18 @@ QByteArray AudioDecoder::nextFrame(AVPacket &audioPacket)
                                                                            AV_SAMPLE_FMT_S16, 1);
                     /*if(data_size > audio->bytesFree())
                         data_size = audio->bytesFree();*/
-                    m_output->write((const char*)out->data[0], data_size);
-                    res += QByteArray((const char*)out->data[0], data_size);
+                    AudioBuff buff;
+                    buff.arr = QByteArray((const char*)out->data[0], data_size);
+                    buff.dts = audioPacket.dts;
+                    audioBuffer.append(buff);
+                    /*m_output->write((const char*)out->data[0], data_size);
+                    res += QByteArray((const char*)out->data[0], data_size);*/
                   //  qDebug() << data_size;
 //                    qDebug() << "NEED" << audioPacket.dts - audioFrame->best_effort_timestamp;
                  //   qDebug() << "IS" << data_size;
                     AVStream *stream = formatContext->streams[audioStream];
                     double seconds= (audioPacket.dts - stream->start_time) * av_q2d(stream->time_base)*1000;
+                    qDebug() << "TIME   " << time << "  " << (getDTSFromMS(time) - stream->start_time) * av_q2d(stream->time_base)*1000;
                     qDebug() << "A_SECONDS    " <<seconds;
 
 
@@ -321,8 +333,17 @@ QByteArray AudioDecoder::nextFrame(AVPacket &audioPacket)
             audioPacket.data += len;
         }
 
+        while( audioBuffer.size() > 0 && currentDts >= audioBuffer.first().dts)
+        {
+         //   qDebug() << "AUDIO  " << currentDts;
+            m_output->write(audioBuffer.first().arr.data(), audioBuffer.first().arr.size());
+            res += audioBuffer.first().arr;
+            audioBuffer.pop_front();
 
         }
+
+    }
+
     return res;
 }
 

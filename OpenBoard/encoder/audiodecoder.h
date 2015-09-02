@@ -52,6 +52,11 @@ struct sample_fmt_entry{
 
 class AudioDecoder : public QObject
 {
+    struct AudioBuff{
+        QByteArray arr;
+        qint64 dts;
+    };
+
     Q_OBJECT
     AVDictionary    *optionsDict = NULL;
     AVFormatContext *formatContext = NULL;
@@ -71,22 +76,23 @@ class AudioDecoder : public QObject
     QAudioFormat format;
     QAudioOutput *audio;
     QBuffer buffer;
-    qint64 th_data_size;
-    QByteArray audioThBuff;
 
     QTimer *m_pullTimer;
     QIODevice *m_output;
     unsigned int buffSize;
     fstream myFile;
+    QList<AudioBuff> audioBuffer;
 
 public:
     explicit AudioDecoder(QObject * parent, AVFormatContext *formatContext );
     void initAudioDecoder();
     ~AudioDecoder();
-    QByteArray nextFrame();
-    QByteArray nextFrame(AVPacket &value);
+    QByteArray nextFrame(qint64 time);
+    QByteArray nextFrame(AVPacket &value, qint64 time);
     void setAudioPacket(const AVPacket &value);
     qint64 getDTSFromMS(int ms);
+    int getFrameFinished() const;
+
 public slots:
     void stateChanged(QAudio::State state);
     void pullTimerExpired();

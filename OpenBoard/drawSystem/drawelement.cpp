@@ -45,7 +45,7 @@ bool DrawElement::setDrawWidget(OGLWidget *value)
     qDebug() << "alpha effect created";
 
      effects.push_back(alphaEffect); //ADD DEFAULT EFFECT
-     effects.push_back(spiralEffect); //ADD DEFAULT EFFECT
+    // effects.push_back(spiralEffect); //ADD DEFAULT EFFECT
 
 
 

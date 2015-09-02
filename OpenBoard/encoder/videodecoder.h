@@ -42,8 +42,8 @@ public:
 
     ~VideoDecoder();
     int getVideoLengthMs();
-    QImage getNextFrame();
-    QImage getNextFrame(AVPacket &videoPacket);
+    QImage getNextFrame(qint64 time);
+    QImage getNextFrame(AVPacket &videoPacket, qint64 time);
     AVCodecContext *getVideoCodecContext() const;
     void seekFile(int ms);
 
@@ -51,7 +51,7 @@ public:
     QSize getSize();
 
 public slots:
-    qint64 getDTSFromMS(qint64 ms);
+    qint64 getDTSFromMS(int ms);
 private:
     int initVideoDecoder();
 };

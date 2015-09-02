@@ -26,7 +26,6 @@
 #include "drawSystem/drawsystem.h"
 #include "../NewProject/projectcreator.h"
 
-
 namespace Ui {
 class MainWindow;
 }

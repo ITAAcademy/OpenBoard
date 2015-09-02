@@ -13,6 +13,7 @@ class FFmpegHelp : public QObject
 
     QThread videoThread;
     QThread audioThread;
+    qint64 lastDts = 0;
 
     VideoDecoder *vDecoder = NULL;
     AudioDecoder *aDecoder = NULL;

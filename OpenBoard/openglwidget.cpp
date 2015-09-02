@@ -854,7 +854,7 @@ FBOWrapper OGLWidget::initFboWrapper(int width, int height, bool visibleOnly) {
     glGetError();
 
     makeCurrent();
-    //qDebug () << "                                                                  INIT FBO";
+    qDebug () << "                                                                  INIT FBO";
 
     FBOWrapper fboWrapper;
     fboWrapper.errorStatus=0;
@@ -863,21 +863,21 @@ FBOWrapper OGLWidget::initFboWrapper(int width, int height, bool visibleOnly) {
     GLuint fbo=0;
     GLuint depth_buffer=0;
     GLuint fbo_texture=0;
-   // qDebug() << "fbo:"<<fbo;
-    //qDebug()<< "depth_buffer:"<<depth_buffer;
-   // qDebug() << "fbo_texture:"<<fbo_texture;
+    qDebug() << "fbo:"<<fbo;
+    qDebug()<< "depth_buffer:"<<depth_buffer;
+    qDebug() << "fbo_texture:"<<fbo_texture;
     GLenum error = glGetError();
 
     //qDebug() << "GL_ERROR_STATUS initFrameBuffer:"<<error;
   //  glEnable(GL_DEPTH_TEST);
 
-   // qDebug() << "GL_ERROR_STATUS initFrameBuffer:"<<error;
+    qDebug() << "GL_ERROR_STATUS initFrameBuffer:"<<error;
     if(error != 0)
     {
         fboWrapper.errorStatus = error;
         return fboWrapper;
     }
-    //qDebug() << 1;
+    qDebug() << 1;
     if(visibleOnly)
     if(!isVisible() || !isInit())
     {
@@ -887,9 +887,9 @@ FBOWrapper OGLWidget::initFboWrapper(int width, int height, bool visibleOnly) {
 
     glGenFramebuffers(1, &fbo); // Generate one frame buffer and store the ID in fbo
 
-//qDebug() << 2;
+qDebug() << 2;
 
-//qDebug() << 3;
+qDebug() << 3;
      error = glGetError();
      if(error != NULL)
      {
@@ -904,7 +904,7 @@ FBOWrapper OGLWidget::initFboWrapper(int width, int height, bool visibleOnly) {
      return fboWrapper;
  }
 glBindFramebuffer(GL_FRAMEBUFFER , fbo); // Bind our frame buffer
-//qDebug () << "texture inited id:"<<fbo_texture;
+qDebug () << "texture inited id:"<<fbo_texture;
 
 error = glGetError();
 if(error != NULL)
@@ -912,8 +912,8 @@ if(error != NULL)
     fboWrapper.errorStatus = error;
     return fboWrapper;
 }
-//qDebug() << "GL_ERROR_STATUS initFrameBufferTexture:"<<error;
-//qDebug() << "attachment.count():"<<attachment.count();
+qDebug() << "GL_ERROR_STATUS initFrameBufferTexture:"<<error;
+qDebug() << "attachment.count():"<<attachment.count();
 //attachment.append(GL_COLOR_ATTACHMENT0+attachment.count());
 attachment.append(GL_COLOR_ATTACHMENT0);
 glFramebufferTexture2D(GL_FRAMEBUFFER , attachment.last() , GL_TEXTURE_2D, fbo_texture, 0); // Attach the texture fbo_texture to the color buffer in our frame buffer
@@ -1112,7 +1112,7 @@ void OGLWidget::paintGL()
                   if (editingRectangle.isEditingRectangleVisible && !forseEditBoxDisable && !isPainting && getStatus()!= PLAY)
                   {
 
-                      qDebug () << "DRAW RECTANGLE";
+                    //  qDebug () << "DRAW RECTANGLE";
                      // paintBufferOnScreen(0, 0, wax, way);
                       //rectangle
                       glLineWidth(3);
@@ -1876,10 +1876,10 @@ void OGLWidget::myRenderText( QGLWidget* w, int x, int y,int z, const QString& t
 
    // glEnable(GL_BLEND);
  //   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-    glRasterPos3i( x, y, z );
+ //   glRasterPos3i( x, y, z );
     //glScalef(getWax()/rect.width(), getWay()/rect.height(), 0);
     //glPixelZoom(getWax()/rect.width(), getWax()/rect.width());
-    glDrawPixels( rect.width(), rect.height(), GL_RGBA, GL_UNSIGNED_BYTE, img.bits() );
+   // glDrawPixels( rect.width(), rect.height(), GL_RGBA, GL_UNSIGNED_BYTE, img.bits() );
     //glDisable(GL_BLEND);
     /*glMatrixMode( GL_PROJECTION );
     glPopMatrix();
