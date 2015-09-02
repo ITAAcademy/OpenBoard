@@ -20,10 +20,22 @@ void ShaderEffect::setEffectTimeHowLong(unsigned int value)
 {
     effectTimeHowLong = value;
 }
-ShaderEffect::ShaderEffect(ShaderProgramWrapper *shaderWrp)
+
+bool ShaderEffect::save(QDataStream &stream)
+{
+    stream << startTimeMS << effectTimeHowLong << shaderWrapperIndex;
+}
+bool ShaderEffect::load(QDataStream &stream)
+{
+stream >> startTimeMS >> effectTimeHowLong >> shaderWrapperIndex;
+
+}
+
+ShaderEffect::ShaderEffect(ShaderProgramWrapper *shaderWrp, int shaderIndex)
 {
     qDebug() << "shaderWrapper=shaderWrp";
     shaderWrapper=shaderWrp;
+    shaderWrapperIndex=shaderIndex;
 }
 
 ShaderEffect::ShaderEffect()
@@ -39,6 +51,15 @@ ShaderEffect::~ShaderEffect()
 ShaderProgramWrapper *ShaderEffect::getShaderWrapper()
 {
     return shaderWrapper;
+}
+
+void ShaderEffect::setShaderWrapper(ShaderProgramWrapper *shader)
+{
+    shaderWrapper=shader;
+}
+int ShaderEffect::getShaderWrapperIndex()
+{
+    return shaderWrapperIndex;
 }
 
 void ShaderEffect::setUniformAnimationKey(OGLWidget *oglWidget,ShaderEffect shaderEffect, float keyFrame)

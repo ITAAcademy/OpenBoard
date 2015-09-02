@@ -13,8 +13,11 @@ bool DrawElement::setDrawWidget(OGLWidget *value)
     if(value == pDrawWidget && value != NULL)
     {
       //  qDebug() << "VALUE  " << fboWrapper.errorStatus;
-        if(fboWrapper.errorStatus != 0 &&  pDrawWidget->isInit())
+        if(fboWrapper.errorStatus != 0 &&  pDrawWidget->isInit()){
             setFBOWrapper(pDrawWidget->initFboWrapper(pDrawWidget->getWax(),pDrawWidget->getWay()));//TODO
+            for (int i = 0; i <effects.length(); i++)
+            effects[i].setShaderWrapper(pDrawWidget->getShaderPrograms()[effects[i].getShaderWrapperIndex()]);
+        }
         return false;
     }
 
@@ -39,8 +42,8 @@ bool DrawElement::setDrawWidget(OGLWidget *value)
     connect(pDrawWidget, SIGNAL(stopSignal()), this, SLOT(stop()));
     connect(pDrawWidget, SIGNAL(pauseSignal()), this, SLOT(pause()));
 
-    ShaderEffect alphaEffect(pDrawWidget->getShaderPrograms()[OGLWidget::ALPHA_SHADER]);
-    ShaderEffect spiralEffect(pDrawWidget->getShaderPrograms()[OGLWidget::SPIRAL_SHADER]);
+    ShaderEffect alphaEffect(pDrawWidget->getShaderPrograms()[OGLWidget::ALPHA_SHADER],OGLWidget::ALPHA_SHADER);
+    ShaderEffect spiralEffect(pDrawWidget->getShaderPrograms()[OGLWidget::SPIRAL_SHADER],OGLWidget::SPIRAL_SHADER);
     alphaEffect.setEffectTimeHowLong(1000);
     spiralEffect.setEffectTimeHowLong(1000);
 
@@ -285,11 +288,22 @@ bool DrawElement::loadTypeId(QIODevice* device)
 }
 bool DrawElement::loadRest(QIODevice* device)
 {
+    qDebug() << "load rest begin";
     QDataStream stream(device);
     stream  >> key >> lifeTime >> tickTime >> startDrawTime >> x >> y >> z >> width >> height >> keyCouter;
     //if (typeId == Element_type::Image)
         icon = load_image(stream);
     load_add(stream);
+    qDebug() << "load add";
+    int effectsLength = 0;
+    stream >> effectsLength;
+    qDebug() << "effectsLength:"<<effectsLength;
+    for (int i = 0 ; i < effectsLength;i++)
+    {
+        effects.push_back(ShaderEffect());
+        effects[i].load(stream);
+    }
+     qDebug() << "load rest end";
 }
 
 bool DrawElement::save(QIODevice* device)
@@ -307,6 +321,9 @@ bool DrawElement::save(QIODevice* device)
     save_image(stream, icon );
 
     save_add(stream);
+    stream << effects.length();
+    for (int i = 0 ; i < effects.length();i++)
+        effects[i].save(stream);
 }
 
 bool DrawElement::save(QString path)
