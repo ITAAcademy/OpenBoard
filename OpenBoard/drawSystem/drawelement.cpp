@@ -13,7 +13,7 @@ bool DrawElement::setDrawWidget(OGLWidget *value)
     if(value == pDrawWidget && value != NULL)
     {
       //  qDebug() << "VALUE  " << fboWrapper.errorStatus;
-        if(fboWrapper.errorStatus != 0)
+        if(fboWrapper.errorStatus != 0 &&  pDrawWidget->isInit())
             setFBOWrapper(pDrawWidget->initFboWrapper(pDrawWidget->getWax(),pDrawWidget->getWay()));//TODO
         return false;
     }
@@ -30,9 +30,11 @@ bool DrawElement::setDrawWidget(OGLWidget *value)
     qDebug() << "pDrawWidget->getShaderPrograms().length:"<<pDrawWidget->getShaderPrograms().length();
 
 
-
-    if(fboWrapper.errorStatus != 0)
+    if(fboWrapper.errorStatus != 0  && pDrawWidget->isInit())
+    {
+        qDebug()<<"BEFORE SETFBOWRAPPER";
         setFBOWrapper(pDrawWidget->initFboWrapper(pDrawWidget->getWax(),pDrawWidget->getWay()));//TODO
+ qDebug()<<"AFTER SETFBOWRAPPER";
     connect(pDrawWidget, SIGNAL(startSignal()), this, SLOT(start()));
     connect(pDrawWidget, SIGNAL(stopSignal()), this, SLOT(stop()));
     connect(pDrawWidget, SIGNAL(pauseSignal()), this, SLOT(pause()));
@@ -46,6 +48,8 @@ bool DrawElement::setDrawWidget(OGLWidget *value)
 
      effects.push_back(alphaEffect); //ADD DEFAULT EFFECT
      effects.push_back(spiralEffect); //ADD DEFAULT EFFECT
+}
+
 
 
 

@@ -40,6 +40,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     mpOGLWidget->show();
     mpOGLWidget->setVisible(false);
+
      //qDebug() << "connect unableToDraw";
 /*
      mpOGLWidget->getTimeLine()->show();
@@ -582,6 +583,7 @@ case OPENING_PROJECT:
 
     if(!isVisible())
         show();
+
     activateWindow();
 }
 
@@ -1302,7 +1304,7 @@ void MainWindow::on_action_Open_Project_triggered()
         file.close();
         ui->statusBar->showMessage("project opened");
        mpOGLWidget->getTimeLine()->sendUpdateModel();
-       mpOGLWidget->setList(mpOGLWidget->getTimeLine()->getPointedBlocksDE());
+      mpOGLWidget->setList(mpOGLWidget->getTimeLine()->getPointedBlocksDE());
         return ;
     }
     else
