@@ -260,7 +260,7 @@ void DrawTextElm::clearBuffer()
 
 void DrawTextElm::draw()
 {
-    qDebug() << "void DrawTextElm::draw()" << pDrawWidget->getTimeLine()->getPlayTime();
+   // qDebug() << "void DrawTextElm::draw()" << pDrawWidget->getTimeLine()->getPlayTime();
     pDrawWidget->clearFrameBuffer(fboWrapper);
     int current_time;
     if(!bPlay)
@@ -574,7 +574,7 @@ void DrawTextElm::drawTextBuffer( int m_x, int m_y, int m_width, int m_height, i
        //     x += fMetrics->width(tabulationStr[j] + "\t");
       //  }
       //  // //qDebug() << "C:"<<colors.length();
-        qDebug() << "colors.length()"<<colors.length();
+       // qDebug() << "colors.length()"<<colors.length();
     for (int k = 0 ; k< colors.length();k++)
     {
         int columnOfColorStrBegin;

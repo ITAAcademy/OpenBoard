@@ -235,6 +235,63 @@ onYChanged: y=0;
         enabled: !globalRep.isDrag
         hoverEnabled: true
 
+        onIsDraggedChanged:  {
+
+           if (isDragged)
+            {
+                 cursorShape = Qt.OpenHandCursor
+                 animation_scale_small.running = true
+                 animation_scale_x.running = true
+                 animation_scale_y.running = true
+                 shadow.visible = true
+            }
+            else
+            {
+
+
+
+                 //globalRep.updateModel();
+                 //var sel_blocka = root.p_main222.selectedBlock
+
+                root.animation_scale_normal_FromXpos_cuz = root.x
+                root.animation_scale_normal_FromYpos_cuz = root.y
+
+                root.animation_scale_normal_FromScale = background_rec.scale
+
+                if (main222.dropEnteredBlockIndex !== -1)
+                {
+                    var zdvig = 0;
+                    if (main222.doZdvigWhenNormalAnim)
+                        zdvig =  main222.dropEnteredBlock.width //666
+                root.animation_scale_normal_toXpos = main222.dropEnteredBlock.x +
+                                    main222.zdvigWhenNormalAnim
+
+                    var num_of_blocks_beetwen = main222.dropEnteredBlock.colIndex - root.colIndex
+                     var tempo_y_zdvig = (root.height+ main222.p_columns.spacing ) *num_of_blocks_beetwen
+                    root.animation_scale_normal_toYpos = tempo_y_zdvig // divider.y
+
+                }
+
+
+
+
+                root.p_bar_track.z += 200 //888
+                root.z += 200
+
+                animation_scale_normal.running = true
+
+//function moveBlocksForAnim( from, to,  left_right,  value)
+
+                root.p_bar_track.z -= 200 //888
+                root.z -= 200
+
+
+//root.p_main222.root_isDragChanged = true;
+            }
+
+
+        }
+
         Timer {
             id: double_click_timer
                interval: 250; running: false; repeat: false

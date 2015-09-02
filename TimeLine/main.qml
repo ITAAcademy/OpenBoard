@@ -223,6 +223,7 @@ isPlayPauseStop = 1
 
         scroll.flickableItem.contentX = 0
 scale_pointer.x = 0// timeControll.getMaxTrackTime() + scale_pointer.width/2 - scroll.flickableItem.contentX;
+        console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAvvvv")
     }
 
     function setScalePointerPos(xx)    {

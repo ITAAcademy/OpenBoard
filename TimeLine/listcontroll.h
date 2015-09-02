@@ -219,9 +219,12 @@ class ListControll : public QObject, public QQuickImageProvider
     //QElapsedTimer timer;
       qint64 timerValue;
     qint64 time_sum;
-    int isPlayPauseStop = 3;
+
 
 public:
+     int isPlayPauseStop = 3;
+
+
     bool save(QIODevice* device);
     bool load(QIODevice* device);
 
