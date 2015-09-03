@@ -1,7 +1,6 @@
 #include "listcontroll.h"
 
 
-
 QPoint ListControll::getSelectedBlockPoint() const
 {
 
@@ -211,6 +210,12 @@ void ListControll::loadFromFile()
        qDebug() << "loadFromFile(): elm == NULL";
        return;
    }
+
+    if (elm->getTypeId() == 2)
+    {
+      QSize image_size = QPixmap(open).size();
+       emit imageLoadedPictureSizeSignal(image_size);
+    }
    // //qDebug() << "9999999999999999999999999999999999999999999999" << elm->getType();
 
    Element &temp = tracks[p.x()].block[p.y()];
@@ -243,7 +248,7 @@ void ListControll::loadFromFile()
 }
 
 bool ListControll::removeLastBlock(int col)
-{
+{/*
     setBlocked(true);
     setSelectedBlockPoint(QPoint(-1,-1));
     if (tracks[col].block.size())
@@ -274,6 +279,8 @@ bool ListControll::removeLastBlock(int col)
     setBlocked(false);
 
     return false;
+    */
+    removeBlock(col,tracks[col].block.size() - 1);
 }
 
 bool ListControll::removeLastTrack()
@@ -539,6 +546,7 @@ int ListControll::getTrackSize(int col)
 
 ListControll::ListControll(QObject *parent) : QObject(parent), QQuickImageProvider(QQuickImageProvider::Image)
 {
+    buffer_is_full = false;
    resetProjectToDefault();
 
    /* QList <QString>  temp;
@@ -1028,6 +1036,44 @@ QImage ListControll::requestImage(const QString &id, QSize *size, const QSize &r
   void ListControll::emitNewProject()
   {
       emit newProjectSignel();
+  }
+
+  void  ListControll::copyBlockToBuffer()
+  {
+      QPoint sel_block = this->getSelectedBlockPoint();
+      if (sel_block.x() == -1)
+          return;
+
+           block_in_buffer = this->getBlock(sel_block);
+          DrawElement *blocK_draw_el =  block_in_buffer.draw_element;
+          DrawElement *draw_el = new DrawElement(blocK_draw_el->getDrawWidget(),this) ; //();
+         // draw_el->setDrawWidget(blocK_draw_el->getDrawWidget());
+          draw_el->copy(blocK_draw_el);
+          draw_el->setTypeId(blocK_draw_el->getTypeId());
+          //block_in_buffer.draw_element->copy(block_in_buffer.draw_element);
+          block_in_buffer.draw_element = draw_el;
+          buffer_is_full = true;
+
+            qDebug() << "Block copied in buffer";
+  }
+
+
+  void ListControll::pasteBlockFromBuffer()
+  {
+      if (!buffer_is_full)
+          return;
+      QPoint sel_block = this->getSelectedBlockPoint();
+      if (sel_block.x() == -1)
+          return;
+
+      tracks[sel_block.x()].appendBlockAt(sel_block.y()+1, block_in_buffer);
+      if (maxTrackTime <  tracks[sel_block.x()].time)
+          maxTrackTime =  tracks[sel_block.x()].time;
+     // calcPointedBlocks();
+
+      emit updateTrackAt(sel_block.x());
+
+
   }
 
     void ListControll::emitOpenProject()

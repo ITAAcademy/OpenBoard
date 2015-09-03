@@ -22,7 +22,7 @@ void ShaderEffect::setEffectTimeHowLong(unsigned int value)
 }
 ShaderEffect::ShaderEffect(ShaderProgramWrapper *shaderWrp)
 {
-    qDebug() << "shaderWrapper=shaderWrp";
+   // qDebug() << "shaderWrapper=shaderWrp";
     shaderWrapper=shaderWrp;
 }
 

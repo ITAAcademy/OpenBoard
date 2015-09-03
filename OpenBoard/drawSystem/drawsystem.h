@@ -38,6 +38,7 @@ static DrawElement *GenerationDrawElement( QString path, OGLWidget *drawWidget =
     if(format == "image")
     {
         DrawImageElm *elm = new DrawImageElm(drawWidget, parent);
+
         elm->load(path);
         elm->setTypeId(Element_type::Image);
         elm->setKey(target.baseName());

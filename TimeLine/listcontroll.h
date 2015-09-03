@@ -147,6 +147,19 @@ struct Track {
            }
 
     }
+    void appendBlockAt(int ind,Element block_val)
+    {
+       block.append(block_val);
+       block.move( block.size()-1,ind);
+
+
+       time += block_val.draw_element->getLifeTime();
+      // testWidth[col].append(200);
+       //testColumnWidth[col]+=200;
+     //  // //qDebug() << "SIZE   " << test.size();
+
+    }
+
     bool save(QIODevice* device)
     {
         QDataStream stream(device);
@@ -219,7 +232,8 @@ class ListControll : public QObject, public QQuickImageProvider
     //QElapsedTimer timer;
       qint64 timerValue;
     qint64 time_sum;
-
+    Element block_in_buffer;
+    bool buffer_is_full;
 
 public:
      int isPlayPauseStop = 3;
@@ -373,11 +387,14 @@ signals:
 
     void focusLostSignal();
     void focusFoundSignal();
+    void imageLoadedPictureSizeSignal(QSize);
 
 //void setScalePointerPosSignal(int value);
 public slots:
     void addMsToTimerValue(int ms);
 Q_INVOKABLE void emitNewProject();
+   Q_INVOKABLE void  copyBlockToBuffer();
+     Q_INVOKABLE void  pasteBlockFromBuffer();
   Q_INVOKABLE void emitOpenProject();
   Q_INVOKABLE void emitSaveProject();
  Q_INVOKABLE void  emitBlockEditedSignal();
