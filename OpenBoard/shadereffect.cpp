@@ -20,10 +20,32 @@ void ShaderEffect::setEffectTimeHowLong(unsigned int value)
 {
     effectTimeHowLong = value;
 }
-ShaderEffect::ShaderEffect(ShaderProgramWrapper *shaderWrp)
+
+bool ShaderEffect::save(QDataStream &stream)
+{
+    stream << startTimeMS << effectTimeHowLong << shaderWrapperIndex;
+}
+bool ShaderEffect::load(QDataStream &stream)
+{
+stream >> startTimeMS >> effectTimeHowLong >> shaderWrapperIndex;
+
+}
+
+
+bool ShaderEffect::getReverse() const
+{
+    return reverse;
+}
+
+void ShaderEffect::setReverse(bool value)
+{
+    reverse = value;
+}
+ShaderEffect::ShaderEffect(ShaderProgramWrapper *shaderWrp, int shaderIndex)
 {
     qDebug() << "shaderWrapper=shaderWrp";
     shaderWrapper=shaderWrp;
+    shaderWrapperIndex=shaderIndex;
 }
 
 ShaderEffect::ShaderEffect()
@@ -41,6 +63,15 @@ ShaderProgramWrapper *ShaderEffect::getShaderWrapper()
     return shaderWrapper;
 }
 
+void ShaderEffect::setShaderWrapper(ShaderProgramWrapper *shader)
+{
+    shaderWrapper=shader;
+}
+int ShaderEffect::getShaderWrapperIndex()
+{
+    return shaderWrapperIndex;
+}
+
 void ShaderEffect::setUniformAnimationKey(OGLWidget *oglWidget,ShaderEffect shaderEffect, float keyFrame)
 {
     GLint keyUnifrom = oglWidget->context()->functions()->glGetUniformLocation(shaderEffect.getShaderWrapper()->getShaderProgram()
@@ -56,5 +87,13 @@ void ShaderEffect::setUniformResolution(OGLWidget *oglWidget,ShaderEffect shader
 {
     GLint keyUnifrom = oglWidget->context()->functions()->glGetUniformLocation(shaderEffect.getShaderWrapper()->getShaderProgram()
                         ,"resolution");
-            oglWidget->context()->functions()->glUniform2f(keyUnifrom,width,height);
+    oglWidget->context()->functions()->glUniform2f(keyUnifrom,width,height);
+}
+
+void ShaderEffect::setUniformReverse(OGLWidget *oglWidget, ShaderEffect shaderEffect, bool val)
+{
+    GLint reverseUnifrom = oglWidget->context()->functions()->glGetUniformLocation(shaderEffect.getShaderWrapper()->getShaderProgram()
+                        ,"reverse");
+    oglWidget->context()->functions()->glUniform1i(reverseUnifrom,val);
+
 }

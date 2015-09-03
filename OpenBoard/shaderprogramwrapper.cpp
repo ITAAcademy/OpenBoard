@@ -10,20 +10,37 @@ ShaderProgramWrapper::ShaderProgramWrapper()
 {
 
 }
+bool ShaderProgramWrapper::save(QDataStream &stream)
+{
+stream << fragCode << vertCode;
+}
+bool ShaderProgramWrapper::load(QDataStream &stream)
+{
+stream >> fragCode;
+stream >> vertCode;
+initShader(fragCode,vertCode,false);
+if (!isInited())return false;
+return true;
+}
 
 ShaderProgramWrapper::~ShaderProgramWrapper()
 {
     glf->glDeleteShader(ShaderProgram);
 }
 
-int ShaderProgramWrapper::initShader(QString fShaderFilePath,QString vShaderFilePath)
+int ShaderProgramWrapper::initShader(QString fShaderFilePath,QString vShaderFilePath,bool isFilePath)
+{
+    QString fragmentShaderCode;
+    QString vertexShaderCode;
+    fragmentShaderCode=fShaderFilePath;
+    vertexShaderCode=vShaderFilePath;
+if (isFilePath)
 {
     QFile fragmentShadeFile(fShaderFilePath);
 
     QFile vertexShaderFile(vShaderFilePath);
 
-    QString fragmentShaderCode;
-    QString vertexShaderCode;
+
     errorStatus=0;
              if(fragmentShadeFile.open(QIODevice::ReadOnly | QIODevice::Text))
              {
@@ -55,6 +72,9 @@ int ShaderProgramWrapper::initShader(QString fShaderFilePath,QString vShaderFile
 
              }
 
+          fragCode = fragmentShaderCode;
+         vertCode=vertexShaderCode;
+}
 
               ShaderProgram = glf->glCreateProgram();
               GLuint vertexShaderObj = glf->glCreateShader(GL_VERTEX_SHADER);
