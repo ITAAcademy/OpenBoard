@@ -192,6 +192,8 @@ void OGLWidget::setList(const QList<DrawElement *> &value)
     curentList = !curentList;
 }
 void OGLWidget::paintBrushInBuffer(GLuint& texture,Brush& currentBrushOfDrawSystem,FBOWrapper& fboWrapper,QVector<QPoint> coords,QVector<BrushBeginingIndex> brushes,int keyFrame){
+
+
     if (fboWrapper.errorStatus==-1)qDebug() << "BAD BUFFER";
    // qDebug()<<"binded buffer in paint brush:"<< fboWrapper.frameBuffer;
    // glBindFramebuffer(GL_FRAMEBUFFER , fboWrapper.frameBuffer); // Bind our frame buffer for rendering
@@ -332,6 +334,8 @@ glBegin(GL_TRIANGLES);
 glBindTexture(GL_TEXTURE_2D,0);
 //glBindFramebuffer(GL_FRAMEBUFFER , 0); // Unbind our texture
 }
+
+
 bool OGLWidget::isShowLastDrawing(){
     return showingLastDrawing;
 }
@@ -620,6 +624,7 @@ void OGLWidget::resizeGL(int nWidth, int nHeight)
   qDebug() << "end resize";
 }
 void OGLWidget::paintBufferOnScreen( FBOWrapper buffer,int x, int y, int width, int height, int z){
+
      if (buffer.errorStatus==-1)qDebug() << "BAD BUFFER";
     glColor3f(1.0,1.0,1.0);
     glEnable(GL_TEXTURE_2D);
@@ -645,7 +650,10 @@ void OGLWidget::paintBufferOnScreen( FBOWrapper buffer,int x, int y, int width, 
     glDisable(GL_TEXTURE_2D);
 }
 
+
 void OGLWidget::paintBrushInBuffer(FBOWrapper fboWrapper) {
+    if (able_drawing)
+    {
 glBindFramebuffer(GL_FRAMEBUFFER , fboWrapper.frameBuffer); // Bind our frame buffer for rendering
 //glPushAttrib(GL_VIEWPORT_BIT | GL_ENABLE_BIT); // Push our glEnable and glViewport states
 //glViewport(0, 0, window_width, window_height); // Set the size of the frame buffer view port
@@ -798,9 +806,12 @@ glBindFramebuffer(GL_FRAMEBUFFER , 0); // Unbind our texture
 
 
 //glPopAttrib(); // Restore our glEnable and glViewport states
+    }
 
 
 }
+
+
 QImage OGLWidget::twiceImageSizeWithouScaling(QImage img)
 {
     QSize originSize = img.size();
@@ -1031,6 +1042,11 @@ FBOWrapper OGLWidget::getMainFBO(){
 }
 FBOWrapper OGLWidget::getPingPongFBO(){
     return pingpongFBO;
+}
+
+void OGLWidget::setAbleDrawing(bool value)
+{
+    able_drawing = value;
 }
 
 void OGLWidget::clearFrameBuffer(FBOWrapper fboWrapper){

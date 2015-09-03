@@ -216,7 +216,6 @@ void ListControll::loadFromFile()
       QSize image_size = QPixmap(open).size();
        emit imageLoadedPictureSizeSignal(image_size);
     }
-   // //qDebug() << "9999999999999999999999999999999999999999999999" << elm->getType();
 
    Element &temp = tracks[p.x()].block[p.y()];
    int life_time = temp.draw_element->getLifeTime();
@@ -1045,13 +1044,18 @@ QImage ListControll::requestImage(const QString &id, QSize *size, const QSize &r
           return;
 
            block_in_buffer = this->getBlock(sel_block);
-          DrawElement *blocK_draw_el =  block_in_buffer.draw_element;
+         /* DrawElement *blocK_draw_el =  block_in_buffer.draw_element;
           DrawElement *draw_el = new DrawElement(blocK_draw_el->getDrawWidget(),this) ; //();
+
          // draw_el->setDrawWidget(blocK_draw_el->getDrawWidget());
           draw_el->copy(blocK_draw_el);
-          draw_el->setTypeId(blocK_draw_el->getTypeId());
+          draw_el->setTypeId(blocK_draw_el->getTypeId()); //999999999999
+
           //block_in_buffer.draw_element->copy(block_in_buffer.draw_element);
           block_in_buffer.draw_element = draw_el;
+
+          */
+          life_time_in_buffer = block_in_buffer.draw_element->getLifeTime();
           buffer_is_full = true;
 
             qDebug() << "Block copied in buffer";
@@ -1075,6 +1079,19 @@ QImage ListControll::requestImage(const QString &id, QSize *size, const QSize &r
 
 
   }
+
+   void ListControll::setBlockTimeFromBuffer()
+  {
+       if (!buffer_is_full)
+           return;
+       QPoint sel_block = this->getSelectedBlockPoint();
+       if (sel_block.x() == -1)
+           return;
+
+       setBlockTime(sel_block.x(),sel_block.y(),life_time_in_buffer);
+       emit updateTrackAt(sel_block.x());
+   }
+
 
     void ListControll::emitOpenProject()
     {

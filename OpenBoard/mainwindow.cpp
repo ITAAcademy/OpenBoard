@@ -143,6 +143,16 @@ connect(mpOGLWidget,SIGNAL(keyPressSignal(QKeyEvent*)),this,SLOT(keyEventSlot(QK
        toolBar->addAction(a_redo);
    //    toolBar->addAction(QPixmap(":/icons/redo-icon.png").scaled(QSize(16, 16)), "Redo", this, SLOT(on_action_Redo_triggered()));
 
+       a_able_to_draw = new QAction(this);
+       a_able_to_draw->setEnabled(true);
+       a_able_to_draw->setIcon(QPixmap(":/iphone_toolbar_icons/Drawing-icon.png").scaled(QSize(16, 16)));
+       a_able_to_draw->setToolTip(tr("Enable drawing"));
+       a_able_to_draw->setCheckable(true);
+       a_able_to_draw->setChecked(false);
+       connect(a_able_to_draw,SIGNAL(triggered()),this,  SLOT(on_action_Able_to_draw_Checked()));
+       toolBarBoard->addAction(a_able_to_draw);
+
+
        a_clear_drawing = new QAction(this);
        a_clear_drawing->setEnabled(false);
        a_clear_drawing->setIcon(QPixmap(":/icons/Oxygen-Icons.org-Oxygen-Actions-edit-clear.ico").scaled(QSize(16, 16)));
@@ -1997,6 +2007,10 @@ void MainWindow::on_action_Pause_triggered()
 
 
 
+void MainWindow::on_action_Able_to_draw_Checked()
+{
+    mpOGLWidget->setAbleDrawing(a_able_to_draw->isChecked());
+}
 
 
 void MainWindow::on_action_Record_to_file_triggered()
@@ -2071,7 +2085,7 @@ void MainWindow::on_slider_speedTB_valueChanged(int value)
 {
     lastInpuDelay = value;
     if(mpOGLWidget != NULL)
-        mpOGLWidget->setDelay(1000/value);
+        mpOGLWidget->setDelay(100/value);
 }
 
 void MainWindow::hideBoardSettings()

@@ -60,6 +60,8 @@ public:
 
     QRect getRect();
 
+    DrawElement* getCopy(QObject parentamana);
+
     void setPosition(QPoint pos);
     void setPosition( int x, int y);
     void setDelay(int d);

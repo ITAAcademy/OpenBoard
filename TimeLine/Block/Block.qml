@@ -58,7 +58,7 @@ Rectangle{
               id: animation_run_xX
               from: root.x
               to: root.x + root.anim_run_value
-              duration: 800
+              duration: 200
           }
         /* NumberAnimation  {
               target: root
@@ -175,7 +175,7 @@ Rectangle{
     }
     NumberAnimation on scale {
         id:animation_scale_small;
-         property int anim_time : 800
+         property int anim_time : 200
         running: false;
         to: 0.8;
         duration: anim_time
