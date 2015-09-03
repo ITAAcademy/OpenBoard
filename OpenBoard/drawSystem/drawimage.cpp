@@ -63,7 +63,7 @@ gif->jumpToFrame(keyFrame);
     }
     else
     {
-        if (keyCouter==0)pDrawWidget->clearFrameBuffer(fboWrapper);
+        pDrawWidget->clearFrameBuffer(fboWrapper);
         pDrawWidget->drawTexture(0, 0, pDrawWidget->getWax(), pDrawWidget->getWay(), textureIndex, 0, 1 , 1, z);
     }
      keyCouter++;

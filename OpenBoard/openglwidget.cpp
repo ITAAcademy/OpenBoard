@@ -1622,8 +1622,8 @@ void OGLWidget::brushParamsChanged()
     else
     m_manager.getCreatedBrush().color_img=BrushPainter::getInstance()->applyColor(m_manager.getCreatedBrush());
     brushTexture = loadTexture(m_manager.getCreatedBrush().color_img,true);
-    while (!isInit())
-        qDebug() << "waiting for init";
+    //while (!isInit())
+        //qDebug() << "waiting for init";
     drawBrushElm->addBrush(m_manager.getCreatedBrush());
     //qDebug() << "brushParamsChanged";
 
