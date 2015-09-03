@@ -570,7 +570,7 @@ bool DrawElement::save_image(QDataStream &stream, QImage img)
     QByteArray ba;
     QBuffer buffer(&ba); // QBuffer inherits QIODevice
     buffer.open(QIODevice::WriteOnly);
-    img.save(&buffer);
+    img.save(&buffer,"PNG");
 
     buffer.close();
     stream << ba.length() << ba;
