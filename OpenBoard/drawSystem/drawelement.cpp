@@ -45,6 +45,7 @@ bool DrawElement::setDrawWidget(OGLWidget *value)
     ShaderEffect alphaEffect(pDrawWidget->getShaderPrograms()[OGLWidget::ALPHA_SHADER],OGLWidget::ALPHA_SHADER);
     ShaderEffect spiralEffect(pDrawWidget->getShaderPrograms()[OGLWidget::SPIRAL_SHADER],OGLWidget::SPIRAL_SHADER);
     alphaEffect.setEffectTimeHowLong(1000);
+    //alphaEffect.setReverse(true);
     spiralEffect.setEffectTimeHowLong(1000);
 
     qDebug() << "alpha effect created";
@@ -165,6 +166,8 @@ void DrawElement::paint()
               //  float keyFrame = (float)(pDrawWidget->getTimeLine()->getPlayTime()-startDrawTime)/lifeTime;//MOVE UP LATER
                 ShaderEffect::setUniformAnimationKey(pDrawWidget,effects[i],keyFrame);
                 ShaderEffect::setUniformResolution(pDrawWidget,effects[i],fboWrapper.tWidth,fboWrapper.tHeight);
+                ShaderEffect::setUniformReverse(pDrawWidget,effects[i],effects[i].getReverse());
+
                 if (i==0)
                 draw();
                 else

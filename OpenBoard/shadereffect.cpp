@@ -31,6 +31,16 @@ stream >> startTimeMS >> effectTimeHowLong >> shaderWrapperIndex;
 
 }
 
+
+bool ShaderEffect::getReverse() const
+{
+    return reverse;
+}
+
+void ShaderEffect::setReverse(bool value)
+{
+    reverse = value;
+}
 ShaderEffect::ShaderEffect(ShaderProgramWrapper *shaderWrp, int shaderIndex)
 {
     qDebug() << "shaderWrapper=shaderWrp";
@@ -77,5 +87,13 @@ void ShaderEffect::setUniformResolution(OGLWidget *oglWidget,ShaderEffect shader
 {
     GLint keyUnifrom = oglWidget->context()->functions()->glGetUniformLocation(shaderEffect.getShaderWrapper()->getShaderProgram()
                         ,"resolution");
-            oglWidget->context()->functions()->glUniform2f(keyUnifrom,width,height);
+    oglWidget->context()->functions()->glUniform2f(keyUnifrom,width,height);
+}
+
+void ShaderEffect::setUniformReverse(OGLWidget *oglWidget, ShaderEffect shaderEffect, bool val)
+{
+    GLint reverseUnifrom = oglWidget->context()->functions()->glGetUniformLocation(shaderEffect.getShaderWrapper()->getShaderProgram()
+                        ,"reverse");
+    oglWidget->context()->functions()->glUniform1i(reverseUnifrom,val);
+
 }
