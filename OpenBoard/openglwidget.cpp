@@ -36,12 +36,12 @@ if (doubleSize)img = twiceImageSizeWithouScaling(img);
     QImage GL_formatted_image = convertToGLFormat(img);
 
 
-    if(GL_formatted_image.isNull())
+   /* if(GL_formatted_image.isNull())
         qWarning() << "IMAGE IS NULL";
     else
     {
         qWarning() << "IMAGE NOT NULL";
-    }
+    }*/ //Yura - meni  mishaye
     //generate the texture name
     //glEnable(GL_TEXTURE_2D); // Enable texturing
     GLuint texture;
@@ -489,6 +489,8 @@ OGLWidget::OGLWidget(QWidget *parent) :
 
     connect(this,SIGNAL(windowUpdating(int)),timeLine,SLOT(addMsToTimerValue(int)));
 
+     connect(getTimeLine(),SIGNAL(imageLoadedPictureSizeSignal(QSize)),this,SLOT(imageLoadedPictureSizeSlot(QSize)));
+
 
     connect(timeLine,SIGNAL(blockEditedSignal()),this,SLOT(slotBlockEdited()));
 
@@ -873,21 +875,21 @@ FBOWrapper OGLWidget::initFboWrapper(int width, int height, bool visibleOnly) {
     GLuint fbo=0;
     GLuint depth_buffer=0;
     GLuint fbo_texture=0;
-    qDebug() << "fbo:"<<fbo;
-    qDebug()<< "depth_buffer:"<<depth_buffer;
-    qDebug() << "fbo_texture:"<<fbo_texture;
+   // qDebug() << "fbo:"<<fbo;
+   // qDebug()<< "depth_buffer:"<<depth_buffer;
+   // qDebug() << "fbo_texture:"<<fbo_texture;
     GLenum error = glGetError();
 
     //qDebug() << "GL_ERROR_STATUS initFrameBuffer:"<<error;
   //  glEnable(GL_DEPTH_TEST);
 
-    qDebug() << "GL_ERROR_STATUS initFrameBuffer:"<<error;
+   // qDebug() << "GL_ERROR_STATUS initFrameBuffer:"<<error;
     if(error != 0)
     {
         fboWrapper.errorStatus = error;
         return fboWrapper;
     }
-    qDebug() << 1;
+    //qDebug() << 1;
     if(visibleOnly)
     if(!isVisible() || !isInit())
     {
@@ -897,9 +899,9 @@ FBOWrapper OGLWidget::initFboWrapper(int width, int height, bool visibleOnly) {
 
     glGenFramebuffers(1, &fbo); // Generate one frame buffer and store the ID in fbo
 
-qDebug() << 2;
+//qDebug() << 2;
 
-qDebug() << 3;
+//qDebug() << 3;
      error = glGetError();
      if(error != NULL)
      {
@@ -914,7 +916,7 @@ qDebug() << 3;
      return fboWrapper;
  }
 glBindFramebuffer(GL_FRAMEBUFFER , fbo); // Bind our frame buffer
-qDebug () << "texture inited id:"<<fbo_texture;
+//qDebug () << "texture inited id:"<<fbo_texture;
 
 error = glGetError();
 if(error != NULL)
@@ -922,8 +924,8 @@ if(error != NULL)
     fboWrapper.errorStatus = error;
     return fboWrapper;
 }
-qDebug() << "GL_ERROR_STATUS initFrameBufferTexture:"<<error;
-qDebug() << "attachment.count():"<<attachment.count();
+//qDebug() << "GL_ERROR_STATUS initFrameBufferTexture:"<<error;
+//qDebug() << "attachment.count():"<<attachment.count();
 //attachment.append(GL_COLOR_ATTACHMENT0+attachment.count());
 attachment.append(GL_COLOR_ATTACHMENT0);
 glFramebufferTexture2D(GL_FRAMEBUFFER , attachment.last() , GL_TEXTURE_2D, fbo_texture, 0); // Attach the texture fbo_texture to the color buffer in our frame buffer
@@ -1347,6 +1349,11 @@ bool OGLWidget::isInit()
     return init;
 }
 
+void OGLWidget::setFileNameForRecords(QString value)
+{
+    fileNameForRecords = value;
+}
+
 void OGLWidget::mouseReleaseEvent(QMouseEvent *event)
 {
     //int x = event->x();
@@ -1528,17 +1535,9 @@ bool OGLWidget::drawAnimated(bool record)
     {
         editingRectangle.isEditingRectangleVisible = false;
         //QString fileName = QFileDialog::getSaveFileName(this, tr("Choose file..."), qApp->applicationDirPath(), tr("Videos (*.avi *.mp4)"), 0, QFileDialog::DontUseNativeDialog);
-
-        QString suf;
-        QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"), QString(),
-                                                        tr("Videos (*.avi *.mp4)"), &suf, QFileDialog::DontUseNativeDialog | QFileDialog::DontConfirmOverwrite);
-        fileName =  mSuffixFromFilter(suf, fileName);
-
-        if(fileName.size() == 0)
-            return false;
         //qDebug() << "OKKKKKKKKKKKKKKKKKKKKKKK";
       //  //qDebug() << "SHOW_FILE_NAME " << fileName;
-        m_encoder->setFileName(fileName);
+        m_encoder->setFileName(fileNameForRecords);
         m_encoder->setGrabWidget(this);
 
          m_encoder->startRecord();
@@ -2004,6 +2003,30 @@ void OGLWidget::fillText( QString str,QColor color,QFont textFont, int x, int y,
         float y2 = y + fMetrics->height()*0.15;
         drawFigure(x ,y2 ,x2 , y2,LINE, false, fillColor);
     }*/
+}
+
+void OGLWidget::imageLoadedPictureSizeSlot(QSize value)
+{
+   int width =  this->getWax() ;
+   int height = this->getWay();
+   int width2 = value.width();
+    int height2 = value.height();
+    float scaleWidth = (float) width / width2;
+     float scaleHeight = (float) height / height2;
+     if (scaleWidth < 1 || scaleHeight < 1)
+     {
+         if (scaleWidth < scaleHeight)
+         {
+             value.setHeight(value.height()*scaleWidth);
+             value.setWidth(value.width()*scaleWidth);
+         }
+         else
+         {
+             value.setHeight(value.height()*scaleHeight);
+             value.setWidth(value.width()*scaleHeight);
+         }
+     }
+          editingRectangle.rect.setSize(value);
 }
 
 bool OGLWidget::crossTextV2()

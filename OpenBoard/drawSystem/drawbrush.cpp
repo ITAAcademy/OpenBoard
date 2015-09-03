@@ -265,7 +265,7 @@ QDataStream &operator >> ( QDataStream &st, BrushBeginingIndex &data )
 */
 void DrawBrushElm::addBrush(Brush brush)
 {
-   qDebug() << "brushes.length():"<<brushes.length();
+   //qDebug() << "brushes.length():"<<brushes.length();
    // if (brushes==NULL)return;
     for (int i=0;i<brushes.length();i++){
    // //qDebug() << "i:"<<i;
@@ -275,7 +275,7 @@ void DrawBrushElm::addBrush(Brush brush)
 
         if (brushes[i].pointIndex==coords.length()){
             brushes[i].brush=brush;
-            qDebug () << "BRUSH ALREADY EXCIST:"<<i;
+            //qDebug () << "BRUSH ALREADY EXCIST:"<<i;
             return;
 
         }

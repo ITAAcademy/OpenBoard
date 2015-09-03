@@ -43,7 +43,7 @@ void ShaderEffect::setReverse(bool value)
 }
 ShaderEffect::ShaderEffect(ShaderProgramWrapper *shaderWrp, int shaderIndex)
 {
-    qDebug() << "shaderWrapper=shaderWrp";
+   // qDebug() << "shaderWrapper=shaderWrp";
     shaderWrapper=shaderWrp;
     shaderWrapperIndex=shaderIndex;
 }

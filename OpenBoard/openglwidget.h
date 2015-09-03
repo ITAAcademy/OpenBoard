@@ -298,6 +298,7 @@ public slots:
     void displayText(const QString &text, QColor color,QFont font);
     void testRectangle();
     bool isInit();
+    void setFileNameForRecords(QString ) ;
 
 
     void drawQImageFromTexture(int x, int y, QImage img, GLuint index, int z);
@@ -309,13 +310,13 @@ signals:
 
 
 private slots:
-
+    void imageLoadedPictureSizeSlot(QSize);
     bool crossTextV2();
 
     void storeMousePos();
 
 private:
-
+QString fileNameForRecords;
   //  QMap <void* , QList<QByteArray>>  audioList;
     GLuint pixelBufferIDs[2];
 

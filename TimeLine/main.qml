@@ -84,9 +84,13 @@ Rectangle
    }
 
    property Item selectedBlock: null
-   property int selectedBlockCol : 0
-   property int selectedBlockIndex : 0
-   property int dropEnteredBlockIndex : 0
+   property int selectedBlockCol : -1
+   property int selectedBlockIndex : -1
+   property int dropEnteredBlockIndex : -1
+ property bool needUpdateModelWhereBlockDroped : false
+   property int zdvigWhenNormalAnim : 0
+   property bool exitedFromDropArea : false
+   property Item dropEnteredBlock
    property Item dropEnteredBlockItemGlobalRep
    property int dropEnteredTrackIndex : 0
     property real scaling :  timeControll.getScaleScrollChildren()
@@ -124,7 +128,12 @@ focus: true
           if(event.modifiers & Qt.ControlModifier) {
                main222.ctrl_pressed = true
               ////console.log("AAAAAAAAAAAAAAAAAAAAA " + ctrl_pressed)
-
+              if (event.key === Qt.Key_C )
+                        timeControll.copyBlockToBuffer();
+              else
+              if (event.key === Qt.Key_V )
+                        timeControll.pasteBlockFromBuffer();
+              else
               if ((event.key === Qt.Key_S || event.key === 1067) && (event.modifiers & Qt.ShiftModifier))
                         timeControll.emitSaveProject();
               else
@@ -223,7 +232,6 @@ isPlayPauseStop = 1
 
         scroll.flickableItem.contentX = 0
 scale_pointer.x = 0// timeControll.getMaxTrackTime() + scale_pointer.width/2 - scroll.flickableItem.contentX;
-        console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAvvvv")
     }
 
     function setScalePointerPos(xx)    {
@@ -700,6 +708,7 @@ timeControll.setScalePointerPos((x  -20 + scroll.flickableItem.contentX)* main22
                                            id: repka
                                            Component.onCompleted: {
                                                trackbar.globalRep = repka
+                                               trackbar.p_main222 = main222
                                            }
                                            property bool isDrag : false
                                            model:  timeControll.getTrackSize(trackbar.mIndex)//     bar_track.mIndex)
@@ -715,6 +724,18 @@ timeControll.setScalePointerPos((x  -20 + scroll.flickableItem.contentX)* main22
         timeControll.calcPointedBlocks();
         timeControll.setIsProjectChanged(true)
     }
+    function moveBlockForAnim(ind,   value) //left_right -1 or 1
+      {
+              repka.itemAt(ind).animRunX( value)
+      }
+
+    function moveBlocksForAnim( from, to,   value) //left_right -1 or 1
+      {
+          for (var i = from; i <= to; i++)
+          {
+              repka.itemAt(i).animRunX( value)
+          }
+      }
                                            delegate:
                                            ContentBlock.Block{
                                                id: cool

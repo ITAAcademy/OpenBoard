@@ -1869,6 +1869,7 @@ void MainWindow::on_action_Play_triggered()
     {
         if(mpOGLWidget->drawAnimated(ui->actionRecord_to_file->isChecked()))
         {
+            qDebug() << "AAAAAAAAAAAAAAAA " << ui->actionRecord_to_file->isChecked();
           //mpOGLWidget->setCurStatus( OGLWidget::PLAY );
              //off for test
 
@@ -2000,21 +2001,35 @@ void MainWindow::on_action_Pause_triggered()
 
 void MainWindow::on_action_Record_to_file_triggered()
 {
+    if (!isRecordToFile)
+    {
+           QString suf;
+           QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"), QString(),
+                       tr("Videos (*.avi *.mp4)"), &suf, QFileDialog::DontUseNativeDialog | QFileDialog::DontConfirmOverwrite);
+           fileName =  mSuffixFromFilter(suf, fileName);
+
+           if(fileName.size() == 0)
+           {
+               isRecordToFile = false;
+           }
+           else
+           {
+                mpOGLWidget->setFileNameForRecords(fileName);
+                isRecordToFile = true;
+           }
+    }
+    else
+         isRecordToFile = !isRecordToFile;
+
     disconnect(ui->actionRecord_to_file,SIGNAL(triggered()),this,  SLOT(on_action_Record_to_file_triggered()));
     disconnect(a_record_to_file,SIGNAL(triggered()),this,  SLOT(on_action_Record_to_file_triggered()));
 
-    isRecordToFile = !isRecordToFile;
+
     ui->actionRecord_to_file->setChecked(isRecordToFile);
     a_record_to_file->setChecked( isRecordToFile);
     //a_record_to_file->setChecked(!(a_record_to_file->isChecked()));
     connect(ui->actionRecord_to_file,SIGNAL(triggered()),this,  SLOT(on_action_Record_to_file_triggered()));
      connect(a_record_to_file,SIGNAL(triggered()),this,  SLOT(on_action_Record_to_file_triggered()));
-
-
-
-   /* //qDebug() << "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA " << a_record_to_file->isChecked()
-             << " ui->actionRecord_to_file" << ui->actionRecord_to_file->isChecked();*/
-
 }
 
 void MainWindow::on_action_About_triggered()

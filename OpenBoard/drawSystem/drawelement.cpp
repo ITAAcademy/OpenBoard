@@ -29,8 +29,8 @@ bool DrawElement::setDrawWidget(OGLWidget *value)
         disconnect(pDrawWidget, SIGNAL(pauseSignal()), this, SLOT(pause()));
     }
     pDrawWidget = value;
-    qDebug() << "before alpha effect created";
-    qDebug() << "pDrawWidget->getShaderPrograms().length:"<<pDrawWidget->getShaderPrograms().length();
+   // qDebug() << "before alpha effect created";
+   // qDebug() << "pDrawWidget->getShaderPrograms().length:"<<pDrawWidget->getShaderPrograms().length();
 
 
     if(fboWrapper.errorStatus != 0  && pDrawWidget->isInit())
@@ -48,7 +48,7 @@ bool DrawElement::setDrawWidget(OGLWidget *value)
     //alphaEffect.setReverse(true);
     spiralEffect.setEffectTimeHowLong(1000);
 
-    qDebug() << "alpha effect created";
+    //qDebug() << "alpha effect created";
 
      effects.push_back(alphaEffect); //ADD DEFAULT EFFECT
 }
@@ -90,10 +90,10 @@ DrawElement::DrawElement(OGLWidget *drawWidget, QObject *parent) : QObject(paren
         connect(pDrawWidget, SIGNAL(stopSignal()), this, SLOT(stop()));
         connect(pDrawWidget, SIGNAL(pauseSignal()), this, SLOT(pause()));
     }
-    qDebug() << "RRRR BEFORE";
+   // qDebug() << "RRRR BEFORE";
    // if (pDrawWidget)
 //fboWrapper=pDrawWidget->initFboWrapper();
- qDebug() << "RRRR AFTER";
+ //qDebug() << "RRRR AFTER";
 }
 
 void DrawElement::copy(DrawElement *elm)
@@ -253,6 +253,7 @@ FBOWrapper DrawElement::getFBOWrapper()
 {
  return fboWrapper;
 }
+
 DrawElement::setFBOWrapper(FBOWrapper wrapper)
 {
     this->fboWrapper=wrapper;
@@ -265,7 +266,7 @@ bool DrawElement::load(QString path)
         return false;
     lastPath = path;
     appFile.open(QFile::ReadOnly);
-    this->load(&appFile);
+    this->load(&appFile);   
     appFile.close();
 
 }

@@ -6,6 +6,7 @@ Rectangle {
     id: root_toolbar
     color: "black"
 
+    property Item  p_main222
      property Repeater globalRep
     //anchors.left: parent.left
     height: parent.height
@@ -52,12 +53,18 @@ Rectangle {
             icon_source : "qrc:/iphone_toolbar_icons/delete.png"
             onClicked: {
                 main222.needToLightSelected = false;
-                if ( timeControll.removeLastBlock(trackbar.mIndex))
+              //  rep_columns.itemAt( main222.selectedBlockIndex).abortColorize()
+               // if ( main222.selectedBlockIndex != -1)
+                    if(main222.selectedBlock !== null)
                 {
-                    for (var y = 0; y < rep_columns.model; y++)
-                         rep_columns.itemAt(y).abortColorize()
-                    globalRep.updateModel()
+                    main222.selectedBlockIndex = -1
+                    main222.selectedBlockCol = -1
+                    var color = "#00000000"
+                    root_toolbar.p_main222.selectedBlock.p_icon_coloroverlay.color = color
                 }
+                timeControll.removeLastBlock(trackbar.mIndex)
+                  globalRep.updateModel()
+
             }
         }
     }
