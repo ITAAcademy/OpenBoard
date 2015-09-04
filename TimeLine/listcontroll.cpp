@@ -22,6 +22,7 @@ void ListControll::setSelectedBlockPoint(const QPoint &value)
 
 void ListControll::setSelectedBlockPoint(int col, int ind)
 {
+      //if(testIndexs(col, ind))
     setSelectedBlockPoint(QPoint(col,ind));
     // //qDebug() <<"FFFFFFFFFFFF: col = " << selectedBlockPoint.x() << " ind = " << selectedBlockPoint.y();
 }
@@ -353,7 +354,7 @@ bool ListControll::removeTrack(int col)
     tracks[col0].block.removeAt(ind0);
             tracks[col1].block.append(temp);
             tracks[col1].block.move(tracks[col1].block.size()-1,ind1);
-            qDebug() << "moveBlockFromTo : ind1=" << ind1 << " trackMaxEl=" <<  tracks[col1].block.size() -1;
+
  }
 
 void ListControll::setBlocks(int col,const QList <Element> &value)
@@ -375,13 +376,14 @@ void ListControll::setBlockTime(int col, int i,int value)
 
 void ListControll::setBlockStartTime(int col, int i,int value)
 {
+   if(testIndexs(col, i))
     tracks[col].block[i].draw_element->setStartDraw(value);
 }
 
 int ListControll::getBlockStartTime(int col, int i)
 {
     if(!testIndexs(col, i))
-        return NULL;
+        return -1;
     return tracks[col].block[i].draw_element->getStartDrawTime();
 }
 
@@ -417,7 +419,7 @@ QImage ListControll::getBlockIcon(int col, int i)
  int ListControll::getDrawX(int col, int i)
  {
      if(!testIndexs(col, i))
-         return NULL;
+         return -1;
      return tracks[col].block[i].draw_element->getX() ;
  }
 
@@ -429,7 +431,7 @@ QImage ListControll::getBlockIcon(int col, int i)
  int ListControll::getDrawY(int col, int i)
  {
      if(!testIndexs(col, i))
-         return NULL;
+         return -1;
      return tracks[col].block[i].draw_element->getY();
  }
 
@@ -441,7 +443,7 @@ QImage ListControll::getBlockIcon(int col, int i)
  int ListControll::getDrawZ(int col, int i)
  {
      if(!testIndexs(col, i))
-         return NULL;
+         return -1;
      return tracks[col].block[i].draw_element->getZ() ;
  }
 
@@ -493,7 +495,7 @@ QImage ListControll::getBlockIcon(int col, int i)
 int ListControll::getBlockTime(int col, int i )
 {
     if(!testIndexs(col, i))
-        return NULL;
+        return -1;
     return tracks[col].block[i].draw_element->getLifeTime();
 }
 
@@ -513,7 +515,7 @@ Element ListControll::getBlock(QPoint point)
 int ListControll::getTrackTime( int col)
 {
     if(!testIndexs(col, -1))
-        return NULL;
+        return -1;
     return tracks[col].time;
 }
 
@@ -525,7 +527,7 @@ int ListControll::getMaxTrackTime( )
 int ListControll::getTrackSize(int col)
 {
     if(!testIndexs(col, -1))
-        return NULL;
+        return -1;
 
     int temp = tracks[col].block.size();
     // //qDebug()  << "FHFHHFHFHFHFH getTrackSize = " << temp;

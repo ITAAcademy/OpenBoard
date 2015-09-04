@@ -40,6 +40,8 @@ Rectangle{
     }
 
 
+
+
    /* NumberAnimation on x {
         id: animation_run_x
         running: false;
@@ -126,7 +128,7 @@ Rectangle{
            width: background.width;
            height: background.height
            visible:  true
-           ColorOverlay {
+          ColorOverlay {
                id: icon_coloroverlay
                   anchors.fill: icon
                   source: icon
@@ -196,22 +198,30 @@ Rectangle{
     ParallelAnimation{
         id:animation_scale_normal;
         running: false;
+        onStarted: {
+            /*root.p_main222.p_toolbar .p_button_RemoveTrack.enabled = false
+            root.p_main222.p_toolbar .p_button_AddTrack.enabled = false
+            root.p_main222.p_toolbar .p_button_play.enabled = false
+             for (var i=0; i< root.p_main222.p_rep_columns.count; i++)
+                     root.p_main222.p_rep_columns.itemAt( i).enableTrackbarsButtons(false)*/
+        }
+
         onStopped:  {
 //console.log("2 NE TUTAAAAAAAAAAAAAA")
             root.p_bar_track.z -= 200
      root.globalRep.z -= 200
-          //  console.log("3 NE TUTAAAAAAAAAAAAAA")
-            if(main222.needUpdateModelWhereBlockDroped)
+          //
+            if(root.p_main222.needUpdateModelWhereBlockDroped)
             {
-              //  console.log("4 NE TUTAAAAAAAAAAAAAA")
-                main222.dropEnteredBlockItemGlobalRep.updateModel();
-                main222.needUpdateModelWhereBlockDroped = false
-               // console.log("5 NE TUTAAAAAAAAAAAAAA")
+                root.p_main222.dropEnteredBlockItemGlobalRep.updateModel();
+                root.p_main222.needUpdateModelWhereBlockDroped = false
             }
             root.globalRep.updateModel();
-           // console.log("6 NE TUTAAAAAAAAAAAAAA")
-            //console.log("root.y = " + root.y)
-
+            /*root.p_main222.p_toolbar.p_button_RemoveTrack.enabled = true
+            root.p_main222.p_toolbar.p_button_AddTrack.enabled = true
+             root.p_main222.p_toolbar.p_button_play.enabled = true
+            for (var i=0; i< root.p_main222.p_rep_columns.count; i++)
+                    root.p_main222.p_rep_columns.itemAt( i).enableTrackbarsButtons(true)*/
         }
 
         property int anim_time : 200
@@ -324,14 +334,15 @@ z: 0
         acceptedButtons: Qt.LeftButton | Qt.RightButton
         drag.target: root
         property int oldMouseX
-        property bool isDragged : drag.active
+        property bool isDrag : drag.active
         anchors.fill: parent
         enabled: !globalRep.isDrag
         hoverEnabled: true
 
-        onIsDraggedChanged:  {
+        onIsDragChanged:  {
+            //console.log("onIsDragChanged begin-----------------------------")
 
-           if (isDragged)
+           if (isDrag)
             {
                  cursorShape = Qt.OpenHandCursor
                  animation_scale_small.running = true
@@ -376,9 +387,8 @@ z: 0
 
                 root.p_bar_track.z -= 200 //888
                 root.z -= 200
-
-
 //root.p_main222.root_isDragChanged = true;
+                //console.log("onIsDragChanged end ------------------------------")
             }
 
 
@@ -534,8 +544,6 @@ z: 0
          //main222.p_trackbar_which_block_dragged
          root.globalRep.z -= 200*/
               divider.visible = false
-              //  if (main222.dropEnteredBlockIndex !== -1)
-                {
                    if (main222.dropEntered)
                     {
                         //timeControll.reverseBlocks(root.colIndex,root.mIndex,main222.clicked_blockId)
@@ -549,54 +557,30 @@ z: 0
                            var out_console = true
                 main222.zdvigWhenNormalAnim =  0
 
+
            if ( main222.selectedBlockIndex + 1 === divider.pos_to_append.y)
            {
                if (main222.block_zayshow_sprava)
                {
                    if (main222.left_rigth_entered)
                    {
-                       if (main222.exitedFromDropArea)
-                       {
                            if (main222.selectedBlockCol === main222.dropEnteredTrackIndex)
                            {
                                if(out_console) console.log("555555555555555555 ok +")
                                root.globalRep.moveBlockForAnim(divider.pos_to_append.y,-root.width)
-
                                main222.zdvigWhenNormalAnim = main222.dropEnteredBlock.width - root.width
-
                            }
                            else
                            {
                                if(out_console) console.log("555555555555555555____  OK +")
                                divider.pos_to_append.x = main222.dropEnteredBlock.colIndex
                               divider.pos_to_append.y = main222.dropEnteredBlock.mIndex +1
-                             //root.globalRep.moveBlocksForAnim(root.mIndex, track_size - 1,-root.width)
-                              // main222.zdvigWhenNormalAnim = main222.dropEnteredBlock.width //  root.width
-                               main222.zdvigWhenNormalAnim = (main222.dropEnteredBlock.width + root.width)/2
+                              main222.zdvigWhenNormalAnim = (main222.dropEnteredBlock.width)// + root.width)/2
                                main222.dropEnteredBlock.globalRep.moveBlocksForAnim(
                                       divider.pos_to_append.y,track_size_drop_in - 1,root.width)
                            }
-                       }
-                       else
-                       {
-                           if (main222.selectedBlockCol === main222.dropEnteredTrackIndex)
-                           {
-                           if(out_console) console.log("6666666666666666666 ok+")
-                           root.globalRep.moveBlockForAnim(divider.pos_to_append.y,-root.width)
-                           main222.zdvigWhenNormalAnim = main222.dropEnteredBlock.width - root.width
-                           }
-                           else
-                           {
 
-                              divider.pos_to_append.x = main222.dropEnteredBlock.colIndex
-                             divider.pos_to_append.y = main222.dropEnteredBlock.mIndex + 1
-                              main222.zdvigWhenNormalAnim = (main222.dropEnteredBlock.width +  root.width)/2
-                              main222.dropEnteredBlock.globalRep.moveBlocksForAnim(
-                                     divider.pos_to_append.y,track_size_drop_in - 1,root.width)
 
-                                if(out_console) console.log("6666666666666666666___OK +")
-                           }
-                       }
                    }
                    else
                    {
@@ -607,8 +591,7 @@ z: 0
                            if(out_console) console.log("777777777777777 ok +")
                           // root.globalRep.moveBlockForAnim(root.mIndex,-root.width)
                            divider.pos_to_append.y = main222.dropEnteredBlock.mIndex - 1// -=1
-                           //main222.zdvigWhenNormalAnim = -(main222.dropEnteredBlock.width - root.width)
-                          main222.zdvigWhenNormalAnim = -(main222.dropEnteredBlock.width + root.width)/2
+                          main222.zdvigWhenNormalAnim = -root.width
                            /*main222.dropEnteredBlock.globalRep.moveBlocksForAnim(
                                   divider.pos_to_append.y,track_size_drop_in - 1,root.width)*/
                            }
@@ -633,12 +616,13 @@ z: 0
                            }
                            else
                            {
-                               if(out_console) console.log("RRRRRRRRRRRRRRRRRRRRRRR____ hz ") //++++++++++++++++
+                               if(out_console) console.log("RRRRRRRRRRRRRRRRRRRRRRR____ ok + ") //++++++++++++++++
                                divider.pos_to_append.x = main222.dropEnteredBlock.colIndex
                               divider.pos_to_append.y = main222.dropEnteredBlock.mIndex
-                              main222.zdvigWhenNormalAnim = main222.dropEnteredBlock.width -  root.width
-                               /*main222.dropEnteredBlock.globalRep.moveBlocksForAnim(
-                                      divider.pos_to_append.y,track_size_drop_in - 1,root.width)*/
+                              // main222.zdvigWhenNormalAnim = main222.dropEnteredBlock.width - root.width
+                              // main222.zdvigWhenNormalAnim = -(main222.dropEnteredBlock.width + root.width)/2
+                               main222.dropEnteredBlock.globalRep.moveBlocksForAnim(
+                                      divider.pos_to_append.y,track_size_drop_in - 1,root.width)
                            }
                        }
                    }
@@ -647,83 +631,44 @@ z: 0
                {
                    if (main222.left_rigth_entered)
                    {
-                       if (main222.exitedFromDropArea)
-                       {
                            if (main222.selectedBlockCol === main222.dropEnteredTrackIndex)
                            {
-                           if(out_console) console.log("888888888888888 ok")
+                           if(out_console) console.log("888888888888888 ok +")
                            root.globalRep.moveBlockForAnim(divider.pos_to_append.y,-root.width)
-                           // main222.zdvigWhenNormalAnim = (main222.dropEnteredBlock.width + root.width)/2
                            main222.zdvigWhenNormalAnim = main222.dropEnteredBlock.width -  root.width
                            }
                            else
                            {
-                               if(out_console) console.log("88888888888888888888____  ok")
+                               if(out_console) console.log("88888888888888888888____  ok +")
+                               divider.pos_to_append.x = main222.dropEnteredBlock.colIndex
                                 divider.pos_to_append.y = main222.dropEnteredBlock.mIndex + 1
-                               main222.zdvigWhenNormalAnim = main222.dropEnteredBlock.width // root.width
+                             main222.zdvigWhenNormalAnim = main222.dropEnteredBlock.width
+                                 main222.dropEnteredBlock.globalRep.moveBlocksForAnim(
+                                        divider.pos_to_append.y,track_size_drop_in - 1,root.width)
                            }
-                       }
-                       else
-                       {
-                           if (main222.selectedBlockCol === main222.dropEnteredTrackIndex)
-                           {
-                           if(out_console) console.log("OOOOOOOOOOOOOO ok")
-                              root.globalRep.moveBlockForAnim(divider.pos_to_append.y,-root.width)
-                            main222.zdvigWhenNormalAnim = - (main222.dropEnteredBlock.width + root.width)
-                           }
-                           else
-                           {
-                               if(out_console) console.log("OOOOOOOOOOOOOOOOOOO____ ok")
-                               divider.pos_to_append.y = main222.dropEnteredBlock.mIndex + 1
-                               main222.zdvigWhenNormalAnim = main222.dropEnteredBlock.width // root.width
-                               main222.dropEnteredBlock.globalRep.moveBlocksForAnim(
-                                          divider.pos_to_append.y,track_size_drop_in - 1,root.width)
-                           }
-                          //
-                       }
+
                    }
                    else
                    {
-                       if (main222.exitedFromDropArea)
-                       {
                            if (main222.selectedBlockCol === main222.dropEnteredTrackIndex)
                            {
-                           if(out_console) console.log("PPPPPPPPPPPPPP ok")
+                           if(out_console) console.log("PPPPPPPPPPPPPP ok +")
                            divider.pos_to_append.y -= 1
-                          main222.zdvigWhenNormalAnim = (main222.dropEnteredBlock.width - root.width)
+                          main222.zdvigWhenNormalAnim = - root.width //-(main222.dropEnteredBlock.width )//)
                            }
                            else
                            {
-                               if(out_console) console.log("PPPPPPPPPPPPPPPPPP____   ok ")
+                               if(out_console) console.log("PPPPPPPPPPPPPPPPPP____   ok + ")
                                divider.pos_to_append.x = main222.dropEnteredBlock.colIndex
                                 divider.pos_to_append.y = main222.dropEnteredBlock.mIndex
                                  main222.dropEnteredBlock.globalRep.moveBlocksForAnim(
                                         divider.pos_to_append.y,track_size_drop_in - 1,root.width) //=====================
                            }
                        }
-                       else
-                       {
-                            if (main222.selectedBlockCol === main222.dropEnteredTrackIndex)
-                            {
-                               if(out_console) console.log("SSSSSSSSSSSSSSSSSSSS ok")
-                               divider.pos_to_append.y -=1
-                              // main222.zdvigWhenNormalAnim = -main222.dropEnteredBlock.width // root.width
-                               main222.zdvigWhenNormalAnim = -(main222.dropEnteredBlock.width - root.width)
-                            }
-                            else
-                            {
-                                if(out_console) console.log("SSSSSSSSSSSSSSSSSSSS___  ok  +") //8999
-                                divider.pos_to_append.x = main222.dropEnteredBlock.colIndex
-                                divider.pos_to_append.y = main222.dropEnteredBlock.mIndex
-                              // root.globalRep.moveBlocksForAnim(root.mIndex, track_size - 1,-root.width)
-                               main222.dropEnteredBlock.globalRep.moveBlocksForAnim(
-                                            divider.pos_to_append.y,track_size_drop_in - 1,root.width)
 
-                            }
-                       }
                    }
                }
-           }
+
            else
            if (main222.selectedBlockIndex < divider.pos_to_append.y)
            {
@@ -731,11 +676,10 @@ z: 0
                {
                    if (main222.left_rigth_entered)
                    {
-                       if (main222.exitedFromDropArea)
-                       {
                            if (main222.selectedBlockCol === main222.dropEnteredTrackIndex)
                            {
-                           if(out_console) console.log("111111111111111 ok")
+                           if(out_console) console.log("111111111111111 ok +")
+                           main222.zdvigWhenNormalAnim = main222.dropEnteredBlock.width - root.width
                            root.globalRep.moveBlocksForAnim(root.mIndex, divider.pos_to_append.y,-root.width)
                            }
                            else
@@ -746,196 +690,105 @@ z: 0
                               main222.zdvigWhenNormalAnim = main222.dropEnteredBlock.width // root.width
                               main222.dropEnteredBlock.globalRep.moveBlocksForAnim(
                                      divider.pos_to_append.y,track_size_drop_in - 1,root.width)
-
-                                //root.globalRep.moveBlocksForAnim(root.mIndex, track_size - 1,-root.width)
-                              //root.globalRep.moveBlockForAnimLast(root.width)
                                var ind_from = 0 //root.mIndex
                                var ind_to = root.mIndex -1 //track_size_drop_in - 2
-                            if(out_console) console.log("1111111111111111111____ ok " + ind_from  + " "+ ind_to) ///0091
+                            if(out_console) console.log("1111111111111111111____ ok +") ///0091
                               // root.globalRep.moveBlocksForAnim(ind_from, ind_to,-root.width)
                              //root.globalRep.moveTrackForAnim(root.width)
-
-
-                           }
-                       }
-                       else
-                       {
-                           if (main222.selectedBlockCol === main222.dropEnteredTrackIndex)
-                           {
-                           if(out_console) console.log("2222222222222222 ok")
-                           root.globalRep.moveBlocksForAnim(root.mIndex, divider.pos_to_append.y,-root.width)
-                           }
-                           else
-                           {
-                               if(out_console) console.log("222222222222222222222____ ok ")
-                               divider.pos_to_append.x = main222.dropEnteredBlock.colIndex
-                             divider.pos_to_append.y = main222.dropEnteredBlock.mIndex + 1
-                              main222.zdvigWhenNormalAnim = main222.dropEnteredBlock.width // root.width
-                              main222.dropEnteredBlock.globalRep.moveBlocksForAnim(
-                                     divider.pos_to_append.y,track_size_drop_in - 1,root.width)
-                           }
-                       }
+                           }                       
                    }
                    else
                    {
-                       if (main222.exitedFromDropArea)
-                       {
                            if (main222.selectedBlockCol === main222.dropEnteredTrackIndex)
                            {
-                               if(out_console) console.log("33333333333333333 ok")
+                               if(out_console) console.log("33333333333333333 ok + ")
+                                divider.pos_to_append.y = main222.dropEnteredBlock.mIndex -1
+                                main222.zdvigWhenNormalAnim = -(main222.dropEnteredBlock.width + root.width)/2
                                root.globalRep.moveBlocksForAnim(root.mIndex, divider.pos_to_append.y,-root.width)
                            }
                            else
                            {
-                               if(out_console) console.log("33333333333333333333____ ok") //99909
+                               if(out_console) console.log("33333333333333333333____ ok +") //99909
                                divider.pos_to_append.x = main222.dropEnteredBlock.colIndex
-                             divider.pos_to_append.y = 3 // main222.dropEnteredBlock.mIndex
+                             divider.pos_to_append.y =  main222.dropEnteredBlock.mIndex
                              main222.dropEnteredBlock.globalRep.moveBlocksForAnim(
                                      divider.pos_to_append.y ,track_size_drop_in - 1,root.width)
                            }
-                       }
-                       else
-                       {
-                           if (main222.selectedBlockCol === main222.dropEnteredTrackIndex)
-                           {
-                           if(out_console) console.log("TTTTTTTTTTTTTTTTTTT ok")
-                           root.globalRep.moveBlocksForAnim(root.mIndex, divider.pos_to_append.y,-root.width)
-                           }
-                           else
-                           {
-                               if(out_console) console.log("TTTTTTTTTTTTTTTTTTTTT____ ok")
-                               divider.pos_to_append.x = main222.dropEnteredBlock.colIndex
-                             divider.pos_to_append.y = main222.dropEnteredBlock.mIndex
-                              main222.dropEnteredBlock.globalRep.moveBlocksForAnim(
-                                     divider.pos_to_append.y,track_size_drop_in - 1,root.width)
-                           }
-                       }
                    }
                }
                else
                {
                    if (main222.left_rigth_entered)
                    {
-                       if (main222.exitedFromDropArea)
-                       {
                            if (main222.selectedBlockCol === main222.dropEnteredTrackIndex)
                            {
-                           if(out_console) console.log("4444444444444444444 ok")
+                           if(out_console) console.log("4444444444444444444 ok + ")
+                           main222.zdvigWhenNormalAnim =  main222.dropEnteredBlock.width - root.width
                            root.globalRep.moveBlocksForAnim(root.mIndex,
                                              divider.pos_to_append.y,-root.width)
                            }
                            else
                            {
-                               if(out_console) console.log("4444444444444444444444____  ok")
+                               if(out_console) console.log("4444444444444444444444____  ok + ")
                                divider.pos_to_append.x = main222.dropEnteredBlock.colIndex
                               divider.pos_to_append.y = main222.dropEnteredBlock.mIndex + 1
                              main222.dropEnteredBlock.globalRep.moveBlocksForAnim(
                                           divider.pos_to_append.y,track_size_drop_in - 1,root.width)
                                main222.zdvigWhenNormalAnim = main222.dropEnteredBlock.width // root.width
                            }
-                       }
-                       else
-                       {
-                           if (main222.selectedBlockCol === main222.dropEnteredTrackIndex)
-                           {
-                           if(out_console) console.log("UUUUUUUUUUUUUUUUUUU ok")
-                           root.globalRep.moveBlocksForAnim(root.mIndex,divider.pos_to_append.y,-root.width)
-                           main222.zdvigWhenNormalAnim = main222.dropEnteredBlock.width - root.width
 
-                           }
-                           else
-                           {
-                               if(out_console) console.log("UUUUUUUUUUUUUUUUUUUUUU____ ok")
-                               divider.pos_to_append.x = main222.dropEnteredBlock.colIndex
-                              divider.pos_to_append.y = main222.dropEnteredBlock.mIndex + 1
-                             main222.dropEnteredBlock.globalRep.moveBlocksForAnim(
-                                          divider.pos_to_append.y,track_size_drop_in - 1,root.width)
-                               main222.zdvigWhenNormalAnim = main222.dropEnteredBlock.width // root.width
-                           }
-                       }
                    }
                    else
                    {
-                       if (main222.exitedFromDropArea)
-                       {
                            if (main222.selectedBlockCol === main222.dropEnteredTrackIndex)
                            {
-                           if(out_console) console.log("VVVVVVVVVVVVVVVVVV ok")
+                           if(out_console) console.log("VVVVVVVVVVVVVVVVVV ok +")
                            divider.pos_to_append.y -=1
                            root.globalRep.moveBlocksForAnim(root.mIndex, divider.pos_to_append.y,-root.width)
-                           main222.zdvigWhenNormalAnim = -main222.dropEnteredBlock.width // root.width
+                           main222.zdvigWhenNormalAnim = - root.width //(main222.dropEnteredBlock.width - root.width)/2
+                          // main222.zdvigWhenNormalAnim = main222.dropEnteredBlock.width - root.width
                            }
                            else
                            {
-                               if(out_console) console.log("VVVVVVVVVVVVVVVVVVVVVVV____ ok")
+                               if(out_console) console.log("VVVVVVVVVVVVVVVVVVVVVVV____ ok + ")
                                divider.pos_to_append.x = main222.dropEnteredBlock.colIndex
                               divider.pos_to_append.y = main222.dropEnteredBlock.mIndex
+                             //  main222.zdvigWhenNormalAnim = main222.dropEnteredBlock.width // root.width
                              main222.dropEnteredBlock.globalRep.moveBlocksForAnim(
                                           divider.pos_to_append.y,track_size_drop_in - 1,root.width)
                            }
-                       }
-                       else
-                       {
-                           if (main222.selectedBlockCol === main222.dropEnteredTrackIndex)
-                           {
-                           if(out_console) console.log("WWWWWWWWWWWWWWWWWWWW ok")
-                           divider.pos_to_append.y -=1
-                           main222.zdvigWhenNormalAnim = -main222.dropEnteredBlock.width // root.width
-                           root.globalRep.moveBlocksForAnim(root.mIndex,divider.pos_to_append.y,-root.width)
-                           }
-                           else
-                           {
-                               if(out_console) console.log("WWWWWWWWWWWWWWWWWWW____ ok")
-                               divider.pos_to_append.x = main222.dropEnteredBlock.colIndex
-                              divider.pos_to_append.y = main222.dropEnteredBlock.mIndex
-                             main222.dropEnteredBlock.globalRep.moveBlocksForAnim(
-                                          divider.pos_to_append.y,track_size_drop_in - 1,root.width)
-                           }
-                       }
+
                    }
                }
            }
            else
            if (main222.selectedBlockIndex === divider.pos_to_append.y)
            {
+               console.log("DDDDDDDDDDDDDAAAAAAAAAAAAAAAAAAAAAAAAAA 1")
                if (main222.block_zayshow_sprava)
                {
+                   console.log("DDDDDDDDDDDDDAAAAAAAAAAAAAAAAAAAAAAAAAA 2")
                    if (main222.left_rigth_entered)
                    {
-                       if (main222.exitedFromDropArea)
-                       {
+                       console.log("DDDDDDDDDDDDDAAAAAAAAAAAAAAAAAAAAAAAAAA 3")
                            if (main222.selectedBlockCol === main222.dropEnteredTrackIndex)
                            {
-                           if(out_console) console.log("9999999999999999")
+                           if(out_console) console.log("9999999999999999 hz")
+                           divider.pos_to_append.y = main222.dropEnteredBlock.mIndex + 1
+                           main222.zdvigWhenNormalAnim = main222.dropEnteredBlock.width
                            }
                            else
                            {
-                               if(out_console) console.log("99999999999999999____ ")
+                               if(out_console) console.log("99999999999999999____ ok +")
+                               divider.pos_to_append.x = main222.dropEnteredBlock.colIndex
+                               divider.pos_to_append.y = main222.dropEnteredBlock.mIndex + 1
+                               main222.zdvigWhenNormalAnim = root.width //main222.dropEnteredBlock.width
 
                            }
-                       }
-                       else
-                       {
-                           if (main222.selectedBlockCol === main222.dropEnteredTrackIndex)
-                           {
-                           if(out_console) console.log("AAAAAAAAAAAAAAAA")
-                           }
-                           else
-                           {
-                               if(out_console) console.log("AAAAAAAAAAAAAAAAAAA____ ")
-                               divider.pos_to_append.x = main222.dropEnteredBlock.colIndex
-                              divider.pos_to_append.y = main222.dropEnteredBlock.mIndex + 1
-                            // root.globalRep.moveBlocksForAnim(root.mIndex, track_size - 1,-root.width)
-                               main222.zdvigWhenNormalAnim = main222.dropEnteredBlock.width // root.width
-                               main222.dropEnteredBlock.globalRep.moveBlocksForAnim(
-                                      divider.pos_to_append.y,track_size_drop_in - 1,root.width)
-                           }
-                       }
+
                    }
                    else
                    {
-                       if (main222.exitedFromDropArea)
-                       {
                            if (main222.selectedBlockCol === main222.dropEnteredTrackIndex)
                            {
                            if(out_console) console.log("BBBBBBBBBBBBBBBBBB")
@@ -943,81 +796,55 @@ z: 0
                            else
                            {
                                if(out_console) console.log("BBBBBBBBBBBBBBBBBB____ ")
+                               divider.pos_to_append.x = main222.dropEnteredBlock.colIndex
+                               main222.dropEnteredBlock.globalRep.moveBlocksForAnim(
+                                                                     divider.pos_to_append.y,track_size_drop_in - 1,root.width)
                            }
-                       }
-                       else
-                       {
-                           if (main222.selectedBlockCol === main222.dropEnteredTrackIndex)
-                           {
-                           if(out_console) console.log("XXXXXXXXXXXXXXXXXXXXXX")
-                           }
-                           else
-                           {
-                               if(out_console) console.log("XXXXXXXXXXXXXXXXXXXXXXX____ ")
-                           }
-                       }
+
                    }
                }
                else //zayshow zliva
                {
                    if (main222.left_rigth_entered)
                    {
-                       if (main222.exitedFromDropArea)
-                       {
                            if (main222.selectedBlockCol === main222.dropEnteredTrackIndex)
                            {
                            if(out_console) console.log("YYYYYYYYYYYYYYYYYYYY")
                            }
                            else
                            {
-                               if(out_console) console.log("YYYYYYYYYYYYYYYYYYYYY____ ")
+                               if(out_console) console.log("YYYYYYYYYYYYYYYYYYYYY____ ok +")
+                               //main222.zdvigWhenNormalAnim = (main222.dropEnteredBlock.width -  root.width)/2
+                               divider.pos_to_append.x = main222.dropEnteredBlock.colIndex
+                              //divider.pos_to_append.y = main222.dropEnteredBlock.mIndex
+                               divider.pos_to_append.y = main222.dropEnteredBlock.mIndex + 1
+                               main222.zdvigWhenNormalAnim = main222.dropEnteredBlock.width //(root.width + main222.dropEnteredBlock.width)/2
+                               main222.dropEnteredBlock.globalRep.moveBlocksForAnim(
+                                                                     divider.pos_to_append.y,track_size_drop_in - 1,root.width)
                            }
-                       }
-                       else
-                       {
-                           if (main222.selectedBlockCol === main222.dropEnteredTrackIndex)
-                           {
-                           if(out_console) console.log("ZZZZZZZZZZZZZZZZ")
-                           }
-                           else
-                           {
-                               if(out_console) console.log("ZZZZZZZZZZZZZZZZ____ ")
-                               main222.zdvigWhenNormalAnim = main222.dropEnteredBlock.width -  root.width
 
-                           }
-                       }
                    }
                    else
                    {
-                       if (main222.exitedFromDropArea)
-                       {
                            if (main222.selectedBlockCol === main222.dropEnteredTrackIndex)
                            {
                            if(out_console) console.log("!!!!!!!!!!!!!!!!!!!!!!!!")
                            }
                            else
                            {
-                               if(out_console) console.log("!!!!!!!!!!!!!!!!!!!!!!!!____ ")
-                               main222.zdvigWhenNormalAnim = main222.dropEnteredBlock.width -  root.width
-                               main222.dropEnteredBlock.globalRep.moveBlocksForAnim(
-                                            divider.pos_to_append.y,track_size_drop_in - 1,root.width)
-                           }
-                       }
-                       else
-                       {
-                           if (main222.selectedBlockCol === main222.dropEnteredTrackIndex)
-                           {
-                           if(out_console) console.log("@@@@@@@@@@@@@@@@@@@")
-                           }
-                           else
-                           {
-                               if(out_console) console.log("@@@@@@@@@@@@@@@@@@@@@@___ ok")
+                               if(out_console) console.log("!!!!!!!!!!!!!!!!!!!!!!!!____  crash")
+/*
                                divider.pos_to_append.x = main222.dropEnteredBlock.colIndex
-                               divider.pos_to_append.y = main222.dropEnteredBlock.mIndex
-                                main222.dropEnteredBlock.globalRep.moveBlocksForAnim(
-                                           divider.pos_to_append.y,track_size_drop_in - 1,root.width)
+                              divider.pos_to_append.y = main222.dropEnteredBlock.mIndex
+
+                               main222.dropEnteredBlock.globalRep.moveBlocksForAnim(
+                                            divider.pos_to_append.y,track_size_drop_in - 1,root.width)*/
+
+                               divider.pos_to_append.x = main222.dropEnteredBlock.colIndex
+                             // divider.pos_to_append.y = main222.dropEnteredBlock.mIndex +1 //!!!!!!
+                             main222.dropEnteredBlock.globalRep.moveBlocksForAnim(
+                                          divider.pos_to_append.y,track_size_drop_in - 1,root.width)
                            }
-                       }
                    }
                }
            }
@@ -1027,89 +854,48 @@ z: 0
                if (main222.block_zayshow_sprava)
                {
                    if (main222.left_rigth_entered)
-                   {
-                       if (main222.exitedFromDropArea)
-                       {
+                   {                      
                            if (main222.selectedBlockCol === main222.dropEnteredTrackIndex)
                            {
-                           if(out_console) console.log("DDDDDDDDDDDDDDDDD ok") //0-0-0
+                           if(out_console) console.log("DDDDDDDDDDDDDDDDD ok +") //0-0-0
                            main222.zdvigWhenNormalAnim = main222.dropEnteredBlock.width //   root.width
                            divider.pos_to_append.y +=1
                            }
                            else
                            {
-                               if(out_console) console.log("DDDDDDDDDDDDDDDDDDDD____ ok")
+                               if(out_console) console.log("DDDDDDDDDDDDDDDDDDDD____ ok + ")
                                divider.pos_to_append.x = main222.dropEnteredBlock.colIndex
                               divider.pos_to_append.y = main222.dropEnteredBlock.mIndex + 1
                              main222.zdvigWhenNormalAnim = main222.dropEnteredBlock.width // root.width
                              main222.dropEnteredBlock.globalRep.moveBlocksForAnim(
                                           divider.pos_to_append.y,track_size_drop_in - 1,root.width)
                            }
-                       }
-                       else
-                       {
-                           if (main222.selectedBlockCol === main222.dropEnteredTrackIndex)
-                           {
-                           if(out_console) console.log("EEEEEEEEEEEEEEEE ok")
-                            divider.pos_to_append.y +=1
-                           main222.zdvigWhenNormalAnim = main222.dropEnteredBlock.width // root.width
-                           }
-                           else
-                           {
-                               if(out_console) console.log("EEEEEEEEEEEEEEEEEEE____ ok")
-                               divider.pos_to_append.x = main222.dropEnteredBlock.colIndex
-                              divider.pos_to_append.y = main222.dropEnteredBlock.mIndex + 1
-                             main222.zdvigWhenNormalAnim = main222.dropEnteredBlock.width //  root.width
-                             main222.dropEnteredBlock.globalRep.moveBlocksForAnim(
-                                          divider.pos_to_append.y,track_size_drop_in - 1,root.width)
-                           }
-                       }
                    }
                    else
                    {
-                       if (main222.exitedFromDropArea)
-                       {
                            if (main222.selectedBlockCol === main222.dropEnteredTrackIndex)
                            {
-                           if(out_console) console.log("FFFFFFFFFFFFFFFF ok")
+                           if(out_console) console.log("FFFFFFFFFFFFFFFF ok +")
                            root.globalRep.moveBlockForAnim(divider.pos_to_append.y,root.width)
                            }
                            else
                            {
-                               if(out_console) console.log("FFFFFFFFFFFFFFFFFF____ ok")
+                               if(out_console) console.log("FFFFFFFFFFFFFFFFFF____ ok +")
                                divider.pos_to_append.x = main222.dropEnteredBlock.colIndex
                               divider.pos_to_append.y = main222.dropEnteredBlock.mIndex
                              main222.dropEnteredBlock.globalRep.moveBlocksForAnim(
                                           divider.pos_to_append.y,track_size_drop_in - 1,root.width)
                            }
-                       }
-                       else
-                       {
-                           if (main222.selectedBlockCol === main222.dropEnteredTrackIndex)
-                           {
-                           if(out_console) console.log("#################### ok")
-                           root.globalRep.moveBlockForAnim(divider.pos_to_append.y, root.width)
-                           }
-                           else
-                           {
-                               if(out_console) console.log("#########################____ ok")
-                               divider.pos_to_append.x = main222.dropEnteredBlock.colIndex
-                              divider.pos_to_append.y = main222.dropEnteredBlock.mIndex
-                             main222.dropEnteredBlock.globalRep.moveBlocksForAnim(
-                                          divider.pos_to_append.y,track_size_drop_in - 1,root.width)
-                           }
-                       }
+
                    }
                }
                else
                {
                    if (main222.left_rigth_entered)
                    {
-                       if (main222.exitedFromDropArea)
-                       {
                            if (main222.selectedBlockCol === main222.dropEnteredTrackIndex)
                            {
-                           if(out_console) console.log("GGGGGGGGGGGGGGGGGGG ok")
+                           if(out_console) console.log("GGGGGGGGGGGGGGGGGGG ok +")
                            main222.zdvigWhenNormalAnim = main222.dropEnteredBlock.width // root.width
                            divider.pos_to_append.y +=1
                            }
@@ -1122,29 +908,11 @@ z: 0
                              main222.dropEnteredBlock.globalRep.moveBlocksForAnim(
                                           divider.pos_to_append.y,track_size_drop_in - 1,root.width)
                            }
-                       }
-                       else
-                       {
-                           if (main222.selectedBlockCol === main222.dropEnteredTrackIndex)
-                           {
-                           if(out_console) console.log("$$$$$$$$$$$$$$$$$$$ ok")
-                           divider.pos_to_append.y +=1
-                           main222.zdvigWhenNormalAnim = main222.dropEnteredBlock.width // root.width
-                           }
-                           else
-                           {
-                               if(out_console) console.log("$$$$$$$$$$$$$$$$$$$$$$____ ok")
-                               divider.pos_to_append.x = main222.dropEnteredBlock.colIndex
-                              divider.pos_to_append.y = main222.dropEnteredBlock.mIndex + 1
-                             main222.zdvigWhenNormalAnim = main222.dropEnteredBlock.width //  root.width
-                             main222.dropEnteredBlock.globalRep.moveBlocksForAnim(
-                                          divider.pos_to_append.y,track_size_drop_in - 1,root.width)
-                           }
-                       }
+
                    }
                    else
                    {
-                       if (main222.exitedFromDropArea)
+                      /* if (main222.exitedFromDropArea)
                        {
                            if (main222.selectedBlockCol === main222.dropEnteredTrackIndex)
                            {
@@ -1153,15 +921,15 @@ z: 0
                            }
                            else
                            {
-                               if(out_console) console.log("%%%%%%%%%%%%%%%%%%%%%%____ ok")
+                               if(out_console) console.log("%%%%%%%%%%%%%%%%%%%%%%____ ok + ")
                                divider.pos_to_append.x = main222.dropEnteredBlock.colIndex
                               divider.pos_to_append.y = main222.dropEnteredBlock.mIndex
                              main222.dropEnteredBlock.globalRep.moveBlocksForAnim(
                                           divider.pos_to_append.y,track_size_drop_in - 1,root.width)
                            }
                        }
-                       else
-                       {
+                       else*/
+
                            if (main222.selectedBlockCol === main222.dropEnteredTrackIndex)
                            {
                                if(out_console) console.log("^^^^^^^^^^^^^^^^ ok")
@@ -1169,13 +937,13 @@ z: 0
                            }
                            else
                            {
-                               if(out_console) console.log("^^^^^^^^^^^^^^^^^^^____ ok")
+                               if(out_console) console.log("^^^^^^^^^^^^^^^^^^^____ ok +")
                                divider.pos_to_append.x = main222.dropEnteredBlock.colIndex
-                               divider.pos_to_append.y = main222.dropEnteredBlock.mIndex
+                               //divider.pos_to_append.y = main222.dropEnteredBlock.mIndex
                                main222.dropEnteredBlock.globalRep.moveBlocksForAnim(
                                           divider.pos_to_append.y,track_size_drop_in - 1,root.width)
                            }
-                       }
+
                    }
                }
            }
@@ -1186,8 +954,6 @@ z: 0
                {
                    if (main222.left_rigth_entered)
                    {
-                       if (main222.exitedFromDropArea)
-                       {
                            if (main222.selectedBlockCol === main222.dropEnteredTrackIndex)
                            {
                            if(out_console) console.log("HHHHHHHHHHHHHHHHHH ok")
@@ -1197,77 +963,43 @@ z: 0
                            }
                            else
                            {
-                               if(out_console) console.log("HHHHHHHHHHHHHHHHHHHHHHHH____ ok")
+                               if(out_console) console.log("HHHHHHHHHHHHHHHHHHHHHHHH____ ok +")
                                divider.pos_to_append.x = main222.dropEnteredBlock.colIndex
                                divider.pos_to_append.y = main222.dropEnteredBlock.mIndex + 1
                                main222.zdvigWhenNormalAnim =  main222.dropEnteredBlock.width // root.width
                                main222.dropEnteredBlock.globalRep.moveBlocksForAnim(
                                        divider.pos_to_append.y,track_size_drop_in - 1,root.width)
                            }
-                       }
-                       else
-                       {
-                           if (main222.selectedBlockCol === main222.dropEnteredTrackIndex)
-                           {
-                           if(out_console) console.log("IIIIIIIIIIIIIIIIIIIIIII ok")
-                           divider.pos_to_append.y +=1
-                           main222.zdvigWhenNormalAnim = main222.dropEnteredBlock.width //  root.width
-                           root.globalRep.moveBlocksForAnim( divider.pos_to_append.y,root.mIndex,root.width)
-                           }
-                           else
-                           {
-                               if(out_console) console.log("IIIIIIIIIIIIIIIIIIIIIII____ ok")
-                               divider.pos_to_append.x = main222.dropEnteredBlock.colIndex
-                               divider.pos_to_append.y = main222.dropEnteredBlock.mIndex + 1
-                               main222.zdvigWhenNormalAnim = main222.dropEnteredBlock.width //  root.width
-                               main222.dropEnteredBlock.globalRep.moveBlocksForAnim(
-                                          divider.pos_to_append.y,track_size_drop_in - 1,root.width)
-                           }
-                       }
+
+
                    }
                    else
                    {
-                       if (main222.exitedFromDropArea)
-                       {
                            if (main222.selectedBlockCol === main222.dropEnteredTrackIndex)
                            {
-                           if(out_console) console.log("JJJJJJJJJJJJJJJJJJJJ ok")
+                           if(out_console) console.log("JJJJJJJJJJJJJJJJJJJJ ok + ")
                            root.globalRep.moveBlocksForAnim(divider.pos_to_append.y,root.mIndex,root.width)
                            }
                            else
                            {
-                               if(out_console) console.log("JJJJJJJJJJJJJJJJJJJ____  ok")
-                               divider.pos_to_append.x = main222.dropEnteredBlock.colIndex
+                               if(out_console) console.log("JJJJJJJJJJJJJJJJJJJ____  ok crash ")
+                              /* divider.pos_to_append.x = main222.dropEnteredBlock.colIndex
                                divider.pos_to_append.y = main222.dropEnteredBlock.mIndex
                                main222.dropEnteredBlock.globalRep.moveBlocksForAnim(
                                           divider.pos_to_append.y,track_size_drop_in - 1,root.width)
-                           }
-                       }
-                       else
-                       {
-                           if (main222.selectedBlockCol === main222.dropEnteredTrackIndex)
-                           {
-                           if(out_console) console.log("MMMMMMMMMMMMMMM ok")
-                           root.globalRep.moveBlocksForAnim(divider.pos_to_append.y,root.mIndex,root.width)
-                           }
-                           else
-                           {
-                               if(out_console) console.log("MMMMMMMMMMMMMMMMM____ ok")
+                               */
                                divider.pos_to_append.x = main222.dropEnteredBlock.colIndex
-                               divider.pos_to_append.y = main222.dropEnteredBlock.mIndex
+                              // divider.pos_to_append.y = main222.dropEnteredBlock.mIndex
                                main222.dropEnteredBlock.globalRep.moveBlocksForAnim(
                                           divider.pos_to_append.y,track_size_drop_in - 1,root.width)
                            }
-                           //ok
-                       }
+
                    }
                }
                else
                {
                    if (main222.left_rigth_entered)
                    {
-                       if (main222.exitedFromDropArea)
-                       {
                            if (main222.selectedBlockCol === main222.dropEnteredTrackIndex)
                            {
                            if(out_console) console.log("NNNNNNNNNNNNNNNNNNNNNNNNNNN ok")
@@ -1284,31 +1016,10 @@ z: 0
                                main222.dropEnteredBlock.globalRep.moveBlocksForAnim(
                                           divider.pos_to_append.y,track_size_drop_in - 1,root.width)
                            }
-                       }
-                       else
-                       {
-                           if (main222.selectedBlockCol === main222.dropEnteredTrackIndex)
-                           {
-                           if(out_console) console.log("&&&&&&&&&&&&&&&&&&&&&& ok")
-                           divider.pos_to_append.y += 1
-                           main222.zdvigWhenNormalAnim = main222.dropEnteredBlock.width // root.width
-                           root.globalRep.moveBlocksForAnim( divider.pos_to_append.y,root.mIndex,root.width)
-                           }
-                           else
-                           {
-                               if(out_console) console.log("&&&&&&&&&&&&&&&&&&&&&&&&____ ok")
-                               divider.pos_to_append.x = main222.dropEnteredBlock.colIndex
-                               divider.pos_to_append.y = main222.dropEnteredBlock.mIndex + 1
-                               main222.zdvigWhenNormalAnim = main222.dropEnteredBlock.width // root.width
-                               main222.dropEnteredBlock.globalRep.moveBlocksForAnim(
-                                          divider.pos_to_append.y,track_size_drop_in - 1,root.width)
-                           }
-                       }
+
                    }
                    else  // move from right to left, zayshow zliva, main222.selectedBlockIndex > divider.pos_to_append.y
                    {
-                       if (main222.exitedFromDropArea)
-                       {
                            if (main222.selectedBlockCol === main222.dropEnteredTrackIndex)
                            {
                            if(out_console) console.log("********************* ok")
@@ -1316,32 +1027,17 @@ z: 0
                            }
                            else
                            {
-                               if(out_console) console.log("*********************____ ok")
+                               if(out_console) console.log("*********************____ ok +")
                                divider.pos_to_append.x = main222.dropEnteredBlock.colIndex
-                               divider.pos_to_append.y = main222.dropEnteredBlock.mIndex
+                               //divider.pos_to_append.y = main222.dropEnteredBlock.mIndex// +1
                                main222.dropEnteredBlock.globalRep.moveBlocksForAnim(
                                           divider.pos_to_append.y,track_size_drop_in - 1,root.width)
                            }
                        }
-                       else
-                       {
-                           if (main222.selectedBlockCol === main222.dropEnteredTrackIndex)
-                           {
-                           if(out_console) console.log("(((((((((((()))))))))))) ok")
-                           root.globalRep.moveBlocksForAnim( divider.pos_to_append.y,root.mIndex,root.width)
-                           }
-                           else
-                           {
-                               if(out_console) console.log("((((((((((()))))))))))))))____ ok")
-                               divider.pos_to_append.x = main222.dropEnteredBlock.colIndex
-                               divider.pos_to_append.y = main222.dropEnteredBlock.mIndex
-                               main222.dropEnteredBlock.globalRep.moveBlocksForAnim(
-                                          divider.pos_to_append.y,track_size_drop_in - 1,root.width)
-                           }
-                       }
+
                    }
                }
-           }
+
 
 
 
@@ -1372,12 +1068,8 @@ z: 0
 
 
             timeControll.setSelectedBlockPoint(main222.selectedBlockCol,main222.selectedBlockIndex)
-      console.log(" +++++    " +   main222.selectedBlockCol + " " +
-                  main222.selectedBlockIndex)
-
-            }
-                }
-                 globalRep.isDrag = false
+                   }
+root.globalRep.isDrag = false
             }
             else
              if(bChangeSize)

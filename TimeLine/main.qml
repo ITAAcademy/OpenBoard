@@ -79,6 +79,7 @@ Rectangle
      property int blocks_num : 0
    property bool left_rigth_entered : false
    property bool block_zayshow_sprava : false
+   property Item p_toolbar
    onBlock_zayshow_spravaChanged: {
       // anim_
    }
@@ -297,7 +298,7 @@ scale_pointer.x = 0// timeControll.getMaxTrackTime() + scale_pointer.width/2 - s
 
        onUpdateModel: {
            for(var i = 0; i < cool_main.children.length; i++) {
-              console.log("destroying: " + i)
+             // console.log("destroying: " + i)
               cool_main.children[i].destroy();
             }
            main222.updateTracksModel();
@@ -662,6 +663,7 @@ timeControll.setScalePointerPos((x  -20 + scroll.flickableItem.contentX)* main22
                                   model = 0;
                           }
 
+
                           Component.onCompleted: {
                           main222.p_rep_columns = rep_columns
                           }
@@ -687,6 +689,10 @@ timeControll.setScalePointerPos((x  -20 + scroll.flickableItem.contentX)* main22
                                    // //console.log("repka.itemAt(indexa).x="+repka.itemAt(indexa).x)
 
                                      return repka.itemAt(indexa).x
+                               }
+                               function enableTrackbarsButtons(value)
+                               {
+                                   trackbar.enableButtonsClick = value;
                                }
 
 
@@ -749,7 +755,7 @@ timeControll.setScalePointerPos((x  -20 + scroll.flickableItem.contentX)* main22
                                                mIndex: index
                                                 colIndex:  bar_track.mIndex
                                    width:  timeControll.getBlockTime(colIndex, mIndex) / main222.scaling
-                                    //p_main222: main222
+                                    p_main222: main222
 
                                                title: timeControll.getBlockKey(colIndex,mIndex)
 
@@ -802,6 +808,9 @@ timeControll.setScalePointerPos((x  -20 + scroll.flickableItem.contentX)* main22
              x: scroll.width
              width: 30
              height: parent.height
+             Component.onCompleted: {
+                 main222.p_toolbar = tollbar
+             }
          }
 
        ////////////////////////tuta

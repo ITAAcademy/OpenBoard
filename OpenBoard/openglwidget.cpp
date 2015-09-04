@@ -375,7 +375,7 @@ void OGLWidget::setEditingRectangle(const RectangleEditor &value)
 void OGLWidget::hideEvent(QHideEvent *)
 {
     init=false;
-    qDebug() << "HIDE EVENT";
+    //qDebug() << "HIDE EVENT";
 }
 
 void OGLWidget::processMouse()
@@ -873,10 +873,10 @@ FBOWrapper OGLWidget::initFboWrapper(int width, int height, bool visibleOnly) {
 
     makeCurrent();
 
-    qDebug() << "1111";
+   // qDebug() << "1111";
      glGetError();
     //qDebug () << "                                                                  INIT FBO";
-      qDebug() << "2";
+     // qDebug() << "2";
 
 
     FBOWrapper fboWrapper;

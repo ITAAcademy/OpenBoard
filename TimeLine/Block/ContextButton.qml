@@ -43,9 +43,9 @@ Rectangle {
             font { pixelSize: 14 }
         }
         MouseArea {
-            hoverEnabled: enable
+            hoverEnabled: true
             anchors.fill: parent
-            enabled: enable
+            enabled: true
             onClicked:  {
 
 
