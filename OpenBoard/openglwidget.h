@@ -317,6 +317,7 @@ private slots:
     void storeMousePos();
 
 private:
+    int MOUSE_PROCESS_DELAY_MS=60;
 QString fileNameForRecords;
   //  QMap <void* , QList<QByteArray>>  audioList;
     GLuint pixelBufferIDs[2];
@@ -333,6 +334,7 @@ QString fileNameForRecords;
     unsigned int current_millisecs =0;
     unsigned int last_milisecs_update = 0;
     unsigned int last_milisecs_drawn = 0;
+    unsigned int last_mouse_process = 0;
 
     QVector<GLenum> attachment;
     FBOWrapper mainFBO,pingpongFBO;

@@ -1779,7 +1779,13 @@ void  OGLWidget::updateWindow(){
     //if (timeLine->getPointedBlocks().size())
    /// if(!timeLine->isBlocked)
    ///
+ if ((current_millisecs - last_mouse_process) >= 1.0/MOUSE_PROCESS_DELAY_MS)
+ {
 processMouse();
+  last_mouse_process = current_millisecs;
+ }
+
+
     setList(timeLine->getPointedBlocksDE());
 
     QPoint t = timeLine->getSelectedBlockPoint();
