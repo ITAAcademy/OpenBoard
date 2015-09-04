@@ -387,7 +387,7 @@ void OGLWidget::processMouse()
           GLint y1 = editingRectangle.rect.y();
             GLint x2 = editingRectangle.rect.x()+editingRectangle.rect.width();
             GLint y2 = editingRectangle.rect.y()+editingRectangle.rect.height();
-            m_manager.setAbleToDraw(true);
+            m_manager.setAbleToDraw(able_drawing);
 
             int leftCornerX1=x1-editingRectangle.leftCornerSize/2;
              int leftCornerY1=y1-editingRectangle.leftCornerSize/2;
@@ -1129,7 +1129,7 @@ void OGLWidget::paintGL()
       GLint y1 = editingRectangle.rect.y();
         GLint x2 = editingRectangle.rect.x()+editingRectangle.rect.width();
         GLint y2 = editingRectangle.rect.y()+editingRectangle.rect.height();
-        m_manager.setAbleToDraw(true);
+       // m_manager.setAbleToDraw(true);
 
         int leftCornerX1=x1-editingRectangle.leftCornerSize/2;
          int leftCornerY1=y1-editingRectangle.leftCornerSize/2;
@@ -2185,7 +2185,7 @@ QPoint OGLWidget::drawWrapText(QString str)
 
 void OGLWidget::storeMousePos()
 {
-    if (isMousePress){
+    if (isMousePress && m_manager.isAbleToDraw()){
 
         if (drawBrushElm->getCoords().length()==0)drawBrushElm->addBrush(m_manager.getCreatedBrush());
             drawBrushElm->addCoord(QPoint(mousePos.x(),mousePos.y()));
