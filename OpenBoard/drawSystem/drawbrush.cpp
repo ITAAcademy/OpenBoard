@@ -205,7 +205,7 @@ void DrawBrushElm::draw()
           if (coords.size()>0)
           //realKeyValue=qFloor((double)((current_time - startDrawTime) / ((double)(lifeTime/coords.size()))));
          realKeyValue = qCeil((double)((current_time-startDrawTime)*coords.size()/lifeTime));
-         // //qDebug() << "QQQQQQQQQQQQQQQQQQQQ" << keyCouter;
+         qDebug() << "QQQQQQQQQQQQQQQQQQQQ" << keyCouter;
         if(keyCouter == 0)
         {
             qDebug()<<"CLEAR FRAME BUFFER";
@@ -219,14 +219,15 @@ void DrawBrushElm::draw()
        // qDebug() << "realKeyValue:"<<realKeyValue;
 //qDebug() << "keyCouter:"<<keyCouter;
 //qDebug() << "fbo wrapper:"<<fboWrapper.frameBuffer;
-
+qDebug() << "pDrawWidget->paintBrushInBuffer" << coords.size();
         while(keyCouter <realKeyValue && bPlay)
         {
+
             if (keyCouter < coords.size() )
             {
 
                 pDrawWidget->paintBrushInBuffer(currentTexture,brush,fboWrapper,coords,brushes, keyCouter);
-              //  qDebug() << "pDrawWidget->paintBrushInBuffer";
+
             }
                     keyCouter++;
                     //fboWrapper

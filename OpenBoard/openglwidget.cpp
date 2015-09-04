@@ -88,8 +88,7 @@ glTexImage2D(GL_TEXTURE_2D, 0, 4, GL_formatted_image.width(), GL_formatted_image
        glTexParameteri(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER,GL_NEAREST);
        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
-
-     //  glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
+       glTexEnvi(GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_REPLACE);
 
        glBindTexture(GL_TEXTURE_2D, 0);
        glDisable(GL_TEXTURE_2D);
@@ -219,7 +218,7 @@ glBegin(GL_TRIANGLES);
        // //qDebug() << "mouse play index:"<<keyFrame;
 
         currentBrushOfDrawSystem = brushes[recordedBrushN].brush;
-        if (shaderSupported)
+        if (shaderSupported) //
             texture = loadTexture(currentBrushOfDrawSystem.img,true);
         else
         texture = loadTexture(currentBrushOfDrawSystem.color_img,true);
@@ -457,6 +456,7 @@ void OGLWidget::initShaderPrograms()
     ShaderProgramWrapper *spiralShader = new ShaderProgramWrapper(this);
     if(spiralShader->initShader(SPIRAL_FRAGMENT_SHADER_PATH,SPIRAL_VERTEX_SHADER_PATH)!=0)shaderSupported=true;
     shaderPrograms.push_back(spiralShader);
+    shaderSupported= false;
 }
 
 QVector<ShaderProgramWrapper*> OGLWidget::getShaderPrograms()
@@ -1224,7 +1224,7 @@ glBindFramebuffer(GL_FRAMEBUFFER , mainFBO.frameBuffer);
 if(curStatus == STOP)
     paintBufferOnScreen(mainFBO,0, 0, wax, way,-100);
 
-glDisable(GL_BLEND);
+//glDisable(GL_BLEND);
 GLuint error = glGetError();
 
 glFinish();

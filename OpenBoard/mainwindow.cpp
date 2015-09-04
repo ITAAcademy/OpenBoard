@@ -13,6 +13,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    ui->backBtn->setVisible(false);
     //drawThread.start();
 
     ui->delayBtn->setToolTip("Pause");
