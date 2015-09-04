@@ -25,7 +25,12 @@ return true;
 
 ShaderProgramWrapper::~ShaderProgramWrapper()
 {
-    glf->glDeleteShader(ShaderProgram);
+
+    if(parentWidget != NULL && parentWidget->isInit())
+    {
+        glf->glUseProgram(0);
+        glf->glDeleteShader(ShaderProgram);
+    }
 }
 
 int ShaderProgramWrapper::initShader(QString fShaderFilePath,QString vShaderFilePath,bool isFilePath)

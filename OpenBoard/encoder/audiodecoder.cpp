@@ -311,8 +311,8 @@ QByteArray AudioDecoder::nextFrame(AVPacket &audioPacket, qint64 time)
                  //   qDebug() << "IS" << data_size;
                     AVStream *stream = formatContext->streams[audioStream];
                     double seconds= (audioPacket.dts - stream->start_time) * av_q2d(stream->time_base)*1000;
-                    qDebug() << "TIME   " << time << "  " << (getDTSFromMS(time) - stream->start_time) * av_q2d(stream->time_base)*1000;
-                    qDebug() << "A_SECONDS    " <<seconds;
+                    //qDebug() << "TIME   " << time << "  " << (getDTSFromMS(time) - stream->start_time) * av_q2d(stream->time_base)*1000;
+                    //qDebug() << "A_SECONDS    " <<seconds;
 
 
                     /*int chunks = audio->bytesFree()/audio->periodSize();

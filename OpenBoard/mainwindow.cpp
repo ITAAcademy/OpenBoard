@@ -598,12 +598,20 @@ case OPENING_PROJECT:
     activateWindow();
 }
 
-void MainWindow::closeEvent(QCloseEvent*)
+void MainWindow::closeEvent(QCloseEvent* event)
 {
-    if(mpOGLWidget != NULL && mpOGLWidget->isVisible())
+    if(trySaveProject())
     {
-        on_action_Hide_triggered();
-        mpOGLWidget->close();
+        if(mpOGLWidget != NULL && mpOGLWidget->isVisible())
+        {
+            on_action_Hide_triggered();
+            mpOGLWidget->close();
+        }
+        event->accept();
+    }
+    else
+    {
+        event->ignore();
     }
     // //qDebug() << "Close drawWidget";
 }
@@ -1326,27 +1334,32 @@ void MainWindow::on_action_Open_Project_triggered()
     }
 
 }
-
-void MainWindow::on_action_New_Project_triggered()
+bool MainWindow::trySaveProject()
 {
-   // mpOGLWidget->show();
-
-    //qDebug() << "NEW_PROJECT";
     if (mpOGLWidget->getTimeLine()->isProjectChanged())
     {
         QMessageBox::StandardButton reply;
          reply = QMessageBox::question(this, "Test", "Are you want to save changes in current project?",
                                        QMessageBox::Yes|QMessageBox::No | QMessageBox::Cancel);
          if (reply == QMessageBox::Cancel)
-             return;
+             return false;
          else
          if (reply == QMessageBox::Yes)
          {
              if (on_action_Save_Project_triggered() == false)
-                 return;
+                 return false;
          }
     }
+    return true;
+}
 
+void MainWindow::on_action_New_Project_triggered()
+{
+   // mpOGLWidget->show();
+
+    //qDebug() << "NEW_PROJECT";
+
+     trySaveProject();
      curProjectFile.clear();
      //mpOGLWidget->getTimeLine()->emitResetProject();
      mpOGLWidget->getTimeLine()->resetProjectToDefault();
@@ -1399,10 +1412,10 @@ if (a_hide->isEnabled())
      case VIDEO_EDIT_TEXT:
      {
          qDebug () << "VIDEO_EDIT_TEXT BEGIN";
-         DrawImageElm *first = new DrawImageElm();
+         DrawImageElm *first = new DrawImageElm(mpOGLWidget);
          //qDebug() << "mpOGLWidget:"<<mpOGLWidget;
 
-       //  first->setFBOWrapper(mpOGLWidget->initFboWrapper(mpOGLWidget->getWax(),mpOGLWidget->getWay()));
+         first->setFBOWrapper(mpOGLWidget->initFboWrapper(mpOGLWidget->getWax(),mpOGLWidget->getWay()));
 
          QImage load(curentState.firstImage);
 qDebug () << "VIDEO_EDIT_TEXT BEGIN-1";
@@ -1413,16 +1426,16 @@ qDebug () << "VIDEO_EDIT_TEXT BEGIN-2";
 
 qDebug () << "VIDEO_EDIT_TEXT MID";
 
-         DrawImageElm *last = new DrawImageElm();
+         DrawImageElm *last = new DrawImageElm(mpOGLWidget);
          QImage load2(curentState.lastImage);
          //qApp->processEvents();
          last->setDrawImage(load2);
-    //   last->setFBOWrapper(mpOGLWidget->initFboWrapper(mpOGLWidget->getWax(),mpOGLWidget->getWay()));
+       last->setFBOWrapper(mpOGLWidget->initFboWrapper(mpOGLWidget->getWax(),mpOGLWidget->getWay()));
 
          first->setTypeId(Element_type::Image);
          last->setTypeId(Element_type::Image);
 
-         DrawTextElm *text = new DrawTextElm();
+         DrawTextElm *text = new DrawTextElm(mpOGLWidget);
 
          first->setLifeTime(curentState.firsTime);
          last->setLifeTime(curentState.lastTime);

@@ -183,6 +183,7 @@ QMessageBox messAbout;
     volatile bool isActive = true; // active main windows?
     ProjectStartupSetting curentState;
     void updateEditWidgets(bool forceEnabled = false);
+    bool trySaveProject();
 public slots:
     ProjectStartupSetting getCurentState();
     Q_INVOKABLE void setCurentState(ProjectStartupSetting state);

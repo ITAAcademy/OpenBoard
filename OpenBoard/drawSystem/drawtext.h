@@ -5,6 +5,8 @@
 #include "drawelement.h"
 #include "../parser/parser.h"
 
+#define LINE_HEIGHT 25
+
 class DrawTextElm : public DrawElement
 {
     Q_OBJECT
@@ -24,7 +26,7 @@ class DrawTextElm : public DrawElement
 
     QFont textFont;
     QFont mainTextFont;
-    QFontMetrics *fMetrics;
+    QFontMetrics *fMetrics = NULL;
     int indexInList;
     int deleteWT;
 

@@ -218,15 +218,15 @@ DrawTextElm::DrawTextElm(OGLWidget *drawWidget, QObject *parent) : DrawElement(d
      marginLeft = 20;
      marginTop = 40;
 
-     x = marginLeft;
-     y = lineHeight + pt;
+     line_x = marginLeft;
+     line_y = lineHeight + pt;
 
      pt = 36;
-     lineHeight = 25;
+     lineHeight = LINE_HEIGHT;
 
      isCrossingNow = false;
      scroll = 0;
-    clearBuffer();
+    //clearBuffer();
 
     setTextFont(QFont("Arial Narrow",20,20)); //444
     mainFillColor = QColor("white");
@@ -428,7 +428,7 @@ void DrawTextElm::clearCanvas(int m_x, int m_y)
     marginLeft = m_x;
     marginTop = m_y;
     line_x = m_x;
-    line_y = m_y + lineHeight + pt;
+    line_y = lineHeight + pt;
     scroll = 0;
     //listStr[0] = 0;
 }
@@ -528,6 +528,7 @@ void DrawTextElm::drawTextBuffer( int m_x, int m_y, int m_width, int m_height, i
      //   return QPoint(0, 0);
     //int width = fMetrics->width(str)*1.125 ;//+ fMetrics->leftBearing(str.at(0)) + fMetrics->rightBearing(str.at(0));
      textFont.setPointSize(mainTextFont.pointSize() * scale);
+     lineHeight = LINE_HEIGHT * scale;
      //1234
     // textFont.setPointSize(20);
      textFont.setFamily(mainTextFont.family());

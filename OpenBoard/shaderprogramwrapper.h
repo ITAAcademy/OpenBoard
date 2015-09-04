@@ -13,7 +13,7 @@ class ShaderProgramWrapper
 GLuint ShaderProgram;
 bool inited = false;
 int errorStatus = 0;
-OGLWidget *parentWidget;
+OGLWidget *parentWidget = NULL;
 QOpenGLFunctions_3_0 *glf;
 QString fragCode,vertCode;
 public:

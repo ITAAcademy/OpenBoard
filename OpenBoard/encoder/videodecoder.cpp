@@ -209,7 +209,7 @@ QImage VideoDecoder::getNextFrame(AVPacket &videoPacket, qint64 time)
 
         AVStream *stream = videoFormatContext->streams[videoStream];
         qint64 seconds= (videoPacket.dts - stream->start_time) * av_q2d(stream->time_base)*1000;
-        qDebug() << "V_SECONDS    " << seconds;
+        //qDebug() << "V_SECONDS    " << seconds;
         baseTime = seconds;
         if(time <= seconds)
             frameFinished = true;

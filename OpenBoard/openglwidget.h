@@ -127,7 +127,7 @@ public:
 
 
 
-   DrawBrushElm *drawBrushElm;//record mouse movement
+   DrawBrushElm *drawBrushElm = NULL;//record mouse movement
     GLuint brushTexture;
     GLuint brushTextureCurrentPlayed;
 
@@ -218,7 +218,7 @@ public:
     int initTexture(GLuint &texture, int width, int height);
     void initFBDepthBuffer(GLuint &fbo_depth);
     void paintBrushInBuffer(FBOWrapper fboWrapper);
-    FBOWrapper initFboWrapper( int width, int height,bool visibleOnly=true);
+    FBOWrapper initFboWrapper(int width, int height, bool visibleOnly=true, bool forceLoad = false);
     QList<DrawElement *> &getList();
     void setList(const QList<DrawElement *> &value);
     bool getIsBrushWindowOpened() const;
@@ -317,7 +317,7 @@ private slots:
     void storeMousePos();
 
 private:
-    int MOUSE_PROCESS_DELAY_MS=60;
+    int MOUSE_PROCESS_DELAY_MS=30;
 QString fileNameForRecords;
   //  QMap <void* , QList<QByteArray>>  audioList;
     GLuint pixelBufferIDs[2];

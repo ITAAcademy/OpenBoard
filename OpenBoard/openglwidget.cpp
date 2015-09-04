@@ -438,6 +438,43 @@ void OGLWidget::processMouse()
         if ( m_manager.isAbleToDraw() && prevMousePos != mousePos)
             paintBrushInBuffer(mainFBO);
     }
+
+    if (showingLastDrawing )
+    {
+        if (drawBrushElm->getBrushes().length()<=0)
+        {
+            stopShowLastDrawing();
+            return;
+        }
+     int recordedBrushN = 0;
+        for (; recordedBrushN < drawBrushElm->getBrushes().length(); )
+        {
+            ////qDebug() << "brushes["<<recordedBrushN<<"].pointIndex"<<brushes[recordedBrushN].pointIndex;
+         if (drawBrushElm->getBrushes()[recordedBrushN].pointIndex==currentLastDrawingPointIterator){
+          // //qDebug() << "KEY_FRAME:"<<keyFrame;
+           // //qDebug() << "mouse play index:"<<keyFrame;
+
+           currentBrushOfLastDrawing =drawBrushElm->getBrushes()[recordedBrushN].brush;
+           if (shaderSupported)
+               brushTexture = loadTexture(drawBrushElm->getBrushes()[recordedBrushN].brush.img,true);
+           else
+            brushTexture = loadTexture(drawBrushElm->getBrushes()[recordedBrushN].brush.color_img, true);
+         break;
+        }
+        recordedBrushN++;
+        }
+    glBindFramebuffer(GL_FRAMEBUFFER , mainFBO.frameBuffer);
+        paintBrushInBuffer(brushTextureCurrentPlayed,currentBrushOfLastDrawing,mainFBO,drawBrushElm->getCoords(),drawBrushElm->getBrushes(),currentLastDrawingPointIterator);
+        glBindFramebuffer(GL_FRAMEBUFFER ,0);
+        currentLastDrawingPointIterator++;
+        if (currentLastDrawingPointIterator>=drawBrushElm->getCoords().length())
+        {
+           stopShowLastDrawing();
+        }
+       // currentLastDrawingPointIterator++;
+
+    }
+
 }
 
 void OGLWidget::initPBO()
@@ -591,6 +628,8 @@ void OGLWidget::bindBuffer(GLuint buffer){
 
 OGLWidget::~OGLWidget()
 {
+    /*if(mainShader != NULL)        // CRASH !!!!!!!!!!!!!!!!!
+        delete mainShader;*/
 
     this->stopAnimated();
         qApp->processEvents();
@@ -605,8 +644,6 @@ OGLWidget::~OGLWidget()
 
     for (int i =0;i<shaderPrograms.length();i++)
         delete shaderPrograms[i];
-
-    delete mainShader;
 }
 
 
@@ -682,7 +719,7 @@ glBindFramebuffer(GL_FRAMEBUFFER , fboWrapper.frameBuffer); // Bind our frame bu
         glEnd();*/
     //qglColor(m_manager.getColor());
     if (shaderSupported)
-    glUseProgram(mainShader->getShaderProgram());
+        glUseProgram(mainShader->getShaderProgram());
 
          glBindTexture(GL_TEXTURE_2D,texture);
         QSize brushTextureSize = getTextureSize();
@@ -869,18 +906,25 @@ return glGetError();
 }
 
 
-FBOWrapper OGLWidget::initFboWrapper(int width, int height, bool visibleOnly) {
+FBOWrapper OGLWidget::initFboWrapper(int width, int height, bool visibleOnly, bool forceLoad) {
 
 
     makeCurrent();
+    FBOWrapper fboWrapper;
 
     qDebug() << "1111";
+
+    if(!isInit() && !forceLoad)
+    {
+        fboWrapper.errorStatus = -1;
+        return fboWrapper;
+    }
+
      glGetError();
     //qDebug () << "                                                                  INIT FBO";
       qDebug() << "2";
 
 
-    FBOWrapper fboWrapper;
     fboWrapper.errorStatus=0;
     fboWrapper.tWidth=width;
      fboWrapper.tHeight=height;
@@ -1000,7 +1044,7 @@ glEnable(GL_DEPTH_TEST);
     brushTexture = loadTexture(m_manager.getCreatedBrush().color_img,true);
     //loadTextureFromFile(":/ThirdPart/images/brush.png");
     //initFrameBuffer(); // Create our frame buffer object
-    mainFBO=initFboWrapper(wax,way,false);
+    mainFBO=initFboWrapper(wax, way, false, true);
     pingpongFBO=initFboWrapper(wax,way,false);
     initPBO();
      //initShader();
@@ -1070,6 +1114,9 @@ void OGLWidget::clearFrameBuffer(FBOWrapper fboWrapper){
 
 void OGLWidget::deleteFBO(FBOWrapper wrapper)
 {
+    if(wrapper.errorStatus != 0)
+        return;
+
     makeCurrent();
     glDeleteTextures(1,&wrapper.bindedTexture);
     glDeleteFramebuffers(1,&wrapper.frameBuffer);
@@ -1186,41 +1233,7 @@ for(int i = 0; !timeLine->isBlocked && i < getList().size(); i++)
 
 //glDisable(GL_DEPTH_TEST);
 
-if (showingLastDrawing )
-{
-    if (drawBrushElm->getBrushes().length()<=0)
-    {
-        stopShowLastDrawing();
-        return;
-    }
- int recordedBrushN = 0;
-    for (; recordedBrushN < drawBrushElm->getBrushes().length(); )
-    {
-        ////qDebug() << "brushes["<<recordedBrushN<<"].pointIndex"<<brushes[recordedBrushN].pointIndex;
-     if (drawBrushElm->getBrushes()[recordedBrushN].pointIndex==currentLastDrawingPointIterator){
-      // //qDebug() << "KEY_FRAME:"<<keyFrame;
-       // //qDebug() << "mouse play index:"<<keyFrame;
 
-       currentBrushOfLastDrawing =drawBrushElm->getBrushes()[recordedBrushN].brush;
-       if (shaderSupported)
-           brushTexture = loadTexture(drawBrushElm->getBrushes()[recordedBrushN].brush.img,true);
-       else
-        brushTexture = loadTexture(drawBrushElm->getBrushes()[recordedBrushN].brush.color_img, true);
-     break;
-    }
-    recordedBrushN++;
-    }
-glBindFramebuffer(GL_FRAMEBUFFER , mainFBO.frameBuffer);
-    paintBrushInBuffer(brushTextureCurrentPlayed,currentBrushOfLastDrawing,mainFBO,drawBrushElm->getCoords(),drawBrushElm->getBrushes(),currentLastDrawingPointIterator);
-    glBindFramebuffer(GL_FRAMEBUFFER ,0);
-    currentLastDrawingPointIterator++;
-    if (currentLastDrawingPointIterator>=drawBrushElm->getCoords().length())
-    {
-       stopShowLastDrawing();
-    }
-   // currentLastDrawingPointIterator++;
-
-}
 
 if(curStatus == STOP)
     paintBufferOnScreen(mainFBO,0, 0, wax, way,-100);
@@ -1259,6 +1272,7 @@ void OGLWidget::resizeEvent(QResizeEvent *envent)
 
 void OGLWidget::closeEvent(QCloseEvent *event)
 {
+    glUseProgram(0);
     stopAnimated();
 
     pause(500);
@@ -1893,6 +1907,7 @@ void OGLWidget::myRenderText( QGLWidget* w, int x, int y,int z, const QString& t
     QPixmap pixmap( rect.size() );
     pixmap.fill( Qt::black );
     QPainter painter(&pixmap);
+    painter.setRenderHint(QPainter::TextAntialiasing);
     painter.setPen( Qt::white );
     painter.setFont( font );
     painter.drawText( -rect.left(), -rect.top(), text );

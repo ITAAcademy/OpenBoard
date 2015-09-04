@@ -81,6 +81,7 @@ DrawElement::DrawElement(OGLWidget *drawWidget, QObject *parent) : QObject(paren
     lifeTime = -1;
     icon = QImage();
     typeId = Element_type::Empty;
+    fboWrapper.errorStatus = -1;
 
     if(pDrawWidget != NULL)
     {
@@ -132,7 +133,7 @@ void DrawElement::paint()
         {
               pDrawWidget->bindBuffer(fboWrapper.frameBuffer);
               draw();//Draw original image one time without any effects
-              qDebug() << "EFFECTS EMPTY !!!";
+              //qDebug() << "EFFECTS EMPTY !!!";
         }
         else
         {
