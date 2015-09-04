@@ -537,8 +537,8 @@ qDebug() <<  "OGL WIDGET MID";
     curStatus = STOP;
     //tickTimer.setSingleShot(false);
    // tickTimer.setInterval(1000/25);
-    mouseTimer.setInterval(drawBrushElm->SPEED_OF_RECORDING_MS);
-    mouseTimer.setSingleShot(false);
+    //mouseTimer.setInterval(drawBrushElm->SPEED_OF_RECORDING_MS);
+   // mouseTimer.setSingleShot(false);
     realDelay = 0;
 
    // maxWidth = width() - marginLeft;
@@ -561,8 +561,8 @@ qDebug() <<  "OGL WIDGET MID";
    QTimer *timer = new QTimer(this);
    connect(timer, SIGNAL(timeout()), this, SLOT(updateWindow()));
    timer->start(0);
-   connect(&mouseTimer, SIGNAL(timeout()), this, SLOT(storeMousePos()));
-   mouseTimer.start();
+   //connect(&mouseTimer, SIGNAL(timeout()), this, SLOT(storeMousePos()));
+   //mouseTimer.start();
 
 
 
@@ -1781,6 +1781,7 @@ void  OGLWidget::updateWindow(){
  if ((current_millisecs - last_mouse_process) >= 1.0/MOUSE_PROCESS_DELAY_MS)
  {
 processMouse();
+storeMousePos();
   last_mouse_process = current_millisecs;
  }
 

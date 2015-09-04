@@ -165,7 +165,7 @@ bool DrawBrushElm::save_add(QDataStream &stream)
 
 
 
-int DrawBrushElm::SPEED_OF_RECORDING_MS = 5;
+
 
 void DrawBrushElm::addCoord(int x, int y)
 {
