@@ -77,5 +77,6 @@
         <file>iphone_toolbar_icons/Document-Icon.png</file>
         <file>iphone_toolbar_icons/0.png</file>
         <file>iphone_toolbar_icons/Video.png</file>
+        <file>iphone_toolbar_icons/Drawing-icon.png</file>
     </qresource>
 </RCC>

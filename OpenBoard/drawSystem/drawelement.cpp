@@ -386,6 +386,30 @@ void DrawElement::setPosition(QPoint pos)
     y = pos.y();
 }
 
+ DrawElement* DrawElement::getCopy(QObject parentamana)
+ {
+    /* switch(typeId)
+     {
+     case Element_type::Image :
+     //6666666677777777
+          DrawImageElm *elm = new DrawImageElm(drawWidget, parent);
+          elm->load(path);
+                 elm->setTypeId(Element_type::Image);
+                 elm->setKey(target.baseName());
+          return (DrawElement*) elm;
+     break;
+     case Element_type::Text
+
+     }
+      DrawElement *elm = new DrawElement(drawWidget, parentamana);
+
+     return (DrawElement) this; //777777
+     */
+     DrawElement *elm;
+     memcpy(elm, this,sizeof(DrawElement));
+            return elm;
+ }
+
 void DrawElement::setPosition(int x, int y)
 {
     this->x = x;

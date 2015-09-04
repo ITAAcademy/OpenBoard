@@ -258,6 +258,7 @@ public:
     QOpenGLFunctions_3_0 *getOglFuncs();
     FBOWrapper getPingPongFBO();
 public slots:
+    void setAbleDrawing(bool value);
    // void clearFrameBuffer();
         void clearFrameBuffer(FBOWrapper fboWrapper);
     void hideBrushManager();
@@ -359,6 +360,7 @@ QString fileNameForRecords;
     volatile StatusDraw curStatus; // 0 - stop; 1 - play; -1 - pause
     QThread drawThread;
     AV_REncoder *m_encoder = NULL;
+    bool able_drawing = false;
 
     /*
      * |Сavas property

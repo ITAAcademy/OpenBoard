@@ -112,6 +112,8 @@ public slots:
 
 private slots:
     void on_action_Record_to_file_triggered();
+
+    void on_action_Able_to_draw_Checked();
     void on_action_About_triggered();
     void updateCurrentTxt(); // not need
     void onStopShowLastDrawing();
@@ -145,7 +147,7 @@ private:
 QAction *a_play,*a_clear_textedit,*a_pause,*a_stop,*a_font_canvas,*a_color_canvas,
 *a_record_to_file,*a_undo,*a_redo,*a_show,*a_hide,*a_clear_drawing,*a_clear_drawingBuffer,
 *a_show_last_drawing,*a_save_drawing ,*a_open_project,*a_new_project, *a_save_project,*a_exit,
-*a_cut,*a_copy,*a_paste,*a_select_all,*a_search,*a_send_to_youtube;
+*a_cut,*a_copy,*a_paste,*a_select_all,*a_search,*a_send_to_youtube, *a_able_to_draw;
     Ui::MainWindow  *ui;
 QMessageBox messAbout;
  //   GLWidget        *mpGLWidget;

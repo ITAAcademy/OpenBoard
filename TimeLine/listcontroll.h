@@ -233,6 +233,7 @@ class ListControll : public QObject, public QQuickImageProvider
       qint64 timerValue;
     qint64 time_sum;
     Element block_in_buffer;
+    int life_time_in_buffer;
     bool buffer_is_full;
 
 public:
@@ -395,6 +396,7 @@ public slots:
 Q_INVOKABLE void emitNewProject();
    Q_INVOKABLE void  copyBlockToBuffer();
      Q_INVOKABLE void  pasteBlockFromBuffer();
+     Q_INVOKABLE void setBlockTimeFromBuffer();
   Q_INVOKABLE void emitOpenProject();
   Q_INVOKABLE void emitSaveProject();
  Q_INVOKABLE void  emitBlockEditedSignal();

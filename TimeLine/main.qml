@@ -134,6 +134,9 @@ focus: true
               if (event.key === Qt.Key_V )
                         timeControll.pasteBlockFromBuffer();
               else
+              if (event.key === Qt.Key_T )
+                        timeControll.setBlockTimeFromBuffer()
+              else
               if ((event.key === Qt.Key_S || event.key === 1067) && (event.modifiers & Qt.ShiftModifier))
                         timeControll.emitSaveProject();
               else

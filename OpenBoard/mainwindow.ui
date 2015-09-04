@@ -550,7 +550,7 @@
             <string>USE THIS VALUE</string>
            </property>
            <property name="checked">
-            <bool>true</bool>
+            <bool>false</bool>
            </property>
           </widget>
          </item>
@@ -667,7 +667,7 @@
          <item>
           <widget class="QPushButton" name="button_Delay">
            <property name="text">
-            <string>Delay</string>
+            <string>Delay (*0.1 sec)</string>
            </property>
           </widget>
          </item>
