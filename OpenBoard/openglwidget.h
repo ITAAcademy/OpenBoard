@@ -408,7 +408,7 @@ QString fileNameForRecords;
 
     double timer_test;
     QTimer tickTimer;
-    QTimer mouseTimer;
+
 
     bool busy = false;
     bool isClose = false;
