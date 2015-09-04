@@ -29,6 +29,8 @@ bool DrawElement::setDrawWidget(OGLWidget *value)
         disconnect(pDrawWidget, SIGNAL(pauseSignal()), this, SLOT(pause()));
     }
     pDrawWidget = value;
+    for (int i = 0; i <effects.length(); i++)
+    effects[i].setShaderWrapper(pDrawWidget->getShaderPrograms()[effects[i].getShaderWrapperIndex()]);
    // qDebug() << "before alpha effect created";
    // qDebug() << "pDrawWidget->getShaderPrograms().length:"<<pDrawWidget->getShaderPrograms().length();
 
