@@ -12,7 +12,7 @@ class DrawImageElm  :public DrawElement
     QMovie *gif = new QMovie();
 
 public:
-    explicit DrawImageElm( OGLWidget *drawWidget, QObject *parent = 0);
+    explicit DrawImageElm( OGLWidget *drawWidget = NULL, QObject *parent = 0);
     ~DrawImageElm();
     void draw();
     bool load_add(QDataStream &stream);

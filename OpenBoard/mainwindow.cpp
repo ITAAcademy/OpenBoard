@@ -1399,10 +1399,10 @@ if (a_hide->isEnabled())
      case VIDEO_EDIT_TEXT:
      {
          qDebug () << "VIDEO_EDIT_TEXT BEGIN";
-         DrawImageElm *first = new DrawImageElm(mpOGLWidget);
+         DrawImageElm *first = new DrawImageElm();
          //qDebug() << "mpOGLWidget:"<<mpOGLWidget;
 
-        first->setFBOWrapper(mpOGLWidget->initFboWrapper(mpOGLWidget->getWax(),mpOGLWidget->getWay()));
+       //  first->setFBOWrapper(mpOGLWidget->initFboWrapper(mpOGLWidget->getWax(),mpOGLWidget->getWay()));
 
          QImage load(curentState.firstImage);
 qDebug () << "VIDEO_EDIT_TEXT BEGIN-1";
@@ -1413,16 +1413,16 @@ qDebug () << "VIDEO_EDIT_TEXT BEGIN-2";
 
 qDebug () << "VIDEO_EDIT_TEXT MID";
 
-         DrawImageElm *last = new DrawImageElm(mpOGLWidget);
+         DrawImageElm *last = new DrawImageElm();
          QImage load2(curentState.lastImage);
          //qApp->processEvents();
          last->setDrawImage(load2);
-       last->setFBOWrapper(mpOGLWidget->initFboWrapper(mpOGLWidget->getWax(),mpOGLWidget->getWay()));
+    //   last->setFBOWrapper(mpOGLWidget->initFboWrapper(mpOGLWidget->getWax(),mpOGLWidget->getWay()));
 
          first->setTypeId(Element_type::Image);
          last->setTypeId(Element_type::Image);
 
-         DrawTextElm *text = new DrawTextElm(mpOGLWidget);
+         DrawTextElm *text = new DrawTextElm();
 
          first->setLifeTime(curentState.firsTime);
          last->setLifeTime(curentState.lastTime);

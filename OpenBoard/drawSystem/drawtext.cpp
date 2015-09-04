@@ -735,6 +735,7 @@ QFont DrawTextElm::getTextFont() const
     return mainTextFont;
 }
 
+
 void DrawTextElm::setTextFont(const QFont &value)
 {
     mainTextFont = value;

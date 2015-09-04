@@ -37,7 +37,7 @@ bool DrawElement::setDrawWidget(OGLWidget *value)
     connect(pDrawWidget, SIGNAL(pauseSignal()), this, SLOT(pause()));
 
     for (int i = 0; i <effects.length(); i++)
-    effects[i].setShaderWrapper(pDrawWidget->getShaderPrograms()[effects[i].getShaderWrapperIndex()]);
+        effects[i].setShaderWrapper(pDrawWidget->getShaderPrograms()[effects[i].getShaderWrapperIndex()]);
 
    // qDebug() << "before alpha effect created";
    // qDebug() << "pDrawWidget->getShaderPrograms().length:"<<pDrawWidget->getShaderPrograms().length();
@@ -48,16 +48,6 @@ bool DrawElement::setDrawWidget(OGLWidget *value)
         qDebug()<<"BEFORE SETFBOWRAPPER";
         setFBOWrapper(pDrawWidget->initFboWrapper(pDrawWidget->getWax(),pDrawWidget->getWay()));//TODO
     qDebug()<<"AFTER SETFBOWRAPPER";
-
-    //ShaderEffect alphaEffect(pDrawWidget->getShaderPrograms()[OGLWidget::ALPHA_SHADER],OGLWidget::ALPHA_SHADER);
-    //ShaderEffect spiralEffect(pDrawWidget->getShaderPrograms()[OGLWidget::SPIRAL_SHADER],OGLWidget::SPIRAL_SHADER);
-    //alphaEffect.setEffectTimeHowLong(1000);
-    //alphaEffect.setReverse(true);
-    //spiralEffect.setEffectTimeHowLong(1000);
-
-    //qDebug() << "alpha effect created";
-
-     //effects.push_back(alphaEffect); //ADD DEFAULT EFFECT
 
 }
 
@@ -158,10 +148,17 @@ void DrawElement::paint()
          //   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); glEnable( GL_BLEND );
             for (int i=0;i<effects.length();i++)
             {
-                unsigned int beginAtTime = effects[i].getStartTimeMS()+ startDrawTime ;
+
+                unsigned int beginAtTime;
+                if(!effects[i].getAnchorToEnd())
+                    beginAtTime = effects[i].getStartTimeMS()+ startDrawTime ;
+                else
+                    beginAtTime = lifeTime + startDrawTime - effects[i].getEffectTimeHowLong();
+
                 unsigned int endAtTime = beginAtTime + effects[i].getEffectTimeHowLong();
                 float keyFrame = 0;
-                if(endAtTime-beginAtTime!=0)keyFrame=(float)(playTime-beginAtTime)/(endAtTime-beginAtTime);
+                if(endAtTime-beginAtTime!=0)
+                    keyFrame=(float)(playTime-beginAtTime)/(endAtTime-beginAtTime);
 
                 if (playTime>=beginAtTime && playTime<=endAtTime)
                 {

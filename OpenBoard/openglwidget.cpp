@@ -221,7 +221,7 @@ glBegin(GL_TRIANGLES);
         if (shaderSupported) //
             texture = loadTexture(currentBrushOfDrawSystem.img,true);
         else
-        texture = loadTexture(currentBrushOfDrawSystem.color_img,true);
+            texture = loadTexture(currentBrushOfDrawSystem.color_img, true);
         qDebug() << "recordedBrushN:"<<recordedBrushN;
 
        // isBrushUsed=true;
@@ -231,7 +231,7 @@ glBegin(GL_TRIANGLES);
     recordedBrushN++;
     }
     if (shaderSupported)
-    glUseProgram(mainShader->getShaderProgram());
+        glUseProgram(mainShader->getShaderProgram());
     glBindTexture(GL_TEXTURE_2D,texture);
    // if (isBrushUsed) {
      //   //qDebug() << "recordedBrushN:" << recordedBrushN;
@@ -435,7 +435,8 @@ void OGLWidget::processMouse()
         break;
      }
      testRectangle();
-        if ( m_manager.isAbleToDraw()) paintBrushInBuffer(mainFBO);
+        if ( m_manager.isAbleToDraw() && prevMousePos != mousePos)
+            paintBrushInBuffer(mainFBO);
     }
 }
 
@@ -1204,7 +1205,7 @@ if (showingLastDrawing )
        if (shaderSupported)
            brushTexture = loadTexture(drawBrushElm->getBrushes()[recordedBrushN].brush.img,true);
        else
-        brushTexture = loadTexture(drawBrushElm->getBrushes()[recordedBrushN].brush.color_img,true);
+        brushTexture = loadTexture(drawBrushElm->getBrushes()[recordedBrushN].brush.color_img, true);
      break;
     }
     recordedBrushN++;
@@ -1901,10 +1902,10 @@ void OGLWidget::myRenderText( QGLWidget* w, int x, int y,int z, const QString& t
 
    // glEnable(GL_BLEND);
  //   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
- //   glRasterPos3i( x, y, z );
+    glRasterPos3i( x, y, z );
     //glScalef(getWax()/rect.width(), getWay()/rect.height(), 0);
     //glPixelZoom(getWax()/rect.width(), getWax()/rect.width());
-   // glDrawPixels( rect.width(), rect.height(), GL_RGBA, GL_UNSIGNED_BYTE, img.bits() );
+    glDrawPixels( rect.width(), rect.height(), GL_RGBA, GL_UNSIGNED_BYTE, img.bits() );
     //glDisable(GL_BLEND);
     /*glMatrixMode( GL_PROJECTION );
     glPopMatrix();

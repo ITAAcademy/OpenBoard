@@ -41,10 +41,25 @@ void ShaderEffect::setReverse(bool value)
 {
     reverse = value;
 }
+
+bool ShaderEffect::getAnchorToEnd() const
+{
+    return anchorToEnd;
+}
+
+void ShaderEffect::setAnchorToEnd(bool value)
+{
+    anchorToEnd = value;
+}
 ShaderEffect::ShaderEffect(ShaderProgramWrapper *shaderWrp, int shaderIndex)
 {
-   // qDebug() << "shaderWrapper=shaderWrp";
+    // qDebug() << "shaderWrapper=shaderWrp";
     shaderWrapper=shaderWrp;
+    shaderWrapperIndex=shaderIndex;
+}
+ShaderEffect::ShaderEffect(int shaderIndex)
+{
+    // qDebug() << "shaderWrapper=shaderWrp";
     shaderWrapperIndex=shaderIndex;
 }
 
