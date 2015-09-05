@@ -45,16 +45,14 @@ bool DrawElement::setDrawWidget(OGLWidget *value)
 
     if(fboWrapper.errorStatus != 0  && pDrawWidget->isInit())
     {
-        qDebug()<<"BEFORE SETFBOWRAPPER";
+       // qDebug()<<"BEFORE SETFBOWRAPPER";
         setFBOWrapper(pDrawWidget->initFboWrapper(pDrawWidget->getWax(),pDrawWidget->getWay()));//TODO
+
     qDebug()<<"AFTER SETFBOWRAPPER";
 
+ //qDebug()<<"AFTER SETFBOWRAPPER";
+
 }
-
-
-
-
-
     return true;
 }
 
@@ -112,7 +110,7 @@ DrawElement::~DrawElement()
 {
 
 
- qDebug() << "delete DrawElement";
+ //qDebug() << "delete DrawElement";
     if(pDrawWidget != NULL)
     {
         pDrawWidget->deleteFBO(fboWrapper);
@@ -299,28 +297,33 @@ bool DrawElement::loadTypeId(QIODevice* device)
 }
 bool DrawElement::loadRest(QIODevice* device)
 {
-    qDebug() << "load rest begin";
+    //qDebug() << "load rest begin";
     QDataStream stream(device);
     stream  >> key >> lifeTime >> tickTime >> startDrawTime >> x >> y >> z >> width >> height >> keyCouter;
     //if (typeId == Element_type::Image)
         icon = load_image(stream);
-
-        /////////////////////
-        ///
-        ///
 
     int effectsLength = 0;
     stream >> effectsLength;
     qDebug() << "effectsLength:"<<effectsLength;
     effects.clear();
     effects.resize(effectsLength);
+
+   /* load_add(stream);
+    //qDebug() << "load add";
+    int effectsLength = 0;
+    stream >> effectsLength;
+    //qDebug() << "effectsLength:"<<effectsLength;*/
+
     for (int i = 0 ; i < effectsLength;i++)
     {
         effects[i].load(stream);
     }
+
      qDebug() << "load rest end";
     load_add(stream);
     qDebug() << "load add";
+
 
 }
 

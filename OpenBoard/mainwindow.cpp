@@ -1897,7 +1897,6 @@ void MainWindow::on_action_Play_triggered()
     {
         if(mpOGLWidget->drawAnimated(ui->actionRecord_to_file->isChecked()))
         {
-            qDebug() << "AAAAAAAAAAAAAAAA " << ui->actionRecord_to_file->isChecked();
           //mpOGLWidget->setCurStatus( OGLWidget::PLAY );
              //off for test
 

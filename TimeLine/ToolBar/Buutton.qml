@@ -13,6 +13,8 @@ Rectangle {
     radius: 10
     antialiasing: true
 
+    property bool ma_enabled: true
+
     Image {
         id: icon
         anchors.fill: parent

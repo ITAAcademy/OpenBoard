@@ -8,6 +8,7 @@ Rectangle {
 
     property Item  p_main222
      property Repeater globalRep
+    property bool enableButtonsClick: true
     //anchors.left: parent.left
     height: parent.height
     //anchors.bottom: parent.bottom
@@ -34,6 +35,8 @@ Rectangle {
             height: parent.width
             width: parent.width
           icon_source : "qrc:/iphone_toolbar_icons/plus.png"
+          //
+          ma_enabled :root_toolbar.enableButtonsClick
             onClicked: {
                 main222.needToLightSelected = false
                // for (var i=0; i< 30; i++)
@@ -51,6 +54,7 @@ Rectangle {
             height: parent.width
             width: parent.width
             icon_source : "qrc:/iphone_toolbar_icons/delete.png"
+            ma_enabled : root_toolbar.enableButtonsClick
             onClicked: {
                 main222.needToLightSelected = false;
               //  rep_columns.itemAt( main222.selectedBlockIndex).abortColorize()
