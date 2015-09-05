@@ -410,6 +410,7 @@ a_send_to_youtube = new QAction(this);
         onTextChangeUpdateTimer.setInterval(300);
         onTextChangeUpdateTimer.setSingleShot(true);
         connect(&onTextChangeUpdateTimer,SIGNAL(timeout()),this,SLOT(updateBlockFromTextEdit()));
+        connect(ui->check_use_speed_value,SIGNAL(released()),this,SLOT(updateBlockFromTextEdit()));
 
 
        //load new style
@@ -1795,6 +1796,7 @@ void MainWindow::updateTextEditFromBlock(QPoint point)
             commandTextEdit->setPreviousCursorPosition(text_elm->getPrevTextCursor());
             commandTextEdit->textCursor().setPosition(text_elm->getTextCursor());
             textEdit->setPlainText(text_elm->getUnParsestring());
+            ui->check_use_speed_value->setChecked(text_elm->getBNeedCalcTime());
             connect(textEdit, SIGNAL(textChanged()), this, SLOT(onTextChanged()));
             return;
         }
@@ -1815,6 +1817,8 @@ void MainWindow::updateBlockFromTextEdit()
         if(elm.draw_element->getTypeId() == Element_type::Text)
         {
             DrawTextElm *text_elm = (DrawTextElm *)elm.draw_element;
+
+            text_elm->setBNeedTime(ui->check_use_speed_value->isChecked());
             text_elm->setDelay(ui->slider_speedTB->value()*10);
             text_elm->setUnParsestring(textEdit->toPlainText(), commandTextEdit->toPlainText());
              //qDebug() << "mUnitList.length after append:"<< mUnitList.length();

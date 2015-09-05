@@ -65,12 +65,13 @@ void DrawVideoElm::setVideoFile(QString path)
 
 bool DrawVideoElm::load_add(QDataStream &stream)
 {
-
+    stream >> lastPath;
+    setVideoFile(lastPath);
 }
 
 bool DrawVideoElm::save_add(QDataStream &stream)
 {
-
+    stream << lastPath;
 }
 
 

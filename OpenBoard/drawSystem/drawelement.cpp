@@ -154,15 +154,18 @@ void DrawElement::paint()
                 if(!effects[i].getAnchorToEnd())
                     beginAtTime = effects[i].getStartTimeMS()+ startDrawTime ;
                 else
+                {
                     beginAtTime = lifeTime + startDrawTime - effects[i].getEffectTimeHowLong();
+                }
 
                 unsigned int endAtTime = beginAtTime + effects[i].getEffectTimeHowLong();
-                float keyFrame = 0;
+                float keyFrame = 1;
                 if(endAtTime-beginAtTime!=0)
                     keyFrame=(float)(playTime-beginAtTime)/(endAtTime-beginAtTime);
 
-                if (playTime>=beginAtTime && playTime<=endAtTime)
+                if (playTime >= beginAtTime && playTime <= endAtTime)
                 {
+                    qDebug() << keyFrame;
                     if(drawToSecondBuffer)
                     {
                         //qDebug() << "FIRST DRAW TO PING-PONG FRAME BUFFER";
@@ -180,7 +183,7 @@ void DrawElement::paint()
                             pDrawWidget->drawTexture(0,0,fboWrapper.tWidth,fboWrapper.tHeight,
                                                     fboWrapper.bindedTexture,0,1,1,z );
                     }
-                    else if (!drawToSecondBuffer)
+                    else
                     {
                    // qDebug() << "FIRST DRAW TO MAIN FRAME BUFFER";
                     pDrawWidget->bindBuffer(fboWrapper.frameBuffer);
@@ -189,8 +192,9 @@ void DrawElement::paint()
                     ShaderEffect::setUniformAnimationKey(pDrawWidget,effects[i],keyFrame);
                     ShaderEffect::setUniformResolution(pDrawWidget,effects[i],
                                                        pDrawWidget->getPingPongFBO().tWidth,pDrawWidget->getPingPongFBO().tHeight);
+                    ShaderEffect::setUniformReverse(pDrawWidget,effects[i],effects[i].getReverse());
                     if (i==0)
-                    draw();
+                        draw();
                     else
                     pDrawWidget->drawTexture(0,0,pDrawWidget->getPingPongFBO().tWidth,
                                              pDrawWidget->getPingPongFBO().tHeight,

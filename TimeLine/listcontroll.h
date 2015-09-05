@@ -126,6 +126,13 @@ struct Element {
                     delete  draw_element;
                     draw_element = (DrawElement*) elm;
         }
+        if(typeId == Element_type::Video)
+        {
+           DrawElement *elm = new DrawVideoElm(NULL,NULL);
+                    elm->loadRest(device);
+                    delete  draw_element;
+                    draw_element = (DrawElement*) elm;
+        }
         return true;
     }
 

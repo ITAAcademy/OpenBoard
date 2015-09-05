@@ -32,7 +32,7 @@ FFmpegHelp::Frame FFmpegHelp::getNextFrame(qint64 time)
     AVPacket Packet;
     QImage vNext;
     QByteArray aNext;
-    qDebug() << time;
+   // qDebug() << time;
 
     while( time >= vDecoder->baseTime &&  av_read_frame(formatContext,&Packet) >= 0 )
     {

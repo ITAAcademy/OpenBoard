@@ -34,7 +34,7 @@ void main(void)
             /* The final color, calculated by multiplying the light color with the alpha value */
             vec4 final_color = vec4(light_color, col.a)*vec4(alpha, alpha, alpha, col.a);
 
-            gl_FragColor = final_color + texture2D(textureSampler, texPos)*(.95);
+            gl_FragColor = final_color + texture2D(textureSampler, texPos)*(1.05);
              //gl_FragColor =col;
     }
 

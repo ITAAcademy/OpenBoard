@@ -103,7 +103,7 @@ class OGLWidget : public QGLWidget, protected QOpenGLFunctions_3_0
 signals:
         void stopShowLastDrawingSignal();
 public:
-       void hideEvent(QHideEvent *);
+
         enum shaderEnum {ALPHA_SHADER=0,SPIRAL_SHADER=1};
         void processMouse();
         void initPBO();
@@ -167,6 +167,7 @@ public:
    ~OGLWidget();
     void moveEvent(QMoveEvent *event);
     void paintEvent(QPaintEvent * event);
+    void hideEvent(QHideEvent *);
     void resizeEvent(QResizeEvent *event);
     void closeEvent(QCloseEvent *event);
     void mousePressEvent ( QMouseEvent * event );

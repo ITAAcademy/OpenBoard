@@ -15,7 +15,7 @@ bool inited = false;
 int errorStatus = 0;
 OGLWidget *parentWidget = NULL;
 QOpenGLFunctions_3_0 *glf;
-QString fragCode,vertCode;
+QString fragCode, vertCode;
 public:
     ShaderProgramWrapper(OGLWidget *pWidget);
     ShaderProgramWrapper();

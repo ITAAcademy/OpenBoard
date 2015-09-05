@@ -395,7 +395,7 @@ void DrawTextElm::setTickTime(int value)
 
 bool DrawTextElm::load_add(QDataStream &stream)
 {
-    stream >> unParsestring >> loggerText >> textCursor >> prevTextCursor >> mainTextFont >> mainFillColor;
+    stream >> unParsestring >> loggerText >> textCursor >> prevTextCursor >> mainTextFont >> mainFillColor >> bCalcTime;
     setUnParsestring(unParsestring, loggerText);
 
     /*int sizeOfString = 0;
@@ -414,7 +414,7 @@ bool DrawTextElm::save_add(QDataStream &stream)
  /*   stream << unParsestring.length();
     // //qDebug() << "IN " << unParsestring.length();
     stream.writeRawData(unParsestring.toLatin1().data(), unParsestring.length());*/
-    stream << unParsestring << loggerText << textCursor << prevTextCursor << mainTextFont << mainFillColor;
+    stream << unParsestring << loggerText << textCursor << prevTextCursor << mainTextFont << mainFillColor << bCalcTime;
 }
 
 void DrawTextElm::clearCanvas(int m_x, int m_y)
@@ -731,6 +731,16 @@ int DrawTextElm::getCountDeleteWT() const
     return deleteWT;
 }
 
+
+bool DrawTextElm::getBNeedCalcTime() const
+{
+    return bCalcTime;
+}
+
+void DrawTextElm::setBNeedTime(bool value)
+{
+    bCalcTime = value;
+}
 QFont DrawTextElm::getTextFont() const
 {
     return mainTextFont;

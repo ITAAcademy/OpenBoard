@@ -17,6 +17,7 @@ class DrawTextElm : public DrawElement
     Parser myParser;
     int textCursor = 0;
     int prevTextCursor = 0;
+    bool bCalcTime = false;
     quint64 drawTime;
     int globalPauseLifeTime = 0;
     int globalDeltaComandSize = 0;
@@ -117,9 +118,12 @@ public:
        void setAnimationPersentOfCross(double value);
        void isLastRow();
 
+       bool getBNeedCalcTime() const;
+       void setBNeedTime(bool value);
+
 private:
-    void setTickTime(int value);
-    bool load_add(QDataStream &stream);
+       void setTickTime(int value);
+       bool load_add(QDataStream &stream);
     bool save_add(QDataStream &stream);
 protected slots:
      void start();

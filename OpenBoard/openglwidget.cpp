@@ -628,9 +628,10 @@ void OGLWidget::bindBuffer(GLuint buffer){
 
 OGLWidget::~OGLWidget()
 {
-    /*if(mainShader != NULL)        // CRASH !!!!!!!!!!!!!!!!!
-        delete mainShader;*/
-
+     qDebug() <<" delete mainShader; begin";
+ //   if(mainShader != nullptr)        // CRASH !!!!!!!!!!!!!!!!! on delete QString
+      //  delete mainShader;
+ qDebug() <<" delete mainShader; end";
     this->stopAnimated();
         qApp->processEvents();
     if(timeLine != NULL)
@@ -1439,6 +1440,7 @@ void OGLWidget::keyReleaseEvent(QKeyEvent *event)
 
 bool OGLWidget::event(QEvent *e)
 {
+
     switch(e->type())
     {
         // ...
