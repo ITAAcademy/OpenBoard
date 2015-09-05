@@ -46,7 +46,7 @@ bool DrawBrushElm::load_add(QDataStream &stream)
                images.push_back(load_image(stream));
            }
             //qDebug() <<"imagesIndexed:"<<imagesIndexed.toList();
-    // qDebug() << "load brushes:"<<imgBrushCount;
+     qDebug() << "load brushes:"<<imgBrushCount;
     for (int i = 0; i <brushCount;i++)
     {
         BrushBeginingIndex brushBeginingIndex;
@@ -124,7 +124,7 @@ bool DrawBrushElm::save_add(QDataStream &stream)
  }
  int usedImageIndexesCount=usedImageIndexes.size();
  stream << usedImageIndexesCount;
- //qDebug() << "save usedImageIndexes:"<<usedImageIndexesCount;
+ qDebug() << "save usedImageIndexes:"<<usedImageIndexesCount;
 
  //pDrawWidget->m_manager;
  QString path = "\\Preset\\Brushes";

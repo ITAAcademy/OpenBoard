@@ -128,7 +128,7 @@ struct Element {
         }
         if(typeId == Element_type::Video)
         {
-           DrawElement *elm = new DrawVideoElm(NULL,NULL);
+           DrawVideoElm *elm = new DrawVideoElm(NULL,NULL);
                     elm->loadRest(device);
                     delete  draw_element;
                     draw_element = (DrawElement*) elm;

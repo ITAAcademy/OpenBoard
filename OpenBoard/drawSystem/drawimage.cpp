@@ -106,7 +106,7 @@ bool DrawImageElm::save_add(QDataStream &stream)
     qDebug() << "qwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww" + lastPath;
     if(bGIF)
     {
-        stream >> lastPath;
+        stream << lastPath;
         save_image(stream, lastPath);
     }
 
