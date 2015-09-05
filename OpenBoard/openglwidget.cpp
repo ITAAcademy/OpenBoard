@@ -184,13 +184,13 @@ tempList[i-1]=temp;
 }
     }
 
- qDebug() << "SET LIST:";
+ //qDebug() << "SET LIST:";
    for( DrawElement* elm : tempList)
     {
         if(elm != NULL && !timeLine->isBlocked)//&& timeLine->getMaxTrackTime() > 0)
         {
             elm->setDrawWidget(this);   //12345
-            qDebug() << "elm.z:"<<elm->getZ();
+           // qDebug() << "elm.z:"<<elm->getZ();
 
         }
         else
@@ -234,6 +234,8 @@ glBegin(GL_TRIANGLES);
        // //qDebug() << "mouse play index:"<<keyFrame;
 
         currentBrushOfDrawSystem = brushes[recordedBrushN].brush;
+        if(currentBrushOfDrawSystem.img.isNull())
+            qDebug() << "ISNULL";
         if (shaderSupported) //
             texture = loadTexture(currentBrushOfDrawSystem.img,true);
         else
@@ -510,7 +512,7 @@ void OGLWidget::initShaderPrograms()
     ShaderProgramWrapper *spiralShader = new ShaderProgramWrapper(this);
     if(spiralShader->initShader(SPIRAL_FRAGMENT_SHADER_PATH,SPIRAL_VERTEX_SHADER_PATH)!=0)shaderSupported=true;
     shaderPrograms.push_back(spiralShader);
-    shaderSupported= false;
+    //shaderSupported= false;
 }
 
 QVector<ShaderProgramWrapper*> OGLWidget::getShaderPrograms()
@@ -1669,7 +1671,7 @@ void OGLWidget::brushParamsChanged()
     if (isShaderSupported())
          m_manager.getCreatedBrush().color_img=m_manager.getCreatedBrush().img;
     else
-    m_manager.getCreatedBrush().color_img=BrushPainter::getInstance()->applyColor(m_manager.getCreatedBrush());
+        m_manager.getCreatedBrush().color_img=BrushPainter::getInstance()->applyColor(m_manager.getCreatedBrush());
     brushTexture = loadTexture(m_manager.getCreatedBrush().color_img,true);
     //while (!isInit())
         //qDebug() << "waiting for init";

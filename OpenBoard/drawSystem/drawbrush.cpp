@@ -46,7 +46,7 @@ bool DrawBrushElm::load_add(QDataStream &stream)
                images.push_back(load_image(stream));
            }
             //qDebug() <<"imagesIndexed:"<<imagesIndexed.toList();
-     //qDebug() << "load brushes:"<<brushCount;
+    // qDebug() << "load brushes:"<<imgBrushCount;
     for (int i = 0; i <brushCount;i++)
     {
         BrushBeginingIndex brushBeginingIndex;
@@ -104,7 +104,7 @@ bool DrawBrushElm::setDrawWidget(OGLWidget *value){
        if (pDrawWidget!=NULL && pDrawWidget->isShaderSupported())
             brushes[i].brush.color_img = brushes[i].brush.img;
        else
-        brushes[i].brush.color_img = BrushPainter::getInstance()->applyColor(brushes[i].brush);
+            brushes[i].brush.color_img = BrushPainter::getInstance()->applyColor(brushes[i].brush);
        }
 
    }
@@ -120,7 +120,7 @@ bool DrawBrushElm::save_add(QDataStream &stream)
  for (BrushBeginingIndex brushI : brushes)
  {
      if (brushI.brush.imageIndex!=-1)
- usedImageIndexes.insert(brushI.brush.imageIndex);
+        usedImageIndexes.insert(brushI.brush.imageIndex);
  }
  int usedImageIndexesCount=usedImageIndexes.size();
  stream << usedImageIndexesCount;

@@ -623,9 +623,9 @@ bool DrawElement::save_image(QDataStream &stream, QImage img)
 bool DrawElement::save_image(QDataStream &stream, QString filePath,QImage::Format format)
 {
     stream << (int)0 << (int)0 << (int)0;
-QFile file(filePath);
-file.open(QIODevice::ReadOnly);
-if (filePath.isEmpty())return -1;
+    QFile file(filePath);
+    file.open(QIODevice::ReadOnly);
+    if (filePath.isEmpty())return -1;
     QByteArray ba = file.readAll();
 
     stream << ba.length() << ba;
@@ -664,7 +664,6 @@ QImage DrawElement::load_image(QDataStream &stream)
     stream >> ba;
     QImage img_temp(w, h, (QImage::Format)format);
     img_temp.loadFromData(ba);
-    //img_temp.save("qwewqewqewqewqewq,png");
 
     //stream.readRawData((char*)img_temp.bits(), img_temp.byteCount());
     return img_temp;
