@@ -44,6 +44,7 @@ bool DrawBrushElm::load_add(QDataStream &stream)
                stream >> index;
                imagesIndexed.push_back(index);
                images.push_back(load_image(stream));
+
            }
             //qDebug() <<"imagesIndexed:"<<imagesIndexed.toList();
      qDebug() << "load brushes:"<<imgBrushCount;
@@ -142,7 +143,7 @@ bool DrawBrushElm::save_add(QDataStream &stream)
             qDebug() << "last path:"<<lastPath;
             if (!lastPath.isEmpty())
                resultStatus = save_image(stream,lastPath,img.format());
-            else
+           else
             save_image(stream, img );
          }
 

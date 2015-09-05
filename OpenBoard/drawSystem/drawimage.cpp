@@ -95,9 +95,9 @@ bool DrawImageElm::load_add(QDataStream &stream)
 {
     stream >> bGIF ;
 qDebug() << "qwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww" + lastPath;
+stream >> lastPath;
     if(bGIF)
-    {
-        stream >> lastPath;
+    {  
         gif = new QMovie(lastPath);
         if(!gif->isValid())
             bGIF = false;
@@ -109,9 +109,9 @@ bool DrawImageElm::save_add(QDataStream &stream)
 {
     stream << bGIF;
     qDebug() << "qwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww" + lastPath;
+    stream << lastPath;
     if(bGIF)
-    {
-        stream << lastPath;
+    {   
         save_image(stream, lastPath);
     }
 
