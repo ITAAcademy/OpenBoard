@@ -123,6 +123,7 @@ DrawElement::~DrawElement()
 void DrawElement::paint()
 {
   //  qDebug() << "paint on buffer:"<<fboWrapper.frameBuffer;
+    if (pDrawWidget->getTimeLine()->getPlayTime() > lifeTime + startDrawTime) return;
     if(fboWrapper.errorStatus == 0)
     {
       bool drawToSecondBuffer=false;
@@ -154,6 +155,7 @@ void DrawElement::paint()
                 else
                 {
                     beginAtTime = lifeTime + startDrawTime - effects[i].getEffectTimeHowLong();
+                    if (beginAtTime<0)beginAtTime=0;
 
                 }
                  //  beginAtTime = effects[i].getStartTimeMS()+ startDrawTime ;
@@ -167,13 +169,12 @@ void DrawElement::paint()
 
 //qDebug() << ":"<<playTime-beginAtTime;
 
-                if (playTime >= beginAtTime && playTime <= endAtTime)
+                if (playTime >= beginAtTime && playTime <= endAtTime)//endAtTime + 50 if flickering !!!
                 {
                   //  qDebug() <<i<< "-b:"<<beginAtTime;
                     qDebug() << i<<"-keyFrame:"<<keyFrame;
                     if(drawToSecondBuffer)
                     {
-                        qDebug() << "FIRST DRAW TO PING-PONG FRAME BUFFER";
                         pDrawWidget->bindBuffer(pDrawWidget->getPingPongFBO().frameBuffer);
                        // qDebug() << "Shader program ("<<i<<"):"<<effects[i].getShaderWrapper()->getShaderProgram();
                         pDrawWidget->getOglFuncs()->glUseProgram(effects[i].getShaderWrapper()->getShaderProgram());
@@ -190,7 +191,6 @@ void DrawElement::paint()
                     }
                     else
                     {
-                    qDebug() << "FIRST DRAW TO MAIN FRAME BUFFER";
                     pDrawWidget->bindBuffer(fboWrapper.frameBuffer);
                     pDrawWidget->getOglFuncs()->glUseProgram(effects[i].getShaderWrapper()->getShaderProgram());
                    // float keyFrame = (float)(pDrawWidget->getTimeLine()->getPlayTime()-startDrawTime)/lifeTime;//MOVE UP LATER
