@@ -184,13 +184,13 @@ tempList[i-1]=temp;
 }
     }
 
- qDebug() << "SET LIST:";
+ //qDebug() << "SET LIST:";
    for( DrawElement* elm : tempList)
     {
         if(elm != NULL && !timeLine->isBlocked)//&& timeLine->getMaxTrackTime() > 0)
         {
             elm->setDrawWidget(this);   //12345
-            qDebug() << "elm.z:"<<elm->getZ();
+           // qDebug() << "elm.z:"<<elm->getZ();
 
         }
         else

@@ -1,7 +1,7 @@
 #include "shadereffect.h"
 
 
-unsigned int ShaderEffect::getStartTimeMS() const
+ int ShaderEffect::getStartTimeMS() const
 {
     return startTimeMS;
 }
@@ -11,7 +11,7 @@ void ShaderEffect::setStartTimeMS(unsigned int value)
     startTimeMS = value;
 }
 
-unsigned int ShaderEffect::getEffectTimeHowLong() const
+ int ShaderEffect::getEffectTimeHowLong() const
 {
     return effectTimeHowLong;
 }

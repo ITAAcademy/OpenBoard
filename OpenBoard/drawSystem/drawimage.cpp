@@ -31,8 +31,12 @@ DrawImageElm::DrawImageElm(OGLWidget *drawWidget, QObject *parent) : DrawElement
     ShaderEffect alphaEffect2(OGLWidget::ALPHA_SHADER);
     ShaderEffect spiralEffect(OGLWidget::SPIRAL_SHADER);
     alphaEffect.setEffectTimeHowLong(1000);
-   // alphaEffect2.setEffectTimeHowLong(1000);
-    alphaEffect.setReverse(true);
+    alphaEffect.setStartTimeMS(0);
+    //alphaEffect.setReverse(true);
+    alphaEffect2.setEffectTimeHowLong(1000);
+    alphaEffect2.setReverse(true);
+    alphaEffect2.setStartTimeMS(1000);
+    alphaEffect2.setAnchorToEnd(true);
     //alphaEffect.setAnchorToEnd(true);
     //alphaEffect2.setReverse(false);
  //   spiralEffect.setEffectTimeHowLong(1000);
@@ -40,6 +44,7 @@ DrawImageElm::DrawImageElm(OGLWidget *drawWidget, QObject *parent) : DrawElement
     //qDebug() << "alpha effect created";
 
      effects.push_back(alphaEffect); //ADD DEFAULT EFFECT
+     effects.push_back(alphaEffect2); //ADD DEFAULT EFFECT
      //effects.push_back(alphaEffect2); //ADD DEFAULT EFFECT
      //effects.push_back(spiralEffect); //ADD DEFAULT EFFECT
 

@@ -4,8 +4,8 @@
 
 class ShaderEffect
 {
-    unsigned int startTimeMS = 0;
-    unsigned int effectTimeHowLong = 0;
+     int startTimeMS = 0;
+     int effectTimeHowLong = 0;
     bool reverse = false;
     bool anchorToEnd = false;
    ShaderProgramWrapper *shaderWrapper = nullptr;
@@ -24,9 +24,9 @@ public:
     static void setUniformAnimationKey(OGLWidget *oglWidget, ShaderEffect shaderEffect, float value);
     static void setUniformResolution(OGLWidget *oglWidget, ShaderEffect shaderEffect, float width, float height);
     static void setUniformReverse(OGLWidget *oglWidget, ShaderEffect shaderEffect,bool val);
-    unsigned int getStartTimeMS() const;
+     int getStartTimeMS() const;
     void setStartTimeMS(unsigned int value);
-    unsigned int getEffectTimeHowLong() const;
+     int getEffectTimeHowLong() const;
     void setEffectTimeHowLong(unsigned int value);
     bool save(QDataStream &stream);
 
