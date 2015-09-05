@@ -170,11 +170,27 @@ QList<DrawElement *> &OGLWidget::getList()
 
 void OGLWidget::setList(const QList<DrawElement *> &value)
 {
-   for( DrawElement* elm : value)
+    QList<DrawElement*> tempList = value;
+    DrawElement *temp = nullptr;
+
+    for (int k = 0; k <tempList.length();k++)
+    for (int i = 1; i < tempList.length();i++)
+      {
+if (tempList[i-1]->getZ()>tempList[i]->getZ())
+   {
+temp=tempList[i];
+tempList[i]=tempList[i-1];
+tempList[i-1]=temp;
+}
+    }
+
+ qDebug() << "SET LIST:";
+   for( DrawElement* elm : tempList)
     {
         if(elm != NULL && !timeLine->isBlocked)//&& timeLine->getMaxTrackTime() > 0)
         {
             elm->setDrawWidget(this);   //12345
+            qDebug() << "elm.z:"<<elm->getZ();
 
         }
         else
@@ -182,11 +198,11 @@ void OGLWidget::setList(const QList<DrawElement *> &value)
     }
     if(curentList)
     {
-        list_1 = value;
+        list_1 = tempList;
     }
     else
     {
-        list_2 = value;
+        list_2 = tempList;
     }
     curentList = !curentList;
 }

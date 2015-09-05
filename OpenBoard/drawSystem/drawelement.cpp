@@ -193,6 +193,7 @@ void DrawElement::paint()
                     ShaderEffect::setUniformResolution(pDrawWidget,effects[i],
                                                        pDrawWidget->getPingPongFBO().tWidth,pDrawWidget->getPingPongFBO().tHeight);
                     ShaderEffect::setUniformReverse(pDrawWidget,effects[i],effects[i].getReverse());
+
                     if (i==0)
                         draw();
                     else
