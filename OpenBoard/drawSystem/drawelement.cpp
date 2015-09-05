@@ -49,15 +49,15 @@ bool DrawElement::setDrawWidget(OGLWidget *value)
         setFBOWrapper(pDrawWidget->initFboWrapper(pDrawWidget->getWax(),pDrawWidget->getWay()));//TODO
     qDebug()<<"AFTER SETFBOWRAPPER";
 
-    //ShaderEffect alphaEffect(pDrawWidget->getShaderPrograms()[OGLWidget::ALPHA_SHADER],OGLWidget::ALPHA_SHADER);
-    //ShaderEffect spiralEffect(pDrawWidget->getShaderPrograms()[OGLWidget::SPIRAL_SHADER],OGLWidget::SPIRAL_SHADER);
-    //alphaEffect.setEffectTimeHowLong(1000);
+    ShaderEffect alphaEffect(pDrawWidget->getShaderPrograms()[OGLWidget::ALPHA_SHADER],OGLWidget::ALPHA_SHADER);
+   // ShaderEffect spiralEffect(pDrawWidget->getShaderPrograms()[OGLWidget::SPIRAL_SHADER],OGLWidget::SPIRAL_SHADER);
+    alphaEffect.setEffectTimeHowLong(1000);
     //alphaEffect.setReverse(true);
     //spiralEffect.setEffectTimeHowLong(1000);
 
     //qDebug() << "alpha effect created";
 
-     //effects.push_back(alphaEffect); //ADD DEFAULT EFFECT
+     effects.push_back(alphaEffect); //ADD DEFAULT EFFECT
 
 }
 
@@ -191,6 +191,7 @@ void DrawElement::paint()
                     ShaderEffect::setUniformAnimationKey(pDrawWidget,effects[i],keyFrame);
                     ShaderEffect::setUniformResolution(pDrawWidget,effects[i],
                                                        pDrawWidget->getPingPongFBO().tWidth,pDrawWidget->getPingPongFBO().tHeight);
+                   ShaderEffect::setUniformReverse(pDrawWidget,effects[i],effects[i].getReverse());
                     if (i==0)
                     draw();
                     else

@@ -173,6 +173,7 @@ void OGLWidget::setList(const QList<DrawElement *> &value)
     QList<DrawElement*> tempList = value;
     DrawElement *temp = nullptr;
 
+    for (int k = 0; k <tempList.length();k++)
     for (int i = 1; i < tempList.length();i++)
       {
 if (tempList[i-1]->getZ()>tempList[i]->getZ())
