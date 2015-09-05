@@ -135,38 +135,45 @@ void DrawElement::paint()
         }
         else
         {
-            if (effects.length()>1)
+           /* if (effects.length()%2==1)
             {
                 drawToSecondBuffer=true;
-                pDrawWidget->clearFrameBuffer(pDrawWidget->getPingPongFBO());
+                //pDrawWidget->clearFrameBuffer(pDrawWidget->getPingPongFBO());
                 //pDrawWidget->clearFrameBuffer(pDrawWidget->getMainFBO());
-            }
-            unsigned int playTime = pDrawWidget->getTimeLine()->getPlayTime();
+            }*/
+             int playTime = pDrawWidget->getTimeLine()->getPlayTime();
 
             int effectsUsedInOneTime=0;
          //   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); glEnable( GL_BLEND );
             for (int i=0;i<effects.length();i++)
             {
 
-                unsigned int beginAtTime;
-                if(!effects[i].getAnchorToEnd())
+                 int beginAtTime;
+               if(!effects[i].getAnchorToEnd())
                     beginAtTime = effects[i].getStartTimeMS()+ startDrawTime ;
                 else
                 {
                     beginAtTime = lifeTime + startDrawTime - effects[i].getEffectTimeHowLong();
-                }
 
-                unsigned int endAtTime = beginAtTime + effects[i].getEffectTimeHowLong();
+                }
+                 //  beginAtTime = effects[i].getStartTimeMS()+ startDrawTime ;
+                    //if (beginAtTime<0)beginAtTime=0;
+
+                 int endAtTime = beginAtTime + effects[i].getEffectTimeHowLong();
                 float keyFrame = 1;
-                if(endAtTime-beginAtTime!=0)
+
+                if(endAtTime-beginAtTime>0)
                     keyFrame=(float)(playTime-beginAtTime)/(endAtTime-beginAtTime);
+
+//qDebug() << ":"<<playTime-beginAtTime;
 
                 if (playTime >= beginAtTime && playTime <= endAtTime)
                 {
-                    qDebug() << keyFrame;
+                  //  qDebug() <<i<< "-b:"<<beginAtTime;
+                    qDebug() << i<<"-keyFrame:"<<keyFrame;
                     if(drawToSecondBuffer)
                     {
-                        //qDebug() << "FIRST DRAW TO PING-PONG FRAME BUFFER";
+                        qDebug() << "FIRST DRAW TO PING-PONG FRAME BUFFER";
                         pDrawWidget->bindBuffer(pDrawWidget->getPingPongFBO().frameBuffer);
                        // qDebug() << "Shader program ("<<i<<"):"<<effects[i].getShaderWrapper()->getShaderProgram();
                         pDrawWidget->getOglFuncs()->glUseProgram(effects[i].getShaderWrapper()->getShaderProgram());
@@ -175,7 +182,7 @@ void DrawElement::paint()
                         ShaderEffect::setUniformResolution(pDrawWidget,effects[i],fboWrapper.tWidth,fboWrapper.tHeight);
                         ShaderEffect::setUniformReverse(pDrawWidget,effects[i],effects[i].getReverse());
 
-                        if (i==0)
+                        if (effectsUsedInOneTime==0)
                             draw();
                         else
                             pDrawWidget->drawTexture(0,0,fboWrapper.tWidth,fboWrapper.tHeight,
@@ -183,7 +190,7 @@ void DrawElement::paint()
                     }
                     else
                     {
-                   // qDebug() << "FIRST DRAW TO MAIN FRAME BUFFER";
+                    qDebug() << "FIRST DRAW TO MAIN FRAME BUFFER";
                     pDrawWidget->bindBuffer(fboWrapper.frameBuffer);
                     pDrawWidget->getOglFuncs()->glUseProgram(effects[i].getShaderWrapper()->getShaderProgram());
                    // float keyFrame = (float)(pDrawWidget->getTimeLine()->getPlayTime()-startDrawTime)/lifeTime;//MOVE UP LATER
@@ -192,7 +199,7 @@ void DrawElement::paint()
                                                        pDrawWidget->getPingPongFBO().tWidth,pDrawWidget->getPingPongFBO().tHeight);
                     ShaderEffect::setUniformReverse(pDrawWidget,effects[i],effects[i].getReverse());
 
-                    if (i==0)
+                    if (effectsUsedInOneTime==0)
                         draw();
                     else
                     pDrawWidget->drawTexture(0,0,pDrawWidget->getPingPongFBO().tWidth,
