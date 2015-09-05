@@ -23,11 +23,11 @@ void ShaderEffect::setEffectTimeHowLong(unsigned int value)
 
 bool ShaderEffect::save(QDataStream &stream)
 {
-    stream << startTimeMS << effectTimeHowLong << shaderWrapperIndex;
+    stream << startTimeMS << effectTimeHowLong << shaderWrapperIndex << reverse;
 }
 bool ShaderEffect::load(QDataStream &stream)
 {
-stream >> startTimeMS >> effectTimeHowLong >> shaderWrapperIndex;
+stream >> startTimeMS >> effectTimeHowLong >> shaderWrapperIndex >> reverse;
 
 }
 
