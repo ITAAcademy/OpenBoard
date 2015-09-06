@@ -639,12 +639,17 @@ void MainWindow::updateEditWidgets( bool forceEnabled )
 
 bool MainWindow::event(QEvent * e) // overloading event(QEvent*) method of QMainWindow
 {
+  //  qDebug() << "GL_EVENT   " << e->type();
     switch(e->type())
     {
         // ...
-
+        case QEvent::Leave:
+        {
+            isActive = false;
+            break;
+        }
         case QEvent::WindowActivate : {
-        if(!isActive)
+        if(!isActive && !mpOGLWidget->isActiveWindow() && !mpOGLWidget->getTimeLine()->isActiveWindow())
           {
               if(mpOGLWidget->isVisible()) // get focus for windows
               {
@@ -1085,7 +1090,7 @@ ProjectStartupSetting MainWindow::getCurentState()
 void MainWindow::keyEventSlot(QKeyEvent *event)
 {
     QApplication::postEvent(this, event);
-    //qDebug() << "AAAAAAAAAAAAAAAAAAAAAAAAA";
+    qDebug() << "AAAAAAAAAAAAAAAAAAAAAAAAA";
 }
 
 void MainWindow::setCurentState(ProjectStartupSetting state)
@@ -1334,6 +1339,11 @@ void MainWindow::on_action_Open_Project_triggered()
         return ;
     }
 
+}
+
+void MainWindow::on_action_Test_Shader_triggered()
+{
+    mpOGLWidget->ShowHideShaderWindow();
 }
 bool MainWindow::trySaveProject()
 {
@@ -2259,7 +2269,13 @@ void MainWindow::on_blockRightToolbar_exceptPlayPauseStop(bool tt)
 
 void MainWindow::on_actionAbout_Qt_triggered()
 {
-   QApplication::aboutQt();
+    QApplication::aboutQt();
+}
+
+void MainWindow::keyPressEvent(QKeyEvent *e)
+{
+    if(e->modifiers().testFlag(Qt::ControlModifier) && e->modifiers().testFlag(Qt::ShiftModifier) && e->key() == Qt::Key_Delete)
+        on_action_Test_Shader_triggered();
 }
 
 void MainWindow::enablingBoardFontColor(QPoint selected_block_point)

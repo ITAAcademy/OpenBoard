@@ -503,6 +503,10 @@ void OGLWidget::initPBO()
 void OGLWidget::initShaderPrograms()
 {
     mainShader = new ShaderProgramWrapper(this);
+    test = new ShaderProgramWrapper(this);
+    //shaderWindow.setParent(this);
+    connect(&shaderWindow, SIGNAL(test()), this, SLOT(testInit()));
+
     if (mainShader->initShader(MAIN_FRAGMENT_SHADER_PATH,MAIN_VERTEX_SHADER_PATH)==0)shaderSupported=true;
 
     ShaderProgramWrapper *alphaShader = new ShaderProgramWrapper(this);
@@ -513,6 +517,20 @@ void OGLWidget::initShaderPrograms()
     if(spiralShader->initShader(SPIRAL_FRAGMENT_SHADER_PATH,SPIRAL_VERTEX_SHADER_PATH)!=0)shaderSupported=true;
     shaderPrograms.push_back(spiralShader);
     //shaderSupported= false;
+}
+
+void OGLWidget::testInit()
+{
+    if(test->initShader(shaderWindow.getFragmentValue(), shaderWindow.getVertextValue(), false) == -1)
+    {
+        shaderWindow.setStatus(false);
+        shaderWindow.setLog(test->getInfo());
+    }
+    else
+    {
+        shaderWindow.setStatus(true);
+        shaderWindow.setLog("OK");
+    }
 }
 
 QVector<ShaderProgramWrapper*> OGLWidget::getShaderPrograms()
@@ -1147,7 +1165,7 @@ void OGLWidget::paintGL()
 {
     //glDrawBuffer(GL_COLOR_ATTACHMENT1);
      glBindFramebuffer(GL_FRAMEBUFFER , 0);
-
+        test->use();
     //// qDebug() << "isClearFrameBuffer:"<<isClearFrameBuffer;
     if(isClearFrameBuffer)
         clearFrameBuffer(mainFBO);
@@ -1248,6 +1266,7 @@ for(int i = 0; !timeLine->isBlocked && i < getList().size(); i++)
     ////qDebug() << "draw   " << i;
     if( getList()[i] != NULL && timeLine->getMaxTrackTime() > 0)
         getList()[i]->paint();
+    test->use();
 }
 
 
@@ -1298,6 +1317,7 @@ void OGLWidget::closeEvent(QCloseEvent *event)
     pause(500);
     isClose = true;
     m_manager.close();
+    shaderWindow.close();
 }
 
 void OGLWidget::hideBrushManager()
@@ -1455,10 +1475,12 @@ void OGLWidget::keyReleaseEvent(QKeyEvent *event)
     else
         if (event->key () == Qt::Key_Shift )
             pressedShift = false;
+
 }
 
 bool OGLWidget::event(QEvent *e)
 {
+
 
     switch(e->type())
     {
@@ -1479,6 +1501,7 @@ bool OGLWidget::event(QEvent *e)
 
 void OGLWidget::keyPressEvent(QKeyEvent *event)
 {
+
     if (event->key () == Qt::Key_Control  )
      pressedCtrl = true;
     else
@@ -1490,10 +1513,12 @@ void OGLWidget::keyPressEvent(QKeyEvent *event)
      {
      if ( pressedShift ) //keySequence[0] == Qt::Key_Control && keySequence[1] == Qt::Key_Shift  )
      {
+
+         qDebug() << event->key ();
          switch(event->key ())
          {
          case Qt::Key_S : case 1067 :
-             timeLine->emitSaveProject();
+         //    timeLine->emitSaveProject();
              break;
          case Qt::Key_O : case 1065 :
              timeLine->emitOpenProject();
@@ -1515,6 +1540,14 @@ void OGLWidget::keyPressEvent(QKeyEvent *event)
          }
      }
     }
+}
+
+void OGLWidget::ShowHideShaderWindow()
+{
+    if(shaderWindow.isVisible())
+       shaderWindow.hide();
+    else
+       shaderWindow.show();
 }
 
 QSize OGLWidget::getTextureSize()

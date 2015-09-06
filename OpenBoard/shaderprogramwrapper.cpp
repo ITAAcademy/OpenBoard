@@ -1,5 +1,10 @@
 #include "shaderprogramwrapper.h"
 
+
+QString ShaderProgramWrapper::getInfo() const
+{
+    return info;
+}
 ShaderProgramWrapper::ShaderProgramWrapper(OGLWidget *pWidget)
 {
     parentWidget=pWidget;
@@ -12,22 +17,22 @@ ShaderProgramWrapper::ShaderProgramWrapper()
 }
 bool ShaderProgramWrapper::save(QDataStream &stream)
 {
-stream << fragCode << vertCode;
+    stream << fragCode << vertCode;
 }
 bool ShaderProgramWrapper::load(QDataStream &stream)
 {
-stream >> fragCode;
-stream >> vertCode;
-initShader(fragCode,vertCode,false);
-if (!isInited())return false;
-return true;
+    stream >> fragCode;
+    stream >> vertCode;
+    initShader(fragCode,vertCode,false);
+    if (!isInited())return false;
+        return true;
 }
 
 ShaderProgramWrapper::~ShaderProgramWrapper()
 {
- qDebug() <<"ShaderProgramWrapper::~ShaderProgramWrapper()";
- bool exp = errorStatus==0;
- qDebug() << "succ";
+     qDebug() <<"ShaderProgramWrapper::~ShaderProgramWrapper()";
+     bool exp = errorStatus==0;
+     qDebug() << "succ";
     if(exp)
     {
         qDebug() <<"~ShaderProgramWrapper begin";
@@ -38,8 +43,12 @@ ShaderProgramWrapper::~ShaderProgramWrapper()
     qDebug() <<"~ShaderProgramWrapper end";
 }
 
-int ShaderProgramWrapper::initShader(QString fShaderFilePath,QString vShaderFilePath,bool isFilePath)
+int ShaderProgramWrapper::initShader(QString fShaderFilePath, QString vShaderFilePath, bool isFilePath)
 {
+    inited = false;
+    glf->glUseProgram(0);
+    glf->glDeleteShader(ShaderProgram);
+
     QString fragmentShaderCode;
     QString vertexShaderCode;
     fragmentShaderCode=fShaderFilePath;
@@ -112,6 +121,7 @@ if (isFilePath)
                   GLchar infoLog[1024];
                   glf->glGetShaderInfoLog(vertexShaderObj, sizeof(infoLog), NULL, infoLog);
                    qDebug() <<"Error compiling shader type:" << "GL_VERTEX_SHADER" << infoLog;
+                   info = "Error compiling shader type: GL_VERTEX_SHADER   " + QString(infoLog);
                     errorStatus=-1;
                   return -1;
 
@@ -121,6 +131,7 @@ if (isFilePath)
                   GLchar infoLog[1024];
                   glf->glGetShaderInfoLog(fragmentShaderObj, sizeof(infoLog), NULL,infoLog);
                    qDebug() <<"Error compiling shader type:" << "GL_FRAGMENT_SHADER" << infoLog;
+                    info = "Error compiling shader type: GL_FRAGMENT_SHADER   " + QString(infoLog);
                     errorStatus=-1;
                   return -1;
 
@@ -137,6 +148,7 @@ if (isFilePath)
         if (success == 0) {
             glf->glGetProgramInfoLog(ShaderProgram, sizeof(errorLog), NULL, errorLog);
              qDebug() << "Error linking shader program:" << errorLog;
+             info = "Error linking shader program   " + QString(errorLog);
               errorStatus=-1;
             return -1;
 
@@ -147,7 +159,29 @@ if (isFilePath)
           qDebug() << "Shader supported:"<<parentWidget->isShaderSupported();
             //glLinkProgram(program);
             //glUseProgram(program);
-    return -1; // 0
+          inited = true;
+    return 0; // 0
+
+}
+
+bool ShaderProgramWrapper::setUniform(QString name, QVariant value)
+{
+    GLint unifrom = glf->glGetUniformLocation( ShaderProgram, name.toLatin1().data());
+    if(unifrom == NULL)
+        return false;
+
+    switch (value.type()) {
+    case QMetaType::Int:
+        glf->glUniform1i(unifrom, value.toInt());
+        break;
+    case QMetaType::Float || QMetaType::Double:
+        glf->glUniform1f(unifrom, value.toFloat());
+        break;
+
+    default:
+        return false;
+    }
+    return true;
 
 }
 
@@ -159,5 +193,21 @@ GLuint ShaderProgramWrapper::getShaderProgram()
 bool ShaderProgramWrapper::isInited()
 {
     return inited;
+}
+
+bool ShaderProgramWrapper::use()
+{
+    if(isInited())
+    {
+        glf->glUseProgram(ShaderProgram);
+        return true;
+    }
+    return false;
+
+}
+
+void ShaderProgramWrapper::disable()
+{
+    glf->glUseProgram(0);
 }
 

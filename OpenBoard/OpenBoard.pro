@@ -35,7 +35,9 @@ SOURCES += main.cpp\
     drawSystem/drawvideo.cpp \
     encoder/audiodecoder.cpp \
     shaderprogramwrapper.cpp \
-    shadereffect.cpp
+    shadereffect.cpp \
+    shadertest.cpp \
+    editWidget/codeeditor.cpp
     drawSystem/drawbrush.cpp
 
 
@@ -70,12 +72,15 @@ HEADERS  += mainwindow.h \
     drawSystem/drawvideo.h \
     encoder/audiodecoder.h \
     shaderprogramwrapper.h \
-    shadereffect.h
+    shadereffect.h \
+    shadertest.h \
+    editWidget/codeeditor.h
     drawSystem/drawbrush.h
 
 
 FORMS    += mainwindow.ui \
-    youtube/logindialog.ui
+    youtube/logindialog.ui \
+    shadertest.ui
 
 RESOURCES += \
     icons.qrc \

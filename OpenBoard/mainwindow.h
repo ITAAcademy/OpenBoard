@@ -92,6 +92,7 @@ public slots:
     bool on_action_Save_Project_triggered();
     void on_action_Open_Project_triggered();
     void on_action_New_Project_triggered();
+    void on_action_Test_Shader_triggered();
 
 //    toolbar
     void on_backBtn_clicked();
@@ -192,6 +193,7 @@ public slots:
 private slots:
     void updateBlockFromTextEdit();
     void on_actionAbout_Qt_triggered();
+    void keyPressEvent(QKeyEvent *e);
 };
 
 #endif // MAINWINDOW_H

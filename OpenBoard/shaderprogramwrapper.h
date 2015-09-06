@@ -12,6 +12,7 @@ class ShaderProgramWrapper
 
 GLuint ShaderProgram;
 bool inited = false;
+QString info;
 int errorStatus = 0;
 OGLWidget *parentWidget = NULL;
 QOpenGLFunctions_3_0 *glf;
@@ -20,12 +21,16 @@ public:
     ShaderProgramWrapper(OGLWidget *pWidget);
     ShaderProgramWrapper();
     ~ShaderProgramWrapper();
-   int initShader(QString fragmentShaderCode,QString vertexShaderCode,bool isFilePath=true);
+   int initShader(QString fragmentShaderCode, QString vertexShaderCode, bool isFilePath=true);
+   bool setUniform(QString name, QVariant value);
    GLuint getShaderProgram();
    bool isInited();
+   bool use();
+   void disable();
 
    bool save(QDataStream &stream);
    bool load(QDataStream &stream);
+   QString getInfo() const;
 };
 
 #endif // SHADERPROGRAMWRAPPER_H

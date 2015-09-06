@@ -745,6 +745,7 @@
     <addaction name="actionShow_last_drawing"/>
     <addaction name="actionSave_drawing"/>
     <addaction name="actionLoad_drawing_temp"/>
+    <addaction name="actionTestShader"/>
    </widget>
    <widget class="QMenu" name="menu_Help">
     <property name="title">
@@ -1225,6 +1226,17 @@
   <action name="actionAbout_Qt">
    <property name="text">
     <string>About Qt</string>
+   </property>
+  </action>
+  <action name="actionTestShader">
+   <property name="text">
+    <string>TestShader</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+`</string>
+   </property>
+   <property name="visible">
+    <bool>false</bool>
    </property>
   </action>
  </widget>

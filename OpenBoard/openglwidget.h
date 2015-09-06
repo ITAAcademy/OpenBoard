@@ -19,6 +19,7 @@
 #include <QRect>
 #include "encoder/videorencoder.h"
 #include "../Brush/brushcontroll.h"
+#include "shadertest.h"
 #include <QGLShader>
 #include "shaderprogramwrapper.h"
 #include <QOpenGLFunctions_3_0>
@@ -99,18 +100,20 @@ class OGLWidget : public QGLWidget, protected QOpenGLFunctions_3_0
 {
     Q_OBJECT
    // Q_PROPERTY(QString  drawText READ getDrawText WRITE setDrawText NOTIFY drawTextChanged)
-        QPoint mousePressPos;
+    QPoint mousePressPos;
+    ShaderTest shaderWindow;
+
 signals:
-        void stopShowLastDrawingSignal();
+    void stopShowLastDrawingSignal();
 public:
 
-        enum shaderEnum {ALPHA_SHADER=0,SPIRAL_SHADER=1};
-        void processMouse();
-        void initPBO();
-        void initShaderPrograms();
-        QVector<ShaderProgramWrapper*> getShaderPrograms();
-        bool isShaderSupported();
-        void setShaderSupported(bool value);
+    enum shaderEnum {ALPHA_SHADER=0,SPIRAL_SHADER=1};
+    void processMouse();
+    void initPBO();
+    void initShaderPrograms();
+    QVector<ShaderProgramWrapper*> getShaderPrograms();
+    bool isShaderSupported();
+    void setShaderSupported(bool value);
     BrushManager m_manager;
     bool sucsessLoadTexture;
     void setFrameRate(int frameRate);
@@ -304,6 +307,8 @@ public slots:
 
 
     void drawQImageFromTexture(int x, int y, QImage img, GLuint index, int z);
+    void ShowHideShaderWindow();
+    void testInit();
 signals:
     void windowUpdating(int frameRate);
     void pauseSignal();
@@ -330,6 +335,8 @@ QString fileNameForRecords;
 
     bool shaderSupported = false;
     ShaderProgramWrapper *mainShader;//Color,alpha,blur;
+    ShaderProgramWrapper *test;//Color,alpha,blur;
+
          int frameRate = 25;
        bool mayShowRedRectangle = true;
     unsigned int current_millisecs =0;
