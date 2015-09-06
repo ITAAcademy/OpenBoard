@@ -708,6 +708,35 @@ void ListControll::moveWindow()
      prevMousePosition = QCursor::pos();
  }
 
+ void  ListControll::setBlockAnimation(int col, int ind,int state, int time)
+ {
+     if (state <0 || time < 0 || !testIndexs(col, ind))
+         return;
+     tracks[col].block[ind].draw_element->setAnimStateTime(QPoint(state,time));
+     //qDebug() << "ListControll::setBlockAnimation = " << time;
+ }
+
+ void   ListControll::setBlockAnimationTime(int col, int ind, int time)
+ {
+     if ( time < 0 || !testIndexs(col, ind))
+         return;
+     tracks[col].block[ind].draw_element->setAnimTime(time);
+ }
+
+ void   ListControll::setBlockAnimationState(int col, int ind,int state)
+ {
+     if (state <0  || !testIndexs(col, ind))
+         return;
+     tracks[col].block[ind].draw_element->setAnimState((state));
+ }
+
+ QPoint  ListControll::getBlockAnimation(int col, int ind)
+ {
+     if ( !testIndexs(col, ind))
+         return QPoint (-1,-1); //-=-=
+    return  tracks[col].block[ind].draw_element->getAnimStateTimePoint();
+ }
+
  QPoint  ListControll::getMousePosition()
  {
     return QCursor::pos();

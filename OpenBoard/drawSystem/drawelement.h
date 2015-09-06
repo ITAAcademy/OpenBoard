@@ -15,12 +15,28 @@
 
 enum Element_type { Text, Video, Image,Brushh,Empty};
 
+struct AnimStateTime{
+    int state; //no anim = 0,begin = 1,end = 2, begin & end =3
+    int time;
+    AnimStateTime(int a,int b)
+    {
+        state = a;
+        time = b;
+    }
+    AnimStateTime()
+    {
+        state = 0;
+        time = 10;
+    }
+};
+
 class DrawElement : public QObject
 {
 
     Q_OBJECT
 
 protected:
+    AnimStateTime anim_state_time;
     FBOWrapper fboWrapper;
     QImage icon;
     QString key;
@@ -43,6 +59,14 @@ protected:
     QString lastPath;
     virtual void draw();
 public:
+    void setAnimStateTime(AnimStateTime);
+    void setAnimStateTime(int , int);
+    void setAnimStateTime(QPoint);
+    void setAnimState(int);
+    void setAnimTime(int);
+    QPoint getAnimStateTimePoint();
+    AnimStateTime getAnimStateTime();
+
     FBOWrapper getFBOWrapper();
     explicit DrawElement(OGLWidget *drawWidget, QObject *parent);
     virtual ~DrawElement();

@@ -336,6 +336,12 @@ public:
   Q_INVOKABLE  void setSelectedBlockPoint(int col, int ind);
 
     Q_INVOKABLE void  setPrevMousePosition();
+    Q_INVOKABLE void  setBlockAnimation(int col, int ind,int state, int time);
+     Q_INVOKABLE void  setBlockAnimationTime(int col, int ind, int time);
+     Q_INVOKABLE void  setBlockAnimationState(int col, int ind,int state);
+    Q_INVOKABLE QPoint  getBlockAnimation(int col, int ind);
+
+
     Q_INVOKABLE QPoint  getPrevMousePosition();
     Q_INVOKABLE void  update();
    Q_INVOKABLE void emitUpdateSignal();

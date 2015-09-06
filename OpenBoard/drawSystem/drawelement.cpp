@@ -123,6 +123,44 @@ DrawElement::~DrawElement()
     }
 }
 
+void DrawElement::setAnimStateTime(AnimStateTime value)
+{
+    anim_state_time = value;
+}
+
+void DrawElement::setAnimStateTime(int stat, int tim)
+{
+    setAnimStateTime(AnimStateTime(stat,tim));
+    qDebug() << "DrawElement::setAnimStateTime = " << tim;
+}
+
+void DrawElement::setAnimStateTime(QPoint pp)
+{
+    setAnimStateTime(AnimStateTime(pp.x(),pp.y()));
+}
+
+void DrawElement::setAnimState(int value)
+{
+    anim_state_time.state = value;
+}
+
+void DrawElement::setAnimTime(int value)
+{
+    anim_state_time.time = value;
+    qDebug() << "DrawElement::setAnimTime(int value) " << anim_state_time.time;
+}
+
+QPoint DrawElement::getAnimStateTimePoint()
+{
+    return QPoint(anim_state_time.state, anim_state_time.time);
+}
+
+AnimStateTime DrawElement::getAnimStateTime()
+{
+   return anim_state_time;
+}
+
+
 void DrawElement::paint()
 {
   //  qDebug() << "paint on buffer:"<<fboWrapper.frameBuffer;
@@ -328,6 +366,8 @@ bool DrawElement::save(QIODevice* device)
     stream << effects.length();
     for (int i = 0 ; i < effects.length();i++)
         effects[i].save(stream);
+
+   //stream << anim_state_time.state <<  anim_state_time.time;
 }
 
 bool DrawElement::save(QString path)
