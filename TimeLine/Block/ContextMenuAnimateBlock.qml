@@ -22,7 +22,7 @@ ApplicationWindow {
 
 
     onClosing: {
- console.log("CCCCCCCCCCCCCCCCCCC counter = " + (++counter))
+// console.log("CCCCCCCCCCCCCCCCCCC counter = " + (++counter))
         //setAnim()
         if (block_anim_time_value.text.length ===0)
         {
@@ -37,28 +37,28 @@ ApplicationWindow {
 
     function closeIt()
     {
-         console.log("animate_block_wnd   closeIt( ) ")
+         //console.log("animate_block_wnd   closeIt( ) ")
         animate_block_wnd.close()
         animate_block_wnd.destroy()
     }
 
     function setAnim()
     {
-        console.log("AAAAAAAAAA AAAAAAAAAAAAAA AAAAAAAAAAAAAAAAAAA ="+anim_time)
+        //console.log("AAAAAAAAAA AAAAAAAAAAAAAA AAAAAAAAAAAAAAAAAAA ="+anim_time)
          timeControll.setBlockAnimation(columnIndex,blockIndex,anim_state,anim_time)
     }
 
 
     function setAnimState()
     {
-         console.log("setAnimState() = " +columnIndex + " " + blockIndex + " "  + anim_state)
+         //console.log("setAnimState() = " +columnIndex + " " + blockIndex + " "  + anim_state)
          timeControll.setBlockAnimationState(columnIndex,blockIndex,anim_state)
     }
 
     function setAnimTime()
     {
         var time = block_anim_time_value.text
-         console.log("setAnimTime() = " +columnIndex + " " + blockIndex + " "  + time)
+         //console.log("setAnimTime() = " +columnIndex + " " + blockIndex + " "  + time)
          timeControll.setBlockAnimationTime(columnIndex,blockIndex,time)
     }
 
