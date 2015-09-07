@@ -1092,7 +1092,10 @@ glEnable(GL_DEPTH_TEST);
     //loadTextureFromFile(":/ThirdPart/images/brush.png");
     //initFrameBuffer(); // Create our frame buffer object
     mouseFBO=initFboWrapper(wax, way, false, true);
+    mainFBO=initFboWrapper(wax, way, false, true);
     pingpongFBO=initFboWrapper(wax,way,false);
+
+
     initPBO();
      //initShader();
 glViewport(0, 0, (GLint)wax, (GLint)way);
@@ -1216,6 +1219,7 @@ void OGLWidget::paintGL()
 //WRITE TO FRAME BUFER FROM HERE
    // glBindFramebuffer(GL_FRAMEBUFFER,0);
     qglColor(Qt::white);
+    bindBuffer(mainFBO.frameBuffer);
     drawTexture(0, 0, wax, way, backGroundTexture, 0, 1, 1, -100000);
 //WRITE TO SCREEN FROM HERE
 //drawTextBuffer(10,10,400,400);
@@ -1277,7 +1281,7 @@ for(int i = 0; !timeLine->isBlocked && i < getList().size(); i++)
         getList()[i]->paint();
     //test->use();
 }
-
+ bindBuffer(mainFBO.frameBuffer);
 
 //glDisable(GL_DEPTH_TEST);
 
@@ -1285,6 +1289,9 @@ for(int i = 0; !timeLine->isBlocked && i < getList().size(); i++)
 
 if(curStatus == STOP)
     paintBufferOnScreen(mouseFBO,0, 0, wax, way,-100);
+
+ bindBuffer(0);
+ paintBufferOnScreen(mainFBO,0, 0, wax, way,0);
 
 //glDisable(GL_BLEND);
 GLuint error = glGetError();

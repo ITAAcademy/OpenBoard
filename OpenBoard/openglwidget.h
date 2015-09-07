@@ -353,7 +353,7 @@ QString fileNameForRecords;
     unsigned int last_mouse_process = 0;
 
     QVector<GLenum> attachment;
-    FBOWrapper mouseFBO,pingpongFBO;
+    FBOWrapper mouseFBO,pingpongFBO,mainFBO;
 
      QMessageBox ms_for_debug;
     bool pressedCtrl = false;
