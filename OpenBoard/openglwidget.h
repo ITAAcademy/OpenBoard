@@ -258,7 +258,7 @@ public:
     int getCurStatus() const;
     void setCurStatus(const StatusDraw &value);
 
-    FBOWrapper getMainFBO();
+    FBOWrapper getMouseFBO();
     void bindBuffer(GLuint buffer);
 
     QImage twiceImageSizeWithouScaling(QImage img);
@@ -353,7 +353,7 @@ QString fileNameForRecords;
     unsigned int last_mouse_process = 0;
 
     QVector<GLenum> attachment;
-    FBOWrapper mainFBO,pingpongFBO;
+    FBOWrapper mouseFBO,pingpongFBO;
 
      QMessageBox ms_for_debug;
     bool pressedCtrl = false;

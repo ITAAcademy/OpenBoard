@@ -137,4 +137,6 @@ DISTFILES += \
     alpha.frag \
     alpha.vert \
     spiral.frag \
-    spiral.vert
+    spiral.vert \
+    cross.frag \
+    cross.vert

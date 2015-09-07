@@ -454,7 +454,7 @@ void OGLWidget::processMouse()
      }
      testRectangle();
         if ( m_manager.isAbleToDraw() && prevMousePos != mousePos)
-            paintBrushInBuffer(mainFBO);
+            paintBrushInBuffer(mouseFBO);
     }
 
     if (showingLastDrawing )
@@ -481,8 +481,8 @@ void OGLWidget::processMouse()
         }
         recordedBrushN++;
         }
-    glBindFramebuffer(GL_FRAMEBUFFER , mainFBO.frameBuffer);
-        paintBrushInBuffer(brushTextureCurrentPlayed,currentBrushOfLastDrawing,mainFBO,drawBrushElm->getCoords(),drawBrushElm->getBrushes(),currentLastDrawingPointIterator);
+    glBindFramebuffer(GL_FRAMEBUFFER , mouseFBO.frameBuffer);
+        paintBrushInBuffer(brushTextureCurrentPlayed,currentBrushOfLastDrawing,mouseFBO,drawBrushElm->getCoords(),drawBrushElm->getBrushes(),currentLastDrawingPointIterator);
         glBindFramebuffer(GL_FRAMEBUFFER ,0);
         currentLastDrawingPointIterator++;
         if (currentLastDrawingPointIterator>=drawBrushElm->getCoords().length())
@@ -1091,7 +1091,7 @@ glEnable(GL_DEPTH_TEST);
     brushTexture = loadTexture(m_manager.getCreatedBrush().color_img,true);
     //loadTextureFromFile(":/ThirdPart/images/brush.png");
     //initFrameBuffer(); // Create our frame buffer object
-    mainFBO=initFboWrapper(wax, way, false, true);
+    mouseFBO=initFboWrapper(wax, way, false, true);
     pingpongFBO=initFboWrapper(wax,way,false);
     initPBO();
      //initShader();
@@ -1124,13 +1124,13 @@ void OGLWidget::moveEvent(QMoveEvent *event)
 
 
 void OGLWidget::destroy(bool destroyWindow, bool destroySubWindow){
-    glDeleteFramebuffers(1,&mainFBO.frameBuffer);
-    glDeleteTextures(1,&mainFBO.bindedTexture);
+    glDeleteFramebuffers(1,&mouseFBO.frameBuffer);
+    glDeleteTextures(1,&mouseFBO.bindedTexture);
     //glDeleteRenderbuffers(1,&render_buf);
 
 }
-FBOWrapper OGLWidget::getMainFBO(){
-    return mainFBO;
+FBOWrapper OGLWidget::getMouseFBO(){
+    return mouseFBO;
 }
 FBOWrapper OGLWidget::getPingPongFBO(){
     return pingpongFBO;
@@ -1177,7 +1177,7 @@ void OGLWidget::paintGL()
     useShader(test);
     //// qDebug() << "isClearFrameBuffer:"<<isClearFrameBuffer;
     if(isClearFrameBuffer)
-        clearFrameBuffer(mainFBO);
+        clearFrameBuffer(mouseFBO);
 //glDrawBuffer(GL_COLOR_ATTACHMENT0);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // чистим буфер изображения и буфер глубины
@@ -1284,7 +1284,7 @@ for(int i = 0; !timeLine->isBlocked && i < getList().size(); i++)
 
 
 if(curStatus == STOP)
-    paintBufferOnScreen(mainFBO,0, 0, wax, way,-100);
+    paintBufferOnScreen(mouseFBO,0, 0, wax, way,-100);
 
 //glDisable(GL_BLEND);
 GLuint error = glGetError();
@@ -1697,7 +1697,7 @@ void OGLWidget::stopAnimated()
         //tickTimer.stop();
 
         //m_encoder->stop();
-        clearFrameBuffer(mainFBO);
+        clearFrameBuffer(mouseFBO);
         getTimeLine()->stop();
 
 

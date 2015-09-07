@@ -8,5 +8,7 @@
         <file>openGL/shaders/alpha.vert</file>
         <file>openGL/shaders/spiral.vert</file>
         <file>openGL/shaders/spiral.frag</file>
+        <file>openGL/shaders/cross.vert</file>
+        <file>openGL/shaders/cross.frag</file>
     </qresource>
 </RCC>
