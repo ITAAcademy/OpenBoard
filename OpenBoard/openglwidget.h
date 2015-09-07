@@ -107,13 +107,16 @@ signals:
     void stopShowLastDrawingSignal();
 public:
 
-    enum shaderEnum {ALPHA_SHADER=0,SPIRAL_SHADER=1};
-    void processMouse();
-    void initPBO();
-    void initShaderPrograms();
-    QVector<ShaderProgramWrapper*> getShaderPrograms();
-    bool isShaderSupported();
-    void setShaderSupported(bool value);
+
+	enum shaderEnum {ALPHA_SHADER=0,SPIRAL_SHADER=1};
+	void processMouse();
+	ShaderProgramWrapper* getMainShader();
+	void initPBO();
+	void initShaderPrograms();
+	QVector<ShaderProgramWrapper*> getShaderPrograms();
+	bool isShaderSupported();
+	void setShaderSupported(bool value);
+
     BrushManager m_manager;
     bool sucsessLoadTexture;
     void setFrameRate(int frameRate);
@@ -261,6 +264,7 @@ public:
     QImage twiceImageSizeWithouScaling(QImage img);
     QOpenGLFunctions_3_0 *getOglFuncs();
     FBOWrapper getPingPongFBO();
+    void useShader(ShaderProgramWrapper *shader);
 public slots:
     void setAbleDrawing(bool value);
    // void clearFrameBuffer();
@@ -323,6 +327,7 @@ private slots:
     void storeMousePos();
 
 private:
+    QStack<ShaderProgramWrapper*> currentShaderStack;
     int MOUSE_PROCESS_DELAY_MS=30;
 QString fileNameForRecords;
   //  QMap <void* , QList<QByteArray>>  audioList;

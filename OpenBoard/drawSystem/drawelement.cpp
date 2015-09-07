@@ -215,7 +215,7 @@ void DrawElement::paint()
                     {
                         pDrawWidget->bindBuffer(pDrawWidget->getPingPongFBO().frameBuffer);
                        // qDebug() << "Shader program ("<<i<<"):"<<effects[i].getShaderWrapper()->getShaderProgram();
-                        pDrawWidget->getOglFuncs()->glUseProgram(effects[i].getShaderWrapper()->getShaderProgram());
+                        pDrawWidget->useShader(effects[i].getShaderWrapper());
                       //  float keyFrame = (float)(pDrawWidget->getTimeLine()->getPlayTime()-startDrawTime)/lifeTime;//MOVE UP LATER
                         ShaderEffect::setUniformAnimationKey(pDrawWidget,effects[i],keyFrame);
                         ShaderEffect::setUniformResolution(pDrawWidget,effects[i],fboWrapper.tWidth,fboWrapper.tHeight);
@@ -226,11 +226,12 @@ void DrawElement::paint()
                         else
                             pDrawWidget->drawTexture(0,0,fboWrapper.tWidth,fboWrapper.tHeight,
                                                     fboWrapper.bindedTexture,0,1,1,z );
+                        pDrawWidget->useShader(0);
                     }
                     else
                     {
                     pDrawWidget->bindBuffer(fboWrapper.frameBuffer);
-                    pDrawWidget->getOglFuncs()->glUseProgram(effects[i].getShaderWrapper()->getShaderProgram());
+                    pDrawWidget->useShader(effects[i].getShaderWrapper());
                    // float keyFrame = (float)(pDrawWidget->getTimeLine()->getPlayTime()-startDrawTime)/lifeTime;//MOVE UP LATER
                     ShaderEffect::setUniformAnimationKey(pDrawWidget,effects[i],keyFrame);
                     ShaderEffect::setUniformResolution(pDrawWidget,effects[i],
@@ -243,6 +244,7 @@ void DrawElement::paint()
                     pDrawWidget->drawTexture(0,0,pDrawWidget->getPingPongFBO().tWidth,
                                              pDrawWidget->getPingPongFBO().tHeight,
                                             pDrawWidget->getPingPongFBO().bindedTexture,0,1,1,z );
+                     pDrawWidget->useShader(0);
 
 
                     }
@@ -270,7 +272,13 @@ void DrawElement::paint()
             }
         }
         //pDrawWidget->getOglFuncs()->glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE);
-        pDrawWidget->getOglFuncs()->glUseProgram(0);
+       // pDrawWidget->useShader(0);
+
+
+
+
+
+
         pDrawWidget->bindBuffer(0);
 
 
@@ -670,7 +678,12 @@ bool DrawElement::save_image(QDataStream &stream, QString filePath,QImage::Forma
     stream << (int)0 << (int)0 << (int)0;
     QFile file(filePath);
     file.open(QIODevice::ReadOnly);
-    if (filePath.isEmpty())return -1;
+    if (filePath.isEmpty())
+    {
+        stream << 0;//0 bytes of image;
+        return -1;
+
+    }
     QByteArray ba = file.readAll();
 
     stream << ba.length() << ba;

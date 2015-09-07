@@ -94,7 +94,7 @@ gif->jumpToFrame(keyFrame);
 bool DrawImageElm::load_add(QDataStream &stream)
 {
     stream >> bGIF ;
-qDebug() << "qwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww" + lastPath;
+qDebug() << "DrawImageElm lastPath:" + lastPath;
 stream >> lastPath;
     if(bGIF)
     {  
@@ -108,7 +108,7 @@ stream >> lastPath;
 bool DrawImageElm::save_add(QDataStream &stream)
 {
     stream << bGIF;
-    qDebug() << "qwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww" + lastPath;
+    qDebug() << "DrawImageElm lastPath:" + lastPath;
     stream << lastPath;
     if(bGIF)
     {   

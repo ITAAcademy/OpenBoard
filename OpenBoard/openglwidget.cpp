@@ -249,7 +249,7 @@ glBegin(GL_TRIANGLES);
     recordedBrushN++;
     }
     if (shaderSupported)
-        glUseProgram(mainShader->getShaderProgram());
+        useShader(mainShader);
     glBindTexture(GL_TEXTURE_2D,texture);
    // if (isBrushUsed) {
      //   //qDebug() << "recordedBrushN:" << recordedBrushN;
@@ -345,7 +345,7 @@ glBegin(GL_TRIANGLES);
                 texture,angle,scaleX,scaleY);
         }
          if (shaderSupported)
- glUseProgram(NULL);
+ useShader(0);
 
 
 glBindTexture(GL_TEXTURE_2D,0);
@@ -493,6 +493,11 @@ void OGLWidget::processMouse()
 
     }
 
+}
+
+ShaderProgramWrapper *OGLWidget::getMainShader()
+{
+ return mainShader;
 }
 
 void OGLWidget::initPBO()
@@ -756,7 +761,7 @@ glBindFramebuffer(GL_FRAMEBUFFER , fboWrapper.frameBuffer); // Bind our frame bu
         glEnd();*/
     //qglColor(m_manager.getColor());
     if (shaderSupported)
-        glUseProgram(mainShader->getShaderProgram());
+        useShader(mainShader);
 
          glBindTexture(GL_TEXTURE_2D,texture);
         QSize brushTextureSize = getTextureSize();
@@ -839,7 +844,7 @@ glBindFramebuffer(GL_FRAMEBUFFER , fboWrapper.frameBuffer); // Bind our frame bu
                     texture,angle,scaleX,scaleY, 1000);
             }
             if (shaderSupported)
-            glUseProgram(NULL);
+            useShader(0);
         /*
     else{
       glEnable(GL_TEXTURE_2D);
@@ -1302,6 +1307,24 @@ void OGLWidget::paintEvent(QPaintEvent *event)
 {
 
 }
+void OGLWidget::useShader(ShaderProgramWrapper *shader){
+
+    if (shader==NULL){
+        if (currentShaderStack.isEmpty())
+            glUseProgram(0);
+        else
+        {
+        currentShaderStack.pop();//Discard last shader nafig
+        if (currentShaderStack.isEmpty()) glUseProgram(0);
+        else
+        glUseProgram(currentShaderStack.pop()->getShaderProgram());
+        }
+    }
+    else {
+    currentShaderStack.push(shader);
+    glUseProgram(shader->getShaderProgram());
+    }
+}
 
 void OGLWidget::resizeEvent(QResizeEvent *envent)
 {
@@ -1311,7 +1334,7 @@ void OGLWidget::resizeEvent(QResizeEvent *envent)
 
 void OGLWidget::closeEvent(QCloseEvent *event)
 {
-    glUseProgram(0);
+    useShader(0);
     stopAnimated();
 
     pause(500);

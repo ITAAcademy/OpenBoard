@@ -196,6 +196,7 @@ struct Track {
             block.append(temp);
             qDebug() << "load block[i]:  " << i;
         }
+        qDebug() << "bool load(QIODevice* device) finished";
         return true;
     }
     void clear()

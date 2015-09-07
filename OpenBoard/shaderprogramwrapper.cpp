@@ -36,7 +36,7 @@ ShaderProgramWrapper::~ShaderProgramWrapper()
     if(exp)
     {
         qDebug() <<"~ShaderProgramWrapper begin";
-        glf->glUseProgram(0);
+        //glf->useShader(0);
         glf->glDeleteShader(ShaderProgram);
 
     }
