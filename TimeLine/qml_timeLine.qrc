@@ -11,5 +11,7 @@
         <file>Block/ContextMenu.qml</file>
         <file>Block/EditBlock.qml</file>
         <file>MouseAreaForWindowDraging.qml</file>
+        <file>Block/ContextRadioButton.qml</file>
+        <file>Block/ContextMenuAnimateBlock.qml</file>
     </qresource>
 </RCC>
