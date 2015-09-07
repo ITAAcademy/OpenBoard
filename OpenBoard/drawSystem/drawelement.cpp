@@ -146,6 +146,8 @@ void DrawElement::setAnimState(int value)
 
 void DrawElement::setAnimTime(int value)
 {
+    if (value > this->getLifeTime())
+        value = this->getLifeTime();
     anim_state_time.time = value;
     qDebug() << "DrawElement::setAnimTime(int value) " << anim_state_time.time;
 }
@@ -335,6 +337,9 @@ bool DrawElement::loadRest(QIODevice* device)
     stream  >> key >> lifeTime >> tickTime >> startDrawTime >> x >> y >> z >> width >> height >> keyCouter;
     //if (typeId == Element_type::Image)
         icon = load_image(stream);
+
+        stream >> anim_state_time.state >>  anim_state_time.time;
+
     load_add(stream);
     //qDebug() << "load add";
     int effectsLength = 0;
@@ -345,6 +350,7 @@ bool DrawElement::loadRest(QIODevice* device)
         effects.push_back(ShaderEffect());
         effects[i].load(stream);
     }
+
     // qDebug() << "load rest end";
 }
 
@@ -362,12 +368,14 @@ bool DrawElement::save(QIODevice* device)
     else
     save_image(stream, icon );
 
+    stream << anim_state_time.state <<  anim_state_time.time;
+
     save_add(stream);
     stream << effects.length();
     for (int i = 0 ; i < effects.length();i++)
         effects[i].save(stream);
 
-   //stream << anim_state_time.state <<  anim_state_time.time;
+
 }
 
 bool DrawElement::save(QString path)

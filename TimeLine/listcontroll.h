@@ -235,6 +235,7 @@ class ListControll : public QObject, public QQuickImageProvider
     Element block_in_buffer;
     int life_time_in_buffer;
     bool buffer_is_full;
+    QRect yellow_rec;
 
 public:
      int isPlayPauseStop = 3;
@@ -259,6 +260,7 @@ public:
     bool isVisible();
     bool isActiveWindow();
     Q_INVOKABLE  bool isProjectChanged();
+    Q_INVOKABLE  QRect getYellowRect();
     Q_INVOKABLE  void setIsProjectChanged(bool);
     Q_INVOKABLE int getTrackSize(int col);
     Q_INVOKABLE QString getBlockKey(int col, int i) ;
@@ -275,7 +277,7 @@ public:
     Q_INVOKABLE void setBlockStartTime(int col, int i, int value);
     Q_INVOKABLE int getBlockStartTime(int col, int i);
     Q_INVOKABLE bool setBlockDrawElemet(DrawElement *elm, int col, int i);
-    Q_INVOKABLE   void removeBlock(int col, int i);
+    Q_INVOKABLE   bool removeBlock(int col, int i);
     Q_INVOKABLE int getBlockTime(int col, int i) ;
     Q_INVOKABLE Element getBlock(int col, int i) ;
     Q_INVOKABLE Element getBlock(QPoint point) ;
@@ -377,6 +379,9 @@ Q_INVOKABLE  void setIsEditBlockShow(bool value);
 
 signals:
   void loadFromFileSignal();
+  void drawRectangleSignal();
+  void removeRectangleSignal();
+
   void playSignal();
   void pauseSignal();
   void stopSignal();
@@ -415,7 +420,10 @@ Q_INVOKABLE void  emitStopSignal();
 
     Q_INVOKABLE void zoomMinus();
     Q_INVOKABLE void zoomPlus();
+     Q_INVOKABLE void drawRectangle(int ,int , int , int );
+    Q_INVOKABLE void removeRectangle();
     Q_INVOKABLE bool testIndexs(const int col, const int index);
+    Q_INVOKABLE bool blockValid(const int col, const int index);
 };
 
 #endif // LISTCONTROLL_H

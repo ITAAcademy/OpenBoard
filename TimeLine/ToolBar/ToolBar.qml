@@ -104,6 +104,21 @@ Rectangle {
             }
         }
 
+        /*Buutton{
+            id: butRecDrsaw
+            enabled: true
+            title_text: ""
+            height: parent.width
+            width: parent.width
+          icon_source : "qrc:/iphone_toolbar_icons/stopG.png"
+            onClicked: {
+                     draw_wnd.visible= !draw_wnd.visible
+            }
+            Component.onCompleted: {
+                root.p_button_stop = butStop
+            }
+        }*/
+
     }
 }
 

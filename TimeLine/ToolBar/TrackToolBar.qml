@@ -66,7 +66,7 @@ Rectangle {
                     var color = "#00000000"
                     root_toolbar.p_main222.selectedBlock.p_icon_coloroverlay.color = color
                 }
-                timeControll.removeLastBlock(trackbar.mIndex)
+               if (timeControll.removeLastBlock(trackbar.mIndex))
                   globalRep.updateModel()
 
             }

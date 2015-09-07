@@ -12,6 +12,7 @@ ApplicationWindow {
     property int anim_time : -1//anim_state_point.y;
     property int blockIndex: 0
     property int columnIndex: 0
+     property int block_time: 65534
     property bool anim_not_setted: true
     Component.onDestruction: {
         console.log("BBBBBBBBBBBBBBBB AAAAAAAAAAAAAA")
@@ -57,9 +58,9 @@ ApplicationWindow {
 
     function setAnimTime()
     {
-        var time = block_anim_time_value.text
-         //console.log("setAnimTime() = " +columnIndex + " " + blockIndex + " "  + time)
-         timeControll.setBlockAnimationTime(columnIndex,blockIndex,time)
+        var time = (block_anim_time_value.text)
+         console.log("setAnimTime() = " +columnIndex + " " + blockIndex + " "  + time)
+         timeControll.setBlockAnimationTime(columnIndex,blockIndex,(time))
     }
 
 
@@ -183,6 +184,11 @@ ApplicationWindow {
               y: animate_block_items.height - 1.5 * height
               x:  (animate_block_items.width - width)/2
              text: initValue
+             onTextChanged: {
+                 if (text > animate_block_wnd.block_time)
+                      text = animate_block_wnd.block_time
+             }
+
             // color: text_color
 
          }

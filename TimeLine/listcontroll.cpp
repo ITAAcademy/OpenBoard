@@ -1,5 +1,5 @@
 #include "listcontroll.h"
-
+#include <QVariant>
 
 QPoint ListControll::getSelectedBlockPoint() const
 {
@@ -94,8 +94,13 @@ void ListControll::setBlockKey(int col, int i, QString name)
    // test[col][i] = name;
 }
 
-void ListControll::removeBlock(int col, int i)
+bool ListControll::removeBlock(int col, int i)
 {
+    if ((tracks.size()==0 ||  tracks[col].block.size() == 0 ))
+        return false;
+    if (!(col < tracks.size() && i < tracks[col].block.size()) )
+        return false;
+
     setBlocked(true);
     setSelectedBlockPoint(QPoint(-1,-1));
     if (tracks[col].block.size() > i)
@@ -124,6 +129,7 @@ void ListControll::removeBlock(int col, int i)
     }
     calcPointedBlocks();
     setBlocked(false);
+    return true;
 }
 
 void ListControll::addNewBlock(int col, QString str, DrawElement *element)
@@ -280,7 +286,10 @@ bool ListControll::removeLastBlock(int col)
 
     return false;
     */
-    removeBlock(col,tracks[col].block.size() - 1);
+
+ return removeBlock(col,tracks[col].block.size() - 1);
+
+    ///-=-=-=-=
 }
 
 bool ListControll::removeLastTrack()
@@ -539,6 +548,11 @@ int ListControll::getTrackSize(int col)
      return isProjectChange;
  }
 
+ QRect ListControll::getYellowRect()
+ {
+     return yellow_rec;
+ }
+
  void ListControll::setIsProjectChanged(bool value)
  {
      isProjectChange = value;
@@ -582,8 +596,8 @@ ListControll::ListControll(QObject *parent) : QObject(parent), QQuickImageProvid
     view.engine()->rootContext()->setContextProperty("viewerWidget", &view);
     cloneImg = new ImageClone(this);
     view.engine()->addImageProvider("imageProvider", cloneImg);//&image_provider);
-    view.setSource(QUrl("qrc:/main.qml")); \
-    view.setResizeMode(QQuickView::SizeRootObjectToView);
+    view.setSource(QUrl("qrc:/main.qml"));
+     view.setResizeMode(QQuickView::SizeRootObjectToView);
     view.setPersistentOpenGLContext(false);
     view.setColor("transparent");
     view.setMinimumHeight(205);
@@ -710,7 +724,7 @@ void ListControll::moveWindow()
 
  void  ListControll::setBlockAnimation(int col, int ind,int state, int time)
  {
-     if (state <0 || time < 0 || !testIndexs(col, ind))
+     if (state <0 || time < 0 || !blockValid(col, ind))
          return;
      tracks[col].block[ind].draw_element->setAnimStateTime(QPoint(state,time));
      //qDebug() << "ListControll::setBlockAnimation = " << time;
@@ -718,22 +732,23 @@ void ListControll::moveWindow()
 
  void   ListControll::setBlockAnimationTime(int col, int ind, int time)
  {
-     if ( time < 0 || !testIndexs(col, ind))
+     if ( time < 0 || !blockValid(col, ind))
          return;
      tracks[col].block[ind].draw_element->setAnimTime(time);
+     qDebug() << "ListControll::setBlockAnimationTime " << time ;
  }
 
  void   ListControll::setBlockAnimationState(int col, int ind,int state)
  {
-     if (state <0  || !testIndexs(col, ind))
+     if (state <0  || !blockValid(col, ind))
          return;
      tracks[col].block[ind].draw_element->setAnimState((state));
  }
 
  QPoint  ListControll::getBlockAnimation(int col, int ind)
  {
-     if ( !testIndexs(col, ind))
-         return QPoint (-1,-1); //-=-=
+     if ( !blockValid(col, ind))
+         return QPoint (-1,-1);
     return  tracks[col].block[ind].draw_element->getAnimStateTimePoint();
  }
 
@@ -1162,6 +1177,18 @@ QImage ListControll::requestImage(const QString &id, QSize *size, const QSize &r
          emit updateModel();
     }
 
+    void  ListControll::drawRectangle(int x,int y, int width, int height)
+    {
+        yellow_rec = QRect(x,y,width,height);
+       emit drawRectangleSignal();
+        qDebug() << "ListControll::drawRectangle emitted ";
+    }
+
+    void ListControll::removeRectangle()
+    {
+        emit removeRectangleSignal();
+    }
+
 
     int  ListControll::resetProjectToDefault()
     {
@@ -1199,5 +1226,14 @@ QImage ListControll::requestImage(const QString &id, QSize *size, const QSize &r
 
         return false;
     }
+
+    bool ListControll::blockValid(const int col, const int index)
+    {
+        if(col < tracks.size() && index < tracks[col].block.size()
+           &&  col > -1 && index > -1)
+            return true;
+        return false;
+    }
+
 
 
