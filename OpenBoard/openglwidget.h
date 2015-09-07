@@ -265,6 +265,9 @@ public:
     QOpenGLFunctions_3_0 *getOglFuncs();
     FBOWrapper getPingPongFBO();
     void useShader(ShaderProgramWrapper *shader);
+    ShaderProgramWrapper *getTestShader();
+    void disableShader();
+    void enableShader();
 public slots:
     void setAbleDrawing(bool value);
    // void clearFrameBuffer();

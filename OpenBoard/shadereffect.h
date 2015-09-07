@@ -13,7 +13,7 @@ class ShaderEffect
 
 
 public:
-    ShaderEffect(ShaderProgramWrapper *shaderWrp, int shaderIndex);
+    ShaderEffect(ShaderProgramWrapper *shaderWrp, int shaderIndex=0);
     ShaderEffect(int shaderIndex);
     ShaderEffect();
     ~ShaderEffect();

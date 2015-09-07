@@ -499,6 +499,10 @@ ShaderProgramWrapper *OGLWidget::getMainShader()
 {
  return mainShader;
 }
+ShaderProgramWrapper *OGLWidget::getTestShader()
+{
+ return test;
+}
 
 void OGLWidget::initPBO()
 {
@@ -1170,7 +1174,7 @@ void OGLWidget::paintGL()
 {
     //glDrawBuffer(GL_COLOR_ATTACHMENT1);
      glBindFramebuffer(GL_FRAMEBUFFER , 0);
-        test->use();
+    useShader(test);
     //// qDebug() << "isClearFrameBuffer:"<<isClearFrameBuffer;
     if(isClearFrameBuffer)
         clearFrameBuffer(mainFBO);
@@ -1271,7 +1275,7 @@ for(int i = 0; !timeLine->isBlocked && i < getList().size(); i++)
     ////qDebug() << "draw   " << i;
     if( getList()[i] != NULL && timeLine->getMaxTrackTime() > 0)
         getList()[i]->paint();
-    test->use();
+    //test->use();
 }
 
 
@@ -1287,7 +1291,8 @@ GLuint error = glGetError();
 
 glFinish();
 //////////////////////////////
-
+//glUseProgram(0);
+useShader(0);
 glFlush();
 swapBuffers();
 
@@ -1308,7 +1313,7 @@ void OGLWidget::paintEvent(QPaintEvent *event)
 
 }
 void OGLWidget::useShader(ShaderProgramWrapper *shader){
-
+qDebug() << "before useShader currentShaderStack len:"<<currentShaderStack.length();
     if (shader==NULL){
         if (currentShaderStack.isEmpty())
             glUseProgram(0);
@@ -1317,14 +1322,26 @@ void OGLWidget::useShader(ShaderProgramWrapper *shader){
         currentShaderStack.pop();//Discard last shader nafig
         if (currentShaderStack.isEmpty()) glUseProgram(0);
         else
-        glUseProgram(currentShaderStack.pop()->getShaderProgram());
+        glUseProgram(currentShaderStack.last()->getShaderProgram());
         }
     }
     else {
     currentShaderStack.push(shader);
     glUseProgram(shader->getShaderProgram());
     }
+    qDebug() << "after useShader currentShaderStack len:"<<currentShaderStack.length();
 }
+
+void OGLWidget::disableShader(){
+    qDebug() << "disableShader:"<<currentShaderStack.length();
+    glUseProgram(0);
+}
+void OGLWidget::enableShader(){
+    qDebug() << "enableShader:"<<currentShaderStack.length();
+    //if (currentShaderStack.length()>0)
+    glUseProgram(currentShaderStack.last()->getShaderProgram());
+}
+
 
 void OGLWidget::resizeEvent(QResizeEvent *envent)
 {
@@ -1334,7 +1351,8 @@ void OGLWidget::resizeEvent(QResizeEvent *envent)
 
 void OGLWidget::closeEvent(QCloseEvent *event)
 {
-    useShader(0);
+    //useShader(0);
+    disableShader();
     stopAnimated();
 
     pause(500);

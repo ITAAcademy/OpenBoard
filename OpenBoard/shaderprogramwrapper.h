@@ -25,8 +25,6 @@ public:
    bool setUniform(QString name, QVariant value);
    GLuint getShaderProgram();
    bool isInited();
-   bool use();
-   void disable();
 
    bool save(QDataStream &stream);
    bool load(QDataStream &stream);

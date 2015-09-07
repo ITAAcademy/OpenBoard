@@ -160,11 +160,14 @@ AnimStateTime DrawElement::getAnimStateTime()
 
 void DrawElement::paint()
 {
+
   //  qDebug() << "paint on buffer:"<<fboWrapper.frameBuffer;
     if (pDrawWidget->getTimeLine()->getPlayTime() > lifeTime + startDrawTime) return;
     if(fboWrapper.errorStatus == 0)
     {
       bool drawToSecondBuffer=false;
+      ShaderEffect mainEffect(pDrawWidget->getTestShader());
+      effects.push_back(mainEffect);
      // bool currentDrawToSecondBuffer=false;
         if (effects.isEmpty())
         {
@@ -253,6 +256,9 @@ void DrawElement::paint()
                 }
 
             }
+            qDebug()<<"before remove temp effect";
+            effects.removeAt(effects.length()-1);
+        pDrawWidget->disableShader();
 
             if (effectsUsedInOneTime==0){
                 pDrawWidget->bindBuffer(fboWrapper.frameBuffer);
@@ -270,16 +276,29 @@ void DrawElement::paint()
 
 
             }
+
+            pDrawWidget->enableShader();
         }
+/*
+        //NEWNEWNEWNEWNEWNENWNENWNENWNENWNENWNENW
+                pDrawWidget->bindBuffer(pDrawWidget->getPingPongFBO().frameBuffer);
+               // qDebug() << "Shader program ("<<i<<"):"<<effects[i].getShaderWrapper()->getShaderProgram();
+                pDrawWidget->useShader(pDrawWidget->getTestShader());
+                //pDrawWidget->useShader(0);
+
+                pDrawWidget->drawTexture(0,0,fboWrapper.tWidth,fboWrapper.tHeight,
+                                            fboWrapper.bindedTexture,0,1,1,z );
+               // pDrawWidget->useShader(0);
+
+                pDrawWidget->bindBuffer(pDrawWidget->getMainFBO().frameBuffer);
+                pDrawWidget->drawTexture(0,0,pDrawWidget->getPingPongFBO().tWidth,
+                pDrawWidget->getPingPongFBO().tHeight,
+                pDrawWidget->getPingPongFBO().bindedTexture,0,1,1,z );
+       //NEWNEWNEWNEWNEWNENWNENWNENWNENWNENWNENW
+*/
         //pDrawWidget->getOglFuncs()->glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE);
-       // pDrawWidget->useShader(0);
-
-
-
-
-
-
         pDrawWidget->bindBuffer(0);
+        //pDrawWidget->useShader(0);
 
 
        /* int keyUnifrom = pDrawWidget->context()->functions()->glGetUniformLocation(

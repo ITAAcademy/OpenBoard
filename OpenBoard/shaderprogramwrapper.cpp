@@ -46,7 +46,7 @@ ShaderProgramWrapper::~ShaderProgramWrapper()
 int ShaderProgramWrapper::initShader(QString fShaderFilePath, QString vShaderFilePath, bool isFilePath)
 {
     inited = false;
-    glf->glUseProgram(0);
+    //glf->glUseProgram(0);
     glf->glDeleteShader(ShaderProgram);
 
     QString fragmentShaderCode;
@@ -195,19 +195,4 @@ bool ShaderProgramWrapper::isInited()
     return inited;
 }
 
-bool ShaderProgramWrapper::use()
-{
-    if(isInited())
-    {
-        glf->glUseProgram(ShaderProgram);
-        return true;
-    }
-    return false;
-
-}
-
-void ShaderProgramWrapper::disable()
-{
-    glf->glUseProgram(0);
-}
 
