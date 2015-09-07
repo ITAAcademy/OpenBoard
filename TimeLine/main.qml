@@ -84,6 +84,7 @@ Rectangle
    property bool left_rigth_entered : false
    property bool block_zayshow_sprava : false
    property Item p_toolbar
+   property bool dovodka_block : false
    onBlock_zayshow_spravaChanged: {
       // anim_
    }
@@ -270,7 +271,9 @@ scale_pointer.x = 0// timeControll.getMaxTrackTime() + scale_pointer.width/2 - s
                    yellow_rec.height = heightt
 
         console.log("function drawYellowRectangle (xx,yy,widthh,heightt)")
-        }
+
+        //p_icon_coloroverlay
+    }
 
      Connections {
        target: timeControll

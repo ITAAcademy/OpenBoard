@@ -35,7 +35,8 @@ SOURCES += main.cpp\
     drawSystem/drawvideo.cpp \
     encoder/audiodecoder.cpp \
     shaderprogramwrapper.cpp \
-    shadereffect.cpp
+    shadereffect.cpp \
+    ../TimeLine/group.cpp
     drawSystem/drawbrush.cpp
 
 
@@ -70,7 +71,8 @@ HEADERS  += mainwindow.h \
     drawSystem/drawvideo.h \
     encoder/audiodecoder.h \
     shaderprogramwrapper.h \
-    shadereffect.h
+    shadereffect.h \
+    ../TimeLine/group.h
     drawSystem/drawbrush.h
 
 

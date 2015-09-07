@@ -1,4 +1,5 @@
 import QtQuick 2.0
+import QtQuick.Controls 1.3
 
 Rectangle {
     id: root
@@ -11,6 +12,7 @@ Rectangle {
     property Buutton p_button_play
     property Buutton p_button_pause
     property Buutton p_button_stop
+    property CheckBox p_chb_dovodka
     Column{
         width: parent.width
         height: parent.height
@@ -27,6 +29,19 @@ Rectangle {
                 // //console.log("CLICK2")
             }
         }*/
+        CheckBox {
+            id: chb_dovodka
+            enabled: true
+            height: parent.width
+            width: parent.width
+            checked: false
+            onCheckedChanged:  {
+                  main222.dovodka_block = chb_dovodka.checked
+            }
+            Component.onCompleted: {
+                root.p_chb_dovodka = chb_dovodka
+            }
+        }
         Buutton{
             id: butRemoveTrack
             title_text: ""
@@ -104,7 +119,7 @@ Rectangle {
             }
         }
 
-        /*Buutton{
+       /* Buutton{
             id: butRecDrsaw
             enabled: true
             title_text: ""
@@ -112,7 +127,9 @@ Rectangle {
             width: parent.width
           icon_source : "qrc:/iphone_toolbar_icons/stopG.png"
             onClicked: {
-                     draw_wnd.visible= !draw_wnd.visible
+                     //raw_wnd.visible= !draw_wnd.visible
+                //var rec = timeControll.getYellowRect()
+                  main222.drawYellowRectangle(50,50,400,250)
             }
             Component.onCompleted: {
                 root.p_button_stop = butStop

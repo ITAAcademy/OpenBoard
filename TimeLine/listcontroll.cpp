@@ -69,6 +69,16 @@ void ListControll::setIsEditBlockShow(bool value)
 {
     isEditBlockShow = value;
 }
+
+int ListControll::getBlockHeightPlusSpacing() const
+{
+    return blockHeightPlusSpacing;
+}
+
+void ListControll::setBlockHeightPlusSpacing(int value)
+{
+    blockHeightPlusSpacing = value;
+}
 void ListControll::recountMaxTrackTime()
 {
     maxTrackTime = 0;
@@ -289,7 +299,6 @@ bool ListControll::removeLastBlock(int col)
 
  return removeBlock(col,tracks[col].block.size() - 1);
 
-    ///-=-=-=-=
 }
 
 bool ListControll::removeLastTrack()
@@ -611,6 +620,7 @@ ListControll::ListControll(QObject *parent) : QObject(parent), QQuickImageProvid
     //loadCurrentTextInTheFirstBlockWhenInit();
 
 }
+
 void ListControll::loadCurrentTextInTheFirstBlockWhenInit()
 {
     setBlocked(true);
@@ -1177,11 +1187,46 @@ QImage ListControll::requestImage(const QString &id, QSize *size, const QSize &r
          emit updateModel();
     }
 
-    void  ListControll::drawRectangle(int x,int y, int width, int height)
+    void  ListControll::drawYellowRectangle(int x,int y, int width, int height)
     {
         yellow_rec = QRect(x,y,width,height);
+
        emit drawRectangleSignal();
         qDebug() << "ListControll::drawRectangle emitted ";
+    }
+
+   /*void ListControll::calcBlockHighliteViaYellowRec()
+   {
+       for (int y=0; y< tracks.size(); y++)
+       {
+           int prev_blocks_width_sum = 0;
+           for (int i=0; i < tracks[y].block.size(); i++)
+           {
+               DrawElement\ *draw_el = tracks[y].block[i].draw_element;
+               int x_1 =  prev_blocks_width_sum;
+               int x_2 = draw_el->getStartDrawTime() + x_1;
+               int y_1 = y * blockHeightPlusSpacing;
+               int y_2 = blockHeightPlusSpacing + y1;
+               int x2 = x + width;
+               int y2 = y + height;
+               //for future counting
+               prev_blocks_width_sum = x_2;
+               if (((vmeg(x_1, x, x_2) || vmeg(x, x_1,x2)) && (vmeg(y_1, y,y_2) || vmeg(y, y_1, y2))) //peretyn
+                    || (vmeg(x_1, x, x_2) && vmeg(x_1, x2, x_2) && vmeg(y_1, y,y_2) && vmeg(y_1, y2,y_2)))
+                   tracks[y].block[i].block_cross_with_yellow_rec = true;
+               else
+               {
+                   tracks[y].block[i].block_cross_with_yellow_rec = false;
+                   break;
+               }
+
+           }
+       }
+   }*/
+
+    bool vmeg(int i1,int i2,int i3) // i1 <=i2 <= i3
+    {
+        return (i1<= i2 && i2<= i3);
     }
 
     void ListControll::removeRectangle()

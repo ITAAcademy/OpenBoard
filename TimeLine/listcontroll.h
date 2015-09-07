@@ -12,8 +12,8 @@
 #include <QDebug>
 #include <QFileDialog>
 
-//#include <QDeclarativeContext>
-#include <../OpenBoard/drawSystem/drawsystem.h>
+#include "group.h"
+
 #include "../Brush/imageclone.h"
 
 class DrawTextElm;
@@ -32,6 +32,8 @@ struct Element {
 //    int x, y, z, width, height; //on canva
     //Element_type type;
     DrawElement *draw_element;
+
+    bool block_cross_with_yellow_rec = false;
 
     Element( QString key, int time,int x = 0, int y = 0, int z = 0, int width = minBlockTime, int height = 100) {
         this->key = key;
@@ -75,6 +77,8 @@ struct Element {
             delete draw_element;
         draw_element = NULL;
     }
+
+
     bool save(QIODevice* device)
     {
         QDataStream stream(device);
@@ -207,6 +211,7 @@ class ListControll : public QObject, public QQuickImageProvider
 {
     Q_OBJECT
 
+    int blockHeightPlusSpacing = 100;
     bool isEditBlockShow = false;
     bool isProjectChange = false;
     unsigned long int maxTrackTime ;
@@ -377,6 +382,9 @@ Q_INVOKABLE  void setIsEditBlockShow(bool value);
   volatile bool getBlocked() const;
   void setBlocked(volatile bool value);
 
+  int getBlockHeightPlusSpacing() const;
+  void setBlockHeightPlusSpacing(int value);
+
 signals:
   void loadFromFileSignal();
   void drawRectangleSignal();
@@ -420,7 +428,7 @@ Q_INVOKABLE void  emitStopSignal();
 
     Q_INVOKABLE void zoomMinus();
     Q_INVOKABLE void zoomPlus();
-     Q_INVOKABLE void drawRectangle(int ,int , int , int );
+     Q_INVOKABLE void drawYellowRectangle(int ,int , int , int );
     Q_INVOKABLE void removeRectangle();
     Q_INVOKABLE bool testIndexs(const int col, const int index);
     Q_INVOKABLE bool blockValid(const int col, const int index);
