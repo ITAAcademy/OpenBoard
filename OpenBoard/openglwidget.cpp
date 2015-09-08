@@ -1305,7 +1305,7 @@ if(curStatus == STOP)
 //ENable global shaders for mainFBO
 QVector<ShaderProgramWrapper*> shaders;
 //shaderPrograms[CROSS_SHADER]->setUniformResolution(wax,way);
-if (timeLine->getPlayTime()==0)
+if(curStatus == STOP && isMousePress)
 shaders.push_back(shaderPrograms[CROSS_SHADER]);
 bool drawToSecondBuffer = shaders.length()>0;//shaders.length()>1 && shaders.length()%2==0;
 for (int i=0;i<shaders.length();i++)
