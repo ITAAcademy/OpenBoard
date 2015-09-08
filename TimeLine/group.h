@@ -14,7 +14,7 @@ public:
     void setBoundRec(QRect);
     void setBoundRec(int , int , int, int);
     void setBoundRec(int , int );
-    INT64 calcSumLength();
+    INT64 calcMaxLength();
     void addTo(int, DrawElement *);
     void removeAt(int, int);
 

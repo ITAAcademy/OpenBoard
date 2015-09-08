@@ -241,7 +241,7 @@ class ListControll : public QObject, public QQuickImageProvider
     int life_time_in_buffer;
     bool buffer_is_full;
     QRect yellow_rec;
-
+    int spacing_btw_blocks = 0;
 public:
      int isPlayPauseStop = 3;
 
@@ -264,6 +264,9 @@ public:
     Q_INVOKABLE QPoint getViewPosition();
     bool isVisible();
     bool isActiveWindow();
+    Q_INVOKABLE bool attachBlock(int,int,int);
+    Q_INVOKABLE bool setSpacingBtwBlocks(int);
+    Q_INVOKABLE int getSpacingBtwBlocks();
     Q_INVOKABLE  bool isProjectChanged();
     Q_INVOKABLE  QRect getYellowRect();
     Q_INVOKABLE  void setIsProjectChanged(bool);

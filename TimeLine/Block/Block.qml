@@ -1079,6 +1079,11 @@ root.globalRep.isDrag = false
                 // item_col.width = timeControll.getMaxTrackTime()// item_col.childrenRect.width
 
                  bChangeSize = false;
+                 if (main222.dovodka_block)
+                 {
+                     timeControll.attachBlock(root.colIndex, root.mIndex , 50)
+                     console.log("dovodka finish")
+                 }
                   root.globalRep.updateModel();
     ///console.log("2222222222222");
             }

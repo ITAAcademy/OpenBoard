@@ -1,5 +1,7 @@
 import QtQuick 2.0
 import QtQuick.Controls 1.3
+import QtQuick.Layouts 1.0
+import QtQuick.Controls.Styles 1.2
 
 Rectangle {
     id: root
@@ -35,6 +37,24 @@ Rectangle {
             height: parent.width
             width: parent.width
             checked: false
+            style: CheckBoxStyle {
+                      indicator: Rectangle {
+                              implicitWidth: chb_dovodka.width
+                              implicitHeight: chb_dovodka.height
+                              radius: 3
+                              border.color: chb_dovodka.activeFocus ? "yellow" : "black"
+                              border.width: 1
+                              Image {
+                                  visible: control.checked
+                                 /* color: "black"
+                                  border.color: "#333"
+                                  radius: 1*/
+                                  source: "qrc:/iphone_toolbar_icons/chek.png"
+                                  anchors.margins: 4
+                                  anchors.fill: parent
+                              }
+                      }
+                  }
             onCheckedChanged:  {
                   main222.dovodka_block = chb_dovodka.checked
             }

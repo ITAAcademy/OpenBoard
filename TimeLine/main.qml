@@ -746,8 +746,13 @@ timeControll.setScalePointerPos((x  -20 + scroll.flickableItem.contentX)* main22
                           width:  timeControll.getMaxTrackTime()
                           property Repeater globalRep
                           spacing: 2
+                          onSpacingChanged: {
+                             timeControll.setSpacingBtwBlocks(columns.spacing)
+                          }
+
                           Component.onCompleted: {
                           main222.p_columns = columns
+                           timeControll.setSpacingBtwBlocks(columns.spacing)
                           }
                           Repeater {
                           id: rep_columns

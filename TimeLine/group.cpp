@@ -64,9 +64,18 @@ void Group::setBoundRec(QRect value)
     bound_rec = value;
 }
 
-INT64 Group::calcSumLength()
+INT64 Group::calcMaxLength()
 {
-    // for (int i = 0; i < members.size(); i++)/////////////
+     for (int i = 0; i < members.size(); i++)/////////////
+     {
+         for (int y = 0; y < members[i].size(); i++)
+         {
+
+         }
+
+
+
+     }
         // sum_length += members[i]->getLifeTime();
 }
 

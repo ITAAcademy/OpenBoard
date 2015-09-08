@@ -557,6 +557,58 @@ int ListControll::getTrackSize(int col)
      return isProjectChange;
  }
 
+ bool ListControll::setSpacingBtwBlocks(int value)
+ {
+     if (value < 0)
+         return false;
+     spacing_btw_blocks = value;
+ }
+
+ int ListControll::getSpacingBtwBlocks()
+ {
+     return spacing_btw_blocks;
+ }
+
+ bool ListControll::attachBlock(int col, int index, int value)
+ {
+     if (!blockValid(col,index))
+         return false;
+     value *=scale_scroll_children;
+     qDebug() << "DOVODKA start";
+     DrawElement *draw_el = tracks[col].block[index].draw_element;
+     int from_width = draw_el->getLifeTime() + draw_el->getStartDrawTime();
+      qDebug() << "from_width =   "<< from_width;
+     int dovod_value = 65534;
+     bool value_setted = false;
+
+     for (int i=0; ;  i++)
+     {
+         if (i == col)
+             i++;
+         if (i >= tracks.size())
+             break;
+         for (int y=0; y < tracks[i].block.size(); y++)
+         {
+             DrawElement *draw_el2 = tracks[i].block[y].draw_element;
+             int temp_dovodka = from_width - draw_el2->getLifeTime() - draw_el2->getStartDrawTime();
+              //qDebug() << "temp_dovodka =   "<< temp_dovodka;
+             if (abs(temp_dovodka) <=  abs(value) && (abs(temp_dovodka) <  abs(dovod_value) ))
+             {
+                 dovod_value = temp_dovodka;
+                 qDebug() << "dovodka value =   "<< dovod_value;
+                 value_setted = true;
+             }
+
+
+         }
+     }
+     dovod_value += draw_el->getStartDrawTime();
+     from_width -= dovod_value; //- draw_el->getStartDrawTime();
+     if (value_setted)
+         draw_el->setLifeTime(from_width );
+     qDebug() << "DOVODKA finish "<< dovod_value;
+ }
+
  QRect ListControll::getYellowRect()
  {
      return yellow_rec;
@@ -609,7 +661,7 @@ ListControll::ListControll(QObject *parent) : QObject(parent), QQuickImageProvid
      view.setResizeMode(QQuickView::SizeRootObjectToView);
     view.setPersistentOpenGLContext(false);
     view.setColor("transparent");
-    view.setMinimumHeight(205);
+    view.setMinimumHeight(230);
     view.setMinimumWidth(500);
     view.setHeight(view.minimumHeight());
     view.setWidth(800);
