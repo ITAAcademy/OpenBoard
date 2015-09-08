@@ -25,6 +25,7 @@
 
 #include "../qtmel_global.h"
 #include "encoderglobal.h"
+#include <QCoreApplication>
 
 class QTMELSHARED_EXPORT AudioCodecSettings
 {

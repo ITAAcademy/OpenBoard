@@ -189,7 +189,7 @@ public:
     /*
      * |Canvas control
      */
-    void addAudioToList(QByteArray arr);
+    void addAudioToList(void *obj, QByteArray arr);
     void clearAudioList();
     void drawFigure (int x, int y, int width, int height, FigureType type, bool fill = true, QColor col = "#FF0000", float size = 2);
 
@@ -313,6 +313,7 @@ public slots:
     void drawQImageFromTexture(int x, int y, QImage img, GLuint index, int z);
     void ShowHideShaderWindow();
     void testInit();
+    void encoderAddWaitFrame();
 signals:
     void windowUpdating(int frameRate);
     void pauseSignal();

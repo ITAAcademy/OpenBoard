@@ -10,6 +10,16 @@ void AV_REncoder::setBPause(bool value)
 {
     bPause = value;
 }
+
+void AV_REncoder::clearWaitForFrame()
+{
+    waitForFrame = 0;
+}
+
+void AV_REncoder::addWaitForFrame()
+{
+    waitForFrame++;
+}
 AV_REncoder::AV_REncoder(QObject *parent) : QThread(parent)
 {
     bRun = false;
@@ -83,9 +93,9 @@ void AV_REncoder::addToAudioBuffer( QMap <void* , QList<QByteArray>> array)
     audioBuffer;
 }
 */
-void AV_REncoder::addToAudioBuffer( QList<QByteArray> array)
+void AV_REncoder::addToAudioBuffer( void* obj, QByteArray array)
 {
-    audioBuffer += array;
+    audioBuffer[obj] += array;
 }
 VideoCodecSettings AV_REncoder::videoCodecSettings() const
 {
@@ -208,10 +218,11 @@ void AV_REncoder::stop()
     if(bRun)
     {
        // audioRecorder->stop();
-        m_encoder->stop();
         bRun = false;
+        m_encoder->stop();
+
         frame = QImage(grabWidget->size(), QImage::Format_RGB888);
-        // //qDebug() << "STOPPPP";
+        qDebug() << "STOPPPP";
     }
  //   exit();
 }
@@ -224,27 +235,68 @@ void AV_REncoder::encodeAudioData(QByteArray array)
 void AV_REncoder::run()
 {
     int i = 0;
+    isRun = true;
     int delta = 0;
-    QElapsedTimer timer;
-    timer.start();
-    while(bRun)
+    while(bRun || audioBuffer.size() > 0)
     {
-     //   if(timer.elapsed() >= 40 - delta && !bPause)
-        {
-      //      // //qDebug() << "SHOW";
-            if(!newImage)
+            //qDebug() << "SHOW";
+            if(!newImage || (!bRun && !audioBuffer.isEmpty()))
             {
-                m_encoder->encodeVideoFrame(frame);
-                if(audioBuffer.size() > 0)
+                if(bRun)
+                    m_encoder->encodeVideoFrame(frame);
+                qDebug() << "PERFORM AUDIO " << waitForFrame << "   audioBuffer " << audioBuffer.size();
+                if(audioBuffer.size() > 0 && audioBuffer.size() >= waitForFrame)
                 {
-                    while(audioBuffer.size() > 0)
+                    unsigned int minBlock = -1;
+                    QMap<void*, QByteArray> ::iterator it = audioBuffer.begin();
+                    for(int i = 0; i < audioBuffer.size(); i++)
                     {
-                        m_encoder->encodeAudioData(audioBuffer.first());
-                        audioBuffer.pop_front();
+                        if(minBlock > it.value().size())
+                            minBlock = it.value().size();
+                        it++;
+                        /*m_encoder->encodeAudioData(audioBuffer.first());
+                        audioBuffer.pop_front();*/
+
+
+                    }
+
+                    QList<void*> itList = audioBuffer.keys();
+                    qDebug() << "MIN_AUDIO_BLOCK    " << minBlock;
+                    if(minBlock > 0)
+                    {
+                        QByteArray res;
+                        res.resize(minBlock);
+                        memset(res.data(), 0, minBlock);
+                        for(int i = 0; i < itList.size(); i++)
+                        {
+                            it = audioBuffer.find(itList[i]);
+                            for(int j = 0; j < minBlock; j++)
+                            {
+                                {
+                                    //qDebug() << res[j];
+                                    *((short int *)(res.data() + j)) = (*((short int *)(it.value().data() + j)) + *((short int *)(res.data() + j)))/2;
+                                    j++;
+                                   // qDebug() << res[j];
+
+                                }
+
+                            }
+
+                            it.value().remove(0, minBlock);
+                            if(it.value().size() == 0)
+                            {
+                                audioBuffer.remove(itList[i]);
+                            }
+                            /*m_encoder->encodeAudioData(audioBuffer.first());
+                           audioBuffer.pop_front();*/
+
+                        }
+                        m_encoder->encodeAudioData(res);
                     }
                 }
-                else
+                else if(waitForFrame == 0)
                 {
+                    qDebug() << "PERFORM AUDIO NULL";
                     QByteArray bytes;
                     bytes.resize(5644);
                     bytes.fill(0,5644);
@@ -258,8 +310,9 @@ void AV_REncoder::run()
             timer.restart();*/
 
 
-        }
     }
+    isRun = false;
+    qDebug() << "STOP_ThREAD";
 }
 
 void AV_REncoder::processAudioBuffer(const QAudioBuffer& buffer)

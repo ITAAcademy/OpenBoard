@@ -34,13 +34,14 @@ void DrawVideoElm::draw()
    // qDebug () << k << " " << keyCouter;
    // while( k > keyCouter)
     int k = 0;
+    pDrawWidget->encoderAddWaitFrame();
     if(bPlay && !bPause && pDrawWidget->getTimeLine()->getPlayTime() > 0 ) /// NEED FIX FOR SECOND BLOCK
     {
         pDrawWidget->clearFrameBuffer(fboWrapper);
         FFmpegHelp::Frame frame = decoder.getNextFrame(pDrawWidget->getTimeLine()->getPlayTime() - startDrawTime);
         //pDrawWidget->drawQImage(0, 0, frame.videoFrame, z);
         pDrawWidget->drawQImageFromTexture(0, 0, frame.videoFrame, textureIndex, z);
-        pDrawWidget->addAudioToList(frame.audioFrame);
+        pDrawWidget->addAudioToList(this, frame.audioFrame);
    //     qDebug() << "KEY    " << keyCouter;
         keyCouter++;
      /*   double qwe = (double)keyCouter/(decoder.getPTS() + 1);// for test :)

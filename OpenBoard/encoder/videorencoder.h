@@ -16,6 +16,7 @@
 #include <QtMultimedia/QAudioRecorder>
 #include <QtMultimedia/QAudioProbe>
 #include <QGLWidget>
+#include <QtCore>
 
 
 #include <Encoder>
@@ -35,8 +36,9 @@ class AV_REncoder : public QThread
     QAudioRecorder *audioRecorder = NULL;
     QAudioProbe *probe = NULL;
     //QMap <void* , QList<QByteArray>> audioBuffer;
-    QList<QByteArray> audioBuffer;
+    QMap<void*, QByteArray> audioBuffer;
     QElapsedTimer tick;
+    int waitForFrame = 0;
 
     QMutex mutex;
     QMutexLocker *locker;
@@ -47,6 +49,7 @@ class AV_REncoder : public QThread
     bool bPause;
     QString fileName;
 public:
+    bool isRun = false;
     volatile bool newImage = false;
     explicit AV_REncoder(QObject *parent = 0);
     ~AV_REncoder();
@@ -62,14 +65,14 @@ public:
 
     QImage getFrame() const;
     void setFrame(QImage value);
-    void addToAudioBuffer(QList<QByteArray> array);
+    void addToAudioBuffer(void *obj, QByteArray array);
 
     bool getBPause() const;
     void setBPause(bool value);
 
 private slots:
     void encodeAudioData(QByteArray array);
-     void run();
+    void run();
     void onStart();
     void displayErrorMessage();
     void processAudioBuffer(const QAudioBuffer& buffer);
@@ -84,6 +87,8 @@ public slots:
 signals:
 
 public slots:
+     void clearWaitForFrame();
+     void addWaitForFrame();
 };
 
 #endif // VIDEORENCODER_H

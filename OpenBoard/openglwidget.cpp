@@ -1166,9 +1166,15 @@ void OGLWidget::deleteFBO(FBOWrapper wrapper)
 
 }
 
+void OGLWidget::encoderAddWaitFrame()
+{
+    m_encoder->addWaitForFrame();
+}
+
 void OGLWidget::paintGL()
 {
     //glDrawBuffer(GL_COLOR_ATTACHMENT1);
+
      glBindFramebuffer(GL_FRAMEBUFFER , 0);
         test->use();
     //// qDebug() << "isClearFrameBuffer:"<<isClearFrameBuffer;
@@ -1265,7 +1271,7 @@ void OGLWidget::paintGL()
 //if (isMousePlay)paintBrushInBuffer(true);
 
  ////qDebug() << "PREDRAW";
-
+m_encoder->clearWaitForFrame();
 for(int i = 0; !timeLine->isBlocked && i < getList().size(); i++)
 {
     ////qDebug() << "draw   " << i;
@@ -1293,9 +1299,7 @@ swapBuffers();
 
 if(bRecord)
 {
-    m_encoder->addToAudioBuffer(audioList);
     m_encoder->setFrame(grabFrameBuffer());
-    audioList.clear();
 }
 
 init = true;
@@ -1606,9 +1610,9 @@ void OGLWidget::addAudioToList(QByteArray arr, void *obj)
 
 }
 */
-void OGLWidget::addAudioToList(QByteArray arr)
+void OGLWidget::addAudioToList(void*obj, QByteArray arr)
 {
-   audioList.append(arr);
+   m_encoder->addToAudioBuffer(obj, arr);
 }
 QString OGLWidget::getDrawText()
 {
@@ -1667,6 +1671,7 @@ void OGLWidget::stopAnimated()
     //pause(100);
     if(init)
     {
+        qDebug() << "STOP";
         if(bRecord)
         {
             if(m_encoder->getBPause())
@@ -1674,7 +1679,6 @@ void OGLWidget::stopAnimated()
             m_encoder->stop();
             timeLine->show();
         }
-
         curStatus = STOP;
         //tickTimer.stop();
 
@@ -1701,7 +1705,7 @@ void OGLWidget::stopAnimated()
     bRecord = false;
 
  //   pause(200);
-     //qDebug() << "Stop play" << timeLine->getPlayTime();
+     qDebug() << "Stop play" << timeLine->getPlayTime();
     emit stopSignal();
 
 }
