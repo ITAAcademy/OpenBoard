@@ -206,10 +206,10 @@ void DrawBrushElm::draw()
           if (coords.size()>0)
           //realKeyValue=qFloor((double)((current_time - startDrawTime) / ((double)(lifeTime/coords.size()))));
          realKeyValue = qCeil((double)((current_time-startDrawTime)*coords.size()/lifeTime));
-         qDebug() << "QQQQQQQQQQQQQQQQQQQQ" << keyCouter;
+        // qDebug() << "QQQQQQQQQQQQQQQQQQQQ" << keyCouter;
         if(keyCouter == 0)
         {
-            qDebug()<<"CLEAR FRAME BUFFER";
+            //qDebug()<<"CLEAR FRAME BUFFER";
             pDrawWidget->clearFrameBuffer(fboWrapper);
         }
         //qDebug() << "coords.size():"<<coords.size();

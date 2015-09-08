@@ -4,6 +4,7 @@ precision mediump float;
 uniform float time;
 uniform vec2 mouse;
 uniform vec2 resolution;
+uniform vec2 size;
 uniform sampler2D textureSampler;
 
 
@@ -11,8 +12,8 @@ void main( void ) {
 vec4 col =  texture2D(textureSampler,
 vec2(gl_TexCoord[0]));
         //vec2 position = ( gl_FragCoord.xy / resolution.xy ) + mouse / 4.0;
-        float pixelWidth = 50.0;
-        float pixelHeight =50.0;
+        float pixelWidth = size.x;
+        float pixelHeight =size.y;
 
         float colorID2 = clamp(mod(gl_FragCoord.y,pixelHeight)/1.0,0.0,1.5);
         float colorID = clamp(mod(gl_FragCoord.x,pixelWidth)/1.0,0.0,1.5);

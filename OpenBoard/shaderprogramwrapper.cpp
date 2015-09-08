@@ -16,6 +16,12 @@ void ShaderProgramWrapper::setUniformResolution(float width, float height)
                         ,"resolution");
     glf->glUniform2f(keyUnifrom,width,height);
 }
+void ShaderProgramWrapper::setUniformSize(float width, float height)
+{
+    GLint keyUnifrom = glf->glGetUniformLocation(ShaderProgram
+                        ,"size");
+    glf->glUniform2f(keyUnifrom,width,height);
+}
 
 ShaderProgramWrapper::ShaderProgramWrapper()
 {
@@ -36,17 +42,17 @@ bool ShaderProgramWrapper::load(QDataStream &stream)
 
 ShaderProgramWrapper::~ShaderProgramWrapper()
 {
-     qDebug() <<"ShaderProgramWrapper::~ShaderProgramWrapper()";
+     //qDebug() <<"ShaderProgramWrapper::~ShaderProgramWrapper()";
      bool exp = errorStatus==0;
      qDebug() << "succ";
     if(exp)
     {
-        qDebug() <<"~ShaderProgramWrapper begin";
+        //qDebug() <<"~ShaderProgramWrapper begin";
         //glf->useShader(0);
         glf->glDeleteShader(ShaderProgram);
 
     }
-    qDebug() <<"~ShaderProgramWrapper end";
+   // qDebug() <<"~ShaderProgramWrapper end";
 }
 
 int ShaderProgramWrapper::initShader(QString fShaderFilePath, QString vShaderFilePath, bool isFilePath)

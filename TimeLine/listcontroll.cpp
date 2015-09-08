@@ -966,7 +966,7 @@ void  ListControll::stop()
    timerValue=0;
     isPlayPauseStop = 3;
     calcPointedBlocks();
-    qDebug() << "stop                       TIMELINE";
+   // qDebug() << "stop                       TIMELINE";
 
 }
 

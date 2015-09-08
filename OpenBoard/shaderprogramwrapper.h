@@ -33,6 +33,7 @@ public:
 
    QString getInfo() const;
    void setUniformResolution(float width, float height);
+   void setUniformSize(float width, float height);
 };
 
 #endif // SHADERPROGRAMWRAPPER_H

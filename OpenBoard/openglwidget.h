@@ -25,7 +25,7 @@
 #include <QOpenGLFunctions_3_0>
 #include <QMap>
 #include <QList>
-
+#include "GLWidget/grid.h"
 
 
 class ListControll;
@@ -47,6 +47,7 @@ using namespace QtAV;
 #define STREAM_DURATION 60
 #define TEXTURE_INDEX_BRUSH 1
 #define MIN_RECT_SIZE 25
+
 struct ColorMarker{
     int startIndex;
     QColor value;
@@ -269,6 +270,8 @@ public:
     void disableShader();
     void enableShader();
     FBOWrapper getMainFBO();
+    void setCellSize(int size);
+    void updateGrid();
 public slots:
     void setAbleDrawing(bool value);
    // void clearFrameBuffer();
@@ -331,6 +334,8 @@ private slots:
     void storeMousePos();
 
 private:
+    int GRID_CELL_SIZE = 50;
+    Grid windowGrid;
     QStack<ShaderProgramWrapper*> currentShaderStack;
     int MOUSE_PROCESS_DELAY_MS=30;
 QString fileNameForRecords;

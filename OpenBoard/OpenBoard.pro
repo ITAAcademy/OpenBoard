@@ -37,7 +37,8 @@ SOURCES += main.cpp\
     shaderprogramwrapper.cpp \
     shadereffect.cpp \
     shadertest.cpp \
-    editWidget/codeeditor.cpp
+    editWidget/codeeditor.cpp \
+    GLWidget/grid.cpp
     drawSystem/drawbrush.cpp
 
 
@@ -74,7 +75,8 @@ HEADERS  += mainwindow.h \
     shaderprogramwrapper.h \
     shadereffect.h \
     shadertest.h \
-    editWidget/codeeditor.h
+    editWidget/codeeditor.h \
+    GLWidget/grid.h
     drawSystem/drawbrush.h
 
 

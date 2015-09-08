@@ -213,7 +213,7 @@ void DrawElement::paint()
                 if (playTime >= beginAtTime && playTime <= endAtTime)//endAtTime + 50 if flickering !!!
                 {
                   //  qDebug() <<i<< "-b:"<<beginAtTime;
-                    qDebug() << i<<"-keyFrame:"<<keyFrame;
+                   // qDebug() << i<<"-keyFrame:"<<keyFrame;
                     if(drawToSecondBuffer)
                     {
                         pDrawWidget->bindBuffer(pDrawWidget->getPingPongFBO().frameBuffer);
@@ -256,7 +256,7 @@ void DrawElement::paint()
                 }
 
             }
-            qDebug()<<"before remove temp effect";
+            //qDebug()<<"before remove temp effect";
            //DONT REMOVE effects.removeAt(effects.length()-1);
         pDrawWidget->disableShader();
 

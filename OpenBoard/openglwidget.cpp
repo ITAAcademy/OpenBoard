@@ -672,6 +672,7 @@ qDebug() <<  "OGL WIDGET MID";
 */
    getTimeLine()->setIsProjectChanged(false);
    oglFuncs=this;
+   windowGrid=Grid(GRID_CELL_SIZE);
    qDebug() <<  "OGL WIDGET COnstructor end";
 }
 void OGLWidget::bindBuffer(GLuint buffer){
@@ -1105,7 +1106,6 @@ glEnable(GL_DEPTH_TEST);
     mainFBO=initFboWrapper(wax, way, false, true);
     pingpongFBO=initFboWrapper(wax,way,false);
 
-
     initPBO();
      //initShader();
 glViewport(0, 0, (GLint)wax, (GLint)way);
@@ -1185,9 +1185,19 @@ void OGLWidget::deleteFBO(FBOWrapper wrapper)
     glDeleteFramebuffers(1,&wrapper.frameBuffer);
 
 }
+void OGLWidget::updateGrid(){
+    if (CROSS_SHADER<shaderPrograms.length())
+    {
+        useShader(shaderPrograms[CROSS_SHADER]);
+        //qDebug() << "width:"<<windowGrid.getWidth();
+    shaderPrograms[CROSS_SHADER]->setUniformSize(windowGrid.getWidth(),windowGrid.getHeight());
+     useShader(0);
+    }
+}
 
 void OGLWidget::paintGL()
 {
+    updateGrid();
     //glDrawBuffer(GL_COLOR_ATTACHMENT1);
      glBindFramebuffer(GL_FRAMEBUFFER , 0);
    // useShader(test);
@@ -1310,10 +1320,10 @@ shaders.push_back(shaderPrograms[CROSS_SHADER]);
 bool drawToSecondBuffer = shaders.length()>0;//shaders.length()>1 && shaders.length()%2==0;
 for (int i=0;i<shaders.length();i++)
 {
-    qDebug() << "FOR ";
+    //qDebug() << "FOR ";
         if(drawToSecondBuffer)
         {
-            qDebug() <<" SECOND";
+           // qDebug() <<" SECOND";
            bindBuffer(pingpongFBO.frameBuffer);
             useShader(shaders[i]);
                 paintBufferOnScreen(mainFBO,0, 0, mainFBO.tWidth,mainFBO.tHeight,0);
@@ -1321,7 +1331,7 @@ for (int i=0;i<shaders.length();i++)
         }
         else
         {
-            qDebug() <<" FIRST";
+           // qDebug() <<" FIRST";
         bindBuffer(mainFBO.frameBuffer);
         useShader(shaders[i]);
         paintBufferOnScreen(pingpongFBO,0, 0, pingpongFBO.tWidth,pingpongFBO.tHeight,0);
@@ -1331,7 +1341,7 @@ for (int i=0;i<shaders.length();i++)
 }
 if(!drawToSecondBuffer)
 {
-    qDebug() <<" SECOND";
+    //qDebug() <<" SECOND";
    bindBuffer(pingpongFBO.frameBuffer);
         paintBufferOnScreen(mainFBO,0, 0, mainFBO.tWidth,mainFBO.tHeight,0);
     useShader(0);
@@ -1369,7 +1379,7 @@ void OGLWidget::paintEvent(QPaintEvent *event)
 
 }
 void OGLWidget::useShader(ShaderProgramWrapper *shader){
-qDebug() << "before useShader currentShaderStack len:"<<currentShaderStack.length();
+//qDebug() << "before useShader currentShaderStack len:"<<currentShaderStack.length();
     if (shader==NULL){
         if (currentShaderStack.isEmpty())
             glUseProgram(0);
@@ -1385,15 +1395,15 @@ qDebug() << "before useShader currentShaderStack len:"<<currentShaderStack.lengt
     currentShaderStack.push(shader);
     glUseProgram(shader->getShaderProgram());
     }
-    qDebug() << "after useShader currentShaderStack len:"<<currentShaderStack.length();
+   // qDebug() << "after useShader currentShaderStack len:"<<currentShaderStack.length();
 }
 
 void OGLWidget::disableShader(){
-    qDebug() << "disableShader:"<<currentShaderStack.length();
+    //qDebug() << "disableShader:"<<currentShaderStack.length();
     glUseProgram(0);
 }
 void OGLWidget::enableShader(){
-    qDebug() << "enableShader:"<<currentShaderStack.length();
+    //qDebug() << "enableShader:"<<currentShaderStack.length();
     if (currentShaderStack.length()>0)
     glUseProgram(currentShaderStack.last()->getShaderProgram());
 
@@ -2410,7 +2420,9 @@ void OGLWidget::testWrap(int kIndexOfRow)
         i++;
     }*/
 }
-
+void OGLWidget::setCellSize(int size){
+  windowGrid.setSize(size);
+}
 
 void OGLWidget::displayText(QString const &text, QColor color,QFont font)
 {
