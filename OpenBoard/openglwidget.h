@@ -108,7 +108,7 @@ signals:
 public:
 
 
-	enum shaderEnum {ALPHA_SHADER=0,SPIRAL_SHADER=1};
+    enum shaderEnum {ALPHA_SHADER=0,SPIRAL_SHADER=1,CROSS_SHADER=2};
 	void processMouse();
 	ShaderProgramWrapper* getMainShader();
 	void initPBO();
@@ -268,6 +268,7 @@ public:
     ShaderProgramWrapper *getTestShader();
     void disableShader();
     void enableShader();
+    FBOWrapper getMainFBO();
 public slots:
     void setAbleDrawing(bool value);
    // void clearFrameBuffer();

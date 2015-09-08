@@ -10,6 +10,12 @@ ShaderProgramWrapper::ShaderProgramWrapper(OGLWidget *pWidget)
     parentWidget=pWidget;
     glf=parentWidget->getOglFuncs();
 }
+void ShaderProgramWrapper::setUniformResolution(float width, float height)
+{
+    GLint keyUnifrom = glf->glGetUniformLocation(ShaderProgram
+                        ,"resolution");
+    glf->glUniform2f(keyUnifrom,width,height);
+}
 
 ShaderProgramWrapper::ShaderProgramWrapper()
 {
@@ -183,6 +189,11 @@ bool ShaderProgramWrapper::setUniform(QString name, QVariant value)
     }
     return true;
 
+}
+
+OGLWidget *ShaderProgramWrapper::getParentWidget()
+{
+ return parentWidget;
 }
 
 GLuint ShaderProgramWrapper::getShaderProgram()

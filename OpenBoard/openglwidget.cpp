@@ -10,6 +10,8 @@
 #define ALPHA_VERTEX_SHADER_PATH ":/dynamic/openGL/shaders/alpha.vert"
 #define SPIRAL_FRAGMENT_SHADER_PATH ":/dynamic/openGL/shaders/spiral.frag"
 #define SPIRAL_VERTEX_SHADER_PATH ":/dynamic/openGL/shaders/spiral.vert"
+#define CROSS_FRAGMENT_SHADER_PATH ":/dynamic/openGL/shaders/cross.frag"
+#define CROSS_VERTEX_SHADER_PATH ":/dynamic/openGL/shaders/cross.vert"
 /*
  *scroll
  *
@@ -525,6 +527,14 @@ void OGLWidget::initShaderPrograms()
     ShaderProgramWrapper *spiralShader = new ShaderProgramWrapper(this);
     if(spiralShader->initShader(SPIRAL_FRAGMENT_SHADER_PATH,SPIRAL_VERTEX_SHADER_PATH)!=0)shaderSupported=true;
     shaderPrograms.push_back(spiralShader);
+
+     ShaderProgramWrapper *crossShader = new ShaderProgramWrapper(this);
+     if(crossShader->initShader(CROSS_FRAGMENT_SHADER_PATH,CROSS_VERTEX_SHADER_PATH)!=0)shaderSupported=true;
+     shaderPrograms.push_back(crossShader);
+    /* glUseProgram(crossShader->getShaderProgram());
+     crossShader->setUniformResolution(wax,way);
+      glUseProgram(0);*/
+
     //shaderSupported= false;
 }
 
@@ -1135,6 +1145,9 @@ void OGLWidget::destroy(bool destroyWindow, bool destroySubWindow){
 FBOWrapper OGLWidget::getMouseFBO(){
     return mouseFBO;
 }
+FBOWrapper OGLWidget::getMainFBO(){
+    return mainFBO;
+}
 FBOWrapper OGLWidget::getPingPongFBO(){
     return pingpongFBO;
 }
@@ -1177,7 +1190,7 @@ void OGLWidget::paintGL()
 {
     //glDrawBuffer(GL_COLOR_ATTACHMENT1);
      glBindFramebuffer(GL_FRAMEBUFFER , 0);
-    useShader(test);
+   // useShader(test);
     //// qDebug() << "isClearFrameBuffer:"<<isClearFrameBuffer;
     if(isClearFrameBuffer)
         clearFrameBuffer(mouseFBO);
@@ -1235,7 +1248,7 @@ void OGLWidget::paintGL()
                  int leftCornerX2=x1 + editingRectangle.leftCornerSize/2;
                   int leftCornerY2=y1 + editingRectangle.leftCornerSize/2;
 
-
+disableShader();
                   if (editingRectangle.isEditingRectangleVisible && !forseEditBoxDisable && !isPainting && getStatus()!= PLAY)
                   {
 
@@ -1268,7 +1281,7 @@ void OGLWidget::paintGL()
                          glVertex3i(leftCornerX1, leftCornerY2, 100);
                        glEnd();
                   }
-
+enableShader();
 
 //if (isMousePlay)paintBrushInBuffer(true);
 
@@ -1289,7 +1302,43 @@ for(int i = 0; !timeLine->isBlocked && i < getList().size(); i++)
 
 if(curStatus == STOP)
     paintBufferOnScreen(mouseFBO,0, 0, wax, way,-100);
+//ENable global shaders for mainFBO
+QVector<ShaderProgramWrapper*> shaders;
+//shaderPrograms[CROSS_SHADER]->setUniformResolution(wax,way);
+if (timeLine->getPlayTime()==0)
+shaders.push_back(shaderPrograms[CROSS_SHADER]);
+bool drawToSecondBuffer = shaders.length()>0;//shaders.length()>1 && shaders.length()%2==0;
+for (int i=0;i<shaders.length();i++)
+{
+    qDebug() << "FOR ";
+        if(drawToSecondBuffer)
+        {
+            qDebug() <<" SECOND";
+           bindBuffer(pingpongFBO.frameBuffer);
+            useShader(shaders[i]);
+                paintBufferOnScreen(mainFBO,0, 0, mainFBO.tWidth,mainFBO.tHeight,0);
+            useShader(0);
+        }
+        else
+        {
+            qDebug() <<" FIRST";
+        bindBuffer(mainFBO.frameBuffer);
+        useShader(shaders[i]);
+        paintBufferOnScreen(pingpongFBO,0, 0, pingpongFBO.tWidth,pingpongFBO.tHeight,0);
+        useShader(0);
+        }
+        drawToSecondBuffer=!drawToSecondBuffer;
+}
+if(!drawToSecondBuffer)
+{
+    qDebug() <<" SECOND";
+   bindBuffer(pingpongFBO.frameBuffer);
+        paintBufferOnScreen(mainFBO,0, 0, mainFBO.tWidth,mainFBO.tHeight,0);
+    useShader(0);
+}
 
+
+//
  bindBuffer(0);
  paintBufferOnScreen(mainFBO,0, 0, wax, way,0);
 
@@ -1345,8 +1394,9 @@ void OGLWidget::disableShader(){
 }
 void OGLWidget::enableShader(){
     qDebug() << "enableShader:"<<currentShaderStack.length();
-    //if (currentShaderStack.length()>0)
+    if (currentShaderStack.length()>0)
     glUseProgram(currentShaderStack.last()->getShaderProgram());
+
 }
 
 

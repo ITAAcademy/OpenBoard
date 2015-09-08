@@ -166,8 +166,8 @@ void DrawElement::paint()
     if(fboWrapper.errorStatus == 0)
     {
       bool drawToSecondBuffer=false;
-      ShaderEffect mainEffect(pDrawWidget->getTestShader());
-      effects.push_back(mainEffect);
+      //DONT REMOVE ShaderEffect mainEffect(pDrawWidget->getTestShader());
+      //DONT REMOVE effects.push_back(mainEffect);
      // bool currentDrawToSecondBuffer=false;
         if (effects.isEmpty())
         {
@@ -220,9 +220,9 @@ void DrawElement::paint()
                        // qDebug() << "Shader program ("<<i<<"):"<<effects[i].getShaderWrapper()->getShaderProgram();
                         pDrawWidget->useShader(effects[i].getShaderWrapper());
                       //  float keyFrame = (float)(pDrawWidget->getTimeLine()->getPlayTime()-startDrawTime)/lifeTime;//MOVE UP LATER
-                        ShaderEffect::setUniformAnimationKey(pDrawWidget,effects[i],keyFrame);
-                        ShaderEffect::setUniformResolution(pDrawWidget,effects[i],fboWrapper.tWidth,fboWrapper.tHeight);
-                        ShaderEffect::setUniformReverse(pDrawWidget,effects[i],effects[i].getReverse());
+                        ShaderEffect::setUniformAnimationKey(effects[i],keyFrame);
+                        ShaderEffect::setUniformResolution(effects[i],fboWrapper.tWidth,fboWrapper.tHeight);
+                        ShaderEffect::setUniformReverse(effects[i],effects[i].getReverse());
 
                         if (effectsUsedInOneTime==0)
                             draw();
@@ -236,10 +236,10 @@ void DrawElement::paint()
                     pDrawWidget->bindBuffer(fboWrapper.frameBuffer);
                     pDrawWidget->useShader(effects[i].getShaderWrapper());
                    // float keyFrame = (float)(pDrawWidget->getTimeLine()->getPlayTime()-startDrawTime)/lifeTime;//MOVE UP LATER
-                    ShaderEffect::setUniformAnimationKey(pDrawWidget,effects[i],keyFrame);
-                    ShaderEffect::setUniformResolution(pDrawWidget,effects[i],
+                    ShaderEffect::setUniformAnimationKey(effects[i],keyFrame);
+                    ShaderEffect::setUniformResolution(effects[i],
                                                        pDrawWidget->getPingPongFBO().tWidth,pDrawWidget->getPingPongFBO().tHeight);
-                    ShaderEffect::setUniformReverse(pDrawWidget,effects[i],effects[i].getReverse());
+                    ShaderEffect::setUniformReverse(effects[i],effects[i].getReverse());
 
                     if (effectsUsedInOneTime==0)
                         draw();
@@ -257,7 +257,7 @@ void DrawElement::paint()
 
             }
             qDebug()<<"before remove temp effect";
-            effects.removeAt(effects.length()-1);
+           //DONT REMOVE effects.removeAt(effects.length()-1);
         pDrawWidget->disableShader();
 
             if (effectsUsedInOneTime==0){
@@ -297,7 +297,9 @@ void DrawElement::paint()
        //NEWNEWNEWNEWNEWNENWNENWNENWNENWNENWNENW
 */
         //pDrawWidget->getOglFuncs()->glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE);
-        pDrawWidget->bindBuffer(0);
+       // pDrawWidget->bindBuffer(0);
+         pDrawWidget->bindBuffer(pDrawWidget->getMainFBO().frameBuffer);
+
         //pDrawWidget->useShader(0);
 
 

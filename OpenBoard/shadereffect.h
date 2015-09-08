@@ -21,9 +21,9 @@ public:
 
     ShaderProgramWrapper* getShaderWrapper();
     void setShaderWrapper(ShaderProgramWrapper* shader);
-    static void setUniformAnimationKey(OGLWidget *oglWidget, ShaderEffect shaderEffect, float value);
-    static void setUniformResolution(OGLWidget *oglWidget, ShaderEffect shaderEffect, float width, float height);
-    static void setUniformReverse(OGLWidget *oglWidget, ShaderEffect shaderEffect,bool val);
+    static void setUniformAnimationKey(ShaderEffect shaderEffect, float value);
+    static void setUniformResolution(ShaderEffect shaderEffect, float width, float height);
+    static void setUniformReverse( ShaderEffect shaderEffect,bool val);
      int getStartTimeMS() const;
     void setStartTimeMS(unsigned int value);
      int getEffectTimeHowLong() const;

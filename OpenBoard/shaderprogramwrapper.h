@@ -23,12 +23,16 @@ public:
     ~ShaderProgramWrapper();
    int initShader(QString fragmentShaderCode, QString vertexShaderCode, bool isFilePath=true);
    bool setUniform(QString name, QVariant value);
+   OGLWidget *getParentWidget();
    GLuint getShaderProgram();
    bool isInited();
 
    bool save(QDataStream &stream);
    bool load(QDataStream &stream);
+
+
    QString getInfo() const;
+   void setUniformResolution(float width, float height);
 };
 
 #endif // SHADERPROGRAMWRAPPER_H
