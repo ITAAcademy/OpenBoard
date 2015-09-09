@@ -15,9 +15,10 @@ vec2(gl_TexCoord[0]));
         float pixelWidth = size.x;
         float pixelHeight =size.y;
 
-        float colorID2 = clamp(mod(gl_FragCoord.y,pixelHeight)/1.0,0.0,1.5);
-        float colorID = clamp(mod(gl_FragCoord.x,pixelWidth)/1.0,0.0,1.5);
+        float colorID2 = clamp(mod(gl_FragCoord.y,pixelHeight)/3.0,0.0,1.5);
+        float colorID = clamp(mod(gl_FragCoord.x,pixelWidth)/3.0,0.0,1.5);
         //vec3 color = vec3(position.x);
         vec3 color = vec3(colorID*colorID2);
-        gl_FragColor =vec4(col.rgb*color.rgb/2,col.a);
+        //gl_FragColor =vec4(col.rgb*color.rgb/2,col.a);
+        gl_FragColor =vec4(col.rgb*color.rgb/2,0.35);
 }

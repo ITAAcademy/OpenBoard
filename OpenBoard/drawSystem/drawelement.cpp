@@ -169,13 +169,10 @@ void DrawElement::paint()
       //DONT REMOVE ShaderEffect mainEffect(pDrawWidget->getTestShader());
       //DONT REMOVE effects.push_back(mainEffect);
      // bool currentDrawToSecondBuffer=false;
-        if (effects.isEmpty())
-        {
-              pDrawWidget->bindBuffer(fboWrapper.frameBuffer);
-              draw();//Draw original image one time without any effects
-              //qDebug() << "EFFECTS EMPTY !!!";
-        }
-        else
+       int effectsUsedInOneTime=0;
+
+
+        if (!effects.isEmpty())
         {
            /* if (effects.length()%2==1)
             {
@@ -185,7 +182,7 @@ void DrawElement::paint()
             }*/
              int playTime = pDrawWidget->getTimeLine()->getPlayTime();
 
-            int effectsUsedInOneTime=0;
+
          //   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); glEnable( GL_BLEND );
             for (int i=0;i<effects.length();i++)
             {
@@ -205,13 +202,14 @@ void DrawElement::paint()
                  int endAtTime = beginAtTime + effects[i].getEffectTimeHowLong();
                 float keyFrame = 1;
 
-                if(endAtTime-beginAtTime>0)
-                    keyFrame=(float)(playTime-beginAtTime)/(endAtTime-beginAtTime);
+
 
 //qDebug() << ":"<<playTime-beginAtTime;
 
-                if (playTime >= beginAtTime && playTime <= endAtTime)//endAtTime + 50 if flickering !!!
+                if (bPlay && playTime >= beginAtTime && playTime <= endAtTime)//endAtTime + 50 if flickering !!!
                 {
+                    if(endAtTime-beginAtTime>0)
+                        keyFrame=(float)(playTime-beginAtTime)/(endAtTime-beginAtTime);
                   //  qDebug() <<i<< "-b:"<<beginAtTime;
                    // qDebug() << i<<"-keyFrame:"<<keyFrame;
                     if(drawToSecondBuffer)
@@ -278,6 +276,13 @@ void DrawElement::paint()
             }
 
             pDrawWidget->enableShader();
+        }
+        if (effects.isEmpty() || effectsUsedInOneTime==0){
+            {
+                  pDrawWidget->bindBuffer(fboWrapper.frameBuffer);
+                  draw();//Draw original image one time without any effects
+                  //qDebug() << "EFFECTS EMPTY !!!";
+            }
         }
 /*
         //NEWNEWNEWNEWNEWNENWNENWNENWNENWNENWNENW
