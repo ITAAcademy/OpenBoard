@@ -438,12 +438,14 @@ void OGLWidget::processMouse()
          m_manager.setAbleToDraw(false);
         // // //qDebug()<<"EDIT_RECTANGLE_MOVE width"<<editingRectangle.rect.width();
          //if (isPainting)
-
+if(pressedShift)
+{
          QPoint closestPoint = windowGrid.closeToLCP(mousePos);
 editingRectangle.rect.moveTo(closestPoint);
-
-         //editingRectangle.rect.moveTo(mousePos.x() - mousePressPos.x(), //-editingRectangle.rect.width()/2
-                   //             mousePos.y() - mousePressPos.y() ); //-editingRectangle.rect.height()/
+}
+else
+         editingRectangle.rect.moveTo(mousePos.x() - mousePressPos.x(), //-editingRectangle.rect.width()/2
+                                mousePos.y() - mousePressPos.y() ); //-editingRectangle.rect.height()/
 
      break;
      }
@@ -1214,6 +1216,7 @@ void OGLWidget::updateGrid(){
 
 void OGLWidget::paintGL()
 {
+
     updateGrid();
     //glDrawBuffer(GL_COLOR_ATTACHMENT1);
      glBindFramebuffer(GL_FRAMEBUFFER , 0);
@@ -1433,6 +1436,7 @@ void OGLWidget::resizeEvent(QResizeEvent *envent)
     //maxWidth = width() - marginLeft;
 }
 
+
 void OGLWidget::closeEvent(QCloseEvent *event)
 {
     //useShader(0);
@@ -1455,6 +1459,7 @@ setIsBrushWindowOpened(false);
 
 void OGLWidget::mousePressEvent(QMouseEvent *event)
 {
+
 getTimeLine()->emitFocusLostSignal();
     if(event->button() == Qt::RightButton)
     {
@@ -1581,7 +1586,6 @@ void OGLWidget::mouseReleaseEvent(QMouseEvent *event)
 }
 
 void OGLWidget::mouseMoveEvent ( QMouseEvent * event ){
-
     //mouseDrag
 if (event->buttons() & Qt::LeftButton) {
     mousePos.setX(event->x());
@@ -1605,14 +1609,14 @@ void OGLWidget::keyReleaseEvent(QKeyEvent *event)
 
 bool OGLWidget::event(QEvent *e)
 {
-
+//qDebug() << "event";
 
     switch(e->type())
     {
         // ...
 
         case QEvent::WindowActivate :
-         timeLine->setFocus();
+        // timeLine->setFocus();
             break ;
 
         case QEvent::WindowDeactivate :
@@ -1624,8 +1628,10 @@ bool OGLWidget::event(QEvent *e)
     return QGLWidget::event(e) ;
 }
 
+
 void OGLWidget::keyPressEvent(QKeyEvent *event)
 {
+    qDebug() << "keyPressEvent";
 
     if (event->key () == Qt::Key_Control  )
      pressedCtrl = true;
