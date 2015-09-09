@@ -25,7 +25,7 @@
 #include <QOpenGLFunctions_3_0>
 #include <QMap>
 #include <QList>
-
+#include "GLWidget/grid.h"
 
 
 class ListControll;
@@ -47,6 +47,7 @@ using namespace QtAV;
 #define STREAM_DURATION 60
 #define TEXTURE_INDEX_BRUSH 1
 #define MIN_RECT_SIZE 25
+
 struct ColorMarker{
     int startIndex;
     QColor value;
@@ -108,7 +109,7 @@ signals:
 public:
 
 
-	enum shaderEnum {ALPHA_SHADER=0,SPIRAL_SHADER=1};
+    enum shaderEnum {ALPHA_SHADER=0,SPIRAL_SHADER=1,CROSS_SHADER=2};
 	void processMouse();
 	ShaderProgramWrapper* getMainShader();
 	void initPBO();
@@ -258,13 +259,20 @@ public:
     int getCurStatus() const;
     void setCurStatus(const StatusDraw &value);
 
-    FBOWrapper getMainFBO();
+    FBOWrapper getMouseFBO();
     void bindBuffer(GLuint buffer);
 
     QImage twiceImageSizeWithouScaling(QImage img);
     QOpenGLFunctions_3_0 *getOglFuncs();
     FBOWrapper getPingPongFBO();
     void useShader(ShaderProgramWrapper *shader);
+    ShaderProgramWrapper *getTestShader();
+    void disableShader();
+    void enableShader();
+    FBOWrapper getMainFBO();
+    void setCellSize(int size);
+    void updateGrid();
+    void showLCP();
 public slots:
     void setAbleDrawing(bool value);
    // void clearFrameBuffer();
@@ -328,6 +336,8 @@ private slots:
     void storeMousePos();
 
 private:
+    int GRID_CELL_SIZE = 50;
+    Grid windowGrid;
     QStack<ShaderProgramWrapper*> currentShaderStack;
     int MOUSE_PROCESS_DELAY_MS=30;
 QString fileNameForRecords;
@@ -351,7 +361,7 @@ QString fileNameForRecords;
     unsigned int last_mouse_process = 0;
 
     QVector<GLenum> attachment;
-    FBOWrapper mainFBO,pingpongFBO;
+    FBOWrapper mouseFBO,pingpongFBO,mainFBO;
 
      QMessageBox ms_for_debug;
     bool pressedCtrl = false;

@@ -10,6 +10,18 @@ ShaderProgramWrapper::ShaderProgramWrapper(OGLWidget *pWidget)
     parentWidget=pWidget;
     glf=parentWidget->getOglFuncs();
 }
+void ShaderProgramWrapper::setUniformResolution(float width, float height)
+{
+    GLint keyUnifrom = glf->glGetUniformLocation(ShaderProgram
+                        ,"resolution");
+    glf->glUniform2f(keyUnifrom,width,height);
+}
+void ShaderProgramWrapper::setUniformSize(float width, float height)
+{
+    GLint keyUnifrom = glf->glGetUniformLocation(ShaderProgram
+                        ,"size");
+    glf->glUniform2f(keyUnifrom,width,height);
+}
 
 ShaderProgramWrapper::ShaderProgramWrapper()
 {
@@ -30,23 +42,23 @@ bool ShaderProgramWrapper::load(QDataStream &stream)
 
 ShaderProgramWrapper::~ShaderProgramWrapper()
 {
-     qDebug() <<"ShaderProgramWrapper::~ShaderProgramWrapper()";
+     //qDebug() <<"ShaderProgramWrapper::~ShaderProgramWrapper()";
      bool exp = errorStatus==0;
      qDebug() << "succ";
     if(exp)
     {
-        qDebug() <<"~ShaderProgramWrapper begin";
+        //qDebug() <<"~ShaderProgramWrapper begin";
         //glf->useShader(0);
         glf->glDeleteShader(ShaderProgram);
 
     }
-    qDebug() <<"~ShaderProgramWrapper end";
+   // qDebug() <<"~ShaderProgramWrapper end";
 }
 
 int ShaderProgramWrapper::initShader(QString fShaderFilePath, QString vShaderFilePath, bool isFilePath)
 {
     inited = false;
-    glf->glUseProgram(0);
+    //glf->glUseProgram(0);
     glf->glDeleteShader(ShaderProgram);
 
     QString fragmentShaderCode;
@@ -185,6 +197,11 @@ bool ShaderProgramWrapper::setUniform(QString name, QVariant value)
 
 }
 
+OGLWidget *ShaderProgramWrapper::getParentWidget()
+{
+ return parentWidget;
+}
+
 GLuint ShaderProgramWrapper::getShaderProgram()
 {
     return ShaderProgram;
@@ -195,19 +212,4 @@ bool ShaderProgramWrapper::isInited()
     return inited;
 }
 
-bool ShaderProgramWrapper::use()
-{
-    if(isInited())
-    {
-        glf->glUseProgram(ShaderProgram);
-        return true;
-    }
-    return false;
-
-}
-
-void ShaderProgramWrapper::disable()
-{
-    glf->glUseProgram(0);
-}
 

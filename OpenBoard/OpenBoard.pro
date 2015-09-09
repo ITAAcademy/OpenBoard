@@ -38,7 +38,8 @@ SOURCES += main.cpp\
     shadereffect.cpp \
     shadertest.cpp \
     editWidget/codeeditor.cpp \
-    drawSystem/drawaudio.cpp
+    drawSystem/drawaudio.cpp\
+    GLWidget/grid.cpp\
     drawSystem/drawbrush.cpp
 
 
@@ -77,6 +78,7 @@ HEADERS  += mainwindow.h \
     shadertest.h \
     editWidget/codeeditor.h \
     drawSystem/drawaudio.h
+    GLWidget/grid.h
     drawSystem/drawbrush.h
 
 
@@ -139,4 +141,6 @@ DISTFILES += \
     alpha.frag \
     alpha.vert \
     spiral.frag \
-    spiral.vert
+    spiral.vert \
+    cross.frag \
+    cross.vert

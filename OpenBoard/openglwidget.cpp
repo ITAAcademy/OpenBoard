@@ -10,6 +10,8 @@
 #define ALPHA_VERTEX_SHADER_PATH ":/dynamic/openGL/shaders/alpha.vert"
 #define SPIRAL_FRAGMENT_SHADER_PATH ":/dynamic/openGL/shaders/spiral.frag"
 #define SPIRAL_VERTEX_SHADER_PATH ":/dynamic/openGL/shaders/spiral.vert"
+#define CROSS_FRAGMENT_SHADER_PATH ":/dynamic/openGL/shaders/cross.frag"
+#define CROSS_VERTEX_SHADER_PATH ":/dynamic/openGL/shaders/cross.vert"
 /*
  *scroll
  *
@@ -430,18 +432,25 @@ void OGLWidget::processMouse()
 
 
      switch(editingRectangle.editingRectangleMode){
+
     case EDIT_RECTANGLE_MOVE:
+      {
          m_manager.setAbleToDraw(false);
         // // //qDebug()<<"EDIT_RECTANGLE_MOVE width"<<editingRectangle.rect.width();
          //if (isPainting)
-         {
+if(pressedShift)
+{
+         QPoint closestPoint = windowGrid.closeToLCP(mousePos);
+editingRectangle.rect.moveTo(closestPoint);
+}
+else
          editingRectangle.rect.moveTo(mousePos.x() - mousePressPos.x(), //-editingRectangle.rect.width()/2
-                                mousePos.y() - mousePressPos.y() ); //-editingRectangle.rect.height()/2
-         }
-
+                                mousePos.y() - mousePressPos.y() ); //-editingRectangle.rect.height()/
 
      break;
+     }
      case EDIT_RECTANGLE_RESIZE:
+     {
           m_manager.setAbleToDraw(false);
          // //qDebug()<<"EDIT_RECTANGLE_RESIZE";
         //  if (isPainting)
@@ -452,9 +461,10 @@ void OGLWidget::processMouse()
 
         break;
      }
+     }
      testRectangle();
         if ( m_manager.isAbleToDraw() && prevMousePos != mousePos)
-            paintBrushInBuffer(mainFBO);
+            paintBrushInBuffer(mouseFBO);
     }
 
     if (showingLastDrawing )
@@ -481,8 +491,8 @@ void OGLWidget::processMouse()
         }
         recordedBrushN++;
         }
-    glBindFramebuffer(GL_FRAMEBUFFER , mainFBO.frameBuffer);
-        paintBrushInBuffer(brushTextureCurrentPlayed,currentBrushOfLastDrawing,mainFBO,drawBrushElm->getCoords(),drawBrushElm->getBrushes(),currentLastDrawingPointIterator);
+    glBindFramebuffer(GL_FRAMEBUFFER , mouseFBO.frameBuffer);
+        paintBrushInBuffer(brushTextureCurrentPlayed,currentBrushOfLastDrawing,mouseFBO,drawBrushElm->getCoords(),drawBrushElm->getBrushes(),currentLastDrawingPointIterator);
         glBindFramebuffer(GL_FRAMEBUFFER ,0);
         currentLastDrawingPointIterator++;
         if (currentLastDrawingPointIterator>=drawBrushElm->getCoords().length())
@@ -498,6 +508,10 @@ void OGLWidget::processMouse()
 ShaderProgramWrapper *OGLWidget::getMainShader()
 {
  return mainShader;
+}
+ShaderProgramWrapper *OGLWidget::getTestShader()
+{
+ return test;
 }
 
 void OGLWidget::initPBO()
@@ -521,6 +535,14 @@ void OGLWidget::initShaderPrograms()
     ShaderProgramWrapper *spiralShader = new ShaderProgramWrapper(this);
     if(spiralShader->initShader(SPIRAL_FRAGMENT_SHADER_PATH,SPIRAL_VERTEX_SHADER_PATH)!=0)shaderSupported=true;
     shaderPrograms.push_back(spiralShader);
+
+     ShaderProgramWrapper *crossShader = new ShaderProgramWrapper(this);
+     if(crossShader->initShader(CROSS_FRAGMENT_SHADER_PATH,CROSS_VERTEX_SHADER_PATH)!=0)shaderSupported=true;
+     shaderPrograms.push_back(crossShader);
+    /* glUseProgram(crossShader->getShaderProgram());
+     crossShader->setUniformResolution(wax,way);
+      glUseProgram(0);*/
+
     //shaderSupported= false;
 }
 
@@ -658,6 +680,7 @@ qDebug() <<  "OGL WIDGET MID";
 */
    getTimeLine()->setIsProjectChanged(false);
    oglFuncs=this;
+   windowGrid=Grid(GRID_CELL_SIZE,wax,way);
    qDebug() <<  "OGL WIDGET COnstructor end";
 }
 void OGLWidget::bindBuffer(GLuint buffer){
@@ -904,6 +927,17 @@ QImage OGLWidget::twiceImageSizeWithouScaling(QImage img)
     return result;
 }
 
+void OGLWidget::showLCP()
+{
+    glPointSize(10);
+    glBegin(GL_POINTS);
+    for (QPoint lcp : windowGrid.getLCP()){
+        glVertex2f(lcp.x(),lcp.y());
+    }
+    glEnd();
+
+}
+
 
 
 void OGLWidget::initFBDepthBuffer(GLuint &fbo_depth) {
@@ -1087,8 +1121,10 @@ glEnable(GL_DEPTH_TEST);
     brushTexture = loadTexture(m_manager.getCreatedBrush().color_img,true);
     //loadTextureFromFile(":/ThirdPart/images/brush.png");
     //initFrameBuffer(); // Create our frame buffer object
+    mouseFBO=initFboWrapper(wax, way, false, true);
     mainFBO=initFboWrapper(wax, way, false, true);
     pingpongFBO=initFboWrapper(wax,way,false);
+
     initPBO();
      //initShader();
 glViewport(0, 0, (GLint)wax, (GLint)way);
@@ -1120,10 +1156,13 @@ void OGLWidget::moveEvent(QMoveEvent *event)
 
 
 void OGLWidget::destroy(bool destroyWindow, bool destroySubWindow){
-    glDeleteFramebuffers(1,&mainFBO.frameBuffer);
-    glDeleteTextures(1,&mainFBO.bindedTexture);
+    glDeleteFramebuffers(1,&mouseFBO.frameBuffer);
+    glDeleteTextures(1,&mouseFBO.bindedTexture);
     //glDeleteRenderbuffers(1,&render_buf);
 
+}
+FBOWrapper OGLWidget::getMouseFBO(){
+    return mouseFBO;
 }
 FBOWrapper OGLWidget::getMainFBO(){
     return mainFBO;
@@ -1165,6 +1204,15 @@ void OGLWidget::deleteFBO(FBOWrapper wrapper)
     glDeleteFramebuffers(1,&wrapper.frameBuffer);
 
 }
+void OGLWidget::updateGrid(){
+    if (CROSS_SHADER<shaderPrograms.length())
+    {
+        useShader(shaderPrograms[CROSS_SHADER]);
+        //qDebug() << "width:"<<windowGrid.getWidth();
+    shaderPrograms[CROSS_SHADER]->setUniformSize(windowGrid.getWidth(),windowGrid.getHeight());
+     useShader(0);
+    }
+}
 
 void OGLWidget::encoderAddWaitFrame()
 {
@@ -1173,13 +1221,15 @@ void OGLWidget::encoderAddWaitFrame()
 
 void OGLWidget::paintGL()
 {
+
+    updateGrid();
     //glDrawBuffer(GL_COLOR_ATTACHMENT1);
 
      glBindFramebuffer(GL_FRAMEBUFFER , 0);
-        test->use();
+   // useShader(test);
     //// qDebug() << "isClearFrameBuffer:"<<isClearFrameBuffer;
     if(isClearFrameBuffer)
-        clearFrameBuffer(mainFBO);
+        clearFrameBuffer(mouseFBO);
 //glDrawBuffer(GL_COLOR_ATTACHMENT0);
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // чистим буфер изображения и буфер глубины
@@ -1218,6 +1268,7 @@ void OGLWidget::paintGL()
 //WRITE TO FRAME BUFER FROM HERE
    // glBindFramebuffer(GL_FRAMEBUFFER,0);
     qglColor(Qt::white);
+    bindBuffer(mainFBO.frameBuffer);
     drawTexture(0, 0, wax, way, backGroundTexture, 0, 1, 1, -100000);
 //WRITE TO SCREEN FROM HERE
 //drawTextBuffer(10,10,400,400);
@@ -1233,7 +1284,7 @@ void OGLWidget::paintGL()
                  int leftCornerX2=x1 + editingRectangle.leftCornerSize/2;
                   int leftCornerY2=y1 + editingRectangle.leftCornerSize/2;
 
-
+disableShader();
                   if (editingRectangle.isEditingRectangleVisible && !forseEditBoxDisable && !isPainting && getStatus()!= PLAY)
                   {
 
@@ -1266,7 +1317,7 @@ void OGLWidget::paintGL()
                          glVertex3i(leftCornerX1, leftCornerY2, 100);
                        glEnd();
                   }
-
+enableShader();
 
 //if (isMousePlay)paintBrushInBuffer(true);
 
@@ -1277,23 +1328,63 @@ for(int i = 0; !timeLine->isBlocked && i < getList().size(); i++)
     ////qDebug() << "draw   " << i;
     if( getList()[i] != NULL && timeLine->getMaxTrackTime() > 0)
         getList()[i]->paint();
-    test->use();
+    //test->use();
 }
-
+ bindBuffer(mainFBO.frameBuffer);
 
 //glDisable(GL_DEPTH_TEST);
 
 
 
 if(curStatus == STOP)
-    paintBufferOnScreen(mainFBO,0, 0, wax, way,-100);
+    paintBufferOnScreen(mouseFBO,0, 0, wax, way,-100);
+//ENable global shaders for mainFBO
+QVector<ShaderProgramWrapper*> shaders;
+//shaderPrograms[CROSS_SHADER]->setUniformResolution(wax,way);
+if(curStatus == STOP && isMousePress)
+shaders.push_back(shaderPrograms[CROSS_SHADER]);
+bool drawToSecondBuffer = shaders.length()>0;//shaders.length()>1 && shaders.length()%2==0;
+for (int i=0;i<shaders.length();i++)
+{
+    //qDebug() << "FOR ";
+        if(drawToSecondBuffer)
+        {
+           // qDebug() <<" SECOND";
+           bindBuffer(pingpongFBO.frameBuffer);
+            useShader(shaders[i]);
+                paintBufferOnScreen(mainFBO,0, 0, mainFBO.tWidth,mainFBO.tHeight,0);
+            useShader(0);
+        }
+        else
+        {
+           // qDebug() <<" FIRST";
+        bindBuffer(mainFBO.frameBuffer);
+        useShader(shaders[i]);
+        paintBufferOnScreen(pingpongFBO,0, 0, pingpongFBO.tWidth,pingpongFBO.tHeight,0);
+        useShader(0);
+        }
+        drawToSecondBuffer=!drawToSecondBuffer;
+}
+if(!drawToSecondBuffer)
+{
+    //qDebug() <<" SECOND";
+   bindBuffer(pingpongFBO.frameBuffer);
+        paintBufferOnScreen(mainFBO,0, 0, mainFBO.tWidth,mainFBO.tHeight,0);
+    useShader(0);
+}
+
+
+//
+ bindBuffer(0);
+ paintBufferOnScreen(mainFBO,0, 0, wax, way,0);
 
 //glDisable(GL_BLEND);
 GLuint error = glGetError();
-
+//showLCP();
 glFinish();
 //////////////////////////////
-
+//glUseProgram(0);
+useShader(0);
 glFlush();
 swapBuffers();
 
@@ -1312,7 +1403,7 @@ void OGLWidget::paintEvent(QPaintEvent *event)
 
 }
 void OGLWidget::useShader(ShaderProgramWrapper *shader){
-
+//qDebug() << "before useShader currentShaderStack len:"<<currentShaderStack.length();
     if (shader==NULL){
         if (currentShaderStack.isEmpty())
             glUseProgram(0);
@@ -1321,14 +1412,27 @@ void OGLWidget::useShader(ShaderProgramWrapper *shader){
         currentShaderStack.pop();//Discard last shader nafig
         if (currentShaderStack.isEmpty()) glUseProgram(0);
         else
-        glUseProgram(currentShaderStack.pop()->getShaderProgram());
+        glUseProgram(currentShaderStack.last()->getShaderProgram());
         }
     }
     else {
     currentShaderStack.push(shader);
     glUseProgram(shader->getShaderProgram());
     }
+   // qDebug() << "after useShader currentShaderStack len:"<<currentShaderStack.length();
 }
+
+void OGLWidget::disableShader(){
+    //qDebug() << "disableShader:"<<currentShaderStack.length();
+    glUseProgram(0);
+}
+void OGLWidget::enableShader(){
+    //qDebug() << "enableShader:"<<currentShaderStack.length();
+    if (currentShaderStack.length()>0)
+    glUseProgram(currentShaderStack.last()->getShaderProgram());
+
+}
+
 
 void OGLWidget::resizeEvent(QResizeEvent *envent)
 {
@@ -1336,9 +1440,11 @@ void OGLWidget::resizeEvent(QResizeEvent *envent)
     //maxWidth = width() - marginLeft;
 }
 
+
 void OGLWidget::closeEvent(QCloseEvent *event)
 {
-    useShader(0);
+    //useShader(0);
+    disableShader();
     stopAnimated();
 
     pause(500);
@@ -1357,6 +1463,7 @@ setIsBrushWindowOpened(false);
 
 void OGLWidget::mousePressEvent(QMouseEvent *event)
 {
+
 getTimeLine()->emitFocusLostSignal();
     if(event->button() == Qt::RightButton)
     {
@@ -1483,7 +1590,6 @@ void OGLWidget::mouseReleaseEvent(QMouseEvent *event)
 }
 
 void OGLWidget::mouseMoveEvent ( QMouseEvent * event ){
-
     //mouseDrag
 if (event->buttons() & Qt::LeftButton) {
     mousePos.setX(event->x());
@@ -1507,14 +1613,14 @@ void OGLWidget::keyReleaseEvent(QKeyEvent *event)
 
 bool OGLWidget::event(QEvent *e)
 {
-
+//qDebug() << "event";
 
     switch(e->type())
     {
         // ...
 
         case QEvent::WindowActivate :
-         timeLine->setFocus();
+        // timeLine->setFocus();
             break ;
 
         case QEvent::WindowDeactivate :
@@ -1526,8 +1632,10 @@ bool OGLWidget::event(QEvent *e)
     return QGLWidget::event(e) ;
 }
 
+
 void OGLWidget::keyPressEvent(QKeyEvent *event)
 {
+    qDebug() << "keyPressEvent";
 
     if (event->key () == Qt::Key_Control  )
      pressedCtrl = true;
@@ -1683,7 +1791,7 @@ void OGLWidget::stopAnimated()
         //tickTimer.stop();
 
         //m_encoder->stop();
-        clearFrameBuffer(mainFBO);
+        clearFrameBuffer(mouseFBO);
         getTimeLine()->stop();
 
 
@@ -2339,7 +2447,9 @@ void OGLWidget::testWrap(int kIndexOfRow)
         i++;
     }*/
 }
-
+void OGLWidget::setCellSize(int size){
+  windowGrid.setSize(size);
+}
 
 void OGLWidget::displayText(QString const &text, QColor color,QFont font)
 {

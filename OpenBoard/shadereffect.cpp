@@ -134,28 +134,25 @@ int ShaderEffect::getShaderWrapperIndex()
     return shaderWrapperIndex;
 }
 
-void ShaderEffect::setUniformAnimationKey(OGLWidget *oglWidget,ShaderEffect shaderEffect, float keyFrame)
+void ShaderEffect::setUniformAnimationKey(ShaderEffect shaderEffect, float keyFrame)
 {
-    GLint keyUnifrom = oglWidget->context()->functions()->glGetUniformLocation(shaderEffect.getShaderWrapper()->getShaderProgram()
+    OGLWidget *glWidget = shaderEffect.getShaderWrapper()->getParentWidget();
+    GLint keyUnifrom = glWidget->context()->functions()->glGetUniformLocation(shaderEffect.getShaderWrapper()->getShaderProgram()
                         ,"animationKey");
-    //oglWidget->getShaderPrograms()[OGLWidget::ALPHA_SHADER].getShaderProgram()
-         //   float keyFrame = (float)(pDrawWidget->getTimeLine()->getPlayTime()-startDrawTime)/lifeTime;
 
-            //qDebug() << "KEY FRAME:"<<keyFrame<<"keyuniform:"<<keyUnifrom;
-            //oglWidget->context()->functions()->glUseProgram( oglWidget->getShaderPrograms()[0].getShaderProgram());
-            oglWidget->context()->functions()->glUniform1f(keyUnifrom,keyFrame);
+            glWidget->context()->functions()->glUniform1f(keyUnifrom,keyFrame);
 }
-void ShaderEffect::setUniformResolution(OGLWidget *oglWidget,ShaderEffect shaderEffect, float width, float height)
+void ShaderEffect::setUniformResolution(ShaderEffect shaderEffect, float width, float height)
 {
-    GLint keyUnifrom = oglWidget->context()->functions()->glGetUniformLocation(shaderEffect.getShaderWrapper()->getShaderProgram()
-                        ,"resolution");
-    oglWidget->context()->functions()->glUniform2f(keyUnifrom,width,height);
+   shaderEffect.getShaderWrapper()->setUniformResolution(width,height);
 }
 
-void ShaderEffect::setUniformReverse(OGLWidget *oglWidget, ShaderEffect shaderEffect, bool val)
+void ShaderEffect::setUniformReverse(ShaderEffect shaderEffect, bool val)
 {
-    GLint reverseUnifrom = oglWidget->context()->functions()->glGetUniformLocation(shaderEffect.getShaderWrapper()->getShaderProgram()
+    OGLWidget *glWidget = shaderEffect.getShaderWrapper()->getParentWidget();
+
+    GLint reverseUnifrom = glWidget->context()->functions()->glGetUniformLocation(shaderEffect.getShaderWrapper()->getShaderProgram()
                         ,"reverse");
-    oglWidget->context()->functions()->glUniform1i(reverseUnifrom,val);
+    glWidget->context()->functions()->glUniform1i(reverseUnifrom,val);
 
 }

@@ -1557,7 +1557,7 @@ void MainWindow::on_actionClear_drawing_triggered()
 {
 
 // qDebug() << "on_actionClear_drawing_triggered()";
-    mpOGLWidget->clearFrameBuffer(mpOGLWidget->getMainFBO());
+    mpOGLWidget->clearFrameBuffer(mpOGLWidget->getMouseFBO());
 //// qDebug() << mpOGLWidget->isClearFrameBuffer;
 
 }
