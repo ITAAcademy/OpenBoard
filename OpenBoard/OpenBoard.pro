@@ -40,8 +40,8 @@ SOURCES += main.cpp\
     editWidget/codeeditor.cpp \
     drawSystem/drawaudio.cpp\
     GLWidget/grid.cpp\
-    ../TimeLine/group.cpp\
-    drawSystem/drawbrush.cpp
+    ../TimeLine/group.cpp
+
 
 
 
@@ -67,7 +67,6 @@ HEADERS  += mainwindow.h \
     ../TimeLine/imageprovider.h \
     drawSystem/drawimage.h \
     ../Brush/imageclone.h \
-    drawSystem/drawbrush.h \
     ../NewProject/projectcreator.h \
     encoder/videodecoder.h \
     encoder/ffmpeg.h \
@@ -78,10 +77,11 @@ HEADERS  += mainwindow.h \
     shadereffect.h \
     shadertest.h \
     editWidget/codeeditor.h \
+    drawSystem/drawbrush.h\
     drawSystem/drawaudio.h\
     GLWidget/grid.h\
-    ../TimeLine/group.h\
-    drawSystem/drawbrush.h
+    ../TimeLine/group.h
+
 
 
 FORMS    += mainwindow.ui \
