@@ -129,6 +129,11 @@ focus: true
 
 
     property bool ctrl_pressed : false
+
+    onCtrl_pressedChanged: {
+        timeControll.setCtrlPressed(ctrl_pressed)
+        //console.log("AAAAAAAAAAAAAAAAAAAAA main222.ctrl_pressed" + ctrl_pressed)
+    }
          Keys.onPressed: {
               //console.log("AAAAAAAAAAAAAAAAAAAAA " + event.key)
           if(event.modifiers & Qt.ControlModifier) {
@@ -164,7 +169,6 @@ focus: true
              //ctrl release
                  if( event.key === 16777249) {
                      main222.ctrl_pressed = false
-                    ////console.log("AAAAAAAAAAAAAAAAAAAAA " + ctrl_pressed)
                      }
              }
 
@@ -291,6 +295,14 @@ scale_pointer.x = 0// timeControll.getMaxTrackTime() + scale_pointer.width/2 - s
 
 
        }
+
+       onBorderColorChangedSignal :
+       {
+           //rep_columns.itemAt(col).getBlock(ind).p_border_color = color; //!!!!!!!!!!!!!!!!!!!
+
+       }
+
+
        /*onSetScalePointerPosSignal: {
             main222.setScalePointerPos(value * main222.scaling)
        }*/
@@ -303,6 +315,15 @@ scale_pointer.x = 0// timeControll.getMaxTrackTime() + scale_pointer.width/2 - s
 
        onRemoveRectangleSignal:{
            yellow_rec.visible = false
+       }
+       onUpdateSelectedBlock: {
+          /* if (main222.ctrl_pressed)
+           {
+               var pp = point
+               console.log("AAAAAA  "  +   rep_columns.itemAt(pp.x).getBlock(pp.y).p_border_color)
+              rep_columns.itemAt(pp.x).getBlock(pp.y).p_border_color
+                          = timeControll.getBlockBorderColor(pp.x,pp.y);
+           }*/
        }
 
 
@@ -789,6 +810,14 @@ timeControll.setScalePointerPos((x  -20 + scroll.flickableItem.contentX)* main22
 
                                      return repka.itemAt(indexa).x
                                }
+
+                               function getBlock (indexa)
+                               {
+                                   // //console.log("repka.itemAt(indexa).x="+repka.itemAt(indexa).x)
+
+                                     return repka.itemAt(indexa)
+                               }
+
                                function enableTrackbarsButtons(value)
                                {
                                    trackbar.enableButtonsClick = value;
@@ -821,6 +850,7 @@ timeControll.setScalePointerPos((x  -20 + scroll.flickableItem.contentX)* main22
                                            property bool isDrag : false
                                            model:  timeControll.getTrackSize(trackbar.mIndex)//     bar_track.mIndex)
     function updateModel()      {
+        console.log("AAAAAAAAAAAAAAAAAA updateModel")
        model = 0
         model =  timeControll.getTrackSize(bar_track.mIndex)
          item_col.width = (timeControll.getMaxTrackTime()) / main222.scaling + 31
@@ -844,15 +874,16 @@ timeControll.setScalePointerPos((x  -20 + scroll.flickableItem.contentX)* main22
               repka.itemAt(i).animRunX( value)
           }
       }
-                                           delegate:
-                                           ContentBlock.Block{
-                                               id: cool
-                                               globalRep : repka
-                                               p_trackbar : trackbar
-                                               p_bar_track : bar_track
-                                               height:  100
-                                               mIndex: index
-                                                colIndex:  bar_track.mIndex
+                                   delegate:
+                                   ContentBlock.Block{
+                                       id: cool
+                                       globalRep : repka
+                                       p_trackbar : trackbar
+                                       p_bar_track : bar_track
+                                       p_border_color: timeControll.getBlockBorderColor(colIndex, mIndex)
+                                       height:  100
+                                       mIndex: index
+                                        colIndex:  bar_track.mIndex
                                    width:  timeControll.getBlockTime(colIndex, mIndex) / main222.scaling
                                     p_main222: main222
 

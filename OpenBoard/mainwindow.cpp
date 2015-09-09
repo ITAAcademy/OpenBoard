@@ -782,6 +782,7 @@ void MainWindow::on_action_Show_triggered()
     QPoint curentPos = mpOGLWidget->pos();
     curentPos.setY(curentPos.y() + mpOGLWidget->height());
     mpOGLWidget->getTimeLine()->setViewPosition(curentPos);
+    mpOGLWidget->getTimeLine()->setGlWindInited(true);
 
 }
 
@@ -812,6 +813,7 @@ void MainWindow::on_action_Hide_triggered()
 
     may_to_enable_BoardFontColor = false;
     setEnabledBoardFontColor(false);
+    mpOGLWidget->getTimeLine()->setGlWindInited(false);
 }
 
 void MainWindow::on_action_Clear_TextEdit_triggered()
@@ -856,7 +858,8 @@ void MainWindow::on_action_Board_Font_triggered()
     QPoint selected_block_point = mpOGLWidget->getTimeLine()->getSelectedBlockPoint();
     if (selected_block_point.x() < 0)
         return;
-    DrawTextElm* draw_element =(DrawTextElm*) mpOGLWidget->getTimeLine()->getBlock(selected_block_point).draw_element;
+    DrawTextElm* draw_element =(DrawTextElm*) mpOGLWidget->getTimeLine()->getBlock(selected_block_point);
+    if (draw_element != NULL)
     if (draw_element->getTypeId() != Element_type::Text)
         return;
 
@@ -924,7 +927,8 @@ void MainWindow::on_action_Color_triggered()
 QPoint selected_block_point = mpOGLWidget->getTimeLine()->getSelectedBlockPoint();
 if (selected_block_point.x() < 0)
     return;
-DrawTextElm* draw_element =(DrawTextElm*) mpOGLWidget->getTimeLine()->getBlock(selected_block_point).draw_element;
+DrawTextElm* draw_element =(DrawTextElm*) mpOGLWidget->getTimeLine()->getBlock(selected_block_point);
+if (draw_element != NULL)
 if (draw_element->getTypeId() != Element_type::Text)
     return;
 
@@ -1616,7 +1620,8 @@ void MainWindow::on_colorBtn_pressed()
     QPoint selected_block_point = mpOGLWidget->getTimeLine()->getSelectedBlockPoint();
     if (selected_block_point.x() < 0)
         return;
-    DrawTextElm* draw_element =(DrawTextElm*) mpOGLWidget->getTimeLine()->getBlock(selected_block_point).draw_element;
+    DrawTextElm* draw_element =(DrawTextElm*) mpOGLWidget->getTimeLine()->getBlock(selected_block_point);
+    if (draw_element != NULL)
     if (draw_element->getTypeId() != Element_type::Text)
         return;
 
@@ -1769,10 +1774,10 @@ void MainWindow::updateTextEditFromBlock(QPoint point)
     //qDebug() << "SHOW SELECTED  " << point;
     if(point.x() != -1)
     {
-        Element elm = mpOGLWidget->getTimeLine()->getBlock(point);
-        if(elm.draw_element->getTypeId() == Element_type::Text)
+        DrawElement* elm = mpOGLWidget->getTimeLine()->getBlock(point);
+        if(elm->getTypeId() == Element_type::Text)
         {
-            DrawTextElm *text_elm = (DrawTextElm *)elm.draw_element;
+            DrawTextElm *text_elm = (DrawTextElm *)elm;
             setEnabledToolBar(true);
             disconnect(textEdit, SIGNAL(textChanged()), this, SLOT(onTextChanged()));
             textEdit->newText();
@@ -1797,10 +1802,10 @@ void MainWindow::updateBlockFromTextEdit()
     //qDebug() << "IMAGE" << commandTextEdit->getPreviousCursorPosition();
     if(point.x() != -1 )
     {
-        Element elm = mpOGLWidget->getTimeLine()->getBlock(point);
-        if(elm.draw_element->getTypeId() == Element_type::Text)
+        DrawElement* elm = mpOGLWidget->getTimeLine()->getBlock(point);
+        if(elm->getTypeId() == Element_type::Text)
         {
-            DrawTextElm *text_elm = (DrawTextElm *)elm.draw_element;
+            DrawTextElm *text_elm = (DrawTextElm *)elm;
             text_elm->setDelay(ui->slider_speedTB->value()*10);
             text_elm->setUnParsestring(textEdit->toPlainText(), commandTextEdit->toPlainText());
              //qDebug() << "mUnitList.length after append:"<< mUnitList.length();
@@ -2255,8 +2260,9 @@ void MainWindow::enablingBoardFontColor(QPoint selected_block_point)
         set_enabled = false;
     else
     {
-    DrawTextElm* draw_element =(DrawTextElm*) mpOGLWidget->getTimeLine()->getBlock(selected_block_point).draw_element;
-    if (draw_element->getTypeId() != Element_type::Text)
+    DrawTextElm* draw_element =(DrawTextElm*) mpOGLWidget->getTimeLine()->getBlock(selected_block_point);
+    if (draw_element != NULL)
+       if (draw_element->getTypeId() != Element_type::Text)
         set_enabled = false;
     }
 

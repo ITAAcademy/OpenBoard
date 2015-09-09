@@ -13,6 +13,7 @@
 #include <QFileDialog>
 
 #include "group.h"
+#include <../OpenBoard/drawSystem/drawsystem.h>
 
 #include "../Brush/imageclone.h"
 
@@ -22,7 +23,7 @@ class DrawElement;
 
 #define minBlockTime 1000
 
-
+/*
 struct Element {
     QString key;
    // int lifeTime;
@@ -133,31 +134,31 @@ struct Element {
         return true;
     }
 
-};
+};*/
 
 struct Track {
     unsigned int time;
-    QList <Element> block;
+    QList <DrawElement *> block;
     Track() { }
-    Track( int time ,QList <Element> block ) {
+    Track( int time ,QList <DrawElement *> block ) {
         this-> time = time;
         this-> block = block;
     }
     void deleteClearBlocks ( ) {      
            while(block.size())
            {
-          block.last().clear();
+         delete block.last();
           block.pop_back();
            }
 
     }
-    void appendBlockAt(int ind,Element block_val)
+    void appendBlockAt(int ind,DrawElement *  block_val)
     {
        block.append(block_val);
        block.move( block.size()-1,ind);
 
 
-       time += block_val.draw_element->getLifeTime();
+       time += block_val->getLifeTime();
       // testWidth[col].append(200);
        //testColumnWidth[col]+=200;
      //  // //qDebug() << "SIZE   " << test.size();
@@ -172,7 +173,7 @@ struct Track {
         for (int i=0; i< block.size(); i++)
         {
              qDebug() << "block[i]:  " << i;
-            block[i].save(device);
+            block[i]->save(device);
          }
         return true;
     }
@@ -188,9 +189,48 @@ struct Track {
     //return true;
         for (int i=0; i< blocks_size; i++)
         {
-            Element temp;
-             temp.load(device);
-            block.append(temp);
+            DrawElement *draw_element;
+
+             draw_element->loadTypeId(device);
+
+            Element_type typeId = draw_element->getTypeId();// Element_type::Image;//static_cast<Element_type>(temp_type);
+
+             if(typeId == Element_type::Text)
+             {
+                 DrawTextElm *elm = new DrawTextElm(NULL);
+                         elm->loadRest(device);
+                         delete  draw_element;
+                         draw_element = (DrawElement*) elm;
+             }
+             else
+             if(typeId == Element_type::Image)
+             {
+                DrawImageElm *elm = new DrawImageElm(NULL,NULL);
+                         elm->loadRest(device);
+                         delete  draw_element;
+                         elm->setDrawImage(elm->getIcon());
+                         draw_element = (DrawElement*) elm;
+                         //draw_element->getIcon().save("blaaaaaaaaaaaaaaaaaaaaaa.jpg");
+
+             }
+             else
+             if(typeId == Element_type::Brushh)
+             {
+                DrawBrushElm *elm = new DrawBrushElm(NULL,NULL);
+                         elm->loadRest(device);
+                         delete  draw_element;
+                         draw_element = (DrawElement*) elm;
+             }
+             else
+             if(typeId == Element_type::Empty)
+             {
+                DrawElement *elm = new DrawElement(NULL,NULL);
+                         elm->loadRest(device);
+                         delete  draw_element;
+                         draw_element = (DrawElement*) elm;
+             }
+
+            block.append(draw_element);
             qDebug() << "load block[i]:  " << i;
         }
         return true;
@@ -198,7 +238,12 @@ struct Track {
     void clear()
     {
         for (int i=0; i< block.size(); i++)
-            block[i].clear();
+        {
+            if(block[i] != NULL)
+                delete block[i];
+            block[i] = NULL;
+
+        }
         block.clear();
         time = 0;
     }
@@ -211,7 +256,10 @@ class ListControll : public QObject, public QQuickImageProvider
 {
     Q_OBJECT
 
-    int blockHeightPlusSpacing = 100;
+    OGLWidget *drawWidget;
+    Group * curent_block_group = NULL;
+    QList <Group> block_groups;
+    int blockHeightPlusSpacing = 102;
     bool isEditBlockShow = false;
     bool isProjectChange = false;
     unsigned long int maxTrackTime ;
@@ -228,7 +276,7 @@ class ListControll : public QObject, public QQuickImageProvider
     QPoint selectedBlockPoint;
     int def_min_block_width = minBlockTime;
     int scale_pointer_pos = 0;
-    QList <Element> pointed_block;
+    QList <DrawElement*> pointed_block;
    // QList <Element> pointed_time_blocks;
     //  QVector< int > testColumnWidth;
     void recountMaxTrackTime();
@@ -237,11 +285,13 @@ class ListControll : public QObject, public QQuickImageProvider
     //QElapsedTimer timer;
       qint64 timerValue;
     qint64 time_sum;
-    Element block_in_buffer;
+    DrawElement * block_in_buffer;
     int life_time_in_buffer;
     bool buffer_is_full;
     QRect yellow_rec;
     int spacing_btw_blocks = 0;
+    bool ctrl_pressed = false;
+    bool glWindInited = false;
 public:
      int isPlayPauseStop = 3;
 
@@ -249,11 +299,11 @@ public:
     bool save(QIODevice* device);
     bool load(QIODevice* device);
 
-   Q_INVOKABLE void loadCurrentTextInTheFirstBlockWhenInit();
+
     volatile bool isBlocked = false;
     volatile int countBlocked = 0;
 
-    explicit ListControll(QObject *parent = 0);
+    explicit ListControll(/*OGLWidget *drawWidget = NULL ,*/QObject *parent = 0);
     ~ListControll();
 
     void show();
@@ -264,7 +314,14 @@ public:
     Q_INVOKABLE QPoint getViewPosition();
     bool isVisible();
     bool isActiveWindow();
-    Q_INVOKABLE bool attachBlock(int,int,int);
+    Q_INVOKABLE bool attachBlock(int col, int index, int value);
+
+     Q_INVOKABLE bool addBlockToGroup(DrawElement* block);
+    Q_INVOKABLE bool addBlockToGroup(int col,int ind);
+    Q_INVOKABLE bool removeBlockFromGroup(DrawElement* block);
+    Q_INVOKABLE void setCtrlPressed(bool value);
+    Q_INVOKABLE bool getCtrlPressed();
+
     Q_INVOKABLE bool setSpacingBtwBlocks(int);
     Q_INVOKABLE int getSpacingBtwBlocks();
     Q_INVOKABLE  bool isProjectChanged();
@@ -279,16 +336,16 @@ public:
     Q_INVOKABLE bool removeLastTrack();
     Q_INVOKABLE bool removeTrack(int col);
     Q_INVOKABLE void reverseBlocks(int col, int init_pos, int end_pos);
-    void setBlocks(int col,const  QList <Element> &value);
+    void setBlocks(int col,const  QList <DrawElement * > &value);
     Q_INVOKABLE   void setBlockKey(int col, int i, QString name);\
     Q_INVOKABLE void setBlockTime(int col, int i, int value);
     Q_INVOKABLE void setBlockStartTime(int col, int i, int value);
     Q_INVOKABLE int getBlockStartTime(int col, int i);
-    Q_INVOKABLE bool setBlockDrawElemet(DrawElement *elm, int col, int i);
+    //Q_INVOKABLE bool setBlockDrawElemet(DrawElement *elm, int col, int i);
     Q_INVOKABLE   bool removeBlock(int col, int i);
     Q_INVOKABLE int getBlockTime(int col, int i) ;
-    Q_INVOKABLE Element getBlock(int col, int i) ;
-    Q_INVOKABLE Element getBlock(QPoint point) ;
+    Q_INVOKABLE DrawElement *  getBlock(int col, int i) ;
+    Q_INVOKABLE DrawElement *  getBlock(QPoint point) ;
     Q_INVOKABLE int getTrackTime(int col) ;
     Q_INVOKABLE int getMaxTrackTime( ) ;
 
@@ -315,8 +372,8 @@ public:
    Q_INVOKABLE  void calcPointedBlocksAtTime(int ms );
     Q_INVOKABLE  void calcPointedBlocksAtTime( );
 
-  Q_INVOKABLE  QList <Element> getPointedBlocksAtTime( );
-    Q_INVOKABLE QList <Element> getPointedBlocks( );
+  Q_INVOKABLE  QList <DrawElement * > getPointedBlocksAtTime( );
+    Q_INVOKABLE QList <DrawElement * > getPointedBlocks( );
     QList <DrawElement*> getPointedBlocksDE( );
 
     Q_INVOKABLE void setBlockIcon(int col, int i, QImage icon);
@@ -379,6 +436,8 @@ public:
 Q_INVOKABLE  float getZoomSpeed() const;
  Q_INVOKABLE void setZoomSpeed(float value);
 
+ Q_INVOKABLE QString getBlockBorderColor(int col,int ind);
+
 Q_INVOKABLE  bool getIsEditBlockShow() const;
 Q_INVOKABLE  void setIsEditBlockShow(bool value);
 
@@ -388,7 +447,11 @@ Q_INVOKABLE  void setIsEditBlockShow(bool value);
   int getBlockHeightPlusSpacing() const;
   void setBlockHeightPlusSpacing(int value);
 
+  bool getGlWindInited() const;
+  void setGlWindInited(bool value);
+
 signals:
+  void borderColorChangedSignal(int col,int ind, QString color);
   void loadFromFileSignal();
   void drawRectangleSignal();
   void removeRectangleSignal();
