@@ -40,6 +40,7 @@ SOURCES += main.cpp\
     editWidget/codeeditor.cpp \
     drawSystem/drawaudio.cpp\
     GLWidget/grid.cpp\
+    ../TimeLine/group.cpp\
     drawSystem/drawbrush.cpp
 
 
@@ -77,8 +78,9 @@ HEADERS  += mainwindow.h \
     shadereffect.h \
     shadertest.h \
     editWidget/codeeditor.h \
-    drawSystem/drawaudio.h
-    GLWidget/grid.h
+    drawSystem/drawaudio.h\
+    GLWidget/grid.h\
+    ../TimeLine/group.h\
     drawSystem/drawbrush.h
 
 

@@ -12,6 +12,9 @@
 #include <qvector.h>
 #include <shadereffect.h>
 #include "../openglwidget.h"
+//#include "../TimeLine/group.h"
+
+class Group;
 
 enum Element_type { Text, Video, Audio, Image,Brushh,Empty};
 
@@ -30,12 +33,18 @@ struct AnimStateTime{
     }
 };
 
+
 class DrawElement : public QObject
 {
 
     Q_OBJECT
 
 protected:
+
+    QString block_border_color = "white";
+    Group *group_wich_el_belong = NULL;
+    int blockIndex = -1;
+    int blockColumn = -1;
     AnimStateTime anim_state_time;
     FBOWrapper fboWrapper;
     QImage icon;
@@ -136,7 +145,20 @@ public:
     void copy(DrawElement *elm);
     setFBOWrapper(FBOWrapper wrapper);
     bool save_image(QDataStream &stream, QString filePath,QImage::Format format = QImage::Format_ARGB32);
+    int getBlockIndex() const;
+    void setBlockIndex(int value);
+
+    int getBlockColumn() const;
+    void setBlockColumn(int value);
+
+    Group *getGroupWichElBelong() const;
+    void setGroupWichElBelong(Group *value);
+
+    QString getBlockBorderColor() const;
+    void setBlockBorderColor(const QString &value);
+
 signals:
+    void borderColorChangedSignal(int col, int ind ,QString color);
 
 public slots:
 

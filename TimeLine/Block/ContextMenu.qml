@@ -150,6 +150,7 @@ p_window3 = window3
 
        window3.columnIndex = main222.selectedBlockCol
        window3.blockIndex = main222.selectedBlockIndex
+       window3. block_time = timeControll.getBlockTime( window3.columnIndex,  window3.blockIndex)
         var anim_state_point = timeControll.getBlockAnimation(window3.columnIndex,window3.blockIndex )
        window3.anim_state = anim_state_point.x
           window3.anim_time = anim_state_point.y

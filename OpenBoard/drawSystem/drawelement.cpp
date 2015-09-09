@@ -48,12 +48,12 @@ bool DrawElement::setDrawWidget(OGLWidget *value)
        // qDebug()<<"BEFORE SETFBOWRAPPER";
         setFBOWrapper(pDrawWidget->initFboWrapper(pDrawWidget->getWax(),pDrawWidget->getWay()));//TODO
 
-    qDebug()<<"AFTER SETFBOWRAPPER";
 
  //qDebug()<<"AFTER SETFBOWRAPPER";
 
-}
+	}
     return true;
+
 }
 
 QString DrawElement::getKey() const
@@ -87,6 +87,7 @@ DrawElement::DrawElement(OGLWidget *drawWidget, QObject *parent) : QObject(paren
         connect(pDrawWidget, SIGNAL(stopSignal()), this, SLOT(stop()));
         connect(pDrawWidget, SIGNAL(pauseSignal()), this, SLOT(pause()));
     }
+
    // qDebug() << "RRRR BEFORE";
    // if (pDrawWidget)
 //fboWrapper=pDrawWidget->initFboWrapper();
@@ -149,6 +150,8 @@ void DrawElement::setAnimState(int value)
 
 void DrawElement::setAnimTime(int value)
 {
+    if (value > this->getLifeTime())
+        value = this->getLifeTime();
     anim_state_time.time = value;
     effects.clear();
     effects = ShaderEffect::creatEffectByNum(anim_state_time.state, value);
@@ -338,14 +341,56 @@ void DrawElement::paint()
         qWarning() << "In curent draw element fboWraper is not init!!!";
 }
 
+
+int DrawElement::getBlockIndex() const
+{
+    return blockIndex;
+}
+
+void DrawElement::setBlockIndex(int value)
+{
+    blockIndex = value;
+}
+
+int DrawElement::getBlockColumn() const
+{
+    return blockColumn;
+}
+
+void DrawElement::setBlockColumn(int value)
+{
+    blockColumn = value;
+}
+
+Group *DrawElement::getGroupWichElBelong() const
+{
+    return group_wich_el_belong;
+}
+
+void DrawElement::setGroupWichElBelong(Group *value)
+{
+    group_wich_el_belong = value;
+    qDebug() << "OOOOOOOOOOOOOOOO group_wich_el_belong = " << group_wich_el_belong;
+}
+
+QString DrawElement::getBlockBorderColor() const
+{
+    return block_border_color;
+}
+
+void DrawElement::setBlockBorderColor(const QString &value)
+{
+    block_border_color = value;
+    //emit borderColorChangedSignal(blockColumn,blockIndex,block_border_color);
+}
 void DrawElement::draw()
 {
-
+    
 }
 
 FBOWrapper DrawElement::getFBOWrapper()
 {
- return fboWrapper;
+    return fboWrapper;
 }
 
 DrawElement::setFBOWrapper(FBOWrapper wrapper)
@@ -383,6 +428,7 @@ bool DrawElement::loadTypeId(QIODevice* device)
     int temp_type;
     stream >> temp_type  ;
    typeId = static_cast<Element_type>(temp_type);
+
 }
 bool DrawElement::loadRest(QIODevice* device)
 {
@@ -399,6 +445,11 @@ bool DrawElement::loadRest(QIODevice* device)
     effects.resize(effectsLength);
 
    /* load_add(stream);
+=======
+        stream >> anim_state_time.state >>  anim_state_time.time;
+
+    load_add(stream);
+>>>>>>> origin/Time_line_lastGood
     //qDebug() << "load add";
     int effectsLength = 0;
     stream >> effectsLength;
@@ -412,7 +463,6 @@ bool DrawElement::loadRest(QIODevice* device)
      qDebug() << "load rest end";
     load_add(stream);
     qDebug() << "load add";
-
 
 }
 
@@ -431,11 +481,13 @@ bool DrawElement::save(QIODevice* device)
     else
        save_image(stream, icon );
 
+    stream << anim_state_time.state <<  anim_state_time.time;
     stream << effects.length();
     for (int i = 0 ; i < effects.length();i++)
         effects[i].save(stream);
 
     save_add(stream);
+
 
 }
 

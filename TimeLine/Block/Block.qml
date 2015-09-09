@@ -20,6 +20,10 @@ Rectangle{
     property Item p_bar_track
     property Item  p_main222
     property Item  p_drag
+     property color  p_border_color
+    onP_border_colorChanged: {
+        border_image.border.color = p_border_color
+    }
 
     property int animation_scale_normal_toYpos : 0
     property int animation_scale_normal_toXpos : 0
@@ -145,9 +149,12 @@ Rectangle{
                id: border_image
                width: background.width; height: background.height
                border.width:  background_rec.border_width  ;
-             border.color: "white"
+             border.color: "white"  //-=-=-=
              color: "transparent"
                z: 2
+               Component.onCompleted: {
+                   //root.p_border_color = border.color
+               }
            }
            Text {
                id: name
@@ -488,7 +495,8 @@ z: 0
                 if (root.double_click )
                 {
                     //context_menu.show(-1000, -1000,root.globalRep)
-                   context_menu.showEditBlock()
+                    if (!main222.ctrl_pressed)
+                         context_menu.showEditBlock()
                    root.double_click = false
                 }
                 else
@@ -1079,6 +1087,11 @@ root.globalRep.isDrag = false
                 // item_col.width = timeControll.getMaxTrackTime()// item_col.childrenRect.width
 
                  bChangeSize = false;
+                 if (main222.dovodka_block)
+                 {
+                     timeControll.attachBlock(root.colIndex, root.mIndex , 50)
+                     console.log("dovodka finish")
+                 }
                   root.globalRep.updateModel();
     ///console.log("2222222222222");
             }

@@ -3,6 +3,10 @@ import QtQuick.Controls 1.3
 import QtQuick.Window 2.2
 import QtGraphicalEffects 1.0
 
+import QtQuick.Controls.Styles 1.2
+import QtQuick.Layouts 1.0
+
+
 import "Block" as ContentBlock
 import "ToolBar" as ContentToolBar
 
@@ -80,6 +84,7 @@ Rectangle
    property bool left_rigth_entered : false
    property bool block_zayshow_sprava : false
    property Item p_toolbar
+   property bool dovodka_block : false
    onBlock_zayshow_spravaChanged: {
       // anim_
    }
@@ -124,6 +129,11 @@ focus: true
 
 
     property bool ctrl_pressed : false
+
+    onCtrl_pressedChanged: {
+        timeControll.setCtrlPressed(ctrl_pressed)
+        //console.log("AAAAAAAAAAAAAAAAAAAAA main222.ctrl_pressed" + ctrl_pressed)
+    }
          Keys.onPressed: {
               //console.log("AAAAAAAAAAAAAAAAAAAAA " + event.key)
           if(event.modifiers & Qt.ControlModifier) {
@@ -159,7 +169,6 @@ focus: true
              //ctrl release
                  if( event.key === 16777249) {
                      main222.ctrl_pressed = false
-                    ////console.log("AAAAAAAAAAAAAAAAAAAAA " + ctrl_pressed)
                      }
              }
 
@@ -258,6 +267,18 @@ scale_pointer.x = 0// timeControll.getMaxTrackTime() + scale_pointer.width/2 - s
 
     }
 
+    function drawYellowRectangle (xx,yy,widthh,heightt) {
+        yellow_rec.visible= true
+                   yellow_rec.x = xx
+                   yellow_rec.y = yy
+                   yellow_rec.width = widthh
+                   yellow_rec.height = heightt
+
+        console.log("function drawYellowRectangle (xx,yy,widthh,heightt)")
+
+        //p_icon_coloroverlay
+    }
+
      Connections {
        target: timeControll
 
@@ -274,9 +295,37 @@ scale_pointer.x = 0// timeControll.getMaxTrackTime() + scale_pointer.width/2 - s
 
 
        }
+
+       onBorderColorChangedSignal :
+       {
+           //rep_columns.itemAt(col).getBlock(ind).p_border_color = color; //!!!!!!!!!!!!!!!!!!!
+
+       }
+
+
        /*onSetScalePointerPosSignal: {
             main222.setScalePointerPos(value * main222.scaling)
        }*/
+
+
+      onDrawRectangleSignal: {
+          var rec = timeControll.getYellowRect()
+            main222.drawYellowRectangle(rec.x,rec.y,rec.width,rec.height)
+       }
+
+       onRemoveRectangleSignal:{
+           yellow_rec.visible = false
+       }
+       onUpdateSelectedBlock: {
+          /* if (main222.ctrl_pressed)
+           {
+               var pp = point
+               console.log("AAAAAA  "  +   rep_columns.itemAt(pp.x).getBlock(pp.y).p_border_color)
+              rep_columns.itemAt(pp.x).getBlock(pp.y).p_border_color
+                          = timeControll.getBlockBorderColor(pp.x,pp.y);
+           }*/
+       }
+
 
        onUpdateSignal:  {
           main222.play_time = timeControll.getPlayTime()
@@ -623,6 +672,72 @@ timeControll.setScalePointerPos((x  -20 + scroll.flickableItem.contentX)* main22
                   //context_menu.visible = false //123rr
 
               }
+              Rectangle {
+                  id: yellow_rec
+                  visible: false
+                   border { width: 3; color: "yellow" }
+                  color : "transparent"
+              }
+
+              Rectangle {
+                  id: draw_wnd
+                  visible: false
+                  width: 250
+                  x: 200
+                  z: 1200
+                  height: 500
+                  color: "red"
+
+                  GroupBox {
+                      //title: "Tab Position"
+                      ColumnLayout {
+                          id: rb_col_layout
+                  TextField   {
+                       id: draw_x
+                       width: 200
+                       font { pixelSize: 14 }
+                       y: 0
+                       x:  5
+                      text: ""
+                  }
+                  TextField   {
+                       id: draw_y
+                       width: 200
+                       font { pixelSize: 14 }
+                      // y: draw_x.height
+                       x:  5
+                      text: ""
+                  }
+                  TextField   {
+                       id: draw_width
+                       width: 200
+                       font { pixelSize: 14 }
+                      // y: 2*draw_y.height
+                       x:  5
+                      text: ""
+                  }
+                  TextField   {
+                       id: draw_height
+                       width: 200
+                       font { pixelSize: 14 }
+                       y: 3*draw_width.height
+                       x:  5
+                      text: ""
+                  }
+                  Button {
+                      width:  draw_height.width
+                     // y: 4*draw_height.height
+                      text: " OK draw it"
+                      onClicked: {
+                         /* timeControll.drawRectangle(draw_x.text,draw_y.text,
+                                                     draw_width.text,draw_height.text)*/
+                          timeControll.drawRectangle(200,200,200,200)
+                          draw_wnd.visible= false
+                      }
+                  }
+                      }
+                  }
+              }
 
 
 
@@ -652,8 +767,13 @@ timeControll.setScalePointerPos((x  -20 + scroll.flickableItem.contentX)* main22
                           width:  timeControll.getMaxTrackTime()
                           property Repeater globalRep
                           spacing: 2
+                          onSpacingChanged: {
+                             timeControll.setSpacingBtwBlocks(columns.spacing)
+                          }
+
                           Component.onCompleted: {
                           main222.p_columns = columns
+                           timeControll.setSpacingBtwBlocks(columns.spacing)
                           }
                           Repeater {
                           id: rep_columns
@@ -690,6 +810,14 @@ timeControll.setScalePointerPos((x  -20 + scroll.flickableItem.contentX)* main22
 
                                      return repka.itemAt(indexa).x
                                }
+
+                               function getBlock (indexa)
+                               {
+                                   // //console.log("repka.itemAt(indexa).x="+repka.itemAt(indexa).x)
+
+                                     return repka.itemAt(indexa)
+                               }
+
                                function enableTrackbarsButtons(value)
                                {
                                    trackbar.enableButtonsClick = value;
@@ -722,6 +850,7 @@ timeControll.setScalePointerPos((x  -20 + scroll.flickableItem.contentX)* main22
                                            property bool isDrag : false
                                            model:  timeControll.getTrackSize(trackbar.mIndex)//     bar_track.mIndex)
     function updateModel()      {
+        console.log("AAAAAAAAAAAAAAAAAA updateModel")
        model = 0
         model =  timeControll.getTrackSize(bar_track.mIndex)
          item_col.width = (timeControll.getMaxTrackTime()) / main222.scaling + 31
@@ -745,15 +874,16 @@ timeControll.setScalePointerPos((x  -20 + scroll.flickableItem.contentX)* main22
               repka.itemAt(i).animRunX( value)
           }
       }
-                                           delegate:
-                                           ContentBlock.Block{
-                                               id: cool
-                                               globalRep : repka
-                                               p_trackbar : trackbar
-                                               p_bar_track : bar_track
-                                               height:  100
-                                               mIndex: index
-                                                colIndex:  bar_track.mIndex
+                                   delegate:
+                                   ContentBlock.Block{
+                                       id: cool
+                                       globalRep : repka
+                                       p_trackbar : trackbar
+                                       p_bar_track : bar_track
+                                       p_border_color: timeControll.getBlockBorderColor(colIndex, mIndex)
+                                       height:  100
+                                       mIndex: index
+                                        colIndex:  bar_track.mIndex
                                    width:  timeControll.getBlockTime(colIndex, mIndex) / main222.scaling
                                     p_main222: main222
 
