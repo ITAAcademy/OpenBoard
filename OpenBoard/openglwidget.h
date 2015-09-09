@@ -272,6 +272,7 @@ public:
     FBOWrapper getMainFBO();
     void setCellSize(int size);
     void updateGrid();
+    void showLCP();
 public slots:
     void setAbleDrawing(bool value);
    // void clearFrameBuffer();

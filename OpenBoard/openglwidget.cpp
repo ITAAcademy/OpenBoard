@@ -432,18 +432,23 @@ void OGLWidget::processMouse()
 
 
      switch(editingRectangle.editingRectangleMode){
+
     case EDIT_RECTANGLE_MOVE:
+      {
          m_manager.setAbleToDraw(false);
         // // //qDebug()<<"EDIT_RECTANGLE_MOVE width"<<editingRectangle.rect.width();
          //if (isPainting)
-         {
-         editingRectangle.rect.moveTo(mousePos.x() - mousePressPos.x(), //-editingRectangle.rect.width()/2
-                                mousePos.y() - mousePressPos.y() ); //-editingRectangle.rect.height()/2
-         }
 
+         QPoint closestPoint = windowGrid.closeToLCP(mousePos);
+editingRectangle.rect.moveTo(closestPoint);
+
+         //editingRectangle.rect.moveTo(mousePos.x() - mousePressPos.x(), //-editingRectangle.rect.width()/2
+                   //             mousePos.y() - mousePressPos.y() ); //-editingRectangle.rect.height()/
 
      break;
+     }
      case EDIT_RECTANGLE_RESIZE:
+     {
           m_manager.setAbleToDraw(false);
          // //qDebug()<<"EDIT_RECTANGLE_RESIZE";
         //  if (isPainting)
@@ -453,6 +458,7 @@ void OGLWidget::processMouse()
          }
 
         break;
+     }
      }
      testRectangle();
         if ( m_manager.isAbleToDraw() && prevMousePos != mousePos)
@@ -672,7 +678,7 @@ qDebug() <<  "OGL WIDGET MID";
 */
    getTimeLine()->setIsProjectChanged(false);
    oglFuncs=this;
-   windowGrid=Grid(GRID_CELL_SIZE);
+   windowGrid=Grid(GRID_CELL_SIZE,wax,way);
    qDebug() <<  "OGL WIDGET COnstructor end";
 }
 void OGLWidget::bindBuffer(GLuint buffer){
@@ -917,6 +923,17 @@ QImage OGLWidget::twiceImageSizeWithouScaling(QImage img)
     painter.drawImage(destPos, img);
     painter.end();
     return result;
+}
+
+void OGLWidget::showLCP()
+{
+    glPointSize(10);
+    glBegin(GL_POINTS);
+    for (QPoint lcp : windowGrid.getLCP()){
+        glVertex2f(lcp.x(),lcp.y());
+    }
+    glEnd();
+
 }
 
 
@@ -1354,7 +1371,7 @@ if(!drawToSecondBuffer)
 
 //glDisable(GL_BLEND);
 GLuint error = glGetError();
-
+//showLCP();
 glFinish();
 //////////////////////////////
 //glUseProgram(0);
