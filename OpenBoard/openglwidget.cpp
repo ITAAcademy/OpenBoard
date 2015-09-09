@@ -2168,6 +2168,11 @@ void OGLWidget::drawQImage(int x, int y, QImage img, int z)
 
 void OGLWidget::drawQImageFromTexture(int x, int y, QImage img, GLuint index, int z)
 {
+    if(img.isNull())
+    {
+        qDebug() << "BAD IMAGE";
+        return;
+    }
     glPushMatrix();
     QImage res = img;
     res = QGLWidget::convertToGLFormat(res);

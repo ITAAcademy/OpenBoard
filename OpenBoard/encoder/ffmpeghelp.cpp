@@ -38,7 +38,7 @@ FFmpegHelp::Frame FFmpegHelp::getNextFrame(qint64 time)
         baseTime = vDecoder->baseTime;
     else
         baseTime = aDecoder->baseTime;
-    //qDebug() << "BASE_TIME  " << baseTime;
+    qDebug() << "BASE_TIME  " << baseTime;
 
     while( time >= baseTime &&  av_read_frame(formatContext, &Packet) >= 0 )
     {

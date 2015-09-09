@@ -439,6 +439,7 @@ bool DrawElement::loadRest(QIODevice* device)
         icon = load_image(stream);
 
     int effectsLength = 0;
+    stream >> anim_state_time.state >>  anim_state_time.time;
     stream >> effectsLength;
     qDebug() << "effectsLength:"<<effectsLength;
     effects.clear();
@@ -446,7 +447,7 @@ bool DrawElement::loadRest(QIODevice* device)
 
    /* load_add(stream);
 =======
-        stream >> anim_state_time.state >>  anim_state_time.time;
+
 
     load_add(stream);
 >>>>>>> origin/Time_line_lastGood

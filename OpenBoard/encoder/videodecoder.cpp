@@ -176,7 +176,10 @@ QImage VideoDecoder::getNextFrame(AVPacket &videoPacket, qint64 time)
    // qDebug() << "PTS" << videoPacket.pts;
    // qDebug() << "DTS" << videoPacket.dts;
     if(!init)
+    {
+        qDebug() << "NO_DECODER";
         return QImage();
+    }
 
     int len;
     int finish = 0;
@@ -217,8 +220,8 @@ QImage VideoDecoder::getNextFrame(AVPacket &videoPacket, qint64 time)
         qint64 seconds= (videoPacket.dts - stream->start_time) * av_q2d(stream->time_base)*1000;
       //  qDebug() << "V_SECONDS    " << seconds;
         baseTime = seconds;
-        if(time <= seconds)
-            frameFinished = true;
+        /*if(time <= seconds)
+            frameFinished = true;*/
     }
 
 

@@ -213,41 +213,55 @@ struct Track {
              {
                  DrawTextElm *elm = new DrawTextElm(NULL);
                          elm->loadRest(device);
-                         delete  draw_element;
+                        // delete  draw_element;
                          draw_element = (DrawElement*) elm;
              }
-             else
+
              if(typeId == Element_type::Image)
              {
                 DrawImageElm *elm = new DrawImageElm(NULL,NULL);
                          elm->loadRest(device);
-                         delete  draw_element;
+                         //delete  draw_element;
                          elm->setDrawImage(elm->getIcon());
                          draw_element = (DrawElement*) elm;
                          //draw_element->getIcon().save("blaaaaaaaaaaaaaaaaaaaaaa.jpg");
 
              }
-             else
+
              if(typeId == Element_type::Brushh)
              {
                 DrawBrushElm *elm = new DrawBrushElm(NULL,NULL);
                          elm->loadRest(device);
-                         delete  draw_element;
+                         //delete  draw_element;
                          draw_element = (DrawElement*) elm;
              }
-             else
+
              if(typeId == Element_type::Empty)
              {
                 DrawElement *elm = new DrawElement(NULL,NULL);
                          elm->loadRest(device);
-                         delete  draw_element;
+                         //delete  draw_element;
+                         draw_element = (DrawElement*) elm;
+             }
+             if(typeId == Element_type::Video)
+             {
+                DrawVideoElm *elm = new DrawVideoElm(NULL,NULL);
+                         elm->loadRest(device);
+                         //delete  draw_element;
+                         draw_element = (DrawElement*) elm;
+             }
+             if(typeId == Element_type::Audio)
+             {
+                DrawAudioElm *elm = new DrawAudioElm(NULL,NULL);
+                         elm->loadRest(device);
+                         //delete  draw_element;
                          draw_element = (DrawElement*) elm;
              }
 
             block.append(draw_element);
             qDebug() << "load block[i]:  " << i;
         }
-        qDebug() << "bool load(QIODevice* device) finished";
+        qDebug() << "block size" << block.size();
         return true;
     }
     void clear()

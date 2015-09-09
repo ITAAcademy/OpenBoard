@@ -299,25 +299,24 @@ void ListControll::loadFromFile()
     }
 
    DrawElement* temp = tracks[p.x()].block[p.y()];
-  /* int life_time = temp->getLifeTime();
+   int life_time = temp->getLifeTime();
    int new_life_time = elm->getLifeTime();
-   int start_time = temp.draw_element->getStartDrawTime();
-   delete temp.draw_element;
-   temp.key = elm->getKey();
-   temp.draw_element = elm;
-   temp.draw_element->setLifeTime(life_time);
+   int start_time = temp->getStartDrawTime();
+   delete temp;
+   tracks[p.x()].block[p.y()] = elm;
+   temp = elm;
+   temp->setLifeTime(life_time);
    qDebug() << "LIFE_TIME" << life_time;
    if(life_time == 1000)
        setBlockTime(p.x(), p.y(), new_life_time);
-   temp.draw_element->setStartDraw(start_time);
-   temp.draw_element->setZ(p.x());*/
-   delete temp;
+   temp->setStartDraw(start_time);
+   temp->setZ(p.x());
+
    elm->setBlockColumn(temp->getBlockColumn());
    elm->setBlockIndex(temp->getBlockIndex());
-   temp = elm;
 
    calcPointedBlocks();
- int new_life_time = elm->getLifeTime();
+// int new_life_time = elm->getLifeTime();
    emit updateSelectedBlock(selectedBlockPoint);
    sendUpdateModel();
 
@@ -1423,7 +1422,7 @@ QImage ListControll::requestImage(const QString &id, QSize *size, const QSize &r
         DrawTextElm *text = new DrawTextElm(NULL);
         text->copy(elm);
         delete elm;
-        elm = text;
+        tracks[selectedBlockPoint.x()].block[selectedBlockPoint.y()] = text;
         emit updateSelectedBlock(selectedBlockPoint);
         calcPointedBlocks();
         setBlocked(false);
