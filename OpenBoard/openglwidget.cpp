@@ -1924,8 +1924,8 @@ storeMousePos();
      current_millisecs = QDateTime::currentMSecsSinceEpoch();
    if ((current_millisecs - last_milisecs_drawn) >= 1000/frameRate)
    {
-       emit windowUpdating(current_millisecs-last_milisecs_drawn);
-last_milisecs_drawn=current_millisecs;
+       emit windowUpdating(1000/frameRate);
+        last_milisecs_drawn=current_millisecs;
        updateGL();
 
    }

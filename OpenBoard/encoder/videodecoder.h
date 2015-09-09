@@ -34,9 +34,9 @@ class VideoDecoder : public QObject
 
 
 public:
-    bool init;
-    int64_t duration;
-    int64_t baseTime;
+    bool init = false;
+    int64_t duration = 0;
+    int64_t baseTime = 0;
 public:
     explicit VideoDecoder(QObject * parent, AVFormatContext *formatContext);
 

@@ -29,6 +29,7 @@ void AudioDecoder::seekFile(int ms)
 {
     qDebug() << "seekFile();";
     avformat_seek_file(formatContext, audioStream,INT64_MIN, ms, INT64_MAX, 0 );
+    baseTime = 0;
     audioBuffer.clear();
 }
 void AudioDecoder::stateChanged(QAudio::State state)
@@ -39,6 +40,11 @@ void AudioDecoder::stateChanged(QAudio::State state)
 int AudioDecoder::getFrameFinished() const
 {
     return frameFinished;
+}
+
+int64_t AudioDecoder::getDuration() const
+{
+    return duration;
 }
 AudioDecoder::AudioDecoder(QObject * parent, AVFormatContext *formatContext ): QObject( parent ),  m_pullTimer(new QTimer(this))
 {
@@ -69,6 +75,14 @@ void AudioDecoder::initAudioDecoder()
     audioCodec = avcodec_find_decoder(audioCodecContext->codec_id);
     //qDebug() << "codec ID" << audioCodecContext->codec_id;
     avcodec_open2(audioCodecContext, audioCodec, &optionsDict);
+
+    int secs = formatContext->duration / AV_TIME_BASE;
+    int us = formatContext->duration % AV_TIME_BASE;
+    int l = secs*1000 + us/1000;
+
+    //dumpFormat(pFormatCtx,videoStream,"test video",0);
+
+    duration = l;
 
     //med_buffer = (unsigned char*)malloc(AVCODEC_MAX_AUDIO_FRAME_SIZE + FF_INPUT_BUFFER_PADDING_SIZE);
 
@@ -328,6 +342,10 @@ QByteArray AudioDecoder::nextFrame(AVPacket &audioPacket, qint64 time)
                     }*/
 
                 }
+                AVStream *stream = formatContext->streams[audioStream];
+                qint64 seconds= (audioPacket.dts - stream->start_time) * av_q2d(stream->time_base)*1000;
+                //qDebug() << "V_SECONDS    " << seconds;
+                baseTime = seconds;
             }
             audioPacket.size -= len;
             audioPacket.data += len;

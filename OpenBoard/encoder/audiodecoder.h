@@ -84,6 +84,9 @@ class AudioDecoder : public QObject
     QList<AudioBuff> audioBuffer;
 
 public:
+    int64_t duration = 0;
+    int64_t baseTime = 0;
+
     explicit AudioDecoder(QObject * parent, AVFormatContext *formatContext );
     void initAudioDecoder();
     ~AudioDecoder();
@@ -92,6 +95,8 @@ public:
     void setAudioPacket(const AVPacket &value);
     qint64 getDTSFromMS(int ms);
     int getFrameFinished() const;
+
+    int64_t getDuration() const;
 
 public slots:
     void stateChanged(QAudio::State state);

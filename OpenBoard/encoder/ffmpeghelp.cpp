@@ -11,7 +11,7 @@ int FFmpegHelp::initFF(QString path)
     formatContext = (AVFormatContext*)openVideoStream( path );
     //videoThread.start();
     //audioThread.start();
-
+    qDebug() << "FORMAT "   << formatContext;
     vDecoder = new VideoDecoder(0, formatContext );
     aDecoder = new AudioDecoder(0, formatContext);
 
@@ -33,22 +33,29 @@ FFmpegHelp::Frame FFmpegHelp::getNextFrame(qint64 time)
     QImage vNext;
     QByteArray aNext;
    // qDebug() << time;
+    qint64 baseTime;
+    if(vDecoder->init)
+        baseTime = vDecoder->baseTime;
+    else
+        baseTime = aDecoder->baseTime;
+    //qDebug() << "BASE_TIME  " << baseTime;
 
-    while( time >= vDecoder->baseTime &&  av_read_frame(formatContext,&Packet) >= 0 )
+    while( time >= baseTime &&  av_read_frame(formatContext, &Packet) >= 0 )
     {
-
-        int dts = Packet.dts;
         vNext = QImage(vDecoder->getNextFrame(Packet, time));
         aNext +=  aDecoder->nextFrame(Packet, time);
 
                 //qDebug() << aDecoder->getDTSFromMS(time) << "   " << dts << arr.size();
         av_free_packet(&Packet);
 
+        if(vDecoder->init)
+            baseTime = vDecoder->baseTime;
+        else
+            baseTime = aDecoder->baseTime;
+
 
         //aDecoder->nextFrame(Packet);
     }
-    if(vNext.isNull())
-        vNext =  QImage(800,600, QImage::Format_RGBA8888_Premultiplied);
     return Frame(vNext, aNext);
 
 }
@@ -62,7 +69,10 @@ void FFmpegHelp::restart()
 
 long FFmpegHelp::getDuration()
 {
-    return vDecoder->duration * 1000;
+    if(vDecoder->init)
+        return vDecoder->getVideoLengthMs();
+    else
+        return aDecoder->getDuration();
 }
 
 long FFmpegHelp::getPTS()

@@ -5,6 +5,7 @@
 #include "drawimage.h"
 #include "drawbrush.h"
 #include "drawvideo.h"
+#include "drawaudio.h"
 
 static inline QString mSuffixFromFilter(const QString &filter, QString name)
 {
@@ -97,6 +98,16 @@ static DrawElement *GenerationDrawElement( QString path, OGLWidget *drawWidget =
         elm->setTypeId(Element_type::Video);
         elm->setKey(target.baseName());
         qDebug() << "Create video object successful";
+        return (DrawElement*) elm;
+    }
+
+    if(format == "mp3" || format == "flac" || format == "wav")
+    {
+        DrawAudioElm *elm = new DrawAudioElm(drawWidget, parent);
+        elm->setAudioFile(path);
+        elm->setTypeId(Element_type::Audio);
+        elm->setKey(target.baseName());
+        qDebug() << "Create audio object successful";
         return (DrawElement*) elm;
     }
     return NULL;

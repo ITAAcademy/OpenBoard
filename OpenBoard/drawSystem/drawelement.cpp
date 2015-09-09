@@ -127,23 +127,33 @@ void DrawElement::setAnimStateTime(AnimStateTime value)
 
 void DrawElement::setAnimStateTime(int stat, int tim)
 {
-    setAnimStateTime(AnimStateTime(stat,tim));
+    //setAnimStateTime(AnimStateTime(stat,tim));
+    setAnimState(stat);
+    setAnimTime(tim);
     qDebug() << "DrawElement::setAnimStateTime = " << tim;
 }
 
 void DrawElement::setAnimStateTime(QPoint pp)
 {
-    setAnimStateTime(AnimStateTime(pp.x(),pp.y()));
+    setAnimStateTime(pp.x(), pp.y());
 }
 
 void DrawElement::setAnimState(int value)
 {
     anim_state_time.state = value;
+    effects.clear();
+    effects = ShaderEffect::creatEffectByNum(value, anim_state_time.time);
+    for (int i = 0; i <effects.length(); i++)
+        effects[i].setShaderWrapper(pDrawWidget->getShaderPrograms()[effects[i].getShaderWrapperIndex()]);
 }
 
 void DrawElement::setAnimTime(int value)
 {
     anim_state_time.time = value;
+    effects.clear();
+    effects = ShaderEffect::creatEffectByNum(anim_state_time.state, value);
+    for (int i = 0; i <effects.length(); i++)
+        effects[i].setShaderWrapper(pDrawWidget->getShaderPrograms()[effects[i].getShaderWrapperIndex()]);
     qDebug() << "DrawElement::setAnimTime(int value) " << anim_state_time.time;
 }
 
@@ -322,7 +332,7 @@ bool DrawElement::load(QString path)
     QFile appFile(path);
     if(!appFile.exists())
         return false;
-    lastPath = path;
+    //lastPath = path; //@BUG@09/09/NicolasFix
     appFile.open(QFile::ReadOnly);
     this->load(&appFile);   
     appFile.close();
@@ -389,6 +399,7 @@ bool DrawElement::save(QIODevice* device)
     stream << temp_type << key << lifeTime << tickTime << startDrawTime << x << y << z << width << height << keyCouter;
     //if (typeId == Element_type::Image)
         //save_image(stream, icon);
+    qDebug() << "qwewqewqeqewqQQQQ  " << lastPath;
     if (!lastPath.isEmpty())
        resultStatus = save_image(stream,lastPath,icon.format());
     else

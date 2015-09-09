@@ -244,7 +244,7 @@ void AV_REncoder::run()
             {
                 if(bRun)
                     m_encoder->encodeVideoFrame(frame);
-                qDebug() << "PERFORM AUDIO " << waitForFrame << "   audioBuffer " << audioBuffer.size();
+                //qDebug() << "PERFORM AUDIO " << waitForFrame << "   audioBuffer " << audioBuffer.size();
                 if(audioBuffer.size() > 0 && audioBuffer.size() >= waitForFrame)
                 {
                     unsigned int minBlock = -1;
@@ -261,7 +261,7 @@ void AV_REncoder::run()
                     }
 
                     QList<void*> itList = audioBuffer.keys();
-                    qDebug() << "MIN_AUDIO_BLOCK    " << minBlock;
+                   // qDebug() << "MIN_AUDIO_BLOCK    " << minBlock;
                     if(minBlock > 0)
                     {
                         QByteArray res;
@@ -296,7 +296,7 @@ void AV_REncoder::run()
                 }
                 else if(waitForFrame == 0)
                 {
-                    qDebug() << "PERFORM AUDIO NULL";
+//                    qDebug() << "PERFORM AUDIO NULL";
                     QByteArray bytes;
                     bytes.resize(5644);
                     bytes.fill(0,5644);

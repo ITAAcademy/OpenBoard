@@ -12,7 +12,8 @@ AVCodecContext *VideoDecoder::getVideoCodecContext() const
 void VideoDecoder::seekFile(int ms)
 {
     qDebug() << "seekFile();";
-    avformat_seek_file(videoFormatContext, videoStream,INT64_MIN, ms, INT64_MAX, 0 );
+    if(init)
+        avformat_seek_file(videoFormatContext, videoStream,INT64_MIN, ms, INT64_MAX, 0 );
     baseTime = 0;
 }
 
@@ -24,13 +25,16 @@ int VideoDecoder::getFrameFinished() const
 
 QSize VideoDecoder::getSize()
 {
-    return QSize(videoCodecContext->width, videoCodecContext->height);
+    if(init)
+        return QSize(videoCodecContext->width, videoCodecContext->height);
+    else
+        return QSize(640, 480);
 }
 VideoDecoder::VideoDecoder(QObject *parent, AVFormatContext *formatContext) :QObject(parent)
 {
     videoFormatContext = formatContext;
     initVideoDecoder();
-    // init = true;
+
 }
 
 VideoDecoder::~VideoDecoder()
@@ -69,7 +73,7 @@ int VideoDecoder::initVideoDecoder()
       }
     if(videoStream==-1)
     {
-      //qDebug() << "Didn't find a video stream";
+      qDebug() << "Didn't find a video stream";
       return -1; // Didn't find a video stream
     }
 
@@ -82,7 +86,7 @@ int VideoDecoder::initVideoDecoder()
     //qDebug() << "Codec ID   " << videoCodecContext->codec_id;
     videoCodec=avcodec_find_decoder(videoCodecContext->codec_id);
     if(videoCodec==NULL) {
-      //qDebug() << "Codec not found";
+      qDebug() << "Codec not found";
       return -1; // Codec not found
     }
     else
@@ -90,7 +94,7 @@ int VideoDecoder::initVideoDecoder()
     // Open codec
     if(avcodec_open2(videoCodecContext, videoCodec, &optionsDict)<0)
     {
-        //qDebug() << "Could not open codec";
+        qDebug() << "Could not open codec";
         return -1; // Could not open codec
     }
 
@@ -100,7 +104,7 @@ int VideoDecoder::initVideoDecoder()
     // Allocate an AVFrame structure
     videoFrameRGB=av_frame_alloc();
     if(videoFrameRGB==NULL){
-        //qDebug() << "Allocate an AVFrame structure";
+        qDebug() << "Allocate an AVFrame structure";
         return -1;
     }
 
@@ -171,6 +175,8 @@ QImage VideoDecoder::getNextFrame(AVPacket &videoPacket, qint64 time)
 //    //qDebug() << "SIZE   " << videoPacket.size;
    // qDebug() << "PTS" << videoPacket.pts;
    // qDebug() << "DTS" << videoPacket.dts;
+    if(!init)
+        return QImage();
 
     int len;
     int finish = 0;
@@ -209,7 +215,7 @@ QImage VideoDecoder::getNextFrame(AVPacket &videoPacket, qint64 time)
 
         AVStream *stream = videoFormatContext->streams[videoStream];
         qint64 seconds= (videoPacket.dts - stream->start_time) * av_q2d(stream->time_base)*1000;
-        //qDebug() << "V_SECONDS    " << seconds;
+      //  qDebug() << "V_SECONDS    " << seconds;
         baseTime = seconds;
         if(time <= seconds)
             frameFinished = true;

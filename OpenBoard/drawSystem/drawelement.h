@@ -13,7 +13,7 @@
 #include <shadereffect.h>
 #include "../openglwidget.h"
 
-enum Element_type { Text, Video, Image,Brushh,Empty};
+enum Element_type { Text, Video, Audio, Image,Brushh,Empty};
 
 struct AnimStateTime{
     int state; //no anim = 0,begin = 1,end = 2, begin & end =3
@@ -55,6 +55,7 @@ protected:
     OGLWidget *pDrawWidget;
     bool bPause;
     bool bPlay;
+    bool effectChange = false;
 
     QString lastPath;
     virtual void draw();

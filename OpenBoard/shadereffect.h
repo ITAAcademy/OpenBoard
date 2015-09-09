@@ -37,6 +37,11 @@ public:
     void setReverse(bool value);
     bool getAnchorToEnd() const;
     void setAnchorToEnd(bool value);
+
+    static QVector<ShaderEffect> creatStartEndEffect( int time );
+    static QVector<ShaderEffect> creatEndEffect(int time);
+    static QVector<ShaderEffect> creatStartEffect( int time );
+    static QVector<ShaderEffect> creatEffectByNum( int num, int time );
 };
 
 #endif // SHADEREFFECT_H

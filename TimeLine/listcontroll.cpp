@@ -212,7 +212,7 @@ void ListControll::loadFromFile()
        return;
    }
 
-    if (elm->getTypeId() == 2)
+    if (elm->getTypeId() == Element_type::Image)
     {
       QSize image_size = QPixmap(open).size();
        emit imageLoadedPictureSizeSignal(image_size);
@@ -226,13 +226,15 @@ void ListControll::loadFromFile()
    temp.key = elm->getKey();
    temp.draw_element = elm;
    temp.draw_element->setLifeTime(life_time);
+   qDebug() << "LIFE_TIME" << life_time;
+   if(life_time == 1000)
+       setBlockTime(p.x(), p.y(), new_life_time);
    temp.draw_element->setStartDraw(start_time);
    temp.draw_element->setZ(p.x());
 
    calcPointedBlocks();
 
    emit updateSelectedBlock(selectedBlockPoint);
-   setBlockTime(p.x(), p.y(), new_life_time);
    sendUpdateModel();
 
    setBlocked(false);

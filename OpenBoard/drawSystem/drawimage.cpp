@@ -27,7 +27,7 @@ DrawImageElm::DrawImageElm(OGLWidget *drawWidget, QObject *parent) : DrawElement
     setTypeId(Element_type::Image);
     if(gif != NULL)
         delete gif;
-    ShaderEffect alphaEffect(OGLWidget::ALPHA_SHADER);
+   /* ShaderEffect alphaEffect(OGLWidget::ALPHA_SHADER);
     ShaderEffect alphaEffect2(OGLWidget::ALPHA_SHADER);
     ShaderEffect spiralEffect(OGLWidget::SPIRAL_SHADER);
     alphaEffect.setEffectTimeHowLong(500);
@@ -47,6 +47,7 @@ DrawImageElm::DrawImageElm(OGLWidget *drawWidget, QObject *parent) : DrawElement
      effects.push_back(alphaEffect2); //ADD DEFAULT EFFECT
      //effects.push_back(alphaEffect2); //ADD DEFAULT EFFECT
      //effects.push_back(spiralEffect); //ADD DEFAULT EFFECT
+     */
 
 }
 
@@ -94,10 +95,11 @@ gif->jumpToFrame(keyFrame);
 bool DrawImageElm::load_add(QDataStream &stream)
 {
     stream >> bGIF ;
-qDebug() << "DrawImageElm lastPath:" + lastPath;
-stream >> lastPath;
+    qDebug() << "DrawImageElm lastPath:" + lastPath;
+
     if(bGIF)
     {  
+        stream >> lastPath;
         gif = new QMovie(lastPath);
         if(!gif->isValid())
             bGIF = false;
@@ -109,10 +111,10 @@ bool DrawImageElm::save_add(QDataStream &stream)
 {
     stream << bGIF;
     qDebug() << "DrawImageElm lastPath:" + lastPath;
-    stream << lastPath;
+
     if(bGIF)
     {   
-        save_image(stream, lastPath);
+        stream << lastPath;
     }
 
 }
