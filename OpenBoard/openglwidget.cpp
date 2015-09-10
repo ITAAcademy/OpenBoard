@@ -399,19 +399,33 @@ void OGLWidget::hideEvent(QHideEvent *)
 
 void OGLWidget::zoomGrid(int val)
 {
-    int h = windowGrid.getHeight()+val;
-    int w = windowGrid.getWidth()+val;
+    int h = windowGrid.getCellHeight();
+    int w = windowGrid.getCellWidth();
+    if (h+val>0 && h+val<windowGrid.getHeight())
+    {
+    h+=val;
+    if (w+val>0 && w+val<windowGrid.getWidth())
+            w+=val;
+    }
     windowGrid.setCellWidth(w);
     windowGrid.setCellHeight(h);
     qDebug() << "h"<<h;
+    updateGrid();
+    enableGrid();
+    //QTimer::singleShot(100, this, SLOT(disableGrid()));
 
+
+}
+void OGLWidget::disableGrid(){
+    gridEnabled=false;
+}
+void OGLWidget::enableGrid(){
+    gridEnabled=true;
 }
 
 void OGLWidget::processMouse()
 {
-
-enableCross=false;
-    if(isMousePress) {
+    if(isMousePress) { 
         GLint x1 = editingRectangle.rect.x();
           GLint y1 = editingRectangle.rect.y();
             GLint x2 = editingRectangle.rect.x()+editingRectangle.rect.width();
@@ -445,7 +459,7 @@ enableCross=false;
 
     case EDIT_RECTANGLE_MOVE:
       {
-         enableCross=true;
+         gridEnabled=true;
          m_manager.setAbleToDraw(false);
         // // //qDebug()<<"EDIT_RECTANGLE_MOVE width"<<editingRectangle.rect.width();
          //if (isPainting)
@@ -462,16 +476,22 @@ else
      }
      case EDIT_RECTANGLE_RESIZE:
      {
-         enableCross=true;
+         gridEnabled=true;
           m_manager.setAbleToDraw(false);
          // //qDebug()<<"EDIT_RECTANGLE_RESIZE";
         //  if (isPainting)
          {
+              if (pressedShift)
+              {
               QPoint closestPoint = windowGrid.closeToLCP(mousePos);
               editingRectangle.rect.setX(closestPoint.x());
               editingRectangle.rect.setY(closestPoint.y());
-             //editingRectangle.rect.setX(mousePos.x());
-             //editingRectangle.rect.setY(mousePos.y());
+              }
+              else
+              {
+              editingRectangle.rect.setX(mousePos.x());
+              editingRectangle.rect.setY(mousePos.y());
+              }
          }
 
         break;
@@ -1280,9 +1300,11 @@ void OGLWidget::updateGrid(){
     {
         useShader(shaderPrograms[CROSS_SHADER]);
         //qDebug() << "width:"<<windowGrid.getWidth();
-    shaderPrograms[CROSS_SHADER]->setUniformSize(windowGrid.getWidth(),windowGrid.getHeight());
+    shaderPrograms[CROSS_SHADER]->setUniformSize(windowGrid.getCellWidth(),windowGrid.getCellHeight());
+    shaderPrograms[CROSS_SHADER]->setUniformResolution(windowGrid.getWidth(),windowGrid.getHeight());
      useShader(0);
     }
+    windowGrid.processLCP();
 }
 
 void OGLWidget::encoderAddWaitFrame()
@@ -1333,7 +1355,7 @@ void OGLWidget::paintGL()
 
     QVector<ShaderProgramWrapper*> shaders;
     //shaderPrograms[CROSS_SHADER]->setUniformResolution(wax,way);
-    if(curStatus == STOP && isMousePress && enableCross)
+    if(curStatus == STOP && gridEnabled)
         shaders.push_back(shaderPrograms[CROSS_SHADER]);
     drawGlobalShader(shaders);
 
@@ -1656,6 +1678,7 @@ void OGLWidget::setFileNameForRecords(QString value)
 
 void OGLWidget::mouseReleaseEvent(QMouseEvent *event)
 {
+    gridEnabled=false;
     //int x = event->x();
     //int y = event->y();
     //drawImage();
@@ -1698,11 +1721,21 @@ if (event->buttons() & Qt::LeftButton) {
 
 void OGLWidget::keyReleaseEvent(QKeyEvent *event)
 {
-    if (event->key () == Qt::Key_Control  )
+    switch(event->key () )
+    {
+   case Qt::Key_Control:
      pressedCtrl = false;
-    else
-        if (event->key () == Qt::Key_Shift )
-            pressedShift = false;
+        break;
+    case Qt::Key_Shift:
+     pressedShift = false;
+        break;
+    case Qt::Key_Plus:
+        pressedPlus=false;
+        break;
+    case Qt::Key_Minus:
+        pressedMinus=false;
+
+    }
 
 }
 
@@ -1731,14 +1764,22 @@ bool OGLWidget::event(QEvent *e)
 void OGLWidget::keyPressEvent(QKeyEvent *event)
 {
     qDebug() << "keyPressEvent";
-
-    if (event->key () == Qt::Key_Control  )
-     pressedCtrl = true;
-    else
-        if (event->key () == Qt::Key_Shift )
-         pressedShift = true;
-    else
+    switch(event->key())
     {
+    case(Qt::Key_Control):
+     pressedCtrl = true;
+        break;
+   case Qt::Key_Shift:
+         pressedShift = true;
+        break;
+    case Qt::Key_Plus:
+        pressedPlus=true;
+        break;
+    case Qt::Key_Minus:
+        pressedMinus=true;
+        break;
+     }
+
      if (pressedCtrl)
      {
      if ( pressedShift ) //keySequence[0] == Qt::Key_Control && keySequence[1] == Qt::Key_Shift  )
@@ -1769,7 +1810,12 @@ void OGLWidget::keyPressEvent(QKeyEvent *event)
              break;
          }
      }
-    }
+     if (pressedShift){
+         if (pressedMinus)zoomGrid(-ZOOM_STEP);
+         else if (pressedPlus) zoomGrid(ZOOM_STEP);
+     }
+
+
 }
 
 void OGLWidget::ShowHideShaderWindow()
