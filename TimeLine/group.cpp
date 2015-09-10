@@ -107,37 +107,49 @@ bool Group::addTo(DrawElement *element)
     if (element == NULL)
         return false;
     int block_col = element->getBlockColumn();
+    int mem_size = members.size();
     int block_ind = element->getBlockIndex();
-    int diff = block_col  - members.size() + 1;
+    int diff = block_col  - mem_size + 1;
+    qDebug() << "block_col = " <<block_col <<", block_ind = " <<block_ind
+             <<",\nmembers.size() = " << mem_size<<",diffcol = " << diff ;
     if (diff > 0)
     {
-        for (int i=block_col; i <  members.size() + diff; i++ )
+        for (int i=block_col; i <  mem_size + diff; i++ )
         {
 
-            int diff_ind = block_ind  - members[i].size() + 1;
+            int mem_i_size = members[i].size();
+            int diff_ind = block_ind  - mem_i_size + 1;
+            qDebug() << "diff_ind = " <<diff_ind ;
+            qDebug() << "  mem_i_size = "<< mem_i_size;
+         /*   qDebug() << "block_ind = " <<block_ind ;
+            qDebug() << "members[i].size() = " << mem_i_size ;*/
+
             if (diff_ind > 0)
             {
-                for (int k=block_ind; k <  members[i].size() + diff_ind; k++ )
+                for (int k=block_ind; k < mem_i_size  + diff_ind; k++ )
                 {
+                    //qDebug() << "k = " <<k ;
                     members[i][k] = NULL;
                 }
             }
         }
     }
-    qDebug() << "PPPPPPPPPPPPPPPPPPP -1";
-      if (members.size() == 0)
+    //qDebug() << "PPPPPPPPPPPPPPPPPPP -1";
+     /* if (mem_size == 0)
       {
           members[block_col][block_ind] = (element);
-          element->setGroupWichElBelong(this);
-          qDebug() << "PPPPPPPPPPPPPPPPPPP --0";
+          Group *to_this = this;
+          qDebug() << "ssssssssssss   to_this = " << to_this;
+          element->setGroupWichElBelong(to_this);
            return false;
-      }
-       qDebug() << "PPPPPPPPPPPPPPPPPPP 0";
+      }*/
+       //qDebug() << "PPPPPPPPPPPPPPPPPPP 0";
     int first_not_empty_col_ind = -1;
     int last_not_empty_col_ind = -1;
      DrawElement *mamb =  NULL;
     //for (int k=0; k< members.size(); k++)
-       for (int i=0; i< members[block_col].size(); i++)
+    int mem_col_size =  members[block_col].size();
+       for (int i=0; i< mem_col_size; i++)
         {
            mamb =  members[block_col][i];
             if (mamb == NULL)
@@ -160,15 +172,17 @@ bool Group::addTo(DrawElement *element)
                     if ( el_ind == first_not_empty_col_ind - 1  )
                     {
                         members[block_col][block_ind] = (element);
-                        element->setGroupWichElBelong(this);
-                        qDebug() << "PPPPPPPPPPPPPPPPPPP 1";
+                        Group *to_this = this;
+                        qDebug() << "ssssssssssss   to_this = " << to_this;
+                        element->setGroupWichElBelong(to_this);
                         return true;
                     }   \
                     if (el_ind == last_not_empty_col_ind + 1  )
                     {
                         members[block_col][block_ind] = (element);
-                        element->setGroupWichElBelong(this);
-                        qDebug() << "PPPPPPPPPPPPPPPPPPP 2";
+                        Group *to_this = this;
+                        qDebug() << "ssssssssssss   to_this = " << to_this;
+                        element->setGroupWichElBelong(to_this);
                         return true;
                     }
 
@@ -178,26 +192,18 @@ bool Group::addTo(DrawElement *element)
             bound_rec.width() + bound_rec.x() <= element->getStartDrawTime() + element->getLifeTime())
     {
        // int el_col = element->getBlockColumn();
-        if ( block_col == first_not_empty_col_ind - 1)
+        if ( block_col == first_not_empty_col_ind - 1 ||
+             block_col == last_not_empty_col_ind + 1)
         {
-           /* QList<DrawElement*> temp_list;
-            temp_list.append(element);*/
             members[block_col][block_ind] = (element);
-            element->setGroupWichElBelong(this);
-            qDebug() << "PPPPPPPPPPPPPPPPPPP 3";
-            return true;
+            Group *to_this = this;
+            qDebug() << "ssssssssssss   to_this = " << to_this;
+            element->setGroupWichElBelong(to_this);
+             return true;
         }
-        else
-        if (block_col == last_not_empty_col_ind + 1)
-        {
-            /*QList<DrawElement*> temp_list;
-            temp_list.append(element);*/
-            members[block_col][block_ind] = (element);
-            element->setGroupWichElBelong(this);
-            qDebug() << "PPPPPPPPPPPPPPPPPPP 4";
-            return true;
-        }
+
     }
+    return false;
 
 }
 
@@ -216,7 +222,7 @@ bool Group::removeFromGroup(int col, int ind)
             members[col][ind]->setGroupWichElBelong(NULL);
             members[col][ind]->setBlockBorderColor("white");
             members[col][ind] = NULL;
-            qDebug() << "MMMMMMMM222 getGroupWichElBelong = " << members[col][ind]->getGroupWichElBelong();
+            //qDebug() << "MMMMMMMM222 getGroupWichElBelong = " << members[col][ind]->getGroupWichElBelong();
             return true;
         }
     return false;

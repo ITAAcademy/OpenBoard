@@ -286,8 +286,9 @@ class ListControll : public QObject, public QQuickImageProvider
     Q_OBJECT
 
     OGLWidget *drawWidget;
-    Group * curent_block_group = NULL;
+    int curent_block_group_num = -1;
     QList <Group> block_groups;
+    Group test_group;
     int blockHeightPlusSpacing = 102;
     bool isEditBlockShow = false;
     bool isProjectChange = false;

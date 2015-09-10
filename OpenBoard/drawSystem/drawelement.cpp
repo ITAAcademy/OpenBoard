@@ -478,7 +478,7 @@ bool DrawElement::save(QIODevice* device)
     stream << temp_type << key << lifeTime << tickTime << startDrawTime << x << y << z << width << height << keyCouter;
     //if (typeId == Element_type::Image)
         //save_image(stream, icon);
-    qDebug() << "qwewqewqeqewqQQQQ  " << lastPath;
+   // qDebug() << "qwewqewqeqewqQQQQ  " << lastPath;
     if (!lastPath.isEmpty())
        resultStatus = save_image(stream,lastPath,icon.format());
     else
