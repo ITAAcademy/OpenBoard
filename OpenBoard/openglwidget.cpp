@@ -399,11 +399,12 @@ void OGLWidget::hideEvent(QHideEvent *)
 
 void OGLWidget::zoomGrid(int val)
 {
-    int h = windowGrid.getHeight()+val;
-    int w = windowGrid.getWidth()+val;
+    int h = windowGrid.getCellHeight()+val;
+    int w = windowGrid.getCellWidth()+val;
     windowGrid.setCellWidth(w);
     windowGrid.setCellHeight(h);
     qDebug() << "h"<<h;
+    updateGrid();
 
 }
 
@@ -1280,9 +1281,10 @@ void OGLWidget::updateGrid(){
     {
         useShader(shaderPrograms[CROSS_SHADER]);
         //qDebug() << "width:"<<windowGrid.getWidth();
-    shaderPrograms[CROSS_SHADER]->setUniformSize(windowGrid.getWidth(),windowGrid.getHeight());
+    shaderPrograms[CROSS_SHADER]->setUniformSize(windowGrid.getCellWidth(),windowGrid.getCellHeight());
      useShader(0);
     }
+    windowGrid.processLCP();
 }
 
 void OGLWidget::encoderAddWaitFrame()

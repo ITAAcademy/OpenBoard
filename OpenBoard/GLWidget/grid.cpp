@@ -28,6 +28,7 @@ void Grid::setCellHeight(int h)
 }
 void Grid::processLCP()
 {
+    leftCornerPoints.clear();
     int stepsX = windowWidth/cellWidth;
     int stepsY = windowHeight/cellHeight;
    for (int i=0;i<=stepsY;i++)
@@ -53,12 +54,12 @@ QPoint Grid::closeToLCP(QPoint pt){
     return closestPt;
 }
 
-int Grid::getWidth()
+int Grid::getCellWidth()
 {
     return cellWidth;
 }
 
-int Grid::getHeight()
+int Grid::getCellHeight()
 {
     return cellHeight;
 }
