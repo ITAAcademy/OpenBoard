@@ -79,5 +79,6 @@
         <file>iphone_toolbar_icons/Video.png</file>
         <file>iphone_toolbar_icons/Drawing-icon.png</file>
         <file>iphone_toolbar_icons/chek.png</file>
+        <file>iphone_toolbar_icons/Audio.png</file>
     </qresource>
 </RCC>

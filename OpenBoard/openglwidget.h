@@ -452,6 +452,9 @@ protected:
         int wax ,way; // Window size
 
         QPoint selElm;
+        void drawGlobalShader(QVector<ShaderProgramWrapper *> shaders);
+        void drawEditBox(int z);
+        void reloadScene();
 };
 
 

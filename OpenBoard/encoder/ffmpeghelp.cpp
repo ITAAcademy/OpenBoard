@@ -32,17 +32,12 @@ FFmpegHelp::Frame FFmpegHelp::getNextFrame(qint64 time)
     AVPacket Packet;
     QImage vNext;
     QByteArray aNext;
-   // qDebug() << time;
-    qint64 baseTime;
-    if(vDecoder->init)
-        baseTime = vDecoder->baseTime;
-    else
-        baseTime = aDecoder->baseTime;
-    qDebug() << "BASE_TIME  " << baseTime;
+    qDebug() << time;
+    qint64 baseTime = 0;
 
     while( time >= baseTime &&  av_read_frame(formatContext, &Packet) >= 0 )
     {
-        vNext = QImage(vDecoder->getNextFrame(Packet, time));
+        vNext = vDecoder->getNextFrame(Packet, time);
         aNext +=  aDecoder->nextFrame(Packet, time);
 
                 //qDebug() << aDecoder->getDTSFromMS(time) << "   " << dts << arr.size();
@@ -53,7 +48,7 @@ FFmpegHelp::Frame FFmpegHelp::getNextFrame(qint64 time)
         else
             baseTime = aDecoder->baseTime;
 
-
+        qDebug() << "BASE_TIME  " << baseTime;
         //aDecoder->nextFrame(Packet);
     }
     return Frame(vNext, aNext);

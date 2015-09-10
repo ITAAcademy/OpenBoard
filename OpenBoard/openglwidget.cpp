@@ -1223,185 +1223,205 @@ void OGLWidget::paintGL()
 {
 
     updateGrid();
+    reloadScene();
+
+/*
+ *CONFIG DONE => START DRAWING IN MAIN FBO
+*/
+
+    qglColor(Qt::white);
+
+    bindBuffer(mainFBO.frameBuffer);
+    drawTexture(0, 0, wax, way, backGroundTexture, 0, 1, 1, -100000); //background
+
+/*
+ *  DRAW BLOCK
+*/
+
+    ////qDebug() << "PREDRAW";
+    m_encoder->clearWaitForFrame(); // send encoder for wait media block
+    for(int i = 0; !timeLine->isBlocked && i < getList().size(); i++)
+    {
+        ////qDebug() << "draw   " << i;
+        if( getList()[i] != NULL && timeLine->getMaxTrackTime() > 0)
+            getList()[i]->paint();
+        //test->use();
+    }
+
+/*
+ *  DRAW BRUSHES
+*/
+
+    if(curStatus == STOP)
+        paintBufferOnScreen(mouseFBO,0, 0, wax, way,-100);
+
+/*
+ *  APPLY SHADER EFFECT
+*/
+
+    QVector<ShaderProgramWrapper*> shaders;
+    //shaderPrograms[CROSS_SHADER]->setUniformResolution(wax,way);
+    if(curStatus == STOP && isMousePress)
+        shaders.push_back(shaderPrograms[CROSS_SHADER]);
+    drawGlobalShader(shaders);
+
+/*
+ *  DRAW MAIN FRAME WITH APPLY SHADER EFFECT
+*/
+
+    bindBuffer(0);
+    drawEditBox(1000);
+    paintBufferOnScreen(mainFBO,0, 0, wax, way,0);
+
+    //glDisable(GL_BLEND);
+    GLuint error = glGetError();
+    //showLCP();
+    glFinish();
+    //////////////////////////////
+    //glUseProgram(0);
+    useShader(0);
+    glFlush();
+    swapBuffers();
+
+    if(bRecord)
+    {
+        m_encoder->setFrame(grabFrameBuffer());
+    }
+
+    init = true;
+
+
+}
+
+void OGLWidget::drawGlobalShader( QVector<ShaderProgramWrapper*> shaders)
+{
+    bool drawToSecondBuffer = shaders.length()>0;//shaders.length()>1 && shaders.length()%2==0;
+    for (int i=0;i<shaders.length();i++)
+    {
+        //qDebug() << "FOR ";
+            if(drawToSecondBuffer)
+            {
+               // qDebug() <<" SECOND";
+               bindBuffer(pingpongFBO.frameBuffer);
+                useShader(shaders[i]);
+                    paintBufferOnScreen(mainFBO,0, 0, mainFBO.tWidth,mainFBO.tHeight, -1);
+                useShader(0);
+            }
+            else
+            {
+               // qDebug() <<" FIRST";
+            bindBuffer(mainFBO.frameBuffer);
+            useShader(shaders[i]);
+            paintBufferOnScreen(pingpongFBO,0, 0, pingpongFBO.tWidth,pingpongFBO.tHeight, -1);
+            useShader(0);
+            }
+            drawToSecondBuffer=!drawToSecondBuffer;
+    }
+    if(!drawToSecondBuffer)
+    {
+        //qDebug() <<" SECOND";
+       bindBuffer(pingpongFBO.frameBuffer);
+            paintBufferOnScreen(mainFBO,0, 0, mainFBO.tWidth,mainFBO.tHeight, -1 );
+        useShader(0);
+    }
+}
+
+void OGLWidget::drawEditBox( int z)
+{
+    GLint x1 = editingRectangle.rect.x();
+    GLint y1 = editingRectangle.rect.y();
+    GLint x2 = editingRectangle.rect.x()+editingRectangle.rect.width();
+    GLint y2 = editingRectangle.rect.y()+editingRectangle.rect.height();
+    // m_manager.setAbleToDraw(true);
+
+    int leftCornerX1=x1-editingRectangle.leftCornerSize/2;
+    int leftCornerY1=y1-editingRectangle.leftCornerSize/2;
+    int leftCornerX2=x1 + editingRectangle.leftCornerSize/2;
+    int leftCornerY2=y1 + editingRectangle.leftCornerSize/2;
+
+    if (editingRectangle.isEditingRectangleVisible && !forseEditBoxDisable && !isPainting && getStatus()!= PLAY)
+    {
+
+       // paintBufferOnScreen(0, 0, wax, way);
+        //rectangle
+        glLineWidth(3);
+        glColor3f(1.0f, 0.0f, 0.0f);
+        glBegin(GL_LINES);
+        glVertex3i(x1,y1, z);
+        glVertex3i(x2,y1, z);
+
+        glVertex3i(x2,y1, z);
+        glVertex3i(x2,y2, z);
+
+        glVertex3i(x2,y2, z);
+        glVertex3i(x1,y2, z);
+
+        glVertex3i(x1,y2, z);
+        glVertex3i(x1,y1, z);
+        glEnd();
+
+        //left corner
+         glColor3f(0.0f, 1.0f, 0.0f);
+         glLineWidth(3);
+         glBegin(GL_QUADS);   //We want to draw a quad, i.e. shape with four sides
+              // glColor3i(1, 0, 0); //Set the colour to red
+           glVertex3i(leftCornerX1, leftCornerY1, z);            //Draw the four corners of the rectangle
+           glVertex3i(leftCornerX2, leftCornerY1, z);
+           glVertex3i(leftCornerX2, leftCornerY2, z);
+           glVertex3i(leftCornerX1, leftCornerY2, z);
+         glEnd();
+    }
+}
+
+void OGLWidget::reloadScene()
+{
     //glDrawBuffer(GL_COLOR_ATTACHMENT1);
 
-     glBindFramebuffer(GL_FRAMEBUFFER , 0);
-   // useShader(test);
-    //// qDebug() << "isClearFrameBuffer:"<<isClearFrameBuffer;
-    if(isClearFrameBuffer)
-        clearFrameBuffer(mouseFBO);
+    glBindFramebuffer(GL_FRAMEBUFFER , 0);
+  // useShader(test);
+   //// qDebug() << "isClearFrameBuffer:"<<isClearFrameBuffer;
+   if(isClearFrameBuffer)
+       clearFrameBuffer(mouseFBO);
 //glDrawBuffer(GL_COLOR_ATTACHMENT0);
 
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // чистим буфер изображения и буфер глубины
-    glClearColor(0.0,0.0,0.0,0.0);
-    //glClearStencil(0);
-    timeLine->update();
+   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // чистим буфер изображения и буфер глубины
+   glClearColor(0.0,0.0,0.0,0.0);
+   //glClearStencil(0);
+   timeLine->update();
 
-    glMatrixMode(GL_PROJECTION); // устанавливаем матрицу
-     //  glShadeModel(GL_SMOOTH);
-       // Сглаживание точек
-       glEnable(GL_POINT_SMOOTH);
-       glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
-       // Сглаживание линий
-       //glEnable(GL_LINE_SMOOTH);
-       //glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
+   glMatrixMode(GL_PROJECTION); // устанавливаем матрицу
+    //  glShadeModel(GL_SMOOTH);
+      // Сглаживание точек
+      glEnable(GL_POINT_SMOOTH);
+      glHint(GL_POINT_SMOOTH_HINT, GL_NICEST);
+      // Сглаживание линий
+      //glEnable(GL_LINE_SMOOTH);
+      //glHint(GL_LINE_SMOOTH_HINT, GL_NICEST);
 
-      // glEnable(GL_POLYGON_SMOOTH);
-      // glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
-      // glEnable(GL_MULTISAMPLE);
+     // glEnable(GL_POLYGON_SMOOTH);
+     // glHint(GL_POLYGON_SMOOTH_HINT, GL_NICEST);
+     // glEnable(GL_MULTISAMPLE);
 
-       glLoadIdentity(); // загружаем матрицу
-       glOrtho(0,wax,way,0, -1000000, 200000); // подготавливаем плоскости для матрицы
-       glEnable(GL_BLEND);
-       glEnable(GL_ALPHA_TEST);
+      glLoadIdentity(); // загружаем матрицу
+      glOrtho(0,wax,way,0, -1000000, 200000); // подготавливаем плоскости для матрицы
+      glEnable(GL_BLEND);
+      glEnable(GL_ALPHA_TEST);
 
-      // glDepthMask(false);
-       glDepthFunc(GL_LEQUAL); // this maybe problem
-       glAlphaFunc(GL_GREATER,0);
-       glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE);
-       //glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
-       //glBlendEquation ( GL_FUNC_ADD ) ;
-     // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-
-
-//WRITE TO FRAME BUFER FROM HERE
-   // glBindFramebuffer(GL_FRAMEBUFFER,0);
-    qglColor(Qt::white);
-    bindBuffer(mainFBO.frameBuffer);
-    drawTexture(0, 0, wax, way, backGroundTexture, 0, 1, 1, -100000);
-//WRITE TO SCREEN FROM HERE
-//drawTextBuffer(10,10,400,400);
-
-    GLint x1 = editingRectangle.rect.x();
-      GLint y1 = editingRectangle.rect.y();
-        GLint x2 = editingRectangle.rect.x()+editingRectangle.rect.width();
-        GLint y2 = editingRectangle.rect.y()+editingRectangle.rect.height();
-       // m_manager.setAbleToDraw(true);
-
-        int leftCornerX1=x1-editingRectangle.leftCornerSize/2;
-         int leftCornerY1=y1-editingRectangle.leftCornerSize/2;
-                 int leftCornerX2=x1 + editingRectangle.leftCornerSize/2;
-                  int leftCornerY2=y1 + editingRectangle.leftCornerSize/2;
-
-disableShader();
-                  if (editingRectangle.isEditingRectangleVisible && !forseEditBoxDisable && !isPainting && getStatus()!= PLAY)
-                  {
-
-                     // paintBufferOnScreen(0, 0, wax, way);
-                      //rectangle
-                      glLineWidth(3);
-                      glColor3f(1.0f, 0.0f, 0.0f);
-                      glBegin(GL_LINES);
-                      glVertex3i(x1,y1, 100);
-                      glVertex3i(x2,y1, 100);
-
-                      glVertex3i(x2,y1, 100);
-                      glVertex3i(x2,y2, 100);
-
-                      glVertex3i(x2,y2, 100);
-                      glVertex3i(x1,y2, 100);
-
-                      glVertex3i(x1,y2, 100);
-                      glVertex3i(x1,y1, 100);
-                      glEnd();
-
-                      //left corner
-                       glColor3f(0.0f, 1.0f, 0.0f);
-                       glLineWidth(3);
-                       glBegin(GL_QUADS);   //We want to draw a quad, i.e. shape with four sides
-                            // glColor3i(1, 0, 0); //Set the colour to red
-                         glVertex3i(leftCornerX1, leftCornerY1, 100);            //Draw the four corners of the rectangle
-                         glVertex3i(leftCornerX2, leftCornerY1, 100);
-                         glVertex3i(leftCornerX2, leftCornerY2, 100);
-                         glVertex3i(leftCornerX1, leftCornerY2, 100);
-                       glEnd();
-                  }
-enableShader();
-
-//if (isMousePlay)paintBrushInBuffer(true);
-
- ////qDebug() << "PREDRAW";
-m_encoder->clearWaitForFrame();
-for(int i = 0; !timeLine->isBlocked && i < getList().size(); i++)
-{
-    ////qDebug() << "draw   " << i;
-    if( getList()[i] != NULL && timeLine->getMaxTrackTime() > 0)
-        getList()[i]->paint();
-    //test->use();
-}
- bindBuffer(mainFBO.frameBuffer);
-
-//glDisable(GL_DEPTH_TEST);
-
-
-
-if(curStatus == STOP)
-    paintBufferOnScreen(mouseFBO,0, 0, wax, way,-100);
-//ENable global shaders for mainFBO
-QVector<ShaderProgramWrapper*> shaders;
-//shaderPrograms[CROSS_SHADER]->setUniformResolution(wax,way);
-if(curStatus == STOP && isMousePress)
-shaders.push_back(shaderPrograms[CROSS_SHADER]);
-bool drawToSecondBuffer = shaders.length()>0;//shaders.length()>1 && shaders.length()%2==0;
-for (int i=0;i<shaders.length();i++)
-{
-    //qDebug() << "FOR ";
-        if(drawToSecondBuffer)
-        {
-           // qDebug() <<" SECOND";
-           bindBuffer(pingpongFBO.frameBuffer);
-            useShader(shaders[i]);
-                paintBufferOnScreen(mainFBO,0, 0, mainFBO.tWidth,mainFBO.tHeight,0);
-            useShader(0);
-        }
-        else
-        {
-           // qDebug() <<" FIRST";
-        bindBuffer(mainFBO.frameBuffer);
-        useShader(shaders[i]);
-        paintBufferOnScreen(pingpongFBO,0, 0, pingpongFBO.tWidth,pingpongFBO.tHeight,0);
-        useShader(0);
-        }
-        drawToSecondBuffer=!drawToSecondBuffer;
-}
-if(!drawToSecondBuffer)
-{
-    //qDebug() <<" SECOND";
-   bindBuffer(pingpongFBO.frameBuffer);
-        paintBufferOnScreen(mainFBO,0, 0, mainFBO.tWidth,mainFBO.tHeight,0);
-    useShader(0);
-}
-
-
-//
- bindBuffer(0);
- paintBufferOnScreen(mainFBO,0, 0, wax, way,0);
-
-//glDisable(GL_BLEND);
-GLuint error = glGetError();
-//showLCP();
-glFinish();
-//////////////////////////////
-//glUseProgram(0);
-useShader(0);
-glFlush();
-swapBuffers();
-
-if(bRecord)
-{
-    m_encoder->setFrame(grabFrameBuffer());
-}
-
-init = true;
-
-
+     // glDepthMask(false);
+      glDepthFunc(GL_LEQUAL); // this maybe problem
+      glAlphaFunc(GL_GREATER,0);
+      glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE);
+      glEnable(GL_DEPTH_TEST);
+      //glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
+      //glBlendEquation ( GL_FUNC_ADD ) ;
+    // glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }
 
 void OGLWidget::paintEvent(QPaintEvent *event)
 {
 
 }
+
 void OGLWidget::useShader(ShaderProgramWrapper *shader){
 //qDebug() << "before useShader currentShaderStack len:"<<currentShaderStack.length();
     if (shader==NULL){
@@ -1429,7 +1449,7 @@ void OGLWidget::disableShader(){
 void OGLWidget::enableShader(){
     //qDebug() << "enableShader:"<<currentShaderStack.length();
     if (currentShaderStack.length()>0)
-    glUseProgram(currentShaderStack.last()->getShaderProgram());
+        glUseProgram(currentShaderStack.last()->getShaderProgram());
 
 }
 
@@ -2208,7 +2228,7 @@ void OGLWidget::fillText( QString str,QColor color,QFont textFont, int x, int y,
    */
 
     qglColor(color);
-   // glDisable(GL_DEPTH_TEST);
+    //glDisable(GL_DEPTH_TEST);
   //  //qDebug() << "SHOW_Z " << z;
 
 //fillText("eeeeeeeeeeeeeeeeeeee",QColor("red"), QFont("Helvetica",40), 10 , 10, 0,(float) 100);

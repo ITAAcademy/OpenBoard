@@ -1212,6 +1212,8 @@ QImage ListControll::requestImage(const QString &id, QSize *size, const QSize &r
 
             if(elm->getTypeId() == Video)
                 return QImage(":/iphone_toolbar_icons/Video.png");
+            if(elm->getTypeId() == Audio)
+                return QImage(":/iphone_toolbar_icons/Audio.png");
 
             return QImage(":/iphone_toolbar_icons/0.png");
         }

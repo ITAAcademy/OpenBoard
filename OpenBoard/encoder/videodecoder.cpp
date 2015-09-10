@@ -177,7 +177,7 @@ QImage VideoDecoder::getNextFrame(AVPacket &videoPacket, qint64 time)
    // qDebug() << "DTS" << videoPacket.dts;
     if(!init)
     {
-        qDebug() << "NO_DECODER";
+        //qDebug() << "NO_VIDEO_DECODER";
         return QImage();
     }
 
