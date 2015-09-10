@@ -400,7 +400,7 @@ void OGLWidget::hideEvent(QHideEvent *)
 void OGLWidget::processMouse()
 {
 
-
+enableCross=false;
     if(isMousePress) {
         GLint x1 = editingRectangle.rect.x();
           GLint y1 = editingRectangle.rect.y();
@@ -435,6 +435,7 @@ void OGLWidget::processMouse()
 
     case EDIT_RECTANGLE_MOVE:
       {
+         enableCross=true;
          m_manager.setAbleToDraw(false);
         // // //qDebug()<<"EDIT_RECTANGLE_MOVE width"<<editingRectangle.rect.width();
          //if (isPainting)
@@ -451,6 +452,7 @@ else
      }
      case EDIT_RECTANGLE_RESIZE:
      {
+         enableCross=true;
           m_manager.setAbleToDraw(false);
          // //qDebug()<<"EDIT_RECTANGLE_RESIZE";
         //  if (isPainting)
@@ -1341,7 +1343,8 @@ if(curStatus == STOP)
 //ENable global shaders for mainFBO
 QVector<ShaderProgramWrapper*> shaders;
 //shaderPrograms[CROSS_SHADER]->setUniformResolution(wax,way);
-if(curStatus == STOP && isMousePress)
+//if(curStatus == STOP && isMousePress)
+if(enableCross)
 shaders.push_back(shaderPrograms[CROSS_SHADER]);
 bool drawToSecondBuffer = shaders.length()>0;//shaders.length()>1 && shaders.length()%2==0;
 for (int i=0;i<shaders.length();i++)

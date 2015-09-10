@@ -336,6 +336,7 @@ private slots:
     void storeMousePos();
 
 private:
+    bool enableCross = false;
     int GRID_CELL_SIZE = 50;
     Grid windowGrid;
     QStack<ShaderProgramWrapper*> currentShaderStack;
