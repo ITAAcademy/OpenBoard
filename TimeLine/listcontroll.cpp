@@ -18,33 +18,48 @@ QString ListControll::getBlockBorderColor(int col,int ind)
 
 void ListControll::setSelectedBlockPoint(const QPoint &value)
 {
-    if (false)
+    //if (false)
     if (ctrl_pressed)
      if ( value.x() != -1) //glWindInited &&
          if ( blockValid(value.x(), value.y()))  //crash*/
     {
-             qDebug() << "IIIIIIIIIIIIIIIIIIIIIIII ";
+             //qDebug() << "IIIIIIIIIIIIIIIIIIIIIIII ";
         DrawElement * draw_el = getBlock(value);
         QString colora("yellow");
         Group * bl_group = draw_el->getGroupWichElBelong();
         if (bl_group == NULL)
         {
-            qDebug() << "IIIIIIIIIIIIIIIIIIIIIIII 111111111111";
+            //qDebug() << "IIIIIIIIIIIIIIIIIIIIIIII 111111111111";
 
            if (addBlockToGroup(draw_el))
+           {
                draw_el->setBlockBorderColor(colora);
+               emit borderColorChangedSignal(value.x(), value.y(), colora);
+               qDebug() << "ListControll::setSelectedBlockPoint adding block to group succesfull";
+           }
+           else
+           {
+               qDebug() << "AAAAAAA adding block to group failed!!!!!!!!!!";
+           }
            // draw_el->setGroupWichElBelong(bl_group);
         }
         else
         {
              colora = "white";
             if (bl_group->removeFromGroup(draw_el))
+            {
                     draw_el->setBlockBorderColor(colora);
+                    qDebug() << "ListControll::setSelectedBlockPoint removing block to group succesfull";
+                    emit borderColorChangedSignal(value.x(), value.y(), colora);
+            }
+            else
+                qDebug() << "AAAAAAA removing block to group failed!!!!!!!!!!";
             //addBlockToGroup(draw_el);
-            qDebug() << "IIIIIIIIIIIIIIIIIIIIIIII 222222222222222222";
+            //qDebug() << "IIIIIIIIIIIIIIIIIIIIIIII 222222222222222222";
         }
-        qDebug() << "AAAAAAAAAAAAAAAA bl_group = " << draw_el->getGroupWichElBelong();
-       emit borderColorChangedSignal(value.x(), value.y(), colora);
+        //qDebug() << "AAAAAAAAAAAAAAAA bl_group = " << draw_el->getGroupWichElBelong();
+        qDebug() << "\n\n";
+
 
     }
     if(value != selectedBlockPoint)
@@ -170,6 +185,19 @@ bool ListControll::removeBlock(int col, int i)
             tracks[col].block[k]->setBlockIndex(k);
     recountMaxTrackTime();
     }
+    if (i == 0)
+    {
+        tracks[col].block[i]->setStartDraw(0);
+        i++;
+    }
+    for (int k=i; k < tracks[col].block.size(); k++)
+    {
+        DrawElement *temp_el = tracks[col].block[k - 1];
+        int draw_time = temp_el->getStartDrawTime()  + temp_el->getLifeTime();
+        tracks[col].block[i]->setStartDraw(draw_time);
+    }
+
+
     calcPointedBlocks();
     setBlocked(false);
     return true;
@@ -210,6 +238,13 @@ void ListControll::addNewBlock(int col, QString str, DrawElement *element)
 
     element->setBlockColumn(col);
     element->setBlockIndex(last_block_ind);
+
+    if (last_block_ind > 0)
+    {
+        DrawElement *temp_el = tracks[col].block[last_block_ind - 1];
+        int draw_time = temp_el->getStartDrawTime()  + temp_el->getLifeTime();
+        element->setStartDraw(draw_time);
+    }
 
     tracks[col].time += element->getLifeTime();
     if (maxTrackTime <  tracks[col].time)
@@ -456,11 +491,26 @@ bool ListControll::removeTrack(int col)
     }
     for (int k = ind0; k <= ind1; k++)
          tracks[col0].block[k]->setBlockIndex(k);
+
+    if (ind0 == 0)
+    {
+        tracks[col0].block[ind0]->setStartDraw(0);
+        ind0++;
+    }
+
+    for (int i=ind0; i < tracks[col0].block.size(); i++)
+    {
+        DrawElement *temp_el = tracks[col0].block[i - 1];
+        int draw_time = temp_el->getStartDrawTime()  + temp_el->getLifeTime();
+        tracks[col0].block[i]->setStartDraw(draw_time);
+    }
+
  }
 
  void  ListControll::moveBlockFromTo(int col0,int ind0,int col1, int ind1)
  {
      DrawElement* temp =  tracks[col0].block[ind0];
+     tracks[col0].time -= temp->getLifeTime();
     tracks[col0].block.removeAt(ind0);
     for (int k = ind0; k < tracks[col0].block.size(); k++)
     {
@@ -469,12 +519,37 @@ bool ListControll::removeTrack(int col)
 
 
             tracks[col1].block.append(temp);
+            tracks[col1].time += temp->getLifeTime();
             tracks[col1].block.move(tracks[col1].block.size()-1,ind1);
             for (int k = ind1; k < tracks[col1].block.size(); k++)
             {
                 tracks[col1].block[k]->setBlockIndex(k);
             }
             tracks[col1].block[ind1]->setBlockColumn(col1);
+
+            if (ind0 == 0)
+            {
+                tracks[col0].block[ind0]->setStartDraw(0);
+                ind0++;
+            }
+            for (int i=ind0; i < tracks[col0].block.size(); i++)
+            {
+                DrawElement *temp_el = tracks[col0].block[i - 1];
+                int draw_time = temp_el->getStartDrawTime()  + temp_el->getLifeTime();
+                tracks[col0].block[i]->setStartDraw(draw_time);
+            }
+
+            if (ind1 == 0)
+            {
+                tracks[col1].block[ind1]->setStartDraw(0);
+                ind1++;
+            }
+            for (int i=ind1; i < tracks[col1].block.size(); i++)
+            {
+                DrawElement *temp_el = tracks[col1].block[i - 1];
+                int draw_time = temp_el->getStartDrawTime()  + temp_el->getLifeTime();
+                tracks[col1].block[1]->setStartDraw(draw_time);
+            }
 
  }
 
@@ -666,31 +741,51 @@ int ListControll::getTrackSize(int col)
  {
      if (block == NULL)
      {
-         qDebug() << " ListControll::addBlockToGroup 0";
+         qDebug() << " ListControll::addBlockToGroup failed: block is null";
          return false;
      }
-     if (curent_block_group == NULL)
+     if (block->getGroupWichElBelong() !=  NULL)
      {
-         Group temp_group;
-         //temp_group.addTo(block);
-        block_groups.append(temp_group);
-        block_groups.last().addTo(block);
-        qDebug() << " ListControll::addBlockToGroup 1";
+          qDebug() << " ListControll::addBlockToGroup failed: block group not null";
+          return false;
+     }
 
-         //QList <Group>::iterator iter = block_groups.last();
-         curent_block_group = &(block_groups.last());
-     }
-     else
-     {
-         curent_block_group->addTo(block);
-         qDebug() << " ListControll::addBlockToGroup 2";
-     }
-     return true;
+         qDebug() << " ListControll::addBlockToGroup          block->getGroupWichElBelong() == NULL";
+         /*if (curent_block_group_num == -1)
+         {
+             Group temp_group;
+            block_groups.append(temp_group);
+            block_groups.last().addTo(block);
+            curent_block_group_num = block_groups.size() - 1;
+            qDebug() << " ListControll::addBlockToGroup 1";
+
+         }
+         else
+         {
+             block_groups[curent_block_group_num].addTo(block);
+             qDebug() << " ListControll::addBlockToGroup 2";
+         }*/
+        if(test_group.addTo(block))
+        {
+            qDebug() << " ListControll::addBlockToGroup success";
+            return true;
+        }
+        else
+        {
+            qDebug() << " ListControll::addBlockToGroup failed";
+            return false;
+        }
+
+
+     return false;
+
  }
 
  bool  ListControll::removeBlockFromGroup(DrawElement* block)
  {
-     block->getGroupWichElBelong()->removeFromGroup(block);
+     if (block->getGroupWichElBelong() == NULL)
+         return false;
+     return (block->getGroupWichElBelong()->removeFromGroup(block));
  }
 
  void ListControll::setCtrlPressed(bool value)

@@ -298,7 +298,7 @@ scale_pointer.x = 0// timeControll.getMaxTrackTime() + scale_pointer.width/2 - s
 
        onBorderColorChangedSignal :
        {
-           //rep_columns.itemAt(col).getBlock(ind).p_border_color = color; //!!!!!!!!!!!!!!!!!!!
+           rep_columns.itemAt(col).getBlock(ind).p_border_color = color; //!!!!!!!!!!!!!!!!!!!
 
        }
 

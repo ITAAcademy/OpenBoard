@@ -10,6 +10,7 @@ class DrawElement;
 
 class Group
 {
+
    QMap<int, QMap <int, DrawElement*> > members;
     QRect bound_rec;
     int first_col = 0;
