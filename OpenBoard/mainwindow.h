@@ -148,7 +148,7 @@ private:
 QAction *a_play,*a_clear_textedit,*a_pause,*a_stop,*a_font_canvas,*a_color_canvas,
 *a_record_to_file,*a_undo,*a_redo,*a_show,*a_hide,*a_clear_drawing,*a_clear_drawingBuffer,
 *a_show_last_drawing,*a_save_drawing ,*a_open_project,*a_new_project, *a_save_project,*a_exit,
-*a_cut,*a_copy,*a_paste,*a_select_all,*a_search,*a_send_to_youtube, *a_able_to_draw;
+*a_cut,*a_copy,*a_paste,*a_select_all,*a_search,*a_send_to_youtube, *a_able_to_draw,*a_zoom_in,*a_zoom_out;
     Ui::MainWindow  *ui;
 QMessageBox messAbout;
  //   GLWidget        *mpGLWidget;
@@ -190,6 +190,8 @@ public slots:
     Q_INVOKABLE void setCurentState(ProjectStartupSetting state);
     void keyEventSlot(QKeyEvent *event);
 
+    void on_action_ZoomIn_triggered();
+    void on_action_ZoomOut_triggered();
 private slots:
     void updateBlockFromTextEdit();
     void on_actionAbout_Qt_triggered();

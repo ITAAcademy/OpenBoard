@@ -47,7 +47,7 @@ using namespace QtAV;
 #define STREAM_DURATION 60
 #define TEXTURE_INDEX_BRUSH 1
 #define MIN_RECT_SIZE 25
-
+#define ZOOM_STEP 5
 struct ColorMarker{
     int startIndex;
     QColor value;
@@ -107,8 +107,7 @@ class OGLWidget : public QGLWidget, protected QOpenGLFunctions_3_0
 signals:
     void stopShowLastDrawingSignal();
 public:
-
-
+    void zoomGrid(int val);
     enum shaderEnum {ALPHA_SHADER=0,SPIRAL_SHADER=1,CROSS_SHADER=2};
 	void processMouse();
 	ShaderProgramWrapper* getMainShader();

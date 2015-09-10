@@ -48,5 +48,7 @@
         <file>icons/new-icon.png</file>
         <file>icons/Oxygen-Icons.org-Oxygen-Actions-edit-clear.ico</file>
         <file>icons/222.png</file>
+        <file>../../../../../pngIcons/YooTheme_Club_Icons/Actions/32/search_green_32.png</file>
+        <file>icons/search_green_32.png</file>
     </qresource>
 </RCC>

@@ -14,6 +14,8 @@ public:
     Grid(int cellSize, int winWidth, int winHeight);
     Grid();
     void setSize(int size);
+    void setCellWidth(int w);
+    void setCellHeight(int h);
     int getWidth();
     int getHeight();
 

@@ -397,6 +397,16 @@ void OGLWidget::hideEvent(QHideEvent *)
     //qDebug() << "HIDE EVENT";
 }
 
+void OGLWidget::zoomGrid(int val)
+{
+    int h = windowGrid.getHeight()+val;
+    int w = windowGrid.getWidth()+val;
+    windowGrid.setCellWidth(w);
+    windowGrid.setCellHeight(h);
+    qDebug() << "h"<<h;
+
+}
+
 void OGLWidget::processMouse()
 {
 
@@ -457,8 +467,11 @@ else
          // //qDebug()<<"EDIT_RECTANGLE_RESIZE";
         //  if (isPainting)
          {
-             editingRectangle.rect.setX(mousePos.x());
-             editingRectangle.rect.setY(mousePos.y());
+              QPoint closestPoint = windowGrid.closeToLCP(mousePos);
+              editingRectangle.rect.setX(closestPoint.x());
+              editingRectangle.rect.setY(closestPoint.y());
+             //editingRectangle.rect.setX(mousePos.x());
+             //editingRectangle.rect.setY(mousePos.y());
          }
 
         break;
