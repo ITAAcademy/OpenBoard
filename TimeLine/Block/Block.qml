@@ -505,7 +505,8 @@ z: 0
                     double_click_timer.running = true
 
                     context_menu.closeIt()
-                drag.target = root
+                    if (!main222.ctrl_pressed)
+                        drag.target = root
     // //console.log("onPressed");
             drop.visible = false;
              drop.enabled = false;

@@ -289,6 +289,7 @@ class ListControll : public QObject, public QQuickImageProvider
     int curent_block_group_num = -1;
     QList <Group> block_groups;
     Group test_group;
+    Group curent_group;
     int blockHeightPlusSpacing = 102;
     bool isEditBlockShow = false;
     bool isProjectChange = false;
@@ -311,7 +312,7 @@ class ListControll : public QObject, public QQuickImageProvider
     //  QVector< int > testColumnWidth;
     void recountMaxTrackTime();
     ImageClone *cloneImg;
-
+    int group_changed = false;
     //QElapsedTimer timer;
       qint64 timerValue;
     qint64 time_sum;
@@ -322,6 +323,8 @@ class ListControll : public QObject, public QQuickImageProvider
     int spacing_btw_blocks = 0;
     bool ctrl_pressed = false;
     bool glWindInited = false;
+
+    bool isGroupChanged = false;
 public:
      int isPlayPauseStop = 3;
 
@@ -335,7 +338,8 @@ public:
 
     explicit ListControll(/*OGLWidget *drawWidget = NULL ,*/QObject *parent = 0);
     ~ListControll();
-
+    void updateBlocksStartTimesFrom(int col0,int ind0);
+    void updateBlocksIndexFrom(int col, int ind);
     void show();
     void close();
     void hide();
