@@ -22,6 +22,8 @@ public:
     void processLCP();
     QVector<QPoint> getLCP();
     QPoint closeToLCP(QPoint pt);
+    int getWidth();
+    int getHeight();
 };
 
 #endif // GRID_H

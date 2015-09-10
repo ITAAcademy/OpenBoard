@@ -29,11 +29,11 @@ void Grid::setCellHeight(int h)
 void Grid::processLCP()
 {
     leftCornerPoints.clear();
-    int stepsX = windowWidth/cellWidth;
-    int stepsY = windowHeight/cellHeight;
-   for (int i=0;i<=stepsY;i++)
+    int stepsX = windowWidth/cellWidth+1;
+    int stepsY = windowHeight/cellHeight+1;
+   for (int i=-1;i<=stepsY;i++)
        for (int j=0;j<=stepsX;j++)
-           leftCornerPoints.append(QPoint(cellWidth*j,windowHeight-cellHeight-cellHeight*i));
+   leftCornerPoints.append(QPoint(cellWidth*j,windowHeight-cellHeight-cellHeight*i));
 }
 
 QVector<QPoint> Grid::getLCP()
@@ -62,5 +62,13 @@ int Grid::getCellWidth()
 int Grid::getCellHeight()
 {
     return cellHeight;
+}
+int Grid::getWidth()
+{
+    return windowWidth;
+}
+int Grid::getHeight()
+{
+    return windowHeight;
 }
 

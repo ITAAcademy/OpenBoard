@@ -273,7 +273,10 @@ public:
     void setCellSize(int size);
     void updateGrid();
     void showLCP();
+
 public slots:
+    void disableGrid();
+    void enableGrid();
     void setAbleDrawing(bool value);
    // void clearFrameBuffer();
         void clearFrameBuffer(FBOWrapper fboWrapper);
@@ -336,7 +339,7 @@ private slots:
     void storeMousePos();
 
 private:
-    bool enableCross = false;
+    bool gridEnabled = false;
     int GRID_CELL_SIZE = 50;
     Grid windowGrid;
     QStack<ShaderProgramWrapper*> currentShaderStack;
@@ -367,6 +370,8 @@ QString fileNameForRecords;
      QMessageBox ms_for_debug;
     bool pressedCtrl = false;
     bool pressedShift = false;
+    bool pressedPlus = false;
+    bool pressedMinus = false;
 
     bool showingLastDrawing = false;
     int currentLastDrawingPointIterator = 0;
