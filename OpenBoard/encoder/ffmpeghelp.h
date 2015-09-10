@@ -11,6 +11,9 @@ class FFmpegHelp : public QObject
 {
     Q_OBJECT
 
+    QImage vNext;
+    QByteArray aNext;
+
     QThread videoThread;
     QThread audioThread;
     qint64 lastDts = 0;
@@ -33,6 +36,7 @@ public:
     };
 
     explicit FFmpegHelp(QObject *parent = 0);
+    ~FFmpegHelp();
 
     Frame getNextFrame(qint64 time);
     void restart();

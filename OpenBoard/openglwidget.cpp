@@ -1815,7 +1815,8 @@ void OGLWidget::addAudioToList(QByteArray arr, void *obj)
 */
 void OGLWidget::addAudioToList(void*obj, QByteArray arr)
 {
-   m_encoder->addToAudioBuffer(obj, arr);
+    if(this->bRecord)
+        m_encoder->addToAudioBuffer(obj, arr);
 }
 QString OGLWidget::getDrawText()
 {
@@ -2079,9 +2080,9 @@ void  OGLWidget::updateWindow(){
    current_millisecs = QDateTime::currentMSecsSinceEpoch();
  if ((current_millisecs - last_mouse_process) >= 1000/MOUSE_PROCESS_DELAY_MS)
  {
-processMouse();
-storeMousePos();
-  last_mouse_process = current_millisecs;
+    processMouse();
+    storeMousePos();
+    last_mouse_process = current_millisecs;
  }
 
 

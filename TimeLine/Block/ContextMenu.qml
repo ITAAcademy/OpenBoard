@@ -16,6 +16,9 @@ ApplicationWindow  {
     property point coordinates
     property bool animatedMenuShowed  : false
     property bool contextMenuShowed  : false
+    property var lastObj: null
+    property var lastObj2: null
+    property var lastObj3: null
     function closeIt()
     {
         //console.log("11111111 ")
@@ -29,7 +32,13 @@ ApplicationWindow  {
             }
             //closeAnimateMenu()
              //console.log("111111111111111111111111111")
-            p_window.close();
+            p_window.destroy();
+            if(lastObj != null)
+                lastObj.destroy();
+            if(lastObj2 != null)
+                lastObj2.destroy();
+            if(lastObj3 != null)
+                lastObj3.destroy();
 
         }
          appen_block_items.visible = false
@@ -54,6 +63,7 @@ ApplicationWindow  {
               {
         var component = Qt.createComponent("ContextMenu.qml")
        var window    = component.createObject(contextMenuItem)
+        lastObj = window;
         window.animatedMenuShowed = animatedMenuShowed
             window.height = 168
            window.flags = Qt.MSWindowsFixedSizeDialogHint | Qt.CustomizeWindowHint | Qt.FramelessWindowHint
@@ -99,6 +109,8 @@ ApplicationWindow  {
     function showEditBlock()
     {
         var window2    = Qt.createComponent("EditBlock.qml").createObject(contextMenuItem)
+        lastObj2 = window2;
+        window2.flags = Qt.MSWindowsFixedSizeDialogHint | Qt.CustomizeWindowHint | Qt.FramelessWindowHint
         window2.modality = Qt.WindowModal
 
 
@@ -144,6 +156,7 @@ ApplicationWindow  {
            //initedWnd3 = true;
          //ContextMenuAnimateBlock
        var window3    = Qt.createComponent("ContextMenuAnimateBlock.qml").createObject(contextMenuItem)
+       lastObj3 = window3;
         window3.flags = Qt.MSWindowsFixedSizeDialogHint | Qt.CustomizeWindowHint | Qt.FramelessWindowHint
 p_window3 = window3
 
@@ -267,6 +280,12 @@ property int   minBlockWidth : 0
                 context_menu.showEditBlock()
                  but_append.color = contextMenuItem.color
                 appen_block_items.visible = false
+                if(lastObj != null)
+                    lastObj.destroy();
+                if(lastObj2 != null)
+                    lastObj2.destroy();
+                if(lastObj3 != null)
+                    lastObj3.destroy();
                // closeAnimateMenu()
 
 

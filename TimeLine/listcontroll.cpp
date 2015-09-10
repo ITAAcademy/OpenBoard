@@ -1249,6 +1249,7 @@ void  ListControll::stop()
    timerValue=0;
     isPlayPauseStop = 3;
     calcPointedBlocks();
+    view.engine()->clearComponentCache();
    // qDebug() << "stop                       TIMELINE";
 
 }

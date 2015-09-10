@@ -132,15 +132,20 @@ Rectangle{
            width: background.width;
            height: background.height
            visible:  true
-          ColorOverlay {
-               id: icon_coloroverlay
-                  anchors.fill: icon
-                  source: icon
-                  color: "#00000000"
-                  z: 1
-                  enabled: false
 
-              }
+           ColorOverlay {
+              id: icon_coloroverlay
+              anchors.fill: icon
+              source: icon
+              color: "#00000000"
+              z: 1
+              enabled: false
+
+           }
+           onSourceChanged: {
+               gc();
+           }
+
            Component.onCompleted: {
                root.p_icon_coloroverlay = icon_coloroverlay
            }

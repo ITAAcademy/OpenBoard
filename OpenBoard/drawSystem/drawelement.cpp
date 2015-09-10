@@ -67,6 +67,7 @@ void DrawElement::setKey(const QString &value)
 }
 DrawElement::DrawElement(OGLWidget *drawWidget, QObject *parent) : QObject(parent)
 {
+    startDrawTime = 0;
     pDrawWidget = drawWidget;
     bPause = false;
     bPlay = false;
@@ -111,7 +112,7 @@ DrawElement::~DrawElement()
 {
 
 
- //qDebug() << "delete DrawElement";
+ qDebug() << "delete DrawElement";
     if(pDrawWidget != NULL)
     {
         pDrawWidget->deleteFBO(fboWrapper);

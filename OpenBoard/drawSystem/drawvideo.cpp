@@ -39,6 +39,7 @@ void DrawVideoElm::draw()
     {
         pDrawWidget->clearFrameBuffer(fboWrapper);
         FFmpegHelp::Frame frame = decoder.getNextFrame(pDrawWidget->getTimeLine()->getPlayTime() - startDrawTime);
+        //qDebug() << startDrawTime;
         //pDrawWidget->drawQImage(0, 0, frame.videoFrame, z);
         pDrawWidget->drawQImageFromTexture(0, 0, frame.videoFrame, textureIndex, z);
         pDrawWidget->addAudioToList(this, frame.audioFrame);

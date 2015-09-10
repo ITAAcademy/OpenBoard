@@ -5,6 +5,16 @@ FFmpegHelp::FFmpegHelp(QObject *parent) : QObject(parent)
 
 }
 
+FFmpegHelp::~FFmpegHelp()
+{
+    if(vDecoder != NULL)
+        delete vDecoder;
+
+    if(aDecoder != NULL)
+        delete aDecoder;
+
+}
+
 int FFmpegHelp::initFF(QString path)
 {
     qDebug() << "start initFF";
@@ -30,10 +40,14 @@ QSize FFmpegHelp::getSize()
 FFmpegHelp::Frame FFmpegHelp::getNextFrame(qint64 time)
 {
     AVPacket Packet;
-    QImage vNext;
-    QByteArray aNext;
-    qDebug() << time;
-    qint64 baseTime = 0;
+    aNext.clear();
+
+    qint64 baseTime;
+    if(vDecoder->init)
+        baseTime = vDecoder->baseTime;
+    else
+        baseTime = aDecoder->baseTime;
+
 
     while( time >= baseTime &&  av_read_frame(formatContext, &Packet) >= 0 )
     {
@@ -48,7 +62,7 @@ FFmpegHelp::Frame FFmpegHelp::getNextFrame(qint64 time)
         else
             baseTime = aDecoder->baseTime;
 
-        qDebug() << "BASE_TIME  " << baseTime;
+        //qDebug() << "BASE_TIME  " << baseTime;
         //aDecoder->nextFrame(Packet);
     }
     return Frame(vNext, aNext);
@@ -84,6 +98,7 @@ AVFormatContext* FFmpegHelp::openVideoStream( QString path)
     path = path + "\0";
     char *str = new char[path.size() + 5];
     strcpy( str, path.toLatin1().data());
+  //  strcpy( str, path.toLatin1().data());
     //qDebug() << "Input path:  " << path;
     //qDebug() << "Input path:  " << str;
     qDebug() << "registaration";
@@ -120,5 +135,6 @@ AVFormatContext* FFmpegHelp::openVideoStream( QString path)
 
     // Dump information about file onto standard error
     av_dump_format(formatContext, 0, str, 0);
+    delete str;
     return formatContext;
 }

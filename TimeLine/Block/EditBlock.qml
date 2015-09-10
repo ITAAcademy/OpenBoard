@@ -278,7 +278,8 @@ ApplicationWindow  {
                // mainwindow.globalRep.updateModel()
                  //console.log("AAAAAAAAAAAAAAAAAAAA "+ mainwindow.columnIndex +" " + mainwindow.blockIndex)
                  mainwindow.selectedBlock.updateTrackWhereIsBlock()
-                close();
+                mainwindow.close();
+                mainwindow.destroy();
              }
          }
          Button {
@@ -287,7 +288,8 @@ ApplicationWindow  {
              x: contextMenuItem.width - 10 - width
              text: "CANCEL"
            onClicked: {
-               close();
+               mainwindow.close();
+               mainwindow.destroy();
            }
          }
 

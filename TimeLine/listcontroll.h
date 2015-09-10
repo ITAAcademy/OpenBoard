@@ -151,7 +151,7 @@ struct Element {
 };*/
 
 struct Track {
-    unsigned int time;
+    unsigned long int time;
     QList <DrawElement *> block;
     Track() { }
     Track( int time ,QList <DrawElement *> block ) {
@@ -182,7 +182,8 @@ struct Track {
     bool save(QIODevice* device)
     {
         QDataStream stream(device);
-        stream << block.size() << time ;
+        stream << block.size() ;
+        stream.writeRawData((char*)&time, sizeof(unsigned long int));
          qDebug() << "num of saved blocks " << block.size();
         for (int i=0; i< block.size(); i++)
         {
@@ -198,7 +199,8 @@ struct Track {
         time = 0;
         int blocks_size;
         QDataStream stream(device);
-        stream >> blocks_size >> time ;
+        stream >> blocks_size ;
+        stream.readRawData((char*)&time, sizeof(unsigned long int));
     qDebug() << "Track::load  blocks_size = " << blocks_size;
     //return true;
         for (int i=0; i< blocks_size; i++)
@@ -313,8 +315,8 @@ class ListControll : public QObject, public QQuickImageProvider
     ImageClone *cloneImg;
 
     //QElapsedTimer timer;
-      qint64 timerValue;
-    qint64 time_sum;
+      unsigned long int timerValue;
+    unsigned long int time_sum;
     DrawElement * block_in_buffer;
     int life_time_in_buffer;
     bool buffer_is_full;

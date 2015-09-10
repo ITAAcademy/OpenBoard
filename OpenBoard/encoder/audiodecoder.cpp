@@ -256,7 +256,6 @@ int AudioDecoder::resample()
 
 int AudioDecoder::resample2()
 {
-        av_free(out);
         int out_samples;
         out_samples = av_rescale_rnd(swr_get_delay(swr, audioCodecContext->sample_rate) +
                                              audioFrame->nb_samples, audioCodecContext->sample_rate, audioCodecContext->sample_rate, AV_ROUND_UP);
@@ -318,6 +317,7 @@ QByteArray AudioDecoder::nextFrame(AVPacket &audioPacket, qint64 time)
                     buff.arr = QByteArray((const char*)out->data[0], data_size);
                     buff.dts = audioPacket.dts;
                     audioBuffer.append(buff);
+                    avcodec_free_frame(&out);
                     /*m_output->write((const char*)out->data[0], data_size);
                     res += QByteArray((const char*)out->data[0], data_size);*/
                   //  qDebug() << data_size;
@@ -340,6 +340,7 @@ QByteArray AudioDecoder::nextFrame(AVPacket &audioPacket, qint64 time)
                            }
                         }
                     }*/
+                    //av_free(audioFrame);
 
                 }
                 AVStream *stream = formatContext->streams[audioStream];
