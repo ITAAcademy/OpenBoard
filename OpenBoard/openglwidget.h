@@ -47,7 +47,7 @@ using namespace QtAV;
 #define STREAM_DURATION 60
 #define TEXTURE_INDEX_BRUSH 1
 #define MIN_RECT_SIZE 25
-
+#define ZOOM_STEP 5
 struct ColorMarker{
     int startIndex;
     QColor value;
@@ -108,8 +108,7 @@ class OGLWidget : public QGLWidget, protected QOpenGLFunctions_3_0
 signals:
     void stopShowLastDrawingSignal();
 public:
-
-
+    void zoomGrid(int val);
     enum shaderEnum {ALPHA_SHADER=0,SPIRAL_SHADER=1,CROSS_SHADER=2};
 	void processMouse();
 	ShaderProgramWrapper* getMainShader();
@@ -337,6 +336,7 @@ private slots:
     void storeMousePos();
 
 private:
+    bool enableCross = false;
     int GRID_CELL_SIZE = 50;
     Grid windowGrid;
     QStack<ShaderProgramWrapper*> currentShaderStack;
@@ -356,10 +356,10 @@ QString fileNameForRecords;
 
          int frameRate = 25;
        bool mayShowRedRectangle = true;
-    unsigned int current_millisecs =0;
-    unsigned int last_milisecs_update = 0;
-    unsigned int last_milisecs_drawn = 0;
-    unsigned int last_mouse_process = 0;
+    qint64 current_millisecs =0;
+    qint64 last_milisecs_update = 0;
+    qint64 last_milisecs_drawn = 0;
+    qint64 last_mouse_process = 0;
 
     QVector<GLenum> attachment;
     FBOWrapper mouseFBO,pingpongFBO,mainFBO;

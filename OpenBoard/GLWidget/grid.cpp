@@ -16,6 +16,16 @@ void Grid::setSize(int size)
     cellWidth=size;
     cellHeight=size;
 }
+
+void Grid::setCellWidth(int w)
+{
+    cellWidth=w;
+}
+
+void Grid::setCellHeight(int h)
+{
+    cellHeight=h;
+}
 void Grid::processLCP()
 {
     int stepsX = windowWidth/cellWidth;

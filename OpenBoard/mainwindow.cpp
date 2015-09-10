@@ -367,6 +367,20 @@ a_send_to_youtube = new QAction(this);
        toolBarBoard->setMovable(false);
 
 
+       a_zoom_in = new QAction(this);
+       a_zoom_in->setEnabled(true);
+       a_zoom_in->setIcon(QPixmap(":/icons/search-icon.png").scaled(QSize(16, 16)));
+       a_zoom_in->setToolTip(tr("Zoom +"));
+       connect(a_zoom_in,SIGNAL(triggered()),this,  SLOT(on_action_ZoomIn_triggered()));
+       toolBar->addAction(a_zoom_in);
+
+       a_zoom_out = new QAction(this);
+       a_zoom_out->setEnabled(true);
+       a_zoom_out->setIcon(QPixmap(":/icons/search-icon.png").scaled(QSize(16, 16)));
+       a_zoom_out->setToolTip(tr("Zoom -"));
+       connect(a_zoom_out,SIGNAL(triggered()),this,  SLOT(on_action_ZoomOut_triggered()));
+       toolBar->addAction(a_zoom_out);
+
 
        QObjectList chield = toolBar->children();
        for( QObject* i: chield)
@@ -960,6 +974,15 @@ if (draw_element->getTypeId() != Element_type::Text)
 
 
 }
+ void MainWindow::on_action_ZoomIn_triggered()
+ {
+     qDebug() << "zoom in";
+    mpOGLWidget->zoomGrid(ZOOM_STEP);
+ }
+ void MainWindow::on_action_ZoomOut_triggered()
+ {
+    mpOGLWidget->zoomGrid(-ZOOM_STEP);
+ }
 
 void MainWindow::on_action_Undo_triggered()
 {

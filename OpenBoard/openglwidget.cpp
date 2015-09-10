@@ -397,10 +397,20 @@ void OGLWidget::hideEvent(QHideEvent *)
     //qDebug() << "HIDE EVENT";
 }
 
+void OGLWidget::zoomGrid(int val)
+{
+    int h = windowGrid.getHeight()+val;
+    int w = windowGrid.getWidth()+val;
+    windowGrid.setCellWidth(w);
+    windowGrid.setCellHeight(h);
+    qDebug() << "h"<<h;
+
+}
+
 void OGLWidget::processMouse()
 {
 
-
+enableCross=false;
     if(isMousePress) {
         GLint x1 = editingRectangle.rect.x();
           GLint y1 = editingRectangle.rect.y();
@@ -435,6 +445,7 @@ void OGLWidget::processMouse()
 
     case EDIT_RECTANGLE_MOVE:
       {
+         enableCross=true;
          m_manager.setAbleToDraw(false);
         // // //qDebug()<<"EDIT_RECTANGLE_MOVE width"<<editingRectangle.rect.width();
          //if (isPainting)
@@ -451,12 +462,16 @@ else
      }
      case EDIT_RECTANGLE_RESIZE:
      {
+         enableCross=true;
           m_manager.setAbleToDraw(false);
          // //qDebug()<<"EDIT_RECTANGLE_RESIZE";
         //  if (isPainting)
          {
-             editingRectangle.rect.setX(mousePos.x());
-             editingRectangle.rect.setY(mousePos.y());
+              QPoint closestPoint = windowGrid.closeToLCP(mousePos);
+              editingRectangle.rect.setX(closestPoint.x());
+              editingRectangle.rect.setY(closestPoint.y());
+             //editingRectangle.rect.setX(mousePos.x());
+             //editingRectangle.rect.setY(mousePos.y());
          }
 
         break;
@@ -661,7 +676,7 @@ qDebug() <<  "OGL WIDGET MID";
    //glDepthFunc(GL_LEQUAL); // Буфер глубины
    QTimer *timer = new QTimer(this);
    connect(timer, SIGNAL(timeout()), this, SLOT(updateWindow()));
-   timer->start(0);
+   timer->start(5);
    //connect(&mouseTimer, SIGNAL(timeout()), this, SLOT(storeMousePos()));
    //mouseTimer.start();
 
@@ -1368,6 +1383,86 @@ void OGLWidget::drawGlobalShader( QVector<ShaderProgramWrapper*> shaders)
             {
                // qDebug() <<" FIRST";
             bindBuffer(mainFBO.frameBuffer);
+
+    GLint x1 = editingRectangle.rect.x();
+      GLint y1 = editingRectangle.rect.y();
+        GLint x2 = editingRectangle.rect.x()+editingRectangle.rect.width();
+        GLint y2 = editingRectangle.rect.y()+editingRectangle.rect.height();
+       // m_manager.setAbleToDraw(true);
+
+        int leftCornerX1=x1-editingRectangle.leftCornerSize/2;
+         int leftCornerY1=y1-editingRectangle.leftCornerSize/2;
+                 int leftCornerX2=x1 + editingRectangle.leftCornerSize/2;
+                  int leftCornerY2=y1 + editingRectangle.leftCornerSize/2;
+
+disableShader();
+                  if (editingRectangle.isEditingRectangleVisible && !forseEditBoxDisable && !isPainting && getStatus()!= PLAY)
+                  {
+
+                     // paintBufferOnScreen(0, 0, wax, way);
+                      //rectangle
+                      glLineWidth(3);
+                      glColor3f(1.0f, 0.0f, 0.0f);
+                      glBegin(GL_LINES);
+                      glVertex3i(x1,y1, 100);
+                      glVertex3i(x2,y1, 100);
+
+                      glVertex3i(x2,y1, 100);
+                      glVertex3i(x2,y2, 100);
+
+                      glVertex3i(x2,y2, 100);
+                      glVertex3i(x1,y2, 100);
+
+                      glVertex3i(x1,y2, 100);
+                      glVertex3i(x1,y1, 100);
+                      glEnd();
+
+                      //left corner
+                       glColor3f(0.0f, 1.0f, 0.0f);
+                       glLineWidth(3);
+                       glBegin(GL_QUADS);   //We want to draw a quad, i.e. shape with four sides
+                            // glColor3i(1, 0, 0); //Set the colour to red
+                         glVertex3i(leftCornerX1, leftCornerY1, 100);            //Draw the four corners of the rectangle
+                         glVertex3i(leftCornerX2, leftCornerY1, 100);
+                         glVertex3i(leftCornerX2, leftCornerY2, 100);
+                         glVertex3i(leftCornerX1, leftCornerY2, 100);
+                       glEnd();
+                  }
+enableShader();
+
+//if (isMousePlay)paintBrushInBuffer(true);
+
+ ////qDebug() << "PREDRAW";
+m_encoder->clearWaitForFrame();
+for(int i = 0; !timeLine->isBlocked && i < getList().size(); i++)
+{
+    ////qDebug() << "draw   " << i;
+    if( getList()[i] != NULL && timeLine->getMaxTrackTime() > 0)
+        getList()[i]->paint();
+    //test->use();
+}
+ bindBuffer(mainFBO.frameBuffer);
+
+//glDisable(GL_DEPTH_TEST);
+
+
+
+if(curStatus == STOP)
+    paintBufferOnScreen(mouseFBO,0, 0, wax, way,-100);
+//ENable global shaders for mainFBO
+QVector<ShaderProgramWrapper*> shaders;
+//shaderPrograms[CROSS_SHADER]->setUniformResolution(wax,way);
+//if(curStatus == STOP && isMousePress)
+if(enableCross)
+shaders.push_back(shaderPrograms[CROSS_SHADER]);
+bool drawToSecondBuffer = shaders.length()>0;//shaders.length()>1 && shaders.length()%2==0;
+for (int i=0;i<shaders.length();i++)
+{
+    //qDebug() << "FOR ";
+        if(drawToSecondBuffer)
+        {
+           // qDebug() <<" SECOND";
+           bindBuffer(pingpongFBO.frameBuffer);
             useShader(shaders[i]);
             paintBufferOnScreen(pingpongFBO,0, 0, pingpongFBO.tWidth,pingpongFBO.tHeight, -1);
             useShader(0);
@@ -2060,8 +2155,8 @@ void  OGLWidget::updateWindow(){
     //isCrossingNow=true;
     //if (timeLine->getPointedBlocks().size())
    /// if(!timeLine->isBlocked)
-   ///
- if ((current_millisecs - last_mouse_process) >= 1.0/MOUSE_PROCESS_DELAY_MS)
+   current_millisecs = QDateTime::currentMSecsSinceEpoch();
+ if ((current_millisecs - last_mouse_process) >= 1000/MOUSE_PROCESS_DELAY_MS)
  {
 processMouse();
 storeMousePos();
