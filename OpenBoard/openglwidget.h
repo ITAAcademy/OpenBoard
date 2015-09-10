@@ -93,6 +93,7 @@ struct DrawData{
 
 struct FBOWrapper{
     GLuint frameBuffer;
+    GLuint depthStensilBuffer;
     GLuint bindedTexture;
     int errorStatus= -1;
     int tWidth=0,tHeight=0;
@@ -224,7 +225,7 @@ public:
     void drawTexture(int x, int y, int width, int height, GLuint texture, int angle=0, float scaleX = 1, float scaleY = 1, int z = 0);
 
     int initTexture(GLuint &texture, int width, int height);
-    void initFBDepthBuffer(GLuint &fbo_depth);
+    int initDepthTexture(GLuint &fbo_depth, int width, int height);
     void paintBrushInBuffer(FBOWrapper fboWrapper);
     FBOWrapper initFboWrapper(int width, int height, bool visibleOnly=true, bool forceLoad = false);
     QList<DrawElement *> &getList();
