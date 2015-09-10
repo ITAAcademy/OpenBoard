@@ -661,7 +661,7 @@ qDebug() <<  "OGL WIDGET MID";
    //glDepthFunc(GL_LEQUAL); // Буфер глубины
    QTimer *timer = new QTimer(this);
    connect(timer, SIGNAL(timeout()), this, SLOT(updateWindow()));
-   timer->start(0);
+   timer->start(5);
    //connect(&mouseTimer, SIGNAL(timeout()), this, SLOT(storeMousePos()));
    //mouseTimer.start();
 
@@ -1981,8 +1981,8 @@ void  OGLWidget::updateWindow(){
     //isCrossingNow=true;
     //if (timeLine->getPointedBlocks().size())
    /// if(!timeLine->isBlocked)
-   ///
- if ((current_millisecs - last_mouse_process) >= 1.0/MOUSE_PROCESS_DELAY_MS)
+   current_millisecs = QDateTime::currentMSecsSinceEpoch();
+ if ((current_millisecs - last_mouse_process) >= 1000/MOUSE_PROCESS_DELAY_MS)
  {
 processMouse();
 storeMousePos();

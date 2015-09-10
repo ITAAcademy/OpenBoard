@@ -355,10 +355,10 @@ QString fileNameForRecords;
 
          int frameRate = 25;
        bool mayShowRedRectangle = true;
-    unsigned int current_millisecs =0;
-    unsigned int last_milisecs_update = 0;
-    unsigned int last_milisecs_drawn = 0;
-    unsigned int last_mouse_process = 0;
+    qint64 current_millisecs =0;
+    qint64 last_milisecs_update = 0;
+    qint64 last_milisecs_drawn = 0;
+    qint64 last_mouse_process = 0;
 
     QVector<GLenum> attachment;
     FBOWrapper mouseFBO,pingpongFBO,mainFBO;
