@@ -1433,6 +1433,7 @@ void OGLWidget::drawEditBox( int z)
 void OGLWidget::reloadScene()
 {
     //glDrawBuffer(GL_COLOR_ATTACHMENT1);
+    makeCurrent();
     clearFrameBuffer(mainFBO);
     clearFrameBuffer(pingpongFBO);
     glBindFramebuffer(GL_FRAMEBUFFER , 0);

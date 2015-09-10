@@ -175,7 +175,9 @@ void DrawElement::paint()
 {
 
   //  qDebug() << "paint on buffer:"<<fboWrapper.frameBuffer;
-    if (pDrawWidget->getTimeLine()->getPlayTime() > lifeTime + startDrawTime) return;
+    if (pDrawWidget->getTimeLine()->getPlayTime() > lifeTime + startDrawTime)
+        return;
+
     if(fboWrapper.errorStatus == 0)
     {
       bool drawToSecondBuffer=false;
@@ -244,21 +246,21 @@ void DrawElement::paint()
                     }
                     else
                     {
-                    pDrawWidget->bindBuffer(fboWrapper.frameBuffer);
-                    pDrawWidget->useShader(effects[i].getShaderWrapper());
-                   // float keyFrame = (float)(pDrawWidget->getTimeLine()->getPlayTime()-startDrawTime)/lifeTime;//MOVE UP LATER
-                    ShaderEffect::setUniformAnimationKey(effects[i],keyFrame);
-                    ShaderEffect::setUniformResolution(effects[i],
+                        pDrawWidget->bindBuffer(fboWrapper.frameBuffer);
+                        pDrawWidget->useShader(effects[i].getShaderWrapper());
+                        // float keyFrame = (float)(pDrawWidget->getTimeLine()->getPlayTime()-startDrawTime)/lifeTime;//MOVE UP LATER
+                        ShaderEffect::setUniformAnimationKey(effects[i],keyFrame);
+                        ShaderEffect::setUniformResolution(effects[i],
                                                        pDrawWidget->getPingPongFBO().tWidth,pDrawWidget->getPingPongFBO().tHeight);
-                    ShaderEffect::setUniformReverse(effects[i],effects[i].getReverse());
+                        ShaderEffect::setUniformReverse(effects[i],effects[i].getReverse());
 
-                    if (effectsUsedInOneTime==0)
-                        draw();
-                    else
-                    pDrawWidget->drawTexture(0,0,pDrawWidget->getPingPongFBO().tWidth,
+                        if (effectsUsedInOneTime==0)
+                            draw();
+                        else
+                        pDrawWidget->drawTexture(0,0,pDrawWidget->getPingPongFBO().tWidth,
                                              pDrawWidget->getPingPongFBO().tHeight,
                                             pDrawWidget->getPingPongFBO().bindedTexture,0,1,1,z );
-                     pDrawWidget->useShader(0);
+                        pDrawWidget->useShader(0);
 
 
                     }
