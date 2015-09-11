@@ -1,5 +1,6 @@
 #include "listcontroll.h"
 #include <QVariant>
+#include <QCoreApplication>
 
 QPoint ListControll::getSelectedBlockPoint() const
 {
@@ -794,7 +795,7 @@ int ListControll::getTrackSize(int col)
      {
          //-=-=-=
          group_changed = false;
-         test_group.calcNotNullMembers();
+        // test_group.calcNotNullMembers();
          test_group.setBlocksBorderColor("white");
          if (test_group.isGroupValid())
          {
@@ -805,10 +806,14 @@ int ListControll::getTrackSize(int col)
          else
          {
 qDebug() <<"2222222222  test_group.isGroupValid() = false";
-curent_group.setBlocksBorderColor("green");
+//curent_group.setBlocksBorderColor("green");
          }
          isGroupChanged = false;
      }
+
+    if (!ctrl_pressed && value)
+        test_group.clear();
+
      ctrl_pressed = value;
  }
 
@@ -1110,6 +1115,7 @@ bool ListControll::load(QIODevice* device)
 
     }
     //@ CRASH IN RELEASE BUT WORK IN DEBUG @
+    qApp->processEvents(QEventLoop::AllEvents,10000);
     for (int k=0; k< tracks.size(); k++)
     for (int i=0; i< tracks[k].block.size(); i++)
     {

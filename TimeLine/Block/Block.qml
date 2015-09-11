@@ -512,6 +512,8 @@ z: 0
                     context_menu.closeIt()
                     if (!main222.ctrl_pressed)
                         drag.target = root
+                    else
+                        drag.target = null
     // //console.log("onPressed");
             drop.visible = false;
              drop.enabled = false;
