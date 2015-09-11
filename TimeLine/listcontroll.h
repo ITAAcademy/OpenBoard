@@ -209,8 +209,8 @@ struct Track {
 
              draw_element->loadTypeId(device);
 
-            Element_type typeId = draw_element->getTypeId();// Element_type::Image;//static_cast<Element_type>(temp_type);
-
+            Element_type typeId = (Element_type)draw_element->getTypeId();// Element_type::Image;//static_cast<Element_type>(temp_type);
+qDebug() <<"before  if(typeId == Element_type::Text)";
              if(typeId == Element_type::Text)
              {
                  DrawTextElm *elm = new DrawTextElm(NULL);
@@ -259,7 +259,7 @@ struct Track {
                          //delete  draw_element;
                          draw_element = (DrawElement*) elm;
              }
-
+qDebug() <<"before block append";
             block.append(draw_element);
             qDebug() << "load block[i]:  " << i;
         }

@@ -16,7 +16,7 @@
 
 class Group;
 
-enum Element_type { Text, Video, Audio, Image,Brushh,Empty};
+enum Element_type { Text=0, Video=1, Audio=2, Image=3,Brushh=4,Empty=5};
 
 struct AnimStateTime{
     int state; //no anim = 0,begin = 1,end = 2, begin & end =3
@@ -60,7 +60,7 @@ protected:
     QTimer lifeTimer;
     QElapsedTimer tickTimer;
     char type[50];
-    Element_type typeId;
+    int typeId;
     OGLWidget *pDrawWidget;
     bool bPause;
     bool bPlay;
@@ -130,8 +130,8 @@ public:
     void setType( const char name[]);
     QString getType();
 
-    void setTypeId( Element_type);
-    Element_type getTypeId();
+    void setTypeId( int);
+    int getTypeId();
 
     virtual int getTickTime() const;
     virtual void setTickTime(int value);

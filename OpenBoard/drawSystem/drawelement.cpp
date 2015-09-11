@@ -430,12 +430,13 @@ bool DrawElement::loadTypeId(QIODevice* device)
 {
     QDataStream stream(device);
     int temp_type;
-    stream >> temp_type  ;
+    stream >> typeId  ;
+    qDebug() << "good";
     qDebug() << "DrawElement::sav temp_type = " << temp_type;
   // typeId = static_cast<Element_type>(temp_type);
-    Element_type temp_2 ;
-    temp_2 = (Element_type)(temp_type);
-   typeId = temp_2;
+   // Element_type temp_2 =  static_cast<Element_type>(temp_type);
+   //typeId = temp_2;
+
 
 }
 bool DrawElement::loadRest(QIODevice* device)
@@ -482,7 +483,7 @@ bool DrawElement::save(QIODevice* device)
 
     int temp_type = static_cast<int>(typeId);
     int resultStatus=0;
-    qDebug() << "DrawElement::sav temp_type = " << temp_type;
+    //qDebug() << "DrawElement::sav temp_type = " << temp_type;
     stream << temp_type << key << lifeTime << tickTime << startDrawTime << x << y << z
            << width << height << keyCouter << blockIndex << blockColumn;
     //if (typeId == Element_type::Image)
@@ -701,12 +702,12 @@ QString DrawElement::getType()
     return QString(type);
 }
 
-void DrawElement::setTypeId( Element_type val)
+void DrawElement::setTypeId(int val)
 {
     this->typeId = val;
 }
 
-Element_type DrawElement::getTypeId()
+int DrawElement::getTypeId()
 {
     return this->typeId;
 }
