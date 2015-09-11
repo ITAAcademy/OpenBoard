@@ -18,7 +18,7 @@ QString ListControll::getBlockBorderColor(int col,int ind)
 
 void ListControll::setSelectedBlockPoint(const QPoint &value)
 {
-    if (false)
+    //if (false)
     if (ctrl_pressed)
      if ( value.x() != -1) //glWindInited &&
          if ( blockValid(value.x(), value.y()))  //crash*/
@@ -800,11 +800,12 @@ int ListControll::getTrackSize(int col)
          {
              qDebug() <<"2222222222  test_group.isGroupValid() = true";
              curent_group = test_group;
-             //curent_group.setBlocksBorderColor("red");
+             curent_group.setBlocksBorderColor("blue");
          }
          else
          {
 qDebug() <<"2222222222  test_group.isGroupValid() = false";
+curent_group.setBlocksBorderColor("green");
          }
          isGroupChanged = false;
      }
@@ -1106,12 +1107,17 @@ bool ListControll::load(QIODevice* device)
          temp.load(device);
          qDebug() << "load blocks size in track" << temp.block.size();
          tracks.append(temp);
-         /*for (int i=0; i< temp.block.size(); i++)
-         {
-         connect(temp.block[i],SIGNAL(borderColorChangedSignal(int,int,QString)),
-                 this,SIGNAL(borderColorChangedSignal(int,int,QString)));
-         }*/
+
     }
+    //@ CRASH IN RELEASE BUT WORK IN DEBUG @
+    for (int k=0; k< tracks.size(); k++)
+    for (int i=0; i< tracks[k].block.size(); i++)
+    {
+    connect(tracks[k].block[i],SIGNAL(borderColorChangedSignal(int,int,QString)),
+            this,SIGNAL(borderColorChangedSignal(int,int,QString)));
+    }
+
+
     recountMaxTrackTime();
     calcPointedBlocks();
     setSelectedBlockPoint(-1, -1);

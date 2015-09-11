@@ -13,6 +13,8 @@ Group::Group()
                 members[i][k] = NULL;
             }
         }
+    first_ind_not_null = NULL;
+    last_ind_not_null = NULL;
 }
 
 Group::~Group()
@@ -59,12 +61,23 @@ void Group::setSpacingBlocks(int value)
 
 void Group::setBlocksBorderColor(QString color)
 {
+    if (first_ind_not_null == NULL)
+    {
+        calcNotNullMembers();
+    }
     for (int k = first_col_not_null; k <last_col_not_null + 1; k++ )
     {
         for (int i= first_ind_not_null[k]; i<  last_ind_not_null[k] + 1; i++)
         {
             if (members[k][i] != NULL) //protection of crash
+            {
+                qDebug() << "Group::setBlocksBorderColor members[k][i] != NULL";
                 members[k][i]->setBlockBorderColor(color);
+            }
+            else
+            {
+                qDebug() << "Group::setBlocksBorderColor members[k][i] == NULL";
+            }
         }
     }
 }
@@ -90,33 +103,49 @@ void Group::calcNotNullMembers()
              first_ind_not_null[k] = -1;
              last_ind_not_null[k] = -1;
          }
+
      for (int k = 0; k <mem_size; k++ )
      {
-         bool not_null = false;
+         //bool not_null = false;
          for (int i=0; i< members[k].size(); i++)
          {
-             if (members[k][i] != NULL)
-             {
-                 if (!not_null)
+                 if (members[k][i] != NULL)
                  {
-                  first_ind_not_null[k] = i;
-                  first_col_not_null = k;
+                     if (first_ind_not_null[k] == -1)
+                     {
+                         first_ind_not_null[k] = i;
+                         first_col_not_null = k - 1;
+                     }
 
-                  not_null = true;
+                      last_ind_not_null[k] = i;
+                       last_col_not_null = k;
+                      qDebug()<< "first_ind_not_null[" << k << "] = " << first_ind_not_null[k];
+
+
                  }
-                 last_col_not_null = k;
-             }
-             else
+            /* else
              {
-                 if (not_null)
-                 {
-                  last_ind_not_null[k] = i;
-                  last_col_not_null = k;
-                  i = members[k].size() + 5;
-                 }
-             }
+                     if (members[k][i] == NULL && not_null)
+                     {
+
+                          //last_col_not_null = k;
+                          qDebug()<< "last_ind_not_null[" << k << "] = " << last_ind_not_null[k];
+                          i = members[k].size() + 5;
+                     }
+             }*/
          }
      }
+     for (int k = 0; k <mem_size; k++ )
+     {
+     qDebug()<< "last_ind_not_null[" << k << "] = " << last_ind_not_null[k];
+     }
+
+     qDebug() << "first_col_not_null = " << first_col_not_null ;
+
+     qDebug() << "last_col_not_null = " << last_col_not_null;
+
+
+
 
 
 }
@@ -169,6 +198,10 @@ bool Group::isGroupValid()
             }
         }
     }*/
+    if (first_col_not_null == -1)
+        return false;
+     if (first_ind_not_null[first_col_not_null] == -1)
+        return false;
 
     int start_time = members[first_col_not_null][first_ind_not_null[first_col_not_null]]->getStartDrawTime();
     int end_time = members[first_col_not_null].last()->getStartDrawTime();
@@ -203,6 +236,8 @@ bool Group::isGroupValid()
             return false;
         }
         int prev_block_index = 0;
+        if (first_ind_not_null[i] == -1)
+           return false;
         if (mem_i_size > 0)
         for (int k = first_ind_not_null[i]; k <mem_i_size; k++ )
         {
