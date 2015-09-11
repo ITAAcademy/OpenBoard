@@ -263,6 +263,7 @@ void DrawTextElm::clearBuffer()
 void DrawTextElm::draw()
 {
    // qDebug() << "void DrawTextElm::draw()" << pDrawWidget->getTimeLine()->getPlayTime();
+   pDrawWidget->clearTexture(textureIndex);
     pDrawWidget->clearFrameBuffer(fboWrapper);
     int current_time;
     if(!bPlay)
@@ -761,7 +762,7 @@ bool DrawTextElm::setDrawWidget(OGLWidget *value)
 {
     if (DrawElement::setDrawWidget(value))
     {
-        textureIndex = pDrawWidget->loadTexture(QImage(width,height,QImage::Format_ARGB32_Premultiplied));
+        textureIndex = pDrawWidget->loadTexture(QImage(pDrawWidget->getWax(),pDrawWidget->getWay(),QImage::Format_ARGB32));
     }
 
 }

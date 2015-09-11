@@ -276,6 +276,7 @@ public:
     void updateGrid();
     void showLCP();
 
+    void clearTexture(GLuint textureId);
 public slots:
     void disableGrid();
     void enableGrid();
@@ -323,7 +324,7 @@ public slots:
     void setFileNameForRecords(QString ) ;
 
 
-    void drawQImageFromTexture(int x, int y, QImage img, GLuint index, int z);
+    void drawQImageFromTexture(int x, int y, QImage img, GLuint index, int z, bool inverseY=false);
     void ShowHideShaderWindow();
     void testInit();
     void encoderAddWaitFrame();

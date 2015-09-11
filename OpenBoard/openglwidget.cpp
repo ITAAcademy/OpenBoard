@@ -1284,7 +1284,13 @@ void OGLWidget::clearFrameBuffer(FBOWrapper fboWrapper){
 
 
 }
+void OGLWidget::clearTexture(GLuint textureId){
+std::vector<unsigned char> emptyPixels(1024*1024*4, 0);
+    glBindTexture(GL_TEXTURE_2D, textureId);
+    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, wax, way, GL_RGBA, GL_UNSIGNED_BYTE, emptyPixels.data());
+    glBindTexture(GL_TEXTURE_2D, 0);
 
+}
 void OGLWidget::deleteFBO(FBOWrapper wrapper)
 {
     if(wrapper.errorStatus != 0)
@@ -2321,9 +2327,9 @@ void OGLWidget::drawTextFromTexture( int x, int y,int z, const QString& text,GLu
             rgb[j] = qRgba( col.red(), col.green(), col.blue(), qRed(rgb[j]) );
         }
     }
-    img = QGLWidget::convertToGLFormat(img);
+   // img = QGLWidget::convertToGLFormat(img);
     qDebug() << "before drawQImageFromTexture";
-    drawQImageFromTexture(0,0,img,index,z);
+    drawQImageFromTexture(x,y,img,index,z,true);
     //glRasterPos3i( x, y, z );
     //glDrawPixels( rect.width(), rect.height(), GL_RGBA, GL_UNSIGNED_BYTE, img.bits() );
 
@@ -2348,7 +2354,7 @@ void OGLWidget::drawQImage(int x, int y, QImage img, int z)
     glPopMatrix();
 }
 
-void OGLWidget::drawQImageFromTexture(int x, int y, QImage img, GLuint index, int z)
+void OGLWidget::drawQImageFromTexture(int x, int y, QImage img, GLuint index, int z,bool inverseY)
 {
     if(img.isNull())
     {
@@ -2364,7 +2370,10 @@ void OGLWidget::drawQImageFromTexture(int x, int y, QImage img, GLuint index, in
    // glClearColor(0.1f, 0.0f, 0.0f, 0.0f); // устанавливаем фоновый цвет
 
    glBindTexture(GL_TEXTURE_2D, index);
-    glTexSubImage2D(GL_TEXTURE_2D, 0, 0, 0, img.width(), img.height(), GL_RGBA, GL_UNSIGNED_BYTE, res.bits());
+   if (inverseY)
+       glTexSubImage2D(GL_TEXTURE_2D, 0, x, way-y, img.width(), img.height(), GL_RGBA, GL_UNSIGNED_BYTE, res.bits());
+   else
+    glTexSubImage2D(GL_TEXTURE_2D, 0, x, y, img.width(), img.height(), GL_RGBA, GL_UNSIGNED_BYTE, res.bits());
     drawTexture(0,0,wax, way, index, 0, 1, 1, z);
      // glBindTexture(GL_TEXTURE_2D,0);
     glBindTexture(GL_TEXTURE_2D, 0);
