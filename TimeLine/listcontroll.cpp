@@ -42,18 +42,26 @@ void ListControll::setSelectedBlockPoint(const QPoint &value)
            }
            else
            {
+               draw_el->setBlockBorderColor("white");
                qDebug() << "AAAAAAA adding block to group failed!!!!!!!!!!";
            }
            // draw_el->setGroupWichElBelong(bl_group);
         }
         else
         {
-             colora = "white";
-            if (bl_group->removeFromGroup(draw_el))
+            colora = "white";
+            if(curent_group == bl_group)
+            if (test_group.removeFromGroup(draw_el))
             {
-                    draw_el->setBlockBorderColor(colora);
+                    draw_el->setBlockBorderColor("white");
                     qDebug() << "ListControll::setSelectedBlockPoint removing block to group succesfull";
                     emit borderColorChangedSignal(value.x(), value.y(), colora);
+
+                  /*  if(bl_group->getMembersSize() == 0)
+                        delete bl_group;*///@BAG@
+
+                  //  draw_el->setGroupWichElBelong(NULL);
+
             }
             else
                 qDebug() << "AAAAAAA removing block to group failed!!!!!!!!!!";
@@ -67,6 +75,25 @@ void ListControll::setSelectedBlockPoint(const QPoint &value)
     }
     if(value != selectedBlockPoint)
     {
+
+        if(!ctrl_pressed)
+        {
+            DrawElement *elm = getBlock(selectedBlockPoint);
+            if(elm != NULL  && elm->getGroupWichElBelong() != NULL)
+                elm->getGroupWichElBelong()->setBlocksBorderColor("white");
+
+            elm = getBlock(value);
+
+            if(elm != NULL && elm->getGroupWichElBelong() != NULL)
+            {
+                elm->getGroupWichElBelong()->setBlocksBorderColor("blue");
+                curent_group = elm->getGroupWichElBelong();
+            }
+            else
+                curent_group = NULL;
+
+        }
+
         selectedBlockPoint = value;
 
     }
@@ -793,18 +820,28 @@ int ListControll::getTrackSize(int col)
     if (group_changed)
          if (ctrl_pressed && !value)
      {
-         //-=-=-=
+                    qDebug() <<"2222222222  test_group START";
          group_changed = false;
-        // test_group.calcNotNullMembers();
-         test_group.setBlocksBorderColor("white");
+
          if (test_group.isGroupValid())
          {
              qDebug() <<"2222222222  test_group.isGroupValid() = true";
-             curent_group = test_group;
-             curent_group.setBlocksBorderColor("blue");
+             if(curent_group != NULL)
+                 curent_group->deInitGroupBlocks();
+
+             curent_group = new Group(test_group);
+             curent_group->setBlocksBorderColor("blue");
+             curent_group->initGroupBlocks();
          }
          else
          {
+             test_group.setBlocksBorderColor("white");
+             if(curent_group != NULL && test_group.getMembersSize() == 0)
+             {
+                 curent_group->deInitGroupBlocks();//@BAG@
+                 delete curent_group;
+                 curent_group = NULL;
+             }
 qDebug() <<"2222222222  test_group.isGroupValid() = false";
 //curent_group.setBlocksBorderColor("green");
          }
@@ -812,7 +849,17 @@ qDebug() <<"2222222222  test_group.isGroupValid() = false";
      }
 
     if (!ctrl_pressed && value)
-        test_group.clear();
+    {
+        if(curent_group == NULL)
+        {
+            test_group.clear();
+        }
+        else
+        {
+            test_group = *curent_group;
+        }
+    }
+qDebug() << test_group.getMembersSize();
 
      ctrl_pressed = value;
  }
@@ -888,6 +935,7 @@ qDebug() <<"2222222222  test_group.isGroupValid() = false";
 ListControll::ListControll(/*OGLWidget *drawWidget ,*/QObject *parent) : QObject(parent), QQuickImageProvider(QQuickImageProvider::Image)
 {
     buffer_is_full = false;
+    selectedBlockPoint = QPoint(-1, -1);
    resetProjectToDefault();
    /*Group temp_group;
    block_groups.append(temp_group);*/
@@ -1115,7 +1163,7 @@ bool ListControll::load(QIODevice* device)
 
     }
     //@ CRASH IN RELEASE BUT WORK IN DEBUG @
-    qApp->processEvents(QEventLoop::AllEvents,10000);
+  //  qApp->processEvents(QEventLoop::AllEvents,10000);
     for (int k=0; k< tracks.size(); k++)
     for (int i=0; i< tracks[k].block.size(); i++)
     {
@@ -1559,8 +1607,7 @@ QImage ListControll::requestImage(const QString &id, QSize *size, const QSize &r
 
     bool ListControll::blockValid(const int col, const int index)
     {
-        if(col < tracks.size() && index < tracks[col].block.size()
-           &&  col > -1 && index > -1)
+        if( col > -1 && index > -1 && col < tracks.size() && index < tracks[col].block.size()  )
             return true;
         return false;
     }
