@@ -240,7 +240,7 @@ void AV_REncoder::run()
     int delta = 0;
     while(bRun || audioBuffer.size() > 0)
     {
-            qDebug() << "SHOW";
+            //qDebug() << "SHOW";
             if(!newImage || (!bRun && !audioBuffer.isEmpty()))
             {
                 if(bRun)

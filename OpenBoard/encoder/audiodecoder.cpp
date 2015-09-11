@@ -315,17 +315,18 @@ QByteArray AudioDecoder::nextFrame(AVPacket &audioPacket, qint64 time)
     QByteArray res;
     if( audioPacket.stream_index == audioStream)
     {
+        AVStream *stream = formatContext->streams[audioStream];
+
+        //qDebug() << "V_SECONDS    " << seconds << " " << time;
+
         while(audioPacket.size > 0)
         {
             int len;//, data_size = AVCODEC_MAX_AUDIO_FRAME_SIZE;
             //decode
 
             len = avcodec_decode_audio4(audioCodecContext, audioFrame, &frameFinished, &audioPacket);
-            AVStream *stream = formatContext->streams[audioStream];
-            qint64 seconds= (audioPacket.dts - stream->start_time) * av_q2d(stream->time_base)*1000;
-            qDebug() << "V_SECONDS    " << seconds << " " << time;
-            baseTime = seconds;
 
+            baseTime = (audioPacket.dts - stream->start_time) * av_q2d(stream->time_base)*1000;
             if(frameFinished)
             {
                 if(bSwr_init)
@@ -349,8 +350,8 @@ QByteArray AudioDecoder::nextFrame(AVPacket &audioPacket, qint64 time)
                   //  qDebug() << data_size;
 //                    qDebug() << "NEED" << audioPacket.dts - audioFrame->best_effort_timestamp;
                  //   qDebug() << "IS" << data_size;
-                    AVStream *stream = formatContext->streams[audioStream];
-                    double seconds= (audioPacket.dts - stream->start_time) * av_q2d(stream->time_base)*1000;
+                    /*AVStream *stream = formatContext->streams[audioStream];
+                    double seconds= (audioPacket.dts - stream->start_time) * av_q2d(stream->time_base)*1000;*/
                     //qDebug() << "TIME   " << time << "  " << (getDTSFromMS(time) - stream->start_time) * av_q2d(stream->time_base)*1000;
                     //qDebug() << "A_SECONDS    " <<seconds;
 

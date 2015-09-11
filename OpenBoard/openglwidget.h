@@ -182,6 +182,7 @@ public:
     void mouseMoveEvent ( QMouseEvent * event );
     void keyPressEvent(QKeyEvent *e);
     void keyReleaseEvent(QKeyEvent *event);
+    void showEvent(QShowEvent *event);
     bool event(QEvent *e);
     QSize getTextureSize();
 
@@ -274,6 +275,7 @@ public:
     void updateGrid();
     void showLCP();
 
+
 public slots:
     void disableGrid();
     void enableGrid();
@@ -288,6 +290,7 @@ public slots:
     void brushParamsChanged();
     void updateWindow();
     bool isRecord() const;
+    bool isNeedShowTimeLine();
 
     int getDelay() const;
     void setDelay(int value);
