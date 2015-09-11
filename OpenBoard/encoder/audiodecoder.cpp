@@ -91,8 +91,27 @@ void AudioDecoder::initAudioDecoder()
 
 AudioDecoder::~AudioDecoder()
 {
+    audio->stop();
+    qDebug() << "S1";
     delete audio;
-    myFile.close();
+    qDebug() << "S2";
+
+    /*
+     * _OBJECT
+    AVDictionary    *optionsDict = NULL;
+    AVFormatContext *formatContext = NULL;
+    int             audioStream = -1;
+    AVCodecContext  *audioCodecContext;
+    AVCodec         *audioCodec;
+    AVPacket        audioPacket;
+    AVFrame         *audioFrame = NULL;
+    AVFrame         *out  = NULL;
+    AVResampleContext *audio_cntx;
+     */
+    av_free(optionsDict);
+    av_free(formatContext);
+    avcodec_free_context(&audioCodecContext);
+    av_free(audioCodec);
 }
 
 QByteArray AudioDecoder::nextFrame(qint64 time)
@@ -256,6 +275,7 @@ int AudioDecoder::resample()
 
 int AudioDecoder::resample2()
 {
+    av_free(out);
         int out_samples;
         out_samples = av_rescale_rnd(swr_get_delay(swr, audioCodecContext->sample_rate) +
                                              audioFrame->nb_samples, audioCodecContext->sample_rate, audioCodecContext->sample_rate, AV_ROUND_UP);
@@ -301,6 +321,10 @@ QByteArray AudioDecoder::nextFrame(AVPacket &audioPacket, qint64 time)
             //decode
 
             len = avcodec_decode_audio4(audioCodecContext, audioFrame, &frameFinished, &audioPacket);
+            AVStream *stream = formatContext->streams[audioStream];
+            qint64 seconds= (audioPacket.dts - stream->start_time) * av_q2d(stream->time_base)*1000;
+            qDebug() << "V_SECONDS    " << seconds << " " << time;
+            baseTime = seconds;
 
             if(frameFinished)
             {
@@ -313,11 +337,13 @@ QByteArray AudioDecoder::nextFrame(AVPacket &audioPacket, qint64 time)
                                                                            AV_SAMPLE_FMT_S16, 1);
                     /*if(data_size > audio->bytesFree())
                         data_size = audio->bytesFree();*/
+
                     AudioBuff buff;
                     buff.arr = QByteArray((const char*)out->data[0], data_size);
-                    buff.dts = audioPacket.dts;
+                    buff.dts = baseTime;
+
                     audioBuffer.append(buff);
-                    avcodec_free_frame(&out);
+                  //  avcodec_free_frame(&out);
                     /*m_output->write((const char*)out->data[0], data_size);
                     res += QByteArray((const char*)out->data[0], data_size);*/
                   //  qDebug() << data_size;
@@ -343,18 +369,14 @@ QByteArray AudioDecoder::nextFrame(AVPacket &audioPacket, qint64 time)
                     //av_free(audioFrame);
 
                 }
-                AVStream *stream = formatContext->streams[audioStream];
-                qint64 seconds= (audioPacket.dts - stream->start_time) * av_q2d(stream->time_base)*1000;
-                //qDebug() << "V_SECONDS    " << seconds;
-                baseTime = seconds;
+
             }
             audioPacket.size -= len;
             audioPacket.data += len;
         }
-
-        while( audioBuffer.size() > 0 && currentDts >= audioBuffer.first().dts)
+        while( audioBuffer.size() > 0 && (time >= audioBuffer.first().dts))
         {
-         //   qDebug() << "AUDIO  " << currentDts;
+            //qDebug() << "AUDIO  " << currentDts; // currentdts very smoll in the fuftre need fix //@BAG@NicolasFix
             m_output->write(audioBuffer.first().arr.data(), audioBuffer.first().arr.size());
             res += audioBuffer.first().arr;
             audioBuffer.pop_front();
@@ -363,6 +385,12 @@ QByteArray AudioDecoder::nextFrame(AVPacket &audioPacket, qint64 time)
 
     }
 
+    return res;
+}
+
+QByteArray AudioDecoder::getAudioFrombuffer()
+{
+    QByteArray res;
     return res;
 }
 
@@ -398,7 +426,7 @@ void AudioDecoder::initFormat()
     }
 
     audio = 0;
-    audio = new QAudioOutput(QAudioDeviceInfo::defaultOutputDevice(), format, this);
+    audio = new QAudioOutput(QAudioDeviceInfo::defaultOutputDevice(), format, 0);
 
     //qDebug() << "FORMAT PARAM:";
     //qDebug() << "Sample rate = " << format.sampleRate();

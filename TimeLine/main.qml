@@ -245,6 +245,7 @@ isPlayPauseStop = 1
 
         scroll.flickableItem.contentX = 0
 scale_pointer.x = 0// timeControll.getMaxTrackTime() + scale_pointer.width/2 - scroll.flickableItem.contentX;
+        gc();
     }
 
     function setScalePointerPos(xx)    {
@@ -861,6 +862,7 @@ timeControll.setScalePointerPos((x  -20 + scroll.flickableItem.contentX)* main22
         }
         timeControll.calcPointedBlocks();
         timeControll.setIsProjectChanged(true)
+        gc();
     }
     function moveBlockForAnim(ind,   value) //left_right -1 or 1
       {

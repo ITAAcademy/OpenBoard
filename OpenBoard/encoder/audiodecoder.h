@@ -90,7 +90,7 @@ public:
     explicit AudioDecoder(QObject * parent, AVFormatContext *formatContext );
     void initAudioDecoder();
     ~AudioDecoder();
-    QByteArray nextFrame(qint64 time);
+    QByteArray nextFrame(qint64 time);// not use
     QByteArray nextFrame(AVPacket &value, qint64 time);
     void setAudioPacket(const AVPacket &value);
     qint64 getDTSFromMS(int ms);
@@ -102,11 +102,12 @@ public slots:
     void stateChanged(QAudio::State state);
     void pullTimerExpired();
 
-    void seekFile(int ms);
+    void seekFile(int ms);// new remake for milisecond//@BAG@NicolasFix now work for uSecond (see FFmpeg)
+    QByteArray getAudioFrombuffer();
 private:
     void initFormat();
-    int getSampleFormatSize(AVSampleFormat frm);
-    int resample();
+    int getSampleFormatSize(AVSampleFormat frm);// for test
+    int resample();// not work //please dont delete
     int resample2();
 };
 

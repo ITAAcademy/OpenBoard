@@ -168,35 +168,39 @@ bool ListControll::removeBlock(int col, int i)
 {
     if ((tracks.size()==0 ||  tracks[col].block.size() == 0 ))
         return false;
-    if (!(col < tracks.size() && i < tracks[col].block.size()) )
+    if ((col >= tracks.size() && i >= tracks[col].block.size()) )
         return false;
 
     setBlocked(true);
     setSelectedBlockPoint(QPoint(-1,-1));
     if (tracks[col].block.size() > i)
     {
-       int temp = tracks[col].block[i]->getLifeTime();
-      delete tracks[col].block[i];
+        int temp = tracks[col].block[i]->getLifeTime();
+        delete tracks[col].block[i];
 
-       tracks[col].block.removeAt(i);
+        tracks[col].block.removeAt(i);
         tracks[col].time -= temp;
-   // testColumnWidth[col] -= temp;
-        for (int k = i; k < tracks[col].block.size(); k++)
-            tracks[col].block[k]->setBlockIndex(k);
+        // testColumnWidth[col] -= temp;
+        if(tracks[col].block.size() > 0)
+            for (int k = i; k < tracks[col].block.size(); k++)
+                tracks[col].block[k]->setBlockIndex(k);
     recountMaxTrackTime();
     }
-    if (i == 0)
+    if(tracks[col].block.size() > 0)
     {
-        tracks[col].block[i]->setStartDraw(0);
-        i++;
-    }
-    for (int k=i; k < tracks[col].block.size(); k++)
-    {
-        DrawElement *temp_el = tracks[col].block[k - 1];
-        int draw_time = temp_el->getStartDrawTime()  + temp_el->getLifeTime();
-        tracks[col].block[i]->setStartDraw(draw_time);
-    }
+        if (i == 0)
+        {
+            tracks[col].block[i]->setStartDraw(0);
+            i++;
+        }
 
+        for (int k=i; k < tracks[col].block.size(); k++)
+        {
+            DrawElement *temp_el = tracks[col].block[k - 1];
+            int draw_time = temp_el->getStartDrawTime()  + temp_el->getLifeTime();
+            tracks[col].block[i]->setStartDraw(draw_time);
+        }
+    }
 
     calcPointedBlocks();
     setBlocked(false);
@@ -511,7 +515,7 @@ bool ListControll::removeTrack(int col)
      DrawElement* temp =  tracks[col0].block[ind0];
      tracks[col0].time -= temp->getLifeTime();
     tracks[col0].block.removeAt(ind0);
-    for (int k = ind0; k < tracks[col0].block.size(); k++)
+    for (int k = ind0;tracks[col0].block.size() > 0 && k < tracks[col0].block.size(); k++)
     {
         tracks[col0].block[k]->setBlockIndex(k);
     }
@@ -525,17 +529,20 @@ bool ListControll::removeTrack(int col)
                 tracks[col1].block[k]->setBlockIndex(k);
             }
             tracks[col1].block[ind1]->setBlockColumn(col1);
+            if(tracks[col0].block.size() > 0)
+            {
+                if (ind0 == 0)
+                {
+                    tracks[col0].block[ind0]->setStartDraw(0);
+                    ind0++;
+                }
+                for (int i=ind0; i < tracks[col0].block.size(); i++)
+                {
+                    DrawElement *temp_el = tracks[col0].block[i - 1];
+                    int draw_time = temp_el->getStartDrawTime()  + temp_el->getLifeTime();
+                    tracks[col0].block[i]->setStartDraw(draw_time);
+                }
 
-            if (ind0 == 0)
-            {
-                tracks[col0].block[ind0]->setStartDraw(0);
-                ind0++;
-            }
-            for (int i=ind0; i < tracks[col0].block.size(); i++)
-            {
-                DrawElement *temp_el = tracks[col0].block[i - 1];
-                int draw_time = temp_el->getStartDrawTime()  + temp_el->getLifeTime();
-                tracks[col0].block[i]->setStartDraw(draw_time);
             }
 
             if (ind1 == 0)
@@ -1348,6 +1355,8 @@ QImage ListControll::requestImage(const QString &id, QSize *size, const QSize &r
  void ListControll::sendUpdateModel()
  {
      emit updateModel();
+     view.engine()->clearComponentCache();
+     view.engine()->trimComponentCache();
  }
 
   void ListControll::emitNewProject()
