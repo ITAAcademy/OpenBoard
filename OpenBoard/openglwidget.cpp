@@ -499,7 +499,10 @@ else
      }
      testRectangle();
         if ( m_manager.isAbleToDraw() && prevMousePos != mousePos)
+        {
             paintBrushInBuffer(mouseFBO);
+            qDebug() << "paintBrushInBuffer";
+        }
     }
 
     if (showingLastDrawing )
@@ -1354,7 +1357,6 @@ void OGLWidget::paintGL()
 
     if(curStatus == STOP)
         paintBufferOnScreen(mouseFBO,0, 0, wax, way,-100);
-
 /*
  *  APPLY SHADER EFFECT
 */
@@ -1483,8 +1485,11 @@ void OGLWidget::reloadScene()
     glBindFramebuffer(GL_FRAMEBUFFER , 0);
   // useShader(test);
    //// qDebug() << "isClearFrameBuffer:"<<isClearFrameBuffer;
-   if(isClearFrameBuffer)
+   if(isClearMouseFrameBuffer)
+   {
        clearFrameBuffer(mouseFBO);
+       isClearMouseFrameBuffer=false;
+   }
 //glDrawBuffer(GL_COLOR_ATTACHMENT0);
    glClearColor(0.0,0.0,0.0,0.0);
    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // чистим буфер изображения и буфер глубины
@@ -1939,7 +1944,8 @@ void OGLWidget::stopAnimated()
         //tickTimer.stop();
 
         //m_encoder->stop();
-        clearFrameBuffer(mouseFBO);
+        //clearFrameBuffer(mouseFBO);
+        isClearMouseFrameBuffer=true;
         getTimeLine()->stop();
 
 

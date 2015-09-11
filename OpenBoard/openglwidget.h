@@ -130,7 +130,7 @@ public:
   // bool isMousePlay = false;//play recorded mouse movement
    bool isMousePress = false;
    bool ismouseWasPressedBeforeDrag = false;  
-    bool isClearFrameBuffer = false;//clear frame buffer
+    bool isClearMouseFrameBuffer = true;//clear frame buffer
 
 
 
@@ -392,7 +392,7 @@ QString fileNameForRecords;
     QString drawText;
     bool bRecord;
     void generateFrames();
-    volatile StatusDraw curStatus; // 0 - stop; 1 - play; -1 - pause
+    volatile StatusDraw curStatus=STOP; // 0 - stop; 1 - play; -1 - pause
     QThread drawThread;
     AV_REncoder *m_encoder = NULL;
     bool able_drawing = false;
