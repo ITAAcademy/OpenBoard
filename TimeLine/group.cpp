@@ -5,11 +5,22 @@ Group::Group()
 {
 
     qDebug() << "UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU " << members.size();
+    for (int i=0; i < members.size(); i++ )
+    {
+        int mem_i_size = members[i].size();
+            for (int k=0; k < mem_i_size; k++ )
+            {
+                members[i][k] = NULL;
+            }
+        }
+    first_ind_not_null = NULL;
+    last_ind_not_null = NULL;
 }
 
 Group::~Group()
 {
-
+    delete first_ind_not_null;
+    delete last_ind_not_null;
 }
 
 QList <DrawElement*> members;
@@ -42,6 +53,206 @@ void Group::setSpacingBlocks(int value)
 {
     spacing_blocks = value;
 }
+
+ int Group::getMembersSize()
+ {
+     return members.size();
+ }
+
+void Group::setBlocksBorderColor(QString color)
+{
+    if (first_ind_not_null == NULL)
+    {
+        calcNotNullMembers();
+    }
+    for (int k = first_col_not_null; k <last_col_not_null + 1; k++ )
+    {
+        for (int i= first_ind_not_null[k]; i<  last_ind_not_null[k] + 1; i++)
+        {
+            if (members[k][i] != NULL) //protection of crash
+            {
+                qDebug() << "Group::setBlocksBorderColor members[k][i] != NULL";
+                members[k][i]->setBlockBorderColor(color);
+            }
+            else
+            {
+                qDebug() << "Group::setBlocksBorderColor members[k][i] == NULL";
+            }
+        }
+    }
+}
+
+void Group::calcNotNullMembers()
+{
+    int mem_size = members.size();
+    if (mem_size == 0)
+    {
+        qDebug() << "Group::isGroupValid\t members.size() = 0";
+        return;
+    }
+    delete first_ind_not_null;
+    delete last_ind_not_null;
+
+     first_ind_not_null = new int[mem_size];
+     last_ind_not_null = new int[mem_size];
+     first_col_not_null = -1;
+     last_col_not_null = -1;
+
+     for (int k = 0; k <mem_size; k++ )
+         {
+             first_ind_not_null[k] = -1;
+             last_ind_not_null[k] = -1;
+         }
+
+     for (int k = 0; k <mem_size; k++ )
+     {
+         //bool not_null = false;
+         for (int i=0; i< members[k].size(); i++)
+         {
+                 if (members[k][i] != NULL)
+                 {
+                     if (first_ind_not_null[k] == -1)
+                     {
+                         first_ind_not_null[k] = i;
+                         first_col_not_null = k - 1;
+                     }
+
+                      last_ind_not_null[k] = i;
+                       last_col_not_null = k;
+                      qDebug()<< "first_ind_not_null[" << k << "] = " << first_ind_not_null[k];
+
+
+                 }
+            /* else
+             {
+                     if (members[k][i] == NULL && not_null)
+                     {
+
+                          //last_col_not_null = k;
+                          qDebug()<< "last_ind_not_null[" << k << "] = " << last_ind_not_null[k];
+                          i = members[k].size() + 5;
+                     }
+             }*/
+         }
+     }
+     for (int k = 0; k <mem_size; k++ )
+     {
+     qDebug()<< "last_ind_not_null[" << k << "] = " << last_ind_not_null[k];
+     }
+
+     qDebug() << "first_col_not_null = " << first_col_not_null ;
+
+     qDebug() << "last_col_not_null = " << last_col_not_null;
+
+
+
+
+
+}
+
+bool Group::isGroupValid()
+{
+    int mem_size = members.size();
+    if (mem_size == 0)
+    {
+        qDebug() << "Group::isGroupValid\t members.size() = 0";
+        return false;
+    }
+   /* int first_ind_not_null[mem_size];
+    int last_ind_not_null[mem_size];
+    int first_col_not_null = -1;
+    int last_col_not_null = -1;
+
+    for (int k = 0; k <mem_size; k++ )
+        {
+            first_ind_not_null[k] = -1;
+            last_ind_not_null[k] = -1;
+        }
+
+
+
+    for (int k = 0; k <mem_size; k++ )
+    {
+        bool not_null = false;
+        for (int i=0; i< members[k].size(); i++)
+        {
+            if (members[k][i] != NULL)
+            {
+                if (!not_null)
+                {
+                 first_ind_not_null[k] = i;
+                 first_col_not_null = k;
+
+                 not_null = true;
+                }
+                last_col_not_null = k;
+            }
+            else
+            {
+                if (not_null)
+                {
+                 last_ind_not_null[k] = i;
+                 last_col_not_null = k;
+                 i = members[k].size() + 5;
+                }
+            }
+        }
+    }*/
+    if (first_col_not_null == -1)
+        return false;
+     if (first_ind_not_null[first_col_not_null] == -1)
+        return false;
+
+    int start_time = members[first_col_not_null][first_ind_not_null[first_col_not_null]]->getStartDrawTime();
+    int end_time = members[first_col_not_null].last()->getStartDrawTime();
+   int prev_block_index = first_ind_not_null[first_col_not_null];
+    if (members[first_col_not_null].size() > 0)
+    for (int k = 1; k <members[first_col_not_null].size(); k++ )
+    {
+     int mem_i_k_index =  members[first_col_not_null][k]->getBlockIndex();
+        if (prev_block_index + 1 != mem_i_k_index)
+        {
+            qDebug() << "Group::isGroupValid\t members[0] blocks dont in sequence";
+            return false;
+        }
+        prev_block_index = mem_i_k_index;
+    }
+    for (int i= first_col_not_null + 1; i< last_col_not_null; i++)
+    {
+        int mem_i_size = last_ind_not_null[i]+1;
+        if (mem_i_size == 0)
+        {
+            qDebug() << "Group::isGroupValid\t members[" << i << "].size() = 0";
+            return false;
+        }
+        if (start_time != members[i][0]->getStartDrawTime())
+        {
+            qDebug() << "Group::isGroupValid\t members[" << i << "].getStartDrawTime() != start_time";
+            return false;
+        }
+        if (end_time != members[i].last()->getStartDrawTime())
+        {
+            qDebug() << "Group::isGroupValid\t members.last()->getStartDrawTime() != end_time";
+            return false;
+        }
+        int prev_block_index = 0;
+        if (first_ind_not_null[i] == -1)
+           return false;
+        if (mem_i_size > 0)
+        for (int k = first_ind_not_null[i]; k <mem_i_size; k++ )
+        {
+         int mem_i_k_index =  members[i][k]->getBlockIndex();
+            if (prev_block_index + 1 != mem_i_k_index)
+            {
+                qDebug() << "Group::isGroupValid\t members[0] blocks dont in sequence";
+                return false;
+            }
+            prev_block_index = mem_i_k_index;
+        }
+    }
+    return true;
+}
+
 void Group::calcGroupBlocks()
 {
     //for (int y=0; y< tracks.size(); y++)
@@ -107,26 +318,29 @@ bool Group::addTo(DrawElement *element)
     if (element == NULL)
         return false;
     int block_col = element->getBlockColumn();
+    int block_ind = element->getBlockIndex();//-=-=-=
+
+
     int mem_size = members.size();
-    int block_ind = element->getBlockIndex();
-    int diff = block_col  - mem_size + 1;
-    qDebug() << "block_col = " <<block_col <<", block_ind = " <<block_ind
-             <<",\nmembers.size() = " << mem_size<<",diffcol = " << diff ;
-    if (diff > 0)
+   /* qDebug() << "block_col = " <<block_col <<", block_ind = " <<block_ind
+             <<",\nmembers.size() = " << mem_size<<",diffcol = " << diff ;*/
+    if (block_col + 2 > mem_size )
     {
-        for (int i=block_col; i <  mem_size + diff; i++ )
+        qDebug() <<"BBBBBBBBBBBBilshe";
+        for (int i=0; i <  block_col+1; i++ )
         {
 
             int mem_i_size = members[i].size();
-            int diff_ind = block_ind  - mem_i_size + 1;
+            /*int diff_ind = block_ind  - mem_i_size + 1;
             qDebug() << "diff_ind = " <<diff_ind ;
             qDebug() << "  mem_i_size = "<< mem_i_size;
          /*   qDebug() << "block_ind = " <<block_ind ;
             qDebug() << "members[i].size() = " << mem_i_size ;*/
 
-            if (diff_ind > 0)
+            if (block_ind + 1 > mem_i_size)
             {
-                for (int k=block_ind; k < mem_i_size  + diff_ind; k++ )
+                qDebug() <<"BBBBBBBBBBBBilshe mem_i_size = " << mem_i_size;
+                for (int k=mem_i_size; k < block_ind  + 1; k++ )
                 {
                     //qDebug() << "k = " <<k ;
                     members[i][k] = NULL;
@@ -134,76 +348,13 @@ bool Group::addTo(DrawElement *element)
             }
         }
     }
-    //qDebug() << "PPPPPPPPPPPPPPPPPPP -1";
-     /* if (mem_size == 0)
-      {
-          members[block_col][block_ind] = (element);
-          Group *to_this = this;
-          qDebug() << "ssssssssssss   to_this = " << to_this;
-          element->setGroupWichElBelong(to_this);
-           return false;
-      }*/
-       //qDebug() << "PPPPPPPPPPPPPPPPPPP 0";
-    int first_not_empty_col_ind = -1;
-    int last_not_empty_col_ind = -1;
-     DrawElement *mamb =  NULL;
-    //for (int k=0; k< members.size(); k++)
-    int mem_col_size =  members[block_col].size();
-       for (int i=0; i< mem_col_size; i++)
-        {
-           mamb =  members[block_col][i];
-            if (mamb == NULL)
-                continue;
-            if (first_not_empty_col_ind == -1)
-            {
-                first_not_empty_col_ind = i;
-                last_not_empty_col_ind = i;
-            }
-            else
-            {
-                last_not_empty_col_ind = i;
-                break;
-            }
-       }
-       if (first_not_empty_col_ind == -1)
-           return false;
-                    //int mamb_ind = mamb->getBlockIndex();
-                    int el_ind = element->getBlockIndex();
-                    if ( el_ind == first_not_empty_col_ind - 1  )
-                    {
-                        members[block_col][block_ind] = (element);
-                        Group *to_this = this;
-                        qDebug() << "ssssssssssss   to_this = " << to_this;
-                        element->setGroupWichElBelong(to_this);
-                        return true;
-                    }   \
-                    if (el_ind == last_not_empty_col_ind + 1  )
-                    {
-                        members[block_col][block_ind] = (element);
-                        Group *to_this = this;
-                        qDebug() << "ssssssssssss   to_this = " << to_this;
-                        element->setGroupWichElBelong(to_this);
-                        return true;
-                    }
+    ///all empty zanuleny
+    members[block_col][block_ind] = (element);
+    Group *to_this = this;
+    qDebug() << "ssssssssssss   to_this = " << to_this;
+    element->setGroupWichElBelong(to_this);
+    return true;
 
-
-
-    if (bound_rec.x() <= element->getStartDrawTime() &&
-            bound_rec.width() + bound_rec.x() <= element->getStartDrawTime() + element->getLifeTime())
-    {
-       // int el_col = element->getBlockColumn();
-        if ( block_col == first_not_empty_col_ind - 1 ||
-             block_col == last_not_empty_col_ind + 1)
-        {
-            members[block_col][block_ind] = (element);
-            Group *to_this = this;
-            qDebug() << "ssssssssssss   to_this = " << to_this;
-            element->setGroupWichElBelong(to_this);
-             return true;
-        }
-
-    }
-    return false;
 
 }
 

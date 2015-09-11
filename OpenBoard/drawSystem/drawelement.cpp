@@ -384,6 +384,7 @@ QString DrawElement::getBlockBorderColor() const
 void DrawElement::setBlockBorderColor(const QString &value)
 {
     block_border_color = value;
+    emit borderColorChangedSignal(blockColumn, blockIndex, block_border_color);
     //emit borderColorChangedSignal(blockColumn,blockIndex,block_border_color);
 }
 void DrawElement::draw()
@@ -430,14 +431,19 @@ bool DrawElement::loadTypeId(QIODevice* device)
     QDataStream stream(device);
     int temp_type;
     stream >> temp_type  ;
-   typeId = static_cast<Element_type>(temp_type);
+    qDebug() << "DrawElement::sav temp_type = " << temp_type;
+  // typeId = static_cast<Element_type>(temp_type);
+    Element_type temp_2 ;
+    temp_2 = (Element_type)(temp_type);
+   typeId = temp_2;
 
 }
 bool DrawElement::loadRest(QIODevice* device)
 {
     //qDebug() << "load rest begin";
     QDataStream stream(device);
-    stream  >> key >> lifeTime >> tickTime >> startDrawTime >> x >> y >> z >> width >> height >> keyCouter;
+    stream  >> key >> lifeTime >> tickTime >> startDrawTime >> x >> y >> z >>
+            width >> height >> keyCouter>> blockIndex >> blockColumn;
     //if (typeId == Element_type::Image)
         icon = load_image(stream);
 
@@ -476,7 +482,9 @@ bool DrawElement::save(QIODevice* device)
 
     int temp_type = static_cast<int>(typeId);
     int resultStatus=0;
-    stream << temp_type << key << lifeTime << tickTime << startDrawTime << x << y << z << width << height << keyCouter;
+    qDebug() << "DrawElement::sav temp_type = " << temp_type;
+    stream << temp_type << key << lifeTime << tickTime << startDrawTime << x << y << z
+           << width << height << keyCouter << blockIndex << blockColumn;
     //if (typeId == Element_type::Image)
         //save_image(stream, icon);
    // qDebug() << "qwewqewqeqewqQQQQ  " << lastPath;

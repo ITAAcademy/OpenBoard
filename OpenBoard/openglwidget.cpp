@@ -1059,7 +1059,7 @@ FBOWrapper OGLWidget::initFboWrapper(int width, int height, bool visibleOnly, bo
     makeCurrent();
     FBOWrapper fboWrapper;
 
-    qDebug() << "1111";
+    //qDebug() << "1111";
 
     if(!isInit() && !forceLoad)
     {
