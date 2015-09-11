@@ -237,6 +237,8 @@ DrawTextElm::~DrawTextElm()
 {
     if(fMetrics != NULL)
       delete fMetrics;
+    if(textureIndex != 0)
+        pDrawWidget->deleteTexture(textureIndex);
 }
 
 void DrawTextElm::clearBuffer()
@@ -324,7 +326,6 @@ void DrawTextElm::draw()
        setAnimationPersentOfCross( (double)(current_time - animationDelayStart)/animationDelayCount);
            // //qDebug() << realKeyValue <<"    KEY    " << keyCouter;
     }
-
     drawTextBuffer(0, 0, pDrawWidget->getWax(), pDrawWidget->getWay(), z, true, (float)pDrawWidget->getWax()/width);
     curentCh = current_time;
 }
@@ -624,9 +625,8 @@ void DrawTextElm::drawTextBuffer( int m_x, int m_y, int m_width, int m_height, i
             //setFillColor(colors[k].value);
             fillColor = colors[k].value;
             QString textToFill = stringList[i].mid(columnOfColorStrBegin,columnOfColorStrEnd-columnOfColorStrBegin);
-
-
-           pDrawWidget->fillText(textToFill,fillColor,textFont, line_x , line_y, z,(float) scale);
+            qDebug() << "textToFill:"<<textToFill;
+           pDrawWidget->drawTextFromTexture(line_x,line_y,z,textToFill,textureIndex,fillColor,textFont,(float) scale);
             //1234
         // pDrawWidget->fillText(textToFill,QColor("red"),fontishche, line_x , line_x, z,(float) scale);
            //  pDrawWidget->fillText("eeeeeeeeeeeeeeeeeeee",QColor("red"), QFont("Helvetica",40,40), 50 , 50, 0,(float) 1);
@@ -754,6 +754,15 @@ void DrawTextElm::setTextFont(const QFont &value)
         delete fMetrics;
     fMetrics = new QFontMetrics(value);
     pt = value.pointSize();
+
+}
+
+bool DrawTextElm::setDrawWidget(OGLWidget *value)
+{
+    if (DrawElement::setDrawWidget(value))
+    {
+        textureIndex = pDrawWidget->loadTexture(QImage(width,height,QImage::Format_ARGB32_Premultiplied));
+    }
 
 }
 

@@ -16,6 +16,7 @@ class DrawTextElm : public DrawElement
     QString unParsestring;
     Parser myParser;
     int textCursor = 0;
+    GLuint textureIndex = -1;
     int prevTextCursor = 0;
     bool bCalcTime = false;
     quint64 drawTime;
@@ -66,6 +67,7 @@ class DrawTextElm : public DrawElement
 public:
     QFont getTextFont() const;
     void setTextFont(const QFont &value);
+    bool setDrawWidget(OGLWidget *value);
     QList<ColorMarker> colors;
     int curentPauseValue = 0;
     explicit DrawTextElm( OGLWidget *drawWidget = NULL, QObject *parent = 0);

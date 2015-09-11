@@ -2288,8 +2288,48 @@ void OGLWidget::myRenderText( QGLWidget* w, int x, int y,int z, const QString& t
     glPopMatrix();
 
      */
+}
+
+void OGLWidget::drawTextFromTexture( int x, int y,int z, const QString& text,GLuint index, const QColor& col , const QFont& font , float scale )
+{
+    qDebug() << "DTFT:"<<index;
+    qglColor(col);
+
+         qDebug() << scale;
+    if (text.isEmpty()) return;
+
+    glPushMatrix();
+
+    QFontMetrics fm(font);
+
+    QRect rect = fm.boundingRect( text);
+    if (rect.width()>wax)rect.setWidth(wax);
+    if (rect.height()>way)rect.setHeight(way);
+
+    QPixmap pixmap( rect.size() );
+    pixmap.fill( Qt::black );
+    QPainter painter(&pixmap);
+    painter.setRenderHint(QPainter::TextAntialiasing);
+    painter.setPen( Qt::white );
+    painter.setFont( font );
+    painter.drawText( -rect.left(), -rect.top(), text );
+    QImage img = pixmap.toImage().convertToFormat(QImage::Format_ARGB32);
+    for ( int i = 0; i < img.height(); i++ ) {
+        QRgb* rgb = (QRgb*) img.scanLine(i);
+        for ( int j = 0; j < img.width(); j++ ) {
+            rgb[j] = qRgba( col.red(), col.green(), col.blue(), qRed(rgb[j]) );
+        }
+    }
+    img = QGLWidget::convertToGLFormat(img);
+    qDebug() << "before drawQImageFromTexture";
+    drawQImageFromTexture(0,0,img,index,z);
+    //glRasterPos3i( x, y, z );
+    //glDrawPixels( rect.width(), rect.height(), GL_RGBA, GL_UNSIGNED_BYTE, img.bits() );
+
+   qglColor(Qt::white);
 
 }
+
 
 void OGLWidget::drawQImage(int x, int y, QImage img, int z)
 {
@@ -2336,47 +2376,6 @@ void OGLWidget::drawQImageFromTexture(int x, int y, QImage img, GLuint index, in
     glPopMatrix();
     glMatrixMode( GL_MODELVIEW );*/
     glPopMatrix();
-}
-
-void OGLWidget::fillText( QString str,QColor color,QFont textFont, int x, int y, int z, float scale)
-{
- //qDebug() << "IN FILL TEXT:"<< x << "   " << y;
-   /* // //qDebug() << "ARG1:  " << str.size();
-    // //qDebug() << "ARG2:  " << arg2;
-    // //qDebug() << "ARG3:  " << arg3;
-    if(arg1.isValid() && arg2.isValid() && arg3.isValid())
-       if(canvas != NULL)
-   */
-
-    qglColor(color);
-    //glDisable(GL_DEPTH_TEST);
-  //  //qDebug() << "SHOW_Z " << z;
-
-//fillText("eeeeeeeeeeeeeeeeeeee",QColor("red"), QFont("Helvetica",40), 10 , 10, 0,(float) 100);
-    //renderText(x, y, str,textFont);
-
-    myRenderText(this,x,y,z,str,color,textFont, scale);
-
-//=======
-    qglColor(Qt::white);
-//>>>>>>> romaFix_lastGood
-    //displayText(str, color);
-
-    //glEnable(GL_DEPTH_TEST);
-     //renderText(x, y , QString::fromUtf8("Вы набрали %1 очков:").arg(17),textFont);
-    /*if(textFont.strikeOut())
-    {
-        float x2 = x + fMetrics->width(str);
-        float y2 = y - fMetrics->height()/4;
-        drawFigure(x, y2 ,x2 , y2,LINE, false, fillColor);
-    }
-
-    if(textFont.underline())
-    {
-        float x2 = x + fMetrics->width(str) ;
-        float y2 = y + fMetrics->height()*0.15;
-        drawFigure(x ,y2 ,x2 , y2,LINE, false, fillColor);
-    }*/
 }
 
 void OGLWidget::imageLoadedPictureSizeSlot(QSize value)

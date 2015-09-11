@@ -197,7 +197,7 @@ public:
 
     QPoint drawWrapText( QString str ); // main draw function
 
-    void fillText(QString str, QColor color,QFont textFont, int x, int y, int z = 0, float scale = 1);
+
 
     void pause(int ms);
 
@@ -246,6 +246,8 @@ public:
     void drawQImage(int x, int y, QImage img, int z = 0);
 
     void myRenderText(QGLWidget *w, int x, int y, int z, const QString &text, const QColor &col = Qt::white, const QFont &font = QFont(), float scale = 1);
+    void drawTextFromTexture(int x, int y, int z, const QString &text,GLuint index, const QColor &col = Qt::white, const QFont &font = QFont(), float scale = 1);
+
 
 
     bool isShowLastDrawing();
