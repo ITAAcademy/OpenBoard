@@ -120,6 +120,11 @@ DrawElement::~DrawElement()
         disconnect(pDrawWidget, SIGNAL(stopSignal()), this, SLOT(stop()));
         disconnect(pDrawWidget, SIGNAL(pauseSignal()), this, SLOT(pause()));
     }
+    if(group_wich_el_belong != NULL)
+    {
+        group_wich_el_belong->deInitGroupBlocks();
+        delete group_wich_el_belong;
+    }
 }
 
 void DrawElement::setAnimStateTime(AnimStateTime value)
@@ -384,7 +389,7 @@ QString DrawElement::getBlockBorderColor() const
 void DrawElement::setBlockBorderColor(const QString &value)
 {
     block_border_color = value;
-    emit borderColorChangedSignal(blockColumn, blockIndex, block_border_color);
+    emit borderColorChangedSignal(blockColumn, blockIndex, block_border_color);//@BAG@COLUM not init
     //emit borderColorChangedSignal(blockColumn,blockIndex,block_border_color);
 }
 void DrawElement::draw()

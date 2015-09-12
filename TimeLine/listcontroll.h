@@ -291,7 +291,7 @@ class ListControll : public QObject, public QQuickImageProvider
     int curent_block_group_num = -1;
     QList <Group> block_groups;
     Group test_group;
-    Group curent_group;
+    Group *curent_group = NULL;
     int blockHeightPlusSpacing = 102;
     bool isEditBlockShow = false;
     bool isProjectChange = false;

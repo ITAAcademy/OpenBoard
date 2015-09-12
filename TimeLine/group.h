@@ -6,37 +6,37 @@
 #include <QRect>
 
 class DrawElement;
-
+typedef QMap<int, DrawElement*> BlockType;
 
 class Group
 {
 
-   QMap<int, QMap <int, DrawElement*> > members;
+    QMap<int, BlockType > members;
     QRect bound_rec;
     int first_col = 0;
     int blockHeight = 100;
     int spacing_blocks = 2;
+    bool isGroupRecalculated = false;
+    bool bValid = false;
 
-    int* first_ind_not_null;
-    int* last_ind_not_null;
-    int first_col_not_null = -1;
-    int last_col_not_null = -1;
-public:
-    int getMembersSize();
-    void setBlocksBorderColor(QString color);
-    bool isGroupValid();
-    void calcNotNullMembers();
-    void calcGroupBlocks();
-    QRect getBoundRec();
     void setBoundRec(QRect);
     void setBoundRec(int , int , int, int);
     void setBoundRec(int , int );
-    void calcBoundRec();
+    void calcBoundRec(QList<DrawElement *> first, QList<DrawElement *> last);
+    void calcNotNullMembers();
+
+public:
+    int getMembersSize();
+    void clear();
+    void setBlocksBorderColor(QString color);
+    bool isGroupValid();
+    void initGroupBlocks();
+    void deInitGroupBlocks();
+    QRect getBoundRec();
+
     bool addTo(DrawElement *element);
     bool removeFromGroup(int col,int ind);
     bool removeFromGroup(DrawElement *element);
-
-    bool isElementColIndexValid(int, int);
     int getSpacingBlocks() const;
     void setSpacingBlocks(int value);
 
