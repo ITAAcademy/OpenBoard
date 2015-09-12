@@ -396,6 +396,11 @@ void OGLWidget::hideEvent(QHideEvent *)
     init=false;
     //qDebug() << "HIDE EVENT";
 }
+void OGLWidget::showEvent(QShowEvent * event)
+{
+    //if(!isNeedShowTimeLine())
+
+}
 
 void OGLWidget::zoomGrid(int val)
 {
@@ -625,7 +630,7 @@ OGLWidget::OGLWidget(QWidget *parent) :
     setFixedSize(GLWIDGET_SIZE);
      wax=width(); way=height(); // начальный размер окна
     init = false;
-    timeLine = new ListControll();
+    timeLine = new ListControll(this);
     connect(timeLine,SIGNAL(stopSignal()),this,SIGNAL(stopSignal()));
     connect(timeLine,SIGNAL(playSignal()),this,SIGNAL(startSignal()));
     connect(timeLine,SIGNAL(pauseSignal()),this,SIGNAL(pauseSignal()));
@@ -1388,6 +1393,8 @@ void OGLWidget::paintGL()
     if(bRecord)
     {
         m_encoder->setFrame(grabFrameBuffer());
+        if(timeLine->isVisible())
+            timeLine->hide();
     }
 
     init = true;
@@ -2006,6 +2013,14 @@ bool OGLWidget::isRecord() const
     return bRecord;
 }
 
+bool OGLWidget::isNeedShowTimeLine()
+{
+    if(timeLine->isVisible() && !(curStatus == PLAY && bRecord))
+        return true;
+    else
+        return false;
+}
+
 
 
 
@@ -2573,8 +2588,6 @@ ListControll* OGLWidget::getTimeLine()
 {
     return timeLine;
 }
-
-
 
 void OGLWidget::testWrap(int kIndexOfRow)
 {

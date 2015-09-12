@@ -665,9 +665,9 @@ bool MainWindow::event(QEvent * e) // overloading event(QEvent*) method of QMain
         case QEvent::WindowActivate : {
         if(!isActive && !mpOGLWidget->isActiveWindow() && !mpOGLWidget->getTimeLine()->isActiveWindow())
           {
-              if(mpOGLWidget->isVisible()) // get focus for windows
+              if(mpOGLWidget->isVisible() && mpOGLWidget->isNeedShowTimeLine()) // get focus for windows
               {
-                  mpOGLWidget->getTimeLine()->setFocus();
+                 mpOGLWidget->getTimeLine()->setFocus();
                   //childIsActive = true;
               }
               isActive = true;
