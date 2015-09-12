@@ -11,6 +11,7 @@
 #include <QList>
 #include <QDebug>
 #include <QFileDialog>
+#include "../FileManager/filecontroll.h"
 
 #include "group.h"
 #include <../OpenBoard/drawSystem/drawsystem.h>
@@ -287,6 +288,7 @@ class ListControll : public QObject, public QQuickImageProvider
 {
     Q_OBJECT
 
+    FileManager f_manager;
     OGLWidget *drawWidget;
     int curent_block_group_num = -1;
     QList <Group> block_groups;
@@ -367,7 +369,6 @@ public:
     Q_INVOKABLE QString getBlockKey(int col, int i) ;
     Q_INVOKABLE void addNewBlock(int col, QString str , DrawElement *element = NULL);
     Q_INVOKABLE void addNewTrack( );
-    Q_INVOKABLE void loadFromFile();
     Q_INVOKABLE bool removeLastBlock(int col);
     Q_INVOKABLE bool removeLastTrack();
     Q_INVOKABLE bool removeTrack(int col);
@@ -486,6 +487,13 @@ Q_INVOKABLE  void setIsEditBlockShow(bool value);
   bool getGlWindInited() const;
   void setGlWindInited(bool value);
 
+
+
+  Q_INVOKABLE void showF_manager(int x,int y);
+  Q_INVOKABLE void showF_manager(QPoint pos);
+  Q_INVOKABLE void showF_manager();
+  Q_INVOKABLE void hideF_manager();
+
 signals:
   void borderColorChangedSignal(int col,int ind, QString color);
   void loadFromFileSignal();
@@ -512,7 +520,8 @@ signals:
     void imageLoadedPictureSizeSignal(QSize);
 
 //void setScalePointerPosSignal(int value);
-public slots:
+public slots:    
+    Q_INVOKABLE void loadFromFile(QString path = "");
     void addMsToTimerValue(int ms);
 Q_INVOKABLE void emitNewProject();
    Q_INVOKABLE void  copyBlockToBuffer();

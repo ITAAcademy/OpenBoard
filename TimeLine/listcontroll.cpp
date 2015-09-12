@@ -159,6 +159,9 @@ void ListControll::setBlockHeightPlusSpacing(int value)
 {
     blockHeightPlusSpacing = value;
 }
+
+
+
 void ListControll::recountMaxTrackTime()
 {
     maxTrackTime = 0;
@@ -170,6 +173,29 @@ void ListControll::recountMaxTrackTime()
         }
     }
 }
+
+void ListControll::showF_manager(QPoint pos)
+{
+    f_manager.show();
+    f_manager.setPosition(pos);
+}
+
+void ListControll::showF_manager()
+{
+    f_manager.show();
+    f_manager.setPosition(getViewPosition());
+}
+
+void ListControll::showF_manager(int x,int y)
+{
+   showF_manager(QPoint (x,y));
+}
+
+void ListControll::hideF_manager()
+{
+    f_manager.hide();
+}
+
 bool ListControll::getGlWindInited() const
 {
     return glWindInited;
@@ -331,7 +357,7 @@ void ListControll::addNewTrack( )
    calcPointedBlocks();
 }
 
-void ListControll::loadFromFile()
+void ListControll::loadFromFile(QString path)
 {
   //  emit loadFromFileSignal();
      setBlocked(true);
@@ -340,8 +366,11 @@ void ListControll::loadFromFile()
   /*  if (p.x() > -1)
        tracks[p.x()].time -= tracks[p.x()].block[p.y()].draw_element->getLifeTime();*/
    //QString open = QFileDialog::getOpenFileName();
-   QString open =  QFileDialog::getOpenFileName(0, QString(), QString(), QString(), 0, QFileDialog::DontUseNativeDialog);
-////qDebug() <<"AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA " + open;
+    QString open;
+    if ( path == "")
+        open =  QFileDialog::getOpenFileName(0, QString(), QString(), QString(), 0, QFileDialog::DontUseNativeDialog);
+    else
+        open = path;
    DrawElement *elm = GenerationDrawElement(open);
    if(elm == NULL)
    {
@@ -965,6 +994,7 @@ this->drawWidget = drawWidget;
     view.setWidth(800);
     view.setFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint | Qt::WindowTitleHint);
 
+  connect(&f_manager, SIGNAL(filePathNameChanged(QString)),this,SLOT(loadFromFile(QString)));
 
 //view.setMaximumHeight(215);
     //loadCurrentTextInTheFirstBlockWhenInit();
@@ -1181,11 +1211,13 @@ bool ListControll::load(QIODevice* device)
 void ListControll::close()
 {
         view.close();
+        f_manager.close();
 }
 
 void ListControll::hide()
 {
     view.hide();
+    f_manager.hide();
 }
 
 void ListControll::setFocus()
