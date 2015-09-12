@@ -1,0 +1,13 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Preset/Brushes/standart.PNG</file>
+        <file>Content/Separator.qml</file>
+        <file>Content/Button.qml</file>
+        <file>Content/BrushSettingPages/Video.qml</file>
+        <file>Content/BrushSettingPages/Audio.qml</file>
+        <file>Content/BrushSettingPages/Image.qml</file>
+        <file>Content/Button2.qml</file>
+        <file>main_filemanager.qml</file>
+        <file>MouseAreaForWindowDraging.qml</file>
+    </qresource>
+</RCC>

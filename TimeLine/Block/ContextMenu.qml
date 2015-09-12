@@ -358,6 +358,20 @@ property int   minBlockWidth : 0
         ContextButton {
             text_color: contextMenuItem.text_color
             color: contextMenuItem.color
+            id: but_loadlibrary
+            button_text: "Load from library"
+            index: 3
+            onButtonClicked: {
+                context_menu.closeIt()
+
+                 but_append.color = contextMenuItem.color
+                appen_block_items.visible = false
+                timeControll.showF_manager()
+            }
+        }
+        ContextButton {
+            text_color: contextMenuItem.text_color
+            color: contextMenuItem.color
             id: but_animation
             button_text: "Animate block"
             index: 2

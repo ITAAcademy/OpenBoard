@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/">
+        <file>Content/Audio.png</file>
+        <file>Content/brush_skeen.png</file>
+        <file>Content/Video.png</file>
+    </qresource>
+</RCC>

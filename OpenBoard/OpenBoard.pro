@@ -40,7 +40,9 @@ SOURCES += main.cpp\
     editWidget/codeeditor.cpp \
     drawSystem/drawaudio.cpp\
     GLWidget/grid.cpp\
-    ../TimeLine/group.cpp
+    ../TimeLine/group.cpp \
+    ../FileManager/filecontroll.cpp \
+    ../FileManager/filepainter.cpp
 
 
 
@@ -80,7 +82,9 @@ HEADERS  += mainwindow.h \
     drawSystem/drawbrush.h\
     drawSystem/drawaudio.h\
     GLWidget/grid.h\
-    ../TimeLine/group.h
+    ../TimeLine/group.h \
+    ../FileManager/filecontroll.h \
+    ../FileManager/filepainter.h
 
 
 
@@ -94,7 +98,9 @@ RESOURCES += \
     ../TimeLine/qml_timeLine.qrc \
     ../Brush/qml_brush.qrc \
     ../NewProject/qml_new_project.qrc \
-    shaders.qrc
+    shaders.qrc \
+    ../FileManager/icons.qrc \
+    ../FileManager/qml_filemanager.qrc
     RC_FILE = myapp.rc
 
 #unix {
@@ -145,4 +151,5 @@ DISTFILES += \
     spiral.frag \
     spiral.vert \
     cross.frag \
-    cross.vert
+    cross.vert \
+    ../FileManager/main_filemanager.qml
