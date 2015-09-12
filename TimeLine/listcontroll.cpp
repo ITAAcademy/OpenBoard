@@ -22,9 +22,9 @@ void ListControll::setSelectedBlockPoint(const QPoint &value)
     emit updateSelectedBlock(value);
 
     //if (false)
-    if (ctrl_pressed)
+   /* if (ctrl_pressed)
      if ( value.x() != -1) //glWindInited &&
-         if ( blockValid(value.x(), value.y()))  //crash*/
+         if ( blockValid(value.x(), value.y()))  //crash
     {
              //qDebug() << "IIIIIIIIIIIIIIIIIIIIIIII ";
              group_changed = true;
@@ -59,11 +59,6 @@ void ListControll::setSelectedBlockPoint(const QPoint &value)
                     qDebug() << "ListControll::setSelectedBlockPoint removing block to group succesfull";
                     emit borderColorChangedSignal(value.x(), value.y(), colora);
 
-                  /*  if(bl_group->getMembersSize() == 0)
-                        delete bl_group;*///@BAG@
-
-                  //  draw_el->setGroupWichElBelong(NULL);
-
             }
             else
                 qDebug() << "AAAAAAA removing block to group failed!!!!!!!!!!";
@@ -74,6 +69,9 @@ void ListControll::setSelectedBlockPoint(const QPoint &value)
         qDebug() << "\n\n";
 
     }
+
+    }*/
+
     if(value != selectedBlockPoint)
     {
 
@@ -81,7 +79,10 @@ void ListControll::setSelectedBlockPoint(const QPoint &value)
         {
             DrawElement *elm = getBlock(selectedBlockPoint);
             if(elm != NULL  && elm->getGroupWichElBelong() != NULL)
+            {
                 elm->getGroupWichElBelong()->setBlocksBorderColor("white");
+                removeRectangle();
+            }
 
             elm = getBlock(value);
 
@@ -89,9 +90,12 @@ void ListControll::setSelectedBlockPoint(const QPoint &value)
             {
                 elm->getGroupWichElBelong()->setBlocksBorderColor("blue");
                 curent_group = elm->getGroupWichElBelong();
+                drawYellowRectangle(curent_group->getBoundRec());
             }
             else
+            {
                 curent_group = NULL;
+            }
 
         }
 
@@ -158,9 +162,16 @@ int ListControll::getBlockHeightPlusSpacing() const
     return blockHeightPlusSpacing;
 }
 
-void ListControll::setBlockHeightPlusSpacing(int value)
+
+bool ListControll::getCurent_group() const
 {
-    blockHeightPlusSpacing = value;
+    bool res;
+    if(curent_group == NULL)
+        res =  false;
+    else
+        res = true;
+    qDebug() << "RESSSSSSSS_GROUP   " << res;
+    return res;
 }
 void ListControll::recountMaxTrackTime()
 {
@@ -199,6 +210,9 @@ void ListControll::setBlockKey(int col, int i, QString name)
 
 bool ListControll::removeBlock(int col, int i)
 {
+    curent_group = NULL;
+    test_group.clear();
+
     if ((tracks.size()==0 ||  tracks[col].block.size() == 0 ))
         return false;
     if (!(col < tracks.size() && i < tracks[col].block.size()) )
@@ -440,6 +454,8 @@ bool ListControll::removeLastBlock(int col)
 
 bool ListControll::removeLastTrack()
 {
+    curent_group = NULL;
+    test_group.clear();
     setBlocked(true);
     if (tracks.size())
     {
@@ -474,6 +490,8 @@ recountMaxTrackTime();
 
 bool ListControll::removeTrack(int col)
 {
+    curent_group = NULL;
+    test_group.clear();
     isBlocked = true;
     if (tracks.size()>col)
     {
@@ -853,6 +871,7 @@ qDebug() <<"2222222222  test_group.isGroupValid() = false";
 
     if (!ctrl_pressed && value)
     {
+        removeRectangle();
         if(curent_group == NULL)
         {
             test_group.clear();
@@ -1528,6 +1547,22 @@ QImage ListControll::requestImage(const QString &id, QSize *size, const QSize &r
     void  ListControll::drawYellowRectangle(int x,int y, int width, int height)
     {
         yellow_rec = QRect(x,y,width,height);
+
+       emit drawRectangleSignal();
+        qDebug() << "ListControll::drawRectangle emitted ";
+    }
+
+    bool ListControll::updateYellowRectangle(int x, int y, int width, int height)
+    {
+        if(!curent_group->setBoundRec(x, y, width, height))
+            return false;
+
+        yellow_rec = QRect(x, y, width, height);
+        return true;
+    }
+    void  ListControll::drawYellowRectangle(QRect rect)
+    {
+        yellow_rec = rect;
 
        emit drawRectangleSignal();
         qDebug() << "ListControll::drawRectangle emitted ";

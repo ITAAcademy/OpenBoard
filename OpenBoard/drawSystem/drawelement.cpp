@@ -665,6 +665,8 @@ int DrawElement::getLifeTime() const
 void DrawElement::setLifeTime(int value)
 {
     lifeTime = value;
+    if(group_wich_el_belong != NULL)
+        group_wich_el_belong->calcBoundRec();
 }
 
 int DrawElement::getStartDrawTime() const
@@ -675,6 +677,8 @@ int DrawElement::getStartDrawTime() const
 void DrawElement::setStartDraw(int value)
 {
     startDrawTime = value;
+    if(group_wich_el_belong != NULL)
+        group_wich_el_belong->calcBoundRec();
 }
 
 QImage DrawElement::getIcon() const

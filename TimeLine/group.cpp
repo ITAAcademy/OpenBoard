@@ -1,5 +1,6 @@
 #include "group.h"
 #include <../OpenBoard/drawSystem/drawelement.h>
+#include "listcontroll.h"
 
 Group::Group()
 {
@@ -15,12 +16,12 @@ QList <DrawElement*> members;
 INT64 sum_length;
 QRect bound_rec;
 
-void Group::setBoundRec(int x1, int y1, int width  , int height)
+bool Group::setBoundRec(int x1, int y1, int width  , int height)
 {
    bound_rec = QRect(x1,y1,width,height);
 }
 
-void Group::setBoundRec(int x1 ,int width)
+bool Group::setBoundRec(int x1 ,int width)
 {
     bound_rec.setX(x1);
     bound_rec.setWidth(width);
@@ -28,6 +29,7 @@ void Group::setBoundRec(int x1 ,int width)
 
 QRect Group::getBoundRec()
 {
+    qDebug() << bound_rec;
     return bound_rec;
 }
 
@@ -111,8 +113,6 @@ bool Group::isGroupValid()
     QList<int> columns = members.keys();
     qStableSort(columns.begin(), columns.end());
 
-    QList <DrawElement*> first;
-    QList <DrawElement*> last;
     int first_try = 0;
     while(first_try < columns.size() && isRealValid)
     {
@@ -154,6 +154,8 @@ bool Group::isGroupValid()
         break;
     }
 
+    calcBoundRec();
+
     bValid = isRealValid;
     return isRealValid;
 }
@@ -164,8 +166,18 @@ void Group::setBoundRec(QRect value)
     bound_rec = value;
 }
 
-void Group::calcBoundRec(QList<DrawElement*> first, QList<DrawElement*> last)
+void Group::calcBoundRec()
 {
+    if(first.size() == 0)
+        return;
+
+    left.setX(first.first()->getStartDrawTime());
+    left.setY(first.first()->getBlockColumn() * ListControll::blockHeightPlusSpacing);//@BAG@
+
+    right.setX(last.last()->getStartDrawTime() + last.last()->getLifeTime() - left.x());
+    right.setY((last.last()->getBlockColumn() + 1)* ListControll::blockHeightPlusSpacing - left.y());//@BAG@
+
+    bound_rec.setRect(left.x(), left.y(), right.x(), right.y());
 
 }
 
