@@ -270,8 +270,12 @@ struct Track {
     {
         for (int i=0; i< block.size(); i++)
         {
+            qDebug()<<"clear i:"<<i;
             if(block[i] != NULL)
+            {
+               qDebug() << "block[i]:"<< block[i];
                 delete block[i];
+            }
             block[i] = NULL;
 
         }

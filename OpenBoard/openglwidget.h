@@ -348,7 +348,7 @@ private:
     int GRID_CELL_SIZE = 50;
     Grid windowGrid;
     QStack<ShaderProgramWrapper*> currentShaderStack;
-    int MOUSE_PROCESS_DELAY_MS=30;
+    int MOUSE_PROCESS_DELAY_MS=60;
 QString fileNameForRecords;
   //  QMap <void* , QList<QByteArray>>  audioList;
     GLuint pixelBufferIDs[2];

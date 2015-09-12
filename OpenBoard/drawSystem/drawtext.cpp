@@ -237,7 +237,7 @@ DrawTextElm::~DrawTextElm()
 {
     if(fMetrics != NULL)
       delete fMetrics;
-    if(textureIndex != 0)
+    if(textureIndex != -1)
         pDrawWidget->deleteTexture(textureIndex);
 }
 

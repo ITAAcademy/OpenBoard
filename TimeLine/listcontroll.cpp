@@ -19,6 +19,8 @@ QString ListControll::getBlockBorderColor(int col,int ind)
 
 void ListControll::setSelectedBlockPoint(const QPoint &value)
 {
+    emit updateSelectedBlock(value);
+
     //if (false)
     if (ctrl_pressed)
      if ( value.x() != -1) //glWindInited &&
@@ -71,7 +73,6 @@ void ListControll::setSelectedBlockPoint(const QPoint &value)
         //qDebug() << "AAAAAAAAAAAAAAAA bl_group = " << draw_el->getGroupWichElBelong();
         qDebug() << "\n\n";
 
-
     }
     if(value != selectedBlockPoint)
     {
@@ -103,7 +104,9 @@ void ListControll::setSelectedBlockPoint(const QPoint &value)
 void ListControll::setSelectedBlockPoint(int col, int ind)
 {
       //if(testIndexs(col, ind))
+
     setSelectedBlockPoint(QPoint(col,ind));
+
     // //qDebug() <<"FFFFFFFFFFFF: col = " << selectedBlockPoint.x() << " ind = " << selectedBlockPoint.y();
 }
 
@@ -1076,6 +1079,8 @@ void ListControll::moveWindow()
  {
      if ( time < 0 || !blockValid(col, ind))
          return;
+     int lifeTime=tracks[col].block[ind]->getLifeTime();
+     if (time > lifeTime/2)time =lifeTime/2;
      tracks[col].block[ind]->setAnimTime(time);
      qDebug() << "ListControll::setBlockAnimationTime " << time ;
  }
@@ -1571,16 +1576,21 @@ QImage ListControll::requestImage(const QString &id, QSize *size, const QSize &r
     int  ListControll::resetProjectToDefault()
     {
         setBlocked(true);
-
+qDebug() << "1";
         for (int i=0; i< tracks.size(); i++)
             tracks[i].clear();
+        qDebug() << "2";
         tracks.clear();
+        qDebug() << "3";
         maxTrackTime = 0;
         time_sum = 0;
         selectedBlockPoint = QPoint(-1,-1);
         addNewTrack( );
+        qDebug() << "4";
         recountMaxTrackTime();
+        qDebug() << "5";
         calcPointedBlocks();
+        qDebug() << "6";
         setBlocked(false);
     }
 

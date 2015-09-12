@@ -53,8 +53,10 @@ DrawImageElm::DrawImageElm(OGLWidget *drawWidget, QObject *parent) : DrawElement
 
 DrawImageElm::~DrawImageElm()
 {
-    if(textureIndex != 0)
+    qDebug() << "delete texture begin with index:"<<textureIndex;
+    if(textureIndex != -1)
         pDrawWidget->deleteTexture(textureIndex);
+      qDebug() << "delete texture end";
 }
 
 void DrawImageElm::draw()

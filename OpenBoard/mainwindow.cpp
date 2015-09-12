@@ -1396,12 +1396,14 @@ void MainWindow::on_action_New_Project_triggered()
    // mpOGLWidget->show();
 
     //qDebug() << "NEW_PROJECT";
-
+qDebug() << "on_action_New_Project_triggered";
      trySaveProject();
+     qDebug() << "trySaveProject";
      curProjectFile.clear();
+     qDebug() << "curProjectFile.clear()";
      //mpOGLWidget->getTimeLine()->emitResetProject();
      mpOGLWidget->getTimeLine()->resetProjectToDefault();
-     // //qDebug() << "AAAAAAAAAAAAAAAAAAAA1";
+     qDebug() << "resetProjectToDefault";
      mpOGLWidget->getTimeLine()->setIsProjectChanged(false);
      mpOGLWidget->getTimeLine()->setBlocked(true);
 
@@ -1819,7 +1821,7 @@ void MainWindow::onTextChanged()
 
 void MainWindow::updateTextEditFromBlock(QPoint point)
 {
-    //qDebug() << "SHOW SELECTED  " << point;
+    qDebug() << "updateTextEditFromBlock  " << point;
     if(point.x() != -1)
     {
         DrawElement* elm = mpOGLWidget->getTimeLine()->getBlock(point);

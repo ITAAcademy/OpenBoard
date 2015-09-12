@@ -125,6 +125,7 @@ DrawElement::~DrawElement()
         group_wich_el_belong->deInitGroupBlocks();
         delete group_wich_el_belong;
     }
+    qDebug() << "delete end";
 }
 
 void DrawElement::setAnimStateTime(AnimStateTime value)
