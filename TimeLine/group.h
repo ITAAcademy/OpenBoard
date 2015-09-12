@@ -13,19 +13,26 @@ class Group
 
     QMap<int, BlockType > members;
     QRect bound_rec;
+    QPoint left;
+    QPoint right;
+
+    QList <DrawElement*> first;
+    QList <DrawElement*> last;
+
     int first_col = 0;
     int blockHeight = 100;
     int spacing_blocks = 2;
     bool isGroupRecalculated = false;
     bool bValid = false;
 
-    void setBoundRec(QRect);
-    void setBoundRec(int , int , int, int);
-    void setBoundRec(int , int );
-    void calcBoundRec(QList<DrawElement *> first, QList<DrawElement *> last);
+
     void calcNotNullMembers();
 
 public:
+    void setBoundRec(QRect);
+    bool setBoundRec(int , int , int, int);
+    bool setBoundRec(int , int );
+    void calcBoundRec();
     int getMembersSize();
     void clear();
     void setBlocksBorderColor(QString color);

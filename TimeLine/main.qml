@@ -270,12 +270,12 @@ scale_pointer.x = 0// timeControll.getMaxTrackTime() + scale_pointer.width/2 - s
 
     function drawYellowRectangle (xx,yy,widthh,heightt) {
         yellow_rec.visible= true
-                   yellow_rec.x = xx
+                   yellow_rec.x = 30 + xx/main222.scaling//@BAG@
                    yellow_rec.y = yy
-                   yellow_rec.width = widthh
+                   yellow_rec.width = widthh/main222.scaling
                    yellow_rec.height = heightt
 
-        console.log("function drawYellowRectangle (xx,yy,widthh,heightt)")
+        console.log("function drawYellowRectangle " + "( " + xx + "   ,  " + yy + " " + yellow_rec.width + "  " + heightt)
 
         //p_icon_coloroverlay
     }
@@ -674,13 +674,6 @@ timeControll.setScalePointerPos((x  -20 + scroll.flickableItem.contentX)* main22
 
               }
               Rectangle {
-                  id: yellow_rec
-                  visible: false
-                   border { width: 3; color: "yellow" }
-                  color : "transparent"
-              }
-
-              Rectangle {
                   id: draw_wnd
                   visible: false
                   width: 250
@@ -754,6 +747,51 @@ timeControll.setScalePointerPos((x  -20 + scroll.flickableItem.contentX)* main22
                    // width: childrenRect.width
                     height: childrenRect.height
                     color: "gray"
+                    Rectangle {
+                        id: yellow_rec
+                        z:100
+                        visible: false
+                         border { width: 3; color: "yellow" }
+                        color : "transparent"
+
+                        MouseArea{
+                            id: yellow_rec_mouse
+                            anchors.fill: yellow_rec
+                            property int old: mouseX
+                            property bool press: false
+                            hoverEnabled: true
+                            z: 1000
+                            onEntered: {
+                                console.log("qweqweqwewqeqe")
+                            }
+
+                            onPressed: {
+                                if(mouseX > yellow_rec.width*0.9 && mouseX < width)
+                                    press = true;
+                                else
+                                    press = false;
+                            }
+
+                            onMouseXChanged: {
+                                console.log(mouseX);
+                                if( mouseX > yellow_rec.width * 0.9) //mouseX < root.width * 0.1 ||/
+                                {
+                                    cursorShape = Qt.SizeHorCursor;
+                                }
+                                else
+                                {
+                                    cursorShape = Qt.ArrowCursor;
+                                }
+
+                                if(press)
+                                {
+                                    if(timeControll.updateYellowRectangle(yellow_rec.x, yellow_rec.y, yellow_rec.width - (old - mouseX), yellow_rec.height))
+                                    yellow_rec.width -= old - mouseX;
+                                }
+                                old = mouseX
+                            }
+                        }
+                    }
                     onWidthChanged: {
                         if (time_scale.width < width  ) //1234
                         {

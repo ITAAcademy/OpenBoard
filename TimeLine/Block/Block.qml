@@ -346,7 +346,7 @@ z: 0
         acceptedButtons: Qt.LeftButton | Qt.RightButton
         drag.target: root
         property int oldMouseX
-        property bool isDrag : drag.active
+        property bool isDrag : drag.active ;
         anchors.fill: parent
         enabled: !globalRep.isDrag
         hoverEnabled: true
@@ -414,7 +414,8 @@ z: 0
 
         onMouseXChanged: {
            // if (context_menu.visible === false) //123rr
-
+            if(timeControll.getCurent_group())
+                return;
             {
             if(globalRep.isDrag === false &&  mouseX > root.width * 0.9) //mouseX < root.width * 0.1 ||/
             {
@@ -510,7 +511,7 @@ z: 0
                     double_click_timer.running = true
 
                     context_menu.closeIt()
-                    if (!main222.ctrl_pressed)
+                    if (!main222.ctrl_pressed && !timeControll.getCurent_group())
                         drag.target = root
                     else
                         drag.target = null

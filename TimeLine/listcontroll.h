@@ -292,7 +292,6 @@ class ListControll : public QObject, public QQuickImageProvider
     QList <Group> block_groups;
     Group test_group;
     Group *curent_group = NULL;
-    int blockHeightPlusSpacing = 102;
     bool isEditBlockShow = false;
     bool isProjectChange = false;
     unsigned long int maxTrackTime ;
@@ -329,6 +328,7 @@ class ListControll : public QObject, public QQuickImageProvider
     bool isGroupChanged = false;
 public:
      int isPlayPauseStop = 3;
+     static const int blockHeightPlusSpacing = 102;
 
 
     bool save(QIODevice* device);
@@ -481,10 +481,11 @@ Q_INVOKABLE  void setIsEditBlockShow(bool value);
   void setBlocked(volatile bool value);
 
   int getBlockHeightPlusSpacing() const;
-  void setBlockHeightPlusSpacing(int value);
 
   bool getGlWindInited() const;
   void setGlWindInited(bool value);
+
+  Q_INVOKABLE bool getCurent_group() const;
 
 signals:
   void borderColorChangedSignal(int col,int ind, QString color);
@@ -531,9 +532,12 @@ Q_INVOKABLE void  emitStopSignal();
     Q_INVOKABLE void zoomMinus();
     Q_INVOKABLE void zoomPlus();
      Q_INVOKABLE void drawYellowRectangle(int ,int , int , int );
+    Q_INVOKABLE bool updateYellowRectangle(int x, int y, int width, int height);
     Q_INVOKABLE void removeRectangle();
     Q_INVOKABLE bool testIndexs(const int col, const int index);
     Q_INVOKABLE bool blockValid(const int col, const int index);
+private slots:
+    void drawYellowRectangle(QRect rect);
 };
 
 #endif // LISTCONTROLL_H
