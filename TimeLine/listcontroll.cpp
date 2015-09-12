@@ -22,7 +22,7 @@ void ListControll::setSelectedBlockPoint(const QPoint &value)
     emit updateSelectedBlock(value);
 
     //if (false)
-   /* if (ctrl_pressed)
+  /*  if (ctrl_pressed)
      if ( value.x() != -1) //glWindInited &&
          if ( blockValid(value.x(), value.y()))  //crash
     {
@@ -67,8 +67,6 @@ void ListControll::setSelectedBlockPoint(const QPoint &value)
         }
         //qDebug() << "AAAAAAAAAAAAAAAA bl_group = " << draw_el->getGroupWichElBelong();
         qDebug() << "\n\n";
-
-    }
 
     }*/
 
