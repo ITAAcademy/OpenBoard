@@ -65,7 +65,7 @@ ApplicationWindow  {
        var window    = component.createObject(contextMenuItem)
         lastObj = window;
         window.animatedMenuShowed = animatedMenuShowed
-            window.height = 168
+            window.height = menuHolder.height + 20
            window.flags = Qt.MSWindowsFixedSizeDialogHint | Qt.CustomizeWindowHint | Qt.FramelessWindowHint
         var v_point = timeControll.getViewPosition()
           contextMenuFrame.globalRep = globRepa.globalRep
@@ -231,10 +231,10 @@ property int   minBlockWidth : 0
              onButtonClicked: {
                 context_menu.closeIt()
                 timeControll.addBlockAt(columnIndex,blockIndex)
-                 appen_block_items.visible = false
-                 main222.needToLightSelected = false;
-                 contextMenuFrame.globalRep.updateModel();
-                  but_append.color = contextMenuItem.color
+                appen_block_items.visible = false
+                main222.needToLightSelected = false;
+                contextMenuFrame.globalRep.updateModel();
+                but_append.color = contextMenuItem.color
              }
          }
          ContextButton {
@@ -264,7 +264,7 @@ property int   minBlockWidth : 0
         id: menuHolder
         spacing: 1
         width: parent.width
-        height: children.height * children.length
+        height: menuHolder.childrenRect.height
         anchors { verticalCenter: parent.verticalCenter; left: parent.left; leftMargin: 3 }
         ContextButton {
             text_color: contextMenuItem.text_color
@@ -360,7 +360,7 @@ property int   minBlockWidth : 0
             color: contextMenuItem.color
             id: but_loadlibrary
             button_text: "Load from library"
-            index: 3
+            index: 4
             onButtonClicked: {
                 context_menu.closeIt()
 

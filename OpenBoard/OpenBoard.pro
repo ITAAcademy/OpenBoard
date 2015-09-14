@@ -99,7 +99,6 @@ RESOURCES += \
     ../Brush/qml_brush.qrc \
     ../NewProject/qml_new_project.qrc \
     shaders.qrc \
-    ../FileManager/icons.qrc \
     ../FileManager/qml_filemanager.qrc
     RC_FILE = myapp.rc
 

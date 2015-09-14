@@ -632,7 +632,7 @@ timeControll.setScalePointerPos((x  -20 + scroll.flickableItem.contentX)* main22
             anchors.fill: parent
             drag.target : scale_pointer
             onPressed: {
-                 //context_menu.visible = false //123rr
+                 context_menu.closeIt();
             }
         }
     }

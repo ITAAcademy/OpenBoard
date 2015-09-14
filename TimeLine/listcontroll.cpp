@@ -168,7 +168,7 @@ bool ListControll::getCurent_group() const
         res =  false;
     else
         res = true;
-    qDebug() << "RESSSSSSSS_GROUP   " << res;
+ //   qDebug() << "RESSSSSSSS_GROUP   " << res;
     return res;
 }
 
