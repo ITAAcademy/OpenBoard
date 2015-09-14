@@ -16,12 +16,12 @@ Rectangle{
     radius: 10
     smooth: true
 
-   /* MouseAreaForWindowDraging{
+    Content.MouseAreaForWindowDraging{
         id: draging_MA
         width: root.width
         height: 50
 
-    }*/
+    }
 
     property string finishFileName : ""
 
@@ -170,16 +170,17 @@ Rectangle{
             }
         }
        Content.Button2{
+
+           id: b_calnec
              y: b_ok.y
 
           x: pages.width - width
-            id: b_calnec
             title : "Cancel"
             width : b_ok.width
             onClicked: {
                 ///close it
                 finishFileName = ""
-                brushControll.setFilePathName(finishFileName)
+               // brushControll.setFilePathName(finishFileName)
                 brushControll.hide()
             }
         }

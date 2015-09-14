@@ -80,5 +80,7 @@
         <file>iphone_toolbar_icons/Drawing-icon.png</file>
         <file>iphone_toolbar_icons/chek.png</file>
         <file>iphone_toolbar_icons/Audio.png</file>
+        <file>iphone_toolbar_icons/ttHousehold-Tape-Measure-2-icon (2).png</file>
+        <file>iphone_toolbar_icons/ttHousehold-Tape-Measure-2-icon (1).png</file>
     </qresource>
 </RCC>

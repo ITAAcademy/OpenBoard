@@ -1050,12 +1050,8 @@ void ListControll::addMsToTimerValue(int ms)
 void ListControll::moveWindow()
 {
     QPoint posMouse = QCursor::pos();
-    // view.setPosition(  pos.x() + x , pos.y()  + y);
     view.setPosition( posMouse - framaMousePosition);
-  //  setPrevMousePosition(posMouse);
-   // qApp->processEvents(QEventLoop::AllEvents, 1000);
-
- }
+}
 
  void ListControll::resizeWindowWidth(bool left)
  {

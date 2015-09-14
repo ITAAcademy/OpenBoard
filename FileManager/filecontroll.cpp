@@ -88,7 +88,8 @@ QString FileManager::getFilePathName() const
 void FileManager::setFilePathName(const QString &value)
 {
     filePathName = value;
-    emit filePathNameChanged(value);
+    if (value != "")
+        emit filePathNameChanged(value);
 }
 QDir FileManager::getBrushDir(){
     return brushDir;
@@ -259,4 +260,78 @@ void FileManager::setFocus()
         view.setVisible(true);
     }
 
+}
+
+void  FileManager::setFramaMousePosition( const int x,const int y)
+{
+    framaMousePosition.setX(x);
+    framaMousePosition.setY(y);
+}
+
+void  FileManager::setFramaMousePosition( const QPoint x)
+{
+    framaMousePosition = x;
+}
+
+void  FileManager::setPrevMousePosition()
+{
+    prevMousePosition = QCursor::pos();
+}
+
+void FileManager::moveWindow()
+{
+    QPoint posMouse = QCursor::pos();
+    view.setPosition( posMouse - framaMousePosition);
+}
+
+void FileManager::resizeWindowWidth(bool left)
+{
+    QPoint posMouse = QCursor::pos();
+    if (!left )
+    {
+        int tt = posMouse.x() - view.x();
+        if (tt < view.minimumWidth())
+            tt = view.minimumWidth();
+      view.setWidth(tt)  ;
+    }
+    else
+    {
+        int tt = view.x();
+      view.setX(posMouse.x());
+
+      tt = view.width() + tt - view.x();
+       if (tt < view.minimumWidth())
+       {
+           view.setX(view.x() + (tt - view.minimumWidth()));
+           tt = view.minimumWidth();
+       }
+
+      view.setWidth(tt);
+    }
+}
+
+void FileManager::resizeWindowHeight(bool up)
+{
+    QPoint posMouse = QCursor::pos();
+    if (!up )
+    {
+        int tt = posMouse.y() - view.y();
+        if (tt < view.minimumHeight())
+            tt = view.minimumHeight();
+      view.setHeight(tt)  ;
+    }
+    else
+    {
+        int tt = view.y();
+      view.setY(posMouse.y());
+
+      tt = view.height() + tt - view.y();
+       if (tt < view.minimumHeight())
+       {
+           view.setY(view.y() + (tt - view.minimumHeight()));
+           tt = view.minimumHeight();
+       }
+
+      view.setHeight(tt);
+    }
 }

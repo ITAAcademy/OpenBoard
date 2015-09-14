@@ -8,6 +8,6 @@
         <file>Content/BrushSettingPages/Image.qml</file>
         <file>Content/Button2.qml</file>
         <file>main_filemanager.qml</file>
-        <file>MouseAreaForWindowDraging.qml</file>
+        <file>Content/MouseAreaForWindowDraging.qml</file>
     </qresource>
 </RCC>
