@@ -1370,6 +1370,7 @@ void OGLWidget::paintGL()
     //shaderPrograms[CROSS_SHADER]->setUniformResolution(wax,way);
     if(curStatus == STOP && gridEnabled)
         shaders.push_back(shaderPrograms[CROSS_SHADER]);
+    shaders.append(test);
     drawGlobalShader(shaders);
 
 /*
