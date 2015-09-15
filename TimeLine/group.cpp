@@ -51,8 +51,9 @@ void Group::setSpacingBlocks(int value)
 
  void Group::clear()
  {
-
     members.clear();
+    first.clear();
+    last.clear();
  }
 
 void Group::setBlocksBorderColor(QString color)
@@ -93,9 +94,55 @@ void Group::deInitGroupBlocks()
     }
 }
 
+unsigned long Group::tryGroupResize(long shift)
+{
+    unsigned long maxCount_MinSize = 0;
+    foreach ( BlockType value, members) {
+        if(value.size() > maxCount_MinSize)
+            maxCount_MinSize = value.size();
+    }
+
+    maxCount_MinSize *= minBlockTime;
+    qDebug() << bound_rec.width() + shift;
+    if(bound_rec.width() + shift < maxCount_MinSize)
+    {
+        bound_rec.setWidth(maxCount_MinSize);
+        foreach ( BlockType value, members) {
+            foreach ( DrawElement *elm, value)
+            {
+                elm->setLifeTime(minBlockTime, true);
+            }
+        }
+        return maxCount_MinSize;
+    }
+    unsigned long int res = 0;
+    foreach ( BlockType value, members) {
+        int res_temp = 0;
+        int localShift = shift/value.size();
+        foreach ( DrawElement *elm, value)
+        {
+            elm->setLifeTime(elm->getLifeTime() + localShift, true);
+            res += elm->getLifeTime();
+        }
+    }
+    res /= members.size();
+    bound_rec.setWidth(res);
+    return res;
+}
+
+unsigned long Group::tryMemberResize(long shift)
+{
+
+}
+
 void Group::calcNotNullMembers()
 {
 
+
+}
+
+void Group::calcMaxMemberTime(int col, int index)
+{
 
 }
 
@@ -106,6 +153,9 @@ bool variantLessThan(const int &v1, const int &v2)
 
 bool Group::isGroupValid()
 {
+    first.clear();
+    last.clear();
+
     if(members.size() == 0)
         return false;
 

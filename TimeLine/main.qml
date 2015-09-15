@@ -66,10 +66,10 @@ Rectangle
     property int margin_value : 20
     anchors.margins:  margin_value
     radius: 10
-        color: "gray"
+    color: "gray"
 
     Component.onCompleted: {
-    frama.p_main222 = main222
+        frama.p_main222 = main222
     }
     width: childrenRect.width ///main222.width + 20
    height: childrenRect.height //main222.height + 20
@@ -371,6 +371,16 @@ timeControll.setScaleScrollChildren(0) //it have protection from small values, w
 
        onFocusLostSignal: {
            context_menu.closeIt()
+       }
+
+       function updateBlockTime(col, index, time)
+       {
+           console.log("OK");
+           rep_columns.itemAt(col).getBlock(index).width = time/main222.scaling;
+       }
+
+       onBlockTimeSignel: {
+           updateBlockTime(col, index, time);
        }
 
        }
@@ -756,37 +766,37 @@ timeControll.setScalePointerPos((x  -20 + scroll.flickableItem.contentX)* main22
 
                         MouseArea{
                             id: yellow_rec_mouse
-                            anchors.fill: yellow_rec
+                            anchors.right: yellow_rec.right
+                            width: 30
+                            height: parent.height
                             property int old: mouseX
                             property bool press: false
                             hoverEnabled: true
+
                             z: 1000
                             onEntered: {
-                                console.log("qweqweqwewqeqe")
+                               // console.log("qweqweqwewqeqe")
+                                cursorShape = Qt.SizeHorCursor;
+                            }
+                            onExited: {
+                                cursorShape = Qt.ArrowCursor;
                             }
 
                             onPressed: {
-                                if(mouseX > yellow_rec.width*0.9 && mouseX < width)
-                                    press = true;
-                                else
-                                    press = false;
+                                press = true;
+
+                            }
+                            onReleased: {
+                                press = false;
+                                main222.updateTracksModel();
                             }
 
                             onMouseXChanged: {
                                 console.log(mouseX);
-                                if( mouseX > yellow_rec.width * 0.9) //mouseX < root.width * 0.1 ||/
-                                {
-                                    cursorShape = Qt.SizeHorCursor;
-                                }
-                                else
-                                {
-                                    cursorShape = Qt.ArrowCursor;
-                                }
-
                                 if(press)
                                 {
-                                    if(timeControll.updateYellowRectangle(yellow_rec.x, yellow_rec.y, yellow_rec.width - (old - mouseX), yellow_rec.height))
-                                    yellow_rec.width -= old - mouseX;
+                                    yellow_rec.width = (timeControll.tryResizeCurentGroup((mouseX - old)*main222.scaling))/main222.scaling;
+                                    //if(timeControll.updateYellowRectangle(yellow_rec.x, yellow_rec.y, yellow_rec.width - (old - mouseX), yellow_rec.height))
                                 }
                                 old = mouseX
                             }

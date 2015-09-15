@@ -430,7 +430,7 @@ void OGLWidget::enableGrid(){
 
 void OGLWidget::processMouse()
 {
-    if(isMousePress) { 
+    if(isMousePress) {
         GLint x1 = editingRectangle.rect.x();
           GLint y1 = editingRectangle.rect.y();
             GLint x2 = editingRectangle.rect.x()+editingRectangle.rect.width();

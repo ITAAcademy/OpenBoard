@@ -20,6 +20,7 @@ DrawAudioElm::DrawAudioElm(OGLWidget *drawWidget, QObject *parent) : DrawElement
     setTypeId(Element_type::Audio);
     bPlay = false;
     delta = 0;
+    decoder.setType(AudioType);
 
 }
 

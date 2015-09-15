@@ -22,7 +22,7 @@ void ListControll::setSelectedBlockPoint(const QPoint &value)
     emit updateSelectedBlock(value);
 
     //if (false)
-  /*  if (ctrl_pressed)
+    if (ctrl_pressed)
      if ( value.x() != -1) //glWindInited &&
          if ( blockValid(value.x(), value.y()))  //crash
     {
@@ -68,7 +68,7 @@ void ListControll::setSelectedBlockPoint(const QPoint &value)
         //qDebug() << "AAAAAAAAAAAAAAAA bl_group = " << draw_el->getGroupWichElBelong();
         qDebug() << "\n\n";
 
-    }*/
+    }
 
     if(value != selectedBlockPoint)
     {
@@ -92,6 +92,7 @@ void ListControll::setSelectedBlockPoint(const QPoint &value)
             }
             else
             {
+                qDebug() << NULL;
                 curent_group = NULL;
             }
 
@@ -170,6 +171,30 @@ bool ListControll::getCurent_group() const
         res = true;
  //   qDebug() << "RESSSSSSSS_GROUP   " << res;
     return res;
+}
+bool ListControll::getCurent_group(int col, int index)
+{
+    bool res;
+    DrawElement *elm = getBlock(col, index);
+    if(elm == NULL)
+        return false;
+
+    if(elm->getGroupWichElBelong() == NULL)
+        res =  false;
+    else
+        res = true;
+    qDebug() << "RESSSSSSSS_GROUP   " << res;
+    return res;
+}
+
+unsigned long ListControll::tryResizeCurentGroup(int shift)
+{
+    return curent_group->tryGroupResize(shift);
+}
+
+unsigned long ListControll::tryResizeMemberInCurentGroup(int shift)
+{
+    return curent_group->tryMemberResize(shift);
 }
 
 
@@ -301,8 +326,10 @@ void ListControll::addNewBlock(int col, QString str, DrawElement *element)
 
     element->setBlockColumn(col);
     element->setBlockIndex(last_block_ind);
-    connect(element,SIGNAL(borderColorChangedSignal(int,int,QString)),
-            this,SIGNAL(borderColorChangedSignal(int,int,QString)));
+    connect(element, SIGNAL(borderColorChangedSignal(int,int,QString)),
+            this, SIGNAL(borderColorChangedSignal(int,int,QString)));
+    connect(element, SIGNAL(sizeChangedSignal(int,int, int)),
+        this, SLOT(setBlockTimeWithUpdate(int, int, int)));
     qDebug() << "ListControll::addNewBlock     last_block_ind = " << last_block_ind;
 
 
@@ -418,6 +445,7 @@ void ListControll::loadFromFile(QString path)
    connect(elm,SIGNAL(borderColorChangedSignal(int,int,QString)),
            this,SIGNAL(borderColorChangedSignal(int,int,QString)));
 
+
    int col0 = p.x();
    int ind0 = p.y();
 
@@ -496,7 +524,7 @@ bool ListControll::removeLastTrack()
     {
         maxTrackTime = 0;
         pointed_block.clear();
-        selectedBlockPoint=QPoint(-1,-1);
+        setSelectedBlockPoint(QPoint(-1,-1));
     }
    else
     {
@@ -605,6 +633,7 @@ void ListControll::setBlocks(int col,const QList <DrawElement *> &value)
 void ListControll::setBlockTime(int col, int i,int value)
 {
   //   = value;
+    qDebug() << "SET_TIME";
     if(def_min_block_width > value)
         value = def_min_block_width;
 
@@ -616,7 +645,13 @@ void ListControll::setBlockTime(int col, int i,int value)
    updateBlocksStartTimesFrom(col,i);
 
       recountMaxTrackTime();
-    // //qDebug() << "DDDDD  tracks[col].block[i].draw_element->getLifeTime()=" <<   tracks[col].block[i].draw_element->getLifeTime();
+      // //qDebug() << "DDDDD  tracks[col].block[i].draw_element->getLifeTime()=" <<   tracks[col].block[i].draw_element->getLifeTime();
+}
+
+void ListControll::setBlockTimeWithUpdate(int col, int i, int value)
+{
+    setBlockTime(col, i, value);
+    emit blockTimeSignel(col, i, value);
 }
 
 void ListControll::updateBlocksStartTimesFrom(int col0,int ind0)
@@ -880,6 +915,7 @@ int ListControll::getTrackSize(int col)
              curent_group = new Group(test_group);
              curent_group->setBlocksBorderColor("blue");
              curent_group->initGroupBlocks();
+             drawYellowRectangle(curent_group->getBoundRec());
          }
          else
          {
@@ -901,10 +937,12 @@ qDebug() <<"2222222222  test_group.isGroupValid() = false";
         removeRectangle();
         if(curent_group == NULL)
         {
+            qDebug() << "NEW GROUP TEST";
             test_group.clear();
         }
         else
         {
+            qDebug() << "CONTINUE ADD TO GROUP";
             test_group = *curent_group;
         }
     }
@@ -984,7 +1022,7 @@ qDebug() << test_group.getMembersSize();
 ListControll::ListControll(/*OGLWidget *drawWidget ,*/QObject *parent) : QObject(parent), QQuickImageProvider(QQuickImageProvider::Image)
 {
     buffer_is_full = false;
-    selectedBlockPoint = QPoint(-1, -1);
+    setSelectedBlockPoint(QPoint(-1,-1));
    resetProjectToDefault();
    /*Group temp_group;
    block_groups.append(temp_group);*/
@@ -1219,8 +1257,10 @@ bool ListControll::load(QIODevice* device)
     for (int k=0; k< tracks.size(); k++)
     for (int i=0; i< tracks[k].block.size(); i++)
     {
-    connect(tracks[k].block[i],SIGNAL(borderColorChangedSignal(int,int,QString)),
+        connect(tracks[k].block[i],SIGNAL(borderColorChangedSignal(int,int,QString)),
             this,SIGNAL(borderColorChangedSignal(int,int,QString)));
+        connect(tracks[k].block[i],SIGNAL(sizeChangedSignal(int,int, int)),
+            this, SLOT(setBlockTimeWithUpdate(int, int, int)));
     }
 
 
@@ -1649,7 +1689,7 @@ qDebug() << "1";
         qDebug() << "3";
         maxTrackTime = 0;
         time_sum = 0;
-        selectedBlockPoint = QPoint(-1,-1);
+        setSelectedBlockPoint(QPoint(-1,-1));
         addNewTrack( );
         qDebug() << "4";
         recountMaxTrackTime();

@@ -6,9 +6,13 @@
 #include "audiodecoder.h"
 
 #include <QtCore>
+enum DecoderType{
+    VideoType = 1 , AudioType = 2, VideoAudioType = 3
+};
 
 class FFmpegHelp : public QObject
 {
+private:
     Q_OBJECT
 
     QImage vNext;
@@ -17,6 +21,7 @@ class FFmpegHelp : public QObject
     QThread videoThread;
     QThread audioThread;
     qint64 lastDts = 0;
+    DecoderType type;
 
     VideoDecoder *vDecoder = NULL;
     AudioDecoder *aDecoder = NULL;
@@ -25,6 +30,7 @@ class FFmpegHelp : public QObject
 
     QList <QByteArray> audioBuffer;
 public:
+
     struct Frame{
         QImage videoFrame;
         QByteArray audioFrame;
@@ -42,6 +48,9 @@ public:
     void restart();
     long int getDuration();
     long int getPTS();
+
+    DecoderType getType() const;
+    void setType(const DecoderType &value);
 
 public slots:
     Q_INVOKABLE int initFF(QString path);

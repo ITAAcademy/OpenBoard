@@ -380,6 +380,7 @@ public:
     void setBlocks(int col,const  QList <DrawElement * > &value);
     Q_INVOKABLE   void setBlockKey(int col, int i, QString name);\
     Q_INVOKABLE void setBlockTime(int col, int i, int value);
+    Q_INVOKABLE void setBlockTimeWithUpdate(int col, int i, int value);
     Q_INVOKABLE void setBlockStartTime(int col, int i, int value);
     Q_INVOKABLE int getBlockStartTime(int col, int i);
     //Q_INVOKABLE bool setBlockDrawElemet(DrawElement *elm, int col, int i);
@@ -491,6 +492,9 @@ Q_INVOKABLE  void setIsEditBlockShow(bool value);
   void setGlWindInited(bool value);
 
   Q_INVOKABLE bool getCurent_group() const;
+  Q_INVOKABLE bool getCurent_group(int col, int index) ;
+  Q_INVOKABLE unsigned long tryResizeCurentGroup(int shift);
+  Q_INVOKABLE unsigned long tryResizeMemberInCurentGroup(int shift);
 
   Q_INVOKABLE void showF_manager(int x,int y);
   Q_INVOKABLE void showF_manager(QPoint pos);
@@ -500,6 +504,7 @@ Q_INVOKABLE  void setIsEditBlockShow(bool value);
 
 signals:
   void borderColorChangedSignal(int col,int ind, QString color);
+ // void sizeChangedSignal(int,int,unsigned long);
   void loadFromFileSignal();
   void drawRectangleSignal();
   void removeRectangleSignal();
@@ -518,6 +523,7 @@ signals:
     void openProjectSignel();
     void saveProjectSignel();
     void resetProjectSignel();
+    void blockTimeSignel(int col, int index, int time);
 
     void focusLostSignal();
     void focusFoundSignal();

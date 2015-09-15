@@ -125,7 +125,6 @@ Rectangle{
        source: "qrc:/iphone_toolbar_icons/black_tree.png"
        visible: true
 
-
        Image {
            id: icon
            source:  "image://imageProvider/" + root.colIndex + "+" + root.mIndex + "+ " + (Math.round(Math.random(9999999) * 10000));
@@ -133,15 +132,7 @@ Rectangle{
            height: background.height
            visible:  true
 
-           ColorOverlay {
-              id: icon_coloroverlay
-              anchors.fill: icon
-              source: icon
-              color: "#00000000"
-              z: 1
-              enabled: false
 
-           }
            onSourceChanged: {
                gc();
            }
@@ -150,37 +141,43 @@ Rectangle{
                root.p_icon_coloroverlay = icon_coloroverlay
            }
 
-           Rectangle {
-               id: border_image
-               width: background.width; height: background.height
-               border.width:  background_rec.border_width  ;
-             border.color: "white"  //-=-=-=
-             color: "transparent"
-               z: 2
-               Component.onCompleted: {
-                   //root.p_border_color = border.color
-               }
-           }
-           Text {
-               id: name
-               anchors.margins: 3
-               anchors.centerIn: border_image
-              // x: icon.width/2 - width/2
-               text: root.title
-               font.pixelSize: 1
-               color: "white"
-               style: Text.Outline;
-               styleColor: "black"
-               onTextChanged: {
-                   name.font.pixelSize = (root.width*1.2)/text.length;
-                   if(name.font.pixelSize > root.height*0.7)
-                       name.font.pixelSize = root.height*0.7
+       }
+       ColorOverlay {
+          id: icon_coloroverlay
+          anchors.fill: icon
+          source: icon
+          color: "#00000000"
+          enabled: false
 
-               }
-               z: 3
+       }
+       Text {
+           id: name
+           anchors.margins: 3
+           anchors.centerIn: border_image
+          // x: icon.width/2 - width/2
+           text: root.title
+           font.pixelSize: 1
+           color: "white"
+           style: Text.Outline;
+           styleColor: "black"
+           onTextChanged: {
+               name.font.pixelSize = (root.width*1.2)/text.length;
+               if(name.font.pixelSize > root.height*0.7)
+                   name.font.pixelSize = root.height*0.7
+
            }
        }
+       Rectangle {
+           id: border_image
+           width: background.width; height: background.height
+           border.width:  background_rec.border_width  ;
+         border.color: "white"  //-=-=-=
+         color: "transparent"
 
+           Component.onCompleted: {
+               //root.p_border_color = border.color
+           }
+       }
     }
     onScaleChanged: {
         shadow.height  = root.height * scale
@@ -346,7 +343,7 @@ z: 0
         acceptedButtons: Qt.LeftButton | Qt.RightButton
         drag.target: root
         property int oldMouseX
-        property bool isDrag : drag.active ;
+        property bool isDrag : drag.active;
         anchors.fill: parent
         enabled: !globalRep.isDrag
         hoverEnabled: true
@@ -414,8 +411,8 @@ z: 0
 
         onMouseXChanged: {
            // if (context_menu.visible === false) //123rr
-            if(timeControll.getCurent_group())
-                return;
+            /*if(timeControll.getCurent_group())
+                return;*/
             {
             if(globalRep.isDrag === false &&  mouseX > root.width * 0.9) //mouseX < root.width * 0.1 ||/
             {
@@ -1105,8 +1102,8 @@ root.globalRep.isDrag = false
     ///console.log("2222222222222");
             }
 
-             drop.visible = true;
-             drop.enabled = true;
+             drop.visible = !timeControll.getCurent_group(colIndex, mIndex);
+             drop.enabled = !timeControll.getCurent_group(colIndex, mIndex);
             shadow.visible = false
 
 
@@ -1126,8 +1123,8 @@ root.globalRep.isDrag = false
 
     DropArea {
         id: drop
-        enabled : true
-        visible: true
+        enabled : !timeControll.getCurent_group(colIndex, mIndex)
+        visible: !timeControll.getCurent_group(colIndex, mIndex)
          anchors.fill: parent
     onEntered: {
 

@@ -1,8 +1,18 @@
 #include "ffmpeghelp.h"
 
+
+DecoderType FFmpegHelp::getType() const
+{
+    return type;
+}
+
+void FFmpegHelp::setType(const DecoderType &value)
+{
+    type = value;
+}
 FFmpegHelp::FFmpegHelp(QObject *parent) : QObject(parent)
 {
-
+    type = VideoAudioType;
 }
 
 FFmpegHelp::~FFmpegHelp()
@@ -22,11 +32,19 @@ int FFmpegHelp::initFF(QString path)
     //videoThread.start();
     //audioThread.start();
     qDebug() << "FORMAT "   << formatContext;
-    vDecoder = new VideoDecoder(0, formatContext );
-    aDecoder = new AudioDecoder(0, formatContext);
+    if((type  & VideoType) != 0)
+    {
+        vDecoder = new VideoDecoder(0, formatContext );
+        vDecoder->moveToThread(&videoThread);
+    }
+    if((type  & AudioType) != 0)
+    {
+        aDecoder = new AudioDecoder(0, formatContext);
+        aDecoder->moveToThread(&audioThread);
+    }
 
-    vDecoder->moveToThread(&videoThread);
-    aDecoder->moveToThread(&audioThread);
+
+
 
   //  audio_decode_example(path.append("fsdfsd").toLatin1().data(), path.toLatin1().data());
     return 1;
@@ -34,7 +52,10 @@ int FFmpegHelp::initFF(QString path)
 
 QSize FFmpegHelp::getSize()
 {
-    return vDecoder->getSize();
+    if((type & VideoType) != 0)
+        return vDecoder->getSize();
+    else
+        return QSize(10, 10);
 }
 
 FFmpegHelp::Frame FFmpegHelp::getNextFrame(qint64 time)
@@ -43,7 +64,7 @@ FFmpegHelp::Frame FFmpegHelp::getNextFrame(qint64 time)
     aNext.clear();
 
     qint64 baseTime;
-    if(vDecoder->init)
+    if(((type & VideoType) != 0) && vDecoder->init)
         baseTime = vDecoder->baseTime;
     else
         baseTime = aDecoder->baseTime;
@@ -52,13 +73,14 @@ FFmpegHelp::Frame FFmpegHelp::getNextFrame(qint64 time)
 
     while( time >= baseTime &&  av_read_frame(formatContext, &Packet) >= 0 )
     {
-        vNext = vDecoder->getNextFrame(Packet, time);
+        if(type  & VideoType != 0)
+         vNext = vDecoder->getNextFrame(Packet, time);
         aNext +=  aDecoder->nextFrame(Packet, time);
 
                 //qDebug() << aDecoder->getDTSFromMS(time) << "   " << dts << arr.size();
         av_free_packet(&Packet);
 
-        if(vDecoder->init)
+        if((type  & VideoType != 0) && vDecoder->init)
             baseTime = vDecoder->baseTime;
         else
             baseTime = aDecoder->baseTime;
@@ -72,14 +94,16 @@ FFmpegHelp::Frame FFmpegHelp::getNextFrame(qint64 time)
 
 void FFmpegHelp::restart()
 {
-    vDecoder->seekFile(0);
-    aDecoder->seekFile(0);
+    if((type  & VideoType) != 0)
+        vDecoder->seekFile(0);
+    if((type  & AudioType) != 0)
+        aDecoder->seekFile(0);
     getNextFrame(0);
 }
 
 long FFmpegHelp::getDuration()
 {
-    if(vDecoder->init)
+    if(((type  & VideoType) != 0) && vDecoder->init)
         return vDecoder->getVideoLengthMs();
     else
         return aDecoder->getDuration();
@@ -87,7 +111,10 @@ long FFmpegHelp::getDuration()
 
 long FFmpegHelp::getPTS()
 {
-    return vDecoder->baseTime;
+    if((type  & VideoType) != 0)
+        return vDecoder->baseTime;
+    else
+        return 0;
 }
 
 AVFormatContext* FFmpegHelp::openVideoStream( QString path)

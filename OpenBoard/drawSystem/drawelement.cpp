@@ -51,7 +51,7 @@ bool DrawElement::setDrawWidget(OGLWidget *value)
 
  //qDebug()<<"AFTER SETFBOWRAPPER";
 
-	}
+    }
     return true;
 
 }
@@ -122,8 +122,9 @@ DrawElement::~DrawElement()
     }
     if(group_wich_el_belong != NULL)
     {
+        void *gr_temp = group_wich_el_belong;
         group_wich_el_belong->deInitGroupBlocks();
-        delete group_wich_el_belong;
+        delete gr_temp;
     }
     qDebug() << "delete end";
 }
@@ -395,7 +396,7 @@ void DrawElement::setBlockBorderColor(const QString &value)
 }
 void DrawElement::draw()
 {
-    
+
 }
 
 FBOWrapper DrawElement::getFBOWrapper()
@@ -415,7 +416,7 @@ bool DrawElement::load(QString path)
         return false;
     //lastPath = path; //@BUG@09/09/NicolasFix
     appFile.open(QFile::ReadOnly);
-    this->load(&appFile);   
+    this->load(&appFile);
     appFile.close();
 
 }
@@ -662,11 +663,18 @@ int DrawElement::getLifeTime() const
     return lifeTime;
 }
 
-void DrawElement::setLifeTime(int value)
+void DrawElement::setLifeTime(int value, bool feedBack)
 {
+    if(feedBack)
+    {
+        emit sizeChangedSignal(blockColumn, blockIndex, value);
+        return;
+    }
+
     lifeTime = value;
-    if(group_wich_el_belong != NULL)
+    /*if(group_wich_el_belong != NULL)
         group_wich_el_belong->calcBoundRec();
+    */
 }
 
 int DrawElement::getStartDrawTime() const
