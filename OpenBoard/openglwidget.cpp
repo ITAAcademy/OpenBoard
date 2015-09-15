@@ -2339,7 +2339,10 @@ void OGLWidget::drawTextFromTexture( int x, int y,int z, const QString& text,GLu
     QPainter painter(&pixmap);
     painter.setRenderHint(QPainter::TextAntialiasing);
     painter.setPen( Qt::white );
+    qDebug() << "AAAAAAAAAAAAAAAAAAA font is italic = " << font.italic(); //-=-=-=
+     qDebug() << "AAAAAAAAAAAAAAAAAAA font is bold = " << font.bold();
     painter.setFont( font );
+
     painter.drawText( -rect.left(), -rect.top(), text );
     QImage img = pixmap.toImage().convertToFormat(QImage::Format_ARGB32);
     for ( int i = 0; i < img.height(); i++ ) {

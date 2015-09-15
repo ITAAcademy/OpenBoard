@@ -330,6 +330,10 @@ void ListControll::addNewBlock(int col, QString str, DrawElement *element)
          temp.draw_element->setLifeTime(def_min_block_width);
      temp.draw_element->setZ(col);
      */
+     if (element == NULL)
+     {
+         element = new DrawElement(NULL,NULL);
+     }
    element->setKey( QString("block" + QString::number(qrand())));
 
      tracks[col].block.insert(ind,element);
