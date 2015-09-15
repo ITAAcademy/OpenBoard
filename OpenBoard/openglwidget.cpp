@@ -2340,8 +2340,8 @@ void OGLWidget::drawTextFromTexture( int x, int y,int z, const QString& text,GLu
     QPainter painter(&pixmap);
     painter.setRenderHint(QPainter::TextAntialiasing);
     painter.setPen( Qt::white );
-    qDebug() << "AAAAAAAAAAAAAAAAAAA font is italic = " << font.italic(); //-=-=-=
-     qDebug() << "AAAAAAAAAAAAAAAAAAA font is bold = " << font.bold();
+   // qDebug() << "AAAAAAAAAAAAAAAAAAA font is underline = " << font.underline(); //-=-=-=
+    // qDebug() << "AAAAAAAAAAAAAAAAAAA font is bold = " << font.bold();
     painter.setFont( font );
 
     painter.drawText( -rect.left(), -rect.top(), text );

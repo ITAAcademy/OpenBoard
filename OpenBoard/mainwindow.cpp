@@ -893,11 +893,12 @@ void MainWindow::on_action_Board_Font_triggered()
         return;
 
     font = QFontDialog::getFont(&ok, draw_element->getTextFont(), this);
+
     if (!ok)
         return;
 
-    qDebug() <<"MainWindow::on_action_Board_Font_triggered() bold = " << font.bold()  ;
-     qDebug() <<"MainWindow::on_action_Board_Font_triggered() italic" << font.italic() ;
+    qDebug() <<"MainWindow::on_action_Board_Font_triggered() font underline  = " <<  font.underline() ;
+     //qDebug() <<"MainWindow::on_action_Board_Font_triggered() italic" << font.italic() ;
     draw_element->setTextFont(font);
    mSettings.setBoardFont(font);
 

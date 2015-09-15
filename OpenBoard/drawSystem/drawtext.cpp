@@ -531,6 +531,8 @@ void DrawTextElm::drawTextBuffer( int m_x, int m_y, int m_width, int m_height, i
      textFont.setPointSize(mainTextFont.pointSize() * scale);
      textFont.setBold(mainTextFont.bold());
      textFont.setItalic(mainTextFont.italic());
+     textFont.setUnderline(mainTextFont.underline());
+     textFont.setStrikeOut(mainTextFont.strikeOut());
      lineHeight = LINE_HEIGHT * scale;
      //1234
     // textFont.setPointSize(20);
