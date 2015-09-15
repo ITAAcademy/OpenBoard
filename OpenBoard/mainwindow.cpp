@@ -896,6 +896,8 @@ void MainWindow::on_action_Board_Font_triggered()
     if (!ok)
         return;
 
+    qDebug() <<"MainWindow::on_action_Board_Font_triggered() bold = " << font.bold()  ;
+     qDebug() <<"MainWindow::on_action_Board_Font_triggered() italic" << font.italic() ;
     draw_element->setTextFont(font);
    mSettings.setBoardFont(font);
 
