@@ -90,7 +90,7 @@ Rectangle {
                     height: parent.height
                     width: height
                     antialiasing: true
-                    source: "qrc:/Content/Video.png"
+                    source: "qrc:/iphone_toolbar_icons/Video.png"
 
 
                         Text{

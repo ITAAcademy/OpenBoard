@@ -37,6 +37,15 @@ Rectangle {
             height: parent.width
             width: parent.width
             checked: false
+            property string p_chb_image_source
+            onCheckedChanged: {
+                main222.dovodka_block = chb_dovodka.checked
+              /*  if (chb_dovodka.cheked)
+                    chb_dovodka.p_chb_image_source = "qrc:/iphone_toolbar_icons/ttHousehold-Tape-Measure-2-icon (2).png"
+                else
+                    chb_dovodka.p_chb_image_source = "qrc:/iphone_toolbar_icons/ttHousehold-Tape-Measure-2-icon (1).png"
+          */  }
+
             style: CheckBoxStyle {
                       indicator: Rectangle {
                               implicitWidth: chb_dovodka.width
@@ -45,19 +54,22 @@ Rectangle {
                               border.color: chb_dovodka.activeFocus ? "yellow" : "black"
                               border.width: 1
                               Image {
+                                  id: chb_image_off
+                                  visible: !control.checked
+                                  source: "qrc:/iphone_toolbar_icons/ttHousehold-Tape-Measure-2-icon (1).png"
+                                  anchors.margins: 4
+                                  anchors.fill: parent
+                              }
+                              Image {
+                                  id: chb_image
                                   visible: control.checked
-                                 /* color: "black"
-                                  border.color: "#333"
-                                  radius: 1*/
-                                  source: "qrc:/iphone_toolbar_icons/chek.png"
+                                  source: "qrc:/iphone_toolbar_icons/ttHousehold-Tape-Measure-2-icon (2).png"
                                   anchors.margins: 4
                                   anchors.fill: parent
                               }
                       }
                   }
-            onCheckedChanged:  {
-                  main222.dovodka_block = chb_dovodka.checked
-            }
+
             Component.onCompleted: {
                 root.p_chb_dovodka = chb_dovodka
             }

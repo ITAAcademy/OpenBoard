@@ -39,6 +39,8 @@ class FileManager : public QObject, public QQuickImageProvider
     FileBrush createdBrush;
     ImageClone *cloneImg;
     bool colorize = true;
+    QPoint framaMousePosition;
+     QPoint prevMousePosition;
 
     /*
      *
@@ -90,6 +92,12 @@ public:
 
     Q_INVOKABLE QString getFilePathName() const;
     Q_INVOKABLE void setFilePathName(const QString &value);
+    Q_INVOKABLE void setFramaMousePosition(int mouseX, int mouseY);
+    Q_INVOKABLE void setFramaMousePosition( const QPoint x);
+    Q_INVOKABLE void setPrevMousePosition();
+    Q_INVOKABLE void moveWindow();
+    Q_INVOKABLE void resizeWindowWidth(bool left);
+    Q_INVOKABLE void resizeWindowHeight(bool up);
 
 signals:
     //void colorChanged();

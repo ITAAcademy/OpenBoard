@@ -523,13 +523,14 @@ void DrawTextElm::nextRow( int n, int Row, bool wrap)
 
 void DrawTextElm::drawTextBuffer( int m_x, int m_y, int m_width, int m_height, int z, bool cross, float scale)
 {
-
    // qDebug() << "stringList:"<<stringList;
      pDrawWidget->setBusy(true);
     //if(!crossTextV2())
      //   return QPoint(0, 0);
     //int width = fMetrics->width(str)*1.125 ;//+ fMetrics->leftBearing(str.at(0)) + fMetrics->rightBearing(str.at(0));
      textFont.setPointSize(mainTextFont.pointSize() * scale);
+     textFont.setBold(mainTextFont.bold());
+     textFont.setItalic(mainTextFont.italic());
      lineHeight = LINE_HEIGHT * scale;
      //1234
     // textFont.setPointSize(20);

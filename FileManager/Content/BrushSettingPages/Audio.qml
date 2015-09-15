@@ -91,7 +91,7 @@ Rectangle {
                     height: parent.height
                     width: height
                     antialiasing: true
-                    source: "qrc:/Content/Audio.png"
+                    source: "qrc:/iphone_toolbar_icons/Audio.png"
 
 
                         Text{
