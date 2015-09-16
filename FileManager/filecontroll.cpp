@@ -159,6 +159,7 @@ void FileManager::show()
     } else {\
         view.show();\
     }\
+
 }
 
 void FileManager::hide()
@@ -177,6 +178,23 @@ void FileManager::close()
 
 void FileManager::setPosition(QPoint pos)
 {
+    QRect screen_rec = QApplication::desktop()->screenGeometry();
+    if (pos.x() < 5)
+        pos.setX(5);
+    else
+    {
+
+        int screen_width =screen_rec.width() - view.width() - 5;
+        if (pos.x()  > screen_width)
+            pos.setX(screen_width);
+    }
+    if (pos.y() < 5)
+        pos.setY(5);
+    {
+        int screen_height = screen_rec.height() - view.height() - 25;
+        if (pos.y()  > screen_height)
+            pos.setY(screen_height);
+    }
     view.setPosition(pos);
 }
 

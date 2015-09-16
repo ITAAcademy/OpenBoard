@@ -71,7 +71,15 @@ static DrawElement *GenerationDrawElement( QString path, OGLWidget *drawWidget =
         QFile file(path);
         file.open(QFile::ReadOnly);
         QString data(file.readAll());
+        file.close();
+
+
+        file.open(QFile::ReadOnly);
+        QTextStream instream(&file);
+        QString line = instream.readLine();
+
         data.replace('\t', "    ");
+        qDebug() << "AAAAA " << line;
         elm->setUnParsestring(data, data);
         elm->setTypeId(Element_type::Text);
         elm->setKey(target.baseName());
