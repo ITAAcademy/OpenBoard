@@ -110,7 +110,7 @@ ApplicationWindow  {
     {
         var window2    = Qt.createComponent("EditBlock.qml").createObject(contextMenuItem)
         lastObj2 = window2;
-        window2.flags = Qt.MSWindowsFixedSizeDialogHint | Qt.CustomizeWindowHint | Qt.FramelessWindowHint
+       // window2.flags = Qt.MSWindowsFixedSizeDialogHint | Qt.CustomizeWindowHint | Qt.FramelessWindowHint
         window2.modality = Qt.WindowModal
 
 
@@ -366,7 +366,9 @@ property int   minBlockWidth : 0
 
                  but_append.color = contextMenuItem.color
                 appen_block_items.visible = false
-                timeControll.showF_manager()
+                timeControll.showF_manager()               
+                timeControll.setPosDefaultF_manager()
+
             }
         }
         ContextButton {

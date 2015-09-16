@@ -499,6 +499,9 @@ Q_INVOKABLE  void setIsEditBlockShow(bool value);
   Q_INVOKABLE void showF_manager(int x,int y);
   Q_INVOKABLE void showF_manager(QPoint pos);
   Q_INVOKABLE void showF_manager();
+  Q_INVOKABLE void setPosF_manager(QPoint pos);
+  Q_INVOKABLE void setPosF_manager(int x,int y);
+  Q_INVOKABLE void setPosDefaultF_manager();
   Q_INVOKABLE void hideF_manager();
 
 
