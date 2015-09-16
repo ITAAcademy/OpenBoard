@@ -220,13 +220,35 @@ void ListControll::showF_manager(QPoint pos)
 void ListControll::showF_manager()
 {
     f_manager.show();
-    f_manager.setPosition(getViewPosition());
 }
 
-void ListControll::showF_manager(int x,int y)
+void ListControll::setPosF_manager(QPoint pos)
 {
-   showF_manager(QPoint (x,y));
+    f_manager.setPosition(pos);
 }
+
+void ListControll::showF_manager(int x, int y)
+{
+    showF_manager(QPoint (x,y));
+}
+
+
+void ListControll::setPosF_manager(int x,int y)
+{
+   setPosF_manager(QPoint (x,y));
+}
+
+void ListControll::setPosDefaultF_manager()
+{
+    QPoint mouse_pos =  getMousePosition();
+    QSize f_man_size = f_manager.getSize();
+    QPoint pos(mouse_pos.x() - f_man_size.width()/2,
+               mouse_pos.y() - f_man_size.height()/2);
+   setPosF_manager(pos);
+}
+
+
+
 
 void ListControll::hideF_manager()
 {

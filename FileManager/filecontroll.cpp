@@ -198,6 +198,28 @@ void FileManager::setPosition(QPoint pos)
     view.setPosition(pos);
 }
 
+void FileManager::setSize(QSize size)
+{
+    setSize(size.width(),size.height());
+}
+
+void FileManager::setSize(int width, int height)
+{
+    view.setWidth(width);
+    view.setHeight(height);
+}
+
+QSize FileManager::getSize()
+{
+   return view.size();
+}
+
+
+
+
+
+
+
 QImage FileManager::requestImage(const QString &id, QSize *size, const QSize& requestedSize)
 {
     //qDebug() << "REQUEST IMAGE" << id;

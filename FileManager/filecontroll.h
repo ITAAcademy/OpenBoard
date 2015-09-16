@@ -98,6 +98,9 @@ public:
     Q_INVOKABLE void moveWindow();
     Q_INVOKABLE void resizeWindowWidth(bool left);
     Q_INVOKABLE void resizeWindowHeight(bool up);
+    Q_INVOKABLE void setSize(int width, int height);
+    Q_INVOKABLE void setSize(QSize size);
+    Q_INVOKABLE QSize getSize();
 
 signals:
     //void colorChanged();
