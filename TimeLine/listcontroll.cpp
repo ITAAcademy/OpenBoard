@@ -192,9 +192,12 @@ unsigned long ListControll::tryResizeCurentGroup(int shift)
     return curent_group->tryGroupResize(shift);
 }
 
-unsigned long ListControll::tryResizeMemberInCurentGroup(int shift)
+unsigned long ListControll::tryResizeMemberInCurentGroup(int shift, int col, int index)
 {
-    return curent_group->tryMemberResize(shift);
+    if(curent_group == NULL)
+        return 0;
+
+    return curent_group->tryMemberResize(shift, col, index);
 }
 
 

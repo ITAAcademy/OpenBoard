@@ -110,15 +110,22 @@ unsigned long Group::tryGroupResize(long shift)
         foreach ( BlockType value, members) {
             foreach ( DrawElement *elm, value)
             {
-                elm->setLifeTime(minBlockTime, true);
+                elm->setLifeTime(maxCount_MinSize/value.size(), true);
             }
         }
         return maxCount_MinSize;
     }
     unsigned long int res = 0;
     foreach ( BlockType value, members) {
-        int res_temp = 0;
-        int localShift = shift/value.size();
+
+        int not_null = 0;
+        foreach ( DrawElement *elm, value)
+            if(elm->getLifeTime() > minBlockTime || shift > 0)
+                not_null++;
+        if(not_null == 0)
+            continue;
+
+        int localShift = shift/not_null;
         foreach ( DrawElement *elm, value)
         {
             elm->setLifeTime(elm->getLifeTime() + localShift, true);
@@ -130,9 +137,48 @@ unsigned long Group::tryGroupResize(long shift)
     return res;
 }
 
-unsigned long Group::tryMemberResize(long shift)
+unsigned long Group::tryMemberResize(long shift, int col, int index)
 {
+    BlockType list = members[col];
+    QList<int> keys = list.keys();
 
+    int after = list.size() - 1;
+    unsigned long afterTime = 0;
+    qStableSort(keys.begin(), keys.end());
+    foreach ( int key, keys)
+        if(key == index)
+            break;
+        else
+            after--;
+    qDebug() << "AFTER  " << shift;
+
+    unsigned long allTime = list[index]->getLifeTime();
+    for(int i = after; i < list.size(); i++)// zaminutu na for z kluchiv
+    {
+        allTime += list[keys[i]]->getLifeTime();
+    }
+    allTime -= after*minBlockTime;
+    qDebug() << list[index]->getLifeTime() + shift << "MAX_Block_TIME " << allTime;
+    if(list[index]->getLifeTime() + shift < minBlockTime || allTime <= list[index]->getLifeTime() + shift)
+    {
+        return 0;
+    }
+///////////////////////////////////////////////////////////
+    unsigned long int res = 0;
+    int not_null = 0;
+    for(int i = after; i < list.size(); i++)// zaminutu na for z kluchiv
+        if(list[keys[i]]->getLifeTime() > minBlockTime || shift < 0)
+            not_null++;
+    if(not_null == 0)
+        return 0;
+
+    int localShift = shift/not_null;
+    for(int i = after; i < list.size(); i++)// zaminutu na for z kluchiv
+    {
+        list[keys[i]]->setLifeTime(list[keys[i]]->getLifeTime() - localShift, true);
+    }
+    list[index]->setLifeTime(shift + list[index]->getLifeTime());
+    return shift;
 }
 
 void Group::calcNotNullMembers()
@@ -141,7 +187,7 @@ void Group::calcNotNullMembers()
 
 }
 
-void Group::calcMaxMemberTime(int col, int index)
+unsigned long Group::calcMaxMemberTime(int col, int index)
 {
 
 }

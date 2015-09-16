@@ -27,7 +27,7 @@ class Group
 
 
     void calcNotNullMembers();
-    void calcMaxMemberTime(int col, int index);
+    unsigned long calcMaxMemberTime(int col, int index);
 public:
     void setBoundRec(QRect);
     bool setBoundRec(int , int , int, int);
@@ -40,7 +40,7 @@ public:
     void initGroupBlocks();
     void deInitGroupBlocks();
     unsigned long int tryGroupResize( long int shift);
-    unsigned long int tryMemberResize( long int shift );
+    unsigned long int tryMemberResize( long int shift, int col, int index );
     QRect getBoundRec();
 
     bool addTo(DrawElement *element);
