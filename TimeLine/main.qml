@@ -371,6 +371,8 @@ timeControll.setScaleScrollChildren(0) //it have protection from small values, w
 
        onFocusLostSignal: {
            context_menu.closeIt()
+           if (main222.ctrl_pressed)
+              main222.ctrl_pressed = false;
        }
 
        function updateBlockTime(col, index, time)

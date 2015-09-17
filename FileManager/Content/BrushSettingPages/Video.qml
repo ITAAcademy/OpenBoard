@@ -48,6 +48,7 @@ Rectangle {
                     hoverEnabled: true
                     onClicked:
                     {
+                         finishFileName = filename
                         rep.abortBorders()
                         border.color = "aqua"
                         border.width = 6

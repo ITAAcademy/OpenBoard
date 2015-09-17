@@ -27,11 +27,11 @@ FFmpegHelp::~FFmpegHelp()
 
 int FFmpegHelp::initFF(QString path)
 {
-    qDebug() << "start initFF";
+   // qDebug() << "start initFF";
     formatContext = (AVFormatContext*)openVideoStream( path );
     //videoThread.start();
     //audioThread.start();
-    qDebug() << "FORMAT "   << formatContext;
+   // qDebug() << "FORMAT "   << formatContext;
     if((type  & VideoType) != 0)
     {
         vDecoder = new VideoDecoder(0, formatContext );
@@ -129,9 +129,9 @@ AVFormatContext* FFmpegHelp::openVideoStream( QString path)
   //  strcpy( str, path.toLatin1().data());
     //qDebug() << "Input path:  " << path;
     //qDebug() << "Input path:  " << str;
-    qDebug() << "registaration";
+   // qDebug() << "registaration";
     av_register_all();
-    qDebug() << "registaration  OK";
+   // qDebug() << "registaration  OK";
    /* AVCodec * codec = av_codec_next(NULL);
 
     if(avcodec_find_decoder_by_name("h264_vdpau") != NULL)
@@ -144,7 +144,7 @@ AVFormatContext* FFmpegHelp::openVideoStream( QString path)
     }
     */
     // Open video file
-    qDebug() << "start open ff  " << str;
+    //qDebug() << "start open ff  " << str;
     if(avformat_open_input(&formatContext, str, NULL, NULL)!=0)
     {
       QFile file(str);

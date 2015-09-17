@@ -17,6 +17,7 @@
 #include <../OpenBoard/drawSystem/drawsystem.h>
 
 #include "../Brush/imageclone.h"
+#include <QMessageBox>
 
 class DrawTextElm;
 class DrawBrushElm;
@@ -152,6 +153,7 @@ struct Element {
 };*/
 
 struct Track {
+
     unsigned long int time;
     QList <DrawElement *> block;
     Track() { }
@@ -190,7 +192,8 @@ struct Track {
         {
              qDebug() << "block[i]:  " << i;
             block[i]->save(device);
-         }
+         }       
+
         return true;
     }
 
@@ -202,11 +205,11 @@ struct Track {
         QDataStream stream(device);
         stream >> blocks_size ;
         stream.readRawData((char*)&time, sizeof(unsigned long int));
-    qDebug() << "Track::load  blocks_size = " << blocks_size;
+    //qDebug() << "Track::load  blocks_size = " << blocks_size;
     //return true;
         for (int i=0; i< blocks_size; i++)
         {
-            DrawElement *draw_element;
+            DrawElement *draw_element = new DrawElement(NULL,NULL);
 
              draw_element->loadTypeId(device);
 
@@ -262,9 +265,9 @@ struct Track {
              }
 
             block.append(draw_element);
-            qDebug() << "load block[i]:  " << i;
+            //qDebug() << "load block[i]:  " << i;
         }
-        qDebug() << "block size" << block.size();
+       // qDebug() << "block size" << block.size();
         return true;
     }
     void clear()
@@ -292,6 +295,7 @@ class ListControll : public QObject, public QQuickImageProvider
 {
     Q_OBJECT
 
+     QMessageBox mess_box;
     FileManager f_manager;
     OGLWidget *drawWidget;
     int curent_block_group_num = -1;
@@ -314,7 +318,7 @@ class ListControll : public QObject, public QQuickImageProvider
     QPoint selectedBlockPoint;
     int def_min_block_width = minBlockTime;
     int scale_pointer_pos = 0;
-    QList <DrawElement*> pointed_block;
+    QList <DrawElement *> pointed_block;
    // QList <Element> pointed_time_blocks;
     //  QVector< int > testColumnWidth;
     void recountMaxTrackTime();
@@ -461,6 +465,7 @@ public:
     Q_INVOKABLE int  resetProjectToDefault();
     Q_INVOKABLE void convertCurentBlockToText();
 
+
     Q_INVOKABLE void addBlockAt(int col, int ind, DrawElement *element = NULL);
 
   void sendUpdateModel();
@@ -557,6 +562,7 @@ Q_INVOKABLE void  emitStopSignal();
     Q_INVOKABLE void removeRectangle();
     Q_INVOKABLE bool testIndexs(const int col, const int index);
     Q_INVOKABLE bool blockValid(const int col, const int index);
+    Q_INVOKABLE bool blockValid(QPoint point);
 private slots:
     void drawYellowRectangle(QRect rect);
 };

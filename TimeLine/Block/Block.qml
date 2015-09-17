@@ -551,6 +551,8 @@ z: 0
             main222.p_scale_pointer.x = mouseX + root.x - scroll.flickableItem.contentX + main222.p_scale_pointer.width //1234
            // animation_scale_normal.running = true
 
+            drop.visible = !timeControll.getCurent_group(colIndex, mIndex);
+            drop.enabled = drop.visible;
 
             if (globalRep.isDrag)
             {
@@ -1102,8 +1104,7 @@ root.globalRep.isDrag = false
     ///console.log("2222222222222");
             }
 
-             drop.visible = !timeControll.getCurent_group(colIndex, mIndex);
-             drop.enabled = !timeControll.getCurent_group(colIndex, mIndex);
+
             shadow.visible = false
 
 

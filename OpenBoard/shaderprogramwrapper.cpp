@@ -168,7 +168,7 @@ if (isFilePath)
         else
             //qDebug() << "Linking shader program success";
         glf->glValidateProgram(ShaderProgram);
-          qDebug() << "Shader supported:"<<parentWidget->isShaderSupported();
+          //qDebug() << "Shader supported:"<<parentWidget->isShaderSupported();
             //glLinkProgram(program);
             //glUseProgram(program);
           inited = true;

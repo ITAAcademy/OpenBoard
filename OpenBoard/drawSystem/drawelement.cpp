@@ -438,11 +438,12 @@ bool DrawElement::loadTypeId(QIODevice* device)
     QDataStream stream(device);
     int temp_type;
     stream >> temp_type  ;
-    qDebug() << "DrawElement::sav temp_type = " << temp_type;
+
   // typeId = static_cast<Element_type>(temp_type);
     Element_type temp_2 ;
     temp_2 = (Element_type)(temp_type);
-   typeId = temp_2;
+   setTypeId(temp_2);
+   qDebug() << "DrawElement::load temp_type = " <<(int) getTypeId();
 
 }
 bool DrawElement::loadRest(QIODevice* device)
@@ -457,7 +458,7 @@ bool DrawElement::loadRest(QIODevice* device)
     int effectsLength = 0;
     stream >> anim_state_time.state >>  anim_state_time.time;
     stream >> effectsLength;
-    qDebug() << "effectsLength:"<<effectsLength;
+    //qDebug() << "effectsLength:"<<effectsLength;
     effects.clear();
     effects.resize(effectsLength);
 
@@ -477,13 +478,13 @@ bool DrawElement::loadRest(QIODevice* device)
         effects[i].load(stream);
     }
 
-     qDebug() << "load rest end";
+    // qDebug() << "load rest end";
     load_add(stream);
-    qDebug() << "load add";
+   // qDebug() << "load add";
 
 }
 
-bool DrawElement::save(QIODevice* device)
+bool DrawElement::save(QIODevice* device) //-=-=-=
 {
     QDataStream stream(device);
 
@@ -721,7 +722,7 @@ QString DrawElement::getType()
 
 void DrawElement::setTypeId( Element_type val)
 {
-    this->typeId = val;
+    typeId = val;
 }
 
 Element_type DrawElement::getTypeId()
@@ -792,6 +793,8 @@ bool DrawElement::save_image(QDataStream &stream, QImage img)
     //stream.writeRawData((const char*)img.bits(), img.byteCount());
     //qDebug() <<"image saved:"<<img.byteCount();
 }
+
+
 bool DrawElement::save_image(QDataStream &stream, QString filePath,QImage::Format format)
 {
     stream << (int)0 << (int)0 << (int)0;

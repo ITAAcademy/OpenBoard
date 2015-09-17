@@ -37,7 +37,7 @@ class DrawTextElm : public DrawElement
     int indexRowInList; // first str for draw
 
     QColor mainFillColor;
-
+    int failedLoad = 10;
     int cursorIndex;
     QList<short int> cross;
     QList<QString> stringList;
