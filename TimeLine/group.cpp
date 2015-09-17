@@ -94,7 +94,7 @@ void Group::deInitGroupBlocks()
     }
 }
 
-unsigned long Group::tryGroupResize(long shift)
+long Group::tryGroupResize(long shift)
 {
     unsigned long maxCount_MinSize = 0;
     foreach ( BlockType value, members) {
@@ -137,27 +137,27 @@ unsigned long Group::tryGroupResize(long shift)
     return res;
 }
 
-unsigned long Group::tryMemberResize(long shift, int col, int index)
+ long Group::tryMemberResize(long shift, int col, int index)
 {
     BlockType list = members[col];
     QList<int> keys = list.keys();
 
-    int after = list.size() - 1;
+    int after = 1;
     unsigned long afterTime = 0;
     qStableSort(keys.begin(), keys.end());
     foreach ( int key, keys)
         if(key == index)
             break;
         else
-            after--;
-    qDebug() << "AFTER  " << shift;
+            after++;
+    qDebug() << "AFTER  " << after;
 
     unsigned long allTime = list[index]->getLifeTime();
     for(int i = after; i < list.size(); i++)// zaminutu na for z kluchiv
     {
         allTime += list[keys[i]]->getLifeTime();
     }
-    allTime -= after*minBlockTime;
+    allTime -= (list.size() - after)*minBlockTime;
     qDebug() << list[index]->getLifeTime() + shift << "MAX_Block_TIME " << allTime;
     if(list[index]->getLifeTime() + shift < minBlockTime || allTime <= list[index]->getLifeTime() + shift)
     {
@@ -177,8 +177,10 @@ unsigned long Group::tryMemberResize(long shift, int col, int index)
     {
         list[keys[i]]->setLifeTime(list[keys[i]]->getLifeTime() - localShift, true);
     }
-    list[index]->setLifeTime(shift + list[index]->getLifeTime());
-    return shift;
+
+    //qDebug() << localShift*not_null;
+    list[index]->setLifeTime(localShift*not_null + list[index]->getLifeTime());
+    return localShift*not_null;
 }
 
 void Group::calcNotNullMembers()

@@ -39,8 +39,8 @@ public:
     bool isGroupValid();
     void initGroupBlocks();
     void deInitGroupBlocks();
-    unsigned long int tryGroupResize( long int shift);
-    unsigned long int tryMemberResize( long int shift, int col, int index );
+    long int tryGroupResize( long int shift);
+    long int tryMemberResize( long int shift, int col, int index );
     QRect getBoundRec();
 
     bool addTo(DrawElement *element);

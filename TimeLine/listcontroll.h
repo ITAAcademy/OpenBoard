@@ -493,8 +493,8 @@ Q_INVOKABLE  void setIsEditBlockShow(bool value);
 
   Q_INVOKABLE bool getCurent_group() const;
   Q_INVOKABLE bool getCurent_group(int col, int index) ;
-  Q_INVOKABLE unsigned long tryResizeCurentGroup(int shift);
-  Q_INVOKABLE unsigned long tryResizeMemberInCurentGroup(int shift, int col, int index);
+  Q_INVOKABLE long tryResizeCurentGroup(int shift);
+  Q_INVOKABLE long tryResizeMemberInCurentGroup(int shift, int col, int index);
 
   Q_INVOKABLE void showF_manager(int x,int y);
   Q_INVOKABLE void showF_manager(QPoint pos);

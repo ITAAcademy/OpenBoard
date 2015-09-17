@@ -187,12 +187,12 @@ bool ListControll::getCurent_group(int col, int index)
     return res;
 }
 
-unsigned long ListControll::tryResizeCurentGroup(int shift)
+long ListControll::tryResizeCurentGroup(int shift)
 {
     return curent_group->tryGroupResize(shift);
 }
 
-unsigned long ListControll::tryResizeMemberInCurentGroup(int shift, int col, int index)
+long ListControll::tryResizeMemberInCurentGroup(int shift, int col, int index)
 {
     if(curent_group == NULL)
         return 0;
