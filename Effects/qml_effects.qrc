@@ -1,0 +1,19 @@
+<RCC>
+    <qresource prefix="/">
+        <file>main.qml</file>
+        <file>Preset/Brushes/standart.PNG</file>
+        <file>Content/Separator.qml</file>
+        <file>Content/brush_skeen.png</file>
+        <file>Content/Button.qml</file>
+        <file>Content/BrushSettingPages/EffectAlpha.qml</file>
+        <file>Content/BrushSettingPages/FullSlider.qml</file>
+        <file>Listbox.qml</file>
+        <file>ListboxControl.qml</file>
+        <file>Content/cancel_32.png</file>
+        <file>Content/plus_button_32.png</file>
+        <file>Content/test.jpg</file>
+        <file>Content/arrow_right_24.png</file>
+        <file>Content/FullSlider.qml</file>
+        <file>Content/BrushSettingPages/DoubleSlider.qml</file>
+    </qresource>
+</RCC>
