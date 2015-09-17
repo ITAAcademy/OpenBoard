@@ -51,6 +51,9 @@ public:
 
     Group();
     ~Group();
+    QMap<int, BlockType> getMembers() const;
+    QList<DrawElement *> getFirst() const;
+    QList<DrawElement *> getLast() const;
 };
 
 #endif // GROUP_H

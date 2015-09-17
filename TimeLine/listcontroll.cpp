@@ -286,6 +286,7 @@ bool ListControll::removeBlock(int col, int i)
 {
     curent_group = NULL;
     test_group.clear();
+    removeRectangle();
 
     if ((tracks.size()==0 ||  tracks[col].block.size() == 0 ))
         return false;
@@ -540,6 +541,8 @@ bool ListControll::removeLastTrack()
 {
     curent_group = NULL;
     test_group.clear();
+    removeRectangle();
+
     setBlocked(true);
     if (tracks.size())
     {
@@ -576,6 +579,8 @@ bool ListControll::removeTrack(int col)
 {
     curent_group = NULL;
     test_group.clear();
+    removeRectangle();
+
     isBlocked = true;
     if (tracks.size()>col)
     {
@@ -693,12 +698,38 @@ void ListControll::updateBlocksStartTimesFrom(int col0,int ind0)
         tracks[col0].block[ind0]->setStartDraw(0);
         ind0++;
     }
+    Group *updatedGroup = NULL;
 
     for (int i=ind0; i < tracks[col0].block.size(); i++)
     {
+        long delta;
         DrawElement *temp_el = tracks[col0].block[i - 1];
         int draw_time = temp_el->getStartDrawTime()  + temp_el->getLifeTime();
+        delta = tracks[col0].block[i]->getStartDrawTime() - draw_time;
         tracks[col0].block[i]->setStartDraw(draw_time);
+
+        if(updatedGroup != tracks[col0].block[i]->getGroupWichElBelong() && tracks[col0].block[i]->getGroupWichElBelong() != NULL && !tracks[col0].block[i]->getGroupWichElBelong()->isGroupValid())
+        {
+            updatedGroup = tracks[col0].block[i]->getGroupWichElBelong();
+            if(delta > 0)
+            {
+                DrawElement *deltaElm = new DrawElement();
+                deltaElm->setLifeTime(delta);
+                addBlockAt(col0, i - 1, deltaElm);
+            }
+            else
+            {
+                foreach(DrawElement* elm, updatedGroup->getFirst())
+                {
+                    if(elm->getBlockColumn() != col0)
+                    {
+                        DrawElement *deltaElm = new DrawElement();
+                        deltaElm->setLifeTime(-delta);
+                        addBlockAt(col0, elm->getBlockIndex() - 1, deltaElm);
+                    }
+                }
+            }
+        }
     }
 }
 

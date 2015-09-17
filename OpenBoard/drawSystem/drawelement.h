@@ -78,7 +78,7 @@ public:
     AnimStateTime getAnimStateTime();
 
     FBOWrapper getFBOWrapper();
-    explicit DrawElement(OGLWidget *drawWidget, QObject *parent);
+    explicit DrawElement(OGLWidget *drawWidget = NULL, QObject *parent = 0);
     virtual ~DrawElement();
     void paint(); //new use
     bool load(QString path);

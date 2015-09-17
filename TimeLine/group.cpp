@@ -183,13 +183,28 @@ long Group::tryGroupResize(long shift)
     return localShift*not_null;
 }
 
-void Group::calcNotNullMembers()
-{
+
+ QMap<int, BlockType> Group::getMembers() const
+ {
+     return members;
+ }
+
+ QList<DrawElement *> Group::getFirst() const
+ {
+     return first;
+ }
+
+ QList<DrawElement *> Group::getLast() const
+ {
+     return last;
+ }
+ void Group::calcNotNullMembers()
+ {
 
 
-}
+ }
 
-unsigned long Group::calcMaxMemberTime(int col, int index)
+ unsigned long Group::calcMaxMemberTime(int col, int index)
 {
 
 }
