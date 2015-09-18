@@ -672,7 +672,8 @@ void DrawElement::setLifeTime(int value, bool feedBack)
         return;
     }
 
-    lifeTime = value;
+    if (value >=0)
+        lifeTime = value;
     /*if(group_wich_el_belong != NULL)
         group_wich_el_belong->calcBoundRec();
     */
