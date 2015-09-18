@@ -20,6 +20,7 @@ canvas->setProperty("scroll", k);
 */
 
 GLuint OGLWidget::loadTexture(QImage img,bool doubleSize){
+
     int nextIndex = 0;
         int index = 0;
 if (doubleSize)img = twiceImageSizeWithouScaling(img);
@@ -758,7 +759,7 @@ OGLWidget::~OGLWidget()
 
 void OGLWidget::resizeGL(int nWidth, int nHeight)
 {
-    qDebug()<<"resize";
+   // qDebug()<<"resize";
     if(isInit()){
       //  makeCurrent();
     //glMatrixMode(GL_PROJECTION);
@@ -767,7 +768,7 @@ void OGLWidget::resizeGL(int nWidth, int nHeight)
     }
     wax=nWidth;
     way=nHeight;
-  qDebug() << "end resize";
+ // qDebug() << "end resize";
 }
 void OGLWidget::paintBufferOnScreen( FBOWrapper buffer,int x, int y, int width, int height, int z){
 
@@ -1193,13 +1194,13 @@ return fboWrapper;
 
 void OGLWidget::initializeGL()
 {
-     qDebug() << "initializeGL";
+    // qDebug() << "initializeGL";
 
     initializeOpenGLFunctions();
     makeCurrent();
 glEnable(GL_DEPTH_TEST);
     qglClearColor(Qt::black); // Черный цвет фона
-    qDebug() << "initializeGLFunctions";
+   // qDebug() << "initializeGLFunctions";
      //glEnable(GL_TEXTURE_2D);
     backGroundTexture = loadTextureFromFile(":/ThirdPart/images/start.png");
 
@@ -1222,9 +1223,9 @@ glEnable(GL_DEPTH_TEST);
 glViewport(0, 0, (GLint)wax, (GLint)way);
     setAutoBufferSwap(false);
     qApp->processEvents(QEventLoop::AllEvents, 1000);
-    qDebug() << "A";
+    //qDebug() << "A";
     drawBrushElm = new DrawBrushElm(this,this);//record mouse movement
-    qDebug() << "B";
+    //qDebug() << "B";
    /* list_1.append(GenerationDrawElement("kaka.text", this, 0));
     list_1.append(GenerationDrawElement("brush.png", this, 0));*/
 

@@ -87,6 +87,7 @@ QString FileManager::getFilePathName() const
 
 void FileManager::setFilePathName(const QString &value)
 {
+    qDebug() << "AAAAAAAAAAA  FileManager::setFilePathName   " << value;
     filePathName = value;
     if (value != "")
         emit filePathNameChanged(value);
@@ -251,7 +252,7 @@ bool FileManager::openBrushLibrary(QString path)
 
       QString extension = QFileInfo(temp_path).suffix();
 
-      qDebug() << "Ext " << extension;
+      //qDebug() << "Ext " << extension;
         if (extension == "mp3" || extension == "wav" || extension == "flac")
         {
               musicStack.push(temp_path);

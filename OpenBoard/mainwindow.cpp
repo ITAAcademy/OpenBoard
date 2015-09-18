@@ -1359,7 +1359,7 @@ void MainWindow::on_action_Open_Project_triggered()
         file.close();
         ui->statusBar->showMessage("project opened");
        mpOGLWidget->getTimeLine()->sendUpdateModel();
-      mpOGLWidget->setList(mpOGLWidget->getTimeLine()->getPointedBlocksDE());
+      mpOGLWidget->setList(mpOGLWidget->getTimeLine()->getPointedBlocks());
         return ;
     }
     else
@@ -1824,9 +1824,10 @@ void MainWindow::onTextChanged()
 
 void MainWindow::updateTextEditFromBlock(QPoint point)
 {
-    qDebug() << "updateTextEditFromBlock  " << point;
+
     if(point.x() != -1)
     {
+        qDebug() << "updateTextEditFromBlock  " << point;
         DrawElement* elm = mpOGLWidget->getTimeLine()->getBlock(point);
         if(elm->getTypeId() == Element_type::Text)
         {

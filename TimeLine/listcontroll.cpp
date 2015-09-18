@@ -2,6 +2,16 @@
 #include <QVariant>
 #include <QCoreApplication>
 
+bool isFileExists(QString path) {
+    QFileInfo checkFile(path);
+    // check if file exists and if yes: Is it really a file and no directory?
+    if (checkFile.exists() && checkFile.isFile()) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 QPoint ListControll::getSelectedBlockPoint() const
 {
 
@@ -19,13 +29,16 @@ QString ListControll::getBlockBorderColor(int col,int ind)
 
 void ListControll::setSelectedBlockPoint(const QPoint &value)
 {
+    if(blockValid(value))
+              qDebug() << "AAAAAAAAAAAAAAAAAAAAAAA  ListControll::setSelectedBlockPoint  " <<(int)  getBlock(value)->getTypeId();
     emit updateSelectedBlock(value);
-
     //if (false)
     if (ctrl_pressed)
      if ( value.x() != -1) //glWindInited &&
          if ( blockValid(value.x(), value.y()))  //crash
     {
+
+
              //qDebug() << "IIIIIIIIIIIIIIIIIIIIIIII ";
              group_changed = true;
         DrawElement * draw_el = getBlock(value);
@@ -183,7 +196,7 @@ bool ListControll::getCurent_group(int col, int index)
         res =  false;
     else
         res = true;
-    qDebug() << "RESSSSSSSS_GROUP   " << res;
+   // qDebug() << "RESSSSSSSS_GROUP   " << res;
     return res;
 }
 
@@ -1257,6 +1270,8 @@ bool ListControll::save(QIODevice* device)
         tracks[i].save(device);
     }
    // qDebug() << "Num of saved tracks: " << tracks.size();
+    mess_box.setText("Project saved");
+    mess_box.show();
     return true;
 }
 
@@ -1268,12 +1283,12 @@ bool ListControll::load(QIODevice* device)
     int tracks_size;
     QDataStream stream(device);
     stream >> tracks_size ;
-    qDebug() << "Num of loaded tracks: " << tracks_size;
+  //  qDebug() << "Num of loaded tracks: " << tracks_size;
     for (int i=0; i< tracks_size; i++)
     {
         Track temp;
          temp.load(device);
-         qDebug() << "load blocks size in track" << temp.block.size();
+         //qDebug() << "load blocks size in track" << temp.block.size();
          tracks.append(temp);
 
     }
@@ -1750,6 +1765,11 @@ qDebug() << "1";
         if( col > -1 && index > -1 && col < tracks.size() && index < tracks[col].block.size()  )
             return true;
         return false;
+    }
+
+    bool ListControll::blockValid(QPoint point)
+    {
+        return blockValid(point.x(),point.y());
     }
 
 

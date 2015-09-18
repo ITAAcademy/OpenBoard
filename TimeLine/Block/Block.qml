@@ -454,7 +454,7 @@ z: 0
            root.animation_scale_normal_toYpos = root.y
            divider.y = (root.height + main222.p_columns.spacing) * root.colIndex
                    + time_scale.height - scroll.flickableItem.contentY
-          divider.x =  root.x + root.width - divider.width/2 + tollbar.width
+           divider.x =  root.x + root.width - divider.width/2 + tollbar.width - scroll.flickableItem.contentX  //1234
 
            divider.pos_to_append.x = root.colIndex
            divider.pos_to_append.y =  root.mIndex
@@ -553,6 +553,8 @@ z: 0
             main222.p_scale_pointer.x = mouseX + root.x - scroll.flickableItem.contentX + main222.p_scale_pointer.width //1234
            // animation_scale_normal.running = true
 
+            drop.visible = !timeControll.getCurent_group(colIndex, mIndex);
+            drop.enabled = drop.visible;
 
             if (globalRep.isDrag)
             {
@@ -1104,8 +1106,7 @@ root.globalRep.isDrag = false
     ///console.log("2222222222222");
             }
 
-             drop.visible = !timeControll.getCurent_group(colIndex, mIndex);
-             drop.enabled = !timeControll.getCurent_group(colIndex, mIndex);
+
             shadow.visible = false
 
 
@@ -1159,41 +1160,34 @@ root.globalRep.isDrag = false
 
             }
     onPositionChanged: {
-          {
-            divider.visible = true
-            var temp = main222.selectedBlock.x - root.x - root.width/2
-            var move_y_pos = (root.height + main222.p_columns.spacing) * root.colIndex
-                    + time_scale.height - scroll.flickableItem.contentY
+           {
+               divider.visible = true
+               var temp = main222.selectedBlock.x - root.x - root.width/2
+               var move_y_pos = (root.height + main222.p_columns.spacing) * root.colIndex
+                     + time_scale.height - scroll.flickableItem.contentY
+               var move_x_pos  = root.x  - divider.width/2 + tollbar.width - scroll.flickableItem.contentX
+               if (temp > 0  )
+               {
 
-              if (temp > 0  )
-              {
-                //main222.block_zayshow_sprava = true
-                    //divider.x = root.x + root.width - divider.width/2 + tollbar.width
-                 /* divider.y = root.height + columns.spacing) * root.colIndex
-                          + time_scale.height - scroll.flickableItem.contentY*/
+                  divider.moveTo(move_x_pos  + root.width,
+                            move_y_pos )
 
+                   main222.left_rigth_entered = true
+                   divider.pos_to_append.y = root.mIndex
+                  // console.log("onPositionChanged: right " + divider.pos_to_append.y)
+               }
+               else
+               {
+                      divider.moveTo(move_x_pos,
+                                move_y_pos )
 
-                 divider.moveTo(root.x + root.width - divider.width/2 + tollbar.width,
-                           move_y_pos )
+                 main222.left_rigth_entered = false
+                 divider.pos_to_append.y = root.mIndex
+                 //console.log("onPositionChanged: left " + divider.pos_to_append.y)
 
-                  main222.left_rigth_entered = true
-                  divider.pos_to_append.y = root.mIndex
-                 // console.log("onPositionChanged: right " + divider.pos_to_append.y)
-              }
-              else
-              {
-                      //main222.block_zayshow_sprava = false
-                  //divider.x = root.x - divider.width/2 + tollbar.width
-                     divider.moveTo(root.x - divider.width/2 + tollbar.width,
-                               move_y_pos )
-
-                main222.left_rigth_entered = false
-                divider.pos_to_append.y = root.mIndex
-                //console.log("onPositionChanged: left " + divider.pos_to_append.y)
-
-              }
-          }
-    }
+               }
+           }
+     }
 
     }
     Component.onCompleted: {

@@ -763,10 +763,21 @@ void DrawTextElm::setTextFont(const QFont &value)
 
 bool DrawTextElm::setDrawWidget(OGLWidget *value)
 {
-    if (DrawElement::setDrawWidget(value))
+   /* if (DrawElement::setDrawWidget(value))
     {
+        if (!value->isInit())
+            return false;
         textureIndex = pDrawWidget->loadTexture(QImage(pDrawWidget->getWax(),pDrawWidget->getWay(),QImage::Format_ARGB32));
+    }*/
+    if(((!DrawElement::setDrawWidget(value) && textureIndex != 4294967295) || failedLoad < 0) || (!pDrawWidget->isVisible() || !pDrawWidget->isInit()))
+    {
+        return 0;
     }
+    textureIndex = pDrawWidget->loadTexture(QImage(pDrawWidget->getWax(),pDrawWidget->getWay(),QImage::Format_ARGB32));
+
+
+    if(textureIndex == 4294967295)
+        failedLoad--;
 
 }
 

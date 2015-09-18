@@ -23,6 +23,7 @@ public:
     bool load_add(QDataStream &stream);
     bool save_add(QDataStream &stream);
     bool setDrawWidget(OGLWidget *value);
+    QString getFilePath();
 protected slots:
     void start();
     void stop();
