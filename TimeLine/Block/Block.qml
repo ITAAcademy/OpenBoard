@@ -437,7 +437,9 @@ z: 0
             if(bChangeSize)
             {
                 //console.log(xChange);
-                if(!timeControll.getCurent_group() || timeControll.tryResizeMemberInCurentGroup(-xChange*main222.scaling, root.colIndex, root.mIndex) != 0)
+                if(timeControll.getCurent_group())
+                    root.width += timeControll.tryResizeMemberInCurentGroup(-xChange*main222.scaling, root.colIndex, root.mIndex)/main222.scaling;
+                else
                     root.width -= xChange;
                 //timeControll.setTestWidth(bar_track.index,root.width, mIndex);
 
