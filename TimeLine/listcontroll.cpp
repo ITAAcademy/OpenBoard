@@ -387,7 +387,7 @@ void ListControll::addNewBlock(int col, QString str, DrawElement *element)
      {
          element = new DrawElement(NULL,NULL);
      }
-   element->setKey( QString("block" + QString::number(qrand())));
+     element->setKey( QString("block" + QString::number(qrand())));
 
      tracks[col].block.insert(ind,element);
 
@@ -688,7 +688,7 @@ void ListControll::setBlockTimeWithUpdate(int col, int i, int value)
     emit blockTimeSignel(col, i, value);
 }
 
-void ListControll::updateBlocksStartTimesFrom(int col0,int ind0)
+void ListControll::updateBlocksStartTimesFrom(int col0,int ind0, bool withGroup)
 {
     if (!blockValid(col0,ind0))
         return;
@@ -699,38 +699,46 @@ void ListControll::updateBlocksStartTimesFrom(int col0,int ind0)
         ind0++;
     }
     Group *updatedGroup = NULL;
+    long delta = 0;
 
     for (int i=ind0; i < tracks[col0].block.size(); i++)
     {
-        long delta;
+
         DrawElement *temp_el = tracks[col0].block[i - 1];
         int draw_time = temp_el->getStartDrawTime()  + temp_el->getLifeTime();
         delta = tracks[col0].block[i]->getStartDrawTime() - draw_time;
         tracks[col0].block[i]->setStartDraw(draw_time);
+    }
 
-        if(updatedGroup != tracks[col0].block[i]->getGroupWichElBelong() && tracks[col0].block[i]->getGroupWichElBelong() != NULL && !tracks[col0].block[i]->getGroupWichElBelong()->isGroupValid())
+    if(false)
+        for (int i=ind0; i < tracks[col0].block.size(); i++)
         {
-            updatedGroup = tracks[col0].block[i]->getGroupWichElBelong();
-            if(delta > 0)
+            if(updatedGroup != tracks[col0].block[i]->getGroupWichElBelong() && tracks[col0].block[i]->getGroupWichElBelong() != NULL && !tracks[col0].block[i]->getGroupWichElBelong()->isGroupValid() )
             {
-                DrawElement *deltaElm = new DrawElement();
-                deltaElm->setLifeTime(delta);
-                addBlockAt(col0, i - 1, deltaElm);
-            }
-            else
-            {
-                foreach(DrawElement* elm, updatedGroup->getFirst())
+                updatedGroup = tracks[col0].block[i]->getGroupWichElBelong();
+                if( updatedGroup->getMembers().contains(col0) &&  updatedGroup->getMembers()[col0].contains(ind0))
+                    continue;
+
+                if(delta > 0)
                 {
-                    if(elm->getBlockColumn() != col0)
+                    DrawElement *deltaElm = new DrawElement();
+                    deltaElm->setLifeTime(delta);
+                    addBlockAt(col0, i - 1, deltaElm);
+                }
+                else
+                {
+                    foreach(DrawElement* elm, updatedGroup->getFirst())
                     {
-                        DrawElement *deltaElm = new DrawElement();
-                        deltaElm->setLifeTime(-delta);
-                        addBlockAt(col0, elm->getBlockIndex() - 1, deltaElm);
+                        if(elm->getBlockColumn() != col0)
+                        {
+                            DrawElement *deltaElm = new DrawElement();
+                            deltaElm->setLifeTime(-delta);
+                            addBlockAt(col0, elm->getBlockIndex() - 1, deltaElm);
+                        }
                     }
                 }
             }
         }
-    }
 }
 
 void ListControll::updateBlocksIndexFrom(int col, int ind)
@@ -1283,9 +1291,23 @@ bool ListControll::save(QIODevice* device)
 {
     QDataStream stream(device);
     stream << tracks.size() ;
+    QSet<Group*> allGroups;
+
     for (int i=0; i< tracks.size(); i++)
     {
-        tracks[i].save(device);
+       tracks[i].save(device);
+
+       for(DrawElement* elm : tracks[i].block)
+       {
+           if(elm->getGroupWichElBelong() != NULL)
+               allGroups.insert(elm->getGroupWichElBelong());
+       }
+    }
+
+    stream << allGroups.size();
+    for(Group* val : allGroups)
+    {
+        stream << val->getMembersPosition();
     }
    // qDebug() << "Num of saved tracks: " << tracks.size();
     return true;
@@ -1318,7 +1340,22 @@ bool ListControll::load(QIODevice* device)
         connect(tracks[k].block[i],SIGNAL(sizeChangedSignal(int,int, int)),
             this, SLOT(setBlockTimeWithUpdate(int, int, int)));
     }
+    // add group
+    int numGroups;
+    stream >> numGroups;
 
+    for(int i = 0; i < numGroups; i++)
+    {
+        QList<QPoint> groupPos;
+        stream >> groupPos;
+        Group *group = new Group();
+        for(QPoint pos : groupPos)
+        {
+            group->addTo(getBlock(pos));
+        }
+        group->isGroupValid();
+        group->initGroupBlocks();
+    }
 
     recountMaxTrackTime();
     calcPointedBlocks();

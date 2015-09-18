@@ -189,6 +189,18 @@ long Group::tryGroupResize(long shift)
      return members;
  }
 
+ QList<QPoint> Group::getMembersPosition() const
+ {
+     QList<QPoint> membersPositionList;
+
+     foreach ( BlockType value, members) {
+         foreach ( DrawElement *elm, value)
+             membersPositionList.append(QPoint(elm->getBlockColumn(), elm->getBlockIndex()));
+     }
+
+     return membersPositionList;
+ }
+
  QList<DrawElement *> Group::getFirst() const
  {
      return first;
@@ -218,6 +230,7 @@ bool Group::isGroupValid()
 {
     first.clear();
     last.clear();
+    bValid = false;
 
     if(members.size() == 0)
         return false;
@@ -281,7 +294,7 @@ void Group::setBoundRec(QRect value)
 
 void Group::calcBoundRec()
 {
-    if(first.size() == 0)
+    if(!bValid || first.size() == 0)
         return;
 
     left.setX(first.first()->getStartDrawTime());
@@ -308,6 +321,7 @@ bool Group::addTo(DrawElement *element)
 
     qDebug() << "Size " << members.size();
 }
+
 
 bool Group::removeFromGroup(int col, int ind)
 {
