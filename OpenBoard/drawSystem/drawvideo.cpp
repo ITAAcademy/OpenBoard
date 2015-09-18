@@ -14,6 +14,16 @@ void DrawVideoElm::stop()
     pDrawWidget->clearAudioList();
 }
 
+
+QString DrawVideoElm::getVidePath() const
+{
+    return videPath;
+}
+
+void DrawVideoElm::setVidePath(const QString &value)
+{
+    videPath = value;
+}
 DrawVideoElm::DrawVideoElm(OGLWidget *drawWidget, QObject *parent) : DrawElement(drawWidget, parent)
 {
     setType("video");
@@ -53,13 +63,21 @@ void DrawVideoElm::draw()
 
 }
 
+bool DrawVideoElm::isVidePathValid()
+{
+    return  videoValid = true;
+}
+
 void DrawVideoElm::setVideoFile(QString path)
 {
+    videoValid = false;
+
     QFile file(path);
     if(file.exists())
     {
         if(decoder.initFF(path) != NULL)
             videPath = path;
+        videoValid = true;
 
     }
     if(lifeTime < 1000)
@@ -69,6 +87,7 @@ void DrawVideoElm::setVideoFile(QString path)
 bool DrawVideoElm::load_add(QDataStream &stream)
 {
     stream >> videPath;
+    key = videPath;
     setVideoFile(videPath);
 }
 

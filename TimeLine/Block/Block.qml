@@ -171,7 +171,7 @@ Rectangle{
            id: border_image
            width: background.width; height: background.height
            border.width:  background_rec.border_width  ;
-         border.color: "white"
+         border.color: "white"  //-=-=-=
          color: "transparent"
 
            Component.onCompleted: {
@@ -446,64 +446,13 @@ z: 0
 
 
        onPressed: {
-           if (mouse.button == Qt.RightButton)
-           {
-              context_menu.showIt(main222.p_scale_pointer.x, mouseY + root.colIndex * (root.height + 2)
-                                - scroll.flickableItem.contentY,root)
-               drag.target = null
-           }
-       else
-           {
-               if (root.double_click )
-               {
-                   //context_menu.show(-1000, -1000,root.globalRep)
-                   if (!main222.ctrl_pressed)
-                        context_menu.showEditBlock()
-                  root.double_click = false
-               }
-               else
-               {
-                    root.double_click = true
-                   double_click_timer.running = true
-
-                   context_menu.closeIt()
-                   if (!main222.ctrl_pressed && !timeControll.getCurent_group())
-                       drag.target = root
-                   else
-                       drag.target = null
-   // //console.log("onPressed");
-           drop.visible = false;
-            drop.enabled = false;
-           if( mouseX > root.width * 0.9)
-           {
-               bChangeSize = true;
-               mouseArea.drag.target = null
-           }
-           else
-           {
-           globalRep.isDrag = true;
-
-                main222.maIsPressed = 1
-               main222.clicked_blockId = root.mIndex
-               main222.clicked_blockX = root.x
-               main222.clicked_blockY = root.y
-               root.z += 200
-                root.p_bar_track.z += 200
-               //main222.p_trackbar_which_block_dragged = root.p_trackbar
-               //globalRep.z += 200
-
-           }
-           }
-       }
            //console.log("mamamamammaa   mIndex = " + root.mIndex)
             main222.dropEntered = 0
            root.animation_scale_normal_toXpos = root.x
            root.animation_scale_normal_toYpos = root.y
            divider.y = (root.height + main222.p_columns.spacing) * root.colIndex
                    + time_scale.height - scroll.flickableItem.contentY
-          divider.x =  root.x + root.width - divider.width/2 + tollbar.width - scroll.flickableItem.contentX  //1234
-           console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA     divider.x = " +  divider.x + " scroll.flickableItem.contentX = " + scroll.flickableItem.contentX)
-            //main222.p_scale_pointer.x = mouseX + root.x - scroll.flickableItem.contentX + main222.p_scale_pointer.width //1234
+           divider.x =  root.x + root.width - divider.width/2 + tollbar.width - scroll.flickableItem.contentX  //1234
 
            divider.pos_to_append.x = root.colIndex
            divider.pos_to_append.y =  root.mIndex
@@ -538,7 +487,64 @@ z: 0
            // blocks.itemAt(i).icon_coloroverlay.color = "#00000000"
             //columns.childAt()
             // //console.log("onPressed: mIndex="+mIndex+" colIndex="+ colIndex + " time = " + timeControll.getBlockTime(colIndex,mIndex))
+            if (mouse.button == Qt.RightButton)
+            {
+               context_menu.showIt(main222.p_scale_pointer.x, mouseY + root.colIndex * (root.height + 2)
+                                 - scroll.flickableItem.contentY,root)
+                drag.target = null
+            }
+        else
+            {
+                if (root.double_click )
+                {
+                    //context_menu.show(-1000, -1000,root.globalRep)
+                    if (!main222.ctrl_pressed)
+                         context_menu.showEditBlock()
+                   root.double_click = false
+                }
+                else
+                {
+                     root.double_click = true
+                    double_click_timer.running = true
 
+                    context_menu.closeIt()
+                    if (!main222.ctrl_pressed && !timeControll.getCurent_group())
+                        drag.target = root
+                    else
+                        drag.target = null
+    // //console.log("onPressed");
+            drop.visible = false;
+             drop.enabled = false;
+            if( mouseX > root.width * 0.9)
+            {
+                bChangeSize = true;
+                mouseArea.drag.target = null
+            }
+            else
+            {
+            globalRep.isDrag = true;
+
+                //root.border.color  = "transparent"
+
+
+
+
+
+              /*   mouseY + root.colIndex * (root.height + 2)
+                                                 - scroll.flickableItem.contentY  */
+
+                 main222.maIsPressed = 1
+                main222.clicked_blockId = root.mIndex
+                main222.clicked_blockX = root.x
+                main222.clicked_blockY = root.y
+                root.z += 200
+                 root.p_bar_track.z += 200
+                //main222.p_trackbar_which_block_dragged = root.p_trackbar
+                //globalRep.z += 200
+
+            }
+            }
+        }
         }
         onReleased: {
 //root.border.color = "white"
@@ -1143,7 +1149,6 @@ root.globalRep.isDrag = false
 
 
 
-
     }
     onExited: {
         main222.exitedFromDropArea = true
@@ -1153,34 +1158,34 @@ root.globalRep.isDrag = false
 
             }
     onPositionChanged: {
-          {
-              divider.visible = true
-              var temp = main222.selectedBlock.x - root.x - root.width/2
-              var move_y_pos = (root.height + main222.p_columns.spacing) * root.colIndex
-                    + time_scale.height - scroll.flickableItem.contentY
-              var move_x_pos  = root.x  - divider.width/2 + tollbar.width - scroll.flickableItem.contentX
-              if (temp > 0  )
-              {
+           {
+               divider.visible = true
+               var temp = main222.selectedBlock.x - root.x - root.width/2
+               var move_y_pos = (root.height + main222.p_columns.spacing) * root.colIndex
+                     + time_scale.height - scroll.flickableItem.contentY
+               var move_x_pos  = root.x  - divider.width/2 + tollbar.width - scroll.flickableItem.contentX
+               if (temp > 0  )
+               {
 
-                 divider.moveTo(move_x_pos  + root.width,
-                           move_y_pos )
+                  divider.moveTo(move_x_pos  + root.width,
+                            move_y_pos )
 
-                  main222.left_rigth_entered = true
-                  divider.pos_to_append.y = root.mIndex
-                 // console.log("onPositionChanged: right " + divider.pos_to_append.y)
-              }
-              else
-              {                     
-                     divider.moveTo(move_x_pos,
-                               move_y_pos )
+                   main222.left_rigth_entered = true
+                   divider.pos_to_append.y = root.mIndex
+                  // console.log("onPositionChanged: right " + divider.pos_to_append.y)
+               }
+               else
+               {
+                      divider.moveTo(move_x_pos,
+                                move_y_pos )
 
-                main222.left_rigth_entered = false
-                divider.pos_to_append.y = root.mIndex
-                //console.log("onPositionChanged: left " + divider.pos_to_append.y)
+                 main222.left_rigth_entered = false
+                 divider.pos_to_append.y = root.mIndex
+                 //console.log("onPositionChanged: left " + divider.pos_to_append.y)
 
-              }
-          }
-    }
+               }
+           }
+     }
 
     }
     Component.onCompleted: {

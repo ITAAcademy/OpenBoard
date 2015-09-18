@@ -25,132 +25,7 @@ class DrawElement;
 
 #define minBlockTime 1000
 
-/*
-struct Element {
-    QString key;
-   // int lifeTime;
-
-    //QImage icon;
-//    int startDrawTime;
-//    int x, y, z, width, height; //on canva
-    //Element_type type;
-    DrawElement *draw_element;
-
-    bool block_cross_with_yellow_rec = false;
-
-    Element( QString key, int time,int x = 0, int y = 0, int z = 0, int width = minBlockTime, int height = 100) {
-        this->key = key;
-        draw_element = new DrawElement((OGLWidget *)NULL, NULL);
-         draw_element->setLifeTime(time);
-        draw_element->setX(x);
-         draw_element->setY(y);
-         draw_element->setZ(z);
-         draw_element->setSize(width, height);
-
-         draw_element->setIcon(QImage("qrc:/Block/file.png")); //for testing!!!!!!!!!!! delete after
-
-    }
-    Element() {
-        this->key = "key";
-        draw_element = new DrawElement((OGLWidget *)NULL, NULL);
-          draw_element->setLifeTime(minBlockTime);
-         draw_element->setX(0);
-          draw_element->setY(0);
-          draw_element->setZ(0);
-          draw_element->setSize(100, 100);
-           draw_element->setStartDraw( 0);
-    }
-    Element(DrawElement *element) {
-        this->key = element->getKey();
-        draw_element = element;
-          draw_element->setLifeTime(minBlockTime);
-         draw_element->setX(0);
-          draw_element->setY(0);
-          draw_element->setZ(0);
-          draw_element->setSize(100, 100);
-          draw_element->setStartDraw( element->getStartDrawTime());
-
-    }
-    ~Element() {
-
-    }
-    void clear()
-    {
-        if(draw_element != NULL)
-            delete draw_element;
-        draw_element = NULL;
-    }
-
-
-    bool save(QIODevice* device)
-    {
-        QDataStream stream(device);
-        stream << key ;
-       draw_element->save(device);
-       return true;
-    }
-
-    bool load(QIODevice* device)
-    {
-        QDataStream stream(device);
-        stream >> key ;
-        draw_element->loadTypeId(device);
-
-
-       Element_type typeId = draw_element->getTypeId();// Element_type::Image;//static_cast<Element_type>(temp_type);
-
-        if(typeId == Element_type::Text)
-        {
-            DrawTextElm *elm = new DrawTextElm(NULL);
-                    elm->loadRest(device);
-                    delete  draw_element;
-                    draw_element = (DrawElement*) elm;
-        }
-        else
-        if(typeId == Element_type::Image)
-        {
-           DrawImageElm *elm = new DrawImageElm(NULL,NULL);
-                    elm->loadRest(device);
-                    delete  draw_element;
-                    elm->setDrawImage(elm->getIcon());
-                    draw_element = (DrawElement*) elm;
-                    //draw_element->getIcon().save("blaaaaaaaaaaaaaaaaaaaaaa.jpg");
-
-        }
-        else
-        if(typeId == Element_type::Brushh)
-        {
-           DrawBrushElm *elm = new DrawBrushElm(NULL,NULL);
-                    elm->loadRest(device);
-                    delete  draw_element;
-                    draw_element = (DrawElement*) elm;
-        }
-        else
-        if(typeId == Element_type::Empty)
-        {
-           DrawElement *elm = new DrawElement(NULL,NULL);
-                    elm->loadRest(device);
-                    delete  draw_element;
-                    draw_element = (DrawElement*) elm;
-        }
-        if(typeId == Element_type::Video)
-        {
-           DrawVideoElm *elm = new DrawVideoElm(NULL,NULL);
-                    elm->loadRest(device);
-                    delete  draw_element;
-                    draw_element = (DrawElement*) elm;
-        }
-        if(typeId == Element_type::Audio)
-        {
-           DrawAudioElm *elm = new DrawAudioElm(NULL,NULL);
-                    elm->loadRest(device);
-                    delete  draw_element;
-                    draw_element = (DrawElement*) elm;
-        }
-        return true;
-    }
-
-};*/
+bool isFileExists(QString path) ;
 
 struct Track {
 
@@ -254,14 +129,33 @@ struct Track {
                 DrawVideoElm *elm = new DrawVideoElm(NULL,NULL);
                          elm->loadRest(device);
                          //delete  draw_element;
-                         draw_element = (DrawElement*) elm;
+                        // if (elm->isVidePathValid())
+                              if (isFileExists(elm->getVidePath()))
+                            draw_element = (DrawElement*) elm;
+                         else
+                         {
+                             draw_element = new DrawElement(NULL,NULL);
+                             draw_element->copy(elm);
+                             draw_element->setKey(elm->getKey());
+                             delete elm;
+                         }
              }
              if(typeId == Element_type::Audio)
              {
                 DrawAudioElm *elm = new DrawAudioElm(NULL,NULL);
                          elm->loadRest(device);
                          //delete  draw_element;
-                         draw_element = (DrawElement*) elm;
+                         if (isFileExists(elm->getFilePath()))
+                            draw_element = (DrawElement*) elm;
+                         else
+                         {
+                             draw_element = new DrawElement(NULL,NULL);
+                             draw_element->copy(elm);
+                             draw_element->setKey(elm->getKey());
+                             delete elm;
+                         }
+
+
              }
 
             block.append(draw_element);

@@ -77,6 +77,11 @@ bool DrawAudioElm::save_add(QDataStream &stream)
     stream << audioPath;
 }
 
+QString DrawAudioElm::getFilePath()
+{
+    return audioPath;
+}
+
 
 bool DrawAudioElm::setDrawWidget(OGLWidget *value)
 {

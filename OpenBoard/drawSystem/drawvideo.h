@@ -13,7 +13,9 @@ class DrawVideoElm  :public DrawElement
     GLuint textureIndex = -1;
     int failedLoad = 10;
     QString videPath;
+    bool videoValid = false;
 public:
+   bool isVidePathValid();
     explicit DrawVideoElm( OGLWidget *drawWidget, QObject *parent = 0);
     ~DrawVideoElm();
     void draw();
@@ -22,6 +24,9 @@ public:
     bool load_add(QDataStream &stream);
     bool save_add(QDataStream &stream);
     bool setDrawWidget(OGLWidget *value);
+    QString getVidePath() const;
+    void setVidePath(const QString &value);
+
 protected slots:
     void start();
     void stop();
