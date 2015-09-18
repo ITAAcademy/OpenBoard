@@ -62,12 +62,12 @@ struct Track {
         QDataStream stream(device);
         stream << block.size() ;
         stream.writeRawData((char*)&time, sizeof(unsigned long int));
-         qDebug() << "num of saved blocks " << block.size();
+        qDebug() << "num of saved blocks " << block.size();
         for (int i=0; i< block.size(); i++)
         {
              qDebug() << "block[i]:  " << i;
             block[i]->save(device);
-         }       
+        }       
 
         return true;
     }
@@ -244,7 +244,7 @@ public:
 
     explicit ListControll(/*OGLWidget *drawWidget = NULL ,*/QObject *parent = 0);
     ~ListControll();
-    void updateBlocksStartTimesFrom(int col0,int ind0);
+    void updateBlocksStartTimesFrom(int col0, int ind0, bool withGroup = true);
     void updateBlocksIndexFrom(int col, int ind);
     void show();
     void close();

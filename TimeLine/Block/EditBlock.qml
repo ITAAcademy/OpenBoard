@@ -32,6 +32,7 @@ ApplicationWindow  {
             Rectangle {
                 id: block_width
                 color: "black"
+                enabled: !timeControll.getCurent_group() //@BAG@//NICOlas
                 width: contextMenuItem.width // block_width_text + 10 + block_width_value.width
                 height: 40
                 border  { width: 2; color: "white" }

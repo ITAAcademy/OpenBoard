@@ -52,6 +52,7 @@ public:
     Group();
     ~Group();
     QMap<int, BlockType> getMembers() const;
+    QList<QPoint> getMembersPosition() const;
     QList<DrawElement *> getFirst() const;
     QList<DrawElement *> getLast() const;
 };
