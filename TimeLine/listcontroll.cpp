@@ -318,25 +318,7 @@ bool ListControll::removeBlock(int col, int i)
 
 void ListControll::addNewBlock(int col, QString str, DrawElement *element)
 {
-  /*  QString open = QFileDialog::getOpenFileName();
-    DrawElement *elm = GenerationDrawElement(open);
-    if(elm == NULL)
-        return;
-    // //qDebug() << "9999999999999999999999999999999999999999999999" << elm->getType();*/
     setSelectedBlockPoint(QPoint(-1,-1));
-   /* DrawElement * temp;
-    temp.key = str;
-    if(element != NULL)
-    {
-        temp.draw_element = element;
-    }
-    //temp.draw_element->setLifeTime(def_min_block_width);
-    if(temp.draw_element->getLifeTime() < def_min_block_width)
-        temp.draw_element->setLifeTime(def_min_block_width);
-    temp.draw_element->setZ(col);*/
-
-
-
 
     if (element == NULL)
         element = new DrawElement(NULL,NULL);
@@ -349,7 +331,7 @@ void ListControll::addNewBlock(int col, QString str, DrawElement *element)
     int last_block_ind = tracks[col].block.size();
 
 
-    element->setBlockColumn(col);
+  /*  element->setBlockColumn(col);
     element->setBlockIndex(last_block_ind);
     connect(element, SIGNAL(borderColorChangedSignal(int,int,QString)),
             this, SIGNAL(borderColorChangedSignal(int,int,QString)));
@@ -358,7 +340,7 @@ void ListControll::addNewBlock(int col, QString str, DrawElement *element)
     qDebug() << "ListControll::addNewBlock     last_block_ind = " << last_block_ind;
 
 
-    updateBlocksStartTimesFrom(col,last_block_ind);
+    updateBlocksStartTimesFrom(col,last_block_ind);*/
     tracks[col].block.append(element);
 
     tracks[col].time += element->getLifeTime();
