@@ -60,6 +60,8 @@ int FileManager::getVideoStackSize() const
   {
       if (index > -1 && index <  musicStackName.size())
              return musicStackName[index];
+      else
+          return "";
   }
 
   QString FileManager::getVideoStackOnlyFilenameAt(int index)
@@ -71,8 +73,9 @@ int FileManager::getVideoStackSize() const
   QString FileManager::getVideoStackAt(int index)
   {
       if (index > -1 && index <  videoStack.size())
-
           return videoStack[index];
+      else
+          return "";
   }
 
 void FileManager::setVideoStack(const QStack<QString> &value)

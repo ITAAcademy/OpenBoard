@@ -146,10 +146,16 @@ focus: true
                         timeControll.pasteBlockFromBuffer();
               else
               if (event.key === Qt.Key_T )
+              {
                         timeControll.setBlockTimeFromBuffer()
+                  main222.selectedBlock. globalRep.updateModel()
+              }
               else
               if ((event.key === Qt.Key_S || event.key === 1067) && (event.modifiers & Qt.ShiftModifier))
+              {
                         timeControll.emitSaveProject();
+                        main222.ctrl_pressed = false;
+              }
               else
                   if ((event.key === Qt.Key_O  || event.key === 1065) && (event.modifiers & Qt.ShiftModifier)) //1065 - 'Щ'
                              timeControll.emitOpenProject();

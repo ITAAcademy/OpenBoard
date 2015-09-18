@@ -492,6 +492,9 @@ void ListControll::loadFromFile(QString path)
    int col0 = p.x();
    int ind0 = p.y();
 
+   QFileInfo file_info(path);
+
+   elm->setKey(file_info.fileName());
 
     updateBlocksStartTimesFrom(col0,ind0);
 

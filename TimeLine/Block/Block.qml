@@ -152,18 +152,21 @@ Rectangle{
        }
        Text {
            id: name
-           anchors.margins: 3
-           anchors.centerIn: border_image
+           anchors.margins: root.height/5
+           //anchors.centerIn: border_image
+           anchors.left: border_image.left
+           anchors.verticalCenter: border_image.verticalCenter
           // x: icon.width/2 - width/2
            text: root.title
-           font.pixelSize: 1
+           font.pixelSize : root.height/4
            color: "white"
            style: Text.Outline;
            styleColor: "black"
            onTextChanged: {
-               name.font.pixelSize = (root.width*1.2)/text.length;
-               if(name.font.pixelSize > root.height*0.7)
-                   name.font.pixelSize = root.height*0.7
+               console.log("KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK       name = " + name.text)
+              // name.font.pixelSize = (root.width*1.2)/text.length;
+               /*if(name.font.pixelSize > root.height*0.7)
+                   name.font.pixelSize = root.height*0.7*/
 
            }
        }
