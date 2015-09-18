@@ -17,6 +17,7 @@ Rectangle {
     property color text_entered_color: "green"
     property color button_highlited :  "darkgrey"
     property color button_normal :  "grey"
+    property color button_disabled :  "lightgray"
 
     function viewButtonHovered() {
 
@@ -28,6 +29,14 @@ Rectangle {
 
 
     }
+
+    onEnabledChanged: {
+        if (enabled)
+            viewButton.state = "normal";
+        else
+            viewButton.state = "disabled";
+    }
+
     Rectangle {
         id: viewButton;
         height: vButton.height + 4
@@ -69,7 +78,12 @@ Rectangle {
             State {
                 name: "normal";
                 PropertyChanges { target: contextButtonItem; color: button_normal }
+            },
+            State{
+                name: "disabled"
+                PropertyChanges { target: vButton; color: button_disabled }
             }
+
         ]
     }
 }

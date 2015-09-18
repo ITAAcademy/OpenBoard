@@ -273,6 +273,7 @@ property int   minBlockWidth : 0
            property color text_clicked_color: "red"*/
             color: contextMenuItem.color
             id: but_edit
+           // enabled: false
             button_text: "Edit block"
             index: 1
             onButtonClicked: {
