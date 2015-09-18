@@ -25,9 +25,9 @@ public:
     static void setUniformResolution(ShaderEffect shaderEffect, float width, float height);
     static void setUniformReverse( ShaderEffect shaderEffect,bool val);
      int getStartTimeMS() const;
-    void setStartTimeMS(unsigned int value);
+    void setStartTimeMS(int value);
      int getEffectTimeHowLong() const;
-    void setEffectTimeHowLong(unsigned int value);
+    void setEffectTimeHowLong(int value);
     bool save(QDataStream &stream);
 
 

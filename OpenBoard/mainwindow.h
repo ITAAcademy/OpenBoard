@@ -185,7 +185,7 @@ QMessageBox messAbout;
     ProjectStartupSetting curentState;
     void updateEditWidgets(bool forceEnabled = false);
     bool trySaveProject();
-public slots:
+public slots:  
     ProjectStartupSetting getCurentState();
     Q_INVOKABLE void setCurentState(ProjectStartupSetting state);
     void keyEventSlot(QKeyEvent *event);

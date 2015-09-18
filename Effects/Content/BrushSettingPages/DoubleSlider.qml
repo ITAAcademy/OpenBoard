@@ -9,19 +9,20 @@ Item{
     property bool checkable: false
     property bool checked: false
     property color mColor: "#333333"
-    property bool small: false
+    property bool small: true
 
     property real value1: 1
     property real value2: 10
-    property real maximum: 100
+    property real maximum: blockTime
     property real minimum: 0
-    property real maximum2: 100
+    property real maximum2: maximum
     property real minimum2: 0
     property int xMax: size.width - handle1.width - 4
      property int xMax2: size.width - handle2.width - 4
     property int  glowRadius: 3
     function setValue1(n){
         value1=n;
+
     }
     function setValue2(n){
         value2=n;
@@ -31,17 +32,18 @@ Item{
   onValue1Changed: {
 
     handle1.x = 2 + (root.value1 - root.minimum) * root.xMax / (root.maximum - root.minimum);
-      if (handle1.x>handle2.x)handle1.x=handle2.x;
+     // if (handle1.x>handle2.x)handle1.x=handle2.x;
 
   }
    onValue2Changed: {
 
        handle2.x = 2 + (root.value2 - root.minimum2) * root.xMax2 / (root.maximum2 - root.minimum2);
-       if (handle1.x>handle2.x)handle2.x=handle1.x;
+       //if (handle1.x>handle2.x)handle2.x=handle1.x;
 
    }
     signal release;
     Row{
+        id:mainRow
         width: parent.width
         height: parent.height
         spacing: 10
@@ -81,6 +83,7 @@ Item{
             Rectangle {
                 id: handle1; smooth: true
                 z: 1
+                 y:mainRow.y+5;
                 x: 2 + (root.value1 - root.minimum) * root.xMax / (root.maximum - root.minimum); width: size.height; height: size.height; radius: 100
                 gradient: Gradient {
                     GradientStop { position: 0.0; color: "lightgray" }
@@ -88,7 +91,7 @@ Item{
                 }
                 Text {
                     id: size_value
-                    text: if(small) root.value1.toFixed(2);else Math.round(root.value1)
+                    text: if(small) (root.value1/1000).toFixed(2);else Math.round(root.value1)
                     width: 30
                     color: "white"
                     font.pixelSize: 14
@@ -109,13 +112,15 @@ Item{
                     hoverEnabled: true
                     drag.axis: Drag.XAxis; drag.minimumX: 2; drag.maximumX: root.xMax+2
                     onPositionChanged: {
+
                         root.value1 = (root.maximum - root.minimum) * (handle1.x-2) / root.xMax + root.minimum;
                         if (value1>value2)value1=value2;//BUG HERE. RESET VALUE IN 0 WHEN LOADING
                          effectsControll.setCurrentEffectProperty("alpha_start_time",value1);
+
                     }
                     property bool enter: false
                     onExited: {
-                        if(pressed == false)
+                        if(pressed === false)
                             from.start();
                     }
                     onEntered:{
@@ -142,14 +147,16 @@ Item{
             Rectangle {
                 id: handle2; smooth: true
                 z: 1
+                y:mainRow.y-5;
                 x: 20 + (root.value2 - root.minimum2) * root.xMax2 / (root.maximum2 - root.minimum2); width: size.height; height: size.height; radius: 100
                 gradient: Gradient {
                     GradientStop { position: 0.0; color: "lightgreen" }
                     GradientStop { position: 1.0; color: "green" }
                 }
                 Text {
+                    y:handle2
                     id: size_value2
-                    text: if(small) root.value2.toFixed(2);else Math.round(root.value2)
+                    text: if(small) (root.value2/1000).toFixed(2);else Math.round(root.value2)
                     width: 30
                     color: "white"
                     font.pixelSize: 14

@@ -418,6 +418,8 @@ a_send_to_youtube = new QAction(this);
 
 
         connect(mpOGLWidget->getTimeLine(),SIGNAL(updateSelectedBlock(QPoint)),this,SLOT(enablingBoardFontColor(QPoint)));
+connect(mpOGLWidget->getTimeLine(), SIGNAL(showEffectsSignal()), mpOGLWidget, SLOT(showEffectsManager()));
+connect(mpOGLWidget->getTimeLine(), SIGNAL(hideEffectsSignal()), mpOGLWidget, SLOT(hideEffectsManager()));
 
         setEnabledToolBar(false);
 
@@ -677,6 +679,8 @@ bool MainWindow::event(QEvent * e) // overloading event(QEvent*) method of QMain
           }
           mpOGLWidget->getTimeLine()->emitFocusLostSignal();
           mpOGLWidget->hideBrushManager();
+          mpOGLWidget->hideEffectsManager();
+
          /* QPoint current_pos = mpOGLWidget->pos();
           current_pos.setY(current_pos.y() + mpOGLWidget->height());
           mpOGLWidget->getTimeLine()->setViewPosition(current_pos);*/
@@ -1393,6 +1397,8 @@ bool MainWindow::trySaveProject()
     }
     return true;
 }
+
+
 
 void MainWindow::on_action_New_Project_triggered()
 {

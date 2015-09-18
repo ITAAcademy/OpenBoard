@@ -43,8 +43,6 @@ Rectangle {
             id:doubleSliderTime
      width:root.width
      height:10
-     maximum: 100
-     maximum2: 100
     name: "time"
 
         }

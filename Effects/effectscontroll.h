@@ -13,7 +13,8 @@
 #include <QStack>
 #include <QDebug>
 #include <QFont>
-#include <effect.h>
+#include "effect.h"
+#include <QQuickItem>
 #define TEXTURE_INDEX_BRUSH 1
 
 
@@ -22,6 +23,7 @@ class EffectsManager : public QObject, public QQuickImageProvider
 {
     Q_OBJECT
 
+    public:
     QQuickView view;
     /*
      *
@@ -34,6 +36,8 @@ public:
     void show();
     void hide();
     void close();
+    QQmlContext* getRootContext();
+    setBlockTime(int n);
     void setPosition(QPoint pos);
     Q_INVOKABLE void addEffect(QString name,  int startTime, int howLong);
     Q_INVOKABLE void removeEffect(int i);
@@ -61,11 +65,23 @@ public:
 
 
 
+    QVector<Effect> getDataListValues() const;
+    void setDataListValues(const QVector<Effect> &value);
+
+    void clearEffects();
+    void addEffect(Effect effect);
+
+
 signals:
     //void colorChanged();
+    void showSignal();
+    void hideSignal();
+    void setBlockTimeSignal(int val);
 public slots:
     void setFocus();
 private:
+    int blockTime = 0;
+    bool showed=false;
     QStringList dataListLabels;
     QVector<Effect> dataListValues;
     bool ableToDraw=true;

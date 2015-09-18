@@ -515,6 +515,8 @@ signals:
   void playSignal();
   void pauseSignal();
   void stopSignal();
+  void showEffectsSignal();
+  void hideEffectsSignal();
     void updateSignal();
     void updateTrackAt(int);
     void updateModel();
@@ -537,6 +539,9 @@ public slots:
     Q_INVOKABLE void loadFromFile(QString path = "");
     void addMsToTimerValue(int ms);
 Q_INVOKABLE void emitNewProject();
+    Q_INVOKABLE void emitOpenEffects();
+     Q_INVOKABLE void emitHideEffects();
+
    Q_INVOKABLE void  copyBlockToBuffer();
      Q_INVOKABLE void  pasteBlockFromBuffer();
      Q_INVOKABLE void setBlockTimeFromBuffer();
