@@ -244,7 +244,7 @@ public:
 
     explicit ListControll(/*OGLWidget *drawWidget = NULL ,*/QObject *parent = 0);
     ~ListControll();
-    void updateBlocksStartTimesFrom(int col0, int ind0, bool withGroup = true);
+    Q_INVOKABLE void updateBlocksStartTimesFrom(int col0, int ind0, bool withGroup = true);
     void updateBlocksIndexFrom(int col, int ind);
     void show();
     void close();
@@ -278,7 +278,7 @@ public:
     void setBlocks(int col,const  QList <DrawElement * > &value);
     Q_INVOKABLE   void setBlockKey(int col, int i, QString name);\
     Q_INVOKABLE void setBlockTime(int col, int i, int value);
-    Q_INVOKABLE void setBlockTimeWithUpdate(int col, int i, int value);
+    Q_INVOKABLE void setBlockTimeWithUpdate(int col, int i, int value, bool visual);
     Q_INVOKABLE void setBlockStartTime(int col, int i, int value);
     Q_INVOKABLE int getBlockStartTime(int col, int i);
     //Q_INVOKABLE bool setBlockDrawElemet(DrawElement *elm, int col, int i);

@@ -383,7 +383,7 @@ timeControll.setScaleScrollChildren(0) //it have protection from small values, w
 
        function updateBlockTime(col, index, time)
        {
-           console.log("OK");
+           console.log("OK" + time);
            rep_columns.itemAt(col).getBlock(index).width = time/main222.scaling;
        }
 

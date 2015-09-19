@@ -163,7 +163,7 @@ Rectangle{
            style: Text.Outline;
            styleColor: "black"
            onTextChanged: {
-               console.log("KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK       name = " + name.text)
+             //  console.log("KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK       name = " + name.text)
               // name.font.pixelSize = (root.width*1.2)/text.length;
                /*if(name.font.pixelSize > root.height*0.7)
                    name.font.pixelSize = root.height*0.7*/
@@ -787,13 +787,13 @@ z: 0
            else
            if (main222.selectedBlockIndex === divider.pos_to_append.y)
            {
-               console.log("DDDDDDDDDDDDDAAAAAAAAAAAAAAAAAAAAAAAAAA 1")
+               //console.log("DDDDDDDDDDDDDAAAAAAAAAAAAAAAAAAAAAAAAAA 1")
                if (main222.block_zayshow_sprava)
                {
-                   console.log("DDDDDDDDDDDDDAAAAAAAAAAAAAAAAAAAAAAAAAA 2")
+                   //console.log("DDDDDDDDDDDDDAAAAAAAAAAAAAAAAAAAAAAAAAA 2")
                    if (main222.left_rigth_entered)
                    {
-                       console.log("DDDDDDDDDDDDDAAAAAAAAAAAAAAAAAAAAAAAAAA 3")
+                       //console.log("DDDDDDDDDDDDDAAAAAAAAAAAAAAAAAAAAAAAAAA 3")
                            if (main222.selectedBlockCol === main222.dropEnteredTrackIndex)
                            {
                            if(out_console) console.log("9999999999999999 hz")
@@ -1098,10 +1098,11 @@ root.globalRep.isDrag = false
              if(bChangeSize)
             {
                 mouseArea.drag.target = root;
-                 timeControll.setBlockTime(colIndex, mIndex,root.width * main222.scaling);
+                timeControll.setBlockTime(colIndex, mIndex,root.width * main222.scaling);
                 // item_col.width = timeControll.getMaxTrackTime()// item_col.childrenRect.width
 
                  bChangeSize = false;
+                 if(main222 != null)
                  if (main222.dovodka_block)
                  {
                      timeControll.attachBlock(root.colIndex, root.mIndex , 50)

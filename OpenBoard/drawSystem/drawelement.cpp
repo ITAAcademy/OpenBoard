@@ -664,11 +664,11 @@ int DrawElement::getLifeTime() const
     return lifeTime;
 }
 
-void DrawElement::setLifeTime(int value, bool feedBack)
+void DrawElement::setLifeTime(int value, bool feedBack, bool visual)
 {
     if(feedBack)
     {
-        emit sizeChangedSignal(blockColumn, blockIndex, value);
+        emit sizeChangedSignal(blockColumn, blockIndex, value, visual);
         return;
     }
 

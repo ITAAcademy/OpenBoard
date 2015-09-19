@@ -1827,7 +1827,7 @@ void MainWindow::updateTextEditFromBlock(QPoint point)
 
     if(point.x() != -1)
     {
-        qDebug() << "updateTextEditFromBlock  " << point;
+        //qDebug() << "updateTextEditFromBlock  " << point;
         DrawElement* elm = mpOGLWidget->getTimeLine()->getBlock(point);
         if(elm->getTypeId() == Element_type::Text)
         {

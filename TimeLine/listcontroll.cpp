@@ -367,8 +367,8 @@ void ListControll::addNewBlock(int col, QString str, DrawElement *element)
     element->setBlockIndex(last_block_ind);
     connect(element, SIGNAL(borderColorChangedSignal(int,int,QString)),
             this, SIGNAL(borderColorChangedSignal(int,int,QString)));
-    connect(element, SIGNAL(sizeChangedSignal(int,int, int)),
-        this, SLOT(setBlockTimeWithUpdate(int, int, int)));
+    connect(element, SIGNAL(sizeChangedSignal(int,int, int, bool)),
+        this, SLOT(setBlockTimeWithUpdate(int, int, int, bool)));
     qDebug() << "ListControll::addNewBlock     last_block_ind = " << last_block_ind;
 
 
@@ -400,7 +400,8 @@ void ListControll::addNewBlock(int col, QString str, DrawElement *element)
      {
          element = new DrawElement(NULL,NULL);
      }
-     element->setKey( QString("block" + QString::number(qrand())));
+     if(element->getKey().isNull())
+        element->setKey( QString("block" + QString::number(qrand())));
 
      tracks[col].block.insert(ind,element);
 
@@ -692,16 +693,17 @@ void ListControll::setBlockTime(int col, int i,int value)
 
       int col0 = col;
       int ind0 = i;
-   updateBlocksStartTimesFrom(col,i);
+   updateBlocksStartTimesFrom(col, i);
 
       recountMaxTrackTime();
       // //qDebug() << "DDDDD  tracks[col].block[i].draw_element->getLifeTime()=" <<   tracks[col].block[i].draw_element->getLifeTime();
 }
 
-void ListControll::setBlockTimeWithUpdate(int col, int i, int value)
+void ListControll::setBlockTimeWithUpdate(int col, int i, int value, bool visual)
 {
     setBlockTime(col, i, value);
-    emit blockTimeSignel(col, i, value);
+    if(visual)
+        emit blockTimeSignel(col, i, value);
 }
 
 void ListControll::updateBlocksStartTimesFrom(int col0,int ind0, bool withGroup)
@@ -722,24 +724,28 @@ void ListControll::updateBlocksStartTimesFrom(int col0,int ind0, bool withGroup)
 
         DrawElement *temp_el = tracks[col0].block[i - 1];
         int draw_time = temp_el->getStartDrawTime()  + temp_el->getLifeTime();
-        delta = tracks[col0].block[i]->getStartDrawTime() - draw_time;
+        if(delta == 0)
+            delta = tracks[col0].block[i]->getStartDrawTime() - draw_time;
+        qDebug() << "DELTA"<< i << "  " << delta;
         tracks[col0].block[i]->setStartDraw(draw_time);
     }
 
     if(false)
         for (int i=ind0; i < tracks[col0].block.size(); i++)
         {
-            if(updatedGroup != tracks[col0].block[i]->getGroupWichElBelong() && tracks[col0].block[i]->getGroupWichElBelong() != NULL && !tracks[col0].block[i]->getGroupWichElBelong()->isGroupValid() )
+            if(updatedGroup != tracks[col0].block[i]->getGroupWichElBelong() && tracks[col0].block[i]->getGroupWichElBelong() != NULL && !tracks[col0].block[i]->getGroupWichElBelong()->isGroupValid())
             {
                 updatedGroup = tracks[col0].block[i]->getGroupWichElBelong();
-                if( updatedGroup->getMembers().contains(col0) &&  updatedGroup->getMembers()[col0].contains(ind0))
-                    continue;
+                /*if( updatedGroup->getMembers().contains(col0) &&  updatedGroup->getMembers()[col0].contains(ind0))
+                    continue;*/
 
                 if(delta > 0)
                 {
                     DrawElement *deltaElm = new DrawElement();
                     deltaElm->setLifeTime(delta);
+                    deltaElm->setKey("NULL2");
                     addBlockAt(col0, i - 1, deltaElm);
+                    updateBlocksStartTimesFrom(col0, 0, false);
                 }
                 else
                 {
@@ -749,12 +755,15 @@ void ListControll::updateBlocksStartTimesFrom(int col0,int ind0, bool withGroup)
                         {
                             DrawElement *deltaElm = new DrawElement();
                             deltaElm->setLifeTime(-delta);
-                            addBlockAt(col0, elm->getBlockIndex() - 1, deltaElm);
+                            deltaElm->setKey("NULL");
+                            addBlockAt(elm->getBlockColumn(), elm->getBlockIndex() - 1, deltaElm);
                         }
+                        updateBlocksStartTimesFrom(elm->getBlockColumn(), 0, false);
                     }
                 }
             }
         }
+ //   sendUpdateModel();
 }
 
 void ListControll::updateBlocksIndexFrom(int col, int ind)
@@ -1355,8 +1364,8 @@ bool ListControll::load(QIODevice* device)
     {
         connect(tracks[k].block[i],SIGNAL(borderColorChangedSignal(int,int,QString)),
             this,SIGNAL(borderColorChangedSignal(int,int,QString)));
-        connect(tracks[k].block[i],SIGNAL(sizeChangedSignal(int,int, int)),
-            this, SLOT(setBlockTimeWithUpdate(int, int, int)));
+        connect(tracks[k].block[i],SIGNAL(sizeChangedSignal(int,int, int, bool)),
+            this, SLOT(setBlockTimeWithUpdate(int, int, int, bool)));
     }
     // add group
     int numGroups;

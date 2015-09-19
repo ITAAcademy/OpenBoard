@@ -537,6 +537,7 @@ void DrawTextElm::drawTextBuffer( int m_x, int m_y, int m_width, int m_height, i
      //1234
     // textFont.setPointSize(20);
      textFont.setFamily(mainTextFont.family());
+     textFont.setStyleStrategy(QFont::PreferQuality);
 
      if(fMetrics != NULL)
          delete fMetrics;

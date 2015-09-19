@@ -230,7 +230,8 @@ property int   minBlockWidth : 0
              height: parent.height/3
              onButtonClicked: {
                 context_menu.closeIt()
-                timeControll.addBlockAt(columnIndex,blockIndex)
+                timeControll.addBlockAt(columnIndex,blockIndex);
+                timeControll.updateBlocksStartTimesFrom(columnIndex,blockIndex - 1);
                 appen_block_items.visible = false
                 main222.needToLightSelected = false;
                 contextMenuFrame.globalRep.updateModel();
@@ -249,7 +250,8 @@ property int   minBlockWidth : 0
              onButtonClicked: {
 
                  context_menu.closeIt()
-                timeControll.addBlockAt(columnIndex,blockIndex+1)
+                timeControll.addBlockAt(columnIndex,blockIndex+1);
+                 timeControll.updateBlocksStartTimesFrom(columnIndex,blockIndex - 1);
                   appen_block_items.visible = false
                  //closeAnimateMenu()
                  main222.needToLightSelected = false;

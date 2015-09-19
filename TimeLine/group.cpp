@@ -179,7 +179,7 @@ long Group::tryGroupResize(long shift)
     }
 
     //qDebug() << localShift*not_null;
-    list[index]->setLifeTime(localShift*not_null + list[index]->getLifeTime());
+    list[index]->setLifeTime(localShift*not_null + list[index]->getLifeTime(), true, false);
     return localShift*not_null;
 }
 
