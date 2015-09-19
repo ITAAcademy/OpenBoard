@@ -333,14 +333,16 @@ timeControll.emitHideEffects();
                 onButtonClicked: {
                     
                     // animate_block_items.visible = !animate_block_items.visible
-                    
+
                     if (animatedMenuShowed)
                     {
                         closeAnimateMenu();
+
                     }
                     else
                     {
                         showAnimateBlockMenu();
+                        context_menu.closeIt();
                     }
                     
                     /*  if (appen_block_items.visible)
