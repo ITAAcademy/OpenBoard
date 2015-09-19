@@ -28,10 +28,36 @@ class DrawElement;
 bool isFileExists(QString path) ;
 
 struct Track {
+private:
+    unsigned long int time = 0 ;
+    unsigned long int prev_time =  0;
 
-    unsigned long int time;
+public:
+    void setTime(unsigned long int value)
+    {
+        prev_time = time;
+        time = value;
+    }
+    void addTime(unsigned long int value)
+    {
+        prev_time = time;
+        time += value;
+    }
+    unsigned long int getTime()
+    {
+        return time;
+    }
+    unsigned long int getTimeChange()
+    {
+        return time - prev_time;
+    }
+
+
     QList <DrawElement *> block;
-    Track() { }
+    Track()
+    {
+
+    }
     Track( int time ,QList <DrawElement *> block ) {
         this-> time = time;
         this-> block = block;
@@ -244,7 +270,9 @@ public:
 
     explicit ListControll(/*OGLWidget *drawWidget = NULL ,*/QObject *parent = 0);
     ~ListControll();
-    Q_INVOKABLE void updateBlocksStartTimesFrom(int col0, int ind0, bool withGroup = true);
+	
+    void updateBlocksStartTimesFrom(int col0, int ind0, bool withGroup = true);
+    Q_INVOKABLE bool balanceBlocksIfIsGroups(int col0, int ind0);
     void updateBlocksIndexFrom(int col, int ind);
     void show();
     void close();
@@ -282,7 +310,7 @@ public:
     Q_INVOKABLE void setBlockStartTime(int col, int i, int value);
     Q_INVOKABLE int getBlockStartTime(int col, int i);
     //Q_INVOKABLE bool setBlockDrawElemet(DrawElement *elm, int col, int i);
-    Q_INVOKABLE   bool removeBlock(int col, int i);
+    Q_INVOKABLE   bool removeBlock(int col, int i );
     Q_INVOKABLE int getBlockTime(int col, int i) ;
     Q_INVOKABLE DrawElement *  getBlock(int col, int i) ;
     Q_INVOKABLE DrawElement *  getBlock(QPoint point) ;
@@ -360,7 +388,7 @@ public:
     Q_INVOKABLE void convertCurentBlockToText();
 
 
-    Q_INVOKABLE void addBlockAt(int col, int ind, DrawElement *element = NULL);
+    Q_INVOKABLE void addBlockAt(int col, int ind, DrawElement *element = NULL , int life_time = minBlockTime,bool need_balance = false );
 
   void sendUpdateModel();
 

@@ -163,7 +163,7 @@ Rectangle{
            style: Text.Outline;
            styleColor: "black"
            onTextChanged: {
-             //  console.log("KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK       name = " + name.text)
+
               // name.font.pixelSize = (root.width*1.2)/text.length;
                /*if(name.font.pixelSize > root.height*0.7)
                    name.font.pixelSize = root.height*0.7*/
@@ -1102,8 +1102,8 @@ root.globalRep.isDrag = false
                 // item_col.width = timeControll.getMaxTrackTime()// item_col.childrenRect.width
 
                  bChangeSize = false;
-                 if(main222 != null)
-                 if (main222.dovodka_block)
+                 if (root.p_main222.dovodka_block)
+
                  {
                      timeControll.attachBlock(root.colIndex, root.mIndex , 50)
                      console.log("dovodka finish")

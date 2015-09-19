@@ -261,6 +261,7 @@ scale_pointer.x = 0// timeControll.getMaxTrackTime() + scale_pointer.width/2 - s
 
     function updateTracksModel()
     {
+        console.log("func updateTracksModel()")
         scaling = timeControll.getScaleScrollChildren()
         rep_columns.model = 0
          rep_columns.model =  timeControll.getTracksNumber()
@@ -353,11 +354,16 @@ scale_pointer.x = 0// timeControll.getMaxTrackTime() + scale_pointer.width/2 - s
        }
 
        onUpdateModel: {
+           console.log("onUpdateModel !!!!!!!!!!!!!!")
            for(var i = 0; i < cool_main.children.length; i++) {
              // console.log("destroying: " + i)
               cool_main.children[i].destroy();
             }
            main222.updateTracksModel();
+
+          // rep_columns +=1
+           //rep_columns -= 1
+          // rep_columns = timeControll.getTracksNumber()
            //console.log("AAAAAAAAAAAAAAAAAA " +  main222.scaling)
        }
 
