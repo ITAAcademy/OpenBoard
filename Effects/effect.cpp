@@ -69,10 +69,13 @@ Effect::Effect()
 
 }
 
-Effect::Effect(QString name, int startTime, long endTime)
+Effect::Effect(QString name, int startTime, int endTime)
 {
     this->name=name;
-    this->startTime=startTime;
-    this->endTime=endTime;
+    propetries["alpha_start_time"]=startTime;
+    propetries["alpha_end_time"]=endTime;
+
+   // this->startTime=startTime;
+    //this->endTime=endTime;
 }
 

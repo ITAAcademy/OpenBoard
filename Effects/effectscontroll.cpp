@@ -10,11 +10,15 @@ void EffectsManager::update()
     // emit currentBrushChanged();
 }
 
+
 double EffectsManager::getCurrentEffectProperty(QString propertyName)
 {
-    if (currentEffectIndex>=dataListValues.length() || currentEffectIndex<0)return 0;
+    if (currentEffectIndex>=dataListValues.length() || currentEffectIndex<0){
+       // qDebug()<< "currect effect index out of range";
+        return 0;
+    }
     double result = dataListValues[currentEffectIndex].getPropetrie(propertyName);
-     qDebug() << "get current effect property '"<<propertyName<<"'  value"<<result;
+    //qDebug() << "get current effect property '"<<propertyName<<"'  value"<<result;
     return result;
 }
 void EffectsManager::setCurrentEffectProperty(QString propertyName, double val)
@@ -23,9 +27,6 @@ void EffectsManager::setCurrentEffectProperty(QString propertyName, double val)
     dataListValues[currentEffectIndex].setPropetrie(propertyName,val);
     qDebug() << "set current effect property '"<<propertyName<<"' to value"<<val;
 }
-
-
-
 
 EffectsManager::EffectsManager(QObject *parent) : QObject(parent), QQuickImageProvider(QQuickImageProvider::Image)
 {
@@ -40,7 +41,7 @@ EffectsManager::EffectsManager(QObject *parent) : QObject(parent), QQuickImagePr
     new QQmlFileSelector(view.engine(), &view);
     view.engine()->rootContext()->setContextProperty("effectsControll", this);
     //view.engine()->addImageProvider("loader", cloneImg);
-    view.setSource(QUrl("qrc:/main.qml")); \
+    view.setSource(QUrl("qrc:/mainEffectWindow.qml")); \
     view.setResizeMode(QQuickView::SizeRootObjectToView);
     //  view.setPersistentOpenGLContext(true);
     view.setColor("transparent");
@@ -65,6 +66,9 @@ EffectsManager::~EffectsManager()
 
 void EffectsManager::show()
 {
+    if (!showed)
+    {
+        clearEffects();
     view.setFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint | Qt::WindowTitleHint);
 
     if (QGuiApplication::platformName() == QLatin1String("qnx") || \
@@ -73,11 +77,19 @@ void EffectsManager::show()
     } else {\
         view.show();\
     }\
+    emit showSignal();
+    showed=true;
+    }
 }
 
 void EffectsManager::hide()
 {
+    if (showed)
+    {
     view.hide();
+    emit hideSignal();
+    showed=false;
+    }
     //emit currentBrushChanged();
 }
 
@@ -89,9 +101,26 @@ void EffectsManager::close()
 
 }
 
+QQmlContext *EffectsManager::getRootContext()
+{
+    return view.rootContext();
+}
+
+EffectsManager::setBlockTime(int n)
+{
+    blockTime=n;
+    emit setBlockTimeSignal(n);
+}
+
 void EffectsManager::setPosition(QPoint pos)
 {
     view.setPosition(pos);
+}
+void EffectsManager::clearEffects(){
+    qDebug() << "clear effects";
+    dataListLabels.clear();
+    dataListValues.clear();
+    view.rootContext()->setContextProperty("myModel",dataListLabels);
 }
 
 void EffectsManager::addEffect(QString name,  int startTime,  int howLong)
@@ -99,11 +128,24 @@ void EffectsManager::addEffect(QString name,  int startTime,  int howLong)
     qDebug() << "begin add effect";
     QQmlContext *ctxt = view.rootContext();
     //dataList=ctxt->contextProperty("myModel").toStringList();
-    Effect newEffect(name+QString::number(dataListLabels.length()),startTime,howLong);
+    Effect newEffect(name+QString::number(dataListLabels.length()),startTime,startTime+howLong);
+   // qDebug()<<"new effect created";
     dataListLabels.append(newEffect.getName());
-    dataListValues.append(Effect());
+    dataListValues.append(newEffect);
     ctxt->setContextProperty("myModel",dataListLabels);
-    qDebug() << "end add effect";
+    //qDebug() << "end add effect";
+
+}
+void EffectsManager::addEffect(Effect effect)
+{
+    qDebug() << "begin add effect";
+    QQmlContext *ctxt = view.rootContext();
+    //dataList=ctxt->contextProperty("myModel").toStringList();
+    //qDebug()<<"new effect created";
+    dataListLabels.append(effect.getName());
+    dataListValues.append(effect);
+    ctxt->setContextProperty("myModel",dataListLabels);
+   // qDebug() << "end add effect";
 
 }
 void EffectsManager::removeEffect(int i)
@@ -127,7 +169,7 @@ void EffectsManager::removeEffect(int i)
 
 void EffectsManager::setCurrentEffectIndex(int n)
 {
-    qDebug() << "QT:setCurrentEffectIndex="<<n;
+    //qDebug() << "QT:setCurrentEffectIndex="<<n;
     currentEffectIndex= n;
 }
 /*
@@ -196,3 +238,31 @@ void EffectsManager::setFocus()
     }
 
 }
+QPoint EffectsManager::getCurrentBlockIndex() const
+{
+    return currentBlockIndex;
+}
+
+void EffectsManager::setCurrentBlockIndex(const QPoint &value)
+{
+    currentBlockIndex = value;
+}
+
+
+
+QVector<Effect> EffectsManager::getDataListValues() const
+{
+    return dataListValues;
+}
+
+void EffectsManager::setDataListValues(const QVector<Effect> &value)
+{
+    dataListValues = value;
+    dataListLabels.clear();
+    for (Effect dataValue : dataListValues)
+        dataListLabels.push_back(dataValue.getName());
+    QQmlContext *ctxt = view.rootContext();
+    ctxt->setContextProperty("myModel",dataListLabels);
+
+}
+

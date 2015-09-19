@@ -1782,6 +1782,16 @@ QImage ListControll::requestImage(const QString &id, QSize *size, const QSize &r
       emit newProjectSignel();
   }
 
+  void ListControll::emitOpenEffects()
+  {
+      emit showEffectsSignal();
+  }
+
+  void ListControll::emitHideEffects()
+  {
+      emit hideEffectsSignal();
+  }
+
   void  ListControll::copyBlockToBuffer()
   {
       QPoint sel_block = this->getSelectedBlockPoint();

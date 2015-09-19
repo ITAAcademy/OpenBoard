@@ -6,6 +6,19 @@ import "Content" as Content
 import "Content/BrushSettingPages" as SettingPages
 
 Rectangle{
+
+    property real blockTime
+     function setBlockTime(val){
+         blockTime=val;
+         console.log("setBlockTime:"+blockTime);
+     }
+     Connections {
+            target: effectsControll
+
+           onSetBlockTimeSignal: setBlockTime(val);
+
+     }
+
     id: root
     width: 300
     height: 400
@@ -16,6 +29,9 @@ Rectangle{
     radius: 10
     smooth: true
      property bool isEffectAlpha : (combo.currentText==="Alpha");
+
+    property bool isEmptyList : (listBox.listBox.count==0);
+    property bool isNonSelected : (listBox.listBox.currentIndex==-1);
     Row{
          y:listBox.border.width*2
         Column{
@@ -39,8 +55,8 @@ Rectangle{
                           effectsPanelAlpha.setTimeSliderValue1(effectsControll.getCurrentEffectProperty("alpha_start_time"));
                         effectsPanelAlpha.setTimeSliderValue2(effectsControll.getCurrentEffectProperty("alpha_end_time"));
                           effectsPanelAlpha.setInverstion(effectsControll.getCurrentEffectProperty("alpha_inversion"));
-                          combo.currentIndex=effectsControll.getCurrentEffectProperty("alpha_effect_type");
-                          //effectsControll.setCurrentEffectProperty("alpha_effect_type",currentIndex)
+                          combo.currentIndex=effectsControll.getCurrentEffectProperty("effect_type");
+                          //effectsControll.setCurrentEffectProperty("effect_type",currentIndex)
                       }
                   }
             }
@@ -63,7 +79,7 @@ Rectangle{
 
               }
             onCurrentIndexChanged:{
-                effectsControll.setCurrentEffectProperty("alpha_effect_type",currentIndex)
+                effectsControll.setCurrentEffectProperty("effect_type",currentIndex)
                 console.log("onPressedChanged");
             }
 
@@ -76,7 +92,7 @@ Rectangle{
                 color: root.color
                 width:parent.width-firstColumn.width
                 height:parent.height-combo.height
-                visible:isEffectAlpha
+                visible:isEffectAlpha && !isEmptyList && !isNonSelected
 
             }
         }

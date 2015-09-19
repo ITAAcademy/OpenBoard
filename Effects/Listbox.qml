@@ -68,7 +68,7 @@ radius : 4
              height: 25
              border.width: 0.7
              width: 100
-             color: ListView.isCurrentItem?"#157efb":"#53d769"
+             color: ListView.isCurrentItem?"darkgrey":"grey"
                          border.color: Qt.lighter(color, 1.1)
              Text {
                  text: modelData }

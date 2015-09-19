@@ -6,7 +6,7 @@
     return startTimeMS;
 }
 
-void ShaderEffect::setStartTimeMS(unsigned int value)
+void ShaderEffect::setStartTimeMS(int value)
 {
     startTimeMS = value;
 }
@@ -16,7 +16,7 @@ void ShaderEffect::setStartTimeMS(unsigned int value)
     return effectTimeHowLong;
 }
 
-void ShaderEffect::setEffectTimeHowLong(unsigned int value)
+void ShaderEffect::setEffectTimeHowLong(int value)
 {
     effectTimeHowLong = value;
 }

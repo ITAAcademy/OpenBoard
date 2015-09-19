@@ -632,6 +632,7 @@ OGLWidget::OGLWidget(QWidget *parent) :
      wax=width(); way=height(); // начальный размер окна
     init = false;
     timeLine = new ListControll(this);
+    effectManager = new EffectsManager(this);
     connect(timeLine,SIGNAL(stopSignal()),this,SIGNAL(stopSignal()));
     connect(timeLine,SIGNAL(playSignal()),this,SIGNAL(startSignal()));
     connect(timeLine,SIGNAL(pauseSignal()),this,SIGNAL(pauseSignal()));
@@ -644,6 +645,8 @@ OGLWidget::OGLWidget(QWidget *parent) :
     connect(timeLine,SIGNAL(blockEditedSignal()),this,SLOT(slotBlockEdited()));
 
   connect(timeLine,SIGNAL(focusFoundSignal()),this,SLOT(hideBrushManager()));
+  connect(timeLine,SIGNAL(focusFoundSignal()),this,SLOT(hideEffectsManager()));
+
 
     isPainting = false;
     selElm = QPoint(-1,-1); //because it undefined
@@ -726,6 +729,8 @@ qDebug() <<  "OGL WIDGET MID";
    oglFuncs=this;
    windowGrid=Grid(GRID_CELL_SIZE,wax,way);
    qDebug() <<  "OGL WIDGET COnstructor end";
+    connect(effectManager,SIGNAL(hideSignal()),this,SLOT(applyEffectsToCurrentBlock()));
+    connect(effectManager,SIGNAL(showSignal()),this,SLOT(loadEffectFromCurrentBlockToEffectManager()));
 }
 void OGLWidget::bindBuffer(GLuint buffer){
     glBindFramebuffer(GL_FRAMEBUFFER,buffer);
@@ -744,6 +749,8 @@ OGLWidget::~OGLWidget()
         qApp->processEvents();
     if(timeLine != NULL)
         delete timeLine;
+    if (effectManager!=NULL)
+        delete effectManager;
 
     if(m_encoder != NULL);
         delete m_encoder;
@@ -1596,6 +1603,70 @@ m_manager.hide();
 setIsBrushWindowOpened(false);
 }
 
+void OGLWidget::applyEffectsToCurrentBlock()
+{
+    QPoint blockIndex = effectManager->getCurrentBlockIndex();
+    if (blockIndex.x()==-1 || blockIndex.y()==-1)return;
+   // qDebug() << "CUR BLOCK(SAVE):"<<blockIndex;
+   // qDebug() << "apply effect begin";
+    QVector<Effect> blockEffects = effectManager->getDataListValues();
+    QVector<ShaderEffect> timeLineEffects;
+    qDebug() << "applyEffectsToCurrentBlock:"<<blockEffects.length();
+    for (int i=0;i<blockEffects.length();i++){
+        Effect *blockEffect = &blockEffects[i];
+        int shaderProgramIndex = (int)blockEffect->getPropetrie("effect_type");
+        switch (shaderProgramIndex){
+        case 0:
+            ShaderEffect sEffect(shaderPrograms[shaderProgramIndex],shaderProgramIndex);
+        int startTime = blockEffect->getPropetrie("alpha_start_time");
+        int endTime = blockEffect->getPropetrie("alpha_end_time");
+        bool reverse = blockEffect->getPropetrie("alpha_inversion");
+        sEffect.setStartTimeMS(startTime);
+        sEffect.setEffectTimeHowLong(endTime-startTime);
+        sEffect.setReverse(reverse);
+        timeLineEffects.push_back(sEffect);
+        }
+    }
+    qDebug() << "apply effect after for";
+
+    qDebug() << "selectedBlockIndex"<<blockIndex.x()<<" "<<blockIndex.y();
+    timeLine->getBlock(blockIndex)->setEffects(timeLineEffects);
+qDebug() << "apply effect end";
+}
+void OGLWidget::loadEffectFromCurrentBlockToEffectManager()
+{
+    effectManager->setCurrentBlockIndex(timeLine->getSelectedBlockPoint());
+ QPoint blockIndex = effectManager->getCurrentBlockIndex();
+// qDebug() << "CUR BLOCK(LOAD):"<<blockIndex;
+ DrawElement *currentBlock = timeLine->getBlock(blockIndex);
+effectManager->clearEffects();
+effectManager->setBlockTime(currentBlock->getLifeTime());
+qDebug() << "loadEffectFromCurrentBlockToEffectManager:"<<currentBlock->getEffects().length();
+ for (ShaderEffect  currentEffect : currentBlock->getEffects())
+ {
+   //  qDebug() << "cur EFFECT start TIME:"<<currentEffect.getStartTimeMS();
+     //qDebug() << "cur EFFECT howlong TIME:"<<currentEffect.getEffectTimeHowLong();
+Effect effect;
+effect.setName("default");
+ effect.setPropetrie("alpha_start_time",currentEffect.getStartTimeMS());
+ effect.setPropetrie("alpha_end_time",currentEffect.getStartTimeMS()+currentEffect.getEffectTimeHowLong());
+effect.setPropetrie("alpha_inversion",currentEffect.getReverse());
+ effectManager->addEffect(effect);
+ }
+ //effectManager->update();
+
+}
+
+void OGLWidget::hideEffectsManager(){
+effectManager->hide();
+isEffectsManagerOpened=false;
+
+}
+void OGLWidget::showEffectsManager(){
+    effectManager->show();
+    isEffectsManagerOpened=true;
+}
+
 
 
 void OGLWidget::mousePressEvent(QMouseEvent *event)
@@ -1621,6 +1692,7 @@ getTimeLine()->emitFocusLostSignal();
         //isMousePlay = false;
         isPainting = true;
        stopShowLastDrawing();
+       effectManager->hide();
         if (getIsBrushWindowOpened())
         {
         m_manager.hide();

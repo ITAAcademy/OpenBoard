@@ -1,6 +1,6 @@
 <RCC>
     <qresource prefix="/">
-        <file>main.qml</file>
+        <file>mainEffectWindow.qml</file>
         <file>Preset/Brushes/standart.PNG</file>
         <file>Content/Separator.qml</file>
         <file>Content/brush_skeen.png</file>

@@ -26,7 +26,7 @@
 #include <QMap>
 #include <QList>
 #include "GLWidget/grid.h"
-
+#include "../Effects/effectscontroll.h"
 
 class ListControll;
 struct BrushBeginingIndex;
@@ -101,7 +101,7 @@ struct FBOWrapper{
 class OGLWidget : public QGLWidget, protected QOpenGLFunctions_3_0
 {
     Q_OBJECT
-   // Q_PROPERTY(QString  drawText READ getDrawText WRITE setDrawText NOTIFY drawTextChanged)
+    // Q_PROPERTY(QString  drawText READ getDrawText WRITE setDrawText NOTIFY drawTextChanged)
     QPoint mousePressPos;
     ShaderTest shaderWindow;
 
@@ -110,13 +110,13 @@ signals:
 public:
     void zoomGrid(int val);
     enum shaderEnum {ALPHA_SHADER=0,SPIRAL_SHADER=1,CROSS_SHADER=2};
-	void processMouse();
-	ShaderProgramWrapper* getMainShader();
-	void initPBO();
-	void initShaderPrograms();
-	QVector<ShaderProgramWrapper*> getShaderPrograms();
-	bool isShaderSupported();
-	void setShaderSupported(bool value);
+    void processMouse();
+    ShaderProgramWrapper* getMainShader();
+    void initPBO();
+    void initShaderPrograms();
+    QVector<ShaderProgramWrapper*> getShaderPrograms();
+    bool isShaderSupported();
+    void setShaderSupported(bool value);
 
     BrushManager m_manager;
     bool sucsessLoadTexture;
@@ -127,14 +127,14 @@ public:
      */
 
 
-  // bool isMousePlay = false;//play recorded mouse movement
-   bool isMousePress = false;
-   bool ismouseWasPressedBeforeDrag = false;  
+    // bool isMousePlay = false;//play recorded mouse movement
+    bool isMousePress = false;
+    bool ismouseWasPressedBeforeDrag = false;
     bool isClearMouseFrameBuffer = true;//clear frame buffer
 
 
 
-   DrawBrushElm *drawBrushElm = NULL;//record mouse movement
+    DrawBrushElm *drawBrushElm = NULL;//record mouse movement
     GLuint brushTexture;
     GLuint brushTextureCurrentPlayed;
 
@@ -144,9 +144,9 @@ public:
 
 
 
-//bool isEditingRectangleBindedToCursor = false;
-   RectangleEditor editingRectangle;//Draw element layout manager
-   bool forseEditBoxDisable = false;
+    //bool isEditingRectangleBindedToCursor = false;
+    RectangleEditor editingRectangle;//Draw element layout manager
+    bool forseEditBoxDisable = false;
 
     QImage brushBuffer;
     struct GradientSetting{
@@ -161,7 +161,7 @@ public:
     QPoint mousePos;
     QPoint prevMousePos;
     enum StatusDraw{
-     PLAY , STOP, PAUSE
+        PLAY , STOP, PAUSE
     };
     enum FigureType{
         LINE, RECTANGLE
@@ -171,7 +171,7 @@ public:
      * |Events
      */
     explicit OGLWidget(QWidget *parent = 0);
-   ~OGLWidget();
+    ~OGLWidget();
     void moveEvent(QMoveEvent *event);
     void paintEvent(QPaintEvent * event);
     void hideEvent(QHideEvent *);
@@ -278,13 +278,19 @@ public:
     void showLCP();
     void clearTexture(GLuint textureId);
 
+
+
 public slots:
+    void loadEffectFromCurrentBlockToEffectManager();
+    void hideEffectsManager();
+    void hideBrushManager();
+    void applyEffectsToCurrentBlock();
     void disableGrid();
     void enableGrid();
     void setAbleDrawing(bool value);
-   // void clearFrameBuffer();
-        void clearFrameBuffer(FBOWrapper fboWrapper);
-    void hideBrushManager();
+    // void clearFrameBuffer();
+    void clearFrameBuffer(FBOWrapper fboWrapper);
+
     void slotBlockEdited();
     bool drawAnimated( bool record );
     void stopAnimated();
@@ -330,6 +336,7 @@ public slots:
     void ShowHideShaderWindow();
     void testInit();
     void encoderAddWaitFrame();
+    void showEffectsManager();
 signals:
     void windowUpdating(int frameRate);
     void pauseSignal();
@@ -349,21 +356,21 @@ private:
     Grid windowGrid;
     QStack<ShaderProgramWrapper*> currentShaderStack;
     int MOUSE_PROCESS_DELAY_MS=60;
-QString fileNameForRecords;
-  //  QMap <void* , QList<QByteArray>>  audioList;
+    QString fileNameForRecords;
+    //  QMap <void* , QList<QByteArray>>  audioList;
     GLuint pixelBufferIDs[2];
 
     QList<QByteArray>  audioList;
     QOpenGLFunctions_3_0 *oglFuncs;
 
-     QVector<ShaderProgramWrapper*> shaderPrograms;
+    QVector<ShaderProgramWrapper*> shaderPrograms;
 
     bool shaderSupported = false;
     ShaderProgramWrapper *mainShader;//Color,alpha,blur;
     ShaderProgramWrapper *test;//Color,alpha,blur;
 
-         int frameRate = 25;
-       bool mayShowRedRectangle = true;
+    int frameRate = 25;
+    bool mayShowRedRectangle = true;
     qint64 current_millisecs =0;
     qint64 last_milisecs_update = 0;
     qint64 last_milisecs_drawn = 0;
@@ -372,7 +379,7 @@ QString fileNameForRecords;
     QVector<GLenum> attachment;
     FBOWrapper mouseFBO,pingpongFBO,mainFBO;
 
-     QMessageBox ms_for_debug;
+    QMessageBox ms_for_debug;
     bool pressedCtrl = false;
     bool pressedShift = false;
     bool pressedPlus = false;
@@ -381,13 +388,14 @@ QString fileNameForRecords;
     bool showingLastDrawing = false;
     int currentLastDrawingPointIterator = 0;
     //GLuint ShaderProgram;
-       bool firstUpdate = true;
-     bool isPainting;
+    bool firstUpdate = true;
+    bool isPainting;
     QImage img;
     ListControll *timeLine = NULL;
+    EffectsManager *effectManager = NULL;
 
-         Brush currentBrushOfLastDrawing;
-   // GLuint    fbo,// The frame buffer object
+    Brush currentBrushOfLastDrawing;
+    // GLuint    fbo,// The frame buffer object
     //fbo_depth, // The depth buffer for the frame buffer object
 
     //fbo_texture; // The texture object to write our frame buffer object to
@@ -455,17 +463,18 @@ QString fileNameForRecords;
 
 
     bool isBrushWindowOpened = false;//set in true state when brush window opened
+    bool isEffectsManagerOpened = false;
 protected:
     void destroy(bool destroyWindow, bool destroySubWindow);
     void initializeGL(); // Метод для инициализирования opengl
-       void resizeGL(int nWidth, int nHeight);
-       void paintGL(); // Output generated Image to screen
-        int wax ,way; // Window size
+    void resizeGL(int nWidth, int nHeight);
+    void paintGL(); // Output generated Image to screen
+    int wax ,way; // Window size
 
-        QPoint selElm;
-        void drawGlobalShader(QVector<ShaderProgramWrapper *> shaders);
-        void drawEditBox(int z);
-        void reloadScene();
+    QPoint selElm;
+    void drawGlobalShader(QVector<ShaderProgramWrapper *> shaders);
+    void drawEditBox(int z);
+    void reloadScene();
 };
 
 

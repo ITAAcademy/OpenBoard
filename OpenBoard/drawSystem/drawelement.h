@@ -69,6 +69,7 @@ protected:
     QString lastPath;
     virtual void draw();
 public:
+    QVector<ShaderEffect> getEffects();
     void setAnimStateTime(AnimStateTime);
     void setAnimStateTime(int , int);
     void setAnimStateTime(QPoint);
@@ -157,6 +158,9 @@ public:
     QString getBlockBorderColor() const;
     void setBlockBorderColor(const QString &value);
 
+    setEffects(QVector<ShaderEffect> effects);
+    addEffect(ShaderEffect effect);
+    clearEffects();
 signals:
     void borderColorChangedSignal(int col, int ind ,QString color);
     void sizeChangedSignal(int col, int ind, int newSize, bool visual = true);

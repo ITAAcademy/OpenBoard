@@ -42,7 +42,9 @@ SOURCES += main.cpp\
     GLWidget/grid.cpp\
     ../TimeLine/group.cpp \
     ../FileManager/filecontroll.cpp \
-    ../FileManager/filepainter.cpp
+    ../FileManager/filepainter.cpp \
+    ../Effects/effect.cpp \
+    ../Effects/effectscontroll.cpp
 
 
 
@@ -84,7 +86,9 @@ HEADERS  += mainwindow.h \
     GLWidget/grid.h\
     ../TimeLine/group.h \
     ../FileManager/filecontroll.h \
-    ../FileManager/filepainter.h
+    ../FileManager/filepainter.h \
+    ../Effects/effect.h \
+    ../Effects/effectscontroll.h
 
 
 
@@ -99,7 +103,8 @@ RESOURCES += \
     ../Brush/qml_brush.qrc \
     ../NewProject/qml_new_project.qrc \
     shaders.qrc \
-    ../FileManager/qml_filemanager.qrc
+    ../FileManager/qml_filemanager.qrc \
+    ../Effects/qml_effects.qrc
     RC_FILE = myapp.rc
 
 #unix {
@@ -151,4 +156,24 @@ DISTFILES += \
     spiral.vert \
     cross.frag \
     cross.vert \
-    ../FileManager/main_filemanager.qml
+    ../FileManager/main_filemanager.qml \
+    ../Effects/Content/Thumbs.db \
+    ../Effects/MainForm.ui.qml \
+    ../Effects/Content/test.jpg \
+    ../Effects/Content/arrow_right_24.png \
+    ../Effects/Content/brush_skeen.png \
+    ../Effects/Content/cancel_32.png \
+    ../Effects/Content/plus_button_32.png \
+    ../Effects/Preset/Brushes/standart.PNG \
+    ../Effects/Content/BrushSettingPages/DoubleSlider.qml \
+    ../Effects/Content/BrushSettingPages/EffectAlpha.qml \
+    ../Effects/Content/BrushSettingPages/FullSlider.qml \
+    ../Effects/Content/Button.qml \
+    ../Effects/Content/FullSlider.qml \
+    ../Effects/Content/Separator.qml \
+    ../Effects/Listbox.qml \
+    ../Effects/ListboxControl.qml \
+    ../Effects/mainEffectWindow.qml
+
+SUBDIRS += \
+    ../Effects/EffectsManager.pro
