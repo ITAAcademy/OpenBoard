@@ -948,6 +948,7 @@ timeControll.setScalePointerPos((x  -20 + scroll.flickableItem.contentX)* main22
                                        p_border_color: timeControll.getBlockBorderColor(colIndex, mIndex)
                                        height:  100
                                        mIndex: index
+                                       p_divider: divider
                                         colIndex:  bar_track.mIndex
                                    width:  timeControll.getBlockTime(colIndex, mIndex) / main222.scaling
                                     p_main222: main222

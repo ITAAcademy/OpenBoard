@@ -31,6 +31,7 @@ struct Track {
 private:
     unsigned long int time = 0 ;
     unsigned long int prev_time =  0;
+    unsigned long int time_change =  0;
 
 public:
     void setTime(unsigned long int value)
@@ -48,9 +49,22 @@ public:
         return time;
     }
     unsigned long int getTimeChange()
-    {
-        return time - prev_time;
+    {       
+        return time_change;
     }
+
+    unsigned long int calcTimeChange()
+    {
+        time_change = time - prev_time;
+        return time_change;
+    }
+
+    void setTimeChange(unsigned long int value)
+    {
+        time_change = value;
+    }
+
+
 
 
     QList <DrawElement *> block;
@@ -197,7 +211,7 @@ public:
     ~ListControll();
 	
     void updateBlocksStartTimesFrom(int col0, int ind0, bool withGroup = true);
-    Q_INVOKABLE bool balanceBlocksIfIsGroups(int col0, int ind0);
+    Q_INVOKABLE bool balanceBlocksIfIsGroups(int col0, int ind0, bool calc_time_change = true);
     void updateBlocksIndexFrom(int col, int ind);
     void show();
     void close();
