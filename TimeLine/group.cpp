@@ -181,7 +181,13 @@ long Group::tryGroupResize(long shift)
     //qDebug() << localShift*not_null;
     list[index]->setLifeTime(localShift*not_null + list[index]->getLifeTime(), true, false);
     return localShift*not_null;
-}
+ }
+
+ bool Group::tryMemberReverce(DrawElement *in, DrawElement *out)
+ {
+     out->setGroupWichElBelong(in->getGroupWichElBelong());
+     members[in->getBlockColumn()][in->getBlockIndex()] = out;
+ }
 
 
  QMap<int, BlockType> Group::getMembers() const

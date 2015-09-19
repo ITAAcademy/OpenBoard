@@ -41,6 +41,7 @@ public:
     void deInitGroupBlocks();
     long int tryGroupResize( long int shift);
     long int tryMemberResize( long int shift, int col, int index );
+    bool tryMemberReverce(DrawElement* in, DrawElement *out);
     QRect getBoundRec();
 
     bool addTo(DrawElement *element);

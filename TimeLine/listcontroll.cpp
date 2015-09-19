@@ -492,10 +492,18 @@ void ListControll::loadFromFile(QString path)
     }
 
    DrawElement* temp = tracks[p.x()].block[p.y()];
+   temp->setBlockIndex(p.y());
+   temp->setBlockColumn(p.x());
    int life_time = temp->getLifeTime();
    int new_life_time = elm->getLifeTime();
    int start_time = temp->getStartDrawTime();
+
+   if(temp->getGroupWichElBelong() != NULL)
+   {
+       temp->getGroupWichElBelong()->tryMemberReverce(temp, elm);
+   }
    delete temp;
+
    tracks[p.x()].block[p.y()] = elm;
    temp = elm;
    temp->setLifeTime(life_time);
