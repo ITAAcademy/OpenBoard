@@ -13,6 +13,7 @@ Rectangle {
             color: root.color
             height:32
             width:32
+            border.width:2
             id:imgRect1
             Image{
                 anchors.fill: parent
@@ -29,10 +30,10 @@ Rectangle {
                         root.update();
                     }
                     onEntered: {
-                        imgRect1.border.width=2;
+                        imgRect1.border.color="green";
                     }
                     onExited: {
-                        imgRect1.border.width=0;
+                         imgRect1.border.color="black";
                     }
                 }
             }
@@ -43,6 +44,7 @@ Rectangle {
             height:32
             width:32
             id:imgRect2
+            border.width:2
             Image{
                 id: imgRemoveEffect
                 source: "qrc:/Content/cancel_32.png"
@@ -58,10 +60,10 @@ Rectangle {
                         root.update();
                     }
                     onEntered: {
-                        imgRect2.border.width=2;
+                        imgRect2.border.color="red";
                     }
                     onExited: {
-                        imgRect2.border.width=0;
+                        imgRect2.border.color="black";
                     }
                 }
             }
