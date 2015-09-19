@@ -2,6 +2,7 @@
 #define EFFECT_H
 #include <qstring.h>
 #include <qmap.h>
+#include <qpoint.h>
 class Effect
 {
     enum effect_types{EFFECT_ALPHA,EFFECT_OTHER};
@@ -11,6 +12,7 @@ class Effect
     bool inversion;
     int effectType = EFFECT_ALPHA;
     QMap<QString,double> propetries;
+
 public:
     Effect();
     Effect(QString name, int startTime, int endTime);

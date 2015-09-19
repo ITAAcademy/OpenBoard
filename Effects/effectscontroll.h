@@ -72,6 +72,9 @@ public:
     void addEffect(Effect effect);
 
 
+    QPoint getCurrentBlockIndex() const;
+    void setCurrentBlockIndex(const QPoint &value);
+
 signals:
     //void colorChanged();
     void showSignal();
@@ -80,6 +83,7 @@ signals:
 public slots:
     void setFocus();
 private:
+     QPoint currentBlockIndex;
     int blockTime = 0;
     bool showed=false;
     QStringList dataListLabels;

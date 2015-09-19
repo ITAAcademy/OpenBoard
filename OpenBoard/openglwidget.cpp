@@ -1604,12 +1604,13 @@ setIsBrushWindowOpened(false);
 
 void OGLWidget::applyEffectsToCurrentBlock()
 {
-    QPoint blockIndex = timeLine->getSelectedBlockPoint();
+    QPoint blockIndex = effectManager->getCurrentBlockIndex();
     if (blockIndex.x()==-1 || blockIndex.y()==-1)return;
-     qDebug() << "CUR BLOCK(SAVE):"<<blockIndex;
-    qDebug() << "apply effect begin";
+   // qDebug() << "CUR BLOCK(SAVE):"<<blockIndex;
+   // qDebug() << "apply effect begin";
     QVector<Effect> blockEffects = effectManager->getDataListValues();
     QVector<ShaderEffect> timeLineEffects;
+    qDebug() << "applyEffectsToCurrentBlock:"<<blockEffects.length();
     for (int i=0;i<blockEffects.length();i++){
         Effect *blockEffect = &blockEffects[i];
         int shaderProgramIndex = (int)blockEffect->getPropetrie("effect_type");
@@ -1633,15 +1634,17 @@ qDebug() << "apply effect end";
 }
 void OGLWidget::loadEffectFromCurrentBlockToEffectManager()
 {
- QPoint blockIndex = timeLine->getSelectedBlockPoint();
- qDebug() << "CUR BLOCK(LOAD):"<<blockIndex;
+    effectManager->setCurrentBlockIndex(timeLine->getSelectedBlockPoint());
+ QPoint blockIndex = effectManager->getCurrentBlockIndex();
+// qDebug() << "CUR BLOCK(LOAD):"<<blockIndex;
  DrawElement *currentBlock = timeLine->getBlock(blockIndex);
 effectManager->clearEffects();
 effectManager->setBlockTime(currentBlock->getLifeTime());
+qDebug() << "loadEffectFromCurrentBlockToEffectManager:"<<currentBlock->getEffects().length();
  for (ShaderEffect  currentEffect : currentBlock->getEffects())
  {
-     qDebug() << "cur EFFECT start TIME:"<<currentEffect.getStartTimeMS();
-     qDebug() << "cur EFFECT howlong TIME:"<<currentEffect.getEffectTimeHowLong();
+   //  qDebug() << "cur EFFECT start TIME:"<<currentEffect.getStartTimeMS();
+     //qDebug() << "cur EFFECT howlong TIME:"<<currentEffect.getEffectTimeHowLong();
 Effect effect;
 effect.setName("default");
  effect.setPropetrie("alpha_start_time",currentEffect.getStartTimeMS());
@@ -1649,6 +1652,7 @@ effect.setName("default");
 effect.setPropetrie("alpha_inversion",currentEffect.getReverse());
  effectManager->addEffect(effect);
  }
+ //effectManager->update();
 
 }
 

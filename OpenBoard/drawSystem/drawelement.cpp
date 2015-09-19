@@ -407,6 +407,15 @@ QVector<ShaderEffect> DrawElement::getEffects()
 {
 this->effects=effects;
 }
+ DrawElement::addEffect(ShaderEffect effect)
+{
+effects.push_back(effect);
+}
+ DrawElement::clearEffects()
+{
+effects.clear();
+}
+
 
 FBOWrapper DrawElement::getFBOWrapper()
 {

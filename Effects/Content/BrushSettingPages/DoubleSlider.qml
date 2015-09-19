@@ -11,11 +11,11 @@ Item{
     property color mColor: "#333333"
     property bool small: true
 
-    property real value1: 1
-    property real value2: 10
+    property real value1: 0
+    property real value2: 0
     property real maximum: blockTime
     property real minimum: 0
-    property real maximum2: maximum
+    property real maximum2: blockTime
     property real minimum2: 0
     property int xMax: size.width - handle1.width - 4
      property int xMax2: size.width - handle2.width - 4

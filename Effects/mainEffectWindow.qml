@@ -29,6 +29,7 @@ Rectangle{
     radius: 10
     smooth: true
      property bool isEffectAlpha : (combo.currentText==="Alpha");
+    property bool isEmptyList : (listBox.listBox.currentIndex==-1);
     Row{
          y:listBox.border.width*2
         Column{
@@ -89,7 +90,7 @@ Rectangle{
                 color: root.color
                 width:parent.width-firstColumn.width
                 height:parent.height-combo.height
-                visible:isEffectAlpha
+                visible:isEffectAlpha && !isEmptyList
 
             }
         }
