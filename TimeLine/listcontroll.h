@@ -110,82 +110,7 @@ public:
     //return true;
         for (int i=0; i< blocks_size; i++)
         {
-            DrawElement *draw_element = new DrawElement(NULL,NULL);
-
-             draw_element->loadTypeId(device);
-
-            Element_type typeId = draw_element->getTypeId();// Element_type::Image;//static_cast<Element_type>(temp_type);
-
-             if(typeId == Element_type::Text)
-             {
-                 DrawTextElm *elm = new DrawTextElm(NULL);
-                         elm->loadRest(device);
-                        // delete  draw_element;
-                         draw_element = (DrawElement*) elm;
-             }
-
-             if(typeId == Element_type::Image)
-             {
-                DrawImageElm *elm = new DrawImageElm(NULL,NULL);
-                         elm->loadRest(device);
-                         //delete  draw_element;
-                         elm->setDrawImage(elm->getIcon());
-                         draw_element = (DrawElement*) elm;
-                         //draw_element->getIcon().save("blaaaaaaaaaaaaaaaaaaaaaa.jpg");
-
-             }
-
-             if(typeId == Element_type::Brushh)
-             {
-                DrawBrushElm *elm = new DrawBrushElm(NULL,NULL);
-                         elm->loadRest(device);
-                         //delete  draw_element;
-                         draw_element = (DrawElement*) elm;
-             }
-
-             if(typeId == Element_type::Empty)
-             {
-                DrawElement *elm = new DrawElement(NULL,NULL);
-                         elm->loadRest(device);
-                         //delete  draw_element;
-                         draw_element = (DrawElement*) elm;
-             }
-             if(typeId == Element_type::Video)
-             {
-                DrawVideoElm *elm = new DrawVideoElm(NULL,NULL);
-                         elm->loadRest(device);
-                         //delete  draw_element;
-                        // if (elm->isVidePathValid())
-                              if (isFileExists(elm->getVidePath()))
-                            draw_element = (DrawElement*) elm;
-                         else
-                         {
-                             draw_element = new DrawElement(NULL,NULL);
-                             draw_element->copy(elm);
-                             draw_element->setKey(elm->getKey());
-                             delete elm;
-                         }
-             }
-             if(typeId == Element_type::Audio)
-             {
-                DrawAudioElm *elm = new DrawAudioElm(NULL,NULL);
-                         elm->loadRest(device);
-                         //delete  draw_element;
-                         if (isFileExists(elm->getFilePath()))
-                            draw_element = (DrawElement*) elm;
-                         else
-                         {
-                             draw_element = new DrawElement(NULL,NULL);
-                             draw_element->copy(elm);
-                             draw_element->setKey(elm->getKey());
-                             delete elm;
-                         }
-
-
-             }
-
-            block.append(draw_element);
-            //qDebug() << "load block[i]:  " << i;
+            block.append(loadDrawElement(device));
         }
        // qDebug() << "block size" << block.size();
         return true;
@@ -319,6 +244,7 @@ public:
 
   Q_INVOKABLE void moveBlockFromTo(int col,int ind0, int ind1);
     Q_INVOKABLE void  moveBlockFromTo(int col0,int ind0,int col1, int ind1);
+    Q_INVOKABLE void  cloneBlock(DrawElement *origin, DrawElement *clone);
 
     Q_INVOKABLE void moveWindow( ) ;
     Q_INVOKABLE void resizeWindowWidth(bool left) ;

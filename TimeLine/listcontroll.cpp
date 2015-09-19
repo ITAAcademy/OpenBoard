@@ -2,16 +2,6 @@
 #include <QVariant>
 #include <QCoreApplication>
 
-bool isFileExists(QString path) {
-    QFileInfo checkFile(path);
-    // check if file exists and if yes: Is it really a file and no directory?
-    if (checkFile.exists() && checkFile.isFile()) {
-        return true;
-    } else {
-        return false;
-    }
-}
-
 QPoint ListControll::getSelectedBlockPoint() const
 {
 
@@ -29,8 +19,8 @@ QString ListControll::getBlockBorderColor(int col,int ind)
 
 void ListControll::setSelectedBlockPoint(const QPoint &value)
 {
-    if(blockValid(value))
-              qDebug() << "AAAAAAAAAAAAAAAAAAAAAAA  ListControll::setSelectedBlockPoint  " <<(int)  getBlock(value)->getTypeId();
+
+             // qDebug() << "AAAAAAAAAAAAAAAAAAAAAAA  ListControll::setSelectedBlockPoint  " <<(int)  getBlock(value)->getTypeId();
     emit updateSelectedBlock(value);
     //if (false)
     if (ctrl_pressed)
@@ -502,14 +492,14 @@ void ListControll::loadFromFile(QString path)
    temp->setStartDraw(start_time);
    temp->setZ(p.x());
 
-   elm->setBlockColumn(temp->getBlockColumn());
-   elm->setBlockIndex(temp->getBlockIndex());
-   connect(elm,SIGNAL(borderColorChangedSignal(int,int,QString)),
-           this,SIGNAL(borderColorChangedSignal(int,int,QString)));
-
-
    int col0 = p.x();
    int ind0 = p.y();
+
+
+   elm->setBlockColumn(col0);
+   elm->setBlockIndex(ind0);
+   connect(elm,SIGNAL(borderColorChangedSignal(int,int,QString)),
+           this,SIGNAL(borderColorChangedSignal(int,int,QString)));
 
    QFileInfo file_info(path);
 
@@ -691,6 +681,24 @@ bool ListControll::removeTrack(int col)
              updateBlocksIndexFrom(col1,ind1);
              updateBlocksStartTimesFrom(col1,ind1);
 
+ }
+
+ void ListControll::cloneBlock(DrawElement *origin, DrawElement *clone)
+ {
+    QBuffer buff;
+    buff.open(QBuffer::ReadWrite);
+    origin->save(&buff);
+    QPoint p = QPoint(clone->getBlockColumn(), clone->getBlockIndex());
+   // maxTrackTime -= clone->getLifeTime() + origin->getLifeTime();
+
+    if(clone != NULL)
+        delete clone;
+    buff.seek(0);
+    clone = loadDrawElement(&buff);
+    clone->setDrawWidget(origin->getDrawWidget());
+    tracks[p.x()].block[p.y()] = clone;
+    calcPointedBlocks();
+    recountMaxTrackTime();
  }
 
 void ListControll::setBlocks(int col,const QList <DrawElement *> &value)
@@ -1743,7 +1751,7 @@ QImage ListControll::requestImage(const QString &id, QSize *size, const QSize &r
   {
       if (!buffer_is_full)
           return;
-      QPoint sel_block = this->getSelectedBlockPoint();
+      /*QPoint sel_block = this->getSelectedBlockPoint();
       if (sel_block.x() == -1)
           return;
 
@@ -1752,8 +1760,9 @@ QImage ListControll::requestImage(const QString &id, QSize *size, const QSize &r
       if (maxTrackTime <  temp_time)
           maxTrackTime =  temp_time;
      // calcPointedBlocks();
-
-      emit updateTrackAt(sel_block.x());
+    */
+      cloneBlock(block_in_buffer, getBlock(getSelectedBlockPoint()));
+      emit updateTrackAt(getSelectedBlockPoint().x());
 
 
   }

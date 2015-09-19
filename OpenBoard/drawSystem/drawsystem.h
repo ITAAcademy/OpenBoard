@@ -7,6 +7,17 @@
 #include "drawvideo.h"
 #include "drawaudio.h"
 
+
+static bool isFileExists(QString path) {
+    QFileInfo checkFile(path);
+    // check if file exists and if yes: Is it really a file and no directory?
+    if (checkFile.exists() && checkFile.isFile()) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 static inline QString mSuffixFromFilter(const QString &filter, QString name)
 {
     //qDebug() << name;
@@ -23,6 +34,7 @@ static inline QString mSuffixFromFilter(const QString &filter, QString name)
         endPos = filter.indexOf(QLatin1Char(')'), suffixPos + 1);
     return endPos >= 0 ? name + "." + filter.mid(suffixPos, endPos - suffixPos) : QString();
 }
+
 
 static DrawElement *GenerationDrawElement( QString path, OGLWidget *drawWidget = NULL, QObject *parent = NULL )
 {
@@ -121,6 +133,85 @@ static DrawElement *GenerationDrawElement( QString path, OGLWidget *drawWidget =
     return NULL;
 }
 
+static DrawElement *loadDrawElement(QIODevice *device)
+{
+    DrawElement *draw_element = new DrawElement(NULL,NULL);
+
+     draw_element->loadTypeId(device);
+
+    Element_type typeId = draw_element->getTypeId();// Element_type::Image;//static_cast<Element_type>(temp_type);
+
+     if(typeId == Element_type::Text)
+     {
+         DrawTextElm *elm = new DrawTextElm(NULL);
+                 elm->loadRest(device);
+                // delete  draw_element;
+                 draw_element = (DrawElement*) elm;
+     }
+
+     if(typeId == Element_type::Image)
+     {
+        DrawImageElm *elm = new DrawImageElm(NULL,NULL);
+                 elm->loadRest(device);
+                 //delete  draw_element;
+                 elm->setDrawImage(elm->getIcon());
+                 draw_element = (DrawElement*) elm;
+                 //draw_element->getIcon().save("blaaaaaaaaaaaaaaaaaaaaaa.jpg");
+
+     }
+
+     if(typeId == Element_type::Brushh)
+     {
+        DrawBrushElm *elm = new DrawBrushElm(NULL,NULL);
+                 elm->loadRest(device);
+                 //delete  draw_element;
+                 draw_element = (DrawElement*) elm;
+     }
+
+     if(typeId == Element_type::Empty)
+     {
+        DrawElement *elm = new DrawElement(NULL,NULL);
+                 elm->loadRest(device);
+                 //delete  draw_element;
+                 draw_element = (DrawElement*) elm;
+     }
+     if(typeId == Element_type::Video)
+     {
+        DrawVideoElm *elm = new DrawVideoElm(NULL,NULL);
+                 elm->loadRest(device);
+                 //delete  draw_element;
+                // if (elm->isVidePathValid())
+                      if (isFileExists(elm->getVidePath()))
+                    draw_element = (DrawElement*) elm;
+                 else
+                 {
+                     draw_element = new DrawElement(NULL,NULL);
+                     draw_element->copy(elm);
+                     draw_element->setKey(elm->getKey());
+                     delete elm;
+                 }
+     }
+     if(typeId == Element_type::Audio)
+     {
+        DrawAudioElm *elm = new DrawAudioElm(NULL,NULL);
+                 elm->loadRest(device);
+                 //delete  draw_element;
+                 if (isFileExists(elm->getFilePath()))
+                    draw_element = (DrawElement*) elm;
+                 else
+                 {
+                     draw_element = new DrawElement(NULL,NULL);
+                     draw_element->copy(elm);
+                     draw_element->setKey(elm->getKey());
+                     delete elm;
+                 }
+
+
+     }
+
+    return draw_element;
+    //qDebug() << "load block[i]:  " << i;
+}
 
 #endif // DRAWSYSTEM
 
