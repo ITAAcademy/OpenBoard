@@ -28,6 +28,7 @@ Rectangle{
     property int animation_scale_normal_toYpos : 0
     property int animation_scale_normal_toXpos : 0
 
+     property Item  p_divider
     property real animation_scale_normal_FromScale : 0
 
     property int animation_scale_normal_FromYpos_cuz : 0
@@ -1070,7 +1071,8 @@ z: 0
             {
                   timeControll.moveBlockFromTo(main222.selectedBlockCol,
                                          main222.selectedBlockIndex,  divider.pos_to_append.y);
-                main222.selectedBlockIndex =  divider.pos_to_append.y
+                root.p_main222.selectedBlockIndex =  root.p_divider.pos_to_append.y
+
             }
             else
             {

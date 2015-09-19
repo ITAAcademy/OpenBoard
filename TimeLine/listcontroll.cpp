@@ -309,7 +309,12 @@ bool ListControll::removeBlock(int col, int i )
         return false;
 
     setBlocked(true);
-    removeBlockFromGroup(tracks[col].block[i]);
+    bool block_in_group = false;
+    if (tracks[col].block[i]->getGroupWichElBelong() != NULL)
+    {
+        removeBlockFromGroup(tracks[col].block[i]);
+        block_in_group  = true;
+    }
     setSelectedBlockPoint(QPoint(-1,-1));
     if (tracks[col].block.size() > i)
     {
@@ -321,11 +326,19 @@ bool ListControll::removeBlock(int col, int i )
 
    // testColumnWidth[col] -= temp;
 
-       if(!balanceBlocksIfIsGroups(col,i))
+      if (!block_in_group)
+      {
+         if(!balanceBlocksIfIsGroups(col,i))
        {
              updateBlocksIndexFrom(col,i);
              updateBlocksStartTimesFrom(col, i,true);
        }
+      }
+      else
+      {
+          updateBlocksIndexFrom(col,i);
+          updateBlocksStartTimesFrom(col, i,true);
+      }
     recountMaxTrackTime();
     }
 
@@ -422,7 +435,7 @@ void ListControll::addNewBlock(int col, QString str, DrawElement *element)
      element->setBlockColumn(col);
          element->setBlockIndex(ind);
 
-        if(need_balance)
+        if(need_balance && element->getGroupWichElBelong() == NULL)
          balanceBlocksIfIsGroups(col,ind + 1);
 
             updateBlocksIndexFrom(col,ind + 1);
@@ -656,16 +669,54 @@ bool ListControll::removeTrack(int col)
 
  void  ListControll::moveBlockFromTo(int col0,int ind0, int ind1)
  {
-    tracks[col0].block.move(ind0,ind1);
-    if (ind0 > ind1)
-    {
-        int temp = ind0;
-        ind0 = ind1;
-        ind1 = temp;
-    }
+     if (!blockValid(col0,ind0))
+         return ;
+     if  (!blockValid(col0,ind1))
+         return ;
 
-    updateBlocksIndexFrom(col0,ind0);
-    updateBlocksStartTimesFrom(col0,ind0);
+     tracks[col0].block.move(ind0,ind1);
+
+     bool bilshe = false;
+     if (ind0 > ind1)
+     {
+         bilshe = true;
+         int temp = ind0;
+         ind0 = ind1;
+         ind1 = temp;
+     }
+
+     updateBlocksIndexFrom(col0,ind0);
+     updateBlocksStartTimesFrom(col0,ind0);
+
+     Group * grupa = NULL;
+      int time_change = tracks[col0].block[ind0]->getLifeTime();
+     for (int i=ind0; i<ind1; i++ )
+     {
+         grupa = tracks[col0].block[i]->getGroupWichElBelong();
+         tracks[col0].setTimeChange(time_change);
+         DrawElement * elm =  tracks[col0].block[i];
+         if (grupa != NULL)
+         {
+             if (bilshe)
+             {
+                balanceBlocksIfIsGroups(col0,ind0,false);
+              //  if ()
+                addBlockAt(col0, ind1, NULL, time_change,false);
+                 updateBlocksIndexFrom(col0,ind0);
+                 updateBlocksStartTimesFrom(col0,ind0);
+             }
+             else
+             {
+
+                addBlockAt(col0, ind0, NULL, time_change,false);
+                balanceBlocksIfIsGroups(col0,ind1,true);
+                updateBlocksIndexFrom(col0,ind0);
+                updateBlocksStartTimesFrom(col0,ind0);
+             }
+             break;
+         }
+     }
+
 
  }
 
@@ -691,6 +742,8 @@ bool ListControll::removeTrack(int col)
              updateBlocksIndexFrom(col1,ind1);
              updateBlocksStartTimesFrom(col1,ind1);
 
+             balanceBlocksIfIsGroups(col0,ind0);
+
  }
 
 void ListControll::setBlocks(int col,const QList <DrawElement *> &value)
@@ -712,7 +765,8 @@ void ListControll::setBlockTime(int col, int i,int value)
       int col0 = col;
       int ind0 = i;
    updateBlocksStartTimesFrom(col,i);
-   balanceBlocksIfIsGroups(col,i);
+   if ( tracks[col].block[i]->getGroupWichElBelong() == NULL)
+         balanceBlocksIfIsGroups(col,i);
 
 
       recountMaxTrackTime();
@@ -727,9 +781,15 @@ void ListControll::setBlockTimeWithUpdate(int col, int i, int value, bool visual
 }
 
 
-bool ListControll::balanceBlocksIfIsGroups(int col0, int ind0)
+bool ListControll::balanceBlocksIfIsGroups(int col0, int ind0 , bool calc_time_change)
 {
-     long delta =  tracks[col0].getTimeChange();
+    if (!blockValid(col0,ind0))
+        return false;
+     long delta;
+     if (calc_time_change)
+        delta =  tracks[col0].calcTimeChange();
+     else
+          delta =  tracks[col0].getTimeChange();
     for (int i=ind0; i < tracks[col0].block.size(); i++)
     {
        Group *groupa = tracks[col0].block[i]->getGroupWichElBelong();
@@ -793,7 +853,7 @@ void ListControll::updateBlocksStartTimesFrom(int col0,int ind0, bool withGroup)
         ind0++;
     }
     Group *updatedGroup = NULL;
-    long delta =  tracks[col0].getTimeChange();
+    long delta =  tracks[col0].calcTimeChange();
 
     for (int i=ind0; i < tracks[col0].block.size(); i++)
     {
@@ -1921,6 +1981,7 @@ qDebug() << "1";
             return true;
         return false;
     }
+
 
     bool ListControll::blockValid(QPoint point)
     {
