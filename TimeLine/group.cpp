@@ -157,6 +157,7 @@ long Group::tryGroupResize(long shift)
     {
         allTime += list[keys[i]]->getLifeTime();
     }
+
     allTime -= (list.size() - after)*minBlockTime;
     qDebug() << list[index]->getLifeTime() + shift << "MAX_Block_TIME " << allTime;
     if(list[index]->getLifeTime() + shift < minBlockTime || allTime <= list[index]->getLifeTime() + shift)
@@ -169,18 +170,24 @@ long Group::tryGroupResize(long shift)
     for(int i = after; i < list.size(); i++)// zaminutu na for z kluchiv
         if(list[keys[i]]->getLifeTime() > minBlockTime || shift < 0)
             not_null++;
+
     if(not_null == 0)
         return 0;
 
-    int localShift = shift/not_null;
+    int localShift = qFloor(shift/not_null);
+    int ka = 0;
     for(int i = after; i < list.size(); i++)// zaminutu na for z kluchiv
     {
-        list[keys[i]]->setLifeTime(list[keys[i]]->getLifeTime() - localShift, true);
+        if(list[keys[i]]->getLifeTime() - localShift >= minBlockTime || shift < 0)
+        {
+            list[keys[i]]->setLifeTime(list[keys[i]]->getLifeTime() - localShift, true);
+            ka  += localShift;
+        }
     }
 
     //qDebug() << localShift*not_null;
-    list[index]->setLifeTime(localShift*not_null + list[index]->getLifeTime(), true, false);
-    return localShift*not_null;
+    list[index]->setLifeTime(ka + list[index]->getLifeTime());
+    return ka;
  }
 
  bool Group::tryMemberReverce(DrawElement *in, DrawElement *out)

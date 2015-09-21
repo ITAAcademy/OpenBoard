@@ -810,7 +810,7 @@ timeControll.setScalePointerPos((x  -20 + scroll.flickableItem.contentX)* main22
                                 console.log(mouseX);
                                 if(press)
                                 {
-                                    yellow_rec.width = (timeControll.tryResizeCurentGroup((mouseX - old)*main222.scaling))/main222.scaling;
+                                    yellow_rec.width = ((timeControll.tryResizeCurentGroup((mouseX - old)*main222.scaling))/main222.scaling);
                                     //if(timeControll.updateYellowRectangle(yellow_rec.x, yellow_rec.y, yellow_rec.width - (old - mouseX), yellow_rec.height))
                                 }
                                 old = mouseX

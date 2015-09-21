@@ -1100,10 +1100,14 @@ root.globalRep.isDrag = false
              if(bChangeSize)
             {
                 mouseArea.drag.target = root;
-                timeControll.setBlockTime(colIndex, mIndex,root.width * main222.scaling);
+                 if(!timeControll.getCurent_group())
+                    timeControll.setBlockTime(colIndex, mIndex,root.width * main222.scaling);
+                 else
+                    root.width = timeControll.getBlockTime(root.colIndex, root.mIndex)/main222.scaling;
                 // item_col.width = timeControll.getMaxTrackTime()// item_col.childrenRect.width
 
                  bChangeSize = false;
+                 if(!timeControll.getCurent_group())
                  if (root.p_main222.dovodka_block)
 
                  {
