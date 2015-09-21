@@ -229,6 +229,11 @@ void ListControll::showF_manager()
     f_manager.show();
 }
 
+void ListControll::setLoadF_manager(bool file_or_library)
+{
+    this->load_from_file_or_library = file_or_library;
+}
+
 void ListControll::setPosF_manager(QPoint pos)
 {
     f_manager.setPosition(pos);
@@ -395,6 +400,41 @@ void ListControll::addNewBlock(int col, QString str, DrawElement *element)
                         "  " << tracks[i].block[y]->getBlockIndex();
 }
 
+bool ListControll::addNewBlockFromLibrary(QString str , DrawElement *element)
+{
+    addNewBlockFromLibrary(curent_col,str,element);
+}
+
+bool ListControll::addNewBlockFromLibrary(int col, QString str , DrawElement *element)
+{
+    if (!load_from_file_or_library || col <0 || col > tracks.size()-1)
+        return false;
+    //-=-=-=-=
+    /* f_manager.show();
+    setPosDefaultF_manager();
+qDebug() << "AAAAAAAAAAAAAAAAAAAAAAAAAAA     1";*/
+    QString file_name = f_manager.getFilePathName();
+    DrawElement * elm =  loadFromFile(col,-1,file_name,false); //new DrawElement(NULL,NULL);//
+    if (elm == NULL)
+        return false;
+    addNewBlock(col,str,elm);
+    sendUpdateModel();
+ //  delete tracks[col].block.last();
+  // tracks[col].block.last() = elm;
+    if (element != NULL)
+   {
+       elm->copy(element);
+   }
+   else
+   {
+       elm->setBlockColumn(col);
+       elm->setBlockIndex(tracks.size()-1);
+       //emit updateSelectedBlock(QPoint(col,elm->getBlockIndex()));
+   }
+
+   return true;
+}
+
 
 
  void ListControll::addBlockAt(int col, int ind,  DrawElement *element, int life_time ,bool need_balance)
@@ -464,12 +504,15 @@ void ListControll::addNewTrack( )
    calcPointedBlocks();
 }
 
-void ListControll::loadFromFile(QString path)
+DrawElement* ListControll::loadFromFile(int col, int ind, QString path,bool emit_update)
 {
+    if (emit_update)
+        if ( load_from_file_or_library )
+            return NULL;
   //  emit loadFromFileSignal();
      setBlocked(true);
      qApp->processEvents();
-    QPoint p = getSelectedBlockPoint();
+   // QPoint p = getSelectedBlockPoint();
   /*  if (p.x() > -1)
        tracks[p.x()].time -= tracks[p.x()].block[p.y()].draw_element->getLifeTime();*/
    //QString open = QFileDialog::getOpenFileName();
@@ -478,11 +521,11 @@ void ListControll::loadFromFile(QString path)
         open =  QFileDialog::getOpenFileName(0, QString(), QString(), QString(), 0, QFileDialog::DontUseNativeDialog);
     else
         open = path;
-   DrawElement *elm = GenerationDrawElement(open);
+   DrawElement *elm = GenerationDrawElement(open,NULL,NULL);
    if(elm == NULL)
    {
        qDebug() << "loadFromFile(): elm == NULL";
-       return;
+       return NULL;
    }
 
     if (elm->getTypeId() == Element_type::Image)
@@ -491,26 +534,36 @@ void ListControll::loadFromFile(QString path)
        emit imageLoadedPictureSizeSignal(image_size);
     }
 
-   DrawElement* temp = tracks[p.x()].block[p.y()];
-   int life_time = temp->getLifeTime();
-   int new_life_time = elm->getLifeTime();
-   int start_time = temp->getStartDrawTime();
-   delete temp;
-   tracks[p.x()].block[p.y()] = elm;
-   temp = elm;
-   temp->setLifeTime(life_time);
-   qDebug() << "LIFE_TIME" << life_time;
-   if(life_time == 1000)
-       setBlockTime(p.x(), p.y(), new_life_time);
-   temp->setStartDraw(start_time);
-   temp->setZ(p.x());
+    if (emit_update)
+    {
+        DrawElement* temp = tracks[col].block[ind]; ///////!!!!!!!!!!!!!!!!!!!!
+        int life_time = temp->getLifeTime();
+        int new_life_time = elm->getLifeTime();
+        int start_time = temp->getStartDrawTime();
+        delete temp;
+         tracks[col].block[ind] = elm;
+         temp = elm;
+         temp->setLifeTime(life_time);
+         qDebug() << "LIFE_TIME" << life_time;
+         if(life_time == 1000)
+             setBlockTime(col, ind, new_life_time);
+         temp->setStartDraw(start_time);
+         temp->setZ(col);
+         int col0 = col;
+         int ind0 = ind;
 
-   int col0 = p.x();
-   int ind0 = p.y();
+
+         elm->setBlockColumn(col0);
+         elm->setBlockIndex(ind0);
+         updateBlocksStartTimesFrom(col0,ind0);
+         calcPointedBlocks();
+    }
 
 
-   elm->setBlockColumn(col0);
-   elm->setBlockIndex(ind0);
+
+
+
+
    connect(elm,SIGNAL(borderColorChangedSignal(int,int,QString)),
            this,SIGNAL(borderColorChangedSignal(int,int,QString)));
 
@@ -518,23 +571,18 @@ void ListControll::loadFromFile(QString path)
 
    elm->setKey(file_info.fileName());
 
-    updateBlocksStartTimesFrom(col0,ind0);
 
-   calcPointedBlocks();
-// int new_life_time = elm->getLifeTime();
-   emit updateSelectedBlock(selectedBlockPoint);
-   sendUpdateModel();
+   if (emit_update)
+   {
+       qDebug() << "ListControll::loadFromFile    emit updateSelectedBlock     ";
+        emit updateSelectedBlock(selectedBlockPoint);
+        sendUpdateModel();
+   }
+
 
    setBlocked(false);
-  // qApp->processEvents();
-   //emit loadFromFileSignal();
-   //emit loadFromFileSignal();
-/*
-   if(new_life_time > 1000)
-   {
-       setBlockTime(p.x(),p.y(), new_life_time);
-   }
-*/
+
+   return elm;
 }
 
 bool ListControll::removeLastBlock(int col)
@@ -664,48 +712,22 @@ bool ListControll::removeTrack(int col)
      if  (!blockValid(col0,ind1))
          return ;
 
-     tracks[col0].block.move(ind0,ind1);
+     DrawElement *element = tracks[col0].block[ind0];
+     tracks[col0].block.removeAt(ind0);
+     balanceBlocksIfIsGroups(col0,ind0,false);
+     tracks[col0].block.insert(ind1,element);
+     balanceBlocksIfIsGroups(col0,ind1,false);
 
-     bool bilshe = false;
-     if (ind0 > ind1)
-     {
-         bilshe = true;
-         int temp = ind0;
-         ind0 = ind1;
-         ind1 = temp;
-     }
+
+
 
      updateBlocksIndexFrom(col0,ind0);
      updateBlocksStartTimesFrom(col0,ind0);
 
-     Group * grupa = NULL;
-      int time_change = tracks[col0].block[ind0]->getLifeTime();
-     for (int i=ind0; i<ind1; i++ )
-     {
-         grupa = tracks[col0].block[i]->getGroupWichElBelong();
-         tracks[col0].setTimeChange(time_change);
-         DrawElement * elm =  tracks[col0].block[i];
-         if (grupa != NULL)
-         {
-             if (bilshe)
-             {
-                balanceBlocksIfIsGroups(col0,ind0,false);
-              //  if ()
-                addBlockAt(col0, ind1, NULL, time_change,false);
-                 updateBlocksIndexFrom(col0,ind0);
-                 updateBlocksStartTimesFrom(col0,ind0);
-             }
-             else
-             {
 
-                addBlockAt(col0, ind0, NULL, time_change,false);
-                balanceBlocksIfIsGroups(col0,ind1,true);
-                updateBlocksIndexFrom(col0,ind0);
-                updateBlocksStartTimesFrom(col0,ind0);
-             }
-             break;
-         }
-     }
+
+
+
 
 
  }
@@ -816,7 +838,7 @@ bool ListControll::balanceBlocksIfIsGroups(int col0, int ind0 , bool calc_time_c
                     DrawElement *deltaElm = new DrawElement();
                    // deltaElm->setLifeTime(-delta);
                     qDebug() << "UUUUUUUUUUUUUUU delta = "<< delta;
-                    addBlockAt(col0, ind0, deltaElm, -delta,false);
+                    addBlockAt(col0, ind0 + 1, deltaElm, -delta,false);
                     updateTrackAt(col0);
                     return true;
                 }
@@ -838,7 +860,7 @@ bool ListControll::balanceBlocksIfIsGroups(int col0, int ind0 , bool calc_time_c
                         continue;
                     temp_col = cur_col;
                     qDebug() << "UUUUUUUUUUUUUUU delta = "<< delta;
-                    addBlockAt(cur_col, elm->getBlockIndex()-1, NULL, delta,false);
+                    addBlockAt(cur_col, elm->getBlockIndex(), NULL, delta,false);
 
                 }
             }
@@ -848,6 +870,17 @@ bool ListControll::balanceBlocksIfIsGroups(int col0, int ind0 , bool calc_time_c
         }
     }
     return false;
+}
+
+int ListControll::getCurentCol()
+{
+    return curent_col;
+
+
+}
+void ListControll::setCurentCol(int value)
+{
+    curent_col = value;
 }
 
 void ListControll::updateBlocksStartTimesFrom(int col0,int ind0, bool withGroup)
@@ -1287,11 +1320,15 @@ this->drawWidget = drawWidget;
     view.setWidth(800);
     view.setFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint | Qt::WindowTitleHint);
 
+     connect(&f_manager,SIGNAL(filePathNameChanged(QString)),this,SLOT(addNewBlockFromLibrary( QString)));
   connect(&f_manager, SIGNAL(filePathNameChanged(QString)),this,SLOT(loadFromFile(QString)));
 
 //view.setMaximumHeight(215);
     //loadCurrentTextInTheFirstBlockWhenInit();
 
+
+   view.setWidth(1200);
+   view.setHeight(600);
 
 }
 

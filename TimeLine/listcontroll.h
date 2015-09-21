@@ -154,6 +154,8 @@ class ListControll : public QObject, public QQuickImageProvider
 {
     Q_OBJECT
 
+    int curent_col = -1;
+    bool load_from_file_or_library;
      QMessageBox mess_box;
     FileManager f_manager;
     OGLWidget *drawWidget;
@@ -196,6 +198,8 @@ class ListControll : public QObject, public QQuickImageProvider
 
     bool isGroupChanged = false;
 public:
+   Q_INVOKABLE int getCurentCol();
+   Q_INVOKABLE void setCurentCol(int value);
      int isPlayPauseStop = 3;
      static const int blockHeightPlusSpacing = 102;
 
@@ -237,6 +241,7 @@ public:
     Q_INVOKABLE int getTrackSize(int col);
     Q_INVOKABLE QString getBlockKey(int col, int i) ;
     Q_INVOKABLE void addNewBlock(int col, QString str , DrawElement *element = NULL);
+
     Q_INVOKABLE void addNewTrack( );
     Q_INVOKABLE bool removeLastBlock(int col);
     Q_INVOKABLE bool removeLastTrack();
@@ -366,6 +371,7 @@ Q_INVOKABLE  void setIsEditBlockShow(bool value);
   Q_INVOKABLE void showF_manager(int x,int y);
   Q_INVOKABLE void showF_manager(QPoint pos);
   Q_INVOKABLE void showF_manager();
+  Q_INVOKABLE void setLoadF_manager(bool file_or_library);
   Q_INVOKABLE void setPosF_manager(QPoint pos);
   Q_INVOKABLE void setPosF_manager(int x,int y);
   Q_INVOKABLE void setPosDefaultF_manager();
@@ -402,8 +408,10 @@ signals:
     void imageLoadedPictureSizeSignal(QSize);
 
 //void setScalePointerPosSignal(int value);
-public slots:    
-    Q_INVOKABLE void loadFromFile(QString path = "");
+public slots:
+    Q_INVOKABLE bool addNewBlockFromLibrary(int col, QString str , DrawElement *element = NULL);
+    Q_INVOKABLE bool addNewBlockFromLibrary( QString str , DrawElement *element = NULL);
+    Q_INVOKABLE DrawElement* loadFromFile(int col, int ind, QString path = "",bool emit_update = true);
     void addMsToTimerValue(int ms);
 Q_INVOKABLE void emitNewProject();
     Q_INVOKABLE void emitOpenEffects();

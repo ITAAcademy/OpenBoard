@@ -896,6 +896,7 @@ timeControll.setScalePointerPos((x  -20 + scroll.flickableItem.contentX)* main22
                                         height: main_root.height
                                         z:12
                                         x: 0
+                                        colIndex : index
                                      Rectangle {
                                      id:main_root
                                      x: 30
