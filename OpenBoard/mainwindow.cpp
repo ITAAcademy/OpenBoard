@@ -1882,6 +1882,7 @@ void MainWindow::updateBlockFromTextEdit()
             ui->expected_time->setText("EXPECTED TIME:  " + QString::number(change_time) + " ms");
             if(ui->check_use_speed_value->isChecked() && isActiveWindow())
             {
+                qDebug() << "void MainWindow::updateBlockFromTextEdit()";
                 mpOGLWidget->getTimeLine()->setBlockTime(point.x(), point.y(), change_time);
                 mpOGLWidget->getTimeLine()-> sendUpdateModel();
                 //mpOGLWidget->getTimeLine()->sendUpdateModel();

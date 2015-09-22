@@ -20,6 +20,18 @@ Rectangle{
     property Item p_bar_track
     property Item  p_main222
     property Item  p_drag
+    property int type : timeControll.getBlockTypeIdInt(colIndex,mIndex)
+    onTypeChanged: {
+     if (type == 5)
+     {
+         drop.visible = false
+         background_rec.visible = false //-=-=
+         background_rec.enabled = false
+         icon_coloroverlay.visible = false
+        mouseArea.enabled = false
+     }
+
+    }
      property color  p_border_color
     onP_border_colorChanged: {
         border_image.border.color = p_border_color
@@ -38,8 +50,16 @@ Rectangle{
     property Item p_icon_coloroverlay
         property int anim_run_value : 0
 
+    Component.onCompleted: {
+        console.log(" Component.onCompleted"                    )
+        /*type = timeControll.getBlockTypeId(colIndex,mIndex)
+        console.log("type = " + type)*/
+        root.p_color_overlay = icon_coloroverlay
+    }
+
     function animRunX(value)
     {
+        console.log("function animRunX(value)")
         root.anim_run_value = value
        animation_run_x.running = true //9999
     }
@@ -175,7 +195,7 @@ Rectangle{
            id: border_image
            width: background.width; height: background.height
            border.width:  background_rec.border_width  ;
-         border.color: "white"  //-=-=-=
+         border.color: "white"
          color: "transparent"
 
            Component.onCompleted: {
@@ -219,8 +239,8 @@ Rectangle{
                      root.p_main222.p_rep_columns.itemAt( i).enableTrackbarsButtons(false)*/
         }
 
-        onStopped:  {
-//console.log("2 NE TUTAAAAAAAAAAAAAA")
+      onStopped:  {
+console.log("animation_scale_normal   onStopped")
             root.p_bar_track.z -= 200
      root.globalRep.z -= 200
           //
@@ -249,13 +269,13 @@ Rectangle{
             to: 1;
             duration: animation_scale_small.anim_time
         }
-        NumberAnimation  {
+        /*NumberAnimation  {
             target: root
             property: "x"
             from: animation_scale_normal_FromXpos_cuz
             to: animation_scale_normal_toXpos;
             duration: animation_scale_small.anim_time
-        }
+        }*/
         NumberAnimation  {
             target: root
             property: "y"
@@ -312,25 +332,31 @@ Rectangle{
     anchors.leftMargin: 0*/
 z: 0
     onWidthChanged: {
+        type = timeControll.getBlockTypeId(colIndex,mIndex)
+        console.log("onWidthChanged    type = "  +type)
+        if (root.type == 5)
+        {
+            console.log("type == 5")
+             if (width == 0)
+             {
+               //destroy
+             }
+        }
+        else
+        {
+            console.log("type != 5")
         if (width < main222.minBlockWidth)
             width = main222.minBlockWidth
+        }
 
-       /* if (width < height* timeControll.getScaleScrollChildren())
-                icon.width = width;
-        else*/
+            console.log("width = " + width)
             icon.width = icon.height;
-
-       /* var temp = width + timeControll.getBlockStartTime(colIndex,mIndex) > scroll.width
-        if (temp)
-           scroll.flickableItem.y = temp */
-
-       // timeControll.setBlockTime(colIndex,mIndex,width)
-
-        //// //console.log("333 timeControll.setBlockTime " + colIndex + " " + mIndex + " " + width)
-         //timeControll.setBlockTime(mainwindow.columnIndex,mainwindow.blockIndex,block_width_value.value)
-    }
+        timeControll.setBlockTime(colIndex, mIndex,root.width * main222.scaling);
+         // timeControll.createEmptyBlock(root.colIndex, root.mIndex)
+      }
     onXChanged: {
-        timeControll.setBlockStartTime(root.colIndex,root.mIndex, x * main222.scaling)
+       // timeControll.setBlockStartTime(root.colIndex,root.mIndex, x * main222.scaling)
+       // timeControll.createEmptyBlock(root.colIndex, root.mIndex)
     }
 
 
@@ -353,7 +379,7 @@ z: 0
         hoverEnabled: true
 
         onIsDragChanged:  {
-            //console.log("onIsDragChanged begin-----------------------------")
+           console.log("mouseArea   onIsDragChanged")
 
            if (isDrag)
             {
@@ -365,12 +391,7 @@ z: 0
             }
             else
             {
-
-
-
-                 //globalRep.updateModel();
-                 //var sel_blocka = root.p_main222.selectedBlock
-
+                console.log("onIsDragChanged")
                 root.animation_scale_normal_FromXpos_cuz = root.x
                 root.animation_scale_normal_FromYpos_cuz = root.y
 
@@ -381,14 +402,15 @@ z: 0
                     var zdvig = 0;
                     if (main222.doZdvigWhenNormalAnim)
                         zdvig =  main222.dropEnteredBlock.width //666
-                root.animation_scale_normal_toXpos = main222.dropEnteredBlock.x  + main222.zdvigWhenNormalAnim
 
                     var num_of_blocks_beetwen = main222.dropEnteredBlock.colIndex - root.colIndex
                      var tempo_y_zdvig = (root.height+ main222.p_columns.spacing ) *num_of_blocks_beetwen
                     root.animation_scale_normal_toYpos = tempo_y_zdvig
                 }
 
-
+                root.animation_scale_normal_toXpos =root.x - scroll.flickableItem.contentX //main222.dropEnteredBlock.x  + main222.zdvigWhenNormalAnim
+                    timeControll.setBlockStartTime(root.colIndex, root.mIndex, root.x  * main222.scaling)
+                    timeControll.createEmptyBlock(root.colIndex, root.mIndex)
 
 
                 root.p_bar_track.z += 200 //888
@@ -454,9 +476,9 @@ z: 0
 
 
        onPressed: {
-           //console.log("mamamamammaa   mIndex = " + root.mIndex)
+           console.log("onPressed   mIndex = " + root.mIndex)
             main222.dropEntered = 0
-           root.animation_scale_normal_toXpos = root.x
+           //root.animation_scale_normal_toXpos = root.x
            root.animation_scale_normal_toYpos = root.y
            divider.y = (root.height + main222.p_columns.spacing) * root.colIndex
                    + time_scale.height - scroll.flickableItem.contentY
@@ -564,9 +586,6 @@ z: 0
 
             if (globalRep.isDrag)
             {
-                /*root.p_bar_track.z -= 200 //888
-         //main222.p_trackbar_which_block_dragged
-         root.globalRep.z -= 200*/
               divider.visible = false
                    if (main222.dropEntered)
                     {
@@ -608,7 +627,7 @@ z: 0
                    }
                    else
                    {
-                       if (main222.exitedFromDropArea)
+                       if (  main222.exitedFromDropArea)
                        {
                            if (main222.selectedBlockCol === main222.dropEnteredTrackIndex)
                            {
@@ -936,24 +955,6 @@ z: 0
                    }
                    else
                    {
-                      /* if (main222.exitedFromDropArea)
-                       {
-                           if (main222.selectedBlockCol === main222.dropEnteredTrackIndex)
-                           {
-                           if(out_console) console.log("%%%%%%%%%%%%%%%")
-                           main222.zdvigWhenNormalAnim = main222.dropEnteredBlock.width // root.width
-                           }
-                           else
-                           {
-                               if(out_console) console.log("%%%%%%%%%%%%%%%%%%%%%%____ ok + ")
-                               divider.pos_to_append.x = main222.dropEnteredBlock.colIndex
-                              divider.pos_to_append.y = main222.dropEnteredBlock.mIndex
-                             main222.dropEnteredBlock.globalRep.moveBlocksForAnim(
-                                          divider.pos_to_append.y,track_size_drop_in - 1,root.width)
-                           }
-                       }
-                       else*/
-
                            if (main222.selectedBlockCol === main222.dropEnteredTrackIndex)
                            {
                                if(out_console) console.log("^^^^^^^^^^^^^^^^ ok")
@@ -1069,18 +1070,20 @@ z: 0
 
             if (main222.selectedBlockCol === main222.dropEnteredBlock.colIndex)
             {
-                  timeControll.moveBlockFromTo(main222.selectedBlockCol,
-                                         main222.selectedBlockIndex,  divider.pos_to_append.y);
+                /*  timeControll.moveBlockFromTo(main222.selectedBlockCol,
+                                         main222.selectedBlockIndex,  divider.pos_to_append.y);*/
+              // root.animation_scale_normal_toXpos = root.x - scroll.flickableItem.contentX //+ main222.p_scale_pointer.width
+                console.log(" root.animation_scale_normal_toXpos =  " +  root.animation_scale_normal_toXpos)
+
+
                 root.p_main222.selectedBlockIndex =  root.p_divider.pos_to_append.y
 
             }
             else
             {
 
-                //console.log("NE TUTAAAAAAAAAAAAAA")
-                timeControll.moveBlockFromTo(root.colIndex, root.mIndex,
-                                     divider.pos_to_append.x,  divider.pos_to_append.y);
-                //console.log("I NE TUTAAAAAAAAAAAAAA")
+              /*  timeControll.moveBlockFromTo(root.colIndex, root.mIndex,
+                                     divider.pos_to_append.x,  divider.pos_to_append.y);*/
 
                 main222.needUpdateModelWhereBlockDroped = true
 
@@ -1100,10 +1103,15 @@ root.globalRep.isDrag = false
              if(bChangeSize)
             {
                 mouseArea.drag.target = root;
+
                  if(!timeControll.getCurent_group())
                     timeControll.setBlockTime(colIndex, mIndex,root.width * main222.scaling);
                  else
                     root.width = timeControll.getBlockTime(root.colIndex, root.mIndex)/main222.scaling;
+
+              /*  timeControll.setBlockTime(colIndex, mIndex,root.width * main222.scaling);
+                 timeControll.createEmptyBlock(root.colIndex, root.mIndex)*/
+
                 // item_col.width = timeControll.getMaxTrackTime()// item_col.childrenRect.width
 
                  bChangeSize = false;
@@ -1202,9 +1210,9 @@ root.globalRep.isDrag = false
      }
 
     }
-    Component.onCompleted: {
+   /* Component.onCompleted: {
         root.p_color_overlay = icon_coloroverlay
-    }
+    }*/
 }
 
 

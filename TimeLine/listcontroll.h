@@ -242,6 +242,9 @@ public:
     Q_INVOKABLE QString getBlockKey(int col, int i) ;
     Q_INVOKABLE void addNewBlock(int col, QString str , DrawElement *element = NULL);
 
+
+    Q_INVOKABLE   int getBlockTypeId(int col,int ind);
+    Q_INVOKABLE   int getBlockTypeIdInt(int col,int ind);
     Q_INVOKABLE void addNewTrack( );
     Q_INVOKABLE bool removeLastBlock(int col);
     Q_INVOKABLE bool removeLastTrack();
@@ -333,7 +336,7 @@ public:
     Q_INVOKABLE void convertCurentBlockToText();
 
 
-    Q_INVOKABLE void addBlockAt(int col, int ind, DrawElement *element = NULL , int life_time = minBlockTime,bool need_balance = false );
+    Q_INVOKABLE void addBlockAt(int col, int ind, DrawElement *element = NULL , int life_time = -1,bool need_balance = false );
 
   void sendUpdateModel();
 
@@ -364,6 +367,7 @@ Q_INVOKABLE  void setIsEditBlockShow(bool value);
   void setGlWindInited(bool value);
 
   Q_INVOKABLE bool getCurent_group() const;
+  Q_INVOKABLE bool createEmptyBlock(int col,int ind);
   Q_INVOKABLE bool getCurent_group(int col, int index) ;
   Q_INVOKABLE long tryResizeCurentGroup(int shift);
   Q_INVOKABLE long tryResizeMemberInCurentGroup(int shift, int col, int index);
