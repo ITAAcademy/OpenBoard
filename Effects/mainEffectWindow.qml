@@ -33,21 +33,24 @@ Rectangle{
     property bool isEmptyList : (listBox.listBox.count==0);
     property bool isNonSelected : (listBox.listBox.currentIndex==-1);
     Row{
-         y:listBox.border.width*2
+        width: root.width-root.border.width
+         x:root.border.width
+         y:root.border.width
         Column{
+            width:root.width/3
             id:firstColumn
             ListboxControl{
                 id:listControl
-                width:listBox.width
+               // width:listBox.width
                 height:32
                 border.width:2
                 target: listBox
             }
             Listbox{
                 id:listBox
-                width: root.width / 3
+                width: firstColumn.width
                 y:listControl.y+listControl.height
-                height: root.height-(listControl.y+listControl.height)-root.border.width
+                height: root.height-(listControl.y+listControl.height)-root.border.width*2
 
                 Connections {
                       target: listBox.listBox
@@ -63,13 +66,15 @@ Rectangle{
         }
         Column
         {
+            id:secondColumn
             height:parent.height-root.border.width
-            width:root.width-root.border.width
+            width:root.width-firstColumn.width-root.border.width*2
+           // width:root.width-root.border.width
         ComboBox{
             id: combo
-            width:root.width-firstColumn.width-border.width
             height:25
             y: root.border.width
+            width:secondColumn.width
             model: ListModel {
 
                   id: cbItems
@@ -90,7 +95,7 @@ Rectangle{
                 id:effectsPanelAlpha
                 y:listBox.border.width
                 color: root.color
-                width:parent.width-firstColumn.width
+                width:secondColumn.width
                 height:parent.height-combo.height
                 visible:isEffectAlpha && !isEmptyList && !isNonSelected
 
