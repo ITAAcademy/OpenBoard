@@ -5,7 +5,7 @@ import QtQuick 2.0
 Rectangle {
     id: root_toolbar
     color: "black"
-
+ property int colIndex : -1
     property Item  p_main222
      property Repeater globalRep
     property bool enableButtonsClick: true
@@ -34,7 +34,7 @@ Rectangle {
             title_text: ""
             height: parent.width
             width: parent.width
-          icon_source : "qrc:/iphone_toolbar_icons/plus.png"
+          icon_source : "qrc:/iphone_toolbar_icons/blue_library.png"
           //
           ma_enabled :root_toolbar.enableButtonsClick
             onClicked: {
@@ -42,9 +42,15 @@ Rectangle {
                // for (var i=0; i< 30; i++)
                 {
                 var ss = main222.blocks_num
-               timeControll.addNewBlock(bar_track.mIndex,"Block_" + ss);
+                    timeControll.setCurentCol(root_toolbar.colIndex)
+                    timeControll.setLoadF_manager(true)
+                    timeControll.showF_manager()
+                    timeControll.setPosDefaultF_manager()
+              /*if (timeControll.addNewBlockFromLibrary(bar_track.mIndex,"Block_" + ss))
+              {
                 main222.blocks_num +=1
                     globalRep.updateModel()
+              }*/
              }
             }
         }

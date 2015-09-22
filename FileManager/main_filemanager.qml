@@ -164,7 +164,7 @@ Rectangle{
             onClicked: {
 
                 brushControll.setFilePathName(finishFileName)
-                brushControll.hide()
+                brushControll.hideIt();
 
                 //set file name
             }

@@ -318,6 +318,7 @@ timeControll.emitHideEffects();
 
                     but_append.color = contextMenuItem.color
                     appen_block_items.visible = false
+                    timeControll.setLoadF_manager(false) //from file
                     timeControll.showF_manager()
                     timeControll.setPosDefaultF_manager()
 
