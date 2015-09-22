@@ -203,6 +203,20 @@ long ListControll::tryResizeMemberInCurentGroup(int shift, int col, int index)
     return curent_group->tryMemberResize(shift, col, index);
 }
 
+QPoint ListControll::getCurent_groupMembers( int index )
+{
+    QPoint qwe;
+    if(curent_group == NULL)
+        return qwe;
+
+    return curent_group->getMembersPosition(index);
+}
+
+int ListControll::getCurent_groupMembersSize()
+{
+    return curent_group->getMembersPosition().size();
+}
+
 
 
 void ListControll::recountMaxTrackTime()

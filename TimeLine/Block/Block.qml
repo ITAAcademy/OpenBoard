@@ -1144,7 +1144,7 @@ root.globalRep.isDrag = false
     onEntered: {
 
 
-        //console.log("mamamamammaa   entered, mIndex = " + root.mIndex)
+        console.log("mamamamammaa   entered, mIndex = " + root.mIndex)
         main222.exitedFromDropArea = false
          main222.dropEnteredBlockIndex = root.mIndex
         main222.dropEnteredTrackIndex = root.colIndex

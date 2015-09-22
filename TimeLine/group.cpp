@@ -54,6 +54,7 @@ void Group::setSpacingBlocks(int value)
     members.clear();
     first.clear();
     last.clear();
+    membersPositionList.clear();
  }
 
 void Group::setBlocksBorderColor(QString color)
@@ -194,6 +195,7 @@ long Group::tryGroupResize(long shift)
  {
      out->setGroupWichElBelong(in->getGroupWichElBelong());
      members[in->getBlockColumn()][in->getBlockIndex()] = out;
+     membersPositionList.clear();
  }
 
 
@@ -202,9 +204,15 @@ long Group::tryGroupResize(long shift)
      return members;
  }
 
- QList<QPoint> Group::getMembersPosition() const
+ QPoint Group::getMembersPosition(int index)
  {
-     QList<QPoint> membersPositionList;
+     return getMembersPosition()[index];
+ }
+
+ QList<QPoint> Group::getMembersPosition()
+ {
+     if(!membersPositionList.isEmpty())
+         return membersPositionList;
 
      foreach ( BlockType value, members) {
          foreach ( DrawElement *elm, value)
@@ -243,6 +251,7 @@ bool Group::isGroupValid()
 {
     first.clear();
     last.clear();
+    membersPositionList.clear();
     bValid = false;
 
     if(members.size() == 0)
@@ -322,6 +331,8 @@ void Group::calcBoundRec()
 
 bool Group::addTo(DrawElement *element)
 {
+    membersPositionList.clear();
+
     qDebug() << "Size " << members.size() << "  element    " << element;
     if(members.contains(element->getBlockColumn()) && members[element->getBlockColumn()].contains(element->getBlockIndex()))
     {
@@ -344,6 +355,7 @@ bool Group::removeFromGroup(int col, int ind)
 
 bool Group::removeFromGroup(DrawElement *element)
 {
+    membersPositionList.clear();
     if(members.contains(element->getBlockColumn()) && members[element->getBlockColumn()].contains(element->getBlockIndex()))
     {
         members[element->getBlockColumn()].remove(element->getBlockIndex());

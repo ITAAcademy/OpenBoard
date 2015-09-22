@@ -778,7 +778,34 @@ timeControll.setScalePointerPos((x  -20 + scroll.flickableItem.contentX)* main22
                         visible: false
                          border { width: 3; color: "yellow" }
                         color : "transparent"
+                        Drag.active: yellow_rec_mouse.drag.active
+                        property int oldX: x
+                        property int oldY: y
 
+                        onXChanged: {
+                            if(Drag.active)
+                            {
+                                for( var i = 0; i < timeControll.getCurent_groupMembersSize(); i++)
+                                {
+                                    var it = rep_columns.itemAt(timeControll.getCurent_groupMembers(i).x).getBlock(timeControll.getCurent_groupMembers(i).y);
+                                    it.x -= (oldX - x)/1.0;
+                                }
+
+                            }
+                            oldX = x;
+                        }
+                        onYChanged: {
+                            if(Drag.active)
+                            {
+                                for( var i = 0; i < timeControll.getCurent_groupMembersSize(); i++)
+                                {
+                                    var it = rep_columns.itemAt(timeControll.getCurent_groupMembers(i).x).getBlock(timeControll.getCurent_groupMembers(i).y);
+                                    it.y -= (oldY - y)/1.0;
+                                }
+
+                            }
+                            oldY = y;
+                        }
                         MouseArea{
                             id: yellow_rec_mouse
                             anchors.right: yellow_rec.right
@@ -791,19 +818,40 @@ timeControll.setScalePointerPos((x  -20 + scroll.flickableItem.contentX)* main22
                             z: 1000
                             onEntered: {
                                // console.log("qweqweqwewqeqe")
-                                cursorShape = Qt.SizeHorCursor;
+                                if(!drag.active)
+                                    cursorShape = Qt.SizeHorCursor;
                             }
                             onExited: {
-                                cursorShape = Qt.ArrowCursor;
+                                if(!drag.active)
+                                    cursorShape = Qt.ArrowCursor;
                             }
 
                             onPressed: {
                                 press = true;
 
                             }
+                            onPressAndHold: {
+                                press = false;
+                                drag.target = parent;
+                                cursorShape = Qt.ClosedHandCursor;
+                                console.debug(timeControll.getCurent_groupMembersSize());
+                                for( var i = 0; i < timeControll.getCurent_groupMembersSize(); i++)
+                                {
+                                    var it = rep_columns.itemAt(timeControll.getCurent_groupMembers(i).x).getBlock(timeControll.getCurent_groupMembers(i).y);
+                                    it.z = 2000;
+                                }
+
+                            }
+
                             onReleased: {
                                 press = false;
                                 main222.updateTracksModel();
+                                drag.target = null;
+                                for( var i = 0; i < timeControll.getCurent_groupMembersSize(); i++)
+                                {
+                                    var it = rep_columns.itemAt(timeControll.getCurent_groupMembers(i).x).getBlock(timeControll.getCurent_groupMembers(i).y);
+                                    it.z = 0;
+                                }
                             }
 
                             onMouseXChanged: {

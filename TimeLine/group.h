@@ -15,6 +15,7 @@ class Group
     QRect bound_rec;
     QPoint left;
     QPoint right;
+    QList<QPoint> membersPositionList;
 
     QList <DrawElement*> first;
     QList <DrawElement*> last;
@@ -53,7 +54,8 @@ public:
     Group();
     ~Group();
     QMap<int, BlockType> getMembers() const;
-    QList<QPoint> getMembersPosition() const;
+    QList<QPoint> getMembersPosition();
+    QPoint getMembersPosition( int index );
     QList<DrawElement *> getFirst() const;
     QList<DrawElement *> getLast() const;
 };
