@@ -903,6 +903,21 @@ timeControll.setScalePointerPos((x  -20 + scroll.flickableItem.contentX)* main22
                                      width: 4000
                                      height: 100
                                      color: "gray"
+                                     border { color: "white"; width: 0 }
+                                     DropArea
+                                     {
+                                         id: main_root_MA
+                                         anchors.fill: main_root
+                                         onEntered:
+                                         {
+                                             main_root.border.width = 3
+                                         }
+                                         onExited:
+                                         {
+                                             main_root.border.width = 0
+                                         }
+                                     }
+
                                      Row {
                                        id: blocks
                                      //  height: 220
@@ -924,6 +939,7 @@ timeControll.setScalePointerPos((x  -20 + scroll.flickableItem.contentX)* main22
             rep_columns.itemAt(main222.selectedBlockCol).setColorize(main222.selectedBlockIndex,"#8000FF00")
 
         }
+
         timeControll.calcPointedBlocks();
         timeControll.setIsProjectChanged(true)
         gc();
@@ -935,6 +951,7 @@ timeControll.setScalePointerPos((x  -20 + scroll.flickableItem.contentX)* main22
 
     function moveBlocksForAnim( from, to,   value) //left_right -1 or 1
       {
+        console.log("  function moveBlocksForAnim( from, to,   value)")
           for (var i = from; i <= to; i++)
           {
               repka.itemAt(i).animRunX( value)

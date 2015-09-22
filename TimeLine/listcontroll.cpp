@@ -334,6 +334,16 @@ bool ListControll::removeBlock(int col, int i )
           updateBlocksIndexFrom(col,i);
           updateBlocksStartTimesFrom(col, i,true);
       }
+      if (i > 0)
+      {
+          DrawElement *prev = tracks[col].block[i -1];
+          int type = prev->getTypeId();
+          if (type == 5 )
+          {
+               removeBlock(col,i - 1 );
+          }
+      }
+
     recountMaxTrackTime();
     }
 
@@ -343,28 +353,88 @@ bool ListControll::removeBlock(int col, int i )
     return true;
 }
 
+int ListControll::getBlockTypeId(int col,int ind)
+{
+    if (!blockValid(col,ind))
+        return -1;
+    return tracks[col].block[ind]->getTypeId();
+}
+
+int ListControll::getBlockTypeIdInt(int col,int ind)
+{
+    int value =( int) getBlockTypeId(col,ind);
+    qDebug() << "int ListControll::getBlockTypeIdInt(int col,int ind) = " << value;
+    return value;
+}
+
+bool ListControll::createEmptyBlock(int col,int ind)
+{
+
+    qDebug() << "bool ListControll::createEmptyBlock(int col,int ind)";
+
+    if (!blockValid(col,ind))
+        return false;
+ isBlocked = true;
+    DrawElement* element = new DrawElement(NULL,NULL);
+
+
+     DrawElement*  elm_cur = tracks[col].block[ind];
+     int l_time  =   0  ;//= elm_prev->getStartDrawTime() + elm_prev->getLifeTime();
+     int cur_start_time = elm_cur->getStartDrawTime();
+     if (ind == 0)
+     {
+          this->addBlockAt(col,ind,element);
+     }
+     else
+     {
+          DrawElement*  elm_prev = tracks[col].block[ind-1];
+          l_time = elm_prev->getStartDrawTime();
+         if (elm_prev->getTypeId() == 5) //empty
+         {
+             delete element;
+             element = elm_prev;
+            ind -- ;
+            // element->setLifeTime(cur_start_time - element->getStartDrawTime());
+
+         }
+         else
+         {
+             l_time += elm_prev->getLifeTime();
+             this->addBlockAt(col,ind,element);
+            // this->addBlockAt(col,ind,element);
+         }
+
+
+
+         /*
+         l_time = elm_prev->getStartDrawTime() + elm_prev->getLifeTime();
+         this->addBlockAt(col,ind,element);*/
+     }
+
+    element->setStartDraw(l_time);
+
+    int set_time = cur_start_time - l_time;
+
+    if (ind < tracks[col].block.size() - 2)
+    {
+        qDebug() << "DAAAAAAA";
+        DrawElement *next_el = tracks[col].block[ind +2];
+        int type = next_el->getTypeId();
+        qDebug() << "type = " << type;
+        if (type == 5 )
+        {
+            qDebug() << "DAAAAAAA 2";
+     setBlockTime(col,ind + 2 ,next_el->getLifeTime() - (set_time - getBlockTime(col,ind) ));
+        }
+    }
+
+     setBlockTime(col,ind,set_time);
+     isBlocked = false;
+     return true;
+}
+
 void ListControll::addNewBlock(int col, QString str, DrawElement *element)
 {
-  /*  QString open = QFileDialog::getOpenFileName();
-    DrawElement *elm = GenerationDrawElement(open);
-    if(elm == NULL)
-        return;
-    // //qDebug() << "9999999999999999999999999999999999999999999999" << elm->getType();*/
-    setSelectedBlockPoint(QPoint(-1,-1));
-   /* DrawElement * temp;
-    temp.key = str;
-    if(element != NULL)
-    {
-        temp.draw_element = element;
-    }
-    //temp.draw_element->setLifeTime(def_min_block_width);
-    if(temp.draw_element->getLifeTime() < def_min_block_width)
-        temp.draw_element->setLifeTime(def_min_block_width);
-    temp.draw_element->setZ(col);*/
-
-
-
-
     if (element == NULL)
         element = new DrawElement(NULL,NULL);
 
@@ -457,7 +527,8 @@ qDebug() << "AAAAAAAAAAAAAAAAAAAAAAAAAAA     1";*/
      if(element->getKey().isNull())
         element->setKey( QString("block" + QString::number(qrand())));
 
-     element->setLifeTime(life_time);
+     if (life_time >= minBlockTime && element->getTypeId() != 5)
+          element->setLifeTime(life_time);
 
      tracks[col].block.insert(ind,element);
 
@@ -784,20 +855,41 @@ void ListControll::setBlocks(int col,const QList <DrawElement *> &value)
 
 void ListControll::setBlockTime(int col, int i,int value)
 {
-  //   = value;
-    qDebug() << "SET_TIME";
-    if(def_min_block_width > value)
-        value = def_min_block_width;
+      qDebug() << "void ListControll::setBlockTime(int col, int i,int value) = " << value;
+      DrawElement *elm =  tracks[col].block[i];
+      if (elm == NULL)
+        return;
 
-        tracks[col].addTime(value - tracks[col].block[i]->getLifeTime());
-      tracks[col].block[i]->setLifeTime(value);
+
+      if (elm->getTypeId() != 5)
+        if(def_min_block_width > value)
+        {
+             qDebug() << " if (elm->getTypeId() != 5) \
+                         if(def_min_block_width > value) ";
+            value = def_min_block_width;
+        }
+
+      int this_life_time = elm->getLifeTime();
+      tracks[col].addTime(value - tracks[col].block[i]->getLifeTime());
+      elm->setLifeTime(value);
 
       int col0 = col;
       int ind0 = i;
-   updateBlocksStartTimesFrom(col,i);
-   if ( tracks[col].block[i]->getGroupWichElBelong() == NULL)
+      updateBlocksStartTimesFrom(col,i);
+      if ( tracks[col].block[i]->getGroupWichElBelong() == NULL)
          balanceBlocksIfIsGroups(col,i);
 
+       if (i < tracks[col].block.size() - 2)
+       {
+            qDebug() << "if (i < tracks[col].block.size() - 2)";
+           DrawElement *next_el = tracks[col].block[i +1];
+           int type = next_el->getTypeId();
+           if (type == 5 )
+           {
+               qDebug() << "if (type == 5 )";
+                setBlockTime(col,i + 1 ,next_el->getLifeTime() - (value - this_life_time));
+           }
+       }
 
       recountMaxTrackTime();
       // //qDebug() << "DDDDD  tracks[col].block[i].draw_element->getLifeTime()=" <<   tracks[col].block[i].draw_element->getLifeTime();
@@ -951,8 +1043,10 @@ void ListControll::updateBlocksIndexFrom(int col, int ind)
 
 void ListControll::setBlockStartTime(int col, int i,int value)
 {
+     qDebug() << "void ListControll::setBlockStartTime(int col, int i,int value)";
    if(testIndexs(col, i))
     tracks[col].block[i]->setStartDraw(value);
+   qDebug() << "value = " << value;
 }
 
 int ListControll::getBlockStartTime(int col, int i)
