@@ -15,5 +15,7 @@
         <file>Content/arrow_right_24.png</file>
         <file>Content/FullSlider.qml</file>
         <file>Content/BrushSettingPages/DoubleSlider.qml</file>
+        <file>Content/BrushSettingPages/EffectSpin.qml</file>
+        <file>Content/BrushSettingPages/EffectPixelization.qml</file>
     </qresource>
 </RCC>

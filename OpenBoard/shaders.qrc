@@ -6,9 +6,11 @@
     <qresource prefix="/dynamic">
         <file>openGL/shaders/alpha.frag</file>
         <file>openGL/shaders/alpha.vert</file>
-        <file>openGL/shaders/spiral.vert</file>
-        <file>openGL/shaders/spiral.frag</file>
+        <file>openGL/shaders/spin.vert</file>
+        <file>openGL/shaders/spin.frag</file>
         <file>openGL/shaders/cross.vert</file>
         <file>openGL/shaders/cross.frag</file>
+        <file>openGL/shaders/pixelization.frag</file>
+        <file>openGL/shaders/pixelization.vert</file>
     </qresource>
 </RCC>

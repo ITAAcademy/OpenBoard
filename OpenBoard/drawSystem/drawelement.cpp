@@ -194,7 +194,9 @@ void DrawElement::paint()
      // bool currentDrawToSecondBuffer=false;
        int effectsUsedInOneTime=0;
 
-
+      // ShaderEffect testShaderEffect(pDrawWidget->getTestShader());
+       //testShaderEffect.setEffectTimeHowLong(5000);
+     // effects.push_back(testShaderEffect);
         if (!effects.isEmpty())
         {
            /* if (effects.length()%2==1)
@@ -204,7 +206,9 @@ void DrawElement::paint()
                 //pDrawWidget->clearFrameBuffer(pDrawWidget->getMainFBO());
             }*/
              int playTime = pDrawWidget->getTimeLine()->getPlayTime();
+             //TO BE REMOVED IN RELEASE
 
+            //
 
          //   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); glEnable( GL_BLEND );
             for (int i=0;i<effects.length();i++)
@@ -277,8 +281,11 @@ void DrawElement::paint()
                 }
 
             }
+
             //qDebug()<<"before remove temp effect";
-           //DONT REMOVE effects.removeAt(effects.length()-1);
+           //remove test effect
+            //effects.removeAt(effects.length()-1);
+
         pDrawWidget->disableShader();
 
             if (effectsUsedInOneTime==0){

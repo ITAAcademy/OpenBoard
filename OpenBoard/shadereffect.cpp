@@ -129,6 +129,10 @@ void ShaderEffect::setShaderWrapper(ShaderProgramWrapper *shader)
 {
     shaderWrapper=shader;
 }
+void ShaderEffect::setShaderWrapperIndex(int i){
+    shaderWrapperIndex=i;
+}
+
 int ShaderEffect::getShaderWrapperIndex()
 {
     return shaderWrapperIndex;

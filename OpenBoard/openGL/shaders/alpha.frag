@@ -9,5 +9,6 @@ void main(void)
     if (reverse)alpha=1.0-alpha;
     if (alpha>col.a)alpha=col.a;
     gl_FragColor = vec4(col.rgb,alpha);
+
 }
 

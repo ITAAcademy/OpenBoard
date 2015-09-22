@@ -3,15 +3,7 @@
 //#include <qglfunctions.h>
 #include "drawSystem/drawsystem.h"
 #include "../TimeLine/listcontroll.h"
-#define GLWIDGET_SIZE       640,480
-#define MAIN_FRAGMENT_SHADER_PATH ":/staticShaders/openGL/shaders/fragmentShader.glsl"
-#define MAIN_VERTEX_SHADER_PATH ":/staticShaders/openGL/shaders/vertexShader.glsl"
-#define ALPHA_FRAGMENT_SHADER_PATH ":/dynamic/openGL/shaders/alpha.frag"
-#define ALPHA_VERTEX_SHADER_PATH ":/dynamic/openGL/shaders/alpha.vert"
-#define SPIRAL_FRAGMENT_SHADER_PATH ":/dynamic/openGL/shaders/spiral.frag"
-#define SPIRAL_VERTEX_SHADER_PATH ":/dynamic/openGL/shaders/spiral.vert"
-#define CROSS_FRAGMENT_SHADER_PATH ":/dynamic/openGL/shaders/cross.frag"
-#define CROSS_VERTEX_SHADER_PATH ":/dynamic/openGL/shaders/cross.vert"
+
 /*
  *scroll
  *
@@ -576,13 +568,20 @@ void OGLWidget::initShaderPrograms()
     if(alphaShader->initShader(ALPHA_FRAGMENT_SHADER_PATH,ALPHA_VERTEX_SHADER_PATH)!=0)shaderSupported=true;
     shaderPrograms.push_back(alphaShader);
 
-    ShaderProgramWrapper *spiralShader = new ShaderProgramWrapper(this);
-    if(spiralShader->initShader(SPIRAL_FRAGMENT_SHADER_PATH,SPIRAL_VERTEX_SHADER_PATH)!=0)shaderSupported=true;
-    shaderPrograms.push_back(spiralShader);
+    ShaderProgramWrapper *spinShader = new ShaderProgramWrapper(this);
+    if(spinShader->initShader(SPIN_FRAGMENT_SHADER_PATH,SPIN_VERTEX_SHADER_PATH)!=0)shaderSupported=true;
+    shaderPrograms.push_back(spinShader);
+
+    ShaderProgramWrapper *pixelizationShader = new ShaderProgramWrapper(this);
+    if(pixelizationShader->initShader(PIXELIZATION_FRAGMENT_SHADER_PATH,PIXELIZATION_VERTEX_SHADER_PATH)!=0)shaderSupported=true;
+    shaderPrograms.push_back(pixelizationShader);
 
      ShaderProgramWrapper *crossShader = new ShaderProgramWrapper(this);
      if(crossShader->initShader(CROSS_FRAGMENT_SHADER_PATH,CROSS_VERTEX_SHADER_PATH)!=0)shaderSupported=true;
      shaderPrograms.push_back(crossShader);
+
+
+
     /* glUseProgram(crossShader->getShaderProgram());
      crossShader->setUniformResolution(wax,way);
       glUseProgram(0);*/
@@ -1616,14 +1615,17 @@ void OGLWidget::applyEffectsToCurrentBlock()
         Effect *blockEffect = &blockEffects[i];
         int shaderProgramIndex = (int)blockEffect->getPropetrie("effect_type");
         switch (shaderProgramIndex){
-        case 0:
+        case ALPHA_SHADER:
+        case SPIN_SHADER:
+        case PIXELIZATION_SHADER:
             ShaderEffect sEffect(shaderPrograms[shaderProgramIndex],shaderProgramIndex);
-        int startTime = blockEffect->getPropetrie("alpha_start_time");
-        int endTime = blockEffect->getPropetrie("alpha_end_time");
-        bool reverse = blockEffect->getPropetrie("alpha_inversion");
+        int startTime = blockEffect->getPropetrie("start_time");
+        int endTime = blockEffect->getPropetrie("end_time");
+        bool reverse = blockEffect->getPropetrie("inversion");
         sEffect.setStartTimeMS(startTime);
         sEffect.setEffectTimeHowLong(endTime-startTime);
         sEffect.setReverse(reverse);
+        sEffect.setShaderWrapperIndex(shaderProgramIndex);
         timeLineEffects.push_back(sEffect);
         }
     }
@@ -1648,9 +1650,10 @@ qDebug() << "loadEffectFromCurrentBlockToEffectManager:"<<currentBlock->getEffec
      //qDebug() << "cur EFFECT howlong TIME:"<<currentEffect.getEffectTimeHowLong();
 Effect effect;
 effect.setName("default");
- effect.setPropetrie("alpha_start_time",currentEffect.getStartTimeMS());
- effect.setPropetrie("alpha_end_time",currentEffect.getStartTimeMS()+currentEffect.getEffectTimeHowLong());
-effect.setPropetrie("alpha_inversion",currentEffect.getReverse());
+ effect.setPropetrie("start_time",currentEffect.getStartTimeMS());
+ effect.setPropetrie("end_time",currentEffect.getStartTimeMS()+currentEffect.getEffectTimeHowLong());
+effect.setPropetrie("inversion",currentEffect.getReverse());
+effect.setPropetrie("effect_type",currentEffect.getShaderWrapperIndex());
  effectManager->addEffect(effect);
  }
  //effectManager->update();
