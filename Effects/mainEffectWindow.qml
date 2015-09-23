@@ -54,6 +54,12 @@ Rectangle{
              effectsPanelCircles.setEndTime(endTime);
              effectsPanelCircles.setInverted(inversion);
              break;
+         case 4:
+             effectsTurnthepage.setStartTime(startTime);
+             effectsTurnthepage.setEndTime(endTime);
+             effectsTurnthepage.setInverted(inversion);
+             break;
+
 
         }
     }
@@ -77,9 +83,11 @@ Rectangle{
     property bool isEffectSpin : (combo.currentIndex===1);
     property bool isEffectPixelization : (combo.currentIndex===2);
     property bool isEffectCircles : (combo.currentIndex===3);
+    property bool isEffectTurnthepage : (combo.currentIndex===4);
 
     property bool isEmptyList : (listBox.listBox.count==0);
     property bool isNonSelected : (listBox.listBox.currentIndex==-1);
+
 
 
 
@@ -183,6 +191,7 @@ Rectangle{
                     ListElement { text: "Spin"; color: "Green" }
                     ListElement { text: "Pixelization"; color: "Brown" }
                     ListElement { text: "Circles"; color: "Green" }
+                    ListElement { text: "Turn the page"; color: "Green" }
 
                 }
                 onCurrentIndexChanged:{
@@ -235,6 +244,15 @@ Rectangle{
                 width:secondColumn.width
                 height:parent.height-combo.height
                 visible:isEffectCircles && !isEmptyList && !isNonSelected
+
+            }
+            SettingPages.EffectTurnthepage{
+                id:effectsTurnthepage
+                y:listBox.border.width
+                color: root.color
+                width:secondColumn.width
+                height:parent.height-combo.height
+                visible:isEffectTurnthepage && !isEmptyList && !isNonSelected
 
             }
         }

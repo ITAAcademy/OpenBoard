@@ -313,7 +313,7 @@ void DrawElement::paint()
         }
         if (effects.isEmpty()){ //&& effectsUsedInOneTime==0){
             {
-                qDebug() << "if (effects.isEmpty()";
+                //qDebug() << "if (effects.isEmpty()";
                   pDrawWidget->bindBuffer(fboWrapper.frameBuffer);
                   draw();//Draw original image one time without any effects
                   //qDebug() << "EFFECTS EMPTY !!!";
@@ -338,9 +338,9 @@ void DrawElement::paint()
 */
         //pDrawWidget->getOglFuncs()->glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE);
        // pDrawWidget->bindBuffer(0);
-        qDebug() << "MAIN FBO:"<<pDrawWidget->getMainFBO().frameBuffer;
+        //qDebug() << "MAIN FBO:"<<pDrawWidget->getMainFBO().frameBuffer;
          pDrawWidget->bindBuffer(pDrawWidget->getMainFBO().frameBuffer);
-         qDebug() << "PING-pONG FBO:"<<pDrawWidget->getPingPongFBO().frameBuffer;
+        // qDebug() << "PING-pONG FBO:"<<pDrawWidget->getPingPongFBO().frameBuffer;
         //pDrawWidget->useShader(0);
 
         if(aspectRatio)

@@ -584,6 +584,10 @@ void OGLWidget::initShaderPrograms()
     if(circlesShader->initShader(CIRCLES_FRAGMENT_SHADER_PATH,CIRCLES_VERTEX_SHADER_PATH)!=0)shaderSupported=true;
     shaderPrograms.push_back(circlesShader);
 
+    ShaderProgramWrapper *turnThePageShader = new ShaderProgramWrapper(this);
+    if(turnThePageShader->initShader(TURNTHEPAGE_FRAGMENT_SHADER_PATH,TURNTHEPAGE_VERTEX_SHADER_PATH)!=0)shaderSupported=true;
+    shaderPrograms.push_back(turnThePageShader);
+
      ShaderProgramWrapper *crossShader = new ShaderProgramWrapper(this);
      if(crossShader->initShader(CROSS_FRAGMENT_SHADER_PATH,CROSS_VERTEX_SHADER_PATH)!=0)shaderSupported=true;
      shaderPrograms.push_back(crossShader);
@@ -740,7 +744,7 @@ qDebug() <<  "OGL WIDGET MID";
     connect(effectManager,SIGNAL(showSignal()),this,SLOT(loadEffectFromCurrentBlockToEffectManager()));
 }
 void OGLWidget::bindBuffer(GLuint buffer){
-    qDebug()<<"binded to buffer:"<<buffer;
+   // qDebug()<<"binded to buffer:"<<buffer;
     glBindFramebuffer(GL_FRAMEBUFFER,buffer);
 }
  QOpenGLFunctions_3_0* OGLWidget::getOglFuncs(){
@@ -1392,7 +1396,7 @@ void OGLWidget::paintGL()
 /*
  *  DRAW MAIN FRAME WITH APPLY SHADER EFFECT
 */
-    qDebug()<<"unbind main buffer to draw it on screen";
+   // qDebug()<<"unbind main buffer to draw it on screen";
     bindBuffer(0);
     drawEditBox(1000);
     paintBufferOnScreen(mainFBO,0, 0, wax, way,0);
@@ -1429,7 +1433,7 @@ void OGLWidget::drawGlobalShader( QVector<ShaderProgramWrapper*> shaders)
         //qDebug() << "FOR ";
             if(drawToSecondBuffer)
             {
-                qDebug() <<" SECOND";
+               // qDebug() <<" SECOND";
                bindBuffer(pingpongFBO.frameBuffer);
                 useShader(shaders[i]);
                     paintBufferOnScreen(mainFBO,0, 0, mainFBO.tWidth,mainFBO.tHeight, -1);
@@ -1447,7 +1451,7 @@ void OGLWidget::drawGlobalShader( QVector<ShaderProgramWrapper*> shaders)
     }
     if(!drawToSecondBuffer)
     {
-        qDebug() <<" SECOND";
+       // qDebug() <<" SECOND";
 //useShader(0);
        bindBuffer(mainFBO.frameBuffer);
             paintBufferOnScreen(pingpongFBO,0, 0, pingpongFBO.tWidth,pingpongFBO.tHeight, -1 );
@@ -1630,6 +1634,7 @@ void OGLWidget::applyEffectsToCurrentBlock()
         case SPIN_SHADER:
         case CIRCLES_SHADER:
         case PIXELIZATION_SHADER:
+        case TURNTHEPAGE_SHADER:
             ShaderEffect sEffect(shaderPrograms[shaderProgramIndex],shaderProgramIndex);
         int startTime = blockEffect->getPropetrie("start_time");
         int endTime = blockEffect->getPropetrie("end_time");
