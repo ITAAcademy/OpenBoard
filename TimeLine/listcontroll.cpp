@@ -358,12 +358,6 @@ bool ListControll::removeBlock(int col, int i )
           }
       }
 
-    recountMaxTrackTime();
-    }
-        {
-            updateBlocksIndexFrom(col,i);
-            updateBlocksStartTimesFrom(col, i,true);
-        }
         recountMaxTrackTime();
     }
 
@@ -982,12 +976,6 @@ void ListControll::setBlockTime(int col, int i,int value)
     tracks[col].addTime(value - tracks[col].block[i]->getLifeTime());
     tracks[col].block[i]->setLifeTime(value);
 
-    int col0 = col;
-    int ind0 = i;
-    updateBlocksStartTimesFrom(col,i);
-    if ( tracks[col].block[i]->getGroupWichElBelong() == NULL)
-        balanceBlocksIfIsGroups(col,i);
-
        recountMaxTrackTime();
        if (i < tracks[col].block.size() - 2)
        {
@@ -1087,7 +1075,7 @@ int ListControll::getCurentCol()
 void ListControll::setCurentCol(int value)
 {
     curent_col = value;
-
+}
 bool ListControll::checkBlockValidGroup(DrawElement *elm)
 {
     if(elm->getGroupWichElBelong() != NULL)
@@ -1495,65 +1483,10 @@ qDebug() << test_group.getMembersSize();
                 // qDebug() << "dovodka value =   "<< dovod_value;
                  value_setted = true;
              }
+         }
+     }
 
     ctrl_pressed = value;
-}
-
-bool ListControll::getCtrlPressed()
-{
-    return ctrl_pressed;
-}
-
-bool ListControll::setSpacingBtwBlocks(int value)
-{
-    if (value < 0)
-        return false;
-    spacing_btw_blocks = value;
-}
-
-int ListControll::getSpacingBtwBlocks()
-{
-    return spacing_btw_blocks;
-}
-
-bool ListControll::attachBlock(int col, int index, int value)
-{
-    if (!blockValid(col,index))
-        return false;
-    value *=scale_scroll_children;
-    qDebug() << "DOVODKA start";
-    DrawElement *draw_el = tracks[col].block[index];
-    int from_width = draw_el->getLifeTime() + draw_el->getStartDrawTime();
-    qDebug() << "from_width =   "<< from_width;
-    int dovod_value = 65534;
-    bool value_setted = false;
-
-    for (int i=0; ;  i++)
-    {
-        if (i == col)
-            i++;
-        if (i >= tracks.size())
-            break;
-        for (int y=0; y < tracks[i].block.size(); y++)
-        {
-            DrawElement *draw_el2 = tracks[i].block[y];
-            int temp_dovodka = from_width - draw_el2->getLifeTime() - draw_el2->getStartDrawTime();
-            //qDebug() << "temp_dovodka =   "<< temp_dovodka;
-            if (abs(temp_dovodka) <=  abs(value) && (abs(temp_dovodka) <  abs(dovod_value) ))
-            {
-                dovod_value = temp_dovodka;
-                qDebug() << "dovodka value =   "<< dovod_value;
-                value_setted = true;
-            }
-
-
-        }
-    }
-    dovod_value += draw_el->getStartDrawTime();
-    from_width -= dovod_value; //- draw_el->getStartDrawTime();
-    if (value_setted)
-        draw_el->setLifeTime(from_width );
-    qDebug() << "DOVODKA finish "<< dovod_value;
 }
 
 QRect ListControll::getYellowRect()
