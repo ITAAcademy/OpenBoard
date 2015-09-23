@@ -8,34 +8,25 @@ Item{
     property string name: "value"
     property bool checkable: false
     property bool checked: false
-    property color mColor: "#aaaaaa"
+    property color mColor: "#333333"
     property bool small: true
 
-    property real value1
-    property real value2
+    property real value1:0
+    property real value2:0
     property real maximum: blockTime
     property real minimum: 0
     property real maximum2: blockTime
     property real minimum2: 0
-    property int deltaYSlider: 8
     property int xMax: size.width - handle1.width - 4
     property int xMax2: size.width - handle2.width - 4
-    property int  glowRadius: 8
-    function setValue1(n){
-        value1=n;
+    property int  glowRadius: 3
 
+    function getMouseDragLeft(){
+        return mouse_drag_left;
     }
-    function setValue2(n){
-        value2=n;
+    function getMouseDragRight(){
+        return mouse_drag_right;
     }
-
-
-function getMouseDragLeft(){
- return mouse_drag_left;
-}
-function getMouseDragRight(){
- return mouse_drag_right;
-}
 
     onValue1Changed: {
 
@@ -50,8 +41,8 @@ function getMouseDragRight(){
 
     }
     signal release;
-   signal mouse_drag_left_signal;
-   signal mouse_drag_right_signal;
+    signal mouse_drag_left_signal;
+    signal mouse_drag_right_signal;
     Row{
         id:mainRow
         width: parent.width
@@ -100,7 +91,6 @@ function getMouseDragRight(){
                 z: 1
                 y:mainRow.y+10;
                 x: 2 + (root.value1 - root.minimum) * root.xMax / (root.maximum - root.minimum); width: size.height; height: size.height*1.5; radius: 100
-
                 gradient: Gradient {
                     GradientStop { position: 0.0; color: "white" }
                     GradientStop { position: .5; color: "red" }
@@ -115,22 +105,16 @@ function getMouseDragRight(){
                     color: if (!checkable) "white"; else "#CC0000"
                     cornerRadius: handle1.radius + root.glowRadius
                 }*/
-
                 MouseArea {
                     id: mouse_drag_left
                     anchors.fill: parent; drag.target: parent
                     hoverEnabled: true
                     drag.axis: Drag.XAxis; drag.minimumX: 2; drag.maximumX: root.xMax+2
-
                     onPositionChanged: {
+
                         root.value1 = (root.maximum - root.minimum) * (handle1.x-2) / root.xMax + root.minimum;
-
-/*                        if (value1>value2)value1=value2;//BUG HERE. RESET VALUE IN 0 WHEN LOADING
-                        effectsControll.setCurrentEffectProperty("alpha_start_time",value1);
-
-*/
-                        if (value1>value2)value1=value2;
-                   mouse_drag_left_signal();
+                        if (value1>value2)value1=value2;//BUG HERE. RESET VALUE IN 0 WHEN LOADING
+                        mouse_drag_left_signal();
 
                     }
                     property bool enter: false
@@ -168,13 +152,7 @@ function getMouseDragRight(){
                     GradientStop { position: 0.0; color: "green" }
                     GradientStop { position: .5; color: "green" }
                     GradientStop { position: 1.0; color: "white" }
-
-                x: 20 + (root.value2 - root.minimum2) * root.xMax2 / (root.maximum2 - root.minimum2); width: size.height; height: size.height; radius: 100
-                gradient: Gradient {
-                    GradientStop { position: 0.0; color: "lightgreen" }
-                    GradientStop { position: 1.0; color: "green" }
                 }
-
                 /* RectangularGlow {
                     id: effect3
                     anchors.fill: handle2
@@ -192,14 +170,11 @@ function getMouseDragRight(){
                     onPositionChanged: {
                         root.value2 = (root.maximum2 - root.minimum2) * (handle2.x-2) / root.xMax2 + root.minimum2;
                         if (value1>value2)value2=value1;
-
-                         //effectsControll.setCurrentEffectProperty("end_time",value2);
-                    mouse_drag_right_signal();
-
+                        mouse_drag_right_signal();
                     }
                     property bool enter2: false
                     onExited: {
-                        if(pressed === false)
+                        if(pressed == false)
                             from.start();
                     }
                     onEntered:{

@@ -109,12 +109,7 @@ Rectangle{
                 Connections {
                     target: listBox.listBox
                     onCurrentIndexChanged: {
-                        effectsPanelAlpha.setTimeSliderValue1(effectsControll.getCurrentEffectProperty("alpha_start_time"));
-                        effectsPanelAlpha.setTimeSliderValue2(effectsControll.getCurrentEffectProperty("alpha_end_time"));
-                        effectsPanelAlpha.setInverstion(effectsControll.getCurrentEffectProperty("alpha_inversion"));
-                        combo.currentIndex=effectsControll.getCurrentEffectProperty("effect_type");
-
-
+                      //  effectsControll.setCurrentEffectProperty("effect_type",currentIndex);
                        loadEffectParams()
 
                         //effectsControll.setCurrentEffectProperty("effect_type",currentIndex)
@@ -191,16 +186,17 @@ Rectangle{
 
                 }
                 onCurrentIndexChanged:{
-                    effectsControll.setCurrentEffectProperty("effect_type",currentIndex)
+                    effectsControll.setCurrentEffectProperty("effect_type",currentIndex);
+                    loadEffectParams();
                     console.log("onPressedChanged");
                 }
-                Rectangle{
+                /*Rectangle{
                     height: 3
-                    width: parent
+                    width: parent.width
                     color: "white"
                     anchors.bottom: parent.bottom
 
-                }
+                }*/
 
             }
 
