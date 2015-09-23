@@ -85,6 +85,7 @@ Rectangle
    property bool block_zayshow_sprava : false
    property Item p_toolbar
    property bool dovodka_block : false
+    property bool able_create_empty_block : true
    onBlock_zayshow_spravaChanged: {
       // anim_
    }
@@ -96,6 +97,11 @@ Rectangle
  property bool needUpdateModelWhereBlockDroped : false
    property int zdvigWhenNormalAnim : 0
    property bool exitedFromDropArea : false
+
+   onExitedFromDropAreaChanged: {
+       //console.log("exitedFromDropArea = " + exitedFromDropArea)
+   }
+
    property Item dropEnteredBlock
    property Item dropEnteredBlockItemGlobalRep
    property int dropEnteredTrackIndex : 0
@@ -478,6 +484,11 @@ timeControll.setScaleScrollChildren(0) //it have protection from small values, w
         id : divider
         color: "transparent"
         property point pos_to_append
+        onPos_to_appendChanged: {
+            //console.log("onPos_to_appendChanged " + pos_to_append.y)
+
+        }
+
         property int anim_x_value : 0
         property int anim_y_value : 0
         property string d_color: "red"
@@ -954,6 +965,7 @@ timeControll.setScalePointerPos((x  -20 + scroll.flickableItem.contentX)* main22
                                      border { color: "white"; width: 0 }
                                      DropArea
                                      {
+                                         enabled: false
                                          id: main_root_MA
                                          anchors.fill: main_root
                                          onEntered:
@@ -964,6 +976,7 @@ timeControll.setScalePointerPos((x  -20 + scroll.flickableItem.contentX)* main22
                                          {
                                              main_root.border.width = 0
                                          }
+                                         //z: -50
                                      }
 
                                      Row {
@@ -978,7 +991,7 @@ timeControll.setScalePointerPos((x  -20 + scroll.flickableItem.contentX)* main22
                                            property bool isDrag : false
                                            model:  timeControll.getTrackSize(trackbar.mIndex)//     bar_track.mIndex)
     function updateModel()      {
-        console.log("AAAAAAAAAAAAAAAAAA updateModel")
+       // console.log("AAAAAAAAAAAAAAAAAA updateModel")
        model = 0
         model =  timeControll.getTrackSize(bar_track.mIndex)
          item_col.width = (timeControll.getMaxTrackTime()) / main222.scaling + 31
@@ -1002,7 +1015,7 @@ timeControll.setScalePointerPos((x  -20 + scroll.flickableItem.contentX)* main22
         console.log("  function moveBlocksForAnim( from, to,   value)")
           for (var i = from; i <= to; i++)
           {
-              repka.itemAt(i).animRunX( value)
+              repka.itemAt(i).animRunX(repka.itemAt(i).x + value)
           }
       }
                                    delegate:

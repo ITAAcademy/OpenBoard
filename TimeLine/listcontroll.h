@@ -246,6 +246,7 @@ public:
     Q_INVOKABLE   int getBlockTypeId(int col,int ind);
     Q_INVOKABLE   int getBlockTypeIdInt(int col,int ind);
     Q_INVOKABLE void addNewTrack( );
+     Q_INVOKABLE int lastNotEmptyBlockIndexBeginFrom(int col, int ind );
     Q_INVOKABLE bool removeLastBlock(int col);
     Q_INVOKABLE bool removeLastTrack();
     Q_INVOKABLE bool removeTrack(int col);
