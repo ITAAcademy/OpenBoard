@@ -18,7 +18,7 @@ Rectangle {
     }
 
     //property alias inversion : cbInversion.checked
-    // property alias sliderTimer : doubleSliderTime
+   // property alias sliderTimer : doubleSliderTime
     id: root
     width: parent.width
     height: parent.height
@@ -37,33 +37,33 @@ Rectangle {
 
         CheckBox {
             id:cbInversion
-            text: qsTr("Inversion")
-            checked: false
-            onCheckedChanged: {
-                effectsControll.setCurrentEffectProperty("inversion",checked);
+                text: qsTr("Inversion")
+                checked: false
+                onCheckedChanged: {
+                    effectsControll.setCurrentEffectProperty("inversion",checked);
+                }
             }
-        }
 
         DoubleSlider
         {
             id:doubleSliderTime
-            width:root.width
-            height:10
-            name: "time"
-            value1:0
-            value2:0
-            /*  onValue1Changed: {
+     width:root.width
+     height:10
+    name: "time"
+    value1:0
+    value2:0
+  /*  onValue1Changed: {
         startTime=value1
     }
     onValue2Changed: {
         endTime=value2
     }*/
-            onMouse_drag_left_signal: {
-                effectsControll.setCurrentEffectProperty("start_time",value1);
-            }
-            onMouse_drag_right_signal: {
-                effectsControll.setCurrentEffectProperty("end_time",value2);
-            }
+    onMouse_drag_left_signal: {
+     effectsControll.setCurrentEffectProperty("start_time",value1);
+}
+    onMouse_drag_right_signal: {
+     effectsControll.setCurrentEffectProperty("end_time",value2);
+}
         }
 
     }

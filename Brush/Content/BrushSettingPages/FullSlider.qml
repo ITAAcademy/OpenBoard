@@ -12,7 +12,7 @@ Item{
     property bool small: false
 
     property real value: max
-    property real maximum: 1
+    property real maximum: 100
     property real minimum: 0
     property int xMax: size.width - handle.width - 4
     property int  glowRadius: 3

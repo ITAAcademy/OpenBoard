@@ -135,7 +135,7 @@ Item{
                  onPositionChanged: { root.value = (root.maximum - root.minimum) * (handle.x-2) / root.xMax + root.minimum; }
                  property bool enter: false
                  onExited: {
-                     if(pressed == false)
+                     if(pressed === false)
                         from.start();
                  }
                  onEntered:{

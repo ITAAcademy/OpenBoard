@@ -3,16 +3,20 @@ import QtQuick 2.4
 Rectangle {
     width: 100
     height: 32
-    color: root.color
+    color: "#333"
     id: listboxControl
     property Listbox target: null
 
-    Row
+    Item
     {
+        anchors.fill: parent
+
         Rectangle{
-            color: root.color
             height:32
             width:32
+            anchors.left: parent.left
+            border.width: 0
+            color: "transparent"
             id:imgRect1
             Image{
                 anchors.fill: parent
@@ -24,25 +28,27 @@ Rectangle {
                     hoverEnabled: true
                     onClicked:
                     {
-                        effectsControll.addEffect("roma",1,1);
+                        effectsControll.addEffect("Effect ",1,1);
                         //brushControll.setCurentBrush(brush.mIndex);
                         root.update();
                     }
                     onEntered: {
-                        imgRect1.border.width=2;
+                        imgRect1.border.color="green";
                     }
                     onExited: {
-                        imgRect1.border.width=0;
+                        imgRect1.border.color="black";
                     }
                 }
             }
 
         }
         Rectangle{
-            color: root.color
+            color: "transparent"
+            anchors.right: parent.right
             height:32
             width:32
             id:imgRect2
+            border.width:0
             Image{
                 id: imgRemoveEffect
                 source: "qrc:/Content/cancel_32.png"
@@ -58,10 +64,10 @@ Rectangle {
                         root.update();
                     }
                     onEntered: {
-                        imgRect2.border.width=2;
+                        imgRect2.border.color="red";
                     }
                     onExited: {
-                        imgRect2.border.width=0;
+                        imgRect2.border.color="black";
                     }
                 }
             }

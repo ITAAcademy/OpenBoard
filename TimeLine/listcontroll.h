@@ -216,6 +216,7 @@ public:
 	
     void updateBlocksStartTimesFrom(int col0, int ind0, bool withGroup = true);
     Q_INVOKABLE bool balanceBlocksIfIsGroups(int col0, int ind0, bool calc_time_change = true);
+    Q_INVOKABLE bool checkBlockValidGroup(DrawElement *elm);
     void updateBlocksIndexFrom(int col, int ind);
     void show();
     void close();

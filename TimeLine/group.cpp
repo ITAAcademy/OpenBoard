@@ -84,9 +84,9 @@ void Group::initGroupBlocks()
 
 void Group::deInitGroupBlocks()
 {
-    if(!bValid)
+  /*  if(!bValid)
         return;
-
+*/
     foreach ( BlockType value, members) {
         foreach ( DrawElement *elm, value)
         {
@@ -194,8 +194,10 @@ long Group::tryGroupResize(long shift)
  bool Group::tryMemberReverce(DrawElement *in, DrawElement *out)
  {
      out->setGroupWichElBelong(in->getGroupWichElBelong());
+     in->setGroupWichElBelong(NULL);
      members[in->getBlockColumn()][in->getBlockIndex()] = out;
      membersPositionList.clear();
+     isGroupValid();
  }
 
 

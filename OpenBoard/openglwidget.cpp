@@ -3,15 +3,7 @@
 //#include <qglfunctions.h>
 #include "drawSystem/drawsystem.h"
 #include "../TimeLine/listcontroll.h"
-#define GLWIDGET_SIZE       640,480
-#define MAIN_FRAGMENT_SHADER_PATH ":/staticShaders/openGL/shaders/fragmentShader.glsl"
-#define MAIN_VERTEX_SHADER_PATH ":/staticShaders/openGL/shaders/vertexShader.glsl"
-#define ALPHA_FRAGMENT_SHADER_PATH ":/dynamic/openGL/shaders/alpha.frag"
-#define ALPHA_VERTEX_SHADER_PATH ":/dynamic/openGL/shaders/alpha.vert"
-#define SPIRAL_FRAGMENT_SHADER_PATH ":/dynamic/openGL/shaders/spiral.frag"
-#define SPIRAL_VERTEX_SHADER_PATH ":/dynamic/openGL/shaders/spiral.vert"
-#define CROSS_FRAGMENT_SHADER_PATH ":/dynamic/openGL/shaders/cross.frag"
-#define CROSS_VERTEX_SHADER_PATH ":/dynamic/openGL/shaders/cross.vert"
+
 /*
  *scroll
  *
@@ -209,7 +201,9 @@ tempList[i-1]=temp;
     }
     curentList = !curentList;
 }
-void OGLWidget::paintBrushInBuffer(GLuint& texture,Brush& currentBrushOfDrawSystem,FBOWrapper& fboWrapper,QVector<QPoint> coords,QVector<BrushBeginingIndex> brushes,int keyFrame){
+void OGLWidget::paintBrushInBuffer(GLuint& texture,Brush& currentBrushOfDrawSystem,FBOWrapper& fboWrapper,
+                                   QVector<QPoint> coords,QVector<BrushBeginingIndex> brushes,int keyFrame)
+{
 
 
     if (fboWrapper.errorStatus==-1)qDebug() << "BAD BUFFER";
@@ -251,8 +245,9 @@ glBegin(GL_TRIANGLES);
     }
     recordedBrushN++;
     }
-    if (shaderSupported)
+    if (shaderSupported)   
         useShader(mainShader);
+
     glBindTexture(GL_TEXTURE_2D,texture);
    // if (isBrushUsed) {
      //   //qDebug() << "recordedBrushN:" << recordedBrushN;
@@ -349,6 +344,7 @@ glBegin(GL_TRIANGLES);
         }
          if (shaderSupported)
  useShader(0);
+
 
 
 glBindTexture(GL_TEXTURE_2D,0);
@@ -576,13 +572,24 @@ void OGLWidget::initShaderPrograms()
     if(alphaShader->initShader(ALPHA_FRAGMENT_SHADER_PATH,ALPHA_VERTEX_SHADER_PATH)!=0)shaderSupported=true;
     shaderPrograms.push_back(alphaShader);
 
-    ShaderProgramWrapper *spiralShader = new ShaderProgramWrapper(this);
-    if(spiralShader->initShader(SPIRAL_FRAGMENT_SHADER_PATH,SPIRAL_VERTEX_SHADER_PATH)!=0)shaderSupported=true;
-    shaderPrograms.push_back(spiralShader);
+    ShaderProgramWrapper *spinShader = new ShaderProgramWrapper(this);
+    if(spinShader->initShader(SPIN_FRAGMENT_SHADER_PATH,SPIN_VERTEX_SHADER_PATH)!=0)shaderSupported=true;
+    shaderPrograms.push_back(spinShader);
+
+    ShaderProgramWrapper *pixelizationShader = new ShaderProgramWrapper(this);
+    if(pixelizationShader->initShader(PIXELIZATION_FRAGMENT_SHADER_PATH,PIXELIZATION_VERTEX_SHADER_PATH)!=0)shaderSupported=true;
+    shaderPrograms.push_back(pixelizationShader);
+
+    ShaderProgramWrapper *circlesShader = new ShaderProgramWrapper(this);
+    if(circlesShader->initShader(CIRCLES_FRAGMENT_SHADER_PATH,CIRCLES_VERTEX_SHADER_PATH)!=0)shaderSupported=true;
+    shaderPrograms.push_back(circlesShader);
 
      ShaderProgramWrapper *crossShader = new ShaderProgramWrapper(this);
      if(crossShader->initShader(CROSS_FRAGMENT_SHADER_PATH,CROSS_VERTEX_SHADER_PATH)!=0)shaderSupported=true;
      shaderPrograms.push_back(crossShader);
+
+
+
     /* glUseProgram(crossShader->getShaderProgram());
      crossShader->setUniformResolution(wax,way);
       glUseProgram(0);*/
@@ -733,6 +740,7 @@ qDebug() <<  "OGL WIDGET MID";
     connect(effectManager,SIGNAL(showSignal()),this,SLOT(loadEffectFromCurrentBlockToEffectManager()));
 }
 void OGLWidget::bindBuffer(GLuint buffer){
+    qDebug()<<"binded to buffer:"<<buffer;
     glBindFramebuffer(GL_FRAMEBUFFER,buffer);
 }
  QOpenGLFunctions_3_0* OGLWidget::getOglFuncs(){
@@ -1223,7 +1231,7 @@ glEnable(GL_DEPTH_TEST);
     //initFrameBuffer(); // Create our frame buffer object
     mouseFBO=initFboWrapper(wax, way, false, true);
     mainFBO=initFboWrapper(wax, way, false, true);
-    pingpongFBO=initFboWrapper(wax,way,false);
+    pingpongFBO=initFboWrapper(wax,way,false,true);
 
     initPBO();
      //initShader();
@@ -1384,7 +1392,7 @@ void OGLWidget::paintGL()
 /*
  *  DRAW MAIN FRAME WITH APPLY SHADER EFFECT
 */
-
+    qDebug()<<"unbind main buffer to draw it on screen";
     bindBuffer(0);
     drawEditBox(1000);
     paintBufferOnScreen(mainFBO,0, 0, wax, way,0);
@@ -1414,13 +1422,14 @@ void OGLWidget::paintGL()
 
 void OGLWidget::drawGlobalShader( QVector<ShaderProgramWrapper*> shaders)
 {
+
     bool drawToSecondBuffer = shaders.length()>0;//shaders.length()>1 && shaders.length()%2==0;
     for (int i=0;i<shaders.length();i++)
     {
         //qDebug() << "FOR ";
             if(drawToSecondBuffer)
             {
-               // qDebug() <<" SECOND";
+                qDebug() <<" SECOND";
                bindBuffer(pingpongFBO.frameBuffer);
                 useShader(shaders[i]);
                     paintBufferOnScreen(mainFBO,0, 0, mainFBO.tWidth,mainFBO.tHeight, -1);
@@ -1428,7 +1437,7 @@ void OGLWidget::drawGlobalShader( QVector<ShaderProgramWrapper*> shaders)
             }
             else
             {
-               // qDebug() <<" FIRST";
+                qDebug() <<" FIRST";
             bindBuffer(mainFBO.frameBuffer);
             useShader(shaders[i]);
             paintBufferOnScreen(pingpongFBO,0, 0, pingpongFBO.tWidth,pingpongFBO.tHeight, -1);
@@ -1438,10 +1447,11 @@ void OGLWidget::drawGlobalShader( QVector<ShaderProgramWrapper*> shaders)
     }
     if(!drawToSecondBuffer)
     {
-        //qDebug() <<" SECOND";
-       bindBuffer(pingpongFBO.frameBuffer);
-            paintBufferOnScreen(mainFBO,0, 0, mainFBO.tWidth,mainFBO.tHeight, -1 );
-        useShader(0);
+        qDebug() <<" SECOND";
+//useShader(0);
+       bindBuffer(mainFBO.frameBuffer);
+            paintBufferOnScreen(pingpongFBO,0, 0, pingpongFBO.tWidth,pingpongFBO.tHeight, -1 );
+
     }
 }
 
@@ -1553,7 +1563,7 @@ void OGLWidget::useShader(ShaderProgramWrapper *shader){
             glUseProgram(0);
         else
         {
-        currentShaderStack.pop();//Discard last shader nafig
+        currentShaderStack.pop();//Discard last shader
         if (currentShaderStack.isEmpty()) glUseProgram(0);
         else
         glUseProgram(currentShaderStack.last()->getShaderProgram());
@@ -1567,11 +1577,11 @@ void OGLWidget::useShader(ShaderProgramWrapper *shader){
 }
 
 void OGLWidget::disableShader(){
-    //qDebug() << "disableShader:"<<currentShaderStack.length();
+    qDebug() << "disableShader:"<<currentShaderStack.length();
     glUseProgram(0);
 }
 void OGLWidget::enableShader(){
-    //qDebug() << "enableShader:"<<currentShaderStack.length();
+    qDebug() << "enableShader:"<<currentShaderStack.length();
     if (currentShaderStack.length()>0)
         glUseProgram(currentShaderStack.last()->getShaderProgram());
 
@@ -1616,14 +1626,18 @@ void OGLWidget::applyEffectsToCurrentBlock()
         Effect *blockEffect = &blockEffects[i];
         int shaderProgramIndex = (int)blockEffect->getPropetrie("effect_type");
         switch (shaderProgramIndex){
-        case 0:
+        case ALPHA_SHADER:
+        case SPIN_SHADER:
+        case CIRCLES_SHADER:
+        case PIXELIZATION_SHADER:
             ShaderEffect sEffect(shaderPrograms[shaderProgramIndex],shaderProgramIndex);
-        int startTime = blockEffect->getPropetrie("alpha_start_time");
-        int endTime = blockEffect->getPropetrie("alpha_end_time");
-        bool reverse = blockEffect->getPropetrie("alpha_inversion");
+        int startTime = blockEffect->getPropetrie("start_time");
+        int endTime = blockEffect->getPropetrie("end_time");
+        bool reverse = blockEffect->getPropetrie("inversion");
         sEffect.setStartTimeMS(startTime);
         sEffect.setEffectTimeHowLong(endTime-startTime);
         sEffect.setReverse(reverse);
+        sEffect.setShaderWrapperIndex(shaderProgramIndex);
         timeLineEffects.push_back(sEffect);
         }
     }
@@ -1648,9 +1662,10 @@ qDebug() << "loadEffectFromCurrentBlockToEffectManager:"<<currentBlock->getEffec
      //qDebug() << "cur EFFECT howlong TIME:"<<currentEffect.getEffectTimeHowLong();
 Effect effect;
 effect.setName("default");
- effect.setPropetrie("alpha_start_time",currentEffect.getStartTimeMS());
- effect.setPropetrie("alpha_end_time",currentEffect.getStartTimeMS()+currentEffect.getEffectTimeHowLong());
-effect.setPropetrie("alpha_inversion",currentEffect.getReverse());
+ effect.setPropetrie("start_time",currentEffect.getStartTimeMS());
+ effect.setPropetrie("end_time",currentEffect.getStartTimeMS()+currentEffect.getEffectTimeHowLong());
+effect.setPropetrie("inversion",currentEffect.getReverse());
+effect.setPropetrie("effect_type",currentEffect.getShaderWrapperIndex());
  effectManager->addEffect(effect);
  }
  //effectManager->update();

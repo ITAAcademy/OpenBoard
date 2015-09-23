@@ -42,6 +42,7 @@ public:
     static QVector<ShaderEffect> creatEndEffect(int time);
     static QVector<ShaderEffect> creatStartEffect( int time );
     static QVector<ShaderEffect> creatEffectByNum( int num, int time );
+    void setShaderWrapperIndex(int i);
 };
 
 #endif // SHADEREFFECT_H

@@ -194,7 +194,9 @@ void DrawElement::paint()
      // bool currentDrawToSecondBuffer=false;
        int effectsUsedInOneTime=0;
 
-
+      // ShaderEffect testShaderEffect(pDrawWidget->getTestShader());
+       //testShaderEffect.setEffectTimeHowLong(5000);
+     // effects.push_back(testShaderEffect);
         if (!effects.isEmpty())
         {
            /* if (effects.length()%2==1)
@@ -204,7 +206,9 @@ void DrawElement::paint()
                 //pDrawWidget->clearFrameBuffer(pDrawWidget->getMainFBO());
             }*/
              int playTime = pDrawWidget->getTimeLine()->getPlayTime();
+             //TO BE REMOVED IN RELEASE
 
+            //
 
          //   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); glEnable( GL_BLEND );
             for (int i=0;i<effects.length();i++)
@@ -237,6 +241,7 @@ void DrawElement::paint()
                    // qDebug() << i<<"-keyFrame:"<<keyFrame;
                     if(drawToSecondBuffer)
                     {
+                        qDebug()<<"drawToSecondBuffer";
                         pDrawWidget->bindBuffer(pDrawWidget->getPingPongFBO().frameBuffer);
                        // qDebug() << "Shader program ("<<i<<"):"<<effects[i].getShaderWrapper()->getShaderProgram();
                         pDrawWidget->useShader(effects[i].getShaderWrapper());
@@ -254,6 +259,7 @@ void DrawElement::paint()
                     }
                     else
                     {
+                        qDebug()<<"drawToFirstBuffer";
                         pDrawWidget->bindBuffer(fboWrapper.frameBuffer);
                         pDrawWidget->useShader(effects[i].getShaderWrapper());
                         // float keyFrame = (float)(pDrawWidget->getTimeLine()->getPlayTime()-startDrawTime)/lifeTime;//MOVE UP LATER
@@ -277,11 +283,15 @@ void DrawElement::paint()
                 }
 
             }
+
             //qDebug()<<"before remove temp effect";
-           //DONT REMOVE effects.removeAt(effects.length()-1);
+           //remove test effect
+            //effects.removeAt(effects.length()-1);
+
         pDrawWidget->disableShader();
 
             if (effectsUsedInOneTime==0){
+                qDebug() << "if (effectsUsedInOneTime==0)";
                 pDrawWidget->bindBuffer(fboWrapper.frameBuffer);
                 draw();//Draw original image one time without any effects
 
@@ -289,6 +299,7 @@ void DrawElement::paint()
             else
             if (!drawToSecondBuffer)
             {
+                qDebug() << "draw to first buffer forcly";
                 pDrawWidget->bindBuffer(fboWrapper.frameBuffer);
                 // float keyFrame = (float)(pDrawWidget->getTimeLine()->getPlayTime()-startDrawTime)/lifeTime;//MOVE UP LATER
                 pDrawWidget->drawTexture(0,0,pDrawWidget->getPingPongFBO().tWidth,
@@ -300,8 +311,9 @@ void DrawElement::paint()
 
             pDrawWidget->enableShader();
         }
-        if (effects.isEmpty() || effectsUsedInOneTime==0){
+        if (effects.isEmpty()){ //&& effectsUsedInOneTime==0){
             {
+                qDebug() << "if (effects.isEmpty()";
                   pDrawWidget->bindBuffer(fboWrapper.frameBuffer);
                   draw();//Draw original image one time without any effects
                   //qDebug() << "EFFECTS EMPTY !!!";
@@ -326,21 +338,11 @@ void DrawElement::paint()
 */
         //pDrawWidget->getOglFuncs()->glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE);
        // pDrawWidget->bindBuffer(0);
+        qDebug() << "MAIN FBO:"<<pDrawWidget->getMainFBO().frameBuffer;
          pDrawWidget->bindBuffer(pDrawWidget->getMainFBO().frameBuffer);
-
+         qDebug() << "PING-pONG FBO:"<<pDrawWidget->getPingPongFBO().frameBuffer;
         //pDrawWidget->useShader(0);
 
-
-       /* int keyUnifrom = pDrawWidget->context()->functions()->glGetUniformLocation(
-                    pDrawWidget->getShaderPrograms()[0].getShaderProgram(),"animationKey");
-        float keyFrame = (float)(pDrawWidget->getTimeLine()->getPlayTime()-startDrawTime)/lifeTime;
-
-        qDebug() << "KEY FRAME:"<<keyFrame;
-
-
-        pDrawWidget->context()->functions()->glUseProgram( pDrawWidget->getShaderPrograms()[0].getShaderProgram());
-        pDrawWidget->context()->functions()->glUniform1f(keyUnifrom,keyFrame);
-*/
         if(aspectRatio)
             pDrawWidget->paintBufferOnScreen(fboWrapper,x, y, width, width, z);
         else
@@ -690,7 +692,7 @@ void DrawElement::setLifeTime(int value, bool feedBack, bool visual)
         return;
     }
 
-    if (value >=0)
+    if (value >= 0)
         lifeTime = value;
     /*if(group_wich_el_belong != NULL)
         group_wich_el_belong->calcBoundRec();

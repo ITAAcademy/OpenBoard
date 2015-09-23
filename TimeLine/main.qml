@@ -842,7 +842,7 @@ timeControll.setScalePointerPos((x  -20 + scroll.flickableItem.contentX)* main22
 
                             }
                             onPressAndHold: {
-                                press = false;
+                                /*press = false;
                                 drag.target = parent;
                                 cursorShape = Qt.ClosedHandCursor;
                                 console.debug(timeControll.getCurent_groupMembersSize());
@@ -850,7 +850,7 @@ timeControll.setScalePointerPos((x  -20 + scroll.flickableItem.contentX)* main22
                                 {
                                     var it = rep_columns.itemAt(timeControll.getCurent_groupMembers(i).x).getBlock(timeControll.getCurent_groupMembers(i).y);
                                     it.z = 2000;
-                                }
+                                }*/
 
                             }
 
