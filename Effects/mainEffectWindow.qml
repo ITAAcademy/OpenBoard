@@ -47,6 +47,11 @@ Rectangle{
              effectsPanelPixelization.setEndTime(endTime);
              effectsPanelPixelization.setInverted(inversion);
              break;
+         case 3:
+             effectsPanelCircles.setStartTime(startTime);
+             effectsPanelCircles.setEndTime(endTime);
+             effectsPanelCircles.setInverted(inversion);
+             break;
 
         }
     }
@@ -69,6 +74,7 @@ Rectangle{
     property bool isEffectAlpha : (combo.currentIndex===0);
     property bool isEffectSpin : (combo.currentIndex===1);
     property bool isEffectPixelization : (combo.currentIndex===2);
+    property bool isEffectCircles : (combo.currentIndex===3);
 
     property bool isEmptyList : (listBox.listBox.count==0);
     property bool isNonSelected : (listBox.listBox.currentIndex==-1);
@@ -128,6 +134,7 @@ Rectangle{
                     ListElement { text: "Alpha"; color: "Yellow" }
                     ListElement { text: "Spin"; color: "Green" }
                     ListElement { text: "Pixelization"; color: "Brown" }
+                    ListElement { text: "Circles"; color: "Green" }
 
                 }
                 onCurrentIndexChanged:{
@@ -164,6 +171,15 @@ Rectangle{
                 width:secondColumn.width
                 height:parent.height-combo.height
                 visible:isEffectPixelization && !isEmptyList && !isNonSelected
+
+            }
+            SettingPages.EffectCircles{
+                id:effectsPanelCircles
+                y:listBox.border.width
+                color: root.color
+                width:secondColumn.width
+                height:parent.height-combo.height
+                visible:isEffectCircles && !isEmptyList && !isNonSelected
 
             }
         }

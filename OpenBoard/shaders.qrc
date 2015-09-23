@@ -12,5 +12,7 @@
         <file>openGL/shaders/cross.frag</file>
         <file>openGL/shaders/pixelization.frag</file>
         <file>openGL/shaders/pixelization.vert</file>
+        <file>openGL/shaders/circles.frag</file>
+        <file>openGL/shaders/circles.vert</file>
     </qresource>
 </RCC>

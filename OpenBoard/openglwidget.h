@@ -60,6 +60,8 @@ using namespace QtAV;
 #define CROSS_VERTEX_SHADER_PATH ":/dynamic/openGL/shaders/cross.vert"
 #define PIXELIZATION_FRAGMENT_SHADER_PATH ":/dynamic/openGL/shaders/pixelization.frag"
 #define PIXELIZATION_VERTEX_SHADER_PATH ":/dynamic/openGL/shaders/pixelization.vert"
+#define CIRCLES_FRAGMENT_SHADER_PATH ":/dynamic/openGL/shaders/circles.frag"
+#define CIRCLES_VERTEX_SHADER_PATH ":/dynamic/openGL/shaders/circles.vert"
 struct ColorMarker{
     int startIndex;
     QColor value;
@@ -121,7 +123,7 @@ signals:
     void stopShowLastDrawingSignal();
 public:
     void zoomGrid(int val);
-    enum shaderEnum {ALPHA_SHADER=0,SPIN_SHADER=1,PIXELIZATION_SHADER=2,CROSS_SHADER=3};
+    enum shaderEnum {ALPHA_SHADER=0,SPIN_SHADER=1,PIXELIZATION_SHADER=2,CIRCLES_SHADER=3,CROSS_SHADER=4};
     void processMouse();
     ShaderProgramWrapper* getMainShader();
     void initPBO();
