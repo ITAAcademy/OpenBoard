@@ -18,5 +18,6 @@
         <file>Content/BrushSettingPages/EffectSpin.qml</file>
         <file>Content/BrushSettingPages/EffectPixelization.qml</file>
         <file>Content/BrushSettingPages/EffectCircles.qml</file>
+        <file>Content/BrushSettingPages/EffectTurnthepage.qml</file>
     </qresource>
 </RCC>
