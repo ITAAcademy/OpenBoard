@@ -1422,6 +1422,7 @@ void OGLWidget::paintGL()
 
 void OGLWidget::drawGlobalShader( QVector<ShaderProgramWrapper*> shaders)
 {
+
     bool drawToSecondBuffer = shaders.length()>0;//shaders.length()>1 && shaders.length()%2==0;
     for (int i=0;i<shaders.length();i++)
     {
@@ -1447,10 +1448,10 @@ void OGLWidget::drawGlobalShader( QVector<ShaderProgramWrapper*> shaders)
     if(!drawToSecondBuffer)
     {
         qDebug() <<" SECOND";
+//useShader(0);
+       bindBuffer(mainFBO.frameBuffer);
+            paintBufferOnScreen(pingpongFBO,0, 0, pingpongFBO.tWidth,pingpongFBO.tHeight, -1 );
 
-       bindBuffer(pingpongFBO.frameBuffer);
-            paintBufferOnScreen(mainFBO,0, 0, mainFBO.tWidth,mainFBO.tHeight, -1 );
-        //useShader(0);
     }
 }
 

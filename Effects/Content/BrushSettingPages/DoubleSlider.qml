@@ -259,4 +259,5 @@ function getMouseDragRight(){
 
     }
 }
+}
 
