@@ -14,5 +14,7 @@
         <file>openGL/shaders/pixelization.vert</file>
         <file>openGL/shaders/circles.frag</file>
         <file>openGL/shaders/circles.vert</file>
+        <file>openGL/shaders/turnthepage.frag</file>
+        <file>openGL/shaders/turnthepage.vert</file>
     </qresource>
 </RCC>
