@@ -133,7 +133,7 @@ static DrawElement *GenerationDrawElement( QString path, OGLWidget *drawWidget =
     return NULL;
 }
 
-static DrawElement *loadDrawElement(QIODevice *device)
+static DrawElement *loadDrawElement(QIODevice *device, float version)
 {
     DrawElement *draw_element = new DrawElement(NULL,NULL);
 

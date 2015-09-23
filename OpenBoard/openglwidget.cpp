@@ -740,7 +740,7 @@ qDebug() <<  "OGL WIDGET MID";
     connect(effectManager,SIGNAL(showSignal()),this,SLOT(loadEffectFromCurrentBlockToEffectManager()));
 }
 void OGLWidget::bindBuffer(GLuint buffer){
-    qDebug()<<"binded to buffer:"<<buffer;
+   // qDebug()<<"binded to buffer:"<<buffer;
     glBindFramebuffer(GL_FRAMEBUFFER,buffer);
 }
  QOpenGLFunctions_3_0* OGLWidget::getOglFuncs(){
@@ -1392,7 +1392,7 @@ void OGLWidget::paintGL()
 /*
  *  DRAW MAIN FRAME WITH APPLY SHADER EFFECT
 */
-    qDebug()<<"unbind main buffer to draw it on screen";
+   // qDebug()<<"unbind main buffer to draw it on screen";
     bindBuffer(0);
     drawEditBox(1000);
     paintBufferOnScreen(mainFBO,0, 0, wax, way,0);
@@ -1429,7 +1429,7 @@ void OGLWidget::drawGlobalShader( QVector<ShaderProgramWrapper*> shaders)
         //qDebug() << "FOR ";
             if(drawToSecondBuffer)
             {
-                qDebug() <<" SECOND";
+               // qDebug() <<" SECOND";
                bindBuffer(pingpongFBO.frameBuffer);
                 useShader(shaders[i]);
                     paintBufferOnScreen(mainFBO,0, 0, mainFBO.tWidth,mainFBO.tHeight, -1);
@@ -1447,7 +1447,7 @@ void OGLWidget::drawGlobalShader( QVector<ShaderProgramWrapper*> shaders)
     }
     if(!drawToSecondBuffer)
     {
-        qDebug() <<" SECOND";
+       // qDebug() <<" SECOND";
 //useShader(0);
        bindBuffer(mainFBO.frameBuffer);
             paintBufferOnScreen(pingpongFBO,0, 0, pingpongFBO.tWidth,pingpongFBO.tHeight, -1 );

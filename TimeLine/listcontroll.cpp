@@ -764,7 +764,7 @@ void ListControll::cloneBlock(DrawElement *origin, DrawElement *clone)
     if(clone != NULL)
         delete clone;
     buff.seek(0);
-    clone = loadDrawElement(&buff);
+    clone = loadDrawElement(&buff, VERSION);
     clone->setDrawWidget(origin->getDrawWidget());
     tracks[p.x()].block[p.y()] = clone;
     calcPointedBlocks();
@@ -1493,6 +1493,7 @@ void ListControll::show()
 bool ListControll::save(QIODevice* device)
 {
     QDataStream stream(device);
+    stream << (float)VERSION;
     stream << tracks.size() ;
     QSet<Group*> allGroups;
 
@@ -1521,16 +1522,18 @@ bool ListControll::save(QIODevice* device)
 bool ListControll::load(QIODevice* device)
 {
     //QDataStream stream(device);
-
+    float version = 0.0f;
     tracks.clear();
     int tracks_size;
     QDataStream stream(device);
+    stream >> version;
+    qDebug() << "LOAD_VERSION   v" << version ;
     stream >> tracks_size ;
     //  qDebug() << "Num of loaded tracks: " << tracks_size;
     for (int i=0; i< tracks_size; i++)
     {
         Track temp;
-        temp.load(device);
+        temp.load(device, version);
         //qDebug() << "load blocks size in track" << temp.block.size();
         tracks.append(temp);
 
