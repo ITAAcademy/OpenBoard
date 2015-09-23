@@ -152,8 +152,8 @@ DISTFILES += \
     frag_alpha.frag \
     alpha.frag \
     alpha.vert \
-    spiral.frag \
-    spiral.vert \
+    spin.frag \
+    spin.vert \
     cross.frag \
     cross.vert \
     ../FileManager/main_filemanager.qml \

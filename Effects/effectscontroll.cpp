@@ -23,6 +23,7 @@ double EffectsManager::getCurrentEffectProperty(QString propertyName)
 }
 void EffectsManager::setCurrentEffectProperty(QString propertyName, double val)
 {
+    qDebug() << "currentEffectIndex:"<<currentEffectIndex;
     if (currentEffectIndex>=dataListValues.length() || currentEffectIndex<0)return ;
     dataListValues[currentEffectIndex].setPropetrie(propertyName,val);
     qDebug() << "set current effect property '"<<propertyName<<"' to value"<<val;
@@ -169,7 +170,7 @@ void EffectsManager::removeEffect(int i)
 
 void EffectsManager::setCurrentEffectIndex(int n)
 {
-    //qDebug() << "QT:setCurrentEffectIndex="<<n;
+    qDebug() << "QT:setCurrentEffectIndex="<<n;
     currentEffectIndex= n;
 }
 /*

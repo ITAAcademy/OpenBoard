@@ -5,12 +5,12 @@
 #include <qpoint.h>
 class Effect
 {
-    enum effect_types{EFFECT_ALPHA,EFFECT_OTHER};
+    enum effect_types{EFFECT_ALPHA,EFFECT_SPIN,EFFECT_OTHER};
     QString name;
     //long int startTime=0;
     //long int endTime=0;
-    bool inversion;
-    int effectType = EFFECT_ALPHA;
+  //  bool inversion;
+   // int effectType = EFFECT_ALPHA;
     QMap<QString,double> propetries;
 
 public:
