@@ -420,7 +420,13 @@ Rectangle{
                 if (main222.able_create_empty_block)
                 {
                     console.log("main222.exitedFromDropArea = true         createEmptyBlock")
-                    timeControll.setBlockStartTime(root.colIndex, root.mIndex, root.x  * main222.scaling)
+                    //timeControll.setBlockStartTime(root.colIndex, root.mIndex, root.x  * main222.scaling)
+
+                    var ind_add =  timeControll.getBlockIndToAddFromPos(root.colIndex, root.mIndex,root.x  * main222.scaling)
+                    var space_add = timeControll.getBlockSpaceToAddFromPos(root.colIndex, root.mIndex);
+                    timeControll.removeBlock(root.colIndex, root.mIndex);
+                    timeControll.addBlockWithSpaceAt(root.colIndex,ind_add,space_add,timeControll.getBlockFromBuffer() );
+                   //
 
                     //timeControll.createEmptyBlock(root.colIndex, root.mIndex)
                 }

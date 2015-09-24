@@ -305,6 +305,8 @@ void ListControll::setBlockKey(int col, int i, QString name)
     // test[col][i] = name;
 }
 
+
+
 bool ListControll::removeBlock(int col, int i )
 {
     qDebug() << "ListControll::removeBlock(int col, int i)";
@@ -321,6 +323,9 @@ bool ListControll::removeBlock(int col, int i )
     bool block_in_group = false;
 
     DrawElement *elm = tracks[col].block[i];
+    if (block_in_buffer != NULL)
+          delete block_in_buffer;
+    cloneBlock( elm, block_in_buffer);
 
     if (elm->getGroupWichElBelong() != NULL)
     {
@@ -647,8 +652,64 @@ qDebug() << "AAAAAAAAAAAAAAAAAAAAAAAAAAA     1";*/
 
     return true;
 }
+int ListControll::getBlockSpaceToAddFromPos(int col,int ind)
+{
+    if (!blockValid(col,ind))
+        return -1;
+    return spaces_to_add;
 
+}
 
+int ListControll::getBlockIndToAddFromPos(int col,int ind, int pos)
+{
+     spaces_to_add = -1;
+
+    if (!blockValid(col,ind))
+        return -1;
+
+     int get_ind = -1;
+     int track_time = tracks[col].getTime();
+     if (pos > track_time)
+     {
+        spaces_to_add = pos - track_time;
+        get_ind = tracks[col].block.size() - 1;
+        return get_ind;
+     }
+    foreach (DrawElement* elm,tracks[col].block )
+    {
+        if( elm->getBlockIndex() == ind)
+            continue;
+
+        int start = elm->getStartDrawTime();
+        int life = elm->getLifeTime();
+
+        if (elm->getTypeId() == Element_type::Empty)
+        {
+            if (start <= pos && pos <= start + life)
+            {
+                spaces_to_add = pos - start;
+                get_ind = elm->getTypeId();
+                return  get_ind;
+            }
+        }
+    }
+    return  get_ind;
+}
+
+DrawElement* ListControll::getBlockFromBuffer()
+{
+    DrawElement *temp_el ;
+     cloneBlock(block_in_buffer,temp_el);
+    return temp_el;
+}
+
+void ListControll::addBlockWithSpaceAt(int col, int ind,int space,  DrawElement *element, int life_time ,bool need_balance)
+{
+    DrawElement * empt = new DrawElement(NULL,NULL);
+    empt->setLifeTime(space);
+    addBlockAt(col,  ind, empt);
+    addBlockAt( col,  ind + 1,  element,  life_time , need_balance);
+}
 
 void ListControll::addBlockAt(int col, int ind,  DrawElement *element, int life_time ,bool need_balance)
 {
