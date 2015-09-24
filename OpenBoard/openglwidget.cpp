@@ -1337,8 +1337,8 @@ void OGLWidget::updateGrid(){
     {
         useShader(shaderPrograms[CROSS_SHADER]);
         //qDebug() << "width:"<<windowGrid.getWidth();
-    shaderPrograms[CROSS_SHADER]->setUniformSize(windowGrid.getCellWidth(),windowGrid.getCellHeight());
-    shaderPrograms[CROSS_SHADER]->setUniformResolution(windowGrid.getWidth(),windowGrid.getHeight());
+    shaderPrograms[CROSS_SHADER]->setUniform("size",windowGrid.getCellWidth(),windowGrid.getCellHeight());
+    shaderPrograms[CROSS_SHADER]->setUniform("resolution",windowGrid.getWidth(),windowGrid.getHeight());
      useShader(0);
     }
     windowGrid.processLCP();

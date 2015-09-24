@@ -246,9 +246,10 @@ void DrawElement::paint()
                        // qDebug() << "Shader program ("<<i<<"):"<<effects[i].getShaderWrapper()->getShaderProgram();
                         pDrawWidget->useShader(effects[i].getShaderWrapper());
                       //  float keyFrame = (float)(pDrawWidget->getTimeLine()->getPlayTime()-startDrawTime)/lifeTime;//MOVE UP LATER
-                        ShaderEffect::setUniformAnimationKey(effects[i],keyFrame);
-                        ShaderEffect::setUniformResolution(effects[i],fboWrapper.tWidth,fboWrapper.tHeight);
-                        ShaderEffect::setUniformReverse(effects[i],effects[i].getReverse());
+                        effects[i].setUniform("animationKey",keyFrame);
+                        effects[i].setUniform("resolution",fboWrapper.tWidth,fboWrapper.tHeight);
+
+                        effects[i].setUniform("reverse",effects[i].getReverse());
 
                         if (effectsUsedInOneTime==0)
                             draw();
@@ -262,11 +263,12 @@ void DrawElement::paint()
                         qDebug()<<"drawToFirstBuffer";
                         pDrawWidget->bindBuffer(fboWrapper.frameBuffer);
                         pDrawWidget->useShader(effects[i].getShaderWrapper());
-                        // float keyFrame = (float)(pDrawWidget->getTimeLine()->getPlayTime()-startDrawTime)/lifeTime;//MOVE UP LATER
-                        ShaderEffect::setUniformAnimationKey(effects[i],keyFrame);
-                        ShaderEffect::setUniformResolution(effects[i],
-                                                       pDrawWidget->getPingPongFBO().tWidth,pDrawWidget->getPingPongFBO().tHeight);
-                        ShaderEffect::setUniformReverse(effects[i],effects[i].getReverse());
+                        // float keyFrame = (float)(pDrawWidget->getTimeLine()->getPlayTime()-startDrawTime)/lifeTime;//MOVE UP LATER      
+                        effects[i].setUniform("animationKey",keyFrame);
+                        effects[i].setUniform("resolution",pDrawWidget->getPingPongFBO().tWidth,
+                                                                     pDrawWidget->getPingPongFBO().tHeight);
+
+                       effects[i].setUniform("reverse",effects[i].getReverse());
 
                         if (effectsUsedInOneTime==0)
                             draw();

@@ -32,8 +32,8 @@ public:
 
 
    QString getInfo() const;
-   void setUniformResolution(float width, float height);
-   void setUniformSize(float width, float height);
+
+   bool setUniform(QString name, float val1, float val2);
 };
 
 #endif // SHADERPROGRAMWRAPPER_H
