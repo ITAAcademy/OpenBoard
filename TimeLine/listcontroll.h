@@ -370,7 +370,7 @@ Q_INVOKABLE  void setIsEditBlockShow(bool value);
   void setGlWindInited(bool value);
 
   Q_INVOKABLE bool getCurent_group() const;
-  Q_INVOKABLE bool createEmptyBlock(int col,int ind);
+  Q_INVOKABLE bool createEmptyBlock(int col);
   Q_INVOKABLE bool getCurent_group(int col, int index) ;
   Q_INVOKABLE long tryResizeCurentGroup(int shift);
   Q_INVOKABLE long tryResizeMemberInCurentGroup(int shift, int col, int index);

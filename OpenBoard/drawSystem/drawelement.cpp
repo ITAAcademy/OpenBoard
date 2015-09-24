@@ -686,6 +686,7 @@ int DrawElement::getLifeTime() const
 
 void DrawElement::setLifeTime(int value, bool feedBack, bool visual)
 {
+    qDebug() << "DrawElement::setLifeTime value = "<< value;
     if(feedBack)
     {
         emit sizeChangedSignal(blockColumn, blockIndex, value, visual);

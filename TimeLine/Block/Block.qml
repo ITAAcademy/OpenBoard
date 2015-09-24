@@ -342,9 +342,9 @@ Rectangle{
     onWidthChanged: {
         type = timeControll.getBlockTypeId(colIndex,mIndex)
         //console.log("onWidthChanged    type = "  +type)
-        if (root.type == 5)
+       /* if (root.type == 5)
         {
-            // console.log("type == 5")
+             console.log("onWidthChanged   type == 5")
             if (width == 0)
             {
                 //destroy
@@ -352,10 +352,10 @@ Rectangle{
         }
         else
         {
-            // console.log("type != 5")
+             console.log("onWidthChanged  type != 5")
             if (width < main222.minBlockWidth)
                 width = main222.minBlockWidth
-        }
+        }*/
 
         //console.log("width = " + width)
         icon.width = icon.height;
