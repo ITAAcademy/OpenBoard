@@ -19,5 +19,6 @@
         <file>Content/BrushSettingPages/EffectPixelization.qml</file>
         <file>Content/BrushSettingPages/EffectCircles.qml</file>
         <file>Content/BrushSettingPages/EffectTurnthepage.qml</file>
+        <file>Content/BrushSettingPages/EffectRandomsquares.qml</file>
     </qresource>
 </RCC>

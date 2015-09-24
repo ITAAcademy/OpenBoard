@@ -64,6 +64,8 @@ using namespace QtAV;
 #define CIRCLES_VERTEX_SHADER_PATH ":/dynamic/openGL/shaders/circles.vert"
 #define TURNTHEPAGE_FRAGMENT_SHADER_PATH ":/dynamic/openGL/shaders/turnthepage.frag"
 #define TURNTHEPAGE_VERTEX_SHADER_PATH ":/dynamic/openGL/shaders/turnthepage.vert"
+#define RANDOMSQUARES_FRAGMENT_SHADER_PATH ":/dynamic/openGL/shaders/randsquares.frag"
+#define RANDOMSQUARES_VERTEX_SHADER_PATH ":/dynamic/openGL/shaders/randsquares.vert"
 struct ColorMarker{
     int startIndex;
     QColor value;
@@ -125,7 +127,7 @@ signals:
     void stopShowLastDrawingSignal();
 public:
     void zoomGrid(int val);
-    enum shaderEnum {ALPHA_SHADER=0,SPIN_SHADER=1,PIXELIZATION_SHADER=2,CIRCLES_SHADER=3,TURNTHEPAGE_SHADER=4,CROSS_SHADER=5};
+    enum shaderEnum {ALPHA_SHADER=0,SPIN_SHADER=1,PIXELIZATION_SHADER=2,CIRCLES_SHADER=3,TURNTHEPAGE_SHADER=4,RANDSQUARES_SHADER=5,CROSS_SHADER=6};
     void processMouse();
     ShaderProgramWrapper* getMainShader();
     void initPBO();

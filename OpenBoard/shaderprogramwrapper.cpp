@@ -44,7 +44,7 @@ ShaderProgramWrapper::~ShaderProgramWrapper()
 {
      //qDebug() <<"ShaderProgramWrapper::~ShaderProgramWrapper()";
      bool exp = errorStatus==0;
-     qDebug() << "succ";
+    // qDebug() << "succ";
     if(exp)
     {
         //qDebug() <<"~ShaderProgramWrapper begin";

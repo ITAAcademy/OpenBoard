@@ -59,6 +59,11 @@ Rectangle{
              effectsTurnthepage.setEndTime(endTime);
              effectsTurnthepage.setInverted(inversion);
              break;
+         case 5:
+             effectsRandomSquares.setStartTime(startTime);
+             effectsRandomSquares.setEndTime(endTime);
+             effectsRandomSquares.setInverted(inversion);
+             break;
 
 
         }
@@ -84,6 +89,7 @@ Rectangle{
     property bool isEffectPixelization : (combo.currentIndex===2);
     property bool isEffectCircles : (combo.currentIndex===3);
     property bool isEffectTurnthepage : (combo.currentIndex===4);
+    property bool isEffectRandomSquares : (combo.currentIndex===5);
 
     property bool isEmptyList : (listBox.listBox.count==0);
     property bool isNonSelected : (listBox.listBox.currentIndex==-1);
@@ -192,6 +198,7 @@ Rectangle{
                     ListElement { text: "Pixelization"; color: "Brown" }
                     ListElement { text: "Circles"; color: "Green" }
                     ListElement { text: "Turn the page"; color: "Green" }
+                    ListElement { text: "Random squares"; color: "Pink" }
 
                 }
                 onCurrentIndexChanged:{
@@ -253,6 +260,15 @@ Rectangle{
                 width:secondColumn.width
                 height:parent.height-combo.height
                 visible:isEffectTurnthepage && !isEmptyList && !isNonSelected
+
+            }
+            SettingPages.EffectRandomsquares{
+                id:effectsRandomSquares
+                y:listBox.border.width
+                color: root.color
+                width:secondColumn.width
+                height:parent.height-combo.height
+                visible:isEffectRandomSquares && !isEmptyList && !isNonSelected
 
             }
         }
