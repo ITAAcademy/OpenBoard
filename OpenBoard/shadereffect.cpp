@@ -98,6 +98,16 @@ QVector<ShaderEffect> ShaderEffect::creatEffectByNum(int num, int time)
     }
     return res;
 }
+
+int ShaderEffect::getCount() const
+{
+    return count;
+}
+
+void ShaderEffect::setCount(int value)
+{
+    count = value;
+}
 ShaderEffect::ShaderEffect(ShaderProgramWrapper *shaderWrp, int shaderIndex)
 {
     // qDebug() << "shaderWrapper=shaderWrp";

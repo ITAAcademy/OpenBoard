@@ -16,14 +16,16 @@ Rectangle{
 
     function loadEffectParams(){
         var startTime  = effectsControll.getCurrentEffectProperty("start_time")
-       var endTime=effectsControll.getCurrentEffectProperty("end_time")
+        var endTime=effectsControll.getCurrentEffectProperty("end_time")
         var inversion=effectsControll.getCurrentEffectProperty("inversion")
         var effectType=effectsControll.getCurrentEffectProperty("effect_type")
+        var count = effectsControll.getCurrentEffectProperty("count");
         console.log("current index changed");
         console.log("startTime:"+startTime);
         console.log("endTime:"+endTime);
         console.log("inversion:"+inversion);
         console.log("effectType:"+effectType);
+        console.log("count:"+count);
         combo.currentIndex=effectType;
         console.log("secondColumn.comboEffectType:"+effectType);
 
@@ -37,33 +39,34 @@ Rectangle{
             effectsPanelAlpha.setEndTime(endTime);
             effectsPanelAlpha.setInverted(inversion);
             break;
-         case 1:
+        case 1:
             console.log("case 1");
 
             effectsPanelSpin.setStartTime(startTime);
             effectsPanelSpin.setEndTime(endTime);
             effectsPanelSpin.setInverted(inversion);
             break;
-         case 2:
-             effectsPanelPixelization.setStartTime(startTime);
-             effectsPanelPixelization.setEndTime(endTime);
-             effectsPanelPixelization.setInverted(inversion);
-             break;
-         case 3:
-             effectsPanelCircles.setStartTime(startTime);
-             effectsPanelCircles.setEndTime(endTime);
-             effectsPanelCircles.setInverted(inversion);
-             break;
-         case 4:
-             effectsTurnthepage.setStartTime(startTime);
-             effectsTurnthepage.setEndTime(endTime);
-             effectsTurnthepage.setInverted(inversion);
-             break;
-         case 5:
-             effectsRandomSquares.setStartTime(startTime);
-             effectsRandomSquares.setEndTime(endTime);
-             effectsRandomSquares.setInverted(inversion);
-             break;
+        case 2:
+            effectsPanelPixelization.setStartTime(startTime);
+            effectsPanelPixelization.setEndTime(endTime);
+            effectsPanelPixelization.setInverted(inversion);
+            break;
+        case 3:
+            effectsPanelCircles.setStartTime(startTime);
+            effectsPanelCircles.setEndTime(endTime);
+            effectsPanelCircles.setInverted(inversion);
+            effectsPanelCircles.setCount(count);
+            break;
+        case 4:
+            effectsTurnthepage.setStartTime(startTime);
+            effectsTurnthepage.setEndTime(endTime);
+            effectsTurnthepage.setInverted(inversion);
+            break;
+        case 5:
+            effectsRandomSquares.setStartTime(startTime);
+            effectsRandomSquares.setEndTime(endTime);
+            effectsRandomSquares.setInverted(inversion);
+            break;
 
 
         }
@@ -115,7 +118,7 @@ Rectangle{
                 width: firstColumn.width
                 y:listControl.y+listControl.height
                 height: root.height-(listControl.y+listControl.height)-root.border.width*2
-               /* property double startTime
+                /* property double startTime
                 property double endTime
                 property double inversion
                 property double effectType*/
@@ -123,8 +126,8 @@ Rectangle{
                 Connections {
                     target: listBox.listBox
                     onCurrentIndexChanged: {
-                      //  effectsControll.setCurrentEffectProperty("effect_type",currentIndex);
-                       loadEffectParams()
+                        //  effectsControll.setCurrentEffectProperty("effect_type",currentIndex);
+                        loadEffectParams()
 
                         //effectsControll.setCurrentEffectProperty("effect_type",currentIndex)
                     }

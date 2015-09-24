@@ -1400,7 +1400,7 @@ void OGLWidget::paintGL()
 /*
  *  DRAW MAIN FRAME WITH APPLY SHADER EFFECT
 */
-    qDebug()<<"unbind main buffer to draw it on screen";
+    //qDebug()<<"unbind main buffer to draw it on screen";
     bindBuffer(0);
     drawEditBox(1000);
     paintBufferOnScreen(mainFBO,0, 0, wax, way,0);
@@ -1587,11 +1587,11 @@ void OGLWidget::useShader(ShaderProgramWrapper *shader){
 }
 
 void OGLWidget::disableShader(){
-    qDebug() << "disableShader:"<<currentShaderStack.length();
+   // qDebug() << "disableShader:"<<currentShaderStack.length();
     glUseProgram(0);
 }
 void OGLWidget::enableShader(){
-    qDebug() << "enableShader:"<<currentShaderStack.length();
+   // qDebug() << "enableShader:"<<currentShaderStack.length();
     if (currentShaderStack.length()>0)
         glUseProgram(currentShaderStack.last()->getShaderProgram());
 
@@ -1646,10 +1646,12 @@ void OGLWidget::applyEffectsToCurrentBlock()
         int startTime = blockEffect->getPropetrie("start_time");
         int endTime = blockEffect->getPropetrie("end_time");
         bool reverse = blockEffect->getPropetrie("inversion");
+        int count = blockEffect->getPropetrie("count");
         sEffect.setStartTimeMS(startTime);
         sEffect.setEffectTimeHowLong(endTime-startTime);
         sEffect.setReverse(reverse);
         sEffect.setShaderWrapperIndex(shaderProgramIndex);
+        sEffect.setCount(count);
         timeLineEffects.push_back(sEffect);
         }
     }
@@ -1678,6 +1680,7 @@ effect.setName("default");
  effect.setPropetrie("end_time",currentEffect.getStartTimeMS()+currentEffect.getEffectTimeHowLong());
 effect.setPropetrie("inversion",currentEffect.getReverse());
 effect.setPropetrie("effect_type",currentEffect.getShaderWrapperIndex());
+effect.setPropetrie("count",currentEffect.getCount());
  effectManager->addEffect(effect);
  }
  //effectManager->update();
