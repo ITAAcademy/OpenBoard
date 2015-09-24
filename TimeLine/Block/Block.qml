@@ -422,7 +422,7 @@ Rectangle{
                     console.log("main222.exitedFromDropArea = true         createEmptyBlock")
                     timeControll.setBlockStartTime(root.colIndex, root.mIndex, root.x  * main222.scaling)
 
-                    timeControll.createEmptyBlock(root.colIndex, root.mIndex)
+                    //timeControll.createEmptyBlock(root.colIndex, root.mIndex)
                 }
                 main222.able_create_empty_block = true
 

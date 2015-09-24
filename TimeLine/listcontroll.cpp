@@ -319,19 +319,26 @@ bool ListControll::removeBlock(int col, int i )
 
     setBlocked(true);
     bool block_in_group = false;
-    if (tracks[col].block[i]->getGroupWichElBelong() != NULL)
+
+    DrawElement *elm = tracks[col].block[i];
+
+    if (elm->getGroupWichElBelong() != NULL)
     {
-        removeBlockFromGroup(tracks[col].block[i]);
+        removeBlockFromGroup(elm);
         block_in_group  = true;
     }
     setSelectedBlockPoint(QPoint(-1,-1));
     if (tracks[col].block.size() > i)
     {
-        int temp = tracks[col].block[i]->getLifeTime();
-        delete tracks[col].block[i];
+        int temp = elm->getLifeTime();
+        DrawElement * new_empty = new DrawElement(NULL,NULL);
+        new_empty->copy(elm);
+        delete elm;
+
+
 
         tracks[col].block.removeAt(i);
-        tracks[col].addTime(-temp);
+        //tracks[col].addTime(-temp);
 
         // testColumnWidth[col] -= temp;
 
@@ -348,15 +355,64 @@ bool ListControll::removeBlock(int col, int i )
             updateBlocksIndexFrom(col,i);
             updateBlocksStartTimesFrom(col, i,true);
         }
+
+
+
+        DrawElement *prev;
+        int add_index = i;
+        if ( add_index == tracks[col].block.size())
+        {
+            tracks[col].addTime(-temp);
+             delete new_empty;
+            if (i > 0)
+            {
+                prev = tracks[col].block[i -1];
+                if (prev->getTypeId() == Element_type::Empty )
+                {
+                   /* tracks[col].addTime(-prev->getLifeTime());
+                    delete prev;
+                    tracks[col].block.removeAt(i - 1);
+                    */
+                    removeBlock(col, i -1);
+                }
+            }
+
+        }
+        else
         if (i > 0)
         {
-            DrawElement *prev = tracks[col].block[i -1];
+            prev = tracks[col].block[i -1];
             int type = prev->getTypeId();
-            if (type == 5 )
+            if (type == Element_type::Empty )
             {
-                removeBlock(col,i - 1 );
+                add_index = i - 1;
+                prev->setLifeTime( prev->getLifeTime() + new_empty->getLifeTime());
+                delete new_empty;
+
+            }
+            else
+            {
+                prev = new_empty;
+                 addBlockAt(col,i,new_empty);
+            }
+
+            if (add_index < tracks[col].block.size() + 1)
+            {
+                DrawElement * next_el = tracks[col].block[add_index + 1];
+                if (next_el->getTypeId() == Element_type::Empty)
+                {
+                    prev->setLifeTime(next_el->getLifeTime() + prev->getLifeTime());
+                    delete next_el;
+                    tracks[col].block.removeAt(add_index + 1);
+                }
             }
         }
+        else
+        {
+             addBlockAt(col,i,new_empty);
+        }
+       /* */
+
 
         recountMaxTrackTime();
     }
@@ -417,23 +473,11 @@ bool ListControll::createEmptyBlock(int col)
 
         if (diff > 0)
         {
-           /* if (time_bonus != 0)
-            {
-                diff += time_bonus;
-                if (diff < 0)
-                {
-                    time_bonus = diff;
-                    diff = 0;
-                }
-                else
-                {
-                    time_bonus = 0;
-                }
-            }*/
+
 
             if (prev_elm == NULL)
             {
-                if (elm->getTypeId() != 5)
+                if (elm->getTypeId() !=  Element_type::Empty)
                 {
                     DrawElement* element = new DrawElement(NULL,NULL);
                     addBlockAt(col,index,element,diff );
@@ -446,7 +490,7 @@ bool ListControll::createEmptyBlock(int col)
             }
             else
             {
-                if (prev_elm->getTypeId() != 5)
+                if (prev_elm->getTypeId() !=  Element_type::Empty)
                 {
                     DrawElement* element = new DrawElement(NULL,NULL);
                     addBlockAt(col,index,element,diff );
@@ -461,7 +505,7 @@ bool ListControll::createEmptyBlock(int col)
             if (diff < 0)
             {
 
-                if (prev_elm == NULL) // it possible???
+                /*if (prev_elm == NULL) // it possible???
                 {
 
                     if (elm->getTypeId() != 5)
@@ -475,9 +519,9 @@ bool ListControll::createEmptyBlock(int col)
                         setBlockTime(col,elm->getBlockIndex(),diff ); //+ prev_elm->getLifeTime()
                     }
                 }
-                else
+                else*/
                 {
-                    if (prev_elm->getTypeId() != 5)
+                    if (prev_elm->getTypeId() != Element_type::Empty)
                     {
                         /* DrawElement* element = new DrawElement(NULL,NULL);
                         addBlockAt(col,index,element,diff);*/
@@ -490,7 +534,7 @@ bool ListControll::createEmptyBlock(int col)
                         na_siky_zmensh = diff;
                     }
                 }
-                if (na_siky_zmensh < 0)
+               /* if (na_siky_zmensh < 0)
                 {
                     foreach(int inda, start_ind)
                     {
@@ -514,7 +558,7 @@ bool ListControll::createEmptyBlock(int col)
                             }
                         }
                     }
-                }
+                }*/
 
 
 
@@ -1087,8 +1131,8 @@ void ListControll::setBlockTime(int col, int i,int value)
     {
         if(def_min_block_width <= value)
         {
-            qDebug() << " if (elm->getTypeId() != 5) \
-                        if(def_min_block_width > value) ";
+           /* qDebug() << " if (elm->getTypeId() != 5) \
+                        if(def_min_block_width > value) ";*/
                         value = def_min_block_width;
         }
     }
@@ -1107,7 +1151,7 @@ void ListControll::setBlockTime(int col, int i,int value)
         balanceBlocksIfIsGroups(col,i);
 
     //   = value;
-    qDebug() << "SET_TIME";
+    //qDebug() << "SET_TIME";
     /*if(def_min_block_width > value)
         value = def_min_block_width;*/
 
