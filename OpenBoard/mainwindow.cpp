@@ -1809,7 +1809,8 @@ void MainWindow::onTextChanged()
             }
         }
     //updateBlockFromTextEdit();
-    onTextChangeUpdateTimer.start();
+    if(!mpOGLWidget->getTimeLine()->getCurent_group())
+        onTextChangeUpdateTimer.start();
     textEdit->saveChanges();
     connect(textEdit, SIGNAL(textChanged()), this, SLOT(onTextChanged()));
     /*
@@ -1880,7 +1881,7 @@ void MainWindow::updateBlockFromTextEdit()
             if(change_time < 100)
                 change_time = 100;
             ui->expected_time->setText("EXPECTED TIME:  " + QString::number(change_time) + " ms");
-            if(ui->check_use_speed_value->isChecked() && isActiveWindow())
+            if(ui->check_use_speed_value->isChecked() && isActiveWindow() && !mpOGLWidget->getTimeLine()->getCurent_group())
             {
                 mpOGLWidget->getTimeLine()->setBlockTime(point.x(), point.y(), change_time);
                 mpOGLWidget->getTimeLine()-> sendUpdateModel();

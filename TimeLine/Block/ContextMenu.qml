@@ -249,6 +249,7 @@ timeControll.emitHideEffects();
                 text_color: contextMenuItem.text_color
                 color: contextMenuItem.color
                 id: but_append
+                enabled: !timeControll.getCurent_group() //@BAG@//NICOlas
                 button_text: "Append block"
                 index: 2
 

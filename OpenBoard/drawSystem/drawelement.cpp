@@ -683,7 +683,7 @@ int DrawElement::getLifeTime() const
     return lifeTime;
 }
 
-void DrawElement::setLifeTime(int value, bool feedBack, bool visual)
+ void DrawElement::setLifeTime(int value, bool feedBack, bool visual)
 {
     if(feedBack)
     {

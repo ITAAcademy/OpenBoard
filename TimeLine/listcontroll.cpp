@@ -2020,6 +2020,13 @@ void ListControll::convertCurentBlockToText()
     text->copy(elm);
     delete elm;
     tracks[selectedBlockPoint.x()].block[selectedBlockPoint.y()] = text;
+    text->setBlockColumn(selectedBlockPoint.x());
+    text->setBlockIndex(selectedBlockPoint.y());
+    connect(text,SIGNAL(borderColorChangedSignal(int,int,QString)),
+            this,SIGNAL(borderColorChangedSignal(int,int,QString)));
+    connect(text,SIGNAL(sizeChangedSignal(int,int, int, bool)),
+            this, SLOT(setBlockTimeWithUpdate(int, int, int, bool)));
+
     emit updateSelectedBlock(selectedBlockPoint);
     calcPointedBlocks();
     setBlocked(false);
