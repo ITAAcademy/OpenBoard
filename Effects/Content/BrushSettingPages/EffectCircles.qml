@@ -68,6 +68,8 @@ Rectangle {
             maximum:15
             width:root.width
             height:10
+            minimum: 1
+            value1: 1
             onMouse_drag_signal:  {
                effectsControll.setCurrentEffectProperty("count",value1);
             }
