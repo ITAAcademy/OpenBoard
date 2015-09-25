@@ -1293,11 +1293,16 @@ void OGLWidget::setAbleDrawing(bool value)
 }
 
 void OGLWidget::clearFrameBuffer(FBOWrapper fboWrapper){
-
+//const GLuint *value={0};
     makeCurrent();
-    glBindFramebuffer(GL_FRAMEBUFFER , fboWrapper.frameBuffer); // Bind our frame buffer for rendering
-    glClearColor(0.0,0.0,0.0,0.0);
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // чистим буфер изображения и буфер глубины
+       GLint curentBuff;
+       glGetIntegerv(GL_FRAMEBUFFER_BINDING, &curentBuff);
+
+       glBindFramebuffer(GL_FRAMEBUFFER , fboWrapper.frameBuffer); // Bind our frame buffer for rendering
+       glClearColor(0.0,0.0,0.0,0.0);
+       glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // чистим буфер изображения и буфер глубины
+
+       glBindFramebuffer(GL_FRAMEBUFFER, curentBuff); // Bind our frame buffer for rendering
 
    /*std::vector<GLubyte> emptyData(wax * way * 4, 0);
    glBindTexture(GL_TEXTURE_2D, fboWrapper.bindedTexture);
@@ -1312,7 +1317,7 @@ void OGLWidget::clearFrameBuffer(FBOWrapper fboWrapper){
      // glBindFramebuffer(GL_FRAMEBUFFER , 0);
       // qDebug()<<"clearFrameBuffer";
 //        glClearBufferfi(GL_FRAMEBUFFER, fboWrapper.frameBuffer, 0, 0 );*/
-    //glBindFramebuffer(GL_FRAMEBUFFER , 0); // Bind our frame buffer for rendering
+   // glBindFramebuffer(GL_FRAMEBUFFER , 0); // Bind our frame buffer for rendering
 
 
 }

@@ -1,7 +1,6 @@
 #ifndef SHADEREFFECT_H
 #define SHADEREFFECT_H
 #include "shaderprogramwrapper.h"
-
 class ShaderEffect
 {
      int startTimeMS = 0;
@@ -28,11 +27,11 @@ public:
     void setStartTimeMS(int value);
      int getEffectTimeHowLong() const;
     void setEffectTimeHowLong(int value);
-    bool save(QDataStream &stream);
+    bool save(QDataStream &stream, float version);
 
 
     int getShaderWrapperIndex();
-    bool load(QDataStream &stream);
+    bool load(QDataStream &stream, float version);
     bool getReverse() const;
     void setReverse(bool value);
     bool getAnchorToEnd() const;

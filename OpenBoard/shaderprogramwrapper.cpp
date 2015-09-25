@@ -174,12 +174,12 @@ bool ShaderProgramWrapper::setUniform(QString name, QVariant value)
 
     switch (value.type()) {
     case QMetaType::Int:
-        qDebug() << "set uniform int";
+        //qDebug() << "set uniform int";
         glf->glUniform1i(unifrom, value.toInt());
         break;
     case QMetaType::Double:
     case QMetaType::Float:
-        qDebug() << "set uniform double\float";
+        //qDebug() << "set uniform double\float";
         glf->glUniform1f(unifrom, value.toFloat());
         break;
     case QMetaType::QVector2D:

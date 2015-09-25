@@ -1,7 +1,7 @@
 #include "shadereffect.h"
 
 
- int ShaderEffect::getStartTimeMS() const
+int ShaderEffect::getStartTimeMS() const
 {
     return startTimeMS;
 }
@@ -11,7 +11,7 @@ void ShaderEffect::setStartTimeMS(int value)
     startTimeMS = value;
 }
 
- int ShaderEffect::getEffectTimeHowLong() const
+int ShaderEffect::getEffectTimeHowLong() const
 {
     return effectTimeHowLong;
 }
@@ -21,13 +21,19 @@ void ShaderEffect::setEffectTimeHowLong(int value)
     effectTimeHowLong = value;
 }
 
-bool ShaderEffect::save(QDataStream &stream)
+bool ShaderEffect::save(QDataStream &stream,float version)
 {
     stream << startTimeMS << effectTimeHowLong << shaderWrapperIndex << reverse;
+
+    //shaderWrapper->getParentWidget()->getTimeLine()->get
+    if (version > 2.8)
+        stream <<count << elementSize ;
 }
-bool ShaderEffect::load(QDataStream &stream)
+bool ShaderEffect::load(QDataStream &stream,float version)
 {
-stream >> startTimeMS >> effectTimeHowLong >> shaderWrapperIndex >> reverse;
+    stream >> startTimeMS >> effectTimeHowLong >> shaderWrapperIndex >> reverse;
+    if (version > 2.8)
+        stream>> count >> elementSize;
 
 }
 
