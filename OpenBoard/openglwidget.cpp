@@ -210,9 +210,10 @@ void OGLWidget::paintBrushInBuffer(GLuint& texture,Brush& currentBrushOfDrawSyst
     // qDebug()<<"binded buffer in paint brush:"<< fboWrapper.frameBuffer;
     // glBindFramebuffer(GL_FRAMEBUFFER , fboWrapper.frameBuffer); // Bind our frame buffer for rendering
     int recordedBrushN = 0;
-
+    glBindFramebuffer(GL_FRAMEBUFFER, fboWrapper.frameBuffer);
+    glDisable(GL_DEPTH_TEST);
     ////qDebug() << "keyFrame:"<<keyFrame;
-
+    //glBindFramebuffer(GL_FRAMEBUFFER, fboWrapper.frameBuffer);
     //bool isBrushUsed = false;
     //TEST
     glBegin(GL_TRIANGLES);
@@ -340,14 +341,14 @@ void OGLWidget::paintBrushInBuffer(GLuint& texture,Brush& currentBrushOfDrawSyst
 
 
         drawTexture(xPos-BRUSH_SIZE/2 + dispersX ,yPos-BRUSH_SIZE/koff/2 + dispersY,BRUSH_SIZE,BRUSH_SIZE/koff,
-                    texture,angle,scaleX,scaleY);
+                    texture,angle,scaleX,scaleY, i);
     }
     if (shaderSupported)
         useShader(0);
 
+    glEnable(GL_DEPTH_TEST);
 
-
-    glBindTexture(GL_TEXTURE_2D,0);
+   // glBindTexture(GL_TEXTURE_2D,0);
     //glBindFramebuffer(GL_FRAMEBUFFER , 0); // Unbind our texture
 }
 
@@ -1295,9 +1296,14 @@ void OGLWidget::setAbleDrawing(bool value)
 void OGLWidget::clearFrameBuffer(FBOWrapper fboWrapper){
 
     makeCurrent();
+    GLint curentBuff;
+    glGetIntegerv(GL_FRAMEBUFFER_BINDING, &curentBuff);
+
     glBindFramebuffer(GL_FRAMEBUFFER , fboWrapper.frameBuffer); // Bind our frame buffer for rendering
     glClearColor(0.0,0.0,0.0,0.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // чистим буфер изображения и буфер глубины
+
+    glBindFramebuffer(GL_FRAMEBUFFER, curentBuff); // Bind our frame buffer for rendering
 
     /*std::vector<GLubyte> emptyData(wax * way * 4, 0);
    glBindTexture(GL_TEXTURE_2D, fboWrapper.bindedTexture);

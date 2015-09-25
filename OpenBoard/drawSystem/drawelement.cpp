@@ -12,7 +12,7 @@ bool DrawElement::setDrawWidget(OGLWidget *value)
 
     if(value == pDrawWidget && value != NULL)
     {
-      //  qDebug() << "VALUE  " << fboWrapper.errorStatus;
+        //  qDebug() << "VALUE  " << fboWrapper.errorStatus;
         if(fboWrapper.errorStatus != 0 &&  pDrawWidget->isInit()){
             setFBOWrapper(pDrawWidget->initFboWrapper(pDrawWidget->getWax(),pDrawWidget->getWay()));//TODO
             for (int i = 0; i <effects.length(); i++)
@@ -39,17 +39,17 @@ bool DrawElement::setDrawWidget(OGLWidget *value)
     for (int i = 0; i <effects.length(); i++)
         effects[i].setShaderWrapper(pDrawWidget->getShaderPrograms()[effects[i].getShaderWrapperIndex()]);
 
-   // qDebug() << "before alpha effect created";
-   // qDebug() << "pDrawWidget->getShaderPrograms().length:"<<pDrawWidget->getShaderPrograms().length();
+    // qDebug() << "before alpha effect created";
+    // qDebug() << "pDrawWidget->getShaderPrograms().length:"<<pDrawWidget->getShaderPrograms().length();
 
 
     if(fboWrapper.errorStatus != 0  && pDrawWidget->isInit())
     {
-       // qDebug()<<"BEFORE SETFBOWRAPPER";
+        // qDebug()<<"BEFORE SETFBOWRAPPER";
         setFBOWrapper(pDrawWidget->initFboWrapper(pDrawWidget->getWax(),pDrawWidget->getWay()));//TODO
 
 
- //qDebug()<<"AFTER SETFBOWRAPPER";
+        //qDebug()<<"AFTER SETFBOWRAPPER";
 
     }
     return true;
@@ -89,10 +89,10 @@ DrawElement::DrawElement(OGLWidget *drawWidget, QObject *parent) : QObject(paren
         connect(pDrawWidget, SIGNAL(pauseSignal()), this, SLOT(pause()));
     }
 
-   // qDebug() << "RRRR BEFORE";
-   // if (pDrawWidget)
-//fboWrapper=pDrawWidget->initFboWrapper();
- //qDebug() << "RRRR AFTER";
+    // qDebug() << "RRRR BEFORE";
+    // if (pDrawWidget)
+    //fboWrapper=pDrawWidget->initFboWrapper();
+    //qDebug() << "RRRR AFTER";
 }
 
 void DrawElement::copy(DrawElement *elm)
@@ -112,7 +112,7 @@ DrawElement::~DrawElement()
 {
 
 
- qDebug() << "delete DrawElement";
+    qDebug() << "delete DrawElement";
     if(pDrawWidget != NULL)
     {
         pDrawWidget->deleteFBO(fboWrapper);
@@ -175,47 +175,47 @@ QPoint DrawElement::getAnimStateTimePoint()
 
 AnimStateTime DrawElement::getAnimStateTime()
 {
-   return anim_state_time;
+    return anim_state_time;
 }
 
 
 void DrawElement::paint()
 {
 
-  //  qDebug() << "paint on buffer:"<<fboWrapper.frameBuffer;
+    //  qDebug() << "paint on buffer:"<<fboWrapper.frameBuffer;
     if (pDrawWidget->getTimeLine()->getPlayTime() > lifeTime + startDrawTime)
         return;
 
     if(fboWrapper.errorStatus == 0)
     {
-      bool drawToSecondBuffer=false;
-      //DONT REMOVE ShaderEffect mainEffect(pDrawWidget->getTestShader());
-      //DONT REMOVE effects.push_back(mainEffect);
-     // bool currentDrawToSecondBuffer=false;
-       int effectsUsedInOneTime=0;
+        bool drawToSecondBuffer = false;
+        //DONT REMOVE ShaderEffect mainEffect(pDrawWidget->getTestShader());
+        //DONT REMOVE effects.push_back(mainEffect);
+        // bool currentDrawToSecondBuffer=false;
+        int effectsUsedInOneTime=0;
 
-      // ShaderEffect testShaderEffect(pDrawWidget->getTestShader());
-       //testShaderEffect.setEffectTimeHowLong(5000);
-     // effects.push_back(testShaderEffect);
+        // ShaderEffect testShaderEffect(pDrawWidget->getTestShader());
+        //testShaderEffect.setEffectTimeHowLong(5000);
+        // effects.push_back(testShaderEffect);
         if (!effects.isEmpty())
         {
-           /* if (effects.length()%2==1)
+            /* if (effects.length()%2==1)
             {
                 drawToSecondBuffer=true;
                 //pDrawWidget->clearFrameBuffer(pDrawWidget->getPingPongFBO());
                 //pDrawWidget->clearFrameBuffer(pDrawWidget->getMainFBO());
             }*/
-             int playTime = pDrawWidget->getTimeLine()->getPlayTime();
-             //TO BE REMOVED IN RELEASE
+            int playTime = pDrawWidget->getTimeLine()->getPlayTime();
+            //TO BE REMOVED IN RELEASE
 
             //
 
-         //   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); glEnable( GL_BLEND );
+            //   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); glEnable( GL_BLEND );
             for (int i=0;i<effects.length();i++)
             {
 
-                 int beginAtTime;
-               if(!effects[i].getAnchorToEnd())
+                int beginAtTime;
+                if(!effects[i].getAnchorToEnd())
                     beginAtTime = effects[i].getStartTimeMS()+ startDrawTime ;
                 else
                 {
@@ -223,29 +223,30 @@ void DrawElement::paint()
                     if (beginAtTime<0)beginAtTime=0;
 
                 }
-                 //  beginAtTime = effects[i].getStartTimeMS()+ startDrawTime ;
-                    //if (beginAtTime<0)beginAtTime=0;
+                //  beginAtTime = effects[i].getStartTimeMS()+ startDrawTime ;
+                //if (beginAtTime<0)beginAtTime=0;
 
-                 int endAtTime = beginAtTime + effects[i].getEffectTimeHowLong();
+                int endAtTime = beginAtTime + effects[i].getEffectTimeHowLong();
                 float keyFrame = 1;
 
 
 
-//qDebug() << ":"<<playTime-beginAtTime;
+                //qDebug() << ":"<<playTime-beginAtTime;
 
                 if (bPlay && playTime >= beginAtTime && playTime <= endAtTime)//endAtTime + 50 if flickering !!!
                 {
                     if(endAtTime-beginAtTime>0)
                         keyFrame=(float)(playTime-beginAtTime)/(endAtTime-beginAtTime);
-                  //  qDebug() <<i<< "-b:"<<beginAtTime;
-                   // qDebug() << i<<"-keyFrame:"<<keyFrame;
+                    //  qDebug() <<i<< "-b:"<<beginAtTime;
+                    // qDebug() << i<<"-keyFrame:"<<keyFrame;
                     if(drawToSecondBuffer)
                     {
                         //qDebug()<<"drawToSecondBuffer";
                         pDrawWidget->bindBuffer(pDrawWidget->getPingPongFBO().frameBuffer);
-                       // qDebug() << "Shader program ("<<i<<"):"<<effects[i].getShaderWrapper()->getShaderProgram();
+                        pDrawWidget->clearFrameBuffer(pDrawWidget->getPingPongFBO());
+                        // qDebug() << "Shader program ("<<i<<"):"<<effects[i].getShaderWrapper()->getShaderProgram();
                         pDrawWidget->useShader(effects[i].getShaderWrapper());
-                      //  float keyFrame = (float)(pDrawWidget->getTimeLine()->getPlayTime()-startDrawTime)/lifeTime;//MOVE UP LATER
+                        //  float keyFrame = (float)(pDrawWidget->getTimeLine()->getPlayTime()-startDrawTime)/lifeTime;//MOVE UP LATER
                         effects[i].setUniform("animationKey",keyFrame);
                         effects[i].setUniform("resolution",fboWrapper.tWidth,fboWrapper.tHeight);
                         effects[i].setUniform("reverse",effects[i].getReverse());
@@ -255,27 +256,28 @@ void DrawElement::paint()
                             draw();
                         else
                             pDrawWidget->drawTexture(0,0,fboWrapper.tWidth,fboWrapper.tHeight,
-                                                    fboWrapper.bindedTexture,0,1,1,z );
+                                                     fboWrapper.bindedTexture,0,1,1,z );
                         pDrawWidget->useShader(0);
                     }
                     else
                     {
-                       // qDebug()<<"drawToFirstBuffer";
+                        // qDebug()<<"drawToFirstBuffer";
                         pDrawWidget->bindBuffer(fboWrapper.frameBuffer);
+                        pDrawWidget->clearFrameBuffer(fboWrapper);
                         pDrawWidget->useShader(effects[i].getShaderWrapper());
-                        // float keyFrame = (float)(pDrawWidget->getTimeLine()->getPlayTime()-startDrawTime)/lifeTime;//MOVE UP LATER      
+                        // float keyFrame = (float)(pDrawWidget->getTimeLine()->getPlayTime()-startDrawTime)/lifeTime;//MOVE UP LATER
                         effects[i].setUniform("animationKey",keyFrame);
                         effects[i].setUniform("resolution",pDrawWidget->getPingPongFBO().tWidth,
-                                                                     pDrawWidget->getPingPongFBO().tHeight);
+                                              pDrawWidget->getPingPongFBO().tHeight);
 
-                       effects[i].setUniform("reverse",effects[i].getReverse());
-                       effects[i].setUniform("count",effects[i].getCount());
+                        effects[i].setUniform("reverse",effects[i].getReverse());
+                        effects[i].setUniform("count",effects[i].getCount());
                         if (effectsUsedInOneTime==0)
                             draw();
                         else
-                        pDrawWidget->drawTexture(0,0,pDrawWidget->getPingPongFBO().tWidth,
-                                             pDrawWidget->getPingPongFBO().tHeight,
-                                            pDrawWidget->getPingPongFBO().bindedTexture,0,1,1,z );
+                            pDrawWidget->drawTexture(0,0,pDrawWidget->getPingPongFBO().tWidth,
+                                                     pDrawWidget->getPingPongFBO().tHeight,
+                                                     pDrawWidget->getPingPongFBO().bindedTexture,0,1,1,z );
                         pDrawWidget->useShader(0);
 
 
@@ -287,10 +289,10 @@ void DrawElement::paint()
             }
 
             //qDebug()<<"before remove temp effect";
-           //remove test effect
+            //remove test effect
             //effects.removeAt(effects.length()-1);
 
-        pDrawWidget->disableShader();
+            pDrawWidget->disableShader();
 
             if (effectsUsedInOneTime==0){
                 //qDebug() << "if (effectsUsedInOneTime==0)";
@@ -299,29 +301,29 @@ void DrawElement::paint()
 
             }
             else
-            if (!drawToSecondBuffer)
-            {
-               // qDebug() << "draw to first buffer forcly";
-                pDrawWidget->bindBuffer(fboWrapper.frameBuffer);
-                // float keyFrame = (float)(pDrawWidget->getTimeLine()->getPlayTime()-startDrawTime)/lifeTime;//MOVE UP LATER
-                pDrawWidget->drawTexture(0,0,pDrawWidget->getPingPongFBO().tWidth,
-                pDrawWidget->getPingPongFBO().tHeight,
-                pDrawWidget->getPingPongFBO().bindedTexture,0,1,1,z );
+                if (!drawToSecondBuffer)
+                {
+                    // qDebug() << "draw to first buffer forcly";
+                    pDrawWidget->bindBuffer(fboWrapper.frameBuffer);
+                    pDrawWidget->clearFrameBuffer(fboWrapper);
+                    // float keyFrame = (float)(pDrawWidget->getTimeLine()->getPlayTime()-startDrawTime)/lifeTime;//MOVE UP LATER
+                    pDrawWidget->drawTexture(0,0,pDrawWidget->getPingPongFBO().tWidth,
+                                             pDrawWidget->getPingPongFBO().tHeight,
+                                             pDrawWidget->getPingPongFBO().bindedTexture,0,1,1,z );
 
-
-            }
+                }
 
             pDrawWidget->enableShader();
         }
         if (effects.isEmpty()){ //&& effectsUsedInOneTime==0){
             {
                 //qDebug() << "if (effects.isEmpty()";
-                  pDrawWidget->bindBuffer(fboWrapper.frameBuffer);
-                  draw();//Draw original image one time without any effects
-                  //qDebug() << "EFFECTS EMPTY !!!";
+                pDrawWidget->bindBuffer(fboWrapper.frameBuffer);
+                draw();//Draw original image one time without any effects
+                //qDebug() << "EFFECTS EMPTY !!!";
             }
         }
-/*
+        /*
         //NEWNEWNEWNEWNEWNENWNENWNENWNENWNENWNENW
                 pDrawWidget->bindBuffer(pDrawWidget->getPingPongFBO().frameBuffer);
                // qDebug() << "Shader program ("<<i<<"):"<<effects[i].getShaderWrapper()->getShaderProgram();
@@ -339,9 +341,9 @@ void DrawElement::paint()
        //NEWNEWNEWNEWNEWNENWNENWNENWNENWNENWNENW
 */
         //pDrawWidget->getOglFuncs()->glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE);
-       // pDrawWidget->bindBuffer(0);
+        // pDrawWidget->bindBuffer(0);
         //qDebug() << "MAIN FBO:"<<pDrawWidget->getMainFBO().frameBuffer;
-         pDrawWidget->bindBuffer(pDrawWidget->getMainFBO().frameBuffer);
+        pDrawWidget->bindBuffer(pDrawWidget->getMainFBO().frameBuffer);
 
         //pDrawWidget->useShader(0);
 
@@ -405,19 +407,19 @@ void DrawElement::draw()
 
 QVector<ShaderEffect> DrawElement::getEffects()
 {
- return effects;
+    return effects;
 }
- DrawElement::setEffects(QVector<ShaderEffect> effects)
+DrawElement::setEffects(QVector<ShaderEffect> effects)
 {
-this->effects=effects;
+    this->effects=effects;
 }
- DrawElement::addEffect(ShaderEffect effect)
+DrawElement::addEffect(ShaderEffect effect)
 {
-effects.push_back(effect);
+    effects.push_back(effect);
 }
- DrawElement::clearEffects()
+DrawElement::clearEffects()
 {
-effects.clear();
+    effects.clear();
 }
 
 
@@ -461,11 +463,11 @@ bool DrawElement::loadTypeId(QIODevice* device)
     int temp_type;
     stream >> temp_type  ;
 
-  // typeId = static_cast<Element_type>(temp_type);
+    // typeId = static_cast<Element_type>(temp_type);
     Element_type temp_2 ;
     temp_2 = (Element_type)(temp_type);
-   setTypeId(temp_2);
-   qDebug() << "DrawElement::load temp_type = " <<(int) getTypeId();
+    setTypeId(temp_2);
+    qDebug() << "DrawElement::load temp_type = " <<(int) getTypeId();
 
 }
 bool DrawElement::loadRest(QIODevice* device)
@@ -475,7 +477,7 @@ bool DrawElement::loadRest(QIODevice* device)
     stream  >> key >> lifeTime >> tickTime >> startDrawTime >> x >> y >> z >>
             width >> height >> keyCouter>> blockIndex >> blockColumn;
     //if (typeId == Element_type::Image)
-        icon = load_image(stream);
+    icon = load_image(stream);
 
     int effectsLength = 0;
     stream >> anim_state_time.state >>  anim_state_time.time;
@@ -484,7 +486,7 @@ bool DrawElement::loadRest(QIODevice* device)
     effects.clear();
     effects.resize(effectsLength);
 
-   /* load_add(stream);
+    /* load_add(stream);
 =======
 
 
@@ -502,7 +504,7 @@ bool DrawElement::loadRest(QIODevice* device)
 
     // qDebug() << "load rest end";
     load_add(stream);
-   // qDebug() << "load add";
+    // qDebug() << "load add";
 
 }
 
@@ -516,12 +518,12 @@ bool DrawElement::save(QIODevice* device) //-=-=-=
     stream << temp_type << key << lifeTime << tickTime << startDrawTime << x << y << z
            << width << height << keyCouter << blockIndex << blockColumn;
     //if (typeId == Element_type::Image)
-        //save_image(stream, icon);
-   // qDebug() << "qwewqewqeqewqQQQQ  " << lastPath;
+    //save_image(stream, icon);
+    // qDebug() << "qwewqewqeqewqQQQQ  " << lastPath;
     if (!lastPath.isEmpty())
-       resultStatus = save_image(stream,lastPath,icon.format());
+        resultStatus = save_image(stream,lastPath,icon.format());
     else
-       save_image(stream, icon );
+        save_image(stream, icon );
 
     stream << anim_state_time.state <<  anim_state_time.time;
     stream << effects.length();
@@ -589,8 +591,8 @@ void DrawElement::setPosition(QPoint pos)
     y = pos.y();
 }
 
- DrawElement* DrawElement::getCopy(QObject parentamana)
- {
+DrawElement* DrawElement::getCopy(QObject parentamana)
+{
     /* switch(typeId)
      {
      case Element_type::Image :
@@ -608,10 +610,10 @@ void DrawElement::setPosition(QPoint pos)
 
      return (DrawElement) this; //777777
      */
-     DrawElement *elm;
-     memcpy(elm, this,sizeof(DrawElement));
-            return elm;
- }
+    DrawElement *elm;
+    memcpy(elm, this,sizeof(DrawElement));
+    return elm;
+}
 
 void DrawElement::setPosition(int x, int y)
 {
@@ -771,7 +773,7 @@ void DrawElement::stop()
 void DrawElement::start()
 {
     if (!bPause)
-    keyCouter = 0;
+        keyCouter = 0;
     bPause = false;
     bPlay = true;
 
@@ -850,9 +852,9 @@ QMovie *DrawElement::load_Movie(QDataStream &stream)
     QBuffer buffer(&ba); // QBuffer inherits QIODevice
     buffer.open(QIODevice::ReadOnly);
     mov = new QMovie(&buffer, ba);
-//img_temp.load(&buffer,"PNG");
+    //img_temp.load(&buffer,"PNG");
 
-buffer.close();
+    buffer.close();
     //stream.readRawData((char*)img_temp.bits(), img_temp.byteCount());
     return mov;
 }

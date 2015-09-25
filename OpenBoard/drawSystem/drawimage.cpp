@@ -27,7 +27,7 @@ DrawImageElm::DrawImageElm(OGLWidget *drawWidget, QObject *parent) : DrawElement
     setTypeId(Element_type::Image);
     if(gif != NULL)
         delete gif;
-   /* ShaderEffect alphaEffect(OGLWidget::ALPHA_SHADER);
+    /* ShaderEffect alphaEffect(OGLWidget::ALPHA_SHADER);
     ShaderEffect alphaEffect2(OGLWidget::ALPHA_SHADER);
     ShaderEffect spiralEffect(OGLWidget::SPIRAL_SHADER);
     alphaEffect.setEffectTimeHowLong(500);
@@ -56,7 +56,7 @@ DrawImageElm::~DrawImageElm()
     qDebug() << "delete texture begin with index:"<<textureIndex;
     if(textureIndex != -1)
         pDrawWidget->deleteTexture(textureIndex);
-      qDebug() << "delete texture end";
+    qDebug() << "delete texture end";
 }
 
 void DrawImageElm::draw()
@@ -67,20 +67,20 @@ void DrawImageElm::draw()
         pDrawWidget->clearFrameBuffer(fboWrapper);
         //pDrawWidget->bindBuffer(fboWrapper.frameBuffer);
         if(keyCouter==0)
-                {
+        {
 
-                   qDebug() << "RESET GIF";
-                        gif->stop();
-                        gif->start();
+            qDebug() << "RESET GIF";
+            gif->stop();
+            gif->start();
 
-    int playTime = pDrawWidget->getTimeLine()->getPlayTime();
-             int keyFrame = (playTime-startDrawTime)*gif->frameCount()/lifeTime;
-gif->jumpToFrame(keyFrame);
-              gif->start();
+            int playTime = pDrawWidget->getTimeLine()->getPlayTime();
+            int keyFrame = (playTime-startDrawTime)*gif->frameCount()/lifeTime;
+            gif->jumpToFrame(keyFrame);
+            gif->start();
 
         }
         if (bPause){
-                gif->setPaused(true);
+            gif->setPaused(true);
         }
         else    gif->setPaused(false);
         pDrawWidget->drawQImageFromTexture(0, 0, gif->currentImage(),textureIndex,z);
@@ -90,23 +90,23 @@ gif->jumpToFrame(keyFrame);
         pDrawWidget->clearFrameBuffer(fboWrapper);
         pDrawWidget->drawTexture(0, 0, pDrawWidget->getWax(), pDrawWidget->getWay(), textureIndex, 0, 1 , 1, z);
     }
-     keyCouter++;
+    keyCouter++;
 
 }
 
 bool DrawImageElm::load_add(QDataStream &stream)
 {
     stream >> bGIF ;
-   // qDebug() << "DrawImageElm lastPath:" + lastPath;
+    // qDebug() << "DrawImageElm lastPath:" + lastPath;
 
     if(bGIF)
-    {  
+    {
         stream >> lastPath;
         gif = new QMovie(lastPath);
         if(!gif->isValid())
             bGIF = false;
     }
-   // qDebug() << "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww" + bGIF;
+    // qDebug() << "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww" + bGIF;
 }
 
 bool DrawImageElm::save_add(QDataStream &stream)
@@ -115,7 +115,7 @@ bool DrawImageElm::save_add(QDataStream &stream)
     //qDebug() << "DrawImageElm lastPath:" + lastPath;
 
     if(bGIF)
-    {   
+    {
         stream << lastPath;
     }
 
@@ -124,11 +124,11 @@ bool DrawImageElm::save_add(QDataStream &stream)
 void DrawImageElm::setDrawImage(QImage img)
 {
     image = img;
-//    new QMovie()
+    //    new QMovie()
     icon = img;
     //image.save("12334243534534534.png");
     if(pDrawWidget != NULL && pDrawWidget->isVisible())
-         textureIndex = pDrawWidget->loadTexture(image);
+        textureIndex = pDrawWidget->loadTexture(image);
 
 
 }
