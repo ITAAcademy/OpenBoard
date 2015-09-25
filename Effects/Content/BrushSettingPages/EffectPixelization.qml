@@ -53,8 +53,8 @@ Rectangle {
      width:root.width
      height:10
     name: "time"
-    value1:0
-    value2:0
+    value1:0.0
+    value2:0.0
   /*  onValue1Changed: {
         startTime=value1
     }
@@ -73,6 +73,8 @@ Rectangle {
             maximum:100
             width:root.width
             height:10
+            minimum: 1
+            value1: 1
             onMouse_drag_signal:  {
                effectsControll.setCurrentEffectProperty("elementSize",value1);
             }

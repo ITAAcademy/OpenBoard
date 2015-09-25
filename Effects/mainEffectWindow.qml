@@ -51,13 +51,16 @@ Rectangle{
             effectsPanelPixelization.setStartTime(startTime);
             effectsPanelPixelization.setEndTime(endTime);
             effectsPanelPixelization.setInverted(inversion);
+            if (elementSize<1)elementsize=1;
             effectsPanelPixelization.setElementSize(elementSize)
             break;
         case 3:
             effectsPanelCircles.setStartTime(startTime);
             effectsPanelCircles.setEndTime(endTime);
             effectsPanelCircles.setInverted(inversion);
+             if (count<1)count=1;
             effectsPanelCircles.setCount(count);
+
             break;
         case 4:
             effectsTurnthepage.setStartTime(startTime);
