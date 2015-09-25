@@ -143,8 +143,8 @@ void EffectsManager::addEffect(Effect effect)
     QQmlContext *ctxt = view.rootContext();
     //dataList=ctxt->contextProperty("myModel").toStringList();
     //qDebug()<<"new effect created";
-    dataListLabels.append(effect.getName());
-    dataListValues.append(effect);
+    dataListLabels.push_back(effect.getName());
+    dataListValues.push_back(effect);
     ctxt->setContextProperty("myModel",dataListLabels);
    // qDebug() << "end add effect";
 

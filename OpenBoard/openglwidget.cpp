@@ -1294,7 +1294,7 @@ void OGLWidget::setAbleDrawing(bool value)
 }
 
 void OGLWidget::clearFrameBuffer(FBOWrapper fboWrapper){
-
+//const GLuint *value={0};
     makeCurrent();
     GLint curentBuff;
     glGetIntegerv(GL_FRAMEBUFFER_BINDING, &curentBuff);
@@ -1318,7 +1318,7 @@ void OGLWidget::clearFrameBuffer(FBOWrapper fboWrapper){
      // glBindFramebuffer(GL_FRAMEBUFFER , 0);
       // qDebug()<<"clearFrameBuffer";
 //        glClearBufferfi(GL_FRAMEBUFFER, fboWrapper.frameBuffer, 0, 0 );*/
-    //glBindFramebuffer(GL_FRAMEBUFFER , 0); // Bind our frame buffer for rendering
+   // glBindFramebuffer(GL_FRAMEBUFFER , 0); // Bind our frame buffer for rendering
 
 
 }
@@ -1649,16 +1649,19 @@ void OGLWidget::applyEffectsToCurrentBlock()
         case TURNTHEPAGE_SHADER:
         case RANDSQUARES_SHADER:
             ShaderEffect sEffect(shaderPrograms[shaderProgramIndex],shaderProgramIndex);
-            int startTime = blockEffect->getPropetrie("start_time");
-            int endTime = blockEffect->getPropetrie("end_time");
-            bool reverse = blockEffect->getPropetrie("inversion");
-            int count = blockEffect->getPropetrie("count");
-            sEffect.setStartTimeMS(startTime);
-            sEffect.setEffectTimeHowLong(endTime-startTime);
-            sEffect.setReverse(reverse);
-            sEffect.setShaderWrapperIndex(shaderProgramIndex);
-            sEffect.setCount(count);
-            timeLineEffects.push_back(sEffect);
+
+        int startTime = blockEffect->getPropetrie("start_time");
+        int endTime = blockEffect->getPropetrie("end_time");
+        bool reverse = blockEffect->getPropetrie("inversion");
+        int count = blockEffect->getPropetrie("count");
+        int elmSize = blockEffect->getPropetrie("elementSize");
+        sEffect.setStartTimeMS(startTime);
+        sEffect.setEffectTimeHowLong(endTime-startTime);
+        sEffect.setReverse(reverse);
+        sEffect.setShaderWrapperIndex(shaderProgramIndex);
+        sEffect.setCount(count);
+        sEffect.setElementSize(elmSize);
+        timeLineEffects.push_back(sEffect);
         }
     }
     qDebug() << "apply effect after for";
@@ -1670,26 +1673,29 @@ void OGLWidget::applyEffectsToCurrentBlock()
 void OGLWidget::loadEffectFromCurrentBlockToEffectManager()
 {
     effectManager->setCurrentBlockIndex(timeLine->getSelectedBlockPoint());
-    QPoint blockIndex = effectManager->getCurrentBlockIndex();
-    // qDebug() << "CUR BLOCK(LOAD):"<<blockIndex;
-    DrawElement *currentBlock = timeLine->getBlock(blockIndex);
-    effectManager->clearEffects();
-    effectManager->setBlockTime(currentBlock->getLifeTime());
-    qDebug() << "loadEffectFromCurrentBlockToEffectManager:"<<currentBlock->getEffects().length();
-    for (ShaderEffect  currentEffect : currentBlock->getEffects())
-    {
-        //  qDebug() << "cur EFFECT start TIME:"<<currentEffect.getStartTimeMS();
-        //qDebug() << "cur EFFECT howlong TIME:"<<currentEffect.getEffectTimeHowLong();
-        Effect effect;
-        effect.setName("default");
-        effect.setPropetrie("start_time",currentEffect.getStartTimeMS());
-        effect.setPropetrie("end_time",currentEffect.getStartTimeMS()+currentEffect.getEffectTimeHowLong());
-        effect.setPropetrie("inversion",currentEffect.getReverse());
-        effect.setPropetrie("effect_type",currentEffect.getShaderWrapperIndex());
-        effect.setPropetrie("count",currentEffect.getCount());
-        effectManager->addEffect(effect);
-    }
-    //effectManager->update();
+
+ QPoint blockIndex = effectManager->getCurrentBlockIndex();
+// qDebug() << "CUR BLOCK(LOAD):"<<blockIndex;
+ DrawElement *currentBlock = timeLine->getBlock(blockIndex);
+effectManager->clearEffects();
+effectManager->setBlockTime(currentBlock->getLifeTime());
+qDebug() << "loadEffectFromCurrentBlockToEffectManager:"<<currentBlock->getEffects().length();
+ for (ShaderEffect  currentEffect : currentBlock->getEffects())
+ {
+   //  qDebug() << "cur EFFECT start TIME:"<<currentEffect.getStartTimeMS();
+     //qDebug() << "cur EFFECT howlong TIME:"<<currentEffect.getEffectTimeHowLong();
+Effect effect;
+effect.setName("default");
+ effect.setPropetrie("start_time",currentEffect.getStartTimeMS());
+ effect.setPropetrie("end_time",currentEffect.getStartTimeMS()+currentEffect.getEffectTimeHowLong());
+effect.setPropetrie("inversion",currentEffect.getReverse());
+effect.setPropetrie("effect_type",currentEffect.getShaderWrapperIndex());
+effect.setPropetrie("count",currentEffect.getCount());
+effect.setPropetrie("elementSize",currentEffect.getElementSize());
+ effectManager->addEffect(effect);
+ }
+ //effectManager->update();
+
 
 }
 
