@@ -1684,13 +1684,44 @@ void OGLWidget::loadEffectFromCurrentBlockToEffectManager()
  DrawElement *currentBlock = timeLine->getBlock(blockIndex);
 effectManager->clearEffects();
 effectManager->setBlockTime(currentBlock->getLifeTime());
+int indexes[shaderPrograms.length()];
+for (int i = 0; i < shaderPrograms.length();i++)
+    indexes[i]=0;
 qDebug() << "loadEffectFromCurrentBlockToEffectManager:"<<currentBlock->getEffects().length();
  for (ShaderEffect  currentEffect : currentBlock->getEffects())
  {
    //  qDebug() << "cur EFFECT start TIME:"<<currentEffect.getStartTimeMS();
      //qDebug() << "cur EFFECT howlong TIME:"<<currentEffect.getEffectTimeHowLong();
 Effect effect;
-effect.setName("default");
+int currentProgramIndex = currentEffect.getShaderWrapperIndex();
+indexes[currentProgramIndex]++;
+QString nameStart;
+switch(currentProgramIndex){
+case ALPHA_SHADER:
+    nameStart="alpha";
+    break;
+case SPIN_SHADER:
+    nameStart="spin";
+    break;
+case PIXELIZATION_SHADER:
+    nameStart="pixelization";
+    break;
+case CIRCLES_SHADER:
+    nameStart="circles";
+    break;
+case TURNTHEPAGE_SHADER:
+    nameStart="turnPage";
+    break;
+case RANDSQUARES_SHADER:
+    nameStart="squares";
+    break;
+default:
+    nameStart="effect";
+    break;
+}
+effect.setName(nameStart+QString::number(indexes[currentProgramIndex]));
+
+
  effect.setPropetrie("start_time",currentEffect.getStartTimeMS());
  effect.setPropetrie("end_time",currentEffect.getStartTimeMS()+currentEffect.getEffectTimeHowLong());
 effect.setPropetrie("inversion",currentEffect.getReverse());
