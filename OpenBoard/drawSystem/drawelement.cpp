@@ -241,14 +241,15 @@ void DrawElement::paint()
                    // qDebug() << i<<"-keyFrame:"<<keyFrame;
                     if(drawToSecondBuffer)
                     {
-                        qDebug()<<"drawToSecondBuffer";
+                        //qDebug()<<"drawToSecondBuffer";
                         pDrawWidget->bindBuffer(pDrawWidget->getPingPongFBO().frameBuffer);
                        // qDebug() << "Shader program ("<<i<<"):"<<effects[i].getShaderWrapper()->getShaderProgram();
                         pDrawWidget->useShader(effects[i].getShaderWrapper());
                       //  float keyFrame = (float)(pDrawWidget->getTimeLine()->getPlayTime()-startDrawTime)/lifeTime;//MOVE UP LATER
-                        ShaderEffect::setUniformAnimationKey(effects[i],keyFrame);
-                        ShaderEffect::setUniformResolution(effects[i],fboWrapper.tWidth,fboWrapper.tHeight);
-                        ShaderEffect::setUniformReverse(effects[i],effects[i].getReverse());
+                        effects[i].setUniform("animationKey",keyFrame);
+                        effects[i].setUniform("resolution",fboWrapper.tWidth,fboWrapper.tHeight);
+                        effects[i].setUniform("reverse",effects[i].getReverse());
+                        effects[i].setUniform("count",effects[i].getCount());
 
                         if (effectsUsedInOneTime==0)
                             draw();
@@ -259,15 +260,16 @@ void DrawElement::paint()
                     }
                     else
                     {
-                        qDebug()<<"drawToFirstBuffer";
+                       // qDebug()<<"drawToFirstBuffer";
                         pDrawWidget->bindBuffer(fboWrapper.frameBuffer);
                         pDrawWidget->useShader(effects[i].getShaderWrapper());
-                        // float keyFrame = (float)(pDrawWidget->getTimeLine()->getPlayTime()-startDrawTime)/lifeTime;//MOVE UP LATER
-                        ShaderEffect::setUniformAnimationKey(effects[i],keyFrame);
-                        ShaderEffect::setUniformResolution(effects[i],
-                                                       pDrawWidget->getPingPongFBO().tWidth,pDrawWidget->getPingPongFBO().tHeight);
-                        ShaderEffect::setUniformReverse(effects[i],effects[i].getReverse());
+                        // float keyFrame = (float)(pDrawWidget->getTimeLine()->getPlayTime()-startDrawTime)/lifeTime;//MOVE UP LATER      
+                        effects[i].setUniform("animationKey",keyFrame);
+                        effects[i].setUniform("resolution",pDrawWidget->getPingPongFBO().tWidth,
+                                                                     pDrawWidget->getPingPongFBO().tHeight);
 
+                       effects[i].setUniform("reverse",effects[i].getReverse());
+                       effects[i].setUniform("count",effects[i].getCount());
                         if (effectsUsedInOneTime==0)
                             draw();
                         else
@@ -291,7 +293,7 @@ void DrawElement::paint()
         pDrawWidget->disableShader();
 
             if (effectsUsedInOneTime==0){
-                qDebug() << "if (effectsUsedInOneTime==0)";
+                //qDebug() << "if (effectsUsedInOneTime==0)";
                 pDrawWidget->bindBuffer(fboWrapper.frameBuffer);
                 draw();//Draw original image one time without any effects
 
@@ -299,7 +301,7 @@ void DrawElement::paint()
             else
             if (!drawToSecondBuffer)
             {
-                qDebug() << "draw to first buffer forcly";
+               // qDebug() << "draw to first buffer forcly";
                 pDrawWidget->bindBuffer(fboWrapper.frameBuffer);
                 // float keyFrame = (float)(pDrawWidget->getTimeLine()->getPlayTime()-startDrawTime)/lifeTime;//MOVE UP LATER
                 pDrawWidget->drawTexture(0,0,pDrawWidget->getPingPongFBO().tWidth,
@@ -340,7 +342,7 @@ void DrawElement::paint()
        // pDrawWidget->bindBuffer(0);
         //qDebug() << "MAIN FBO:"<<pDrawWidget->getMainFBO().frameBuffer;
          pDrawWidget->bindBuffer(pDrawWidget->getMainFBO().frameBuffer);
-        // qDebug() << "PING-pONG FBO:"<<pDrawWidget->getPingPongFBO().frameBuffer;
+
         //pDrawWidget->useShader(0);
 
         if(aspectRatio)

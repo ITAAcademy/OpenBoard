@@ -10,18 +10,8 @@ ShaderProgramWrapper::ShaderProgramWrapper(OGLWidget *pWidget)
     parentWidget=pWidget;
     glf=parentWidget->getOglFuncs();
 }
-void ShaderProgramWrapper::setUniformResolution(float width, float height)
-{
-    GLint keyUnifrom = glf->glGetUniformLocation(ShaderProgram
-                        ,"resolution");
-    glf->glUniform2f(keyUnifrom,width,height);
-}
-void ShaderProgramWrapper::setUniformSize(float width, float height)
-{
-    GLint keyUnifrom = glf->glGetUniformLocation(ShaderProgram
-                        ,"size");
-    glf->glUniform2f(keyUnifrom,width,height);
-}
+
+
 
 ShaderProgramWrapper::ShaderProgramWrapper()
 {
@@ -44,7 +34,7 @@ ShaderProgramWrapper::~ShaderProgramWrapper()
 {
      //qDebug() <<"ShaderProgramWrapper::~ShaderProgramWrapper()";
      bool exp = errorStatus==0;
-     qDebug() << "succ";
+    // qDebug() << "succ";
     if(exp)
     {
         //qDebug() <<"~ShaderProgramWrapper begin";
@@ -184,17 +174,52 @@ bool ShaderProgramWrapper::setUniform(QString name, QVariant value)
 
     switch (value.type()) {
     case QMetaType::Int:
+        qDebug() << "set uniform int";
         glf->glUniform1i(unifrom, value.toInt());
         break;
-    case QMetaType::Float || QMetaType::Double:
+    case QMetaType::Double:
+    case QMetaType::Float:
+        qDebug() << "set uniform double\float";
         glf->glUniform1f(unifrom, value.toFloat());
         break;
-
+    case QMetaType::QVector2D:
+{
+        //QVector<int> arr = value.value<QVector<int>>();
+        QVector2D arr = value.value<QVector2D>();
+        //QString vectorType = typeid(arr.[0]).name();
+        //if(vectorType.compare("int"))
+        glf->glUniform2f(unifrom,arr.x(),arr.y() );
+}
+         break;
+    case QMetaType::QVector3D:
+{
+        //QVector<int> arr = value.value<QVector<int>>();
+        QVector3D arr = value.value<QVector3D>();
+        //QString vectorType = typeid(arr.[0]).name();
+        //if(vectorType.compare("int"))
+        glf->glUniform3f(unifrom,arr.x(),arr.y(),arr.z() );
+    }
+        break;
+    case QMetaType::QVector4D:
+{
+        //QVector<int> arr = value.value<QVector<int>>();
+        QVector4D arr = value.value<QVector4D>();
+        //QString vectorType = typeid(arr.[0]).name();
+        //if(vectorType.compare("int"))
+        glf->glUniform4f(unifrom,arr.x(),arr.y(),arr.z(),arr.w() );
+}
+        break;
+case QMetaType::Bool:
+        glf->glUniform1i(unifrom, value.toBool());
+        break;
     default:
         return false;
     }
     return true;
 
+}
+bool ShaderProgramWrapper::setUniform(QString name, float val1,float val2){
+    setUniform(name,QVector2D(val1,val2));
 }
 
 OGLWidget *ShaderProgramWrapper::getParentWidget()

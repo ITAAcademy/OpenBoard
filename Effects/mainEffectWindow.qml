@@ -16,14 +16,16 @@ Rectangle{
 
     function loadEffectParams(){
         var startTime  = effectsControll.getCurrentEffectProperty("start_time")
-       var endTime=effectsControll.getCurrentEffectProperty("end_time")
+        var endTime=effectsControll.getCurrentEffectProperty("end_time")
         var inversion=effectsControll.getCurrentEffectProperty("inversion")
         var effectType=effectsControll.getCurrentEffectProperty("effect_type")
+        var count = effectsControll.getCurrentEffectProperty("count");
         console.log("current index changed");
         console.log("startTime:"+startTime);
         console.log("endTime:"+endTime);
         console.log("inversion:"+inversion);
         console.log("effectType:"+effectType);
+        console.log("count:"+count);
         combo.currentIndex=effectType;
         console.log("secondColumn.comboEffectType:"+effectType);
 
@@ -37,28 +39,34 @@ Rectangle{
             effectsPanelAlpha.setEndTime(endTime);
             effectsPanelAlpha.setInverted(inversion);
             break;
-         case 1:
+        case 1:
             console.log("case 1");
 
             effectsPanelSpin.setStartTime(startTime);
             effectsPanelSpin.setEndTime(endTime);
             effectsPanelSpin.setInverted(inversion);
             break;
-         case 2:
-             effectsPanelPixelization.setStartTime(startTime);
-             effectsPanelPixelization.setEndTime(endTime);
-             effectsPanelPixelization.setInverted(inversion);
-             break;
-         case 3:
-             effectsPanelCircles.setStartTime(startTime);
-             effectsPanelCircles.setEndTime(endTime);
-             effectsPanelCircles.setInverted(inversion);
-             break;
-         case 4:
-             effectsTurnthepage.setStartTime(startTime);
-             effectsTurnthepage.setEndTime(endTime);
-             effectsTurnthepage.setInverted(inversion);
-             break;
+        case 2:
+            effectsPanelPixelization.setStartTime(startTime);
+            effectsPanelPixelization.setEndTime(endTime);
+            effectsPanelPixelization.setInverted(inversion);
+            break;
+        case 3:
+            effectsPanelCircles.setStartTime(startTime);
+            effectsPanelCircles.setEndTime(endTime);
+            effectsPanelCircles.setInverted(inversion);
+            effectsPanelCircles.setCount(count);
+            break;
+        case 4:
+            effectsTurnthepage.setStartTime(startTime);
+            effectsTurnthepage.setEndTime(endTime);
+            effectsTurnthepage.setInverted(inversion);
+            break;
+        case 5:
+            effectsRandomSquares.setStartTime(startTime);
+            effectsRandomSquares.setEndTime(endTime);
+            effectsRandomSquares.setInverted(inversion);
+            break;
 
 
         }
@@ -84,6 +92,7 @@ Rectangle{
     property bool isEffectPixelization : (combo.currentIndex===2);
     property bool isEffectCircles : (combo.currentIndex===3);
     property bool isEffectTurnthepage : (combo.currentIndex===4);
+    property bool isEffectRandomSquares : (combo.currentIndex===5);
 
     property bool isEmptyList : (listBox.listBox.count==0);
     property bool isNonSelected : (listBox.listBox.currentIndex==-1);
@@ -109,7 +118,7 @@ Rectangle{
                 width: firstColumn.width
                 y:listControl.y+listControl.height
                 height: root.height-(listControl.y+listControl.height)-root.border.width*2
-               /* property double startTime
+                /* property double startTime
                 property double endTime
                 property double inversion
                 property double effectType*/
@@ -117,8 +126,8 @@ Rectangle{
                 Connections {
                     target: listBox.listBox
                     onCurrentIndexChanged: {
-                      //  effectsControll.setCurrentEffectProperty("effect_type",currentIndex);
-                       loadEffectParams()
+                        //  effectsControll.setCurrentEffectProperty("effect_type",currentIndex);
+                        loadEffectParams()
 
                         //effectsControll.setCurrentEffectProperty("effect_type",currentIndex)
                     }
@@ -192,6 +201,7 @@ Rectangle{
                     ListElement { text: "Pixelization"; color: "Brown" }
                     ListElement { text: "Circles"; color: "Green" }
                     ListElement { text: "Turn the page"; color: "Green" }
+                    ListElement { text: "Random squares"; color: "Pink" }
 
                 }
                 onCurrentIndexChanged:{
@@ -253,6 +263,15 @@ Rectangle{
                 width:secondColumn.width
                 height:parent.height-combo.height
                 visible:isEffectTurnthepage && !isEmptyList && !isNonSelected
+
+            }
+            SettingPages.EffectRandomsquares{
+                id:effectsRandomSquares
+                y:listBox.border.width
+                color: root.color
+                width:secondColumn.width
+                height:parent.height-combo.height
+                visible:isEffectRandomSquares && !isEmptyList && !isNonSelected
 
             }
         }

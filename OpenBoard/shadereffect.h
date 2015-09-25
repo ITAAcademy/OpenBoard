@@ -7,6 +7,7 @@ class ShaderEffect
      int startTimeMS = 0;
      int effectTimeHowLong = 0;
     bool reverse = false;
+    int count= 0;
     bool anchorToEnd = false;
    ShaderProgramWrapper *shaderWrapper = nullptr;
    int shaderWrapperIndex = -1;
@@ -21,9 +22,7 @@ public:
 
     ShaderProgramWrapper* getShaderWrapper();
     void setShaderWrapper(ShaderProgramWrapper* shader);
-    static void setUniformAnimationKey(ShaderEffect shaderEffect, float value);
-    static void setUniformResolution(ShaderEffect shaderEffect, float width, float height);
-    static void setUniformReverse( ShaderEffect shaderEffect,bool val);
+   // static void setUniformAnimationKey(ShaderEffect shaderEffect, float value);
      int getStartTimeMS() const;
     void setStartTimeMS(int value);
      int getEffectTimeHowLong() const;
@@ -43,6 +42,10 @@ public:
     static QVector<ShaderEffect> creatStartEffect( int time );
     static QVector<ShaderEffect> creatEffectByNum( int num, int time );
     void setShaderWrapperIndex(int i);
+    bool setUniform(QString name, QVariant value);
+    bool setUniform(QString name, float val1, float val2);
+    int getCount() const;
+    void setCount(int value);
 };
 
 #endif // SHADEREFFECT_H

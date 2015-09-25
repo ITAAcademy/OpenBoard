@@ -588,6 +588,10 @@ void OGLWidget::initShaderPrograms()
     if(turnThePageShader->initShader(TURNTHEPAGE_FRAGMENT_SHADER_PATH,TURNTHEPAGE_VERTEX_SHADER_PATH)!=0)shaderSupported=true;
     shaderPrograms.push_back(turnThePageShader);
 
+    ShaderProgramWrapper *randomSquaresShader = new ShaderProgramWrapper(this);
+    if(randomSquaresShader->initShader(RANDOMSQUARES_FRAGMENT_SHADER_PATH,RANDOMSQUARES_VERTEX_SHADER_PATH)!=0)shaderSupported=true;
+    shaderPrograms.push_back(randomSquaresShader);
+
      ShaderProgramWrapper *crossShader = new ShaderProgramWrapper(this);
      if(crossShader->initShader(CROSS_FRAGMENT_SHADER_PATH,CROSS_VERTEX_SHADER_PATH)!=0)shaderSupported=true;
      shaderPrograms.push_back(crossShader);
@@ -744,7 +748,7 @@ qDebug() <<  "OGL WIDGET MID";
     connect(effectManager,SIGNAL(showSignal()),this,SLOT(loadEffectFromCurrentBlockToEffectManager()));
 }
 void OGLWidget::bindBuffer(GLuint buffer){
-   // qDebug()<<"binded to buffer:"<<buffer;
+
     glBindFramebuffer(GL_FRAMEBUFFER,buffer);
 }
  QOpenGLFunctions_3_0* OGLWidget::getOglFuncs(){
@@ -1334,8 +1338,8 @@ void OGLWidget::updateGrid(){
     {
         useShader(shaderPrograms[CROSS_SHADER]);
         //qDebug() << "width:"<<windowGrid.getWidth();
-    shaderPrograms[CROSS_SHADER]->setUniformSize(windowGrid.getCellWidth(),windowGrid.getCellHeight());
-    shaderPrograms[CROSS_SHADER]->setUniformResolution(windowGrid.getWidth(),windowGrid.getHeight());
+    shaderPrograms[CROSS_SHADER]->setUniform("size",windowGrid.getCellWidth(),windowGrid.getCellHeight());
+    shaderPrograms[CROSS_SHADER]->setUniform("resolution",windowGrid.getWidth(),windowGrid.getHeight());
      useShader(0);
     }
     windowGrid.processLCP();
@@ -1390,13 +1394,13 @@ void OGLWidget::paintGL()
     //shaderPrograms[CROSS_SHADER]->setUniformResolution(wax,way);
     if(curStatus == STOP && gridEnabled)
         shaders.push_back(shaderPrograms[CROSS_SHADER]);
+    if (test->isInited())
     shaders.append(test);
     drawGlobalShader(shaders);
 
 /*
  *  DRAW MAIN FRAME WITH APPLY SHADER EFFECT
 */
-   // qDebug()<<"unbind main buffer to draw it on screen";
     bindBuffer(0);
     drawEditBox(1000);
     paintBufferOnScreen(mainFBO,0, 0, wax, way,0);
@@ -1427,7 +1431,7 @@ void OGLWidget::paintGL()
 void OGLWidget::drawGlobalShader( QVector<ShaderProgramWrapper*> shaders)
 {
 
-    bool drawToSecondBuffer = shaders.length()>0;//shaders.length()>1 && shaders.length()%2==0;
+    bool drawToSecondBuffer = true;//shaders.length()>1 && shaders.length()%2==0;
     for (int i=0;i<shaders.length();i++)
     {
         //qDebug() << "FOR ";
@@ -1438,6 +1442,7 @@ void OGLWidget::drawGlobalShader( QVector<ShaderProgramWrapper*> shaders)
                 useShader(shaders[i]);
                     paintBufferOnScreen(mainFBO,0, 0, mainFBO.tWidth,mainFBO.tHeight, -1);
                 useShader(0);
+
             }
             else
             {
@@ -1457,6 +1462,7 @@ void OGLWidget::drawGlobalShader( QVector<ShaderProgramWrapper*> shaders)
             paintBufferOnScreen(pingpongFBO,0, 0, pingpongFBO.tWidth,pingpongFBO.tHeight, -1 );
 
     }
+
 }
 
 void OGLWidget::drawEditBox( int z)
@@ -1581,11 +1587,11 @@ void OGLWidget::useShader(ShaderProgramWrapper *shader){
 }
 
 void OGLWidget::disableShader(){
-    qDebug() << "disableShader:"<<currentShaderStack.length();
+   // qDebug() << "disableShader:"<<currentShaderStack.length();
     glUseProgram(0);
 }
 void OGLWidget::enableShader(){
-    qDebug() << "enableShader:"<<currentShaderStack.length();
+   // qDebug() << "enableShader:"<<currentShaderStack.length();
     if (currentShaderStack.length()>0)
         glUseProgram(currentShaderStack.last()->getShaderProgram());
 
@@ -1635,14 +1641,17 @@ void OGLWidget::applyEffectsToCurrentBlock()
         case CIRCLES_SHADER:
         case PIXELIZATION_SHADER:
         case TURNTHEPAGE_SHADER:
+        case RANDSQUARES_SHADER:
             ShaderEffect sEffect(shaderPrograms[shaderProgramIndex],shaderProgramIndex);
         int startTime = blockEffect->getPropetrie("start_time");
         int endTime = blockEffect->getPropetrie("end_time");
         bool reverse = blockEffect->getPropetrie("inversion");
+        int count = blockEffect->getPropetrie("count");
         sEffect.setStartTimeMS(startTime);
         sEffect.setEffectTimeHowLong(endTime-startTime);
         sEffect.setReverse(reverse);
         sEffect.setShaderWrapperIndex(shaderProgramIndex);
+        sEffect.setCount(count);
         timeLineEffects.push_back(sEffect);
         }
     }
@@ -1671,6 +1680,7 @@ effect.setName("default");
  effect.setPropetrie("end_time",currentEffect.getStartTimeMS()+currentEffect.getEffectTimeHowLong());
 effect.setPropetrie("inversion",currentEffect.getReverse());
 effect.setPropetrie("effect_type",currentEffect.getShaderWrapperIndex());
+effect.setPropetrie("count",currentEffect.getCount());
  effectManager->addEffect(effect);
  }
  //effectManager->update();
