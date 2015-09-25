@@ -88,9 +88,9 @@ public:
     bool reloadLastDone();
 
     void setLastPath(QString path);
-    bool load(QIODevice* device);
+    bool load(QIODevice* device, float version);
     bool loadTypeId(QIODevice* device);
-    bool loadRest(QIODevice* device);
+    bool loadRest(QIODevice* device, float version);
  bool save(QIODevice* device);
 
     QRect getRect();

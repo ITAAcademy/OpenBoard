@@ -298,6 +298,7 @@ public:
 
 
 
+    void clearFrameBuffer(GLuint fbo);
 public slots:
     void loadEffectFromCurrentBlockToEffectManager();
     void hideEffectsManager();
@@ -383,7 +384,7 @@ private:
 
     QVector<ShaderProgramWrapper*> shaderPrograms;
 
-    bool shaderSupported = false;
+    bool shaderSupported = true;
     ShaderProgramWrapper *mainShader;//Color,alpha,blur;
     ShaderProgramWrapper *test;//Color,alpha,blur;
 

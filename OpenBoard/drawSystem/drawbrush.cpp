@@ -236,11 +236,17 @@ void DrawBrushElm::draw()
             
             if (keyCouter < coords.size() )
             {
-                
+                GLint curentBuff;
+                glGetIntegerv(GL_FRAMEBUFFER_BINDING, &curentBuff);
+
                 pDrawWidget->paintBrushInBuffer(currentTexture,brush, renderFbo, coords,brushes, keyCouter);
-                pDrawWidget->bindBuffer(fboWrapper.frameBuffer);
+               // pDrawWidget->bindBuffer(fboWrapper.frameBuffer);
+                 pDrawWidget->bindBuffer(curentBuff);
+                 pDrawWidget->clearFrameBuffer(curentBuff);
+                 qDebug() << "CORRECT BUFFER:"<<curentBuff;
                 pDrawWidget->drawTexture(0,0,renderFbo.tWidth, renderFbo.tHeight,
                                              renderFbo.bindedTexture, 0, 1, 1, z );
+
             }
             keyCouter++;
             //fboWrapper

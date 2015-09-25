@@ -211,7 +211,7 @@ void OGLWidget::paintBrushInBuffer(GLuint& texture,Brush& currentBrushOfDrawSyst
     // glBindFramebuffer(GL_FRAMEBUFFER , fboWrapper.frameBuffer); // Bind our frame buffer for rendering
     int recordedBrushN = 0;
     glBindFramebuffer(GL_FRAMEBUFFER, fboWrapper.frameBuffer);
-    glDisable(GL_DEPTH_TEST);
+    //glDisable(GL_DEPTH_TEST);
     ////qDebug() << "keyFrame:"<<keyFrame;
     //glBindFramebuffer(GL_FRAMEBUFFER, fboWrapper.frameBuffer);
     //bool isBrushUsed = false;
@@ -346,7 +346,7 @@ void OGLWidget::paintBrushInBuffer(GLuint& texture,Brush& currentBrushOfDrawSyst
     if (shaderSupported)
         useShader(0);
 
-    glEnable(GL_DEPTH_TEST);
+   // glEnable(GL_DEPTH_TEST);
 
    // glBindTexture(GL_TEXTURE_2D,0);
     //glBindFramebuffer(GL_FRAMEBUFFER , 0); // Unbind our texture
@@ -1294,12 +1294,17 @@ void OGLWidget::setAbleDrawing(bool value)
 }
 
 void OGLWidget::clearFrameBuffer(FBOWrapper fboWrapper){
+
+    clearFrameBuffer(fboWrapper.frameBuffer);
+}
+
+void OGLWidget::clearFrameBuffer(GLuint fbo){
 //const GLuint *value={0};
     makeCurrent();
     GLint curentBuff;
     glGetIntegerv(GL_FRAMEBUFFER_BINDING, &curentBuff);
 
-    glBindFramebuffer(GL_FRAMEBUFFER , fboWrapper.frameBuffer); // Bind our frame buffer for rendering
+    glBindFramebuffer(GL_FRAMEBUFFER , fbo); // Bind our frame buffer for rendering
     glClearColor(0.0,0.0,0.0,0.0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // чистим буфер изображения и буфер глубины
 

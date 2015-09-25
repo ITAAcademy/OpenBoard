@@ -33,7 +33,7 @@ bool ShaderEffect::load(QDataStream &stream,float version)
 {
     stream >> startTimeMS >> effectTimeHowLong >> shaderWrapperIndex >> reverse;
     if (version > 2.8)
-        stream>> count >> elementSize;
+        stream >> count >> elementSize;
 
 }
 

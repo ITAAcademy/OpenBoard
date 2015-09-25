@@ -188,7 +188,7 @@ void DrawElement::paint()
 
     if(fboWrapper.errorStatus == 0)
     {
-        bool drawToSecondBuffer = false;
+        bool drawToSecondBuffer = true;
         //DONT REMOVE ShaderEffect mainEffect(pDrawWidget->getTestShader());
         //DONT REMOVE effects.push_back(mainEffect);
         // bool currentDrawToSecondBuffer=false;
@@ -199,6 +199,7 @@ void DrawElement::paint()
         // effects.push_back(testShaderEffect);
         if (!effects.isEmpty())
         {
+            /* if (effects.length()%2==1)
             {
                 drawToSecondBuffer=true;
                 //pDrawWidget->clearFrameBuffer(pDrawWidget->getPingPongFBO());
@@ -208,8 +209,8 @@ void DrawElement::paint()
             //TO BE REMOVED IN RELEASE
 
             //
-            //   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); glEnable( GL_BLEND );
 
+            //   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); glEnable( GL_BLEND );
             for (int i=0;i<effects.length();i++)
             {
 
@@ -230,39 +231,41 @@ void DrawElement::paint()
 
 
 
+                //qDebug() << ":"<<playTime-beginAtTime;
+
                 if (bPlay && playTime >= beginAtTime && playTime <= endAtTime)//endAtTime + 50 if flickering !!!
                 {
                     if(endAtTime-beginAtTime>0)
                         keyFrame=(float)(playTime-beginAtTime)/(endAtTime-beginAtTime);
-
                     pDrawWidget->useShader(effects[i].getShaderWrapper());
                     effects[i].setUniform("animationKey",keyFrame);
                     effects[i].setUniform("resolution",fboWrapper.tWidth,fboWrapper.tHeight);
                     effects[i].setUniform("reverse",effects[i].getReverse());
                     effects[i].setUniform("count",effects[i].getCount());
-                     effects[i].setUniform("elementSize",effects[i].getElementSize());
-
+                    effects[i].setUniform("elementSize",effects[i].getElementSize());
+                    //  qDebug() <<i<< "-b:"<<beginAtTime;
+                    // qDebug() << i<<"-keyFrame:"<<keyFrame;
                     if(drawToSecondBuffer)
                     {
-                        pDrawWidget->clearFrameBuffer(pDrawWidget->getPingPongFBO());
-                        //qDebug()<<"drawToSecondBuffer";
+                        qDebug()<<"drawToSecondBuffer:"<<pDrawWidget->getPingPongFBO().frameBuffer;
                         pDrawWidget->bindBuffer(pDrawWidget->getPingPongFBO().frameBuffer);
-
                         pDrawWidget->clearFrameBuffer(pDrawWidget->getPingPongFBO());
+                        // qDebug() << "Shader program ("<<i<<"):"<<effects[i].getShaderWrapper()->getShaderProgram();
+
+                        //  float keyFrame = (float)(pDrawWidget->getTimeLine()->getPlayTime()-startDrawTime)/lifeTime;//MOVE UP LATER
+
 
                         if (effectsUsedInOneTime==0)
                             draw();
                         else
                             pDrawWidget->drawTexture(0,0,fboWrapper.tWidth,fboWrapper.tHeight,
                                                      fboWrapper.bindedTexture,0,1,1,z );
-                        pDrawWidget->useShader(0);
                     }
                     else
                     {
-                        // qDebug()<<"drawToFirstBuffer";
+                         qDebug()<<"drawToFirstBuffer:"<<fboWrapper.frameBuffer;
                         pDrawWidget->bindBuffer(fboWrapper.frameBuffer);
                         pDrawWidget->clearFrameBuffer(fboWrapper);
-                        pDrawWidget->useShader(effects[i].getShaderWrapper());
                         // float keyFrame = (float)(pDrawWidget->getTimeLine()->getPlayTime()-startDrawTime)/lifeTime;//MOVE UP LATER
                         if (effectsUsedInOneTime==0)
                             draw();
@@ -270,7 +273,8 @@ void DrawElement::paint()
                             pDrawWidget->drawTexture(0,0,pDrawWidget->getPingPongFBO().tWidth,
                                                      pDrawWidget->getPingPongFBO().tHeight,
                                                      pDrawWidget->getPingPongFBO().bindedTexture,0,1,1,z );
-                        pDrawWidget->useShader(0);
+
+
 
                     }
                      pDrawWidget->useShader(0);
@@ -335,7 +339,6 @@ void DrawElement::paint()
         //pDrawWidget->getOglFuncs()->glBlendFuncSeparate(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA, GL_ONE, GL_ONE);
         // pDrawWidget->bindBuffer(0);
         //qDebug() << "MAIN FBO:"<<pDrawWidget->getMainFBO().frameBuffer;
-
         pDrawWidget->bindBuffer(pDrawWidget->getMainFBO().frameBuffer);
 
         //pDrawWidget->useShader(0);
@@ -349,7 +352,6 @@ void DrawElement::paint()
     else
         qWarning() << "In curent draw element fboWraper is not init!!!";
 }
-
 
 int DrawElement::getBlockIndex() const
 {
@@ -433,12 +435,12 @@ bool DrawElement::load(QString path)
         return false;
     //lastPath = path; //@BUG@09/09/NicolasFix
     appFile.open(QFile::ReadOnly);
-    this->load(&appFile);
+    this->load(&appFile, VERSION);
     appFile.close();
 
 }
 
-bool DrawElement::load(QIODevice* device)
+bool DrawElement::load(QIODevice* device, float version)
 {
     /*QDataStream stream(device);
 
@@ -448,7 +450,7 @@ bool DrawElement::load(QIODevice* device)
     icon = load_image(stream);
     load_add(stream);*/
     loadTypeId(device);
-    loadRest(device);
+    loadRest(device, version);
 }
 bool DrawElement::loadTypeId(QIODevice* device)
 {
@@ -463,7 +465,7 @@ bool DrawElement::loadTypeId(QIODevice* device)
     qDebug() << "DrawElement::load temp_type = " <<(int) getTypeId();
 
 }
-bool DrawElement::loadRest(QIODevice* device)
+bool DrawElement::loadRest(QIODevice* device, float version)
 {
     //qDebug() << "load rest begin";
     QDataStream stream(device);
@@ -492,7 +494,7 @@ bool DrawElement::loadRest(QIODevice* device)
 
     for (int i = 0 ; i < effectsLength;i++)
     {
-        effects[i].load(stream,VERSION);
+        effects[i].load(stream, version);
     }
 
     // qDebug() << "load rest end";
