@@ -2018,6 +2018,10 @@ void ListControll::convertCurentBlockToText()
     DrawElement* elm = tracks[selectedBlockPoint.x()].block[selectedBlockPoint.y()];
     DrawTextElm *text = new DrawTextElm(NULL);
     text->copy(elm);
+    if(elm->getGroupWichElBelong() != NULL)
+    {
+        elm->getGroupWichElBelong()->tryMemberReverce(elm, text);
+    }
     delete elm;
     tracks[selectedBlockPoint.x()].block[selectedBlockPoint.y()] = text;
     text->setBlockColumn(selectedBlockPoint.x());

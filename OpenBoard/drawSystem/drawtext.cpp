@@ -268,6 +268,25 @@ void DrawTextElm::draw()
     // qDebug() << "void DrawTextElm::draw()" << pDrawWidget->getTimeLine()->getPlayTime();
     pDrawWidget->clearTexture(textureIndex);
     pDrawWidget->clearFrameBuffer(fboWrapper);
+
+    if(staticText)
+    {
+        textFont.setPointSize(mainTextFont.pointSize() * ((float)pDrawWidget->getWax()/width));
+        textFont.setBold(mainTextFont.bold());
+        textFont.setItalic(mainTextFont.italic());
+        textFont.setUnderline(mainTextFont.underline());
+        textFont.setStrikeOut(mainTextFont.strikeOut());
+        textFont.setFamily(mainTextFont.family());
+        textFont.setStyleStrategy(QFont::PreferQuality);
+        pt = textFont.pointSize();
+        QStringList list = unParsestring.split("\n");
+        for(int i = 0; i < list.length(); i++)
+        {
+            pDrawWidget->drawTextFromTexture(0, (i + 1)*(lineHeight + pt), z, list[i],textureIndex, mainFillColor, textFont,(float) 1.0f);
+        }
+        return;
+    }
+
     int current_time;
     if(!bPlay)
         current_time =  pDrawWidget->getTimeLine()->getScalePointerPos();

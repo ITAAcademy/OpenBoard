@@ -12,6 +12,7 @@ class DrawTextElm : public DrawElement
     Q_OBJECT
 
     QList <Unit*>mUnitList;
+    bool staticText = false;
     QString loggerText;
     QString unParsestring;
     Parser myParser;
