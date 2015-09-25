@@ -250,7 +250,7 @@ void DrawElement::paint()
                         effects[i].setUniform("resolution",fboWrapper.tWidth,fboWrapper.tHeight);
                         effects[i].setUniform("reverse",effects[i].getReverse());
                         effects[i].setUniform("count",effects[i].getCount());
-
+                         effects[i].setUniform("elementSize",effects[i].getElementSize());
                         if (effectsUsedInOneTime==0)
                             draw();
                         else
@@ -270,6 +270,7 @@ void DrawElement::paint()
 
                        effects[i].setUniform("reverse",effects[i].getReverse());
                        effects[i].setUniform("count",effects[i].getCount());
+                        effects[i].setUniform("elementSize",effects[i].getElementSize());
                         if (effectsUsedInOneTime==0)
                             draw();
                         else

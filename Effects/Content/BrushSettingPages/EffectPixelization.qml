@@ -16,6 +16,9 @@ Rectangle {
     function setInverted(val){
         cbInversion.checked=val
     }
+    function setElementSize(n){
+        sizeSlider.value1 = n
+    }
 
     //property alias inversion : cbInversion.checked
    // property alias sliderTimer : doubleSliderTime
@@ -64,6 +67,15 @@ Rectangle {
     onMouse_drag_right_signal: {
      effectsControll.setCurrentEffectProperty("end_time",value2);
 }
+        }
+        FullSlider{
+            id: sizeSlider
+            maximum:100
+            width:root.width
+            height:10
+            onMouse_drag_signal:  {
+               effectsControll.setCurrentEffectProperty("elementSize",value1);
+            }
         }
 
     }

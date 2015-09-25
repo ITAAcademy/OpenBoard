@@ -108,6 +108,16 @@ void ShaderEffect::setCount(int value)
 {
     count = value;
 }
+
+int ShaderEffect::getElementSize() const
+{
+    return elementSize;
+}
+
+void ShaderEffect::setElementSize(int value)
+{
+    elementSize = value;
+}
 ShaderEffect::ShaderEffect(ShaderProgramWrapper *shaderWrp, int shaderIndex)
 {
     // qDebug() << "shaderWrapper=shaderWrp";

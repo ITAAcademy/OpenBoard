@@ -8,6 +8,7 @@ class ShaderEffect
      int effectTimeHowLong = 0;
     bool reverse = false;
     int count= 0;
+    int elementSize= 0;
     bool anchorToEnd = false;
    ShaderProgramWrapper *shaderWrapper = nullptr;
    int shaderWrapperIndex = -1;
@@ -46,6 +47,8 @@ public:
     bool setUniform(QString name, float val1, float val2);
     int getCount() const;
     void setCount(int value);
+    int getElementSize() const;
+    void setElementSize(int value);
 };
 
 #endif // SHADEREFFECT_H

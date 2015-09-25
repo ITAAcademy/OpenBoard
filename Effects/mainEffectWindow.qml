@@ -20,6 +20,7 @@ Rectangle{
         var inversion=effectsControll.getCurrentEffectProperty("inversion")
         var effectType=effectsControll.getCurrentEffectProperty("effect_type")
         var count = effectsControll.getCurrentEffectProperty("count");
+        var elementSize = effectsControll.getCurrentEffectProperty("elementSize");
         console.log("current index changed");
         console.log("startTime:"+startTime);
         console.log("endTime:"+endTime);
@@ -50,6 +51,7 @@ Rectangle{
             effectsPanelPixelization.setStartTime(startTime);
             effectsPanelPixelization.setEndTime(endTime);
             effectsPanelPixelization.setInverted(inversion);
+            effectsPanelPixelization.setElementSize(elementSize)
             break;
         case 3:
             effectsPanelCircles.setStartTime(startTime);

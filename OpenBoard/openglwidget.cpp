@@ -1647,11 +1647,13 @@ void OGLWidget::applyEffectsToCurrentBlock()
         int endTime = blockEffect->getPropetrie("end_time");
         bool reverse = blockEffect->getPropetrie("inversion");
         int count = blockEffect->getPropetrie("count");
+        int elmSize = blockEffect->getPropetrie("elementSize");
         sEffect.setStartTimeMS(startTime);
         sEffect.setEffectTimeHowLong(endTime-startTime);
         sEffect.setReverse(reverse);
         sEffect.setShaderWrapperIndex(shaderProgramIndex);
         sEffect.setCount(count);
+        sEffect.setElementSize(elmSize);
         timeLineEffects.push_back(sEffect);
         }
     }
@@ -1681,6 +1683,7 @@ effect.setName("default");
 effect.setPropetrie("inversion",currentEffect.getReverse());
 effect.setPropetrie("effect_type",currentEffect.getShaderWrapperIndex());
 effect.setPropetrie("count",currentEffect.getCount());
+effect.setPropetrie("elementSize",currentEffect.getElementSize());
  effectManager->addEffect(effect);
  }
  //effectManager->update();
