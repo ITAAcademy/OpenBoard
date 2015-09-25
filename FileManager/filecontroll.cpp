@@ -109,9 +109,6 @@ FileManager::FileManager(QObject *parent) : QObject(parent), QQuickImageProvider
     QTime midnight(0,0,0);
     qsrand(midnight.secsTo(QTime::currentTime()));
 
-    mask = QImage(":/Content/brush_skeen.png");
-    createdBrush.img.fill(Qt::black);
-    // open file
     openBrushLibrary();
     qDebug() << "A6";
 
@@ -127,7 +124,7 @@ FileManager::FileManager(QObject *parent) : QObject(parent), QQuickImageProvider
     cloneImg = new ImageClone(this);
       qDebug() << "A8";
 
-    view.engine()->addImageProvider("loader", cloneImg);
+    view.engine()->addImageProvider("loader2", cloneImg);
      view.engine()->rootContext()->setContextProperty("brushControll", this);
       qDebug() << "A9";
     view.setSource(QUrl("qrc:/main_filemanager.qml")); \
@@ -233,11 +230,6 @@ QImage FileManager::requestImage(const QString &id, QSize *size, const QSize& re
         //qDebug() << i;
         return imageStack[i];
     }
-
-   /* if(id[0] == 'h')
-    {
-       return FilePainter::getInstance()->drawBrush(createdBrush);
-    }*/
 
     return QImage(requestedSize, QImage::Format_ARGB32);
 }
