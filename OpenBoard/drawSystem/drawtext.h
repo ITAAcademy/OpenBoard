@@ -124,9 +124,12 @@ public:
     bool getBNeedCalcTime() const;
     void setBNeedTime(bool value);
 
+    bool isStaticText() const;
+    void setStaticText(bool value);
+
 private:
     void setTickTime(int value);
-    bool load_add(QDataStream &stream);
+    bool load_add(QDataStream &stream, float version);
     bool save_add(QDataStream &stream);
 protected slots:
     void start();

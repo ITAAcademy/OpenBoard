@@ -2472,7 +2472,7 @@ void OGLWidget::myRenderText( QGLWidget* w, int x, int y,int z, const QString& t
 
 void OGLWidget::drawTextFromTexture( int x, int y,int z, const QString& text,GLuint index, const QColor& col , const QFont& font , float scale )
 {
-    qDebug() << "DTFT:"<<index;
+  //  qDebug() << "DTFT:"<<x << "     " << y;
     qglColor(col);
 
     qDebug() << scale;
@@ -2483,8 +2483,8 @@ void OGLWidget::drawTextFromTexture( int x, int y,int z, const QString& text,GLu
     QFontMetrics fm(font);
 
     QRect rect = fm.boundingRect( text);
-    if (rect.width()>wax)rect.setWidth(wax);
-    if (rect.height()>way)rect.setHeight(way);
+    if (rect.width()>wax )rect.setWidth(wax );
+    if (rect.height()>way  )rect.setHeight(way);
 
     QPixmap pixmap( rect.size() );
     pixmap.fill( Qt::black );
@@ -2504,7 +2504,7 @@ void OGLWidget::drawTextFromTexture( int x, int y,int z, const QString& text,GLu
         }
     }
     // img = QGLWidget::convertToGLFormat(img);
-    qDebug() << "before drawQImageFromTexture";
+   // qDebug() << "before drawQImageFromTexture";
     drawQImageFromTexture(x,y,img,index,z,true);
     //glRasterPos3i( x, y, z );
     //glDrawPixels( rect.width(), rect.height(), GL_RGBA, GL_UNSIGNED_BYTE, img.bits() );
@@ -2547,10 +2547,11 @@ void OGLWidget::drawQImageFromTexture(int x, int y, QImage img, GLuint index, in
 
     glBindTexture(GL_TEXTURE_2D, index);
     if (inverseY)
-        glTexSubImage2D(GL_TEXTURE_2D, 0, x, way-y, img.width(), img.height(), GL_RGBA, GL_UNSIGNED_BYTE, res.bits());
+        glTexSubImage2D(GL_TEXTURE_2D, 0, x, way - y, img.width(), img.height(), GL_RGBA, GL_UNSIGNED_BYTE, res.bits());
     else
         glTexSubImage2D(GL_TEXTURE_2D, 0, x, y, img.width(), img.height(), GL_RGBA, GL_UNSIGNED_BYTE, res.bits());
-    drawTexture(0,0,wax, way, index, 0, 1, 1, z);
+
+    drawTexture(0, 0, wax, way, index, 0, 1, 1, z);
     // glBindTexture(GL_TEXTURE_2D,0);
     glBindTexture(GL_TEXTURE_2D, 0);
     // glEnable(GL_BLEND);

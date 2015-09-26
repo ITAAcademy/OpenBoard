@@ -57,6 +57,8 @@ DrawImageElm::~DrawImageElm()
     if(textureIndex != -1)
         pDrawWidget->deleteTexture(textureIndex);
     qDebug() << "delete texture end";
+    if(gif != NULL)
+        delete gif;
 }
 
 void DrawImageElm::draw()
@@ -94,7 +96,7 @@ void DrawImageElm::draw()
 
 }
 
-bool DrawImageElm::load_add(QDataStream &stream)
+bool DrawImageElm::load_add(QDataStream &stream, float version)
 {
     stream >> bGIF ;
     // qDebug() << "DrawImageElm lastPath:" + lastPath;

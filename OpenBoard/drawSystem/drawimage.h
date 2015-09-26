@@ -9,13 +9,13 @@ class DrawImageElm  :public DrawElement
     GLuint textureIndex = -1;
     int failedLoad = 10;
     bool bGIF = false;
-    QMovie *gif = new QMovie();
+    QMovie *gif = NULL;
 
 public:
     explicit DrawImageElm( OGLWidget *drawWidget = NULL, QObject *parent = 0);
     ~DrawImageElm();
     void draw();
-    bool load_add(QDataStream &stream);
+    bool load_add(QDataStream &stream, float version);
     bool save_add(QDataStream &stream);
     void setDrawImage(QImage img);
 

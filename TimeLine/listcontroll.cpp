@@ -323,6 +323,11 @@ bool ListControll::removeBlock(int col, int i )
     if (tracks[col].block.size() > i)
     {
         int temp = tracks[col].block[i]->getLifeTime();
+        if(block_in_buffer == tracks[col].block[i])
+        {
+            buffer_is_full = false;
+            block_in_buffer = NULL;
+        }
         delete tracks[col].block[i];
 
         tracks[col].block.removeAt(i);
@@ -755,6 +760,10 @@ void  ListControll::moveBlockFromTo(int col0,int ind0,int col1, int ind1)
 
 void ListControll::cloneBlock(DrawElement *origin, DrawElement *clone)
 {
+    if(origin == clone)
+        return;
+
+    setBlocked(true);
     QBuffer buff;
     buff.open(QBuffer::ReadWrite);
     origin->save(&buff);
@@ -765,10 +774,16 @@ void ListControll::cloneBlock(DrawElement *origin, DrawElement *clone)
         delete clone;
     buff.seek(0);
     clone = loadDrawElement(&buff, VERSION);
+
     clone->setDrawWidget(origin->getDrawWidget());
+
+    clone->setBlockColumn(p.x());
+    clone->setBlockIndex(p.y());
+
     tracks[p.x()].block[p.y()] = clone;
     calcPointedBlocks();
     recountMaxTrackTime();
+    setBlocked(false);
 }
 
 void ListControll::setBlocks(int col,const QList <DrawElement *> &value)
@@ -1871,7 +1886,7 @@ void ListControll::pasteBlockFromBuffer()
      // calcPointedBlocks();
     */
     cloneBlock(block_in_buffer, getBlock(getSelectedBlockPoint()));
-    emit updateTrackAt(getSelectedBlockPoint().x());
+    emit updateTrackAt(block_in_buffer->getBlockColumn());
 
 
 }

@@ -48,7 +48,7 @@ public slots:
     void on_actionClear_drawingBuffer_triggered();
 
     void doUndoRedoEnd();
-//    board
+    //    board
     void closeEvent(QCloseEvent* event);
     void moveEvent(QMoveEvent *event);
     void resizeEvent(QResizeEvent *event);
@@ -65,14 +65,14 @@ public slots:
     void updateTextEditFromBlock(QPoint point);
     void updateVisibleTextEdit( bool state);
 
-//    settings
+    //    settings
     void on_action_Font_triggered();
     void on_action_Color_triggered();
     void on_action_Board_Font_triggered();
     void on_action_Board_Color_triggered();
     void on_action_Reset_default_triggered();
 
-//    edit
+    //    edit
     void on_action_Undo_triggered();
     void on_action_Redo_triggered();
     void on_action_Cut_triggered();
@@ -80,9 +80,9 @@ public slots:
     void on_action_Paste_triggered();
     void on_action_Select_all_triggered();
     void on_action_Find_triggered();
-        void search();
+    void search();
 
-//    file
+    //    file
     void on_action_Exit_triggered();
     bool on_action_Save_as_triggered();
     bool on_action_Save_triggered();
@@ -94,18 +94,18 @@ public slots:
     void on_action_New_Project_triggered();
     void on_action_Test_Shader_triggered();
 
-//    toolbar
+    //    toolbar
     void on_backBtn_clicked();
     void on_animationBtn_clicked();
     void on_crossBtn_clicked();
     void on_clearBtn_clicked();
 
-//    press on button delay
+    //    press on button delay
     void on_delayBtn_pressed();
     void delay_released();
     void show_pause_menu();
 
-//    press on button color
+    //    press on button color
     void on_colorBtn_pressed();
     void on_colorBtn_released();
     void on_colorBtn_clicked();
@@ -141,17 +141,17 @@ private slots:
 
 private:
     bool may_to_enable_BoardFontColor;
-      bool firstNewProjectCreating = true;
+    bool firstNewProjectCreating = true;
     bool isRecordToFile = false;
     bool changeone;
-   QString directory;
-QAction *a_play,*a_clear_textedit,*a_pause,*a_stop,*a_font_canvas,*a_color_canvas,
-*a_record_to_file,*a_undo,*a_redo,*a_show,*a_hide,*a_clear_drawing,*a_clear_drawingBuffer,
-*a_show_last_drawing,*a_save_drawing ,*a_open_project,*a_new_project, *a_save_project,*a_exit,
-*a_cut,*a_copy,*a_paste,*a_select_all,*a_search,*a_send_to_youtube, *a_able_to_draw,*a_zoom_in,*a_zoom_out;
+    QString directory;
+    QAction *a_play,*a_clear_textedit,*a_pause,*a_stop,*a_font_canvas,*a_color_canvas,
+    *a_record_to_file,*a_undo,*a_redo,*a_show,*a_hide,*a_clear_drawing,*a_clear_drawingBuffer,
+    *a_show_last_drawing,*a_save_drawing ,*a_open_project,*a_new_project, *a_save_project,*a_exit,
+    *a_cut,*a_copy,*a_paste,*a_select_all,*a_search,*a_send_to_youtube, *a_able_to_draw,*a_zoom_in,*a_zoom_out;
     Ui::MainWindow  *ui;
-QMessageBox messAbout;
- //   GLWidget        *mpGLWidget;
+    QMessageBox messAbout;
+    //   GLWidget        *mpGLWidget;
     OGLWidget       *mpOGLWidget;
     YouTubeWrapper *youtube;
     QToolBar *toolBar;
@@ -160,7 +160,7 @@ QMessageBox messAbout;
     MyTextEdit       *textEdit = NULL;
     KeyloggerTE *commandTextEdit = NULL;
     QTimer onTextChangeUpdateTimer;
-   // ListControll timeLine;
+    // ListControll timeLine;
     QList <DrawElement*> drawElements;
 
     int drawCounter;
@@ -175,7 +175,7 @@ QMessageBox messAbout;
     QString         inputText;
     int lastInpuDelay;
     QList <Unit*>mUnitList;
-//    QThread drawThread;
+    //    QThread drawThread;
     bool saveFile();
     bool maybeSave();
 

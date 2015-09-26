@@ -23,7 +23,7 @@ QVector<BrushBeginingIndex> DrawBrushElm::getBrushes(){
     return brushes;
 }
 
-bool DrawBrushElm::load_add(QDataStream &stream)
+bool DrawBrushElm::load_add(QDataStream &stream, float version)
 {
     clear();
     QVector<QImage> images;

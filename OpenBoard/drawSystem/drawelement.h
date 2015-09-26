@@ -179,7 +179,7 @@ protected slots:
     QImage load_image(QDataStream &stream);
 
 protected:
-    virtual bool load_add(QDataStream &stream);
+    virtual bool load_add(QDataStream &stream, float version);
     virtual bool save_add(QDataStream &stream);
 
 

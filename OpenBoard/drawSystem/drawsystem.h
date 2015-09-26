@@ -223,7 +223,7 @@ public:
     explicit drawImage( OGLWidget *drawWidget, QObject *parent = 0);
     ~drawImage();
     void draw();
-    bool load_add(QDataStream &stream);
+    bool load_add(QDataStream &stream, float version);
     bool save_add(QDataStream &stream);
 };
 */

@@ -498,7 +498,7 @@ bool DrawElement::loadRest(QIODevice* device, float version)
     }
 
     // qDebug() << "load rest end";
-    load_add(stream);
+    load_add(stream, version);
     // qDebug() << "load add";
 
 }
@@ -789,7 +789,7 @@ void DrawElement::restart()
     tickTimer.restart();
 }
 
-bool DrawElement::load_add(QDataStream &stream)
+bool DrawElement::load_add(QDataStream &stream, float version)
 {
 
 }

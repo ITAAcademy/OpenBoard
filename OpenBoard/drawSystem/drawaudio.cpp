@@ -66,7 +66,7 @@ void DrawAudioElm::setAudioFile(QString path)
         lifeTime = decoder.getDuration();
 }
 
-bool DrawAudioElm::load_add(QDataStream &stream)
+bool DrawAudioElm::load_add(QDataStream &stream, float version)
 {
     stream >> audioPath;
     setAudioFile(audioPath);

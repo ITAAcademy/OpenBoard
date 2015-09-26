@@ -279,10 +279,12 @@ void DrawTextElm::draw()
         textFont.setFamily(mainTextFont.family());
         textFont.setStyleStrategy(QFont::PreferQuality);
         pt = textFont.pointSize();
+        lineHeight = LINE_HEIGHT * ((float)pDrawWidget->getWax()/width);
         QStringList list = unParsestring.split("\n");
-        for(int i = 0; i < list.length(); i++)
+        for(int i = 0; i < list.length() /*&& i < (height/(lineHeight + pt)) - 1*/; i++)
         {
             pDrawWidget->drawTextFromTexture(0, (i + 1)*(lineHeight + pt), z, list[i],textureIndex, mainFillColor, textFont,(float) 1.0f);
+            //pDrawWidget->myRenderText(pDrawWidget, 0, (i + 1)*(lineHeight + pt), z, unParsestring, mainFillColor, textFont);
         }
         return;
     }
@@ -420,11 +422,14 @@ void DrawTextElm::setTickTime(int value)
 
 }
 
-bool DrawTextElm::load_add(QDataStream &stream)
+bool DrawTextElm::load_add(QDataStream &stream, float version)
 {
     stream >> unParsestring >> loggerText >> textCursor >> prevTextCursor >> mainTextFont >> mainFillColor >> bCalcTime;
     setUnParsestring(unParsestring, loggerText);
-
+    if(version > 2.8)
+    {
+        stream >> staticText;
+    }
     /*int sizeOfString = 0;
     stream >> sizeOfString;
     QByteArray data;
@@ -441,7 +446,7 @@ bool DrawTextElm::save_add(QDataStream &stream)
     /*   stream << unParsestring.length();
     // //qDebug() << "IN " << unParsestring.length();
     stream.writeRawData(unParsestring.toLatin1().data(), unParsestring.length());*/
-    stream << unParsestring << loggerText << textCursor << prevTextCursor << mainTextFont << mainFillColor << bCalcTime;
+    stream << unParsestring << loggerText << textCursor << prevTextCursor << mainTextFont << mainFillColor << bCalcTime << staticText;
 }
 
 void DrawTextElm::clearCanvas(int m_x, int m_y)
@@ -570,7 +575,7 @@ void DrawTextElm::drawTextBuffer( int m_x, int m_y, int m_width, int m_height, i
     pt = textFont.pointSize();
 
     clearCanvas(m_x, m_y);
-    int maxDrawElm = (m_height/(lineHeight + pt)) - 1;
+    int maxDrawElm = (height/(lineHeight + pt)) - 1;
     ////qDebug() << "DRAW   "   <<  maxDrawElm;
     int CurRow = convertTextBoxToBufferIndex(cursorIndex).y();
     if(CurRow >= indexRowInList + maxDrawElm)
@@ -770,6 +775,16 @@ bool DrawTextElm::getBNeedCalcTime() const
 void DrawTextElm::setBNeedTime(bool value)
 {
     bCalcTime = value;
+}
+
+bool DrawTextElm::isStaticText() const
+{
+    return staticText;
+}
+
+void DrawTextElm::setStaticText(bool value)
+{
+    staticText = value;
 }
 QFont DrawTextElm::getTextFont() const
 {
