@@ -343,24 +343,28 @@ Rectangle{
     onWidthChanged: {
         type = timeControll.getBlockTypeId(colIndex,mIndex)
         //console.log("onWidthChanged    type = "  +type)
-       /* if (root.type == 5)
+        if (root.type == 5)
         {
-             console.log("onWidthChanged   type == 5")
             if (width == 0)
             {
                 //destroy
             }
         }
         else
-        {
-             console.log("onWidthChanged  type != 5")
+        {             
             if (width < main222.minBlockWidth)
                 width = main222.minBlockWidth
-        }*/
+        }
 
         //console.log("width = " + width)
         icon.width = icon.height;
-        timeControll.setBlockTime(colIndex, mIndex,root.width * main222.scaling);
+        if (main222.maIsPressed === 1)
+            timeControll.setBlockTime(colIndex, mIndex,root.width * main222.scaling,true);
+        else
+            timeControll.setBlockTime(colIndex, mIndex,root.width * main222.scaling);
+
+        console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+
     }
     onXChanged: {
 
@@ -498,6 +502,7 @@ Rectangle{
             //main222.dropedtoDropArea = false
             console.log("onPressed   mIndex = " + root.mIndex)
             main222.dropEntered = 0
+            main222.maIsPressed = 1
             //root.animation_scale_normal_toXpos = root.x
             root.animation_scale_normal_toYpos = root.y
             divider.y = (root.height + main222.p_columns.spacing) * root.colIndex
@@ -584,7 +589,7 @@ Rectangle{
                         /*   mouseY + root.colIndex * (root.height + 2)
                                                  - scroll.flickableItem.contentY  */
 
-                        main222.maIsPressed = 1
+
                         main222.clicked_blockId = root.mIndex
                         main222.clicked_blockX = root.x
                         main222.clicked_blockY = root.y
@@ -1190,6 +1195,7 @@ Rectangle{
 
 
             cursorShape = Qt.ArrowCursor;
+             root.p_main222.maIsPressed = 0
 
 
         }

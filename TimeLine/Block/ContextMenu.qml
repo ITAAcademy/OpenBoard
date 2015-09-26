@@ -46,7 +46,7 @@ ApplicationWindow  {
 
     function closeAnimateMenu()
     {
-timeControll.emitHideEffects();
+        timeControll.emitHideEffects();
     }
 
     function showIt(a,b, globRepa)
@@ -141,7 +141,7 @@ timeControll.emitHideEffects();
 
     function showAnimateBlockMenu()
     {
-       timeControll.emitOpenEffects();
+        timeControll.emitOpenEffects();
     }
 
     property int   minBlockWidth : 0
@@ -298,22 +298,18 @@ timeControll.emitHideEffects();
                 button_text: "Load from file"
                 index: 3
                 onButtonClicked: {
+
                     context_menu.closeIt()
                     but_append.color = contextMenuItem.color
                     appen_block_items.visible = false
 
-                    /*var col= contextMenuItem.columnIndex;
-                var id = contextMenuItem.blockIndex;*/
+
                     timeControll.setLoadF_manager(false)
-                     timeControll.setCurentBlock(contextMenuFrame.colIndex,contextMenuFrame.blockIndex)
+                    timeControll.setCurentBlock(contextMenuFrame.colIndex,contextMenuFrame.blockIndex)
+
                     timeControll.loadFromFile("")
 
                     //,"F://prohect/build-OpenBoard-Desktop_Qt_5_4_0_MinGW_32bit-Debug/Es2zT8Y.jpg")//removeBlock(col,id)
-
-                    // //console.log("AFTER 9999999999999999999999");
-                    //main222.selectedBlock.repaint();
-                    //contextMenuFrame. globalRep.updateModel();
-
 
 
                 }

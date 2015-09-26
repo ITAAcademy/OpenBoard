@@ -899,7 +899,7 @@ DrawElement* ListControll::loadFromFile(int col, int ind, QString path,bool emit
         int new_life_time = elm->getLifeTime();
 
         //elm->copy(temp);
-         elm->setLifeTime(temp->getLifeTime());
+        elm->setLifeTime(temp->getLifeTime());
         elm->setStartDraw(temp->getStartDrawTime());
         elm->setZ(col);
         elm->setBlockColumn(col);
@@ -907,8 +907,8 @@ DrawElement* ListControll::loadFromFile(int col, int ind, QString path,bool emit
 
 
         //elm->setParent(temp->getParent());
-       // elm->setGroupWichElBelong(temp->getGroupWichElBelong());
-      //  elm->setDrawWidget(temp->getDrawWidget());
+        // elm->setGroupWichElBelong(temp->getGroupWichElBelong());
+        //  elm->setDrawWidget(temp->getDrawWidget());
 
         tracks[col].block[ind] = elm;
         delete temp;
@@ -917,7 +917,7 @@ DrawElement* ListControll::loadFromFile(int col, int ind, QString path,bool emit
         /*      if(life_time == 1000)
             setBlockTime(col, ind, new_life_time);
 */
-      //  tracks[col].block[ind] = elm;
+        //  tracks[col].block[ind] = elm;
 
         updateBlocksStartTimesFrom(col,ind);
         calcPointedBlocks();
@@ -1212,7 +1212,7 @@ void ListControll::setBlocks(int col,const QList <DrawElement *> &value)
     tracks[col].block = value;
 }
 
-void ListControll::setBlockTime(int col, int i,int value)
+void ListControll::setBlockTime(int col, int i,int value, bool resize_next_empty)
 {
     if(!blockValid(col,i))
         return;
@@ -1226,7 +1226,7 @@ void ListControll::setBlockTime(int col, int i,int value)
 
     if (elm->getTypeId() != 5)
     {
-        if(def_min_block_width <= value)
+        if(value <= def_min_block_width)
         {
             /* qDebug() << " if (elm->getTypeId() != 5) \
                         if(def_min_block_width > value) ";*/
@@ -1239,10 +1239,47 @@ void ListControll::setBlockTime(int col, int i,int value)
             value = 0;
         }
 
+    int adding_time = value - cur_time___;
 
 
-    tracks[col].addTime(value - cur_time___);
 
+
+    if (resize_next_empty )
+    {
+        for (int k = i + 1; k < tracks[col].block.size(); k++)
+        {
+            DrawElement *k_elm = tracks[col].block[k];
+            if (k_elm == NULL)
+                continue;
+            if (k_elm->getTypeId() != Element_type::Empty)
+                continue;
+            int new_time = k_elm->getLifeTime() - adding_time;
+            if (new_time < 0)
+            {
+                adding_time = -new_time;
+                new_time = 0;
+                delete k_elm;
+                tracks[col].block.removeAt(k);
+                k--;
+            }
+            else
+            {
+                adding_time -= new_time;
+                k_elm->setLifeTime(new_time);
+            }
+            if (adding_time == 0)
+                break;
+
+        }
+
+    }
+    if (adding_time > 0)
+          tracks[col].addTime(adding_time);
+    else
+        if (adding_time == 0)
+    {
+        updateBlocksIndexFrom(col,i);
+    }
 
     updateBlocksStartTimesFrom(col,i);
     if ( tracks[col].block[i]->getGroupWichElBelong() == NULL)
@@ -1255,6 +1292,8 @@ void ListControll::setBlockTime(int col, int i,int value)
 
     tracks[col].addTime(value - elm->getLifeTime());
     elm->setLifeTime(value);
+
+
 
     recountMaxTrackTime();
     /*if (i < tracks[col].block.size() - 2)

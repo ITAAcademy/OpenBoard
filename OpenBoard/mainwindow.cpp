@@ -1279,7 +1279,7 @@ bool MainWindow::on_action_Save_Project_triggered()
         qApp->processEvents();
         activateWindow();
         QString suf;
-       QString fileName = QFileDialog::getSaveFileName(this,
+       QString fileName = QFileDialog::getSaveFileName(0,
         tr("Save project"), directory, tr("Project file (*.project )"), &suf, QFileDialog::DontUseNativeDialog | QFileDialog::DontConfirmOverwrite);
        fileName =  mSuffixFromFilter(suf, fileName);
         isActive = true;
@@ -1321,7 +1321,7 @@ void MainWindow::on_action_Open_Project_triggered()
     if (mpOGLWidget->getTimeLine()->isProjectChanged())
     {
     QMessageBox::StandardButton reply;
-     reply = QMessageBox::question(this, "Test", "Are you want to save changes in current project?",
+     reply = QMessageBox::question(0, "Test", "Are you want to save changes in current project?",
                                    QMessageBox::Yes|QMessageBox::No | QMessageBox::Cancel);
      if (reply == QMessageBox::Cancel)
          return ;
@@ -1338,7 +1338,7 @@ void MainWindow::on_action_Open_Project_triggered()
     qApp->processEvents();
     activateWindow();
   //  mpOGLWidget->show();
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open project"), directory, tr("Project file (*.project)"), 0, QFileDialog::DontUseNativeDialog);
+    QString fileName = QFileDialog::getOpenFileName(0, tr("Open project"), directory, tr("Project file (*.project)"), 0, QFileDialog::DontUseNativeDialog);
     //mpOGLWidget->hide();
    //qDebug() << "DDDDDDDDDDDDDDDDDDDDDDDDDDD fileName = " <<  fileName;
     isActive = true;
@@ -1384,7 +1384,8 @@ bool MainWindow::trySaveProject()
     if (mpOGLWidget->getTimeLine()->isProjectChanged())
     {
         QMessageBox::StandardButton reply;
-         reply = QMessageBox::question(this, "Test", "Are you want to save changes in current project?",
+
+         reply = QMessageBox::question(0, "Test", "Are you want to save changes in current project?",
                                        QMessageBox::Yes|QMessageBox::No | QMessageBox::Cancel);
          if (reply == QMessageBox::Cancel)
              return false;
