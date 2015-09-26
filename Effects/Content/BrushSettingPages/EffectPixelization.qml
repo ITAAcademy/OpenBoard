@@ -28,6 +28,7 @@ Rectangle {
     //anchors.fill: parent
     color: "transparent"
     property string cLoaderName: "loader"
+    property alias elementSizeSlider : sizeSlider
     signal update
     onUpdate: {
         //console.log("update brush");
@@ -69,6 +70,7 @@ Rectangle {
 }
         }
         FullSlider{
+            name:"size"
             id: sizeSlider
             maximum:100
             width:root.width
