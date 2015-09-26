@@ -304,7 +304,11 @@ timeControll.emitHideEffects();
 
                     /*var col= contextMenuItem.columnIndex;
                 var id = contextMenuItem.blockIndex;*/
-                    timeControll.loadFromFile(contextMenuFrame.columnIndex,contextMenuFrame.blockIndex)//removeBlock(col,id)
+                    timeControll.setLoadF_manager(false)
+                     timeControll.setCurentBlock(contextMenuFrame.colIndex,contextMenuFrame.blockIndex)
+                    timeControll.loadFromFile("")
+
+                    //,"F://prohect/build-OpenBoard-Desktop_Qt_5_4_0_MinGW_32bit-Debug/Es2zT8Y.jpg")//removeBlock(col,id)
 
                     // //console.log("AFTER 9999999999999999999999");
                     //main222.selectedBlock.repaint();

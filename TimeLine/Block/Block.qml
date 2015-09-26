@@ -521,10 +521,11 @@ Rectangle{
             if(main222.selectedBlock !== null)
                 main222.selectedBlock.hideMenu();
             timeControll.emitFocusFoundSignal();
+             main222.p_scale_pointer.x = -500
             //console.log("AAAAAAAAAAAAAAA " + timeControll.getBlockStartTime(root.colIndex,root.mIndex))
             main222.p_scale_pointer.x = mouseX + root.x - scroll.flickableItem.contentX + main222.p_scale_pointer.width //1234
 
-            main222.p_scale_pointer.x+=1
+
 
 
             main222.needToLightSelected = true
