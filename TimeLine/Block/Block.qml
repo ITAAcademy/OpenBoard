@@ -258,6 +258,7 @@ Rectangle{
                     root.p_main222.needUpdateModelWhereBlockDroped = false
                 }
                 root.globalRep.updateModel();
+                console.log("animation_scale_normal    root.globalRep.updateModel();")
                 /*root.p_main222.p_toolbar.p_button_RemoveTrack.enabled = true
             root.p_main222.p_toolbar.p_button_AddTrack.enabled = true
              root.p_main222.p_toolbar.p_button_play.enabled = true
@@ -360,11 +361,9 @@ Rectangle{
         //console.log("width = " + width)
         icon.width = icon.height;
         timeControll.setBlockTime(colIndex, mIndex,root.width * main222.scaling);
-        // timeControll.createEmptyBlock(root.colIndex, root.mIndex)
     }
     onXChanged: {
-        // timeControll.setBlockStartTime(root.colIndex,root.mIndex, x * main222.scaling)
-        // timeControll.createEmptyBlock(root.colIndex, root.mIndex)
+
     }
 
 
@@ -425,7 +424,7 @@ Rectangle{
                     var ind_add =  timeControll.getBlockIndToAddFromPos(root.colIndex, root.mIndex,root.x  * main222.scaling)
                     var space_add = timeControll.getBlockSpaceToAddFromPos(root.colIndex, root.mIndex);
                     timeControll.removeBlock(root.colIndex, root.mIndex);
-                    timeControll.addBlockWithSpaceAt(root.colIndex,ind_add,space_add,timeControll.getBlockFromBuffer() );
+                    timeControll.addBlockWithSpaceFromBufferAt(root.colIndex, ind_add, space_add );
                    //
 
                     //timeControll.createEmptyBlock(root.colIndex, root.mIndex)

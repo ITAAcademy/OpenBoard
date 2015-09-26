@@ -30,6 +30,30 @@ Rectangle {
 
         z: 100
         Buutton{
+            id: butAddEmpty
+            title_text: ""
+            height: parent.width
+            width: parent.width
+          icon_source : "qrc:/iphone_toolbar_icons/bittorrent_plus.png"
+          //
+          ma_enabled :root_toolbar.enableButtonsClick
+            onClicked: {
+                main222.needToLightSelected = false
+               // for (var i=0; i< 30; i++)
+                {
+                var ss = main222.blocks_num
+                    timeControll.setCurentBlock(root_toolbar.colIndex,-1)
+                   timeControll.addNewBlock(root_toolbar.colIndex)
+                     globalRep.updateModel()
+              /*if (timeControll.addNewBlockFromLibrary(bar_track.mIndex,"Block_" + ss))
+              {
+                main222.blocks_num +=1
+                    globalRep.updateModel()
+              }*/
+             }
+            }
+        }
+        Buutton{
             id: butAdd
             title_text: ""
             height: parent.width
@@ -42,7 +66,7 @@ Rectangle {
                // for (var i=0; i< 30; i++)
                 {
                 var ss = main222.blocks_num
-                    timeControll.setCurentCol(root_toolbar.colIndex)
+                    timeControll.setCurentBlock(root_toolbar.colIndex,-1)
                     timeControll.setLoadF_manager(true)
                     timeControll.showF_manager()
                     timeControll.setPosDefaultF_manager()

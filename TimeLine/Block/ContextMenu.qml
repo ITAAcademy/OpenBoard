@@ -181,6 +181,7 @@ timeControll.emitHideEffects();
                 button_text: "left"
                 height: parent.height/3
                 onButtonClicked: {
+                    console.log("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^   timeControll.addBlockAt(columnIndex,blockIndex) left    ")
                     context_menu.closeIt()
                     timeControll.addBlockAt(columnIndex,blockIndex)
                     appen_block_items.visible = false
@@ -199,14 +200,20 @@ timeControll.emitHideEffects();
                 button_text: "right"
                 height: parent.height/3
                 onButtonClicked: {
-
+                    console.log("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^   timeControll.addBlockAt(columnIndex,blockIndex) right    ")
                     context_menu.closeIt()
+                    console.log("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^   timeControll.addBlockAt(columnIndex,blockIndex) right    2")
                     timeControll.addBlockAt(columnIndex,blockIndex+1)
+                    console.log("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^   timeControll.addBlockAt(columnIndex,blockIndex) right    3")
                     appen_block_items.visible = false
+                    console.log("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^   timeControll.addBlockAt(columnIndex,blockIndex) right    4")
                     //closeAnimateMenu()
                     main222.needToLightSelected = false;
+                    console.log("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^   timeControll.addBlockAt(columnIndex,blockIndex) right    5")
                     contextMenuFrame.globalRep.updateModel();
+                    console.log("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^   timeControll.addBlockAt(columnIndex,blockIndex) right    6")
                     but_append.color = contextMenuItem.color
+                    console.log("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^   timeControll.addBlockAt(columnIndex,blockIndex) right    7")
                 }
             }
             height: but_edit.height*2.5
@@ -297,7 +304,7 @@ timeControll.emitHideEffects();
 
                     /*var col= contextMenuItem.columnIndex;
                 var id = contextMenuItem.blockIndex;*/
-                    timeControll.loadFromFile();//removeBlock(col,id)
+                    timeControll.loadFromFile(contextMenuFrame.columnIndex,contextMenuFrame.blockIndex)//removeBlock(col,id)
 
                     // //console.log("AFTER 9999999999999999999999");
                     //main222.selectedBlock.repaint();
@@ -318,6 +325,7 @@ timeControll.emitHideEffects();
 
                     but_append.color = contextMenuItem.color
                     appen_block_items.visible = false
+                    timeControll.setCurentBlock(main222.selectedBlockCol,main222.selectedBlockIndex)
                     timeControll.setLoadF_manager(false) //from file
                     timeControll.showF_manager()
                     timeControll.setPosDefaultF_manager()

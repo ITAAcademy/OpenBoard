@@ -156,7 +156,7 @@ class ListControll : public QObject, public QQuickImageProvider
     Q_OBJECT
 
      int spaces_to_add = -1;
-    int curent_col = -1;
+    QPoint curent_block = QPoint(-1,-1);
     bool load_from_file_or_library;
     QMessageBox mess_box;
     FileManager f_manager;
@@ -200,8 +200,10 @@ class ListControll : public QObject, public QQuickImageProvider
 
     bool isGroupChanged = false;
 public:
-    Q_INVOKABLE int getCurentCol();
-    Q_INVOKABLE void setCurentCol(int value);
+
+    Q_INVOKABLE QPoint getCurentBlock();
+   Q_INVOKABLE void setCurentBlock (QPoint value);
+    Q_INVOKABLE void setCurentBlock (int col, int ind);
     int isPlayPauseStop = 3;
     static const int blockHeightPlusSpacing = 102;
 
@@ -216,7 +218,7 @@ public:
     explicit ListControll(/*OGLWidget *drawWidget = NULL ,*/QObject *parent = 0);
     ~ListControll();
 
-    void updateBlocksStartTimesFrom(int col0, int ind0, bool withGroup = true);
+    void updateBlocksStartTimesFrom(int col0, int ind0, bool withGroup = false);
     Q_INVOKABLE bool balanceBlocksIfIsGroups(int col0, int ind0, bool calc_time_change = true);
     Q_INVOKABLE bool checkBlockValidGroup(DrawElement *elm);
     void updateBlocksIndexFrom(int col, int ind);
@@ -243,7 +245,7 @@ public:
     Q_INVOKABLE  void setIsProjectChanged(bool);
     Q_INVOKABLE int getTrackSize(int col);
     Q_INVOKABLE QString getBlockKey(int col, int i) ;
-    Q_INVOKABLE void addNewBlock(int col, QString str , DrawElement *element = NULL);
+    Q_INVOKABLE void addNewBlock(int col, QString str = QString("block"+ QString::number(qrand())), DrawElement *element = NULL);
 
 
     Q_INVOKABLE   int getBlockTypeId(int col,int ind);
@@ -271,6 +273,7 @@ public:
     Q_INVOKABLE void moveBlockFromTo(int col,int ind0, int ind1);
     Q_INVOKABLE void  moveBlockFromTo(int col0,int ind0,int col1, int ind1);
     Q_INVOKABLE void  cloneBlock(DrawElement *origin, DrawElement *clone);
+    Q_INVOKABLE void cloneDrawElement (DrawElement *origin, DrawElement *clone);
 
     Q_INVOKABLE void moveWindow( ) ;
     Q_INVOKABLE void resizeWindowWidth(bool left) ;
@@ -342,6 +345,7 @@ public:
 
     Q_INVOKABLE void addBlockAt(int col, int ind, DrawElement *element = NULL , int life_time = -1,bool need_balance = false );
     Q_INVOKABLE void addBlockWithSpaceAt(int col, int ind,int space, DrawElement *element = NULL , int life_time = -1,bool need_balance = false );
+    Q_INVOKABLE void addBlockWithSpaceFromBufferAt(int col, int ind,int space,   int life_time = -1 ,bool need_balance = false);
 
 
     Q_INVOKABLE DrawElement* getBlockFromBuffer();
@@ -427,6 +431,7 @@ public slots:
     Q_INVOKABLE bool addNewBlockFromLibrary(int col, QString str , DrawElement *element = NULL);
     Q_INVOKABLE bool addNewBlockFromLibrary( QString str , DrawElement *element = NULL);
     Q_INVOKABLE DrawElement* loadFromFile(int col, int ind, QString path = "",bool emit_update = true);
+    Q_INVOKABLE DrawElement* loadFromFile( QString path = "");
     void addMsToTimerValue(int ms);
     Q_INVOKABLE void emitNewProject();
     Q_INVOKABLE void emitOpenEffects();
