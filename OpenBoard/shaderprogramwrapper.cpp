@@ -169,8 +169,8 @@ if (isFilePath)
 bool ShaderProgramWrapper::setUniform(QString name, QVariant value)
 {
     GLint unifrom = glf->glGetUniformLocation( ShaderProgram, name.toLatin1().data());
-    if(unifrom == NULL)
-        return false;
+ //   if(unifrom == NULL)
+   //     return false;
 
     switch (value.type()) {
     case QMetaType::Int:
