@@ -22,6 +22,7 @@ Rectangle {
 
     //property alias inversion : cbInversion.checked
    // property alias sliderTimer : doubleSliderTime
+    property alias countSlider : countSlider
     id: root
     width: parent.width
     height: parent.height
@@ -64,6 +65,7 @@ Rectangle {
 }
         }
         FullSlider{
+            name:"count"
             id: countSlider
             maximum:15
             width:root.width

@@ -34,32 +34,36 @@ Rectangle{
         {
         case 0:
             //default:
-            console.log("case 0");
-
             effectsPanelAlpha.setStartTime(startTime);
             effectsPanelAlpha.setEndTime(endTime);
             effectsPanelAlpha.setInverted(inversion);
             break;
         case 1:
-            console.log("case 1");
-
             effectsPanelSpin.setStartTime(startTime);
             effectsPanelSpin.setEndTime(endTime);
             effectsPanelSpin.setInverted(inversion);
             break;
         case 2:
-            effectsPanelPixelization.setStartTime(startTime);
-            effectsPanelPixelization.setEndTime(endTime);
-            effectsPanelPixelization.setInverted(inversion);
-            if (elementSize<1)elementsize=1;
+            if (elementSize>effectsPanelPixelization.elementSizeSlider.maximum)
+                elementSize = effectsPanelPixelization.elementSizeSlider.maximum
+            if (elementSize<effectsPanelPixelization.elementSizeSlider.minimum)
+                elementSize = effectsPanelPixelization.elementSizeSlider.minimum
+            effectsPanelPixelization.setStartTime(startTime)
+            effectsPanelPixelization.setEndTime(endTime)
+            effectsPanelPixelization.setInverted(inversion)
             effectsPanelPixelization.setElementSize(elementSize)
+            effectsControll.setCurrentEffectProperty("elementSize",elementSize)
             break;
         case 3:
-            effectsPanelCircles.setStartTime(startTime);
-            effectsPanelCircles.setEndTime(endTime);
-            effectsPanelCircles.setInverted(inversion);
-             if (count<1)count=1;
-            effectsPanelCircles.setCount(count);
+             if (count>effectsPanelCircles.countSlider.maximum)
+                 count = effectsPanelCircles.countSlider.maximum
+             if (count<effectsPanelCircles.countSlider.minimum)
+                 count = effectsPanelCircles.countSlider.minimum
+            effectsPanelCircles.setStartTime(startTime)
+            effectsPanelCircles.setEndTime(endTime)
+            effectsPanelCircles.setInverted(inversion)
+            effectsPanelCircles.setCount(count)
+            effectsControll.setCurrentEffectProperty("count",count)
 
             break;
         case 4:
