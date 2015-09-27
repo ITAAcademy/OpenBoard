@@ -351,7 +351,7 @@ Rectangle{
             }
         }
         else
-        {             
+        {
             if (width < main222.minBlockWidth)
                 width = main222.minBlockWidth
         }
@@ -363,7 +363,7 @@ Rectangle{
             timeControll.setBlockTime(colIndex, mIndex,root.width * main222.scaling,true);
 
         }
-       /* else
+        /* else
             timeControll.setBlockTime(colIndex, mIndex,root.width * main222.scaling);*/
 
         console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
@@ -428,11 +428,15 @@ Rectangle{
                     console.log("main222.exitedFromDropArea = true         createEmptyBlock")
                     //timeControll.setBlockStartTime(root.colIndex, root.mIndex, root.x  * main222.scaling)
 
+
+
                     var ind_add =  timeControll.getBlockIndToAddFromPos(root.colIndex, root.mIndex,root.x  * main222.scaling)
+                    console.log("ind_add = " + ind_add)
                     var space_add = timeControll.getBlockSpaceToAddFromPos(root.colIndex, root.mIndex);
-                    timeControll.removeBlock(root.colIndex, root.mIndex);
+                    console.log("space_add = " + space_add)
+                    timeControll.removeBlock(root.colIndex, root.mIndex,true,false);
                     timeControll.addBlockWithSpaceFromBufferAt(root.colIndex, ind_add, space_add );
-                   //
+                    //
 
                     //timeControll.createEmptyBlock(root.colIndex, root.mIndex)
                 }
@@ -529,7 +533,7 @@ Rectangle{
             if(main222.selectedBlock !== null)
                 main222.selectedBlock.hideMenu();
             timeControll.emitFocusFoundSignal();
-             main222.p_scale_pointer.x = -500
+            main222.p_scale_pointer.x = -500
             //console.log("AAAAAAAAAAAAAAA " + timeControll.getBlockStartTime(root.colIndex,root.mIndex))
             main222.p_scale_pointer.x = mouseX + root.x - scroll.flickableItem.contentX + main222.p_scale_pointer.width //1234
 
@@ -1173,7 +1177,7 @@ Rectangle{
 
                     timeControll.deleteBlockToDel(root.colIndex)
 
-                   /* if(!timeControll.getCurent_group())
+                    /* if(!timeControll.getCurent_group())
                     {
                         console.log("tttttttttttttttttttttttttttttttttttttttttttttttt")
                         timeControll.setBlockTime(colIndex, mIndex,root.width * main222.scaling);
@@ -1203,7 +1207,7 @@ Rectangle{
 
 
             cursorShape = Qt.ArrowCursor;
-             root.p_main222.maIsPressed = 0
+            root.p_main222.maIsPressed = 0
 
 
         }
@@ -1225,7 +1229,7 @@ Rectangle{
         onEntered: {
 
 
-           // console.log("mamamamammaa   entered, mIndex = " + root.mIndex)
+            // console.log("mamamamammaa   entered, mIndex = " + root.mIndex)
             main222.exitedFromDropArea = false
             main222.dropEnteredBlockIndex = root.mIndex
             main222.dropEnteredTrackIndex = root.colIndex

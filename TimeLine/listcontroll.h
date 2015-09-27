@@ -265,7 +265,7 @@ public:
     Q_INVOKABLE void setBlockStartTime(int col, int i, int value);
     Q_INVOKABLE int getBlockStartTime(int col, int i);
     //Q_INVOKABLE bool setBlockDrawElemet(DrawElement *elm, int col, int i);
-    Q_INVOKABLE   bool removeBlock(int col, int i, bool copy_in__buffer = true );
+    Q_INVOKABLE   bool removeBlock(int col, int i, bool copy_in__buffer = true, bool del_last_empty = true );
     Q_INVOKABLE int getBlockTime(int col, int i) ;
     Q_INVOKABLE DrawElement *  getBlock(int col, int i) ;
     Q_INVOKABLE DrawElement *  getBlock(QPoint point) ;

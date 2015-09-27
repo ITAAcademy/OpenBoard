@@ -343,7 +343,7 @@ void ListControll::cloneDrawElement (DrawElement *origin, DrawElement *clone)
 
 
 
-bool ListControll::removeBlock(int col, int i, bool copy_in__buffer )
+bool ListControll::removeBlock(int col, int i, bool copy_in__buffer, bool del_last_empty  )
 {
     qDebug() << "ListControll::removeBlock(int col, int i)";
     curent_group = NULL;
@@ -405,10 +405,20 @@ bool ListControll::removeBlock(int col, int i, bool copy_in__buffer )
 
         DrawElement *prev;
         int add_index = i;
+        del_last_empty = false;
         if ( add_index == tracks[col].block.size())
         {
-            tracks[col].addTime(-temp);
-            delete new_empty;
+            if (del_last_empty)
+            {
+                addBlockAt(col,i,new_empty);/////////////////////////
+                tracks[col].addTime(-new_empty->getLifeTime());
+            }
+            else
+            {
+                tracks[col].addTime(-temp);
+                delete new_empty;
+            }
+
             if (i > 0)
             {
                 prev = tracks[col].block[i -1];
@@ -421,6 +431,7 @@ bool ListControll::removeBlock(int col, int i, bool copy_in__buffer )
                     removeBlock(col, i -1);
                 }
             }
+
 
         }
         else
@@ -704,7 +715,7 @@ int ListControll::getBlockIndToAddFromPos(int col,int ind, int pos)
         return -1;
 
     int get_ind = -1;
-    int track_time = tracks[col].getTime();
+    int track_time = tracks[col].getTime() - tracks[col].block[ind]->getLifeTime();
     if (pos > track_time)
     {
         spaces_to_add = pos - track_time;
@@ -743,8 +754,8 @@ void ListControll::addBlockWithSpaceAt(int col, int ind,int space,  DrawElement 
 {
     DrawElement * empt = new DrawElement(NULL,NULL);
     empt->setLifeTime(space);
-    //addBlockAt(col,  ind, empt);
-    addBlockAt( col,  ind ,  element,  life_time , need_balance);
+    addBlockAt(col,  ind, empt);
+    addBlockAt( col,  ind + 1 ,  element,  life_time , need_balance);
 }
 
 void ListControll::addBlockWithSpaceFromBufferAt(int col, int ind,int space,   int life_time ,bool need_balance)
@@ -1270,7 +1281,7 @@ void ListControll::setBlockTime(int col, int i,int value, bool resize_next_empty
             {
                 adding_time = -new_time;
                 new_time = 0;
-              /*  delete k_elm;
+                /*  delete k_elm;
                 tracks[col].block.removeAt(k);
                 k--;*/
                 block_to_del.append(k);
@@ -1288,13 +1299,13 @@ void ListControll::setBlockTime(int col, int i,int value, bool resize_next_empty
     }
     if (adding_time > 0)
     {
-     //     tracks[col].addTime(adding_time);
+        //     tracks[col].addTime(adding_time);
     }
     else
         if (adding_time == 0)
-    {
-        updateBlocksIndexFrom(col,i);
-    }
+        {
+            updateBlocksIndexFrom(col,i);
+        }
 
     updateBlocksStartTimesFrom(col,i);
     if ( tracks[col].block[i]->getGroupWichElBelong() == NULL)
