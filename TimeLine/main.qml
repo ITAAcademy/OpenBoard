@@ -336,10 +336,12 @@ scale_pointer.x = 0// timeControll.getMaxTrackTime() + scale_pointer.width/2 - s
            {
                var pp = point
                console.log("AAAAAA  "  +   rep_columns.itemAt(pp.x).getBlock(pp.y).p_border_color)
-              rep_columns.itemAt(pp.x).getBlock(pp.y).p_border_color
+
+.rep_columns.itemAt(pp.x).getBlock(pp.y).p_border_color
                           = timeControll.getBlockBorderColor(pp.x,pp.y);
            }*/
        }
+
 
 
        onUpdateSignal:  {

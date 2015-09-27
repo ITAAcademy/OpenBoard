@@ -438,7 +438,8 @@ bool ListControll::removeBlock(int col, int i, bool copy_in__buffer )
                 else
                 {
                     prev = new_empty;
-                    addBlockAt(col,i,new_empty);
+                    addBlockAt(col,i,new_empty);/////////////////////////
+                    tracks[col].addTime(-new_empty->getLifeTime());
                 }
 
                 if (add_index < tracks[col].block.size() + 1)
@@ -1212,6 +1213,16 @@ void ListControll::setBlocks(int col,const QList <DrawElement *> &value)
     tracks[col].block = value;
 }
 
+void ListControll::deleteBlockToDel(int col)
+{
+    for (int i=0; i < block_to_del.size(); i++ )
+    {
+        int ind = block_to_del[i];
+        delete tracks[col].block[ind];
+        tracks[col].block.removeAt(ind);
+    }
+}
+
 void ListControll::setBlockTime(int col, int i,int value, bool resize_next_empty)
 {
     if(!blockValid(col,i))
@@ -1246,6 +1257,7 @@ void ListControll::setBlockTime(int col, int i,int value, bool resize_next_empty
 
     if (resize_next_empty )
     {
+        block_to_del.clear();
         for (int k = i + 1; k < tracks[col].block.size(); k++)
         {
             DrawElement *k_elm = tracks[col].block[k];
@@ -1258,14 +1270,15 @@ void ListControll::setBlockTime(int col, int i,int value, bool resize_next_empty
             {
                 adding_time = -new_time;
                 new_time = 0;
-                delete k_elm;
+              /*  delete k_elm;
                 tracks[col].block.removeAt(k);
-                k--;
+                k--;*/
+                block_to_del.append(k);
             }
             else
             {
                 adding_time -= new_time;
-                k_elm->setLifeTime(new_time);
+                k_elm->setLifeTime(new_time,true);
             }
             if (adding_time == 0)
                 break;
@@ -1274,7 +1287,9 @@ void ListControll::setBlockTime(int col, int i,int value, bool resize_next_empty
 
     }
     if (adding_time > 0)
-          tracks[col].addTime(adding_time);
+    {
+     //     tracks[col].addTime(adding_time);
+    }
     else
         if (adding_time == 0)
     {

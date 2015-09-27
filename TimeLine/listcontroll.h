@@ -199,6 +199,7 @@ class ListControll : public QObject, public QQuickImageProvider
     bool glWindInited = false;
 
     bool isGroupChanged = false;
+    QList <int> block_to_del;
 public:
 
     Q_INVOKABLE QPoint getCurentBlock();
@@ -259,6 +260,7 @@ public:
     void setBlocks(int col,const  QList <DrawElement * > &value);
     Q_INVOKABLE   void setBlockKey(int col, int i, QString name);\
     Q_INVOKABLE void setBlockTime(int col, int i, int value, bool resize_next_empty = false);
+    Q_INVOKABLE void deleteBlockToDel(int col);
     Q_INVOKABLE void setBlockTimeWithUpdate(int col, int i, int value, bool visual);
     Q_INVOKABLE void setBlockStartTime(int col, int i, int value);
     Q_INVOKABLE int getBlockStartTime(int col, int i);
@@ -414,7 +416,7 @@ signals:
     void updateModel();
     void blockEditedSignal();
 
-    void updateSelectedBlock(QPoint point);
+    void updateSelectedBlock(QPoint point);\
 
     void newProjectSignel();
     void openProjectSignel();

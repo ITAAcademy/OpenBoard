@@ -359,9 +359,12 @@ Rectangle{
         //console.log("width = " + width)
         icon.width = icon.height;
         if (main222.maIsPressed === 1)
+        {
             timeControll.setBlockTime(colIndex, mIndex,root.width * main222.scaling,true);
-        else
-            timeControll.setBlockTime(colIndex, mIndex,root.width * main222.scaling);
+
+        }
+       /* else
+            timeControll.setBlockTime(colIndex, mIndex,root.width * main222.scaling);*/
 
         console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 
@@ -1168,15 +1171,20 @@ Rectangle{
                 {
                     mouseArea.drag.target = root;
 
-                    if(!timeControll.getCurent_group())
+                    timeControll.deleteBlockToDel(root.colIndex)
+
+                   /* if(!timeControll.getCurent_group())
+                    {
+                        console.log("tttttttttttttttttttttttttttttttttttttttttttttttt")
                         timeControll.setBlockTime(colIndex, mIndex,root.width * main222.scaling);
+                    }
                     else
+                    {
+                         console.log("yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy")
                         root.width = timeControll.getBlockTime(root.colIndex, root.mIndex)/main222.scaling;
+                    }*/
 
-                    /*  timeControll.setBlockTime(colIndex, mIndex,root.width * main222.scaling);
-                 timeControll.createEmptyBlock(root.colIndex, root.mIndex)*/
 
-                    // item_col.width = timeControll.getMaxTrackTime()// item_col.childrenRect.width
 
                     bChangeSize = false;
                     if(!timeControll.getCurent_group())
