@@ -271,7 +271,11 @@ void DrawTextElm::draw()
 
     if(staticText)
     {
-        textFont.setPointSize(mainTextFont.pointSize() * ((float)pDrawWidget->getWax()/width));
+        float koff = 0;
+        if (width>=height)koff=(float)pDrawWidget->getWax()/width;
+        else koff = (float)pDrawWidget->getWay()/height;
+
+        textFont.setPointSize(mainTextFont.pointSize() * koff);
         textFont.setBold(mainTextFont.bold());
         textFont.setItalic(mainTextFont.italic());
         textFont.setUnderline(mainTextFont.underline());
@@ -279,7 +283,7 @@ void DrawTextElm::draw()
         textFont.setFamily(mainTextFont.family());
         textFont.setStyleStrategy(QFont::PreferQuality);
         pt = textFont.pointSize();
-        lineHeight = LINE_HEIGHT * ((float)pDrawWidget->getWax()/width);
+        lineHeight = LINE_HEIGHT * koff;
         QStringList list = unParsestring.split("\n");
         for(int i = 0; i < list.length() /*&& i < (height/(lineHeight + pt)) - 1*/; i++)
         {
