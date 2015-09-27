@@ -273,7 +273,11 @@ void DrawTextElm::draw()
     {
         float koff = 0;
         if (width>=height)koff=(float)pDrawWidget->getWax()/width;
-        else koff = (float)pDrawWidget->getWay()/height;
+        else koff = (float)pDrawWidget->getWax()/height;
+        /*float koff1=(float)pDrawWidget->getWax()/width;
+        float koff2=(float)pDrawWidget->getWay()/height;
+        if (koff1>koff2)koff=koff1;
+        else koff=koff2;*/
 
         textFont.setPointSize(mainTextFont.pointSize() * koff);
         textFont.setBold(mainTextFont.bold());
