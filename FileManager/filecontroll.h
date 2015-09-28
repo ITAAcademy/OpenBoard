@@ -112,7 +112,7 @@ public slots:
 void setFocus();
 private:
 bool ableToDraw=true;
-    bool openBrushLibrary( QString path = "\\Preset\\Brushes");
+    bool openBrushLibrary( QString path = "\\Preset\\Standart");
 };
 
 #endif // LISTCONTROLL_H

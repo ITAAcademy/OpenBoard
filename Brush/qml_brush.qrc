@@ -9,7 +9,7 @@
         <file>Content/BrushSettingPages/Color.qml</file>
         <file>Content/BrushSettingPages/Deform.qml</file>
         <file>Content/BrushSettingPages/Dispers.qml</file>
-        <file>Content/BrushSettingPages/Image.qml</file>
-        <file>Content/BrushSettingPages/FullSlider.qml</file>
+        <file>Content/BrushSettingPages/ImageBrush.qml</file>
+        <file>Content/BrushSettingPages/FullSliderBrush.qml</file>
     </qresource>
 </RCC>

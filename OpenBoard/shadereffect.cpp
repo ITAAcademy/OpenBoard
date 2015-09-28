@@ -1,7 +1,7 @@
 #include "shadereffect.h"
 
 
- int ShaderEffect::getStartTimeMS() const
+int ShaderEffect::getStartTimeMS() const
 {
     return startTimeMS;
 }
@@ -11,7 +11,7 @@ void ShaderEffect::setStartTimeMS(int value)
     startTimeMS = value;
 }
 
- int ShaderEffect::getEffectTimeHowLong() const
+int ShaderEffect::getEffectTimeHowLong() const
 {
     return effectTimeHowLong;
 }
@@ -21,13 +21,19 @@ void ShaderEffect::setEffectTimeHowLong(int value)
     effectTimeHowLong = value;
 }
 
-bool ShaderEffect::save(QDataStream &stream)
+bool ShaderEffect::save(QDataStream &stream,float version)
 {
     stream << startTimeMS << effectTimeHowLong << shaderWrapperIndex << reverse;
+
+    //shaderWrapper->getParentWidget()->getTimeLine()->get
+    if (version > 2.8)
+        stream <<count << elementSize ;
 }
-bool ShaderEffect::load(QDataStream &stream)
+bool ShaderEffect::load(QDataStream &stream,float version)
 {
-stream >> startTimeMS >> effectTimeHowLong >> shaderWrapperIndex >> reverse;
+    stream >> startTimeMS >> effectTimeHowLong >> shaderWrapperIndex >> reverse;
+    if (version > 2.8)
+        stream >> count >> elementSize;
 
 }
 
@@ -98,6 +104,26 @@ QVector<ShaderEffect> ShaderEffect::creatEffectByNum(int num, int time)
     }
     return res;
 }
+
+int ShaderEffect::getCount() const
+{
+    return count;
+}
+
+void ShaderEffect::setCount(int value)
+{
+    count = value;
+}
+
+int ShaderEffect::getElementSize() const
+{
+    return elementSize;
+}
+
+void ShaderEffect::setElementSize(int value)
+{
+    elementSize = value;
+}
 ShaderEffect::ShaderEffect(ShaderProgramWrapper *shaderWrp, int shaderIndex)
 {
     // qDebug() << "shaderWrapper=shaderWrp";
@@ -137,26 +163,10 @@ int ShaderEffect::getShaderWrapperIndex()
 {
     return shaderWrapperIndex;
 }
-
-void ShaderEffect::setUniformAnimationKey(ShaderEffect shaderEffect, float keyFrame)
-{
-    OGLWidget *glWidget = shaderEffect.getShaderWrapper()->getParentWidget();
-    GLint keyUnifrom = glWidget->context()->functions()->glGetUniformLocation(shaderEffect.getShaderWrapper()->getShaderProgram()
-                        ,"animationKey");
-
-            glWidget->context()->functions()->glUniform1f(keyUnifrom,keyFrame);
+bool ShaderEffect::setUniform(QString name, QVariant value){
+    shaderWrapper->setUniform(name,value);
 }
-void ShaderEffect::setUniformResolution(ShaderEffect shaderEffect, float width, float height)
-{
-   shaderEffect.getShaderWrapper()->setUniformResolution(width,height);
+bool ShaderEffect::setUniform(QString name, float val1,float val2){
+    shaderWrapper->setUniform(name,val1,val2);
 }
 
-void ShaderEffect::setUniformReverse(ShaderEffect shaderEffect, bool val)
-{
-    OGLWidget *glWidget = shaderEffect.getShaderWrapper()->getParentWidget();
-
-    GLint reverseUnifrom = glWidget->context()->functions()->glGetUniformLocation(shaderEffect.getShaderWrapper()->getShaderProgram()
-                        ,"reverse");
-    glWidget->context()->functions()->glUniform1i(reverseUnifrom,val);
-
-}

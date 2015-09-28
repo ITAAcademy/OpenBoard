@@ -84,7 +84,7 @@ void DrawVideoElm::setVideoFile(QString path)
         lifeTime = decoder.getDuration();
 }
 
-bool DrawVideoElm::load_add(QDataStream &stream)
+bool DrawVideoElm::load_add(QDataStream &stream, float version)
 {
     stream >> videPath;
     key = videPath;

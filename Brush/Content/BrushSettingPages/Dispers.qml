@@ -17,7 +17,7 @@ Rectangle {
         y: 15
         property int fix_height: 26
         spacing: 15
-        FullSlider{
+        FullSliderBrush{
             width: parent.width
             height: parent.fix_height
             name: "DISPERS"
@@ -29,7 +29,7 @@ Rectangle {
                 show_brush_image.update();
             }
         }
-        FullSlider{
+        FullSliderBrush{
             width: parent.width
             height: parent.fix_height
             name: "COUNT"
@@ -42,7 +42,7 @@ Rectangle {
             }
 
         }
-        FullSlider{
+        FullSliderBrush{
             width: parent.width
             height: parent.fix_height
             name: "DELTA"

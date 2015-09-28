@@ -28,7 +28,7 @@ Rectangle {
                     hoverEnabled: true
                     onClicked:
                     {
-                        effectsControll.addEffect("Effect ",1,1);
+                        effectsControll.addEffect("newEffect ",1,1);
                         //brushControll.setCurentBrush(brush.mIndex);
                         root.update();
                     }

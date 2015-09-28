@@ -88,9 +88,9 @@ public:
     bool reloadLastDone();
 
     void setLastPath(QString path);
-    bool load(QIODevice* device);
+    bool load(QIODevice* device, float version);
     bool loadTypeId(QIODevice* device);
-    bool loadRest(QIODevice* device);
+    bool loadRest(QIODevice* device, float version);
  bool save(QIODevice* device);
 
     QRect getRect();
@@ -116,8 +116,13 @@ public:
     int getZ() const;
     void setZ(int value);
 
+<<<<<<< HEAD
      int getLifeTime() ;
      void setLifeTime(int value, bool feedBack = false, bool visual = true);
+=======
+    int getLifeTime() const;
+    void setLifeTime(int value, bool feedBack = false, bool visual = true);
+>>>>>>> nicolas_2
 
     int getStartDrawTime() const;
     void setStartDraw(int value);
@@ -179,7 +184,7 @@ protected slots:
     QImage load_image(QDataStream &stream);
 
 protected:
-    virtual bool load_add(QDataStream &stream);
+    virtual bool load_add(QDataStream &stream, float version);
     virtual bool save_add(QDataStream &stream);
 
 

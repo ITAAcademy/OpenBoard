@@ -42,6 +42,7 @@ Rectangle {
                 border.color: "#DDDDDD"
                 border.width: 0
                 radius: 10
+                clip: true
                 property int mIndex: index
                     Image{
                     id: img

@@ -144,7 +144,7 @@ static DrawElement *loadDrawElement(QIODevice *device, float version)
      if(typeId == Element_type::Text)
      {
          DrawTextElm *elm = new DrawTextElm(NULL);
-                 elm->loadRest(device);
+                 elm->loadRest(device, version);
                 // delete  draw_element;
                  draw_element = (DrawElement*) elm;
      }
@@ -152,7 +152,7 @@ static DrawElement *loadDrawElement(QIODevice *device, float version)
      if(typeId == Element_type::Image)
      {
         DrawImageElm *elm = new DrawImageElm(NULL,NULL);
-                 elm->loadRest(device);
+                 elm->loadRest(device, version);
                  //delete  draw_element;
                  elm->setDrawImage(elm->getIcon());
                  draw_element = (DrawElement*) elm;
@@ -163,7 +163,7 @@ static DrawElement *loadDrawElement(QIODevice *device, float version)
      if(typeId == Element_type::Brushh)
      {
         DrawBrushElm *elm = new DrawBrushElm(NULL,NULL);
-                 elm->loadRest(device);
+                 elm->loadRest(device, version);
                  //delete  draw_element;
                  draw_element = (DrawElement*) elm;
      }
@@ -171,14 +171,14 @@ static DrawElement *loadDrawElement(QIODevice *device, float version)
      if(typeId == Element_type::Empty)
      {
         DrawElement *elm = new DrawElement(NULL,NULL);
-                 elm->loadRest(device);
+                 elm->loadRest(device, version);
                  //delete  draw_element;
                  draw_element = (DrawElement*) elm;
      }
      if(typeId == Element_type::Video)
      {
         DrawVideoElm *elm = new DrawVideoElm(NULL,NULL);
-                 elm->loadRest(device);
+                 elm->loadRest(device, version);
                  //delete  draw_element;
                 // if (elm->isVidePathValid())
                       if (isFileExists(elm->getVidePath()))
@@ -194,7 +194,7 @@ static DrawElement *loadDrawElement(QIODevice *device, float version)
      if(typeId == Element_type::Audio)
      {
         DrawAudioElm *elm = new DrawAudioElm(NULL,NULL);
-                 elm->loadRest(device);
+                 elm->loadRest(device, version);
                  //delete  draw_element;
                  if (isFileExists(elm->getFilePath()))
                     draw_element = (DrawElement*) elm;
@@ -223,7 +223,7 @@ public:
     explicit drawImage( OGLWidget *drawWidget, QObject *parent = 0);
     ~drawImage();
     void draw();
-    bool load_add(QDataStream &stream);
+    bool load_add(QDataStream &stream, float version);
     bool save_add(QDataStream &stream);
 };
 */

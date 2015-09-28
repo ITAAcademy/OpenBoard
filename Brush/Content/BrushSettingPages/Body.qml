@@ -17,7 +17,7 @@ Rectangle {
         y: 15
         property int fix_height: 26
         spacing: 15
-        FullSlider{
+        FullSliderBrush{
             id: size
             width: parent.width
             height: parent.fix_height
@@ -31,7 +31,7 @@ Rectangle {
                 show_brush_image.update();
             }
         }
-        FullSlider{
+        FullSliderBrush{
             width: parent.width
             height: parent.fix_height
             name: "SMOOTH"
@@ -48,7 +48,7 @@ Rectangle {
             }
 
         }
-        FullSlider{
+        FullSliderBrush{
             width: parent.width
             height: parent.fix_height
             name: "OPACITY"
