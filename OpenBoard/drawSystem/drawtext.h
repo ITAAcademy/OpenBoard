@@ -95,7 +95,7 @@ public:
     int getPrevTextCursor() const;
     void setPrevTextCursor(int value);
 
-    void drawTextBuffer(int m_x, int m_y, int m_width, int m_height, int z = 0, bool cross = true, float scale = 1);
+    void drawTextBuffer(int m_x, int m_y, int m_width, int m_height, int z = 0, bool cross = true, float scaleX = 1, float scaleY=1);
     void nextRow(int n   = -1, int Row = -1, bool wrap = true);
 
     void clearCanvas(int m_x = 0, int m_y = 0);

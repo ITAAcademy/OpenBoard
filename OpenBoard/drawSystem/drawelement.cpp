@@ -343,13 +343,13 @@ void DrawElement::paint()
 
         //pDrawWidget->useShader(0);
 
-        if(aspectRatio)
+       /* if(aspectRatio)
         {
             if (width>height)
             pDrawWidget->paintBufferOnScreen(fboWrapper,x, y, width, width, z);
             else pDrawWidget->paintBufferOnScreen(fboWrapper,x, y, height, height, z);
         }
-        else
+        else*/
             pDrawWidget->paintBufferOnScreen(fboWrapper,x, y, width, height, z);
         // pDrawWidget->context()->functions()->glUseProgram(0);
     }

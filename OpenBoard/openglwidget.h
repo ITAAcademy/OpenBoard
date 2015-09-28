@@ -239,8 +239,8 @@ public:
 
 
 
-    void drawTexture(int x, int y, int width, int height, int index, int angle=0, float scaleX = 1, float scaleY = 1, int z = 0);
-    void drawTexture(int x, int y, int width, int height, GLuint texture, int angle=0, float scaleX = 1, float scaleY = 1, int z = 0);
+    void drawTexture(int x, int y, int width, int height, int index, int angle=0, float scaleX = 1, float scaleY = 1, int z = 0,bool centreScaling = true);
+    void drawTexture(int x, int y, int width, int height, GLuint texture, int angle=0, float scaleX = 1, float scaleY = 1, int z = 0,bool centreScaling=true);
 
     int initTexture(GLuint &texture, int width, int height);
     int initDepthTexture(GLuint &fbo_depth, int width, int height);
@@ -265,7 +265,7 @@ public:
     void drawQImage(int x, int y, QImage img, int z = 0);
 
     void myRenderText(QGLWidget *w, int x, int y, int z, const QString &text, const QColor &col = Qt::white, const QFont &font = QFont(), float scale = 1);
-    void drawTextFromTexture(int x, int y, int z, const QString &text,GLuint index, const QColor &col = Qt::white, const QFont &font = QFont(), float scale = 1);
+    void drawTextFromTexture(int x, int y, int z, const QString &text, GLuint index, const QColor &col = Qt::white, const QFont &font = QFont(), float scaleX = 1, float scaleY=1);
 
 
 
@@ -351,7 +351,7 @@ public slots:
     void setFileNameForRecords(QString ) ;
 
 
-    void drawQImageFromTexture(int x, int y, QImage img, GLuint index, int z, bool inverseY=false);
+    void drawQImageFromTexture(int x, int y, QImage img, GLuint index, int z, bool inverseY=false, float scaleX=1, float scaleY=1, bool centreScaling=true);
     void ShowHideShaderWindow();
     void testInit();
     void encoderAddWaitFrame();

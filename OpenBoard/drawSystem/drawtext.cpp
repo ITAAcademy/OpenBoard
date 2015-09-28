@@ -271,15 +271,15 @@ void DrawTextElm::draw()
 
     if(staticText)
     {
-        float koff = 0;
-        if (width>=height)koff=(float)pDrawWidget->getWax()/width;
-        else koff = (float)pDrawWidget->getWax()/height;
-        /*float koff1=(float)pDrawWidget->getWax()/width;
-        float koff2=(float)pDrawWidget->getWay()/height;
-        if (koff1>koff2)koff=koff1;
-        else koff=koff2;*/
 
-        textFont.setPointSize(mainTextFont.pointSize() * koff);
+        //if (width>=height)koff=(float)pDrawWidget->getWax()/width;
+        //else koff = (float)pDrawWidget->getWay()/height;
+         float koff1=(float)pDrawWidget->getWax()/width;
+      float  koff2=(float)pDrawWidget->getWay()/height;
+        //if (koff1>koff2)koff=koff1;
+       // else koff=koff2;*/
+
+        textFont.setPointSize(mainTextFont.pointSize());
         textFont.setBold(mainTextFont.bold());
         textFont.setItalic(mainTextFont.italic());
         textFont.setUnderline(mainTextFont.underline());
@@ -287,11 +287,11 @@ void DrawTextElm::draw()
         textFont.setFamily(mainTextFont.family());
         textFont.setStyleStrategy(QFont::PreferQuality);
         pt = textFont.pointSize();
-        lineHeight = LINE_HEIGHT * koff;
+        lineHeight = LINE_HEIGHT ;
         QStringList list = unParsestring.split("\n");
         for(int i = 0; i < list.length() /*&& i < (height/(lineHeight + pt)) - 1*/; i++)
         {
-            pDrawWidget->drawTextFromTexture(0, (i + 1)*(lineHeight + pt), z, list[i],textureIndex, mainFillColor, textFont,(float) 1.0f);
+            pDrawWidget->drawTextFromTexture(0, (i + 1)*(lineHeight + pt), z, list[i],textureIndex, mainFillColor, textFont,koff1,koff2);
             //pDrawWidget->myRenderText(pDrawWidget, 0, (i + 1)*(lineHeight + pt), z, unParsestring, mainFillColor, textFont);
         }
         return;
@@ -359,7 +359,10 @@ void DrawTextElm::draw()
         setAnimationPersentOfCross( (double)(current_time - animationDelayStart)/animationDelayCount);
         // //qDebug() << realKeyValue <<"    KEY    " << keyCouter;
     }
-    drawTextBuffer(0, 0, pDrawWidget->getWax(), pDrawWidget->getWay(), z, true, (float)pDrawWidget->getWax()/width);
+    float koff1=(float)pDrawWidget->getWax()/width;
+ float  koff2=(float)pDrawWidget->getWay()/height;
+
+   drawTextBuffer(0, 0, pDrawWidget->getWax(), pDrawWidget->getWay(), z, true,koff1,koff2);
     curentCh = current_time;
 }
 
@@ -559,19 +562,19 @@ void DrawTextElm::nextRow( int n, int Row, bool wrap)
 
 }
 
-void DrawTextElm::drawTextBuffer( int m_x, int m_y, int m_width, int m_height, int z, bool cross, float scale)
+void DrawTextElm::drawTextBuffer( int m_x, int m_y, int m_width, int m_height, int z, bool cross, float scaleX,float scaleY)
 {
     // qDebug() << "stringList:"<<stringList;
     pDrawWidget->setBusy(true);
     //if(!crossTextV2())
     //   return QPoint(0, 0);
     //int width = fMetrics->width(str)*1.125 ;//+ fMetrics->leftBearing(str.at(0)) + fMetrics->rightBearing(str.at(0));
-    textFont.setPointSize(mainTextFont.pointSize() * scale);
+    textFont.setPointSize(mainTextFont.pointSize());
     textFont.setBold(mainTextFont.bold());
     textFont.setItalic(mainTextFont.italic());
     textFont.setUnderline(mainTextFont.underline());
     textFont.setStrikeOut(mainTextFont.strikeOut());
-    lineHeight = LINE_HEIGHT * scale;
+    lineHeight = LINE_HEIGHT;
     //1234
     // textFont.setPointSize(20);
     textFont.setFamily(mainTextFont.family());
@@ -669,7 +672,7 @@ void DrawTextElm::drawTextBuffer( int m_x, int m_y, int m_width, int m_height, i
             fillColor = colors[k].value;
             QString textToFill = stringList[i].mid(columnOfColorStrBegin,columnOfColorStrEnd-columnOfColorStrBegin);
             qDebug() << "textToFill:"<<textToFill;
-            pDrawWidget->drawTextFromTexture(line_x,line_y,z,textToFill,textureIndex,fillColor,textFont,(float) scale);
+            pDrawWidget->drawTextFromTexture(line_x,line_y,z,textToFill,textureIndex,fillColor,textFont,scaleX,scaleY);
             //1234
             // pDrawWidget->fillText(textToFill,QColor("red"),fontishche, line_x , line_x, z,(float) scale);
             //  pDrawWidget->fillText("eeeeeeeeeeeeeeeeeeee",QColor("red"), QFont("Helvetica",40,40), 50 , 50, 0,(float) 1);

@@ -120,7 +120,7 @@ int OGLWidget::loadTextureFromFile(QString path)
 
 }
 
-void OGLWidget::drawTexture(int x, int y, int width, int height, GLuint texture,int angle,float scaleX,float scaleY, int z){
+void OGLWidget::drawTexture(int x, int y, int width, int height, GLuint texture, int angle, float scaleX, float scaleY, int z, bool centreScaling){
     //loadTextures();
     // glLoadIdentity();
     glEnable(GL_TEXTURE_2D);
@@ -131,9 +131,11 @@ void OGLWidget::drawTexture(int x, int y, int width, int height, GLuint texture,
 
     glPushMatrix();
 
+    if (centreScaling)
     glTranslatef(cx, cy, 0);
     glScalef(scaleX, scaleY, 1.f);
     glRotatef(angle, 0, 0, 1);
+    if (centreScaling)
     glTranslatef(-cx, -cy, 0);
 
     glBegin(GL_QUADS);
@@ -147,9 +149,9 @@ void OGLWidget::drawTexture(int x, int y, int width, int height, GLuint texture,
     glPopMatrix();
 
 }
-void OGLWidget::drawTexture(int x, int y, int width, int height, int index, int angle, float scaleX, float scaleY, int z)
+void OGLWidget::drawTexture(int x, int y, int width, int height, int index, int angle, float scaleX, float scaleY, int z, bool centreScaling)
 {
-    drawTexture(x, y, width, height, index, angle, scaleX, scaleY, z);
+    drawTexture(x, y, width, height, index, angle, scaleX, scaleY, z,centreScaling);
     //// //qDebug() << "void OGLWidget::drawTexture(int x, int y, int width, int height, int index)";
 }
 
@@ -2470,12 +2472,11 @@ void OGLWidget::myRenderText( QGLWidget* w, int x, int y,int z, const QString& t
      */
 }
 
-void OGLWidget::drawTextFromTexture( int x, int y,int z, const QString& text,GLuint index, const QColor& col , const QFont& font , float scale )
+void OGLWidget::drawTextFromTexture( int x, int y,int z, const QString& text,GLuint index, const QColor& col , const QFont& font , float scaleX,float scaleY )
 {
   //  qDebug() << "DTFT:"<<x << "     " << y;
     qglColor(col);
 
-    qDebug() << scale;
     if (text.isEmpty()) return;
 
     glPushMatrix();
@@ -2505,7 +2506,7 @@ void OGLWidget::drawTextFromTexture( int x, int y,int z, const QString& text,GLu
     }
     // img = QGLWidget::convertToGLFormat(img);
    // qDebug() << "before drawQImageFromTexture";
-    drawQImageFromTexture(x,y,img,index,z,true);
+    drawQImageFromTexture(x,y,img,index,z, true,scaleX,scaleY,false);
     //glRasterPos3i( x, y, z );
     //glDrawPixels( rect.width(), rect.height(), GL_RGBA, GL_UNSIGNED_BYTE, img.bits() );
 
@@ -2530,7 +2531,7 @@ void OGLWidget::drawQImage(int x, int y, QImage img, int z)
     glPopMatrix();
 }
 
-void OGLWidget::drawQImageFromTexture(int x, int y, QImage img, GLuint index, int z,bool inverseY)
+void OGLWidget::drawQImageFromTexture(int x, int y, QImage img, GLuint index, int z, bool inverseY, float scaleX, float scaleY,bool centreScaling)
 {
     if(img.isNull())
     {
@@ -2551,7 +2552,7 @@ void OGLWidget::drawQImageFromTexture(int x, int y, QImage img, GLuint index, in
     else
         glTexSubImage2D(GL_TEXTURE_2D, 0, x, y, img.width(), img.height(), GL_RGBA, GL_UNSIGNED_BYTE, res.bits());
 
-    drawTexture(0, 0, wax, way, index, 0, 1, 1, z);
+    drawTexture(0, 0, wax, way, index, 0, scaleX, scaleY, z,centreScaling);
     // glBindTexture(GL_TEXTURE_2D,0);
     glBindTexture(GL_TEXTURE_2D, 0);
     // glEnable(GL_BLEND);
