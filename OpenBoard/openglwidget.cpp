@@ -1439,6 +1439,16 @@ void OGLWidget::paintGL()
 
 
 }
+DrawElement *OGLWidget::getSelElm() const
+{
+    return selElm;
+}
+
+void OGLWidget::setSelElm(DrawElement *value)
+{
+    selElm = value;
+}
+
 
 
 void OGLWidget::drawGlobalShader( QVector<ShaderProgramWrapper*> shaders)
@@ -1961,7 +1971,7 @@ void OGLWidget::keyPressEvent(QKeyEvent *event)
             switch(event->key ())
             {
             case Qt::Key_S : case 1067 :
-                //    timeLine->emitSaveProject();
+                timeLine->emitSaveProject();
                 break;
             case Qt::Key_O : case 1065 :
                 timeLine->emitOpenProject();
@@ -2316,8 +2326,7 @@ void  OGLWidget::updateWindow(){
 
     if(curStatus != PLAY && t.x() >= 0 && !timeLine->isBlocked)
     {
-        if (mayShowRedRectangle)
-            editingRectangle.isEditingRectangleVisible = true;
+        editingRectangle.isEditingRectangleVisible = true;
 
         if(timeLine->getBlock(t) != selElm )
         {

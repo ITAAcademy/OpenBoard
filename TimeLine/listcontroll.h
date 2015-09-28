@@ -50,7 +50,7 @@ public:
         return time;
     }
     unsigned long int getTimeChange()
-    {       
+    {
         return time_change;
     }
 
@@ -77,24 +77,24 @@ public:
         this-> time = time;
         this-> block = block;
     }
-    void deleteClearBlocks ( ) {      
-           while(block.size())
-           {
-         delete block.last();
-          block.pop_back();
-           }
+    void deleteClearBlocks ( ) {
+        while(block.size())
+        {
+            delete block.last();
+            block.pop_back();
+        }
 
     }
     void appendBlockAt(int ind,DrawElement *  block_val)
     {
-       block.append(block_val);
-       block.move( block.size()-1,ind);
+        block.append(block_val);
+        block.move( block.size()-1,ind);
 
 
-       time += block_val->getLifeTime();
-      // testWidth[col].append(200);
-       //testColumnWidth[col]+=200;
-     //  // //qDebug() << "SIZE   " << test.size();
+        time += block_val->getLifeTime();
+        // testWidth[col].append(200);
+        //testColumnWidth[col]+=200;
+        //  // //qDebug() << "SIZE   " << test.size();
 
     }
 
@@ -106,9 +106,9 @@ public:
         qDebug() << "num of saved blocks " << block.size();
         for (int i=0; i< block.size(); i++)
         {
-             qDebug() << "block[i]:  " << i;
+            qDebug() << "block[i]:  " << i;
             block[i]->save(device);
-        }       
+        }
 
         return true;
     }
@@ -121,13 +121,13 @@ public:
         QDataStream stream(device);
         stream >> blocks_size ;
         stream.readRawData((char*)&time, sizeof(unsigned long int));
-    //qDebug() << "Track::load  blocks_size = " << blocks_size;
-    //return true;
+        //qDebug() << "Track::load  blocks_size = " << blocks_size;
+        //return true;
         for (int i=0; i< blocks_size; i++)
         {
             block.append(loadDrawElement(device, version));
         }
-       // qDebug() << "block size" << block.size();
+        // qDebug() << "block size" << block.size();
         return true;
     }
     void clear()
@@ -137,7 +137,7 @@ public:
             qDebug()<<"clear i:"<<i;
             if(block[i] != NULL)
             {
-               qDebug() << "block[i]:"<< block[i];
+                qDebug() << "block[i]:"<< block[i];
                 delete block[i];
             }
             block[i] = NULL;
@@ -155,7 +155,7 @@ class ListControll : public QObject, public QQuickImageProvider
 {
     Q_OBJECT
 
-     QMessageBox mess_box;
+    QMessageBox mess_box;
     FileManager f_manager;
     OGLWidget *drawWidget;
     int curent_block_group_num = -1;
@@ -169,23 +169,23 @@ class ListControll : public QObject, public QQuickImageProvider
     float zoom_speed = 1.0;
     QQuickView view;
     QPoint framaMousePosition;
-     QPoint prevMousePosition;
+    QPoint prevMousePosition;
     // QVector< QList <QString> > test;
     //  QVector< QList <int> > testWidth;
 
     QVector< Track > tracks;
-   // Element selectedBlock;
+    // Element selectedBlock;
     QPoint selectedBlockPoint;
     int def_min_block_width = minBlockTime;
     int scale_pointer_pos = 0;
     QList <DrawElement *> pointed_block;
-   // QList <Element> pointed_time_blocks;
+    // QList <Element> pointed_time_blocks;
     //  QVector< int > testColumnWidth;
     void recountMaxTrackTime();
     ImageClone *cloneImg;
     int group_changed = false;
     //QElapsedTimer timer;
-      unsigned long int timerValue;
+    unsigned long int timerValue;
     unsigned long int time_sum;
     DrawElement * block_in_buffer;
     int life_time_in_buffer;
@@ -197,8 +197,8 @@ class ListControll : public QObject, public QQuickImageProvider
 
     bool isGroupChanged = false;
 public:
-     int isPlayPauseStop = 3;
-     static const int blockHeightPlusSpacing = 102;
+    int isPlayPauseStop = 3;
+    static const int blockHeightPlusSpacing = 102;
 
 
     bool save(QIODevice* device);
@@ -210,7 +210,7 @@ public:
 
     explicit ListControll(/*OGLWidget *drawWidget = NULL ,*/QObject *parent = 0);
     ~ListControll();
-	
+
     void updateBlocksStartTimesFrom(int col0, int ind0, bool withGroup = true);
     Q_INVOKABLE bool balanceBlocksIfIsGroups(int col0, int ind0, bool calc_time_change = true);
     Q_INVOKABLE bool checkBlockValidGroup(DrawElement *elm);
@@ -225,7 +225,7 @@ public:
     bool isActiveWindow();
     Q_INVOKABLE bool attachBlock(int col, int index, int value);
 
-     Q_INVOKABLE bool addBlockToGroup(DrawElement* block);
+    Q_INVOKABLE bool addBlockToGroup(DrawElement* block);
     Q_INVOKABLE bool addBlockToGroup(int col,int ind);
     Q_INVOKABLE bool removeBlockFromGroup(DrawElement* block);
     Q_INVOKABLE void setCtrlPressed(bool value);
@@ -258,7 +258,7 @@ public:
     Q_INVOKABLE int getTrackTime(int col) ;
     Q_INVOKABLE int getMaxTrackTime( ) ;
 
-  Q_INVOKABLE void moveBlockFromTo(int col,int ind0, int ind1);
+    Q_INVOKABLE void moveBlockFromTo(int col,int ind0, int ind1);
     Q_INVOKABLE void  moveBlockFromTo(int col0,int ind0,int col1, int ind1);
     Q_INVOKABLE void  cloneBlock(DrawElement *origin, DrawElement *clone);
 
@@ -269,20 +269,20 @@ public:
     Q_INVOKABLE void  setFramaMousePosition( const int x,const int y) ;
     Q_INVOKABLE void setFramaMousePosition( const QPoint x);
 
-     Q_INVOKABLE QPoint  getMousePosition();
+    Q_INVOKABLE QPoint  getMousePosition();
 
-  //  Q_INVOKABLE void setSelectedBlock(int col, int i);
-   // Q_INVOKABLE Element getSelectedBlock() ;
+    //  Q_INVOKABLE void setSelectedBlock(int col, int i);
+    // Q_INVOKABLE Element getSelectedBlock() ;
 
     Q_INVOKABLE void setScalePointerPos( int x);
     Q_INVOKABLE int getScalePointerPos( );
 
     Q_INVOKABLE void calcPointedBlocks( );
 
-   Q_INVOKABLE  void calcPointedBlocksAtTime(int ms );
+    Q_INVOKABLE  void calcPointedBlocksAtTime(int ms );
     Q_INVOKABLE  void calcPointedBlocksAtTime( );
 
-  Q_INVOKABLE  QList <DrawElement * > getPointedBlocksAtTime( );
+    Q_INVOKABLE  QList <DrawElement * > getPointedBlocksAtTime( );
     Q_INVOKABLE QList <DrawElement * > getPointedBlocks( );
     QList <DrawElement*> getPointedBlocksDE( );
 
@@ -303,26 +303,26 @@ public:
     Q_INVOKABLE void  pause();
     Q_INVOKABLE void  stop();
     Q_INVOKABLE qint64 getPlayTime();
-     Q_INVOKABLE void setPlayTime(qint64);
+    Q_INVOKABLE void setPlayTime(qint64);
 
     QImage requestImage(const QString & id, QSize * size, const QSize & requestedSize);
 
 
-   Q_INVOKABLE QPoint getSelectedBlockPoint() const;
-  Q_INVOKABLE  void setSelectedBlockPoint(const QPoint &value);
-  Q_INVOKABLE  void setSelectedBlockPoint(int col, int ind);
+    Q_INVOKABLE QPoint getSelectedBlockPoint() const;
+    Q_INVOKABLE  void setSelectedBlockPoint(const QPoint &value);
+    Q_INVOKABLE  void setSelectedBlockPoint(int col, int ind);
 
     Q_INVOKABLE void  setPrevMousePosition();
     Q_INVOKABLE void  setBlockAnimation(int col, int ind,int state, int time);
-     Q_INVOKABLE void  setBlockAnimationTime(int col, int ind, int time);
-     Q_INVOKABLE void  setBlockAnimationState(int col, int ind,int state);
+    Q_INVOKABLE void  setBlockAnimationTime(int col, int ind, int time);
+    Q_INVOKABLE void  setBlockAnimationState(int col, int ind,int state);
     Q_INVOKABLE QPoint  getBlockAnimation(int col, int ind);
 
 
     Q_INVOKABLE QPoint  getPrevMousePosition();
     Q_INVOKABLE void  update();
-   Q_INVOKABLE void emitUpdateSignal();
-   Q_INVOKABLE void  emitUpdateTrackAt(int col);
+    Q_INVOKABLE void emitUpdateSignal();
+    Q_INVOKABLE void  emitUpdateTrackAt(int col);
 
     Q_INVOKABLE int  getTracksNumber();
 
@@ -332,62 +332,62 @@ public:
 
     Q_INVOKABLE void addBlockAt(int col, int ind, DrawElement *element = NULL , int life_time = minBlockTime,bool need_balance = false );
 
-  void sendUpdateModel();
+    void sendUpdateModel();
 
- Q_INVOKABLE  float getScaleScrollChildren() const;
- Q_INVOKABLE  void setScaleScrollChildren(const float &value);
- Q_INVOKABLE  void changeScaleScrollChildren(const float &value);
+    Q_INVOKABLE  float getScaleScrollChildren() const;
+    Q_INVOKABLE  void setScaleScrollChildren(const float &value);
+    Q_INVOKABLE  void changeScaleScrollChildren(const float &value);
 
-  Q_INVOKABLE  void videoSignalHAHAHAA(QString addrW)
-{
-  //QDesktopServices::openUrl(QUrl(QString("E:/Adele - Someone Like You.mp4")));
- // QDesktopServices::openUrl(QUrl::FromLocalFile(addrW, QUrl::TolerantMode));
-}
+    Q_INVOKABLE  void videoSignalHAHAHAA(QString addrW)
+    {
+        //QDesktopServices::openUrl(QUrl(QString("E:/Adele - Someone Like You.mp4")));
+        // QDesktopServices::openUrl(QUrl::FromLocalFile(addrW, QUrl::TolerantMode));
+    }
 
-Q_INVOKABLE  float getZoomSpeed() const;
- Q_INVOKABLE void setZoomSpeed(float value);
+    Q_INVOKABLE  float getZoomSpeed() const;
+    Q_INVOKABLE void setZoomSpeed(float value);
 
- Q_INVOKABLE QString getBlockBorderColor(int col,int ind);
+    Q_INVOKABLE QString getBlockBorderColor(int col,int ind);
 
-Q_INVOKABLE  bool getIsEditBlockShow() const;
-Q_INVOKABLE  void setIsEditBlockShow(bool value);
+    Q_INVOKABLE  bool getIsEditBlockShow() const;
+    Q_INVOKABLE  void setIsEditBlockShow(bool value);
 
-  volatile bool getBlocked() const;
-  void setBlocked(volatile bool value);
+    volatile bool getBlocked() const;
+    void setBlocked(volatile bool value);
 
-  int getBlockHeightPlusSpacing() const;
+    int getBlockHeightPlusSpacing() const;
 
-  bool getGlWindInited() const;
-  void setGlWindInited(bool value);
+    bool getGlWindInited() const;
+    void setGlWindInited(bool value);
 
-  Q_INVOKABLE bool getCurent_group() const;
-  Q_INVOKABLE bool getCurent_group(int col, int index) ;
-  Q_INVOKABLE long tryResizeCurentGroup(int shift);
-  Q_INVOKABLE long tryResizeMemberInCurentGroup(int shift, int col, int index);
-  Q_INVOKABLE QPoint getCurent_groupMembers(int index);
-  Q_INVOKABLE int getCurent_groupMembersSize();
+    Q_INVOKABLE bool getCurent_group() const;
+    Q_INVOKABLE bool getCurent_group(int col, int index) ;
+    Q_INVOKABLE long tryResizeCurentGroup(int shift);
+    Q_INVOKABLE long tryResizeMemberInCurentGroup(int shift, int col, int index);
+    Q_INVOKABLE QPoint getCurent_groupMembers(int index);
+    Q_INVOKABLE int getCurent_groupMembersSize();
 
-  Q_INVOKABLE void showF_manager(int x,int y);
-  Q_INVOKABLE void showF_manager(QPoint pos);
-  Q_INVOKABLE void showF_manager();
-  Q_INVOKABLE void setPosF_manager(QPoint pos);
-  Q_INVOKABLE void setPosF_manager(int x,int y);
-  Q_INVOKABLE void setPosDefaultF_manager();
-  Q_INVOKABLE void hideF_manager();
+    Q_INVOKABLE void showF_manager(int x,int y);
+    Q_INVOKABLE void showF_manager(QPoint pos);
+    Q_INVOKABLE void showF_manager();
+    Q_INVOKABLE void setPosF_manager(QPoint pos);
+    Q_INVOKABLE void setPosF_manager(int x,int y);
+    Q_INVOKABLE void setPosDefaultF_manager();
+    Q_INVOKABLE void hideF_manager();
 
 
 signals:
-  void borderColorChangedSignal(int col,int ind, QString color);
- // void sizeChangedSignal(int,int,unsigned long);
-  void loadFromFileSignal();
-  void drawRectangleSignal();
-  void removeRectangleSignal();
+    void borderColorChangedSignal(int col,int ind, QString color);
+    // void sizeChangedSignal(int,int,unsigned long);
+    void loadFromFileSignal();
+    void drawRectangleSignal();
+    void removeRectangleSignal();
 
-  void playSignal();
-  void pauseSignal();
-  void stopSignal();
-  void showEffectsSignal();
-  void hideEffectsSignal();
+    void playSignal();
+    void pauseSignal();
+    void stopSignal();
+    void showEffectsSignal();
+    void hideEffectsSignal();
     void updateSignal();
     void updateTrackAt(int);
     void updateModel();
@@ -405,30 +405,31 @@ signals:
     void focusFoundSignal();
     void imageLoadedPictureSizeSignal(QSize);
 
-//void setScalePointerPosSignal(int value);
+    //void setScalePointerPosSignal(int value);
 public slots:    
     Q_INVOKABLE void loadFromFile(QString path = "");
     void addMsToTimerValue(int ms);
-Q_INVOKABLE void emitNewProject();
+    Q_INVOKABLE void emitNewProject();
     Q_INVOKABLE void emitOpenEffects();
-     Q_INVOKABLE void emitHideEffects();
+    Q_INVOKABLE void emitHideEffects();
 
-   Q_INVOKABLE void  copyBlockToBuffer();
-     Q_INVOKABLE void  pasteBlockFromBuffer();
-     Q_INVOKABLE void setBlockTimeFromBuffer();
-  Q_INVOKABLE void emitOpenProject();
-  Q_INVOKABLE void emitSaveProject();
- Q_INVOKABLE void  emitBlockEditedSignal();
-Q_INVOKABLE void  emitPlaySignal();
-Q_INVOKABLE void  emitPauseSignal();
-Q_INVOKABLE void  emitStopSignal();
+    Q_INVOKABLE void  copyBlockToBuffer();
+    Q_INVOKABLE void  pasteBlockFromBuffer();
+    Q_INVOKABLE void setBlockTimeFromBuffer();
+    Q_INVOKABLE void setBlockPositionSizeFromBuffer();
+    Q_INVOKABLE void emitOpenProject();
+    Q_INVOKABLE void emitSaveProject();
+    Q_INVOKABLE void  emitBlockEditedSignal();
+    Q_INVOKABLE void  emitPlaySignal();
+    Q_INVOKABLE void  emitPauseSignal();
+    Q_INVOKABLE void  emitStopSignal();
     Q_INVOKABLE   void emitResetProject();
-  Q_INVOKABLE  void emitFocusLostSignal();
-  Q_INVOKABLE  void emitFocusFoundSignal();
+    Q_INVOKABLE  void emitFocusLostSignal();
+    Q_INVOKABLE  void emitFocusFoundSignal();
 
     Q_INVOKABLE void zoomMinus();
     Q_INVOKABLE void zoomPlus();
-     Q_INVOKABLE void drawYellowRectangle(int ,int , int , int );
+    Q_INVOKABLE void drawYellowRectangle(int ,int , int , int );
     Q_INVOKABLE bool updateYellowRectangle(int x, int y, int width, int height);
     Q_INVOKABLE void removeRectangle();
     Q_INVOKABLE bool testIndexs(const int col, const int index);

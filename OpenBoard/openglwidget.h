@@ -299,6 +299,9 @@ public:
 
 
     void clearFrameBuffer(GLuint fbo);
+    DrawElement *getSelElm() const;
+    void setSelElm(DrawElement *value);
+
 public slots:
     void loadEffectFromCurrentBlockToEffectManager();
     void hideEffectsManager();
@@ -389,7 +392,6 @@ private:
     ShaderProgramWrapper *test;//Color,alpha,blur;
 
     int frameRate = 25;
-    bool mayShowRedRectangle = true;
     qint64 current_millisecs =0;
     qint64 last_milisecs_update = 0;
     qint64 last_milisecs_drawn = 0;

@@ -1907,6 +1907,22 @@ void ListControll::setBlockTimeFromBuffer()
     emit updateTrackAt(sel_block.x());
 }
 
+void ListControll::setBlockPositionSizeFromBuffer()
+{
+    if (!buffer_is_full)
+        return;
+
+    setBlocked(true);
+
+    QPoint sel = getSelectedBlockPoint();
+    DrawElement *elm = getBlock(sel);
+    elm->getDrawWidget()->setSelElm( NULL);
+
+    elm->setRect(block_in_buffer->getRect());
+
+    setBlocked(false);
+}
+
 
 void ListControll::emitOpenProject()
 {

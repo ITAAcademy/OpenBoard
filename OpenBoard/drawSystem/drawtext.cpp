@@ -274,6 +274,7 @@ void DrawTextElm::draw()
 
     pDrawWidget->clearTexture(textureIndex);
     pDrawWidget->clearFrameBuffer(fboWrapper);
+    pDrawWidget->clearFrameBuffer(renderFbo);
 
     if(staticText)
     {
