@@ -366,7 +366,7 @@ Rectangle{
         /* else
             timeControll.setBlockTime(colIndex, mIndex,root.width * main222.scaling);*/
 
-        console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+       // console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 
     }
     onXChanged: {
@@ -433,8 +433,15 @@ Rectangle{
                     console.log("ind_add = " + ind_add)
                     var space_add = timeControll.getBlockSpaceToAddFromPos(root.colIndex, root.mIndex);
                     console.log("space_add = " + space_add)
-                    timeControll.removeBlock(root.colIndex, root.mIndex,true,false);
-                    timeControll.addBlockWithSpaceFromBufferAt(root.colIndex, ind_add, space_add );
+                    if (ind_add === timeControll.getTrackSize(root.colIndex) - 1)
+                    {
+                        if (root.mIndex === ind_add)
+                        timeControll.addEmptyBlockAt(root.colIndex, ind_add ,space_add );
+                    }
+
+                    // timeControll.removeBlock(root.colIndex, root.mIndex,true,false); // cop buffer,       del last empty
+
+                    //  timeControll.addBlockWithSpaceFromBufferAt(root.colIndex, ind_add, space_add );
                     //
 
                     //timeControll.createEmptyBlock(root.colIndex, root.mIndex)

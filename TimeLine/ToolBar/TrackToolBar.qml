@@ -30,7 +30,7 @@ Rectangle {
 
         z: 100
         Buutton{
-            id: butAddEmpty
+            id: butAddText
             title_text: ""
             height: parent.width
             width: parent.width
