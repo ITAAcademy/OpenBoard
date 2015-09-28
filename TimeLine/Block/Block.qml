@@ -429,7 +429,7 @@ Rectangle{
                     //timeControll.setBlockStartTime(root.colIndex, root.mIndex, root.x  * main222.scaling)
 
 
-                    var ind_add =  timeControll.getBlockIndToAddFromPos(root.colIndex, root.mIndex,root.x  * main222.scaling)
+                    /*var ind_add =  timeControll.getBlockIndToAddFromPos(root.colIndex, root.mIndex,root.x  * main222.scaling)
                     console.log("ind_add = " + ind_add)
                     var space_add = timeControll.getBlockSpaceToAddFromPos(root.colIndex, root.mIndex);
                     console.log("space_add = " + space_add)
@@ -437,7 +437,8 @@ Rectangle{
                     {
                         if (root.mIndex === ind_add)
                         timeControll.addEmptyBlockAt(root.colIndex, ind_add ,space_add );
-                    }
+                    }*/
+                    timeControll.getBlockIndToAddFromPos(root.colIndex, root.mIndex,root.x  * main222.scaling)
 
                     // timeControll.removeBlock(root.colIndex, root.mIndex,true,false); // cop buffer,       del last empty
 

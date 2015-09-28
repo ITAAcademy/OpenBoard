@@ -684,6 +684,9 @@ int ListControll::getBlockIndToAddFromPos(int col,int ind, int pos )
     {
         spaces_to_add = pos - track_time;
         get_ind = tracks[col].block.size() - 1;
+
+         addEmptyBlockAt(col,get_ind,spaces_to_add);
+
         return get_ind;
     }
 
@@ -699,8 +702,15 @@ int ListControll::getBlockIndToAddFromPos(int col,int ind, int pos )
         {
             if (start <= pos && pos <= start + life)
             {
-                spaces_to_add = pos - start;
+
+                spaces_to_add = start - pos;
                 get_ind = elm->getTypeId();
+
+
+
+
+
+
                 return  get_ind;
             }
         }
