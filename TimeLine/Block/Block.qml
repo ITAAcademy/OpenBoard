@@ -429,7 +429,6 @@ Rectangle{
                     //timeControll.setBlockStartTime(root.colIndex, root.mIndex, root.x  * main222.scaling)
 
 
-
                     var ind_add =  timeControll.getBlockIndToAddFromPos(root.colIndex, root.mIndex,root.x  * main222.scaling)
                     console.log("ind_add = " + ind_add)
                     var space_add = timeControll.getBlockSpaceToAddFromPos(root.colIndex, root.mIndex);

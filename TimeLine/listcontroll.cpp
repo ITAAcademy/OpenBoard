@@ -373,108 +373,68 @@ bool ListControll::removeBlock(int col, int i, bool copy_in__buffer, bool del_la
         block_in_group  = true;
     }
     setSelectedBlockPoint(QPoint(-1,-1));
-    if (tracks[col].block.size() > i)
+
+    ////////////
+
+
+    /* DrawElement * new_empty = new DrawElement(NULL,NULL);
+        new_empty->copy(elm);*/
+
+    int l_time = elm->getLifeTime();
+    DrawElement * temp = new DrawElement(NULL,NULL);
+
+    /*  delete elm;
+    elm = temp;*/
+    temp->copy(elm);
+    tracks[col].block[i] = temp;
+    delete elm;
+    elm = tracks[col].block[i];
+
+    if (i > 0)
     {
-        int temp = elm->getLifeTime();
-        DrawElement * new_empty = new DrawElement(NULL,NULL);
-        new_empty->copy(elm);
-        delete elm;
-
-
-
-        tracks[col].block.removeAt(i);
-        //tracks[col].addTime(-temp);
-
-        // testColumnWidth[col] -= temp;
-
-        if (!block_in_group)
+        DrawElement *prev = tracks[col].block[i -1];
+        int type = prev->getTypeId();
+        if (type == Element_type::Empty )
         {
-            if(!balanceBlocksIfIsGroups(col,i))
-            {
-                updateBlocksIndexFrom(col,i);
-                updateBlocksStartTimesFrom(col, i,true);
-            }
-        }
-        else
-        {
+            prev->setLifeTime( prev->getLifeTime() + l_time);
+            tracks[col].block.removeAt(i);
+            delete elm;
+            elm = prev;
+
+            i--; //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\
             updateBlocksIndexFrom(col,i);
+            recountMaxTrackTime();
             updateBlocksStartTimesFrom(col, i,true);
+            balanceBlocksIfIsGroups(col,i);
+
         }
-
-
-
-        DrawElement *prev;
-        int add_index = i;
-        del_last_empty = false;
-        if ( add_index == tracks[col].block.size())
+    }
+    if (i +1 < tracks[col].block.size() )
+    {
+        DrawElement * next_el = tracks[col].block[i + 1];
+        if (next_el->getTypeId() == Element_type::Empty)
         {
-            if (del_last_empty)
-            {
-                addBlockAt(col,i,new_empty);/////////////////////////
-                tracks[col].addTime(-new_empty->getLifeTime());
-            }
-            else
-            {
-                tracks[col].addTime(-temp);
-                delete new_empty;
-            }
-
-            if (i > 0)
-            {
-                prev = tracks[col].block[i -1];
-                if (prev->getTypeId() == Element_type::Empty )
-                {
-                    /* tracks[col].addTime(-prev->getLifeTime());
-                    delete prev;
-                    tracks[col].block.removeAt(i - 1);
-                    */
-                    removeBlock(col, i -1);
-                }
-            }
-
-
+            elm->setLifeTime(next_el->getLifeTime() + elm->getLifeTime());
+            //delete next_el;
+            tracks[col].block.removeAt(i + 1);
         }
-        else
-            if (i > 0)
-            {
-                prev = tracks[col].block[i -1];
-                int type = prev->getTypeId();
-                if (type == Element_type::Empty )
-                {
-                    add_index = i - 1;
-                    prev->setLifeTime( prev->getLifeTime() + new_empty->getLifeTime());
-                    delete new_empty;
+    }
+    if (del_last_empty)
+    {
+         DrawElement *tmp = tracks[col].block.last();
+         if (tmp->getTypeId() ==  Element_type::Empty)
+         {
+              delete tmp;
+             tmp = NULL;
+             tracks[col].block.removeLast();
 
-                }
-                else
-                {
-                    prev = new_empty;
-                    addBlockAt(col,i,new_empty);/////////////////////////
-                    tracks[col].addTime(-new_empty->getLifeTime());
-                }
+         }
 
-                if (add_index < tracks[col].block.size() + 1)
-                {
-                    DrawElement * next_el = tracks[col].block[add_index + 1];
-                    if (next_el->getTypeId() == Element_type::Empty)
-                    {
-                        prev->setLifeTime(next_el->getLifeTime() + prev->getLifeTime());
-                        delete next_el;
-                        tracks[col].block.removeAt(add_index + 1);
-                    }
-                }
-            }
-            else
-            {
-                addBlockAt(col,i,new_empty);
-            }
-        /* */
-
-
-        recountMaxTrackTime();
     }
 
-    balanceBlocksIfIsGroups(col,i);
+    //int track_size = tracks[col].block.size();
+
+
     calcPointedBlocks();
     setBlocked(false);
     return true;
@@ -752,54 +712,25 @@ DrawElement* ListControll::getBlockFromBuffer()
 
 void ListControll::addBlockWithSpaceAt(int col, int ind,int space,  DrawElement *element, int life_time ,bool need_balance)
 {
+    int track_size = tracks[col].block.size();
     DrawElement * empt = new DrawElement(NULL,NULL);
     empt->setLifeTime(space);
     addBlockAt(col,  ind, empt);
-    addBlockAt( col,  ind + 1 ,  element,  life_time , need_balance);
+    element->setLifeTime(life_time);
+    addBlockAt( col,  ind + 1 ,  element,  -1 , need_balance);
 }
 
 void ListControll::addBlockWithSpaceFromBufferAt(int col, int ind,int space,   int life_time ,bool need_balance)
 {
+    int track_size = tracks[col].block.size();
+    DrawElement *eee = block_in_buffer;
+    if (eee = NULL)
+    {
+        int tt = 0;
+        tt++;
+    }
     addBlockWithSpaceAt( col,  ind, space,  block_in_buffer,  life_time , need_balance);
 }
-/*
-void ListControll::addBlockAt(int col, int ind,  DrawElement *element, int life_time ,bool need_balance) //-=-=-=-=-=
-{
-    setSelectedBlockPoint(QPoint(-1,-1));
-    if (element == NULL)
-    {
-       // element = new DrawElement(NULL,NULL);
-        DrawTextElm *dr_text = new DrawTextElm(NULL,NULL);
-        element = (DrawElement*) dr_text;
-    }
-    if(element->getKey().isNull())
-        element->setKey( QString("block" + QString::number(qrand())));
-
-    element->setLifeTime(life_time);
-
-
-   // tracks[col].block.insert(ind,element);
-    tracks[col].block.append(element);
-    connect(element, SIGNAL(borderColorChangedSignal(int,int,QString)),
-              this, SIGNAL(borderColorChangedSignal(int,int,QString)));
-      connect(element, SIGNAL(sizeChangedSignal(int,int, int, bool)),
-              this, SLOT(setBlockTimeWithUpdate(int, int, int, bool)));
-    element->setBlockColumn(col);
-    element->setBlockIndex(ind);
-
-    if(need_balance && element->getGroupWichElBelong() == NULL)
-        balanceBlocksIfIsGroups(col,ind + 1);
-
-    updateBlocksIndexFrom(col,ind + 1);
-    updateBlocksStartTimesFrom(col,ind + 1);
-
-    tracks[col].addTime(element->getLifeTime());
-    long temp_time = tracks[col].getTime();
-    if (maxTrackTime <  temp_time)
-        maxTrackTime =  temp_time;
-    calcPointedBlocks();
-}*/
-
 
 void ListControll::addBlockAt(int col, int ind,  DrawElement *element, int life_time ,bool need_balance)
 {
@@ -809,9 +740,32 @@ void ListControll::addBlockAt(int col, int ind,  DrawElement *element, int life_
         element = (DrawElement*) dr_text;
         element->setKey(QString("block"+ QString::number(qrand())));
     }
+    else
+    {
+        if (element->getTypeId() == Element_type::Empty)
+        {
+            if (ind > 0 )
+            {
+                int track_size = tracks[col].block.size();
+                if ( track_size  > ind )
+                    // ind--;
+                {
+                    DrawElement *prev = tracks[col].block[ind];
+                    if (prev != NULL)
+                        if (prev->getTypeId() == Element_type::Empty)
+                        {
+                            prev->setLifeTime(prev->getLifeTime() + element->getLifeTime());
+                            delete element;
+                            element = prev;
+                        }
+                }
+            }
+        }
+    }
 
-    if(element->getLifeTime() < def_min_block_width)
-        element->setLifeTime(def_min_block_width);
+    if (element->getTypeId() != Element_type::Empty)
+        if(element->getLifeTime() < def_min_block_width)
+            element->setLifeTime(def_min_block_width);
 
     int last_block_ind = tracks[col].block.size();
 
