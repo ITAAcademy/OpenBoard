@@ -266,6 +266,12 @@ void DrawTextElm::clearBuffer()
 void DrawTextElm::draw()
 {
     // qDebug() << "void DrawTextElm::draw()" << pDrawWidget->getTimeLine()->getPlayTime();
+
+    GLint curentBuff;
+    glGetIntegerv(GL_FRAMEBUFFER_BINDING, &curentBuff);
+    pDrawWidget->bindBuffer(renderFbo.frameBuffer);
+    pDrawWidget->disableShader();
+
     pDrawWidget->clearTexture(textureIndex);
     pDrawWidget->clearFrameBuffer(fboWrapper);
 
@@ -274,10 +280,10 @@ void DrawTextElm::draw()
 
         //if (width>=height)koff=(float)pDrawWidget->getWax()/width;
         //else koff = (float)pDrawWidget->getWay()/height;
-         float koff1=(float)pDrawWidget->getWax()/width;
-      float  koff2=(float)pDrawWidget->getWay()/height;
+        float koff1=(float)pDrawWidget->getWax()/width;
+        float  koff2=(float)pDrawWidget->getWay()/height;
         //if (koff1>koff2)koff=koff1;
-       // else koff=koff2;*/
+        // else koff=koff2;*/
 
         textFont.setPointSize(mainTextFont.pointSize());
         textFont.setBold(mainTextFont.bold());
@@ -294,6 +300,12 @@ void DrawTextElm::draw()
             pDrawWidget->drawTextFromTexture(0, (i + 1)*(lineHeight + pt), z, list[i],textureIndex, mainFillColor, textFont,koff1,koff2);
             //pDrawWidget->myRenderText(pDrawWidget, 0, (i + 1)*(lineHeight + pt), z, unParsestring, mainFillColor, textFont);
         }
+
+        pDrawWidget->enableShader();
+        pDrawWidget->bindBuffer(curentBuff);
+        pDrawWidget->clearFrameBuffer(curentBuff);
+        pDrawWidget->drawTexture(0,0,renderFbo.tWidth, renderFbo.tHeight,
+                                 renderFbo.bindedTexture, 0, 1, 1, z );
         return;
     }
 
@@ -302,7 +314,7 @@ void DrawTextElm::draw()
         current_time =  pDrawWidget->getTimeLine()->getScalePointerPos();
     else
         current_time =  pDrawWidget->getTimeLine()->getPlayTime();
-    //    //qDebug() << current_time;
+
     if (current_time > 0 && mUnitList.size() != 1)
     {
         // //qDebug() << "startDrawTime:"<<startDrawTime;
@@ -360,10 +372,19 @@ void DrawTextElm::draw()
         // //qDebug() << realKeyValue <<"    KEY    " << keyCouter;
     }
     float koff1=(float)pDrawWidget->getWax()/width;
- float  koff2=(float)pDrawWidget->getWay()/height;
+    float  koff2=(float)pDrawWidget->getWay()/height;
 
-   drawTextBuffer(0, 0, pDrawWidget->getWax(), pDrawWidget->getWay(), z, true,koff1,koff2);
+    drawTextBuffer(0, 0, pDrawWidget->getWax(), pDrawWidget->getWay(), z, true,koff1,koff2);
     curentCh = current_time;
+
+    /*
+     * render renderBuff
+     */
+    pDrawWidget->enableShader();
+    pDrawWidget->bindBuffer(curentBuff);
+    pDrawWidget->clearFrameBuffer(curentBuff);
+    pDrawWidget->drawTexture(0,0,renderFbo.tWidth, renderFbo.tHeight,
+                             renderFbo.bindedTexture, 0, 1, 1, z );
 }
 
 void DrawTextElm::setLifeTime(int value, bool feedBack, bool visual)
@@ -671,7 +692,7 @@ void DrawTextElm::drawTextBuffer( int m_x, int m_y, int m_width, int m_height, i
             //setFillColor(colors[k].value);
             fillColor = colors[k].value;
             QString textToFill = stringList[i].mid(columnOfColorStrBegin,columnOfColorStrEnd-columnOfColorStrBegin);
-            qDebug() << "textToFill:"<<textToFill;
+            //qDebug() << "textToFill:"<<textToFill;
             pDrawWidget->drawTextFromTexture(line_x,line_y,z,textToFill,textureIndex,fillColor,textFont,scaleX,scaleY);
             //1234
             // pDrawWidget->fillText(textToFill,QColor("red"),fontishche, line_x , line_x, z,(float) scale);
@@ -821,6 +842,15 @@ bool DrawTextElm::setDrawWidget(OGLWidget *value)
             return false;
         textureIndex = pDrawWidget->loadTexture(QImage(pDrawWidget->getWax(),pDrawWidget->getWay(),QImage::Format_ARGB32));
     }*/
+    if(value == pDrawWidget && value != NULL)
+    {
+        //  qDebug() << "VALUE  " << fboWrapper.errorStatus;
+        if(renderFbo.errorStatus != 0 &&  pDrawWidget->isInit()){
+            renderFbo = pDrawWidget->initFboWrapper(pDrawWidget->getWax(),pDrawWidget->getWay());//TODO
+            return false;
+        }
+    }
+
     if(((!DrawElement::setDrawWidget(value) && textureIndex != 4294967295) || failedLoad < 0) || (!pDrawWidget->isVisible() || !pDrawWidget->isInit()))
     {
         return 0;

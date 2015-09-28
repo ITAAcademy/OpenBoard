@@ -183,8 +183,8 @@ void DrawElement::paint()
 {
 
     //  qDebug() << "paint on buffer:"<<fboWrapper.frameBuffer;
-    if (pDrawWidget->getTimeLine()->getPlayTime() > lifeTime + startDrawTime)
-        return;
+    /*if (pDrawWidget->getTimeLine()->getPlayTime() >= lifeTime + startDrawTime)
+        return;*/
 
     if(fboWrapper.errorStatus == 0)
     {
@@ -350,7 +350,7 @@ void DrawElement::paint()
             else pDrawWidget->paintBufferOnScreen(fboWrapper,x, y, height, height, z);
         }
         else*/
-            pDrawWidget->paintBufferOnScreen(fboWrapper,x, y, width, height, z);
+        pDrawWidget->paintBufferOnScreen(fboWrapper,x, y, width, height, z);
         // pDrawWidget->context()->functions()->glUseProgram(0);
     }
     else

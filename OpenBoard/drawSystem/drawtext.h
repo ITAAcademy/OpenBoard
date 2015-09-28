@@ -63,6 +63,7 @@ class DrawTextElm : public DrawElement
     QVector <AnimationFigure> listOfAnimationFigure; // now use only for cross animation
 
     double animationPersentOfCross = 0.01;
+    FBOWrapper renderFbo;
 
 
 public:

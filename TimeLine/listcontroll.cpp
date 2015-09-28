@@ -1697,6 +1697,7 @@ void ListControll::calcPointedBlocksAtTime(int ms )
             blockXstart = blockXend;
         }
     }
+    //qDebug() << "BLOCK FOR DRAW" << pointed_block.size();
 }
 
 void ListControll::calcPointedBlocksAtTime( )

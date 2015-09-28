@@ -2312,9 +2312,6 @@ void  OGLWidget::updateWindow(){
         last_mouse_process = current_millisecs;
     }
 
-
-    setList(timeLine->getPointedBlocksDE());
-
     QPoint t = timeLine->getSelectedBlockPoint();
 
     if(curStatus != PLAY && t.x() >= 0 && !timeLine->isBlocked)
@@ -2356,6 +2353,7 @@ void  OGLWidget::updateWindow(){
     if ((current_millisecs - last_milisecs_drawn) >= 1000/frameRate)
     {
         emit windowUpdating(1000/frameRate);
+        setList(timeLine->getPointedBlocksDE());
         last_milisecs_drawn=current_millisecs;
         updateGL();
 
