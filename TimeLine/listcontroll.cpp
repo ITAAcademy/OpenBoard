@@ -304,7 +304,7 @@ void ListControll::setBlockKey(int col, int i, QString name)
     tracks[col].block[i]->setKey(name);
     // test[col][i] = name;
 }
-
+/*
 void ListControll::cloneBlock(DrawElement *origin, DrawElement *clone)
 {
     QBuffer buff;
@@ -322,7 +322,7 @@ void ListControll::cloneBlock(DrawElement *origin, DrawElement *clone)
     calcPointedBlocks();
     recountMaxTrackTime();
 }
-
+*/
 void ListControll::cloneDrawElement (DrawElement *origin, DrawElement *clone)
 {
     QBuffer buff;
