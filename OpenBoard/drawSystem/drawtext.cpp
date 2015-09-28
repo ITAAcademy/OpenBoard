@@ -42,8 +42,11 @@ void DrawTextElm::setPrevTextCursor(int value)
 void DrawTextElm::start()
 {
     DrawElement::start();
-    clearBuffer();
-    clearCanvas();
+    if(keyCouter == 0)
+    {
+        clearBuffer();
+        clearCanvas();
+    }
 }
 
 
@@ -60,8 +63,8 @@ int DrawTextElm::getFirstSymbolOfString(int index, bool symbol)
         i++;
     }
     //if(sumLength != 0)
-      //  sumLength++;
-                return sumLength;
+    //  sumLength++;
+    return sumLength;
 }
 int DrawTextElm::getLastSymbolOfString(int index, bool symbol)
 {
@@ -76,7 +79,7 @@ int DrawTextElm::getLastSymbolOfString(int index, bool symbol)
         i++;
     }
     //if(sumLength != 0)
-      //  sumLength++;
+    //  sumLength++;
     return sumLength + 1;
 }
 
@@ -87,22 +90,22 @@ QPoint DrawTextElm::convertTextBoxToBufferIndex(int index, bool symbol)
     int numParagraph = 0;
     while( i < stringList.length())
     {
-      //  // //qDebug() <<"stringList:"<<stringList.length();
+        //  // //qDebug() <<"stringList:"<<stringList.length();
         int lenNext;
         if(symbol)
             lenNext = stringList[i].length();
         else
             lenNext = stringList[i].length() + 1;
         sumLength += lenNext;
-     //   // //qDebug() <<"sumLength:"<<sumLength;
-//        // //qDebug() <<"index:"<<index;
-//        // //qDebug() <<"I:"<<i;
+        //   // //qDebug() <<"sumLength:"<<sumLength;
+        //        // //qDebug() <<"index:"<<index;
+        //        // //qDebug() <<"I:"<<i;
 
         if(sumLength > index)
         {
             int colum = index - (sumLength - lenNext);
             int row = i;
-           return QPoint( colum, row);
+            return QPoint( colum, row);
         }
         i++;
     }
@@ -123,16 +126,16 @@ bool DrawTextElm::drawAnimationFigure(int x, int y, int width, int height, doubl
     if(persent < 0.98f)
     {
 
-   //     drawFigure(int x, int y, int x2, int y2,
-  //                 OGLWidget::FigureType type, bool fill = true, QColor col = "#FF0000", float size = 2)
-       // pDrawWidget->drawFigure(x, y, x + (width - x)*persent, height, type, fill);
+        //     drawFigure(int x, int y, int x2, int y2,
+        //                 OGLWidget::FigureType type, bool fill = true, QColor col = "#FF0000", float size = 2)
+        // pDrawWidget->drawFigure(x, y, x + (width - x)*persent, height, type, fill);
 
 
 
-       // pDrawWidget->drawFigure(x,y,x + (width - x)*persent,height,type,fill);
-          pDrawWidget->drawFigure(x, y, x + (width - x)*persent, height, type, fill);
+        // pDrawWidget->drawFigure(x,y,x + (width - x)*persent,height,type,fill);
+        pDrawWidget->drawFigure(x, y, x + (width - x)*persent, height, type, fill);
         //persent += animationPersentOfCross;
-       // QThread::currentThread()->msleep(10);
+        // QThread::currentThread()->msleep(10);
         if(pDrawWidget->getStatus() == OGLWidget::STOP )
         {
             isCrossingNow=false;
@@ -175,7 +178,7 @@ int DrawTextElm::getRowFromTextBoxIndex(int index, bool symbol)
         sumLength += lenNext;
         if(sumLength > index)
         {
-           return i;
+            return i;
         }
         i++;
     }
@@ -211,21 +214,21 @@ DrawTextElm::DrawTextElm(OGLWidget *drawWidget, QObject *parent) : DrawElement(d
     indexInList = 1;
     indexRowInList = 0;
     cursorIndex = 0;
-     stringList.append("");
+    stringList.append("");
 
-     indexW = 1;
-     indexRow = 0;
-     marginLeft = 20;
-     marginTop = 40;
+    indexW = 1;
+    indexRow = 0;
+    marginLeft = 20;
+    marginTop = 40;
 
-     line_x = marginLeft;
-     line_y = lineHeight + pt;
+    line_x = marginLeft;
+    line_y = lineHeight + pt;
 
-     pt = 36;
-     lineHeight = LINE_HEIGHT;
+    pt = 36;
+    lineHeight = LINE_HEIGHT;
 
-     isCrossingNow = false;
-     scroll = 0;
+    isCrossingNow = false;
+    scroll = 0;
     //clearBuffer();
 
     setTextFont(QFont("Arial Narrow",20,20)); //444
@@ -236,19 +239,19 @@ DrawTextElm::DrawTextElm(OGLWidget *drawWidget, QObject *parent) : DrawElement(d
 DrawTextElm::~DrawTextElm()
 {
     if(fMetrics != NULL)
-      delete fMetrics;
+        delete fMetrics;
     if(textureIndex != -1)
         pDrawWidget->deleteTexture(textureIndex);
 }
 
 void DrawTextElm::clearBuffer()
 {
-     qDebug() << "CLEAR_TEXT_BUFFER";
-     colors.clear();
-     ColorMarker startMarker;
-     startMarker.startIndex=0;
-     startMarker.value=getMainFillColor();
-     colors.append(startMarker);
+    qDebug() << "CLEAR_TEXT_BUFFER";
+    colors.clear();
+    ColorMarker startMarker;
+    startMarker.startIndex=0;
+    startMarker.value=getMainFillColor();
+    colors.append(startMarker);
     cross.clear();
     cross.append(0); // для визова зачеркування якщо стрічка зацінчується
     stringList.clear();
@@ -262,34 +265,76 @@ void DrawTextElm::clearBuffer()
 
 void DrawTextElm::draw()
 {
-   // qDebug() << "void DrawTextElm::draw()" << pDrawWidget->getTimeLine()->getPlayTime();
-   pDrawWidget->clearTexture(textureIndex);
+    // qDebug() << "void DrawTextElm::draw()" << pDrawWidget->getTimeLine()->getPlayTime();
+
+    GLint curentBuff;
+    glGetIntegerv(GL_FRAMEBUFFER_BINDING, &curentBuff);
+    pDrawWidget->bindBuffer(renderFbo.frameBuffer);
+    pDrawWidget->disableShader();
+
+    pDrawWidget->clearTexture(textureIndex);
     pDrawWidget->clearFrameBuffer(fboWrapper);
+    pDrawWidget->clearFrameBuffer(renderFbo);
+
+    if(staticText)
+    {
+
+        //if (width>=height)koff=(float)pDrawWidget->getWax()/width;
+        //else koff = (float)pDrawWidget->getWay()/height;
+        float koff1=(float)pDrawWidget->getWax()/width;
+        float  koff2=(float)pDrawWidget->getWay()/height;
+        //if (koff1>koff2)koff=koff1;
+        // else koff=koff2;*/
+
+        textFont.setPointSize(mainTextFont.pointSize());
+        textFont.setBold(mainTextFont.bold());
+        textFont.setItalic(mainTextFont.italic());
+        textFont.setUnderline(mainTextFont.underline());
+        textFont.setStrikeOut(mainTextFont.strikeOut());
+        textFont.setFamily(mainTextFont.family());
+        textFont.setStyleStrategy(QFont::PreferQuality);
+        pt = textFont.pointSize();
+        lineHeight = LINE_HEIGHT ;
+        QStringList list = unParsestring.split("\n");
+        for(int i = 0; i < list.length() /*&& i < (height/(lineHeight + pt)) - 1*/; i++)
+        {
+            pDrawWidget->drawTextFromTexture(0, (i + 1)*(lineHeight + pt), z, list[i],textureIndex, mainFillColor, textFont,koff1,koff2);
+            //pDrawWidget->myRenderText(pDrawWidget, 0, (i + 1)*(lineHeight + pt), z, unParsestring, mainFillColor, textFont);
+        }
+
+        pDrawWidget->enableShader();
+        pDrawWidget->bindBuffer(curentBuff);
+        pDrawWidget->clearFrameBuffer(curentBuff);
+        pDrawWidget->drawTexture(0,0,renderFbo.tWidth, renderFbo.tHeight,
+                                 renderFbo.bindedTexture, 0, 1, 1, z );
+        return;
+    }
+
     int current_time;
     if(!bPlay)
         current_time =  pDrawWidget->getTimeLine()->getScalePointerPos();
     else
         current_time =  pDrawWidget->getTimeLine()->getPlayTime();
-//    //qDebug() << current_time;
+
     if (current_time > 0 && mUnitList.size() != 1)
     {
-       // //qDebug() << "startDrawTime:"<<startDrawTime;
+        // //qDebug() << "startDrawTime:"<<startDrawTime;
         if((keyCouter == 0 || !bPlay) && curentCh != current_time )
-       {
-           clearCanvas();
-           clearBuffer();
-           keyCouter = 0;
-           animationDelayCount = 1;
-           animationDelayStart = 1;
-           curentPauseValue = 0;
-       }
-       int realKeyValue = qRound((double)(current_time - (curentPauseValue + startDrawTime)) / (double)((lifeTime - globalPauseLifeTime)/(mUnitList.size() - 1)));
-       //qDebug() << mUnitList.size() << "            qwe         "<< realKeyValue;
-      // //qDebug() << "cur " << current_time;
-       ////qDebug() << "start " << startDrawTime;
-       ////qDebug() << "list " << mUnitList.length();
+        {
+            clearCanvas();
+            clearBuffer();
+            keyCouter = 0;
+            animationDelayCount = 1;
+            animationDelayStart = 1;
+            curentPauseValue = 0;
+        }
+        int realKeyValue = qRound((double)(current_time - (curentPauseValue + startDrawTime)) / (double)((lifeTime - globalPauseLifeTime)/(mUnitList.size() - 1)));
+        //qDebug() << mUnitList.size() << "            qwe         "<< realKeyValue;
+        // //qDebug() << "cur " << current_time;
+        ////qDebug() << "start " << startDrawTime;
+        ////qDebug() << "list " << mUnitList.length();
 
-   // if (keyCouter < realKeyValue)
+        // if (keyCouter < realKeyValue)
 
         while( keyCouter < mUnitList.size() && listOfAnimationFigure.isEmpty() && (keyCouter <= realKeyValue || mUnitList[keyCouter]->unitType == 1) )
         {
@@ -317,23 +362,38 @@ void DrawTextElm::draw()
             keyCouter++;
 
         }
-      //  //qDebug() << "drawInfo   " << (double) 1 - (double)(qAbs(((current_time - startDrawTime) - (lifeTime/mUnitList.size())*keyCouter)))/(lifeTime/mUnitList.size());
-      /*  if(keyCouter > 0 && keyCouter < mUnitList.size() && mUnitList.at(keyCouter)->unitType != mUnitList.at(keyCouter - 1)->unitType)
+        //  //qDebug() << "drawInfo   " << (double) 1 - (double)(qAbs(((current_time - startDrawTime) - (lifeTime/mUnitList.size())*keyCouter)))/(lifeTime/mUnitList.size());
+        /*  if(keyCouter > 0 && keyCouter < mUnitList.size() && mUnitList.at(keyCouter)->unitType != mUnitList.at(keyCouter - 1)->unitType)
             pDrawWidget->update();*/
 
         if(mUnitList.size() != 0 && (mUnitList.size() - globalDeltaComandSize  - 1) != 0)
             tickTime = ((lifeTime - globalPauseLifeTime)/(mUnitList.size()  - 1));
-       // //qDebug() << "                                                                           HHHH" << animationDelayCount - current_time;
-       setAnimationPersentOfCross( (double)(current_time - animationDelayStart)/animationDelayCount);
-           // //qDebug() << realKeyValue <<"    KEY    " << keyCouter;
+        // //qDebug() << "                                                                           HHHH" << animationDelayCount - current_time;
+        setAnimationPersentOfCross( (double)(current_time - animationDelayStart)/animationDelayCount);
+        // //qDebug() << realKeyValue <<"    KEY    " << keyCouter;
     }
-    drawTextBuffer(0, 0, pDrawWidget->getWax(), pDrawWidget->getWay(), z, true, (float)pDrawWidget->getWax()/width);
+    float koff1=(float)pDrawWidget->getWax()/width;
+    float  koff2=(float)pDrawWidget->getWay()/height;
+
+    drawTextBuffer(0, 0, pDrawWidget->getWax(), pDrawWidget->getWay(), z, true,koff1,koff2);
     curentCh = current_time;
+
+    /*
+     * render renderBuff
+     */
+    pDrawWidget->enableShader();
+    pDrawWidget->bindBuffer(curentBuff);
+    pDrawWidget->clearFrameBuffer(curentBuff);
+    pDrawWidget->drawTexture(0,0,renderFbo.tWidth, renderFbo.tHeight,
+                             renderFbo.bindedTexture, 0, 1, 1, z );
 }
 
-void DrawTextElm::setLifeTime(int value)
+void DrawTextElm::setLifeTime(int value, bool feedBack, bool visual)
 {
-    lifeTime = value;
+    DrawElement::setLifeTime(value, feedBack, visual);
+    if(feedBack)
+        return;
+
     if(mUnitList.size() != 0 && (mUnitList.size() - globalDeltaComandSize  - 1) != 0)
         tickTime = ((lifeTime - globalPauseLifeTime)/(mUnitList.size() - globalDeltaComandSize  - 1));
     //qDebug() << "tickTime4:"<<tickTime;
@@ -363,14 +423,14 @@ void DrawTextElm::setUnParsestring(const QString &valueUnParss, const QString &v
     UnitCommand* command = new UnitCommand();
     command->setUnitCommandType("Update");
     command->setUnitData("1");
-   // command->unitType = 2;
+    // command->unitType = 2;
     mUnitList.append(command);
 
     /*if (needToSaveLifeTime)
         lifeTime=drawTime;*/
     if(mUnitList.size() > 0 && (mUnitList.size() - globalDeltaComandSize  - 1) != 0)
         tickTime = ((lifeTime - globalPauseLifeTime)/(mUnitList.size() - globalDeltaComandSize  - 1));
-     //qDebug()<<"tickTime5:"<<tickTime;
+    //qDebug()<<"tickTime5:"<<tickTime;
 }
 
 void DrawTextElm::setUnitList(const QList<Unit *> &unitList)
@@ -378,14 +438,14 @@ void DrawTextElm::setUnitList(const QList<Unit *> &unitList)
     mUnitList = unitList;
 
 
-  /*  Unit unit;
+    /*  Unit unit;
     unit.setUnitData(QString(" "));
     mUnitList.append(&unit);*/
 
     if(unitList.size() != 0)
     {
         tickTime = lifeTime/unitList.size();
-         //qDebug()<<"tickTime6 :"<<tickTime;
+        //qDebug()<<"tickTime6 :"<<tickTime;
     }
 
 }
@@ -395,11 +455,14 @@ void DrawTextElm::setTickTime(int value)
 
 }
 
-bool DrawTextElm::load_add(QDataStream &stream)
+bool DrawTextElm::load_add(QDataStream &stream, float version)
 {
     stream >> unParsestring >> loggerText >> textCursor >> prevTextCursor >> mainTextFont >> mainFillColor >> bCalcTime;
     setUnParsestring(unParsestring, loggerText);
-
+    if(version > 2.8)
+    {
+        stream >> staticText;
+    }
     /*int sizeOfString = 0;
     stream >> sizeOfString;
     QByteArray data;
@@ -413,10 +476,10 @@ bool DrawTextElm::load_add(QDataStream &stream)
 
 bool DrawTextElm::save_add(QDataStream &stream)
 {
- /*   stream << unParsestring.length();
+    /*   stream << unParsestring.length();
     // //qDebug() << "IN " << unParsestring.length();
     stream.writeRawData(unParsestring.toLatin1().data(), unParsestring.length());*/
-    stream << unParsestring << loggerText << textCursor << prevTextCursor << mainTextFont << mainFillColor << bCalcTime;
+    stream << unParsestring << loggerText << textCursor << prevTextCursor << mainTextFont << mainFillColor << bCalcTime << staticText;
 }
 
 void DrawTextElm::clearCanvas(int m_x, int m_y)
@@ -438,24 +501,24 @@ void DrawTextElm::clearCanvas(int m_x, int m_y)
 void DrawTextElm::insertToBuffer(const QChar ch)
 {
     crossText();
-   // crossTextDraw();
+    // crossTextDraw();
     while (isCrossingNow);
     QPoint convertedIndex = convertTextBoxToBufferIndex(cursorIndex);
-   // // //qDebug() << convertedIndex << " " << stringList.size() << " " << ch;
+    // // //qDebug() << convertedIndex << " " << stringList.size() << " " << ch;
     QString &str =  stringList[convertedIndex.y()];
     if (convertedIndex.x()>=str.length())
         str.append(ch);
     else
         str.insert(convertedIndex.x(), ch);
     cross.insert(cursorIndex - convertTextBoxToBufferIndex(cursorIndex).y(), 0);
-  //  //qDebug() << "insert " << cursorIndex - convertTextBoxToBufferIndex(cursorIndex).y() << "        " << cross;
+    //  //qDebug() << "insert " << cursorIndex - convertTextBoxToBufferIndex(cursorIndex).y() << "        " << cross;
 
-  //  DrawTextElm(convertedIndex.y());
+    //  DrawTextElm(convertedIndex.y());
     listChars.append(ch);
-//qDebug() << "1234567890             " << str;
+    //qDebug() << "1234567890             " << str;
     emit drawTextChanged();
 
-   // pause(delay);
+    // pause(delay);
 
 }
 
@@ -473,10 +536,10 @@ void DrawTextElm::moveCursor(int n, bool withWrapShift)
                 shift = j;
     }
     */
-   /* int maxSymbol = getLastSymbolOfString(stringList.length() - 1, false);
+    /* int maxSymbol = getLastSymbolOfString(stringList.length() - 1, false);
     if( maxSymbol < n)
         n = maxSymbol;*/
-   // //qDebug() << "MAX_SYMBOL" << maxSymbol;
+    // //qDebug() << "MAX_SYMBOL" << maxSymbol;
     if(n > 0)
         cursorIndex += n + shift;
     else
@@ -484,7 +547,7 @@ void DrawTextElm::moveCursor(int n, bool withWrapShift)
     //cursorIndex += n;
     if(cursorIndex < 0)
         cursorIndex = 0;
- //   // //qDebug() << "Cursor move to n " << n <<"=== cur state " << cursorIndex << "QPOINT  " << convertTextBoxToBufferIndex(cursorIndex);
+    //   // //qDebug() << "Cursor move to n " << n <<"=== cur state " << cursorIndex << "QPOINT  " << convertTextBoxToBufferIndex(cursorIndex);
 
 }
 
@@ -515,37 +578,37 @@ void DrawTextElm::nextRow( int n, int Row, bool wrap)
     /* last work
     moveCursor(lastStr.length() + 1);
     */
-   /* if(wrap)
+    /* if(wrap)
         testWrap(i);*/
     emit drawTextChanged();
 
 }
 
-void DrawTextElm::drawTextBuffer( int m_x, int m_y, int m_width, int m_height, int z, bool cross, float scale)
+void DrawTextElm::drawTextBuffer( int m_x, int m_y, int m_width, int m_height, int z, bool cross, float scaleX,float scaleY)
 {
-   // qDebug() << "stringList:"<<stringList;
-     pDrawWidget->setBusy(true);
+    // qDebug() << "stringList:"<<stringList;
+    pDrawWidget->setBusy(true);
     //if(!crossTextV2())
-     //   return QPoint(0, 0);
+    //   return QPoint(0, 0);
     //int width = fMetrics->width(str)*1.125 ;//+ fMetrics->leftBearing(str.at(0)) + fMetrics->rightBearing(str.at(0));
-     textFont.setPointSize(mainTextFont.pointSize() * scale);
-     textFont.setBold(mainTextFont.bold());
-     textFont.setItalic(mainTextFont.italic());
-     textFont.setUnderline(mainTextFont.underline());
-     textFont.setStrikeOut(mainTextFont.strikeOut());
-     lineHeight = LINE_HEIGHT * scale;
-     //1234
+    textFont.setPointSize(mainTextFont.pointSize());
+    textFont.setBold(mainTextFont.bold());
+    textFont.setItalic(mainTextFont.italic());
+    textFont.setUnderline(mainTextFont.underline());
+    textFont.setStrikeOut(mainTextFont.strikeOut());
+    lineHeight = LINE_HEIGHT;
+    //1234
     // textFont.setPointSize(20);
-     textFont.setFamily(mainTextFont.family());
-     textFont.setStyleStrategy(QFont::PreferQuality);
+    textFont.setFamily(mainTextFont.family());
+    textFont.setStyleStrategy(QFont::PreferQuality);
 
-     if(fMetrics != NULL)
-         delete fMetrics;
-     fMetrics = new QFontMetrics(textFont);
-     pt = textFont.pointSize();
+    if(fMetrics != NULL)
+        delete fMetrics;
+    fMetrics = new QFontMetrics(textFont);
+    pt = textFont.pointSize();
 
     clearCanvas(m_x, m_y);
-    int maxDrawElm = (m_height/(lineHeight + pt)) - 1;
+    int maxDrawElm = (height/(lineHeight + pt)) - 1;
     ////qDebug() << "DRAW   "   <<  maxDrawElm;
     int CurRow = convertTextBoxToBufferIndex(cursorIndex).y();
     if(CurRow >= indexRowInList + maxDrawElm)
@@ -566,61 +629,61 @@ void DrawTextElm::drawTextBuffer( int m_x, int m_y, int m_width, int m_height, i
     indexLastDrawSymbol = getLastSymbolOfString(lastRow, false);
 
     ////qDebug() << "First  " << indexFirstDrawSymbol <<    "   " <<  indexRowInList << "    " << indexLastDrawSymbol;
-  //  // //qDebug() << indexRowInList << "   indexFirstDrawSymbol   :           " << indexFirstDrawSymbol << cross;
- //   // //qDebug() << "START draw with indexRowInList " << indexRowInList << "MAX elm " << maxElm << "CUR " << CurRow;
+    //  // //qDebug() << indexRowInList << "   indexFirstDrawSymbol   :           " << indexFirstDrawSymbol << cross;
+    //   // //qDebug() << "START draw with indexRowInList " << indexRowInList << "MAX elm " << maxElm << "CUR " << CurRow;
     int i = indexRowInList;
     while( i < stringList.length() && i < indexRowInList + maxDrawElm)
     {
-       //// //qDebug() << stringList[i] << "@";
+        //// //qDebug() << stringList[i] << "@";
         QStringList tabulationStr = stringList[i].split("\t");
         //TODO SET TEXT COLOR TO CANVAS COLOR
         //setFillColor(fillColor);
-       // for(int j = 0; j < tabulationStr.size(); j++)
-       // {
+        // for(int j = 0; j < tabulationStr.size(); j++)
+        // {
         //    fillText(tabulationStr[j], x, y);
-       //     x += fMetrics->width(tabulationStr[j] + "\t");
-      //  }
-      //  // //qDebug() << "C:"<<colors.length();
-       // qDebug() << "colors.length()"<<colors.length();
-    for (int k = 0 ; k< colors.length();k++)
-    {
-        int columnOfColorStrBegin;
-        int columnOfColorStrEnd;
+        //     x += fMetrics->width(tabulationStr[j] + "\t");
+        //  }
+        //  // //qDebug() << "C:"<<colors.length();
+        // qDebug() << "colors.length()"<<colors.length();
+        for (int k = 0 ; k< colors.length();k++)
+        {
+            int columnOfColorStrBegin;
+            int columnOfColorStrEnd;
 
-           int rowOfColorStrBegin =  convertTextBoxToBufferIndex(colors[k].startIndex).y();//Рядок в якому починається стрічка з кольором
-           int rowOfColorStrEnd = 0;
-           //Якщо не дійшли до останнього кольору, то встановл. рядок кінця стрічи з початку наступної кольорової
-           if (k<colors.length()-1)rowOfColorStrEnd=convertTextBoxToBufferIndex(colors[k+1].startIndex ).y();
-           //Якщо останній колір, то така стрічка закінчується в останньому рядку
-           else rowOfColorStrEnd=stringList.length()-1;
-           //Якщо ColorIndex в цій стрічці відсутній, то переходим на інший ColorIndex
-             if (!(i>=rowOfColorStrBegin && i<=rowOfColorStrEnd))
-                 continue;
-           //Якщо на рядку, в якому починається кольорова стрічка — то стовпчик початку берем одразу з QList<ColorIndex> colors
-           if (i==rowOfColorStrBegin)
-               columnOfColorStrBegin =  convertTextBoxToBufferIndex(colors[k].startIndex ).x();
-           //Інакше стовпчик початку - нульовий стовпчик . Інфа 100%
-           else columnOfColorStrBegin = 0;
-           //Якщо на останньому кольорі, то стовпчик кінця — індекс останнього символу стрічки.
-             if (k==colors.length()-1) columnOfColorStrEnd =  stringList[i].length();
-             else
-                 //якщо не останній колір і на останній стрічці, то стовпчик кінця — стовпчик початку наступної стрічки з кольором
-           if (i==stringList.length()-1)  columnOfColorStrEnd =  convertTextBoxToBufferIndex(colors[k+1].startIndex ).x();
+            int rowOfColorStrBegin =  convertTextBoxToBufferIndex(colors[k].startIndex).y();//Рядок в якому починається стрічка з кольором
+            int rowOfColorStrEnd = 0;
+            //Якщо не дійшли до останнього кольору, то встановл. рядок кінця стрічи з початку наступної кольорової
+            if (k<colors.length()-1)rowOfColorStrEnd=convertTextBoxToBufferIndex(colors[k+1].startIndex ).y();
+            //Якщо останній колір, то така стрічка закінчується в останньому рядку
+            else rowOfColorStrEnd=stringList.length()-1;
+            //Якщо ColorIndex в цій стрічці відсутній, то переходим на інший ColorIndex
+            if (!(i>=rowOfColorStrBegin && i<=rowOfColorStrEnd))
+                continue;
+            //Якщо на рядку, в якому починається кольорова стрічка — то стовпчик початку берем одразу з QList<ColorIndex> colors
+            if (i==rowOfColorStrBegin)
+                columnOfColorStrBegin =  convertTextBoxToBufferIndex(colors[k].startIndex ).x();
+            //Інакше стовпчик початку - нульовий стовпчик . Інфа 100%
+            else columnOfColorStrBegin = 0;
+            //Якщо на останньому кольорі, то стовпчик кінця — індекс останнього символу стрічки.
+            if (k==colors.length()-1) columnOfColorStrEnd =  stringList[i].length();
+            else
+                //якщо не останній колір і на останній стрічці, то стовпчик кінця — стовпчик початку наступної стрічки з кольором
+                if (i==stringList.length()-1)  columnOfColorStrEnd =  convertTextBoxToBufferIndex(colors[k+1].startIndex ).x();
             //Якщо не останній колір і не остання стрічка, то стовпчик кінця —
-           else
-           {
-               //Якщо в цій самій стрічці починається інша кольорова стрічка то кінцевий стовпчик поточної
-               //Кольорової стрічки - це почато наступної
-               if (convertTextBoxToBufferIndex(colors[k+1].startIndex ).y()==i)
-               columnOfColorStrEnd =  convertTextBoxToBufferIndex(colors[k+1].startIndex ).x();
-               //Інакше КС(кінцевий стовпчик) — це кінець стрічки
-               else columnOfColorStrEnd =  stringList[i].length();
-           }
-             QString textToWarp;
+                else
+                {
+                    //Якщо в цій самій стрічці починається інша кольорова стрічка то кінцевий стовпчик поточної
+                    //Кольорової стрічки - це почато наступної
+                    if (convertTextBoxToBufferIndex(colors[k+1].startIndex ).y()==i)
+                        columnOfColorStrEnd =  convertTextBoxToBufferIndex(colors[k+1].startIndex ).x();
+                    //Інакше КС(кінцевий стовпчик) — це кінець стрічки
+                    else columnOfColorStrEnd =  stringList[i].length();
+                }
+            QString textToWarp;
             //Якщо перша кольорова стрічка, то додаєм до локального Х ширину стрічки, що йшла до кольорової стрічки
             if (k==0)
-           textToWarp= stringList[i].mid(0,columnOfColorStrBegin);
-           else  {
+                textToWarp= stringList[i].mid(0,columnOfColorStrBegin);
+            else  {
                 int  columnOfColorStrBeginPrev=0;
                 if (convertTextBoxToBufferIndex(colors[k-1].startIndex ).y()==i)
                     columnOfColorStrBeginPrev=convertTextBoxToBufferIndex(colors[k-1].startIndex ).x();
@@ -630,43 +693,43 @@ void DrawTextElm::drawTextBuffer( int m_x, int m_y, int m_width, int m_height, i
             //setFillColor(colors[k].value);
             fillColor = colors[k].value;
             QString textToFill = stringList[i].mid(columnOfColorStrBegin,columnOfColorStrEnd-columnOfColorStrBegin);
-            qDebug() << "textToFill:"<<textToFill;
-           pDrawWidget->drawTextFromTexture(line_x,line_y,z,textToFill,textureIndex,fillColor,textFont,(float) scale);
+            //qDebug() << "textToFill:"<<textToFill;
+            pDrawWidget->drawTextFromTexture(line_x,line_y,z,textToFill,textureIndex,fillColor,textFont,scaleX,scaleY);
             //1234
-        // pDrawWidget->fillText(textToFill,QColor("red"),fontishche, line_x , line_x, z,(float) scale);
-           //  pDrawWidget->fillText("eeeeeeeeeeeeeeeeeeee",QColor("red"), QFont("Helvetica",40,40), 50 , 50, 0,(float) 1);
-           // localX+=fMetrics->width(textToFill);
+            // pDrawWidget->fillText(textToFill,QColor("red"),fontishche, line_x , line_x, z,(float) scale);
+            //  pDrawWidget->fillText("eeeeeeeeeeeeeeeeeeee",QColor("red"), QFont("Helvetica",40,40), 50 , 50, 0,(float) 1);
+            // localX+=fMetrics->width(textToFill);
             //setFillColor(QColor(255,255,255));//Костиль, удалити, вистачить верхнього setColor, добавити на початок colors колір канви
-           /*  // //qDebug() << "columnOfColorStrEnd:" << columnOfColorStrEnd;
+            /*  // //qDebug() << "columnOfColorStrEnd:" << columnOfColorStrEnd;
              // //qDebug() << "columnOfColorStrBegin:" << columnOfColorStrBegin;
             // //qDebug()<<"textToFill:"<<textToFill;
               // //qDebug()<< "textToWarp:" << textToWarp;
               // //qDebug()<<"rowOfColorStrBegin:"<<rowOfColorStrBegin;*/
-    }
+        }
 
         line_y += lineHeight + pt;
         line_x = m_x;
-       // localX=marginLeft;
+        // localX=marginLeft;
         i++;
     }
     if(cross)
         crossTextDraw();
     pDrawWidget->setBusy(false);
 
-   // updateGL();
+    // updateGL();
 
 }
 
 bool DrawTextElm::crossText()
 {
-  //  // //qDebug() << "www " << deleteWT << cross;
+    //  // //qDebug() << "www " << deleteWT << cross;
     int spacePaid = 1;
     int row = convertTextBoxToBufferIndex(cursorIndex).y();
     while(deleteWT > 0)
     {
         //// //qDebug() << "DW " << deleteWT << convertTextBoxToBufferIndex(cursorIndex);
         int cursor = cursorIndex - row;
-       /*   space paid
+        /*   space paid
         *
         *  while( cursor - spacePaid >= 0)
         {
@@ -706,17 +769,17 @@ void DrawTextElm::setCursorIndex(int value)
 
 void DrawTextElm::crossOutWithAnimation(int n)
 {
-  //  // //qDebug() << "URAAAA!!!  " << deleteWT;
+    //  // //qDebug() << "URAAAA!!!  " << deleteWT;
     crossOutLastSymbol(n);
     crossWithAnimation = true;
 }
 
 void DrawTextElm::update(){
-     pDrawWidget->setBusy(true);
+    pDrawWidget->setBusy(true);
     crossText();
-       // crossTextDraw();
-        pDrawWidget->moveEvent(NULL);
-       //  pDrawWidget->setBusy(false);
+    // crossTextDraw();
+    pDrawWidget->moveEvent(NULL);
+    //  pDrawWidget->setBusy(false);
 }
 
 QColor DrawTextElm::getMainFillColor() const
@@ -746,6 +809,16 @@ void DrawTextElm::setBNeedTime(bool value)
 {
     bCalcTime = value;
 }
+
+bool DrawTextElm::isStaticText() const
+{
+    return staticText;
+}
+
+void DrawTextElm::setStaticText(bool value)
+{
+    staticText = value;
+}
 QFont DrawTextElm::getTextFont() const
 {
     return mainTextFont;
@@ -764,18 +837,26 @@ void DrawTextElm::setTextFont(const QFont &value)
 
 bool DrawTextElm::setDrawWidget(OGLWidget *value)
 {
-   /* if (DrawElement::setDrawWidget(value))
+    /* if (DrawElement::setDrawWidget(value))
     {
         if (!value->isInit())
             return false;
         textureIndex = pDrawWidget->loadTexture(QImage(pDrawWidget->getWax(),pDrawWidget->getWay(),QImage::Format_ARGB32));
     }*/
+    if(value == pDrawWidget && value != NULL)
+    {
+        //  qDebug() << "VALUE  " << fboWrapper.errorStatus;
+        if(renderFbo.errorStatus != 0 &&  pDrawWidget->isInit()){
+            renderFbo = pDrawWidget->initFboWrapper(pDrawWidget->getWax(),pDrawWidget->getWay());//TODO
+            return false;
+        }
+    }
+
     if(((!DrawElement::setDrawWidget(value) && textureIndex != 4294967295) || failedLoad < 0) || (!pDrawWidget->isVisible() || !pDrawWidget->isInit()))
     {
         return 0;
     }
     textureIndex = pDrawWidget->loadTexture(QImage(pDrawWidget->getWax(),pDrawWidget->getWay(),QImage::Format_ARGB32));
-
 
     if(textureIndex == 4294967295)
         failedLoad--;
@@ -805,9 +886,9 @@ void DrawTextElm::deleteFromBuffer(int n)
             }
             else colorsToDelete.push(numOfColor);
         }
-       // {
-       // colorsToDelete.push(startIndex);
-       // }
+        // {
+        // colorsToDelete.push(startIndex);
+        // }
     }
     while (!colorsToDelete.isEmpty()){
         colors.removeAt(colorsToDelete.pop());
@@ -823,12 +904,12 @@ void DrawTextElm::deleteFromBuffer(int n)
             i--;
         else
             i++;
-         //qDebug() << "REMOVE" << crossCursor + i << "   " << " ::  " << cross;
+        //qDebug() << "REMOVE" << crossCursor + i << "   " << " ::  " << cross;
     }
     while(mustDell > 0)
     {
         QPoint convertedIndex = convertTextBoxToBufferIndex(cursorIndex);
-       // cross.insert(cursorIndex - convertedIndex.y(), 0);
+        // cross.insert(cursorIndex - convertedIndex.y(), 0);
         // //qDebug() << convertedIndex << "DELL   " << mustDell;
         QString &str =  stringList[convertedIndex.y()];
         int realDell;
@@ -844,7 +925,7 @@ void DrawTextElm::deleteFromBuffer(int n)
             {
                 if(convertedIndex.y() + 1 < stringList.length())
                 {
-                  //  cursorIndex--;
+                    //  cursorIndex--;
                     mustDell--;
                     stringList[convertedIndex.y()].append(stringList[convertedIndex.y() + 1]);
                     stringList.removeAt(convertedIndex.y() + 1);
@@ -886,12 +967,12 @@ void DrawTextElm::deleteFromBuffer(int n)
     listChars.append(ch);
 */
     emit drawTextChanged();
-   // pause(delay);
+    // pause(delay);
 }
 
 void DrawTextElm::crossOutLastSymbol( int n)
 {
-   // QPoint delPos = symbolPositionList.at(symbolPositionList.length() - 1 - deleteWT);
+    // QPoint delPos = symbolPositionList.at(symbolPositionList.length() - 1 - deleteWT);
     //int k = 0;
     //QString str = listWords.right(1 + deleteWT);
 
@@ -922,7 +1003,7 @@ bool DrawTextElm::crossTextDraw()
     {
         if(drawAnimationFigure(listOfAnimationFigure[i]))
         {
-         //   qDebug() << "LAST" << listOfAnimationFigure[i].start << "     " << listOfAnimationFigure[i].stop << "     " << cross.length();
+            //   qDebug() << "LAST" << listOfAnimationFigure[i].start << "     " << listOfAnimationFigure[i].stop << "     " << cross.length();
             for( int j = listOfAnimationFigure[i].start; j < listOfAnimationFigure[i].stop; j++) // convert to cross without animation
             {
                 if(j < cross.length())
@@ -954,7 +1035,7 @@ bool DrawTextElm::crossTextDraw()
         if(cross[i] != 0)
         {
             QPoint conv = convertTextBoxToBufferIndex(i, true);
-        //    conv = convertTextBoxToBufferIndex(i + conv.y());
+            //    conv = convertTextBoxToBufferIndex(i + conv.y());
             if(!lastGood)
             {
                 x1 = marginLeft + fMetrics->width(stringList[conv.y()].left(conv.x()));
@@ -976,7 +1057,7 @@ bool DrawTextElm::crossTextDraw()
         {
 
             QPoint conv = convertTextBoxToBufferIndex(i - 1, true);
-        //    conv = convertTextBoxToBufferIndex(i + conv.y() + 1);
+            //    conv = convertTextBoxToBufferIndex(i + conv.y() + 1);
             // //qDebug() << "YYYYYYYYYYYYYYYYYYYYYYY" << y;
             y -=   indexRowInList;
             // //qDebug() << "YYYYYYYYYYYYYYYYYYYYYYY2" << y;
@@ -989,12 +1070,12 @@ bool DrawTextElm::crossTextDraw()
             if( cross[i - 1] == -1 )
             {
                 // //qDebug() << "FIRST";
-               // drawAnimationFigure(x1, y, x2, y, LINE, 0);
+                // drawAnimationFigure(x1, y, x2, y, LINE, 0);
                 //drawAnimationFigure(x1, y, x2, y, LINE, 0);
                 if(pDrawWidget->getStatus()  == OGLWidget::PLAY) //curStatus
                 {
                     listOfAnimationFigure.append(AnimationFigure(QRect(x1, y, x2, y), (int)OGLWidget::LINE, x, i));
-                //    qDebug() << "FIRST" << x << "     " << i << "     " << cross.length();
+                    //    qDebug() << "FIRST" << x << "     " << i << "     " << cross.length();
                     for( int j = x; j < i; j++) // convert to cross without animation
                         cross[j] = 0;
                 }
@@ -1007,7 +1088,7 @@ bool DrawTextElm::crossTextDraw()
             else{
                 //drawFigure(x1, y, x2, y, LINE, 0);
                 pDrawWidget->drawFigure(x1,y, x2, y, OGLWidget::LINE, false);
-                 // //qDebug() << "SECOND";
+                // //qDebug() << "SECOND";
             }
             lastGood = false;
             if(needNextRow)

@@ -131,7 +131,7 @@ property Item  p_trackbar_which_block_dragged
 
 
 
-focus: true    
+focus: true
 
 
     property bool ctrl_pressed : false
@@ -155,6 +155,16 @@ focus: true
               {
                         timeControll.setBlockTimeFromBuffer()
                   main222.selectedBlock. globalRep.updateModel()
+              }
+              else
+              if (event.key === Qt.Key_R)
+              {
+                        timeControll.setBlockPositionSizeFromBuffer();
+              }
+              else
+              if (event.key === Qt.Key_E)
+              {
+                        timeControll.setBlockEffectsFromBuffer();
               }
               else
               if ((event.key === Qt.Key_S || event.key === 1067) && (event.modifiers & Qt.ShiftModifier))
@@ -1067,7 +1077,7 @@ timeControll.setScalePointerPos((x  -20 + scroll.flickableItem.contentX)* main22
                                           }
                                      Component.onCompleted: {
                                     trackbar.globalRep = repka
-                                         main222.p_trackbar = trackbar                                          
+                                         main222.p_trackbar = trackbar
                                      }
                                  }
                                  }    //

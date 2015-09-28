@@ -64,6 +64,8 @@ using namespace QtAV;
 #define CIRCLES_VERTEX_SHADER_PATH ":/dynamic/openGL/shaders/circles.vert"
 #define TURNTHEPAGE_FRAGMENT_SHADER_PATH ":/dynamic/openGL/shaders/turnthepage.frag"
 #define TURNTHEPAGE_VERTEX_SHADER_PATH ":/dynamic/openGL/shaders/turnthepage.vert"
+#define RANDOMSQUARES_FRAGMENT_SHADER_PATH ":/dynamic/openGL/shaders/randsquares.frag"
+#define RANDOMSQUARES_VERTEX_SHADER_PATH ":/dynamic/openGL/shaders/randsquares.vert"
 struct ColorMarker{
     int startIndex;
     QColor value;
@@ -125,7 +127,7 @@ signals:
     void stopShowLastDrawingSignal();
 public:
     void zoomGrid(int val);
-    enum shaderEnum {ALPHA_SHADER=0,SPIN_SHADER=1,PIXELIZATION_SHADER=2,CIRCLES_SHADER=3,TURNTHEPAGE_SHADER=4,CROSS_SHADER=5};
+    enum shaderEnum {ALPHA_SHADER=0,SPIN_SHADER=1,PIXELIZATION_SHADER=2,CIRCLES_SHADER=3,TURNTHEPAGE_SHADER=4,RANDSQUARES_SHADER=5,CROSS_SHADER=6};
     void processMouse();
     ShaderProgramWrapper* getMainShader();
     void initPBO();
@@ -162,7 +164,7 @@ public:
 
     //bool isEditingRectangleBindedToCursor = false;
     RectangleEditor editingRectangle;//Draw element layout manager
-    bool forseEditBoxDisable = false;
+    volatile bool forceEditBoxDisable = false;
 
     QImage brushBuffer;
     struct GradientSetting{
@@ -237,8 +239,8 @@ public:
 
 
 
-    void drawTexture(int x, int y, int width, int height, int index, int angle=0, float scaleX = 1, float scaleY = 1, int z = 0);
-    void drawTexture(int x, int y, int width, int height, GLuint texture, int angle=0, float scaleX = 1, float scaleY = 1, int z = 0);
+    void drawTexture(int x, int y, int width, int height, int index, int angle=0, float scaleX = 1, float scaleY = 1, int z = 0,bool centreScaling = true);
+    void drawTexture(int x, int y, int width, int height, GLuint texture, int angle=0, float scaleX = 1, float scaleY = 1, int z = 0,bool centreScaling=true);
 
     int initTexture(GLuint &texture, int width, int height);
     int initDepthTexture(GLuint &fbo_depth, int width, int height);
@@ -263,7 +265,7 @@ public:
     void drawQImage(int x, int y, QImage img, int z = 0);
 
     void myRenderText(QGLWidget *w, int x, int y, int z, const QString &text, const QColor &col = Qt::white, const QFont &font = QFont(), float scale = 1);
-    void drawTextFromTexture(int x, int y, int z, const QString &text,GLuint index, const QColor &col = Qt::white, const QFont &font = QFont(), float scale = 1);
+    void drawTextFromTexture(int x, int y, int z, const QString &text, GLuint index, const QColor &col = Qt::white, const QFont &font = QFont(), float scaleX = 1, float scaleY=1);
 
 
 
@@ -295,6 +297,10 @@ public:
     void clearTexture(GLuint textureId);
 
 
+
+    void clearFrameBuffer(GLuint fbo);
+    DrawElement *getSelElm() const;
+    void setSelElm(DrawElement *value);
 
 public slots:
     void loadEffectFromCurrentBlockToEffectManager();
@@ -348,7 +354,7 @@ public slots:
     void setFileNameForRecords(QString ) ;
 
 
-    void drawQImageFromTexture(int x, int y, QImage img, GLuint index, int z, bool inverseY=false);
+    void drawQImageFromTexture(int x, int y, QImage img, GLuint index, int z, bool inverseY=false, float scaleX=1, float scaleY=1, bool centreScaling=true);
     void ShowHideShaderWindow();
     void testInit();
     void encoderAddWaitFrame();
@@ -381,12 +387,11 @@ private:
 
     QVector<ShaderProgramWrapper*> shaderPrograms;
 
-    bool shaderSupported = false;
+    bool shaderSupported = true;
     ShaderProgramWrapper *mainShader;//Color,alpha,blur;
     ShaderProgramWrapper *test;//Color,alpha,blur;
 
     int frameRate = 25;
-    bool mayShowRedRectangle = true;
     qint64 current_millisecs =0;
     qint64 last_milisecs_update = 0;
     qint64 last_milisecs_drawn = 0;
@@ -487,7 +492,7 @@ protected:
     void paintGL(); // Output generated Image to screen
     int wax ,way; // Window size
 
-    QPoint selElm;
+    DrawElement *selElm;
     void drawGlobalShader(QVector<ShaderProgramWrapper *> shaders);
     void drawEditBox(int z);
     void reloadScene();

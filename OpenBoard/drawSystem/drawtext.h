@@ -12,6 +12,7 @@ class DrawTextElm : public DrawElement
     Q_OBJECT
 
     QList <Unit*>mUnitList;
+    bool staticText = false;
     QString loggerText;
     QString unParsestring;
     Parser myParser;
@@ -62,6 +63,7 @@ class DrawTextElm : public DrawElement
     QVector <AnimationFigure> listOfAnimationFigure; // now use only for cross animation
 
     double animationPersentOfCross = 0.01;
+    FBOWrapper renderFbo;
 
 
 public:
@@ -74,7 +76,7 @@ public:
     ~DrawTextElm();
     void clearBuffer();
     void draw();
-    void setLifeTime(int value);
+    void setLifeTime(int value, bool feedBack, bool visual);
     QList<Unit *> unitList() const;
     void setUnitList(const QList<Unit *> &unitList);
     QString getUnParsestring() const;
@@ -94,48 +96,51 @@ public:
     int getPrevTextCursor() const;
     void setPrevTextCursor(int value);
 
-     void drawTextBuffer(int m_x, int m_y, int m_width, int m_height, int z = 0, bool cross = true, float scale = 1);
-     void nextRow(int n   = -1, int Row = -1, bool wrap = true);
+    void drawTextBuffer(int m_x, int m_y, int m_width, int m_height, int z = 0, bool cross = true, float scaleX = 1, float scaleY=1);
+    void nextRow(int n   = -1, int Row = -1, bool wrap = true);
 
-       void clearCanvas(int m_x = 0, int m_y = 0);
-       void moveCursor(int n = 1, bool withWrapShift = true);
+    void clearCanvas(int m_x = 0, int m_y = 0);
+    void moveCursor(int n = 1, bool withWrapShift = true);
 
-        void insertToBuffer(const QChar ch);
-        void crossOutLastSymbol( int n);
+    void insertToBuffer(const QChar ch);
+    void crossOutLastSymbol( int n);
 
-        void deleteFromBuffer(int n);
-        int getCountDeleteWT() const;
-        void update();
-        QColor getMainFillColor() const;
-        void setMainFillColor(const QColor &value);
-         int getCountNullString(int index);
-         int getLastSymbolOfString(int index, bool symbol);
-       int getFirstSymbolOfString(int index, bool symbol = false);
-       QPoint convertTextBoxToBufferIndex(int index, bool symbol = false);
-       int getRowFromTextBoxIndex(int index, bool symbol);
-       bool drawAnimationFigure (int x, int y, int width, int height, double persent,OGLWidget::FigureType type, bool fill);
-       bool drawAnimationFigure (AnimationFigure &figure);
-       void setFillColor( QColor col);
-       double getAnimationPersentOfCross() const;
-       void setAnimationPersentOfCross(double value);
-       void isLastRow();
+    void deleteFromBuffer(int n);
+    int getCountDeleteWT() const;
+    void update();
+    QColor getMainFillColor() const;
+    void setMainFillColor(const QColor &value);
+    int getCountNullString(int index);
+    int getLastSymbolOfString(int index, bool symbol);
+    int getFirstSymbolOfString(int index, bool symbol = false);
+    QPoint convertTextBoxToBufferIndex(int index, bool symbol = false);
+    int getRowFromTextBoxIndex(int index, bool symbol);
+    bool drawAnimationFigure (int x, int y, int width, int height, double persent,OGLWidget::FigureType type, bool fill);
+    bool drawAnimationFigure (AnimationFigure &figure);
+    void setFillColor( QColor col);
+    double getAnimationPersentOfCross() const;
+    void setAnimationPersentOfCross(double value);
+    void isLastRow();
 
-       bool getBNeedCalcTime() const;
-       void setBNeedTime(bool value);
+    bool getBNeedCalcTime() const;
+    void setBNeedTime(bool value);
+
+    bool isStaticText() const;
+    void setStaticText(bool value);
 
 private:
-       void setTickTime(int value);
-       bool load_add(QDataStream &stream);
+    void setTickTime(int value);
+    bool load_add(QDataStream &stream, float version);
     bool save_add(QDataStream &stream);
 protected slots:
-     void start();
+    void start();
 public slots:
-     bool crossText();
-     bool crossTextDraw();
-     Q_INVOKABLE void crossOutWithAnimation(int n = 1);
+    bool crossText();
+    bool crossTextDraw();
+    Q_INVOKABLE void crossOutWithAnimation(int n = 1);
 
 signals:
-      void drawTextChanged();
+    void drawTextChanged();
 
 
 };

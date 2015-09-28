@@ -20,7 +20,7 @@ public:
     void draw();
 
     void setAudioFile( QString path);
-    bool load_add(QDataStream &stream);
+    bool load_add(QDataStream &stream, float version);
     bool save_add(QDataStream &stream);
     bool setDrawWidget(OGLWidget *value);
     QString getFilePath();

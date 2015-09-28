@@ -7,7 +7,7 @@ Rectangle {
 //    anchors.fill: parent
     height: parent.height
     width: parent.width
-    property string cLoaderName: "loader"
+    property string cLoaderName: "loader2"
     property int last_click_index : -1
      property Item p_rep
 

@@ -374,6 +374,7 @@ bool ListControll::removeBlock(int col, int i, bool copy_in__buffer, bool del_la
     }
     setSelectedBlockPoint(QPoint(-1,-1));
 
+
     ////////////
 
 
@@ -1191,6 +1192,38 @@ void  ListControll::moveBlockFromTo(int col0,int ind0,int col1, int ind1)
 
     balanceBlocksIfIsGroups(col0,ind0);
 
+}
+
+
+void ListControll::cloneBlock(DrawElement *origin, DrawElement *clone)
+{
+    if(origin == clone)
+        return;
+    setBlocked(true);
+    QBuffer buff;
+    buff.open(QBuffer::ReadWrite);
+    origin->save(&buff);
+    QPoint p = QPoint(clone->getBlockColumn(), clone->getBlockIndex());
+    tracks[p.x()].addTime(origin->getLifeTime() - clone->getLifeTime());
+
+    if(clone != NULL)
+        delete clone;
+    buff.seek(0);
+    clone = loadDrawElement(&buff, VERSION);
+
+    clone->setDrawWidget(origin->getDrawWidget());
+
+    clone->setBlockColumn(p.x());
+    clone->setBlockIndex(p.y());
+
+    tracks[p.x()].block[p.y()] = clone;
+
+
+    calcPointedBlocks();
+    recountMaxTrackTime();
+    updateBlocksStartTimesFrom(p.x(), p.y());
+    sendUpdateModel();
+    setBlocked(false);
 }
 
 
@@ -2211,6 +2244,7 @@ void ListControll::calcPointedBlocksAtTime(int ms )
             blockXstart = blockXend;
         }
     }
+    //qDebug() << "BLOCK FOR DRAW" << pointed_block.size();
 }
 
 void ListControll::calcPointedBlocksAtTime( )
@@ -2403,7 +2437,7 @@ void ListControll::pasteBlockFromBuffer()
      // calcPointedBlocks();
     */
     cloneBlock(block_in_buffer, getBlock(getSelectedBlockPoint()));
-    emit updateTrackAt(getSelectedBlockPoint().x());
+    emit updateTrackAt(block_in_buffer->getBlockColumn());
 
 
 }
@@ -2418,6 +2452,33 @@ void ListControll::setBlockTimeFromBuffer()
 
     setBlockTime(sel_block.x(),sel_block.y(),life_time_in_buffer);
     emit updateTrackAt(sel_block.x());
+}
+
+void ListControll::setBlockPositionSizeFromBuffer()
+{
+    if (!buffer_is_full)
+        return;
+
+    setBlocked(true);
+
+    QPoint sel = getSelectedBlockPoint();
+    DrawElement *elm = getBlock(sel);
+    elm->getDrawWidget()->setSelElm( NULL);
+
+    elm->setRect(block_in_buffer->getRect());
+
+    setBlocked(false);
+}
+
+void ListControll::setBlockEffectsFromBuffer()
+{
+    QVector<ShaderEffect> effList = block_in_buffer->getEffects();
+    DrawElement *elm = getBlock(getSelectedBlockPoint());
+    for(ShaderEffect eff : effList)
+    {
+        elm->addEffect(eff);
+    }
+
 }
 
 
@@ -2550,8 +2611,19 @@ void ListControll::convertCurentBlockToText()
     DrawElement* elm = tracks[selectedBlockPoint.x()].block[selectedBlockPoint.y()];
     DrawTextElm *text = new DrawTextElm(NULL);
     text->copy(elm);
+    if(elm->getGroupWichElBelong() != NULL)
+    {
+        elm->getGroupWichElBelong()->tryMemberReverce(elm, text);
+    }
     delete elm;
     tracks[selectedBlockPoint.x()].block[selectedBlockPoint.y()] = text;
+    text->setBlockColumn(selectedBlockPoint.x());
+    text->setBlockIndex(selectedBlockPoint.y());
+    connect(text,SIGNAL(borderColorChangedSignal(int,int,QString)),
+            this,SIGNAL(borderColorChangedSignal(int,int,QString)));
+    connect(text,SIGNAL(sizeChangedSignal(int,int, int, bool)),
+            this, SLOT(setBlockTimeWithUpdate(int, int, int, bool)));
+
     emit updateSelectedBlock(selectedBlockPoint);
     calcPointedBlocks();
     setBlocked(false);

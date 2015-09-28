@@ -24,7 +24,7 @@ class DrawBrushElm;
 class DrawElement;
 
 #define minBlockTime 1000
-#define VERSION 2.8
+#define VERSION 2.9
 
 bool isFileExists(QString path) ;
 
@@ -155,9 +155,11 @@ class ListControll : public QObject, public QQuickImageProvider
 {
     Q_OBJECT
 
+
      int spaces_to_add = -1;
     QPoint curent_block = QPoint(-1,-1);
     bool load_from_file_or_library;
+
     QMessageBox mess_box;
     FileManager f_manager;
     OGLWidget *drawWidget;
@@ -205,6 +207,7 @@ public:
     Q_INVOKABLE QPoint getCurentBlock();
    Q_INVOKABLE void setCurentBlock (QPoint value);
     Q_INVOKABLE void setCurentBlock (int col, int ind);
+
     int isPlayPauseStop = 3;
     static const int blockHeightPlusSpacing = 102;
 
@@ -219,7 +222,9 @@ public:
     explicit ListControll(/*OGLWidget *drawWidget = NULL ,*/QObject *parent = 0);
     ~ListControll();
 
+
     void updateBlocksStartTimesFrom(int col0, int ind0, bool withGroup = false);
+
     Q_INVOKABLE bool balanceBlocksIfIsGroups(int col0, int ind0, bool calc_time_change = true);
     Q_INVOKABLE bool checkBlockValidGroup(DrawElement *elm);
     void updateBlocksIndexFrom(int col, int ind);
@@ -350,7 +355,6 @@ public:
     Q_INVOKABLE void addBlockWithSpaceAt(int col, int ind,int space, DrawElement *element = NULL , int life_time = -1,bool need_balance = false );
     Q_INVOKABLE void addBlockWithSpaceFromBufferAt(int col, int ind,int space,   int life_time = -1 ,bool need_balance = false);
 
-
     Q_INVOKABLE DrawElement* getBlockFromBuffer();
     Q_INVOKABLE getBlockIndToAddFromPos(int col,int ind, int pos);
     Q_INVOKABLE getBlockSpaceToAddFromPos(int col,int ind); //call after getBlockIndToAddFromPos
@@ -359,6 +363,7 @@ public:
     Q_INVOKABLE  float getScaleScrollChildren() const;
     Q_INVOKABLE  void setScaleScrollChildren(const float &value);
     Q_INVOKABLE  void changeScaleScrollChildren(const float &value);
+
 
     Q_INVOKABLE  void videoSignalHAHAHAA(QString addrW)
     {
@@ -383,7 +388,9 @@ public:
     void setGlWindInited(bool value);
 
     Q_INVOKABLE bool getCurent_group() const;
+
     Q_INVOKABLE bool createEmptyBlock(int col);
+
     Q_INVOKABLE bool getCurent_group(int col, int index) ;
     Q_INVOKABLE long tryResizeCurentGroup(int shift);
     Q_INVOKABLE long tryResizeMemberInCurentGroup(int shift, int col, int index);
@@ -393,7 +400,9 @@ public:
     Q_INVOKABLE void showF_manager(int x,int y);
     Q_INVOKABLE void showF_manager(QPoint pos);
     Q_INVOKABLE void showF_manager();
+
     Q_INVOKABLE void setLoadF_manager(bool file_or_library);
+
     Q_INVOKABLE void setPosF_manager(QPoint pos);
     Q_INVOKABLE void setPosF_manager(int x,int y);
     Q_INVOKABLE void setPosDefaultF_manager();
@@ -435,6 +444,7 @@ public slots:
     Q_INVOKABLE bool addNewBlockFromLibrary( QString str , DrawElement *element = NULL);
     Q_INVOKABLE DrawElement* loadFromFile(int col, int ind, QString path = "",bool emit_update = true);
     Q_INVOKABLE DrawElement* loadFromFile( QString path = "");
+
     void addMsToTimerValue(int ms);
     Q_INVOKABLE void emitNewProject();
     Q_INVOKABLE void emitOpenEffects();
@@ -443,6 +453,10 @@ public slots:
     Q_INVOKABLE void  copyBlockToBuffer();
     Q_INVOKABLE void  pasteBlockFromBuffer();
     Q_INVOKABLE void setBlockTimeFromBuffer();
+
+    Q_INVOKABLE void setBlockPositionSizeFromBuffer();
+    Q_INVOKABLE void setBlockEffectsFromBuffer();
+
     Q_INVOKABLE void emitOpenProject();
     Q_INVOKABLE void emitSaveProject();
     Q_INVOKABLE void  emitBlockEditedSignal();

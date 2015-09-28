@@ -16,6 +16,9 @@ Rectangle {
     function setInverted(val){
         cbInversion.checked=val
     }
+    function setElementSize(n){
+        sizeSlider.value1 = n
+    }
 
     //property alias inversion : cbInversion.checked
    // property alias sliderTimer : doubleSliderTime
@@ -25,6 +28,7 @@ Rectangle {
     //anchors.fill: parent
     color: "transparent"
     property string cLoaderName: "loader"
+    property alias elementSizeSlider : sizeSlider
     signal update
     onUpdate: {
         //console.log("update brush");
@@ -50,8 +54,8 @@ Rectangle {
      width:root.width
      height:10
     name: "time"
-    value1:0
-    value2:0
+    value1:0.0
+    value2:0.0
   /*  onValue1Changed: {
         startTime=value1
     }
@@ -64,6 +68,18 @@ Rectangle {
     onMouse_drag_right_signal: {
      effectsControll.setCurrentEffectProperty("end_time",value2);
 }
+        }
+        FullSlider{
+            name:"size"
+            id: sizeSlider
+            maximum:100
+            width:root.width
+            height:10
+            minimum: 1
+            value1: 1
+            onMouse_drag_signal:  {
+               effectsControll.setCurrentEffectProperty("elementSize",value1);
+            }
         }
 
     }

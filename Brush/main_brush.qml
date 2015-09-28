@@ -140,7 +140,7 @@ Rectangle{
 
         }
 
-            SettingPages.Image{
+            SettingPages.ImageBrush{
                 id: p_image
                 x:5
             }

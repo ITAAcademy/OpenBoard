@@ -16,13 +16,9 @@ Rectangle {
     function setInverted(val){
         cbInversion.checked=val
     }
-    function setCount(val){
-        countSlider.value1=val;
-    }
 
     //property alias inversion : cbInversion.checked
    // property alias sliderTimer : doubleSliderTime
-    property alias countSlider : countSlider
     id: root
     width: parent.width
     height: parent.height
@@ -34,7 +30,7 @@ Rectangle {
         //console.log("update brush");
     }
     Column{
-        spacing:20
+        spacing:10
         width: parent.width
         y: 15
         property int fix_height: 26
@@ -56,25 +52,18 @@ Rectangle {
     name: "time"
     value1:0
     value2:0
-
+  /*  onValue1Changed: {
+        startTime=value1
+    }
+    onValue2Changed: {
+        endTime=value2
+    }*/
     onMouse_drag_left_signal: {
      effectsControll.setCurrentEffectProperty("start_time",value1);
 }
     onMouse_drag_right_signal: {
      effectsControll.setCurrentEffectProperty("end_time",value2);
 }
-        }
-        FullSlider{
-            name:"count"
-            id: countSlider
-            maximum:15
-            width:root.width
-            height:10
-            minimum: 1
-            value1: 1
-            onMouse_drag_signal:  {
-               effectsControll.setCurrentEffectProperty("count",value1);
-            }
         }
 
     }
