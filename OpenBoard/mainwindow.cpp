@@ -2250,7 +2250,7 @@ void MainWindow::on_actionLoad_drawing_temp_triggered()
 
 void MainWindow::on_actionHide_editBox_triggered()
 {
-    mpOGLWidget->forseEditBoxDisable = !mpOGLWidget->forseEditBoxDisable;
+    mpOGLWidget->forceEditBoxDisable = !mpOGLWidget->forceEditBoxDisable;
 }
 
 void MainWindow::on_slider_speedTB_sliderReleased()

@@ -378,7 +378,7 @@ void OGLWidget::slotBlockEdited()
     /*QPoint t = timeLine->getSelectedBlockPoint();
 editingRectangle.rect = timeLine->getDrawRect(t.x(), t.y());
 */
-    selElm = QPoint(-1,-1);
+    selElm = NULL;
 }
 
 
@@ -448,7 +448,7 @@ void OGLWidget::processMouse()
         //editingRectangle.setX(0);
         // editingRectangle.setY(0);
 
-        if (editingRectangle.editingRectangleMode==EDIT_RECTANGLE_UNBINDED && editingRectangle.isEditingRectangleVisible && !forseEditBoxDisable && !isPainting)
+        if (editingRectangle.editingRectangleMode==EDIT_RECTANGLE_UNBINDED && editingRectangle.isEditingRectangleVisible && !forceEditBoxDisable && !isPainting)
             if ((mousePos.x() >= leftCornerX1 && mousePos.x() <= leftCornerX2) && (mousePos.y() >= leftCornerY1 && mousePos.y() <= leftCornerY2))
             {
                 editingRectangle.editingRectangleMode=EDIT_RECTANGLE_RESIZE;
@@ -667,7 +667,7 @@ OGLWidget::OGLWidget(QWidget *parent) :
 
 
     isPainting = false;
-    selElm = QPoint(-1,-1); //because it undefined
+    selElm = NULL; //because it undefined
 
     //qRegisterMetaType<DrawData>("DrawData");
     // engine()->rootContext()->setContextProperty(QLatin1String("forma"), this);
@@ -1491,7 +1491,7 @@ void OGLWidget::drawEditBox( int z)
     int leftCornerX2=x1 + editingRectangle.leftCornerSize/2;
     int leftCornerY2=y1 + editingRectangle.leftCornerSize/2;
 
-    if (editingRectangle.isEditingRectangleVisible && !forseEditBoxDisable && !isPainting && getStatus()!= PLAY)
+    if (editingRectangle.isEditingRectangleVisible && !forceEditBoxDisable && !isPainting && getStatus()!= PLAY)
     {
 
         // paintBufferOnScreen(0, 0, wax, way);
@@ -2317,15 +2317,15 @@ void  OGLWidget::updateWindow(){
 
     QPoint t = timeLine->getSelectedBlockPoint();
 
-    if(curStatus != PLAY && t.x() >= 0)
+    if(curStatus != PLAY && t.x() >= 0 && !timeLine->isBlocked)
     {
         if (mayShowRedRectangle)
             editingRectangle.isEditingRectangleVisible = true;
 
-        if(t != selElm )
+        if(timeLine->getBlock(t) != selElm )
         {
             //clearBuffer();
-            selElm = t;
+            selElm = timeLine->getBlock(t);
             editingRectangle.rect = timeLine->getDrawRect(t.x(), t.y());
         }
         else
@@ -2334,9 +2334,9 @@ void  OGLWidget::updateWindow(){
             // if (!timeLine->getIsEditBlockShow())
             {
                 QRect t2 = editingRectangle.rect;
-                timeLine->setDrawX(selElm.x(), selElm.y(), t2.x());
-                timeLine->setDrawY(selElm.x(), selElm.y(), t2.y());
-                timeLine->setDrawSize(selElm.x(), selElm.y(), t2.width(), t2.height());
+                selElm->setX( t2.x());
+                selElm->setY( t2.y());
+                selElm->setSize(t2.width(), t2.height());
             }
 
 
@@ -2346,7 +2346,7 @@ void  OGLWidget::updateWindow(){
     else
     {
         // //qDebug() << "SBLOCK " << t;
-        selElm = t;
+        selElm = timeLine->getBlock(t);
         editingRectangle.isEditingRectangleVisible = false;
 
     }

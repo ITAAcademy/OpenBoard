@@ -762,13 +762,12 @@ void ListControll::cloneBlock(DrawElement *origin, DrawElement *clone)
 {
     if(origin == clone)
         return;
-
     setBlocked(true);
     QBuffer buff;
     buff.open(QBuffer::ReadWrite);
     origin->save(&buff);
     QPoint p = QPoint(clone->getBlockColumn(), clone->getBlockIndex());
-    // maxTrackTime -= clone->getLifeTime() + origin->getLifeTime();
+    tracks[p.x()].addTime(origin->getLifeTime() - clone->getLifeTime());
 
     if(clone != NULL)
         delete clone;
@@ -781,8 +780,12 @@ void ListControll::cloneBlock(DrawElement *origin, DrawElement *clone)
     clone->setBlockIndex(p.y());
 
     tracks[p.x()].block[p.y()] = clone;
+
+
     calcPointedBlocks();
     recountMaxTrackTime();
+    updateBlocksStartTimesFrom(p.x(), p.y());
+    sendUpdateModel();
     setBlocked(false);
 }
 

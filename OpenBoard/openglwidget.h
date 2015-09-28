@@ -164,7 +164,7 @@ public:
 
     //bool isEditingRectangleBindedToCursor = false;
     RectangleEditor editingRectangle;//Draw element layout manager
-    bool forseEditBoxDisable = false;
+    volatile bool forceEditBoxDisable = false;
 
     QImage brushBuffer;
     struct GradientSetting{
@@ -490,7 +490,7 @@ protected:
     void paintGL(); // Output generated Image to screen
     int wax ,way; // Window size
 
-    QPoint selElm;
+    DrawElement *selElm;
     void drawGlobalShader(QVector<ShaderProgramWrapper *> shaders);
     void drawEditBox(int z);
     void reloadScene();
