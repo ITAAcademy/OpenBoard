@@ -156,6 +156,11 @@ focus: true
                         timeControll.setBlockPositionSizeFromBuffer();
               }
               else
+              if (event.key === Qt.Key_E)
+              {
+                        timeControll.setBlockEffectsFromBuffer();
+              }
+              else
               if ((event.key === Qt.Key_S || event.key === 1067) && (event.modifiers & Qt.ShiftModifier))
               {
                         timeControll.emitSaveProject();

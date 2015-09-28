@@ -1923,6 +1923,17 @@ void ListControll::setBlockPositionSizeFromBuffer()
     setBlocked(false);
 }
 
+void ListControll::setBlockEffectsFromBuffer()
+{
+    QVector<ShaderEffect> effList = block_in_buffer->getEffects();
+    DrawElement *elm = getBlock(getSelectedBlockPoint());
+    for(ShaderEffect eff : effList)
+    {
+        elm->addEffect(eff);
+    }
+
+}
+
 
 void ListControll::emitOpenProject()
 {

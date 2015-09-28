@@ -31,6 +31,9 @@ Item{
     onValue1Changed: {
 
         handle1.x = 2 + (root.value1 - root.minimum) * root.xMax / (root.maximum - root.minimum);
+
+        if(!size_value.focus)
+            size_value.text = (value1/1000).toFixed(2);
         // if (handle1.x>handle2.x)handle1.x=handle2.x;
 
     }
@@ -38,6 +41,8 @@ Item{
 
         handle2.x = 2 + (root.value2 - root.minimum2) * root.xMax2 / (root.maximum2 - root.minimum2);
         //if (handle1.x>handle2.x)handle2.x=handle1.x;
+        if(!size_value2.focus)
+            size_value2.text = (value2/1000).toFixed(2);
 
     }
     signal release;
@@ -124,6 +129,8 @@ Item{
                     }
                     onEntered:{
                         to.start();
+                        size_value.focus = false;
+                        size_value1.text = (value1/1000).toFixed(2);
                     }
                     onReleased: {
                         from.start();
@@ -179,6 +186,8 @@ Item{
                     }
                     onEntered:{
                         to.start();
+                        size_value2.focus = false;
+                        size_value2.text = (value2/1000).toFixed(2);
                     }
                     onReleased: {
                         from.start();
@@ -202,26 +211,43 @@ Item{
             id:out
             width: 30
             x: size.x + size.width + 10
-            Text {
+            TextEdit {
                 id: size_value2
-                text: if(small) (root.value2/1000).toFixed(2);else Math.round(root.value2)
+                //text: if(small) (root.value2/1000).toFixed(2);else Math.round(root.value2)
+                text: "0.0"
                 width: 30
                 color: "white"
                 font.pixelSize: 14
-                style: Text.Outline;
-                styleColor: "black"
                 anchors.bottom: parent.top
+                onTextChanged:
+                {
+                    var value = parseFloat(text)*1000;
+                    if(!handle1.focus && value >= minimum && value <= maximum)
+                    {
+                        value2 = value;
+                        if (value1>value2)value2=value1;
+                        mouse_drag_right_signal();
+                    }
+                }
 
             }
-            Text {
+            TextEdit {
                 id: size_value
-                text: if(small) (root.value1/1000).toFixed(2);else Math.round(root.value1)
+                text: "0.0"
                 width: 30
                 color: "white"
                 font.pixelSize: 14
-                style: Text.Outline;
-                styleColor: "black"
                 anchors.top: parent.bottom
+                onTextChanged: {
+                    var value = parseFloat(text)*1000;
+                    if(!handle2.focus && value >= minimum2 && value <= maximum2)
+                    {
+                        value1 = parseFloat(text)*1000
+                        if (value1>value2)value1=value2;//BUG HERE. RESET VALUE IN 0 WHEN LOADING
+                        mouse_drag_left_signal()
+                    }
+                }
+
             }
         }
     }
@@ -229,8 +255,8 @@ Item{
 
         root.xMax = size.width - handle1.width - 4;
         root.xMax2 = size.width - handle2.width - 4;
-        handle1.x = 2 + (root.value1 - root.minimum) * root.xMax / (root.maximum - root.minimum);
-        handle2.x = 2 + (root.value2 - root.minimum2) * root.xMax2 / (root.maximum2 - root.minimum2);
+        handle1.x = 0;
+        handle2.x =0;
 
     }
 }

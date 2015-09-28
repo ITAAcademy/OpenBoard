@@ -417,6 +417,8 @@ public slots:
     Q_INVOKABLE void  pasteBlockFromBuffer();
     Q_INVOKABLE void setBlockTimeFromBuffer();
     Q_INVOKABLE void setBlockPositionSizeFromBuffer();
+    Q_INVOKABLE void setBlockEffectsFromBuffer();
+
     Q_INVOKABLE void emitOpenProject();
     Q_INVOKABLE void emitSaveProject();
     Q_INVOKABLE void  emitBlockEditedSignal();
