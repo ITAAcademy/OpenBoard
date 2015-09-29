@@ -76,6 +76,14 @@ Rectangle{
             effectsRandomSquares.setEndTime(endTime);
             effectsRandomSquares.setInverted(inversion);
             break;
+        case 6:
+            effectsTreshold.setStartTime(startTime);
+            effectsTreshold.setEndTime(endTime);
+            effectsTreshold.setInverted(inversion);
+        case 7:
+            effectsSlide.setStartTime(startTime);
+            effectsSlide.setEndTime(endTime);
+            effectsSlide.setInverted(inversion);
 
 
         }
@@ -102,6 +110,8 @@ Rectangle{
     property bool isEffectCircles : (combo.currentIndex===3);
     property bool isEffectTurnthepage : (combo.currentIndex===4);
     property bool isEffectRandomSquares : (combo.currentIndex===5);
+    property bool isEffectTreshold : (combo.currentIndex===6);
+    property bool isEffectSlide : (combo.currentIndex == 7);
 
     property bool isEmptyList : (listBox.listBox.count==0);
     property bool isNonSelected : (listBox.listBox.currentIndex==-1);
@@ -211,6 +221,8 @@ Rectangle{
                     ListElement { text: "Circles"; color: "Green" }
                     ListElement { text: "Turn the page"; color: "Green" }
                     ListElement { text: "Random squares"; color: "Pink" }
+                    ListElement { text: "Treshold"; color: "Pink" }
+                    ListElement { text: "Slide"; color: "Yellow" }
 
                 }
                 onCurrentIndexChanged:{
@@ -282,6 +294,22 @@ Rectangle{
                 height:parent.height-combo.height
                 visible:isEffectRandomSquares && !isEmptyList && !isNonSelected
 
+            }
+            SettingPages.EffectTreshold{
+                id:effectsTreshold
+                y:listBox.border.width
+                color: root.color
+                width:secondColumn.width
+                height:parent.height-combo.height
+                visible:isEffectTreshold && !isEmptyList && !isNonSelected
+            }
+            SettingPages.EffectSlide{
+                id:effectsSlide
+                y:listBox.border.width
+                color: root.color
+                width:secondColumn.width
+                height:parent.height-combo.height
+                visible:isEffectSlide && !isEmptyList && !isNonSelected
             }
         }
 
