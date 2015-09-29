@@ -1815,7 +1815,7 @@ void MainWindow::onTextChanged()
             }
         }
     //updateBlockFromTextEdit();
-    if(!mpOGLWidget->getTimeLine()->getCurent_group())
+
         onTextChangeUpdateTimer.start();
     textEdit->saveChanges();
     connect(textEdit, SIGNAL(textChanged()), this, SLOT(onTextChanged()));

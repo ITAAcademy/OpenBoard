@@ -1,23 +1,46 @@
- vec2 resolution=vec2(640,480);
- uniform float animationKey;
-uniform sampler2D tex0;
-float key;
+#ifdef GL_ES
+precision highp float;
+#endif
+uniform sampler2D from;
+uniform float animationKey;
+uniform vec2 resolution;
 uniform bool reverse;
+/*
+  (C) Sergey Kosarevsky, 2014
+
+  Available under the terms of MIT license
+  http://www.linderdaum.com
+*/
+float key;
+vec4 to = vec4(0,0,0,0);
 void main(void)
 {
     if (reverse)key=1-animationKey;
     else key=animationKey;
-vec2 p = -1.0 + 2.0 * gl_FragCoord.xy / resolution.xy;
-    vec2 uv;
 
-    float a = atan(p.y,p.x);
-    float r = sqrt(dot(p,p));
+        float Radius = 1.0;
 
-    uv.x = r - 0.25*key;
-    uv.y = cos(a*2.0 + 2.0*sin(key+7.0*r)) ;
+        float T = key;
 
+        vec2 UV = gl_FragCoord.xy / resolution.xy;
 
-    vec3 col =  (.5+.5*uv.y)*texture2D(tex0,uv).xyz;
+        UV -= vec2( 0.5, 0.5 );
 
-    gl_FragColor = vec4(col,1.0);
+        float Dist = length(UV);
+
+        if ( Dist < Radius )
+        {
+                float Percent = (Radius - Dist) / Radius;
+                float A = mix( 0.0, 1.0, T/0.5 );
+                float Theta = Percent * Percent * A * 8.0 * 3.14159;
+                float S = sin( Theta );
+                float C = cos( Theta );
+                UV = vec2( dot(UV, vec2(C, -S)), dot(UV, vec2(S, C)) );
+        }
+        UV += vec2( 0.5, 0.5 );
+
+        vec4 C0 = texture2D( from, UV );
+        vec4 C1 = to;
+
+        gl_FragColor = mix( C0, C1, T );
 }

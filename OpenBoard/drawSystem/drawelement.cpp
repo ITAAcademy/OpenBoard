@@ -221,7 +221,8 @@ void DrawElement::paint()
                 else
                 {
                     beginAtTime = lifeTime + startDrawTime - effects[i].getEffectTimeHowLong();
-                    if (beginAtTime<0)beginAtTime=0;
+                    if (beginAtTime<0)
+                        beginAtTime=0;
 
                 }
                 //  beginAtTime = effects[i].getStartTimeMS()+ startDrawTime ;
@@ -232,12 +233,16 @@ void DrawElement::paint()
 
 
 
-                //qDebug() << ":"<<playTime-beginAtTime;
+              //qDebug() << ":"<<playTime-beginAtTime;
 
-                if (bPlay && playTime >= beginAtTime && playTime <= endAtTime)//endAtTime + 50 if flickering !!!
+
+                if (bPlay && ((playTime >= beginAtTime && playTime <= endAtTime) || lifeTime == effects[i].getEffectTimeHowLong()))//endAtTime + 50 if flickering !!!
                 {
                     if(endAtTime-beginAtTime>0)
                         keyFrame=(float)(playTime-beginAtTime)/(endAtTime-beginAtTime);
+                    if(keyFrame > 1)
+                        keyFrame = 1;
+
                     pDrawWidget->useShader(effects[i].getShaderWrapper());
                     effects[i].setUniform("animationKey",keyFrame);
                     effects[i].setUniform("resolution",fboWrapper.tWidth,fboWrapper.tHeight);

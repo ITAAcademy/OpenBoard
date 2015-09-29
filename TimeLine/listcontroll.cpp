@@ -2543,6 +2543,7 @@ void ListControll::setBlockEffectsFromBuffer()
 {
     QVector<ShaderEffect> effList = block_in_buffer->getEffects();
     DrawElement *elm = getBlock(getSelectedBlockPoint());
+    elm->clearEffects();
     for(ShaderEffect eff : effList)
     {
         elm->addEffect(eff);
