@@ -19,5 +19,6 @@
         <file>Content/BrushSettingPages/EffectCircles.qml</file>
         <file>Content/BrushSettingPages/EffectTurnthepage.qml</file>
         <file>Content/BrushSettingPages/EffectRandomsquares.qml</file>
+        <file>Content/BrushSettingPages/EffectTreshold.qml</file>
     </qresource>
 </RCC>

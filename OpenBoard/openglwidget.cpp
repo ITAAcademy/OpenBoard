@@ -595,6 +595,10 @@ void OGLWidget::initShaderPrograms()
     if(randomSquaresShader->initShader(RANDOMSQUARES_FRAGMENT_SHADER_PATH,RANDOMSQUARES_VERTEX_SHADER_PATH)!=0)shaderSupported=true;
     shaderPrograms.push_back(randomSquaresShader);
 
+    ShaderProgramWrapper *tresholdShader = new ShaderProgramWrapper(this);
+    if(tresholdShader->initShader(TRESHOLD_FRAGMENT_SHADER_PATH,TRESHOLD_VERTEX_SHADER_PATH)!=0)shaderSupported=true;
+    shaderPrograms.push_back(tresholdShader);
+
     ShaderProgramWrapper *crossShader = new ShaderProgramWrapper(this);
     if(crossShader->initShader(CROSS_FRAGMENT_SHADER_PATH,CROSS_VERTEX_SHADER_PATH)!=0)shaderSupported=true;
     shaderPrograms.push_back(crossShader);
@@ -1655,6 +1659,7 @@ void OGLWidget::applyEffectsToCurrentBlock()
         case PIXELIZATION_SHADER:
         case TURNTHEPAGE_SHADER:
         case RANDSQUARES_SHADER:
+        case TRESHOLD_SHADER:
             ShaderEffect sEffect(shaderPrograms[shaderProgramIndex],shaderProgramIndex);
 
         int startTime = blockEffect->getPropetrie("start_time");
@@ -1716,6 +1721,9 @@ case TURNTHEPAGE_SHADER:
     break;
 case RANDSQUARES_SHADER:
     nameStart="squares";
+    break;
+case TRESHOLD_SHADER:
+    nameStart="treshold";
     break;
 default:
     nameStart="effect";
@@ -2506,7 +2514,9 @@ void OGLWidget::drawTextFromTexture( int x, int y,int z, const QString& text,GLu
     }
     // img = QGLWidget::convertToGLFormat(img);
    // qDebug() << "before drawQImageFromTexture";
+
     drawQImageFromTexture(x,y,img,index,z, true,scaleX,scaleY,false);
+
     //glRasterPos3i( x, y, z );
     //glDrawPixels( rect.width(), rect.height(), GL_RGBA, GL_UNSIGNED_BYTE, img.bits() );
 
@@ -2551,7 +2561,6 @@ void OGLWidget::drawQImageFromTexture(int x, int y, QImage img, GLuint index, in
         glTexSubImage2D(GL_TEXTURE_2D, 0, x, way - y, img.width(), img.height(), GL_RGBA, GL_UNSIGNED_BYTE, res.bits());
     else
         glTexSubImage2D(GL_TEXTURE_2D, 0, x, y, img.width(), img.height(), GL_RGBA, GL_UNSIGNED_BYTE, res.bits());
-
     drawTexture(0, 0, wax, way, index, 0, scaleX, scaleY, z,centreScaling);
     // glBindTexture(GL_TEXTURE_2D,0);
     glBindTexture(GL_TEXTURE_2D, 0);

@@ -18,5 +18,7 @@
         <file>openGL/shaders/turnthepage.vert</file>
         <file>openGL/shaders/randsquares.frag</file>
         <file>openGL/shaders/randsquares.vert</file>
+        <file>openGL/shaders/treshold.frag</file>
+        <file>openGL/shaders/treshold.vert</file>
     </qresource>
 </RCC>
