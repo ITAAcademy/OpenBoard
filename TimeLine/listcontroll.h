@@ -202,6 +202,8 @@ class ListControll : public QObject, public QQuickImageProvider
 
     bool isGroupChanged = false;
     QList <int> block_to_del;
+
+    bool force_append_block;
 public:
 
     Q_INVOKABLE QPoint getCurentBlock();
@@ -253,6 +255,8 @@ public:
     Q_INVOKABLE QString getBlockKey(int col, int i) ;
     Q_INVOKABLE void addNewBlock(int col, QString str = QString("block"+ QString::number(qrand())), DrawElement *element = NULL);
 
+     Q_INVOKABLE void setForceAppendBlock(bool value);
+
 
     Q_INVOKABLE   int getBlockTypeId(int col,int ind);
     Q_INVOKABLE   int getBlockTypeIdInt(int col,int ind);
@@ -270,7 +274,7 @@ public:
     Q_INVOKABLE void setBlockStartTime(int col, int i, int value);
     Q_INVOKABLE int getBlockStartTime(int col, int i);
     //Q_INVOKABLE bool setBlockDrawElemet(DrawElement *elm, int col, int i);
-    Q_INVOKABLE   bool removeBlock(int col, int i, bool copy_in__buffer = true, bool del_last_empty = true );
+    Q_INVOKABLE   bool removeBlock(int col, int i, bool copy_in__buffer = true, bool del_last_empty = true,  bool del_draw_el = true );
     Q_INVOKABLE int getBlockTime(int col, int i) ;
     Q_INVOKABLE DrawElement *  getBlock(int col, int i) ;
     Q_INVOKABLE DrawElement *  getBlock(QPoint point) ;

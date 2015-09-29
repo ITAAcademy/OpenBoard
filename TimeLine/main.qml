@@ -85,6 +85,12 @@ Rectangle
    property bool block_zayshow_sprava : false
    property Item p_toolbar
    property bool dovodka_block : false
+   property bool force_append_block : false
+   onForce_append_blockChanged:
+   {
+       timeControll.setForceAppendBlock(force_append_block);
+
+   }
     property bool able_create_empty_block : true
    onBlock_zayshow_spravaChanged: {
       // anim_

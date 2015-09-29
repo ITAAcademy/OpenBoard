@@ -6,7 +6,7 @@ import QtQuick.Controls.Styles 1.2
 Rectangle {
     id: root
     color: "gray"
-   // onHeightChanged: // //console.log("HEIGHT  toolbar = " + height)
+    // onHeightChanged: // //console.log("HEIGHT  toolbar = " + height)
     property Repeater globalRep
     property Buutton p_button_RemoveTrack
     property Buutton p_button_AddTrack
@@ -15,10 +15,11 @@ Rectangle {
     property Buutton p_button_pause
     property Buutton p_button_stop
     property CheckBox p_chb_dovodka
+    property CheckBox p_forcibly_append_block
     Column{
         width: parent.width
         height: parent.height
-     /*   Buutton{
+        /*   Buutton{
             id: butAdd
             title_text: ""
             height: parent.width
@@ -40,49 +41,46 @@ Rectangle {
             property string p_chb_image_source
             onCheckedChanged: {
                 main222.dovodka_block = chb_dovodka.checked
-              /*  if (chb_dovodka.cheked)
-                    chb_dovodka.p_chb_image_source = "qrc:/iphone_toolbar_icons/ttHousehold-Tape-Measure-2-icon (2).png"
-                else
-                    chb_dovodka.p_chb_image_source = "qrc:/iphone_toolbar_icons/ttHousehold-Tape-Measure-2-icon (1).png"
-          */  }
+            }
 
             style: CheckBoxStyle {
-                      indicator: Rectangle {
-                              implicitWidth: chb_dovodka.width
-                              implicitHeight: chb_dovodka.height
-                              radius: 3
-                              border.color: chb_dovodka.activeFocus ? "yellow" : "black"
-                              border.width: 1
-                              Image {
-                                  id: chb_image_off
-                                  visible: !control.checked
-                                  source: "qrc:/iphone_toolbar_icons/ttHousehold-Tape-Measure-2-icon (1).png"
-                                  anchors.margins: 4
-                                  anchors.fill: parent
-                              }
-                              Image {
-                                  id: chb_image
-                                  visible: control.checked
-                                  source: "qrc:/iphone_toolbar_icons/ttHousehold-Tape-Measure-2-icon (2).png"
-                                  anchors.margins: 4
-                                  anchors.fill: parent
-                              }
-                      }
-                  }
+                indicator: Rectangle {
+                    implicitWidth: chb_dovodka.width
+                    implicitHeight: chb_dovodka.height
+                    radius: 3
+                    border.color: chb_dovodka.activeFocus ? "yellow" : "black"
+                    border.width: 1
+                    Image {
+                        id: chb_image_off
+                        visible: !control.checked
+                        source: "qrc:/iphone_toolbar_icons/ttHousehold-Tape-Measure-2-icon (1).png"
+                        anchors.margins: 4
+                        anchors.fill: parent
+                    }
+                    Image {
+                        id: chb_image
+                        visible: control.checked
+                        source: "qrc:/iphone_toolbar_icons/ttHousehold-Tape-Measure-2-icon (2).png"
+                        anchors.margins: 4
+                        anchors.fill: parent
+                    }
+                }
+            }
 
             Component.onCompleted: {
                 root.p_chb_dovodka = chb_dovodka
             }
         }
+
         Buutton{
             id: butRemoveTrack
             title_text: ""
             height: parent.width
             width: parent.width
-          icon_source : "qrc:/iphone_toolbar_icons/delete.png"
-          Component.onCompleted: {
-              root.p_button_RemoveTrack = butRemoveTrack
-          }
+            icon_source : "qrc:/iphone_toolbar_icons/delete.png"
+            Component.onCompleted: {
+                root.p_button_RemoveTrack = butRemoveTrack
+            }
             onClicked: {
                 main222.needToLightSelected = false
                 main222.removeTrack();
@@ -94,22 +92,61 @@ Rectangle {
             title_text: ""
             height: parent.width
             width: parent.width
-          icon_source : "qrc:/iphone_toolbar_icons/eject.png"
-          rotation: 180
-          Component.onCompleted: {
-              root.p_button_AddTrack = butAddTrack
-          }
+            icon_source : "qrc:/iphone_toolbar_icons/eject.png"
+            rotation: 180
+            Component.onCompleted: {
+                root.p_button_AddTrack = butAddTrack
+            }
             onClicked: {
 
                 //for (var i = 0; i< 15; i++)
                 {
                     main222.needToLightSelected = false;
                     main222.addTrack() ;
-                 //  //console.log("AAAAAAAAAAAAding track : "  + timeControll.getTracksNumber())
+                    //  //console.log("AAAAAAAAAAAAding track : "  + timeControll.getTracksNumber())
                 }
             }
         }
-        Buutton{
+       CheckBox {
+            id: forcibly_append_block
+            enabled: true
+            height: parent.width
+            width: parent.width
+            checked: false
+            onCheckedChanged: {
+                main222.force_append_block = forcibly_append_block.checked
+
+            }
+                style: CheckBoxStyle {
+                    indicator: Rectangle {
+                        implicitWidth: forcibly_append_block.width
+                        implicitHeight: forcibly_append_block.height
+                        radius: 3
+                        border.color: forcibly_append_block.activeFocus ? "yellow" : "black"
+                        border.width: 1
+                        Image {
+                            id: app_image_off
+                            visible: !control.checked
+                            source: "qrc:/iphone_toolbar_icons/Shopping_cart_insert_Icon_723.png"
+                            anchors.margins: 4
+                            anchors.fill: parent
+                        }
+                        Image {
+                            id: app_image
+                            visible: control.checked
+                            source: "qrc:/iphone_toolbar_icons/Shopping_cart_insert_Icon_72.png"
+                            anchors.margins: 4
+                            anchors.fill: parent
+                        }
+                    }
+                }
+
+                Component.onCompleted: {
+                    root.p_forcibly_append_block = forcibly_append_block
+                }
+            }
+
+        /* Buutton{
             id: butPlay
             title_text: ""
             height: parent.width
@@ -149,9 +186,9 @@ Rectangle {
             Component.onCompleted: {
                 root.p_button_stop = butStop
             }
-        }
+        }*/
 
-       /* Buutton{
+        /* Buutton{
             id: butRecDrsaw
             enabled: true
             title_text: ""
