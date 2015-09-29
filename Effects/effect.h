@@ -5,7 +5,6 @@
 #include <qpoint.h>
 class Effect
 {
-    enum effect_types{EFFECT_ALPHA,EFFECT_SPIN,EFFECT_OTHER};
     QString name;
     //long int startTime=0;
     //long int endTime=0;

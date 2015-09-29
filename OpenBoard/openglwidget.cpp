@@ -599,6 +599,10 @@ void OGLWidget::initShaderPrograms()
     if(tresholdShader->initShader(TRESHOLD_FRAGMENT_SHADER_PATH,TRESHOLD_VERTEX_SHADER_PATH)!=0)shaderSupported=true;
     shaderPrograms.push_back(tresholdShader);
 
+    ShaderProgramWrapper *slideShader = new ShaderProgramWrapper(this);
+    if(slideShader->initShader(SLIDE_FRAGMENT_SHADER_PATH,SLIDE_VERTEX_SHADER_PATH)!=0)shaderSupported=true;
+    shaderPrograms.push_back(slideShader);
+
     ShaderProgramWrapper *crossShader = new ShaderProgramWrapper(this);
     if(crossShader->initShader(CROSS_FRAGMENT_SHADER_PATH,CROSS_VERTEX_SHADER_PATH)!=0)shaderSupported=true;
     shaderPrograms.push_back(crossShader);
@@ -1660,6 +1664,7 @@ void OGLWidget::applyEffectsToCurrentBlock()
         case TURNTHEPAGE_SHADER:
         case RANDSQUARES_SHADER:
         case TRESHOLD_SHADER:
+        case SLIDE_SHADER:
             ShaderEffect sEffect(shaderPrograms[shaderProgramIndex],shaderProgramIndex);
 
         int startTime = blockEffect->getPropetrie("start_time");
@@ -1724,6 +1729,9 @@ case RANDSQUARES_SHADER:
     break;
 case TRESHOLD_SHADER:
     nameStart="treshold";
+    break;
+case SLIDE_SHADER:
+    nameStart="slide";
     break;
 default:
     nameStart="effect";
