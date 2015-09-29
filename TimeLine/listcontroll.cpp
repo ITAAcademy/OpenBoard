@@ -21,7 +21,6 @@ void ListControll::setSelectedBlockPoint(const QPoint &value)
 {
 
     // qDebug() << "AAAAAAAAAAAAAAAAAAAAAAA  ListControll::setSelectedBlockPoint  " <<(int)  getBlock(value)->getTypeId();
-    emit updateSelectedBlock(value);
     //if (false)
     if (ctrl_pressed)
         if ( value.x() != -1) //glWindInited &&
@@ -102,6 +101,7 @@ void ListControll::setSelectedBlockPoint(const QPoint &value)
         }
 
         selectedBlockPoint = value;
+        emit updateSelectedBlock(value);
 
     }
 
@@ -1326,7 +1326,9 @@ ListControll::ListControll(/*OGLWidget *drawWidget ,*/QObject *parent) : QObject
         view.setFormat(f);\
     }\
     //  view.connect(view.engine(), SIGNAL(quit()), &app, SLOT(quit()));
+
     new QQmlFileSelector(view.engine(), &view);\
+    view.setModality(Qt::WindowModal);
     view.engine()->rootContext()->setContextProperty("timeControll", this);
     view.engine()->rootContext()->setContextProperty("viewerWidget", &view);
     cloneImg = new ImageClone(this);
@@ -1339,6 +1341,7 @@ ListControll::ListControll(/*OGLWidget *drawWidget ,*/QObject *parent) : QObject
     view.setMinimumWidth(500);
     view.setHeight(view.minimumHeight());
     view.setWidth(800);
+
     view.setFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint | Qt::WindowTitleHint);
 
     connect(&f_manager, SIGNAL(filePathNameChanged(QString)),this,SLOT(loadFromFile(QString)));
@@ -1388,6 +1391,7 @@ void ListControll::resizeWindowWidth(bool left)
         int tt = posMouse.x() - view.x();
         if (tt < view.minimumWidth())
             tt = view.minimumWidth();
+
         view.setWidth(tt)  ;
     }
     else
@@ -1610,7 +1614,6 @@ void ListControll::setFocus()
         view.setWindowState(Qt::WindowNoState);
         view.setVisible(true);
     }
-
 }
 
 void ListControll::setViewPosition(QPoint pos)

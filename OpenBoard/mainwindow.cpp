@@ -429,6 +429,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->check_use_speed_value,SIGNAL(released()),this,SLOT(updateBlockFromTextEdit()));
     connect(ui->check_is_static,SIGNAL(released()),this,SLOT(updateBlockFromTextEdit()));
 
+
     //load new style
     QFile file(":/style.txt");
     file.open(QFile::ReadOnly);
@@ -655,51 +656,45 @@ void MainWindow::updateEditWidgets( bool forceEnabled )
 
 bool MainWindow::event(QEvent * e) // overloading event(QEvent*) method of QMainWindow
 {
-    //  qDebug() << "GL_EVENT   " << e->type();
     switch(e->type())
     {
-    // ...
-    case QEvent::Leave:
-    {
-        isActive = false;
-        break;
-    }
-    case QEvent::WindowActivate : {
-        if(!isActive && !mpOGLWidget->isActiveWindow() && !mpOGLWidget->getTimeLine()->isActiveWindow())
-        {
-            if(mpOGLWidget->isVisible() && mpOGLWidget->isNeedShowTimeLine()) // get focus for windows
-            {
-                mpOGLWidget->getTimeLine()->setFocus();
-                //childIsActive = true;
-            }
-            isActive = true;
-            qApp->processEvents();
-            activateWindow();
-            isActive = true;
-        }
+        // ...
+
+        case QEvent::WindowActivate : {
+        if(!isActive)
+          {
+              if(mpOGLWidget->isVisible()) // get focus for windows
+              {
+                  mpOGLWidget->getTimeLine()->setFocus();
+                  //childIsActive = true;
+              }
+              isActive = true;
+             qApp->processEvents();
+             activateWindow();
+              isActive = true;
+          }
         mpOGLWidget->getTimeLine()->emitFocusLostSignal();
         mpOGLWidget->hideBrushManager();
         mpOGLWidget->hideEffectsManager();
-
-        /* QPoint current_pos = mpOGLWidget->pos();
+         /* QPoint current_pos = mpOGLWidget->pos();
           current_pos.setY(current_pos.y() + mpOGLWidget->height());
           mpOGLWidget->getTimeLine()->setViewPosition(current_pos);*/
-        updateBlockFromTextEdit();
-        //qDebug() << "SET_ACTIVE_MAIN_WINDOW";
-        break ;
-    }
+          updateBlockFromTextEdit();
+          //qDebug() << "SET_ACTIVE_MAIN_WINDOW";
+          break ;
+      }
 
-    case QEvent::WindowDeactivate :
-        // lost focus
-        bool activeOther = false;
-        if(mpOGLWidget->isActiveWindow())
-            activeOther = true;
-        if(mpOGLWidget->getTimeLine()->isActiveWindow())
-            activeOther = true;
-        if(!activeOther)
-            isActive = false;
-        //qDebug() << "LOSE_ACTIVE_MAIN_WINDOW";
-        break ;
+      case QEvent::WindowDeactivate :
+          // lost focus
+          bool activeOther = false;
+          if(mpOGLWidget->isActiveWindow())
+              activeOther = true;
+          if(mpOGLWidget->getTimeLine()->isActiveWindow())
+              activeOther = true;
+          if(!activeOther)
+              isActive = false;
+          //qDebug() << "LOSE_ACTIVE_MAIN_WINDOW";
+          break ;
 
     } ;
 
@@ -707,14 +702,14 @@ bool MainWindow::event(QEvent * e) // overloading event(QEvent*) method of QMain
         if (isMinimized()) {
             mpOGLWidget->getTimeLine()->hide();
             mpOGLWidget->hide();
-            isActive = false;
-            e->ignore();
+          isActive = false;
+          e->ignore();
         } else {
-            e->accept();
-            mpOGLWidget->show();
-            mpOGLWidget->getTimeLine()->show();
+          e->accept();
+          mpOGLWidget->show();
+          mpOGLWidget->getTimeLine()->show();
         }
-    }
+      }
     return QMainWindow::event(e) ;
 }
 
@@ -1810,7 +1805,7 @@ void MainWindow::onTextChanged()
         }
     //updateBlockFromTextEdit();
 
-        onTextChangeUpdateTimer.start();
+    onTextChangeUpdateTimer.start();
     textEdit->saveChanges();
     connect(textEdit, SIGNAL(textChanged()), this, SLOT(onTextChanged()));
     /*
@@ -1850,6 +1845,7 @@ void MainWindow::updateTextEditFromBlock(QPoint point)
             ui->check_use_speed_value->setChecked(text_elm->getBNeedCalcTime());
             connect(textEdit, SIGNAL(textChanged()), this, SLOT(onTextChanged()));
             ui->check_is_static->setChecked(text_elm->isStaticText());
+            ui->staticMomentSpin->setValue(text_elm->getStaticMoment());
             return;
         }
     }
@@ -1890,6 +1886,48 @@ void MainWindow::updateBlockFromTextEdit()
             }
 
             text_elm->setStaticText(ui->check_is_static->isChecked());
+        }
+    }
+}
+
+void MainWindow::setCurentTextBlockStaticMoment(double value)
+{
+    qInfo() << "setCurentTextBlockStaticMoment <<S>> " << value;
+    QPoint point = mpOGLWidget->getTimeLine()->getSelectedBlockPoint();
+    //qDebug() << "IMAGE" << commandTextEdit->getPreviousCursorPosition();
+    if(point.x() != -1 )
+    {
+        DrawElement* elm = mpOGLWidget->getTimeLine()->getBlock(point);
+        if(elm->getTypeId() == Element_type::Text)
+        {
+
+            DrawTextElm *text_elm = (DrawTextElm *)elm;
+
+            if(value > 0)
+            {
+                text_elm->setStaticMoment(value);
+                return;
+            }
+            else
+            {
+                int currentValue = mpOGLWidget->getTimeLine()->getScalePointerPos();
+                qDebug()<< "currentValue" << currentValue;
+
+                if(currentValue < text_elm->getStartDrawTime())
+                {
+                    ui->staticMomentSpin->setValue(0);
+                    return;
+                }
+
+                if(currentValue > text_elm->getStartDrawTime() + text_elm->getLifeTime())
+                {
+                    ui->staticMomentSpin->setValue(1);
+                    return;
+                }
+
+                ui->staticMomentSpin->setValue((double)(currentValue - text_elm->getStartDrawTime())/text_elm->getLifeTime());
+            }
+
         }
     }
 }
@@ -2201,6 +2239,9 @@ void MainWindow::setEnabledToolBar(bool status)
     ui->spinBox_delayTB->setEnabled(status);
     ui->check_use_speed_value->setEnabled(status);
     ui->check_is_static->setEnabled(status);
+    ui->staticMomentButton->setEnabled(status);
+    ui->staticMomentSpin_2->setEnabled(status);
+    ui->staticMomentSpin->setEnabled(status);
 
     on_block_text_buttons_toolbar(status);
 
@@ -2352,4 +2393,25 @@ void MainWindow::setEnabledBoardFontColor(bool set_enabled)
     a_color_canvas->setEnabled(set_enabled);
     this->ui->action_Board_Color->setEnabled(set_enabled);
     this->ui->action_Board_Font->setEnabled(set_enabled);
+}
+
+void MainWindow::on_spinBox_speedTB_valueChanged(int arg1)
+{
+
+}
+
+void MainWindow::on_staticMomentSpin_valueChanged(double arg1)
+{
+    ui->staticMomentSpin_2->setValue(arg1*100);
+    setCurentTextBlockStaticMoment(arg1);
+}
+
+void MainWindow::on_staticMomentSpin_2_valueChanged(int value)
+{
+    ui->staticMomentSpin->setValue((double)value/100);
+}
+
+void MainWindow::on_staticMomentButton_clicked()
+{
+    setCurentTextBlockStaticMoment(-1);
 }

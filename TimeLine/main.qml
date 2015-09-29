@@ -72,7 +72,7 @@ Rectangle
         frama.p_main222 = main222
     }
     width: childrenRect.width ///main222.width + 20
-   height: childrenRect.height //main222.height + 20
+   //height: childrenRect.height //main222.height + 20
     property int clicked_blockId : -1
     property int clicked_blockX : -1
     property int clicked_blockY : -1

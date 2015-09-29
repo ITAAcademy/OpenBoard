@@ -328,7 +328,7 @@ void DrawTextElm::draw()
             animationDelayStart = 1;
             curentPauseValue = 0;
         }
-        int realKeyValue = qRound((double)(current_time - (curentPauseValue + startDrawTime)) / (double)((lifeTime - globalPauseLifeTime)/(mUnitList.size() - 1)));
+        int realKeyValue = qRound((double)(current_time - (curentPauseValue + startDrawTime)) / (double)((lifeTime*staticMoment - globalPauseLifeTime)/(mUnitList.size() - 1)));
         //qDebug() << mUnitList.size() << "            qwe         "<< realKeyValue;
         // //qDebug() << "cur " << current_time;
         ////qDebug() << "start " << startDrawTime;
@@ -463,6 +463,10 @@ bool DrawTextElm::load_add(QDataStream &stream, float version)
     {
         stream >> staticText;
     }
+    if(version > 2.9)
+    {
+        stream >> staticMoment;
+    }
     /*int sizeOfString = 0;
     stream >> sizeOfString;
     QByteArray data;
@@ -479,7 +483,7 @@ bool DrawTextElm::save_add(QDataStream &stream)
     /*   stream << unParsestring.length();
     // //qDebug() << "IN " << unParsestring.length();
     stream.writeRawData(unParsestring.toLatin1().data(), unParsestring.length());*/
-    stream << unParsestring << loggerText << textCursor << prevTextCursor << mainTextFont << mainFillColor << bCalcTime << staticText;
+    stream << unParsestring << loggerText << textCursor << prevTextCursor << mainTextFont << mainFillColor << bCalcTime << staticText << staticMoment;
 }
 
 void DrawTextElm::clearCanvas(int m_x, int m_y)
@@ -818,6 +822,16 @@ bool DrawTextElm::isStaticText() const
 void DrawTextElm::setStaticText(bool value)
 {
     staticText = value;
+}
+
+double DrawTextElm::getStaticMoment() const
+{
+    return staticMoment;
+}
+
+void DrawTextElm::setStaticMoment(double value)
+{
+    staticMoment = value;
 }
 QFont DrawTextElm::getTextFont() const
 {
