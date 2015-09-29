@@ -66,6 +66,7 @@ using namespace QtAV;
 #define TURNTHEPAGE_VERTEX_SHADER_PATH ":/dynamic/openGL/shaders/turnthepage.vert"
 #define RANDOMSQUARES_FRAGMENT_SHADER_PATH ":/dynamic/openGL/shaders/randsquares.frag"
 #define RANDOMSQUARES_VERTEX_SHADER_PATH ":/dynamic/openGL/shaders/randsquares.vert"
+
 struct ColorMarker{
     int startIndex;
     QColor value;

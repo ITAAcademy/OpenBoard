@@ -5,7 +5,7 @@ import QtQuick.Controls.Styles 1.2
 
 Rectangle {
     id: root
-    color: "gray"
+    color: "#222"
    // onHeightChanged: // //console.log("HEIGHT  toolbar = " + height)
     property Repeater globalRep
     property Buutton p_button_RemoveTrack

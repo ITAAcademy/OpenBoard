@@ -54,10 +54,10 @@ Rectangle
         id: cool_main
         y: -scroll.flickableItem.contentY
         z: 1000
-        height: scroll.height + scroll.flickableItem.contentY
+        height: scroll.height + scroll.flickableItem.contentY + scroll.borderSize*2
         clip: true
         width: childrenRect.width
-        color: "black"
+        color: "#222"
     }
 
     id:main222
@@ -580,13 +580,13 @@ visible : false
             if (x<zdvig)
             {
                  // //console.log("10004")
-                scroll.flickableItem.contentX -= zdvig -x
+                scroll.flickableItem.contentX -= zdvig -scale_pointer.x
                 if (scroll.flickableItem.contentX < 0)
                 {
                     scroll.flickableItem.contentX = 0;
                      // //console.log("10005")
                 }
-               x = zdvig
+               scale_pointer.x = zdvig
                   ////console.log("10006")
             }
             else
@@ -696,9 +696,12 @@ timeControll.setScalePointerPos((x  -20 + scroll.flickableItem.contentX)* main22
          ScrollView  {
               id: scroll
               width: parent.width - tollbar.width
-              height: parent.height
+              height: parent.height + 1
+
               property int horizontalX: flickableItem.contentX
               property int verticalY: flickableItem.contentY
+
+              property int borderSize: 10
              //property int baba: scroll.flickableItem.contentWidth
               onHorizontalXChanged:  {
                time_scale.x = -flickableItem.contentX + 30
@@ -708,6 +711,43 @@ timeControll.setScalePointerPos((x  -20 + scroll.flickableItem.contentX)* main22
                   //context_menu.visible = false //123rr
 
               }
+              style: ScrollViewStyle{
+                    scrollBarBackground : Rectangle{
+                        implicitHeight: scroll.borderSize
+                        implicitWidth: scroll.borderSize
+                        x:1
+                        color: "#222"
+                    }
+                    decrementControl :
+                        Rectangle{
+                                height: 0
+                                width: 20
+                                color: "transparent"
+                        }
+                    incrementControl  :
+                        Rectangle{
+                                implicitHeight: 0
+                                implicitWidth: 0
+                                color: "transparent"
+                        }
+                    corner  :
+                        Rectangle{
+                                implicitHeight: scroll.borderSize
+                                implicitWidth: scroll.borderSize
+                                x:1
+                                color: "#222"
+                        }
+                    handle:
+                        Rectangle{
+                                color: "#555"
+                                y: scroll.borderSize/2
+                                x: scroll.borderSize/2
+                                implicitHeight: scroll.borderSize/2
+                                radius: 10
+                                implicitWidth: implicitHeight
+                        }
+              }
+
               Rectangle {
                   id: draw_wnd
                   visible: false
