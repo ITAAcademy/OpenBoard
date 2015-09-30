@@ -102,6 +102,7 @@ Item{
                     GradientStop { position: 1.0; color: "red" }
                 }
 
+
                 /*RectangularGlow {
                     id: effect2
                     anchors.fill: handle1
@@ -118,7 +119,7 @@ Item{
                     onPositionChanged: {
 
                         root.value1 = (root.maximum - root.minimum) * (handle1.x-2) / root.xMax + root.minimum;
-                        if (value1>value2)value1=value2;//BUG HERE. RESET VALUE IN 0 WHEN LOADING
+                        if (value1>value2)value1=value2;
                         mouse_drag_left_signal();
 
                     }
@@ -181,7 +182,7 @@ Item{
                     }
                     property bool enter2: false
                     onExited: {
-                        if(pressed == false)
+                        if(pressed === false)
                             from.start();
                     }
                     onEntered:{
@@ -255,8 +256,8 @@ Item{
 
         root.xMax = size.width - handle1.width - 4;
         root.xMax2 = size.width - handle2.width - 4;
-        handle1.x = 0;
-        handle2.x =0;
+        handle1.x = 2;
+        handle2.x =2;
 
     }
 }
