@@ -767,7 +767,6 @@
    <zorder>line</zorder>
    <zorder>widget_speedTB</zorder>
    <zorder></zorder>
-   <zorder>layoutWidget</zorder>
    <zorder>widget_Find</zorder>
    <zorder>widget</zorder>
   </widget>
@@ -1331,8 +1330,8 @@
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources>
-  <include location="../TimeLine/icons_timeLine.qrc"/>
   <include location="icons.qrc"/>
+  <include location="../TimeLine/icons_timeLine.qrc"/>
  </resources>
  <connections>
   <connection>

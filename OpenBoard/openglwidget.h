@@ -309,6 +309,7 @@ public:
     void setSelElm(DrawElement *value);
 
 public slots:
+    QSize imageLoadedPictureSizeSlot(QSize);
     void loadEffectFromCurrentBlockToEffectManager();
     void hideEffectsManager();
     void hideBrushManager();
@@ -373,7 +374,7 @@ signals:
 
 
 private slots:
-    void imageLoadedPictureSizeSlot(QSize);
+
     bool crossTextV2();
 
     void storeMousePos();

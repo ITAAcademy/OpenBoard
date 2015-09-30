@@ -14,6 +14,10 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->backBtn->setVisible(false);
+
+    ui->statusBar->addWidget(&status);
+    status.setVisible(false);
+
     //drawThread.start();
 
     ui->delayBtn->setToolTip("Pause");
@@ -23,7 +27,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->crossBtn->setToolTip("Cross out");
     ui->colorBtn->setToolTip("Color");
     ui->clearBtn->setToolTip("Clean");
-
 
     //QStandardPaths path;
     directory = QStandardPaths::locate(QStandardPaths::DocumentsLocation, QString(),
@@ -417,7 +420,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(mpOGLWidget,SIGNAL(stopShowLastDrawingSignal()),this,SLOT(onStopShowLastDrawing()));
 
 
-    connect(mpOGLWidget->getTimeLine(),SIGNAL(updateSelectedBlock(QPoint)),this,SLOT(enablingBoardFontColor(QPoint)));
+    //connect(mpOGLWidget->getTimeLine(),SIGNAL(updateSelectedBlock(QPoint)),this,SLOT(enablingBoardFontColor(QPoint)));
     connect(mpOGLWidget->getTimeLine(), SIGNAL(showEffectsSignal()), mpOGLWidget, SLOT(showEffectsManager()));
     connect(mpOGLWidget->getTimeLine(), SIGNAL(hideEffectsSignal()), mpOGLWidget, SLOT(hideEffectsManager()));
 
@@ -742,6 +745,7 @@ void MainWindow::on_action_Show_triggered()
     // showBoardSettings();
 
     setEnabledToolBar(true);
+    setEnabledBoardFontColor(true);
 
     a_show->setEnabled(false);
     ui->action_Show->setEnabled(false);
@@ -882,24 +886,29 @@ void MainWindow::on_action_Board_Font_triggered()
     QFont font;
 
 
-
     QPoint selected_block_point = mpOGLWidget->getTimeLine()->getSelectedBlockPoint();
-    if (selected_block_point.x() < 0)
-        return;
-    DrawTextElm* draw_element =(DrawTextElm*) mpOGLWidget->getTimeLine()->getBlock(selected_block_point);
-    if (draw_element != NULL)
-        if (draw_element->getTypeId() != Element_type::Text)
-            return;
+    if (selected_block_point.x() >= 0)
+    {
+        DrawTextElm* draw_element =(DrawTextElm*) mpOGLWidget->getTimeLine()->getBlock(selected_block_point);
+        if (draw_element != NULL)
+            if (draw_element->getTypeId() == Element_type::Text)
+            {
+                font = QFontDialog::getFont(&ok, draw_element->getTextFont(), this);
+                if (!ok)
+                    return;
 
-    font = QFontDialog::getFont(&ok, draw_element->getTextFont(), this);
+                qDebug() <<"MainWindow::on_action_Board_Font_triggered() font underline  = " <<  font.underline() ;
+                //qDebug() <<"MainWindow::on_action_Board_Font_triggered() italic" << font.italic() ;
+                draw_element->setTextFont(font);
+                return;
 
-    if (!ok)
-        return;
-
-    qDebug() <<"MainWindow::on_action_Board_Font_triggered() font underline  = " <<  font.underline() ;
-    //qDebug() <<"MainWindow::on_action_Board_Font_triggered() italic" << font.italic() ;
-    draw_element->setTextFont(font);
+            }
+    }
+    font = QFontDialog::getFont(&ok, mSettings.getBoardFont(), this);
     mSettings.setBoardFont(font);
+
+
+
 
 
 
@@ -956,25 +965,25 @@ void MainWindow::on_action_Board_Color_triggered()
     QColor colorm;
 
     QPoint selected_block_point = mpOGLWidget->getTimeLine()->getSelectedBlockPoint();
-    if (selected_block_point.x() < 0)
-        return;
-    DrawTextElm* draw_element =(DrawTextElm*) mpOGLWidget->getTimeLine()->getBlock(selected_block_point);
-    if (draw_element != NULL)
-        if (draw_element->getTypeId() != Element_type::Text)
-            return;
-
-    colorm = QColorDialog::getColor(draw_element->getMainFillColor(), this);
-
-    // QString col = colorm.name();
-    if(colorm.isValid())
+    if (selected_block_point.x() >= 0)
     {
-        // mpOGLWidget->setMainFillColor(colorm);
-        draw_element->setMainFillColor(colorm);
-        mSettings.setBoardFontColor(colorm);
+        DrawTextElm* draw_element =(DrawTextElm*) mpOGLWidget->getTimeLine()->getBlock(selected_block_point);
+        if (draw_element != NULL)
+            if (draw_element->getTypeId() == Element_type::Text)
+            {
+                colorm = QColorDialog::getColor(draw_element->getMainFillColor(), this);
+                if(!colorm.isValid())
+                    return;
+                draw_element->setMainFillColor(colorm);
+                return;
+            }
     }
 
-
-
+    colorm = QColorDialog::getColor(mSettings.getBoardFontColor(), this);
+    if(!colorm.isValid())
+        return;
+    mSettings.setBoardFontColor(colorm);
+    return;
 }
 void MainWindow::on_action_ZoomIn_triggered()
 {
@@ -1287,15 +1296,19 @@ bool MainWindow::on_action_Save_Project_triggered()
     QFile file(curProjectFile);
     if(file.open(QIODevice::WriteOnly))
     {
-        ui->statusBar->showMessage("project saving...");
+       // ui->statusBar->showMessage("project saving...");
+        status.setVisible(true);
+        status.setMaximum(mpOGLWidget->getTimeLine()->getMemberCount());
+        status.setValue(0);
 
-        mpOGLWidget->getTimeLine()->save(&file);
+        mpOGLWidget->getTimeLine()->save(&file, &status);
         QDataStream stream(&file);
         int state =   static_cast<int>(curentState.state);
         stream << curentState.advance_mode << state ;
         file.close();
         ui->statusBar->showMessage("project saved");
         mpOGLWidget->getTimeLine()->setIsProjectChanged(false);
+        status.setVisible(false);
         return true;
     }
     else
@@ -1401,7 +1414,8 @@ void MainWindow::on_action_New_Project_triggered()
 
     //qDebug() << "NEW_PROJECT";
     qDebug() << "on_action_New_Project_triggered";
-    trySaveProject();
+    if(!trySaveProject())
+       return;
     qDebug() << "trySaveProject";
     curProjectFile.clear();
     qDebug() << "curProjectFile.clear()";
@@ -1410,6 +1424,17 @@ void MainWindow::on_action_New_Project_triggered()
     qDebug() << "resetProjectToDefault";
     mpOGLWidget->getTimeLine()->setIsProjectChanged(false);
     mpOGLWidget->getTimeLine()->setBlocked(true);
+
+    disconnect(ui->actionRecord_to_file,SIGNAL(triggered()),this,  SLOT(on_action_Record_to_file_triggered()));
+    disconnect(a_record_to_file,SIGNAL(triggered()),this,  SLOT(on_action_Record_to_file_triggered()));
+
+
+    ui->actionRecord_to_file->setChecked(false);
+    a_record_to_file->setChecked( false);
+    isRecordToFile = false;//@BAG@ WAT
+
+    connect(ui->actionRecord_to_file,SIGNAL(triggered()),this,  SLOT(on_action_Record_to_file_triggered()));
+    connect(a_record_to_file,SIGNAL(triggered()),this,  SLOT(on_action_Record_to_file_triggered()));
 
     setEnabledToolBar(true);
     // //qDebug() << "AAAAAAAAAAAAAAAAAAAA3";
@@ -1427,8 +1452,7 @@ void MainWindow::on_action_New_Project_triggered()
         this->setCurentState(ProjectCreator::getProjectSetting(false, false));
     else
         this->setCurentState(ProjectCreator::getProjectSetting(true, false));
-    qDebug() << "111111111 curentState.state " <<(int) curentState.state;
-    ////qDebug() << "AAAAAAAAAAAAAAAAAAAA6";
+
 
     {
         setEnabledToolBar(false);
@@ -1877,6 +1901,12 @@ void MainWindow::updateBlockFromTextEdit()
             int change_time = text_elm->getDrawTime();
             if(change_time < 100)
                 change_time = 100;
+            if(text_elm->getTextFont().family() == "123")
+                text_elm->setTextFont(mSettings.getBoardFont());
+
+            if(text_elm->getMainFillColor().alpha() == 0)
+                text_elm->setMainFillColor(mSettings.getBoardFontColor());
+
             ui->expected_time->setText("EXPECTED TIME:  " + QString::number(change_time) + " ms");
             if(ui->check_use_speed_value->isChecked() && isActiveWindow() && !mpOGLWidget->getTimeLine()->getCurent_group())
             {
@@ -2326,8 +2356,8 @@ void MainWindow::on_block_text_buttons_toolbar(bool tt)
     this->ui->action_Select_all->setEnabled(tt);
     this->ui->action_Find->setEnabled(tt);
     this->ui->action_clearTB->setEnabled(tt);
-    this->ui->action_Font->setEnabled(tt);
-    this->ui->action_Color->setEnabled(tt);
+    /*this->ui->action_Font->setEnabled(tt);
+    this->ui->action_Color->setEnabled(tt);*/
 
 }
 

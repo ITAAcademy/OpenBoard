@@ -231,8 +231,8 @@ DrawTextElm::DrawTextElm(OGLWidget *drawWidget, QObject *parent) : DrawElement(d
     scroll = 0;
     //clearBuffer();
 
-    setTextFont(QFont("Arial Narrow",20,20)); //444
-    mainFillColor = QColor("white");
+    setTextFont(QFont("123")); //444
+    mainFillColor = QColor(0,0,0,0);
 
 }
 

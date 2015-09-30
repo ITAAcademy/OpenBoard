@@ -499,7 +499,7 @@ void ListControll::loadFromFile(QString path)
     if (elm->getTypeId() == Element_type::Image)
     {
         QSize image_size = QPixmap(open).size();
-        emit imageLoadedPictureSizeSignal(image_size);
+        elm->setSize(tracks[p.x()].block[p.y()]->getDrawWidget()->imageLoadedPictureSizeSlot(image_size));
     }
 
     DrawElement* temp = tracks[p.x()].block[p.y()];
@@ -765,7 +765,7 @@ void ListControll::cloneBlock(DrawElement *origin, DrawElement *clone)
     setBlocked(true);
     QBuffer buff;
     buff.open(QBuffer::ReadWrite);
-    origin->save(&buff);
+    origin->save(&buff, NULL);
     QPoint p = QPoint(clone->getBlockColumn(), clone->getBlockIndex());
     tracks[p.x()].addTime(origin->getLifeTime() - clone->getLifeTime());
 
@@ -1512,7 +1512,7 @@ void ListControll::show()
     }\
 }
 
-bool ListControll::save(QIODevice* device)
+bool ListControll::save(QIODevice* device, QProgressBar *bar)
 {
     QDataStream stream(device);
     stream << (float)VERSION;
@@ -1521,7 +1521,7 @@ bool ListControll::save(QIODevice* device)
 
     for (int i=0; i< tracks.size(); i++)
     {
-        tracks[i].save(device);
+        tracks[i].save(device, bar);
 
         for(DrawElement* elm : tracks[i].block)
         {
@@ -1536,8 +1536,8 @@ bool ListControll::save(QIODevice* device)
         stream << val->getMembersPosition();
     }
     // qDebug() << "Num of saved tracks: " << tracks.size();
-    mess_box.setText("Project saved");
-    mess_box.show();
+    /*mess_box.setText("Project saved");
+    mess_box.show();*/
     return true;
 }
 
@@ -1625,6 +1625,16 @@ void ListControll::setViewPosition(QPoint pos)
 QPoint ListControll::getViewPosition()
 {
     return view.position();
+}
+
+int ListControll::getMemberCount()
+{
+    int count = 0;
+    for(Track tr: tracks)
+    {
+        count += tr.block.size();
+    }
+    return count;
 }
 
 bool ListControll::isVisible()

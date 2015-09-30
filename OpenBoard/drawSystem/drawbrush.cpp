@@ -38,7 +38,7 @@ bool DrawBrushElm::load_add(QDataStream &stream, float version)
     stream >> brushCount;
     int imgBrushCount = 0;
     stream >>  imgBrushCount;
-    
+    QByteArray arr;
     for (int i = 0 ;i< imgBrushCount; i++) {
         int index = 0;
         stream >> index;
@@ -98,17 +98,7 @@ bool DrawBrushElm::load_add(QDataStream &stream, float version)
         tickTime = lifeTime/coords.size();
 }
 bool DrawBrushElm::setDrawWidget(OGLWidget *value){
-    if (DrawElement::setDrawWidget(value))
-    {
-        for (int i=0;i<brushes.length();i++)
-        {
-            if (pDrawWidget!=NULL && pDrawWidget->isShaderSupported())
-                brushes[i].brush.color_img = brushes[i].brush.img;
-            else
-                brushes[i].brush.color_img = BrushPainter::getInstance()->applyColor(brushes[i].brush);
-        }
-        
-    }
+
     if(value == pDrawWidget && value != NULL)
     {
         //  qDebug() << "VALUE  " << fboWrapper.errorStatus;
@@ -116,6 +106,19 @@ bool DrawBrushElm::setDrawWidget(OGLWidget *value){
             renderFbo = pDrawWidget->initFboWrapper(pDrawWidget->getWax(),pDrawWidget->getWay());//TODO
         return false;
         }
+    }
+
+    if (!DrawElement::setDrawWidget(value))
+    {
+       return false;
+    }
+
+    for (int i=0;i<brushes.length();i++)
+    {
+        if (pDrawWidget!=NULL && pDrawWidget->isShaderSupported())
+            brushes[i].brush.color_img = brushes[i].brush.img;
+        else
+            brushes[i].brush.color_img = BrushPainter::getInstance()->applyColor(brushes[i].brush);
     }
     return true;
     
@@ -195,9 +198,12 @@ void DrawBrushElm::clear()
     coords.clear();
     brushes.clear();
 }
-void DrawBrushElm::setLifeTime(int value)
+void DrawBrushElm::setLifeTime(int value, bool feedBack, bool visual)
 {
-    lifeTime = value;
+    DrawElement::setLifeTime(value, feedBack, visual);
+    if(feedBack)
+        return;
+
     if(coords.size() > 0)
         tickTime = lifeTime/coords.size();
 }
@@ -211,10 +217,7 @@ void DrawBrushElm::draw()
     
     if (current_time > 0)
     {
-        int realKeyValue = 0;
-        if (coords.size()>0)
-            //realKeyValue=qFloor((double)((current_time - startDrawTime) / ((double)(lifeTime/coords.size()))));
-            realKeyValue = qCeil((double)((current_time-startDrawTime)*coords.size()/lifeTime));
+        int realKeyValue = qCeil((double)((current_time-startDrawTime)*coords.size()/lifeTime));
         // qDebug() << "QQQQQQQQQQQQQQQQQQQQ" << keyCouter;
         if(keyCouter == 0)
         {
@@ -224,28 +227,27 @@ void DrawBrushElm::draw()
         }
         //qDebug() << "coords.size():"<<coords.size();
         
-        // qDebug() << "lifeTime:"<<lifeTime;
-        // qDebug() << "startDrawTime:"<<startDrawTime;
-        // qDebug() << "current_time:"<<current_time;
-        // qDebug() << "realKeyValue:"<<realKeyValue;
-        //qDebug() << "keyCouter:"<<keyCouter;
+         /*qDebug() << "lifeTime:"<<lifeTime;
+         qDebug() << "startDrawTime:"<<startDrawTime;
+         qDebug() << "current_time:"<<current_time;
+         qDebug() << "realKeyValue:"<<realKeyValue;
+        qDebug() << "keyCouter:"<<keyCouter;*/
         //qDebug() << "fbo wrapper:"<<fboWrapper.frameBuffer;
-        qDebug() << "pDrawWidget->paintBrushInBuffer" << coords.size();
-        while(keyCouter <realKeyValue && bPlay)
+        //qDebug() << "pDrawWidget->paintBrushInBuffer" << coords.size();
+        while(keyCouter < realKeyValue)
         {
-            
             if (keyCouter < coords.size() )
             {
                 GLint curentBuff;
                 glGetIntegerv(GL_FRAMEBUFFER_BINDING, &curentBuff);
 
                 pDrawWidget->paintBrushInBuffer(currentTexture,brush, renderFbo, coords,brushes, keyCouter);
-               // pDrawWidget->bindBuffer(fboWrapper.frameBuffer);
-                 pDrawWidget->bindBuffer(curentBuff);
-                 pDrawWidget->clearFrameBuffer(curentBuff);
-                 qDebug() << "CORRECT BUFFER:"<<curentBuff;
+                // pDrawWidget->bindBuffer(fboWrapper.frameBuffer);
+                pDrawWidget->bindBuffer(curentBuff);
+                pDrawWidget->clearFrameBuffer(curentBuff);
+                qDebug() << "CORRECT BUFFER:"<<curentBuff;
                 pDrawWidget->drawTexture(0,0,renderFbo.tWidth, renderFbo.tHeight,
-                                             renderFbo.bindedTexture, 0, 1, 1, z );
+                                         renderFbo.bindedTexture, 0, 1, 1, z );
 
             }
             keyCouter++;

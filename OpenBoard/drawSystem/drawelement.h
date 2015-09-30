@@ -47,7 +47,10 @@ protected:
     int blockColumn = -1;
     AnimStateTime anim_state_time;
     FBOWrapper fboWrapper;
+
     QImage icon;
+    QByteArray iconData;
+
     QString key;
     QVector<ShaderEffect> effects;
     int lifeTime = 0;
@@ -55,7 +58,7 @@ protected:
     int delay;
     int startDrawTime;
     int x, y, z, width, height;
-    int keyCouter;
+    int keyCouter = 0;
     bool aspectRatio = false;
     QTimer lifeTimer;
     QElapsedTimer tickTimer;
@@ -91,7 +94,7 @@ public:
     bool load(QIODevice* device, float version);
     bool loadTypeId(QIODevice* device);
     bool loadRest(QIODevice* device, float version);
- bool save(QIODevice* device);
+ bool save(QIODevice* device, QProgressBar *bar);
 
     QRect getRect();
 

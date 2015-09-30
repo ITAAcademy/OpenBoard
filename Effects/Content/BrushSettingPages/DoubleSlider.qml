@@ -130,7 +130,7 @@ Item{
                     onEntered:{
                         to.start();
                         size_value.focus = false;
-                        size_value1.text = (value1/1000).toFixed(2);
+                        size_value.text = (value1/1000).toFixed(2);
                     }
                     onReleased: {
                         from.start();
@@ -214,7 +214,7 @@ Item{
             TextEdit {
                 id: size_value2
                 //text: if(small) (root.value2/1000).toFixed(2);else Math.round(root.value2)
-                text: "0.0"
+                text: "0.00"
                 width: 30
                 color: "white"
                 font.pixelSize: 14
@@ -233,7 +233,7 @@ Item{
             }
             TextEdit {
                 id: size_value
-                text: "0.0"
+                text: "0.00"
                 width: 30
                 color: "white"
                 font.pixelSize: 14

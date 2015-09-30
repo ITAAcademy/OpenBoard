@@ -2590,7 +2590,7 @@ void OGLWidget::drawQImageFromTexture(int x, int y, QImage img, GLuint index, in
     glPopMatrix();
 }
 
-void OGLWidget::imageLoadedPictureSizeSlot(QSize value)
+QSize OGLWidget::imageLoadedPictureSizeSlot(QSize value)
 {
     int width =  this->getWax() ;
     int height = this->getWay();
@@ -2612,6 +2612,7 @@ void OGLWidget::imageLoadedPictureSizeSlot(QSize value)
         }
     }
     editingRectangle.rect.setSize(value);
+    return value;
 }
 
 bool OGLWidget::crossTextV2()
