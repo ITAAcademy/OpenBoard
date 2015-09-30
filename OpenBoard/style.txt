@@ -22,8 +22,8 @@ QWidget:item:hover
 
 QWidget:item:selected
 {
-    background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #005aff, stop: 1 #4a00ff);
-    color: #5ada25;
+    background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #606060, stop: 0.5 #dbdbdb, stop: 1 #606060);
+    color: #454545;
 }
 
 QMenuBar::item

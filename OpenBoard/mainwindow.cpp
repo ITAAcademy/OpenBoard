@@ -110,7 +110,7 @@ MainWindow::MainWindow(QWidget *parent) :
         mSettings.saveSettings();
     }
 
-    setWindowTitle(mSettings.getMainWindowTitle());
+    setWindowTitle("Open Board");
     setGeometry(mSettings.getMainWindowRect());
     this->textEdit->setColOrigin(mSettings.getMainWindowColor());
     //commandTextEdit->setStyleSheet("color: " + mSettings.getMainWindowColor().name());
@@ -1294,6 +1294,8 @@ bool MainWindow::on_action_Save_Project_triggered()
     }
 
     QFile file(curProjectFile);
+    setWindowTitle(QFileInfo(curProjectFile).baseName() + " - Open Board");
+
     if(file.open(QIODevice::WriteOnly))
     {
        // ui->statusBar->showMessage("project saving...");
@@ -1326,20 +1328,9 @@ void MainWindow::on_action_Open_Project_triggered()
     qApp->processEvents();
     activateWindow();
 
-    if (mpOGLWidget->getTimeLine()->isProjectChanged())
-    {
-        QMessageBox::StandardButton reply;
-        reply = QMessageBox::question(this, "Test", "Are you want to save changes in current project?",
-                                      QMessageBox::Yes|QMessageBox::No | QMessageBox::Cancel);
-        if (reply == QMessageBox::Cancel)
-            return ;
-        else
-            if (reply == QMessageBox::Yes)
-            {
-                if (on_action_Save_Project_triggered() == false)
-                    return;
-            }
-    }
+    if(!trySaveProject())
+        return;
+
     mpOGLWidget->getTimeLine()->setIsProjectChanged(false);
     curProjectFile.clear();
     isActive = false;
@@ -1355,6 +1346,8 @@ void MainWindow::on_action_Open_Project_triggered()
     activateWindow();
     if(fileName.isEmpty())   return;
     curProjectFile = fileName;
+
+    setWindowTitle(QFileInfo(fileName).baseName() + " - Open Board");
 
     QFile file(curProjectFile);
     if(file.open(QIODevice::ReadOnly))
@@ -1419,7 +1412,7 @@ void MainWindow::on_action_New_Project_triggered()
     qDebug() << "trySaveProject";
     curProjectFile.clear();
     qDebug() << "curProjectFile.clear()";
-    //mpOGLWidget->getTimeLine()->emitResetProject();
+    setWindowTitle("New Project - Open Board");
     mpOGLWidget->getTimeLine()->resetProjectToDefault();
     qDebug() << "resetProjectToDefault";
     mpOGLWidget->getTimeLine()->setIsProjectChanged(false);
@@ -1901,6 +1894,10 @@ void MainWindow::updateBlockFromTextEdit()
             int change_time = text_elm->getDrawTime();
             if(change_time < 100)
                 change_time = 100;
+
+            /*
+             *DEFAULT VALUE
+             */
             if(text_elm->getTextFont().family() == "123")
                 text_elm->setTextFont(mSettings.getBoardFont());
 
