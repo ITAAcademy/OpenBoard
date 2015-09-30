@@ -26,6 +26,7 @@ Rectangle{
         {
             drop.visible = false
             background_rec.visible = 1 //-=-=
+            background_rec.opacity = 0.5
             background_rec.enabled = true
             icon_coloroverlay.visible = false
             mouseArea.enabled = false
@@ -35,6 +36,7 @@ Rectangle{
             drop.visible = true
             background_rec.visible = true //-=-=
             background_rec.enabled = true
+            background_rec.opacity = 1
             icon_coloroverlay.visible = true
             mouseArea.enabled = true
         }

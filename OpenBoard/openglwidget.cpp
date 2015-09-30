@@ -659,6 +659,7 @@ OGLWidget::OGLWidget(QWidget *parent) :
     wax=width(); way=height(); // начальный размер окна
     init = false;
     timeLine = new ListControll(this);
+    timeLine->setP_drawWidget(this);
     effectManager = new EffectsManager(this);
     connect(timeLine,SIGNAL(stopSignal()),this,SIGNAL(stopSignal()));
     connect(timeLine,SIGNAL(playSignal()),this,SIGNAL(startSignal()));

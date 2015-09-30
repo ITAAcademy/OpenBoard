@@ -219,6 +219,16 @@ int ListControll::getCurent_groupMembersSize()
 
 
 
+
+OGLWidget *ListControll::getP_drawWidget() const
+{
+    return p_drawWidget;
+}
+
+void ListControll::setP_drawWidget(OGLWidget *value)
+{
+    p_drawWidget = value;
+}
 void ListControll::recountMaxTrackTime()
 {
     maxTrackTime = 0;
@@ -325,7 +335,7 @@ void ListControll::cloneBlock(DrawElement *origin, DrawElement *clone)
 */
 void ListControll::cloneDrawElement (DrawElement *origin, DrawElement *clone)
 {
-   /* QBuffer buff;
+    /* QBuffer buff;
     buff.open(QBuffer::ReadWrite);
     origin->save(&buff);
     // QPoint p = QPoint(clone->getBlockColumn(), clone->getBlockIndex());
@@ -692,7 +702,7 @@ int ListControll::getBlockIndToAddFromPos(int col,int ind, int pos )
     DrawElement * move_block = tracks[col].block[ind];
     int track_size = tracks[col].block.size();
     int mov_block_time = move_block->getLifeTime();
-   // int track_time = tracks[col].getTime() - mov_block_time;
+    // int track_time = tracks[col].getTime() - mov_block_time;
     /* if (ind == tracks[col].block.size() - 1)
         track_time -= tracks[col].block[ind]->getLifeTime();*/
 
@@ -704,10 +714,10 @@ int ListControll::getBlockIndToAddFromPos(int col,int ind, int pos )
         get_ind = tracks[col].block.size();
 
 
-       tracks[col].block.insert(get_ind   ,move_block);
+        tracks[col].block.insert(get_ind   ,move_block);
         tracks[col].addTime(mov_block_time);
         addEmptyBlockAt(col,get_ind  ,spaces_to_add - mov_block_time);
-       /* if ( ind < track_size - 1)
+        /* if ( ind < track_size - 1)
         {
 
             int next_type =  tracks[col].block[ind + 1 ]->getTypeId();
@@ -765,15 +775,12 @@ int ListControll::getBlockIndToAddFromPos(int col,int ind, int pos )
                 {
                     if (true)  //!force_append_block)
                     {
-
                         int elm_index = elm->getBlockIndex();
-
                         int new_time = pos - start;
-
                         bool elm_is_last = (elm_index == track_size - 1 ||
                                             move_block->getBlockIndex() == track_size - 1);// ? true : false;
 
-                        elm->setLifeTime(     new_time);
+                        elm->setLifeTime( new_time);
 
                         tracks[col].block.insert(elm_index + 1, move_block);
 
@@ -784,29 +791,32 @@ int ListControll::getBlockIndToAddFromPos(int col,int ind, int pos )
                             int right_emp_time = end - pos - mov_block_time;
                             if (!elm_is_last && right_emp_time > 0 )
                             {
-                                /* int next_index = elm_index + 2;
-                            DrawElement* next_el = tracks[col].block[next_index];
-                            int a1 = tracks[col].block[elm_index]->getTypeId();
-                            int a2 = tracks[col].block[elm_index + 1]->getTypeId();
-                            int a3 = tracks[col].block[elm_index + 2]->getTypeId();
-*/
+                                int next_index = elm_index + 2;
+                                DrawElement* next_el = tracks[col].block[next_index];
 
-                                //if (next_el->getTypeId() != Element_type::Empty)
+                                if (next_el->getTypeId() != Element_type::Empty)
                                 {
                                     DrawElement* right_empty = new DrawElement(NULL,NULL);
                                     right_empty->setLifeTime(right_emp_time);
                                     tracks[col].block.insert(elm_index + 2,right_empty);
-                                    tracks[col].setTime( pos + mov_block_time + right_emp_time);
-                                }
-                                /* else
-                            {
-                                next_el->setLifeTime(next_el->getLifeTime() + right_emp_time );
+                                    qDebug() << "AAAAAAAAAAAA " << tracks[col].getTime();
 
-                            }*/
+                                }
+                                else
+                                {
+                                    next_el->setLifeTime(next_el->getLifeTime() + right_emp_time );
+                                    tracks[col].addTime(right_emp_time);
+                                    qDebug() << "BBBBBBBBBBBB " << tracks[col].getTime();
+
+                                }
+
+                                qDebug() << " tracks[col].addTime(" <<  right_emp_time;
+                                // tracks[col].setTime( pos + mov_block_time + right_emp_time);
                             }
                             else
                             {
-                                tracks[col].setTime( pos + mov_block_time);
+                                //tracks[col].setTime( pos + mov_block_time);
+                                qDebug() << "FFFFFFFFFFFF " << tracks[col].getTime();
                             }
                         }
 
@@ -814,7 +824,7 @@ int ListControll::getBlockIndToAddFromPos(int col,int ind, int pos )
                         updateBlocksStartTimesFrom(col,0);
                         recountMaxTrackTime();
 
-                        qDebug() << "FFFFFFFFFFFFFFFFFFAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA  tracks[col].time = " << tracks[col].getTime();
+
                         return  get_ind;
                     }
                 }
@@ -1006,10 +1016,11 @@ DrawElement* ListControll::loadFromFile(int col, int ind, QString path,bool emit
     }
 
 
-    if (elm->getTypeId() == Element_type::Image)
+    if (elm->getTypeId() == Element_type::Image && p_drawWidget != NULL) //123_123
     {
         QSize image_size = QPixmap(open).size();
-        elm->setSize(tracks[curent_block.x()].block[curent_block.y()]->getDrawWidget()->imageLoadedPictureSizeSlot(image_size));
+        elm->setSize(p_drawWidget->imageLoadedPictureSizeSlot(image_size));
+
     }
 
 
@@ -1039,7 +1050,7 @@ DrawElement* ListControll::loadFromFile(int col, int ind, QString path,bool emit
 */
         //  tracks[col].block[ind] = elm;
 
-        updateBlocksStartTimesFrom(col,ind);
+        updateBlocksStartTimesFrom(col,0);
         calcPointedBlocks();
     }
 
@@ -1352,7 +1363,7 @@ void ListControll::cloneBlock(DrawElement *origin, DrawElement *clone)
 
     calcPointedBlocks();
     recountMaxTrackTime();
-    updateBlocksStartTimesFrom(p.x(), p.y());
+    updateBlocksStartTimesFrom(p.x(), 0);
     sendUpdateModel();
     setBlocked(false);
 }

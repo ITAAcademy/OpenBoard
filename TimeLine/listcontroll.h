@@ -156,6 +156,7 @@ class ListControll : public QObject, public QQuickImageProvider
     Q_OBJECT
 
 
+    OGLWidget *p_drawWidget = NULL;
      int spaces_to_add = -1;
     QPoint curent_block = QPoint(-1,-1);
     bool load_from_file_or_library;
@@ -415,6 +416,9 @@ public:
     Q_INVOKABLE void setPosDefaultF_manager();
     Q_INVOKABLE void hideF_manager();
 
+
+    OGLWidget *getP_drawWidget() const;
+    void setP_drawWidget(OGLWidget *value);
 
 signals:
     void borderColorChangedSignal(int col,int ind, QString color);
