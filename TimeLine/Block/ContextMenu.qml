@@ -306,9 +306,10 @@ ApplicationWindow  {
 
 
                     timeControll.setLoadF_manager(false)
-                    timeControll.setCurentBlock(contextMenuFrame.colIndex,contextMenuFrame.blockIndex)
+                    console.log("but_loadFile   colIndex = "+ contextMenuFrame.colIndex + " blockIndex = "+ contextMenuFrame.blockIndex)
+                    timeControll.setCurentBlock(main222.selectedBlockCol, main222.selectedBlockIndex)
 
-                    timeControll.loadFromFile("")
+                    timeControll.loadFromFileVoid( "")
 
                     //,"F://prohect/build-OpenBoard-Desktop_Qt_5_4_0_MinGW_32bit-Debug/Es2zT8Y.jpg")//removeBlock(col,id)
 

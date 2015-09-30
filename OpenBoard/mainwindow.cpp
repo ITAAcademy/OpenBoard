@@ -1201,7 +1201,7 @@ bool MainWindow::on_action_Save_as_triggered()
 {
 
     QString suf;
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"), directory,
+    QString fileName = QFileDialog::getSaveFileName(0, tr("Save File"), directory,
                                                     tr("Text Files (*.txt);;All Files (*.*)"), &suf, QFileDialog::DontUseNativeDialog | QFileDialog::DontConfirmOverwrite);
     fileName =  mSuffixFromFilter(suf, fileName);
 
@@ -1225,7 +1225,7 @@ void MainWindow::on_action_Open_triggered()
 {
     if (maybeSave())
     {
-        QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), directory,
+        QString fileName = QFileDialog::getOpenFileName(0, tr("Open File"), directory,
                                                         tr("Text Files (*.txt);;All Files (*.*)"), 0, QFileDialog::DontUseNativeDialog);
 
         openFile( fileName);
@@ -1323,7 +1323,7 @@ void MainWindow::on_action_Open_Project_triggered()
     if (mpOGLWidget->getTimeLine()->isProjectChanged())
     {
         QMessageBox::StandardButton reply;
-        reply = QMessageBox::question(this, "Test", "Are you want to save changes in current project?",
+        reply = QMessageBox::question(0, "Test", "Are you want to save changes in current project?",
                                       QMessageBox::Yes|QMessageBox::No | QMessageBox::Cancel);
         if (reply == QMessageBox::Cancel)
             return ;
@@ -1342,7 +1342,7 @@ void MainWindow::on_action_Open_Project_triggered()
     activateWindow();
 
     //  mpOGLWidget->show();
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open project"), directory, tr("Project file (*.project)"), 0, QFileDialog::DontUseNativeDialog);
+    QString fileName = QFileDialog::getOpenFileName(0, tr("Open project"), directory, tr("Project file (*.project)"), 0, QFileDialog::DontUseNativeDialog);
 
     //mpOGLWidget->hide();
     //qDebug() << "DDDDDDDDDDDDDDDDDDDDDDDDDDD fileName = " <<  fileName;
@@ -1373,7 +1373,7 @@ void MainWindow::on_action_Open_Project_triggered()
     }
     else
     {
-        QMessageBox::warning(this, "Error",tr("Project\'s opening failed") //щ
+        QMessageBox::warning(0, "Error",tr("Project\'s opening failed") //щ
                              .arg(curProjectFile).arg(file.errorString()));
         return ;
     }
@@ -1390,7 +1390,7 @@ bool MainWindow::trySaveProject()
     {
         QMessageBox::StandardButton reply;
 
-        reply = QMessageBox::question(this, "Test", "Are you want to save changes in current project?",
+        reply = QMessageBox::question(0, "Test", "Are you want to save changes in current project?",
                                       QMessageBox::Yes|QMessageBox::No | QMessageBox::Cancel);
         if (reply == QMessageBox::Cancel)
             return false;
@@ -2056,7 +2056,7 @@ void MainWindow::on_action_Stop_triggered()
 
 void MainWindow::on_action_youTube_triggered()
 {
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Choose file..."), qApp->applicationDirPath(), tr("Videos (*.avi *.mp4)"), 0, QFileDialog::DontUseNativeDialog);
+    QString fileName = QFileDialog::getOpenFileName(0, tr("Choose file..."), qApp->applicationDirPath(), tr("Videos (*.avi *.mp4)"), 0, QFileDialog::DontUseNativeDialog);
     if(fileName.size() != 0)
     {
         youtube= new YouTubeWrapper(QString(fileName),this);
@@ -2098,7 +2098,7 @@ void MainWindow::on_action_Record_to_file_triggered()
     if (!isRecordToFile)
     {
         QString suf;
-        QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"), QString(),
+        QString fileName = QFileDialog::getSaveFileName(0, tr("Save File"), QString(),
                                                         tr("Videos (*.avi *.mp4)"), &suf, QFileDialog::DontUseNativeDialog | QFileDialog::DontConfirmOverwrite);
         fileName =  mSuffixFromFilter(suf, fileName);
 
@@ -2238,7 +2238,7 @@ void MainWindow::on_actionShow_last_drawing_triggered()
 void MainWindow::on_actionSave_drawing_triggered()
 {
     QString suf;
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Choose file..."), qApp->applicationDirPath(), tr("Drawing (*.paint)"), &suf, QFileDialog::DontUseNativeDialog | QFileDialog::DontConfirmOverwrite);
+    QString fileName = QFileDialog::getSaveFileName(0, tr("Choose file..."), qApp->applicationDirPath(), tr("Drawing (*.paint)"), &suf, QFileDialog::DontUseNativeDialog | QFileDialog::DontConfirmOverwrite);
 
     fileName =  mSuffixFromFilter(suf, fileName);
     if(!fileName.size())
@@ -2249,7 +2249,7 @@ void MainWindow::on_actionSave_drawing_triggered()
 
 void MainWindow::on_actionLoad_drawing_temp_triggered()
 {
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Choose file..."), qApp->applicationDirPath(), tr("Drawing (*.paint)"), 0, QFileDialog::DontUseNativeDialog);
+    QString fileName = QFileDialog::getOpenFileName(0, tr("Choose file..."), qApp->applicationDirPath(), tr("Drawing (*.paint)"), 0, QFileDialog::DontUseNativeDialog);
     if(!fileName.size())
         return;
     mpOGLWidget->drawBrushElm->load(fileName);

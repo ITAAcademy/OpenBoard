@@ -43,7 +43,8 @@ Rectangle {
                 {
                 var ss = main222.blocks_num
                     timeControll.setCurentBlock(root_toolbar.colIndex,-1)
-                   timeControll.addNewBlock(root_toolbar.colIndex)
+                   timeControll.addNewBlock(colIndex)
+                    console.log("DDDDDDDDDDDDAAAAAAAAAAAAAAAAAAA             colIndex  = " + colIndex)
                      globalRep.updateModel()
               /*if (timeControll.addNewBlockFromLibrary(bar_track.mIndex,"Block_" + ss))
               {

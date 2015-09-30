@@ -366,7 +366,7 @@ Rectangle{
         /* else
             timeControll.setBlockTime(colIndex, mIndex,root.width * main222.scaling);*/
 
-       // console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+        // console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 
     }
     onXChanged: {
@@ -513,10 +513,12 @@ Rectangle{
 
 
         onPressed: {
+           timeControll. logBlocksTypes(root.colIndex);
             //main222.dropedtoDropArea = false
-            console.log("onPressed   mIndex = " + root.mIndex)
+            console.log("onPressed colIndex =" + root.colIndex + "  mIndex = " + root.mIndex)
             main222.dropEntered = 0
             main222.maIsPressed = 1
+             main222.selectedBlockCol = root.colIndex
             //root.animation_scale_normal_toXpos = root.x
             root.animation_scale_normal_toYpos = root.y
             divider.y = (root.height + main222.p_columns.spacing) * root.colIndex
@@ -1145,7 +1147,7 @@ Rectangle{
                         if (!main222.exitedFromDropArea)
                         {
                             console.log("move blcok from to")
-                            timeControll.moveBlockFromTo(main222.selectedBlockCol,main222.selectedBlockIndex,  divider.pos_to_append.y );
+                            // timeControll.moveBlockFromTo(main222.selectedBlockCol,main222.selectedBlockIndex,  divider.pos_to_append.y );
                             main222.able_create_empty_block = false
                             root.animation_scale_normal_toXpos = root.x - scroll.flickableItem.contentX
                         }
@@ -1169,6 +1171,7 @@ Rectangle{
                         //
                         //console.log(" rizni !!!!!!!!!!!!!!!!!!!!!!!!!!")
                     }
+                   // main222.selectedBlockCol = divider.pos_to_append.x
 
 
 

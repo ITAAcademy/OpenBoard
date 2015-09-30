@@ -362,6 +362,7 @@ public:
     Q_INVOKABLE DrawElement* getBlockFromBuffer();
     Q_INVOKABLE getBlockIndToAddFromPos(int col,int ind, int pos);
     Q_INVOKABLE getBlockSpaceToAddFromPos(int col,int ind); //call after getBlockIndToAddFromPos
+    Q_INVOKABLE void logBlocksTypes(int col);
     void sendUpdateModel();
 
     Q_INVOKABLE  float getScaleScrollChildren() const;
@@ -448,6 +449,7 @@ public slots:
     Q_INVOKABLE bool addNewBlockFromLibrary( QString str , DrawElement *element = NULL);
     Q_INVOKABLE DrawElement* loadFromFile(int col, int ind, QString path = "",bool emit_update = true);
     Q_INVOKABLE DrawElement* loadFromFile( QString path = "");
+    Q_INVOKABLE void loadFromFileVoid( QString path = "");
 
     void addMsToTimerValue(int ms);
     Q_INVOKABLE void emitNewProject();
