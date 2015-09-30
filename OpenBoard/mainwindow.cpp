@@ -2,6 +2,8 @@
 #include "ui_mainwindow.h"
 #include "../TimeLine/listcontroll.h"
 
+
+
 #define TIMER_VALUE         300
 
 #define WINDOW_POS          80,100,760,560
@@ -1925,7 +1927,7 @@ void MainWindow::updateBlockFromTextEdit()
 
 void MainWindow::setCurentTextBlockStaticMoment(double value)
 {
-    qInfo() << "setCurentTextBlockStaticMoment <<S>> " << value;
+    qDebug() << "setCurentTextBlockStaticMoment <<S>> " << value;
     QPoint point = mpOGLWidget->getTimeLine()->getSelectedBlockPoint();
     //qDebug() << "IMAGE" << commandTextEdit->getPreviousCursorPosition();
     if(point.x() != -1 )

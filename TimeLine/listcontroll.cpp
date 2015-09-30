@@ -325,7 +325,7 @@ void ListControll::cloneBlock(DrawElement *origin, DrawElement *clone)
 */
 void ListControll::cloneDrawElement (DrawElement *origin, DrawElement *clone)
 {
-    QBuffer buff;
+   /* QBuffer buff;
     buff.open(QBuffer::ReadWrite);
     origin->save(&buff);
     // QPoint p = QPoint(clone->getBlockColumn(), clone->getBlockIndex());
@@ -338,7 +338,7 @@ void ListControll::cloneDrawElement (DrawElement *origin, DrawElement *clone)
     clone->setDrawWidget(origin->getDrawWidget());
     // tracks[p.x()].block[p.y()] = clone;
     //calcPointedBlocks();
-    // recountMaxTrackTime();
+    // recountMaxTrackTime();*/
 }
 
 
@@ -705,7 +705,7 @@ int ListControll::getBlockIndToAddFromPos(int col,int ind, int pos )
 
 
        tracks[col].block.insert(get_ind   ,move_block);
-        tracks[col].addTime(move_block_time);
+        tracks[col].addTime(mov_block_time);
         addEmptyBlockAt(col,get_ind  ,spaces_to_add - mov_block_time);
        /* if ( ind < track_size - 1)
         {
@@ -1009,7 +1009,7 @@ DrawElement* ListControll::loadFromFile(int col, int ind, QString path,bool emit
     if (elm->getTypeId() == Element_type::Image)
     {
         QSize image_size = QPixmap(open).size();
-        elm->setSize(tracks[p.x()].block[p.y()]->getDrawWidget()->imageLoadedPictureSizeSlot(image_size));
+        elm->setSize(tracks[curent_block.x()].block[curent_block.y()]->getDrawWidget()->imageLoadedPictureSizeSlot(image_size));
     }
 
 
