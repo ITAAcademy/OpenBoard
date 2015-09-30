@@ -570,41 +570,42 @@ void OGLWidget::initShaderPrograms()
     connect(&shaderWindow, SIGNAL(test()), this, SLOT(testInit()));
 
     if (mainShader->initShader(MAIN_FRAGMENT_SHADER_PATH,MAIN_VERTEX_SHADER_PATH)==0)shaderSupported=true;
+   // mainShader->initShader(MAIN_FRAGMENT_SHADER_PATH,MAIN_VERTEX_SHADER_PATH);
 
     ShaderProgramWrapper *alphaShader = new ShaderProgramWrapper(this);
-    if(alphaShader->initShader(ALPHA_FRAGMENT_SHADER_PATH,ALPHA_VERTEX_SHADER_PATH)!=0)shaderSupported=true;
+    alphaShader->initShader(ALPHA_FRAGMENT_SHADER_PATH,ALPHA_VERTEX_SHADER_PATH);
     shaderPrograms.push_back(alphaShader);
 
     ShaderProgramWrapper *spinShader = new ShaderProgramWrapper(this);
-    if(spinShader->initShader(SPIN_FRAGMENT_SHADER_PATH,SPIN_VERTEX_SHADER_PATH)!=0)shaderSupported=true;
+    spinShader->initShader(SPIN_FRAGMENT_SHADER_PATH,SPIN_VERTEX_SHADER_PATH);
     shaderPrograms.push_back(spinShader);
 
     ShaderProgramWrapper *pixelizationShader = new ShaderProgramWrapper(this);
-    if(pixelizationShader->initShader(PIXELIZATION_FRAGMENT_SHADER_PATH,PIXELIZATION_VERTEX_SHADER_PATH)!=0)shaderSupported=true;
+    pixelizationShader->initShader(PIXELIZATION_FRAGMENT_SHADER_PATH,PIXELIZATION_VERTEX_SHADER_PATH);
     shaderPrograms.push_back(pixelizationShader);
 
     ShaderProgramWrapper *circlesShader = new ShaderProgramWrapper(this);
-    if(circlesShader->initShader(CIRCLES_FRAGMENT_SHADER_PATH,CIRCLES_VERTEX_SHADER_PATH)!=0)shaderSupported=true;
+   circlesShader->initShader(CIRCLES_FRAGMENT_SHADER_PATH,CIRCLES_VERTEX_SHADER_PATH);
     shaderPrograms.push_back(circlesShader);
 
     ShaderProgramWrapper *turnThePageShader = new ShaderProgramWrapper(this);
-    if(turnThePageShader->initShader(TURNTHEPAGE_FRAGMENT_SHADER_PATH,TURNTHEPAGE_VERTEX_SHADER_PATH)!=0)shaderSupported=true;
+    turnThePageShader->initShader(TURNTHEPAGE_FRAGMENT_SHADER_PATH,TURNTHEPAGE_VERTEX_SHADER_PATH);
     shaderPrograms.push_back(turnThePageShader);
 
     ShaderProgramWrapper *randomSquaresShader = new ShaderProgramWrapper(this);
-    if(randomSquaresShader->initShader(RANDOMSQUARES_FRAGMENT_SHADER_PATH,RANDOMSQUARES_VERTEX_SHADER_PATH)!=0)shaderSupported=true;
+    randomSquaresShader->initShader(RANDOMSQUARES_FRAGMENT_SHADER_PATH,RANDOMSQUARES_VERTEX_SHADER_PATH);
     shaderPrograms.push_back(randomSquaresShader);
 
     ShaderProgramWrapper *tresholdShader = new ShaderProgramWrapper(this);
-    if(tresholdShader->initShader(TRESHOLD_FRAGMENT_SHADER_PATH,TRESHOLD_VERTEX_SHADER_PATH)!=0)shaderSupported=true;
+    tresholdShader->initShader(TRESHOLD_FRAGMENT_SHADER_PATH,TRESHOLD_VERTEX_SHADER_PATH);
     shaderPrograms.push_back(tresholdShader);
 
     ShaderProgramWrapper *slideShader = new ShaderProgramWrapper(this);
-    if(slideShader->initShader(SLIDE_FRAGMENT_SHADER_PATH,SLIDE_VERTEX_SHADER_PATH)!=0)shaderSupported=true;
+    slideShader->initShader(SLIDE_FRAGMENT_SHADER_PATH,SLIDE_VERTEX_SHADER_PATH);
     shaderPrograms.push_back(slideShader);
 
     ShaderProgramWrapper *crossShader = new ShaderProgramWrapper(this);
-    if(crossShader->initShader(CROSS_FRAGMENT_SHADER_PATH,CROSS_VERTEX_SHADER_PATH)!=0)shaderSupported=true;
+    crossShader->initShader(CROSS_FRAGMENT_SHADER_PATH,CROSS_VERTEX_SHADER_PATH);
     shaderPrograms.push_back(crossShader);
 
 

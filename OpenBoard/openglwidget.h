@@ -394,7 +394,7 @@ private:
 
     QVector<ShaderProgramWrapper*> shaderPrograms;
 
-    bool shaderSupported = true;
+    bool shaderSupported = false;
     ShaderProgramWrapper *mainShader;//Color,alpha,blur;
     ShaderProgramWrapper *test;//Color,alpha,blur;
 
