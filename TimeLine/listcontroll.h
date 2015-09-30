@@ -24,7 +24,7 @@ class DrawBrushElm;
 class DrawElement;
 
 #define minBlockTime 1000
-#define VERSION 2.9
+#define VERSION 2.93
 
 bool isFileExists(QString path) ;
 
@@ -98,7 +98,7 @@ public:
 
     }
 
-    bool save(QIODevice* device)
+    bool save(QIODevice* device, QProgressBar *bar)
     {
         QDataStream stream(device);
         stream << block.size() ;
@@ -107,7 +107,7 @@ public:
         for (int i=0; i< block.size(); i++)
         {
             qDebug() << "block[i]:  " << i;
-            block[i]->save(device);
+            block[i]->save(device, bar);
         }
 
         return true;
@@ -214,7 +214,7 @@ public:
     static const int blockHeightPlusSpacing = 102;
 
 
-    bool save(QIODevice* device);
+    bool save(QIODevice* device, QProgressBar *bar);
     bool load(QIODevice* device);
 
 
@@ -236,6 +236,8 @@ public:
     void setFocus();
     void setViewPosition(QPoint pos); //1234
     Q_INVOKABLE QPoint getViewPosition();
+
+    int getMemberCount();
     bool isVisible();
     bool isActiveWindow();
     Q_INVOKABLE bool attachBlock(int col, int index, int value);

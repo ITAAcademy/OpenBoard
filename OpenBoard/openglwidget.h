@@ -309,6 +309,7 @@ public:
     void setSelElm(DrawElement *value);
 
 public slots:
+    QSize imageLoadedPictureSizeSlot(QSize);
     void loadEffectFromCurrentBlockToEffectManager();
     void hideEffectsManager();
     void hideBrushManager();
@@ -373,7 +374,7 @@ signals:
 
 
 private slots:
-    void imageLoadedPictureSizeSlot(QSize);
+
     bool crossTextV2();
 
     void storeMousePos();
@@ -393,7 +394,7 @@ private:
 
     QVector<ShaderProgramWrapper*> shaderPrograms;
 
-    bool shaderSupported = true;
+    bool shaderSupported = false;
     ShaderProgramWrapper *mainShader;//Color,alpha,blur;
     ShaderProgramWrapper *test;//Color,alpha,blur;
 

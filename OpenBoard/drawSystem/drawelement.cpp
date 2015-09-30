@@ -513,7 +513,7 @@ bool DrawElement::loadRest(QIODevice* device, float version)
 
 }
 
-bool DrawElement::save(QIODevice* device) //-=-=-=
+bool DrawElement::save(QIODevice* device, QProgressBar *bar) //-=-=-=
 {
     QDataStream stream(device);
 
@@ -536,15 +536,18 @@ bool DrawElement::save(QIODevice* device) //-=-=-=
         effects[i].save(stream,VERSION);
 
     save_add(stream);
-
-
+    if(bar != NULL)
+    {
+        bar->setValue(bar->value() + 1);
+        qApp->processEvents();
+    }
 }
 
 bool DrawElement::save(QString path)
 {
     QFile appFile(QString(path + "." + type));
     appFile.open(QFile::WriteOnly);
-    this->save(&appFile);
+    this->save(&appFile, NULL);
     appFile.close();
     /*QImage icon;
     int lifeTime;
@@ -818,12 +821,12 @@ bool DrawElement::save_image(QDataStream &stream, QImage img)
     QByteArray ba;
     QBuffer buffer(&ba); // QBuffer inherits QIODevice
     buffer.open(QIODevice::WriteOnly);
-    img.save(&buffer,"PNG");
+    img.save(&buffer,"PNG", 100);
 
     buffer.close();
     stream << ba.length() << ba;
     //stream.writeRawData((const char*)img.bits(), img.byteCount());
-    //qDebug() <<"image saved:"<<img.byteCount();
+    qDebug() <<"image saved:"<<img.byteCount();
 }
 
 

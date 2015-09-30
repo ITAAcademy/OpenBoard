@@ -14,6 +14,10 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->backBtn->setVisible(false);
+
+    ui->statusBar->addWidget(&status);
+    status.setVisible(false);
+
     //drawThread.start();
 
     ui->delayBtn->setToolTip("Pause");
@@ -23,7 +27,6 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->crossBtn->setToolTip("Cross out");
     ui->colorBtn->setToolTip("Color");
     ui->clearBtn->setToolTip("Clean");
-
 
     //QStandardPaths path;
     directory = QStandardPaths::locate(QStandardPaths::DocumentsLocation, QString(),
@@ -107,7 +110,7 @@ MainWindow::MainWindow(QWidget *parent) :
         mSettings.saveSettings();
     }
 
-    setWindowTitle(mSettings.getMainWindowTitle());
+    setWindowTitle("Open Board");
     setGeometry(mSettings.getMainWindowRect());
     this->textEdit->setColOrigin(mSettings.getMainWindowColor());
     //commandTextEdit->setStyleSheet("color: " + mSettings.getMainWindowColor().name());
@@ -417,7 +420,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(mpOGLWidget,SIGNAL(stopShowLastDrawingSignal()),this,SLOT(onStopShowLastDrawing()));
 
 
-    connect(mpOGLWidget->getTimeLine(),SIGNAL(updateSelectedBlock(QPoint)),this,SLOT(enablingBoardFontColor(QPoint)));
+    //connect(mpOGLWidget->getTimeLine(),SIGNAL(updateSelectedBlock(QPoint)),this,SLOT(enablingBoardFontColor(QPoint)));
     connect(mpOGLWidget->getTimeLine(), SIGNAL(showEffectsSignal()), mpOGLWidget, SLOT(showEffectsManager()));
     connect(mpOGLWidget->getTimeLine(), SIGNAL(hideEffectsSignal()), mpOGLWidget, SLOT(hideEffectsManager()));
 
@@ -428,6 +431,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(&onTextChangeUpdateTimer,SIGNAL(timeout()),this,SLOT(updateBlockFromTextEdit()));
     connect(ui->check_use_speed_value,SIGNAL(released()),this,SLOT(updateBlockFromTextEdit()));
     connect(ui->check_is_static,SIGNAL(released()),this,SLOT(updateBlockFromTextEdit()));
+
 
     //load new style
     QFile file(":/style.txt");
@@ -655,51 +659,45 @@ void MainWindow::updateEditWidgets( bool forceEnabled )
 
 bool MainWindow::event(QEvent * e) // overloading event(QEvent*) method of QMainWindow
 {
-    //  qDebug() << "GL_EVENT   " << e->type();
     switch(e->type())
     {
-    // ...
-    case QEvent::Leave:
-    {
-        isActive = false;
-        break;
-    }
-    case QEvent::WindowActivate : {
-        if(!isActive && !mpOGLWidget->isActiveWindow() && !mpOGLWidget->getTimeLine()->isActiveWindow())
-        {
-            if(mpOGLWidget->isVisible() && mpOGLWidget->isNeedShowTimeLine()) // get focus for windows
-            {
-                mpOGLWidget->getTimeLine()->setFocus();
-                //childIsActive = true;
-            }
-            isActive = true;
-            qApp->processEvents();
-            activateWindow();
-            isActive = true;
-        }
+        // ...
+
+        case QEvent::WindowActivate : {
+        if(!isActive)
+          {
+              if(mpOGLWidget->isVisible()) // get focus for windows
+              {
+                  mpOGLWidget->getTimeLine()->setFocus();
+                  //childIsActive = true;
+              }
+              isActive = true;
+             qApp->processEvents();
+             activateWindow();
+              isActive = true;
+          }
         mpOGLWidget->getTimeLine()->emitFocusLostSignal();
         mpOGLWidget->hideBrushManager();
         mpOGLWidget->hideEffectsManager();
-
-        /* QPoint current_pos = mpOGLWidget->pos();
+         /* QPoint current_pos = mpOGLWidget->pos();
           current_pos.setY(current_pos.y() + mpOGLWidget->height());
           mpOGLWidget->getTimeLine()->setViewPosition(current_pos);*/
-        updateBlockFromTextEdit();
-        //qDebug() << "SET_ACTIVE_MAIN_WINDOW";
-        break ;
-    }
+          updateBlockFromTextEdit();
+          //qDebug() << "SET_ACTIVE_MAIN_WINDOW";
+          break ;
+      }
 
-    case QEvent::WindowDeactivate :
-        // lost focus
-        bool activeOther = false;
-        if(mpOGLWidget->isActiveWindow())
-            activeOther = true;
-        if(mpOGLWidget->getTimeLine()->isActiveWindow())
-            activeOther = true;
-        if(!activeOther)
-            isActive = false;
-        //qDebug() << "LOSE_ACTIVE_MAIN_WINDOW";
-        break ;
+      case QEvent::WindowDeactivate :
+          // lost focus
+          bool activeOther = false;
+          if(mpOGLWidget->isActiveWindow())
+              activeOther = true;
+          if(mpOGLWidget->getTimeLine()->isActiveWindow())
+              activeOther = true;
+          if(!activeOther)
+              isActive = false;
+          //qDebug() << "LOSE_ACTIVE_MAIN_WINDOW";
+          break ;
 
     } ;
 
@@ -707,14 +705,14 @@ bool MainWindow::event(QEvent * e) // overloading event(QEvent*) method of QMain
         if (isMinimized()) {
             mpOGLWidget->getTimeLine()->hide();
             mpOGLWidget->hide();
-            isActive = false;
-            e->ignore();
+          isActive = false;
+          e->ignore();
         } else {
-            e->accept();
-            mpOGLWidget->show();
-            mpOGLWidget->getTimeLine()->show();
+          e->accept();
+          mpOGLWidget->show();
+          mpOGLWidget->getTimeLine()->show();
         }
-    }
+      }
     return QMainWindow::event(e) ;
 }
 
@@ -747,6 +745,7 @@ void MainWindow::on_action_Show_triggered()
     // showBoardSettings();
 
     setEnabledToolBar(true);
+    setEnabledBoardFontColor(true);
 
     a_show->setEnabled(false);
     ui->action_Show->setEnabled(false);
@@ -887,24 +886,29 @@ void MainWindow::on_action_Board_Font_triggered()
     QFont font;
 
 
-
     QPoint selected_block_point = mpOGLWidget->getTimeLine()->getSelectedBlockPoint();
-    if (selected_block_point.x() < 0)
-        return;
-    DrawTextElm* draw_element =(DrawTextElm*) mpOGLWidget->getTimeLine()->getBlock(selected_block_point);
-    if (draw_element != NULL)
-        if (draw_element->getTypeId() != Element_type::Text)
-            return;
+    if (selected_block_point.x() >= 0)
+    {
+        DrawTextElm* draw_element =(DrawTextElm*) mpOGLWidget->getTimeLine()->getBlock(selected_block_point);
+        if (draw_element != NULL)
+            if (draw_element->getTypeId() == Element_type::Text)
+            {
+                font = QFontDialog::getFont(&ok, draw_element->getTextFont(), this);
+                if (!ok)
+                    return;
 
-    font = QFontDialog::getFont(&ok, draw_element->getTextFont(), this);
+                qDebug() <<"MainWindow::on_action_Board_Font_triggered() font underline  = " <<  font.underline() ;
+                //qDebug() <<"MainWindow::on_action_Board_Font_triggered() italic" << font.italic() ;
+                draw_element->setTextFont(font);
+                return;
 
-    if (!ok)
-        return;
-
-    qDebug() <<"MainWindow::on_action_Board_Font_triggered() font underline  = " <<  font.underline() ;
-    //qDebug() <<"MainWindow::on_action_Board_Font_triggered() italic" << font.italic() ;
-    draw_element->setTextFont(font);
+            }
+    }
+    font = QFontDialog::getFont(&ok, mSettings.getBoardFont(), this);
     mSettings.setBoardFont(font);
+
+
+
 
 
 
@@ -961,25 +965,25 @@ void MainWindow::on_action_Board_Color_triggered()
     QColor colorm;
 
     QPoint selected_block_point = mpOGLWidget->getTimeLine()->getSelectedBlockPoint();
-    if (selected_block_point.x() < 0)
-        return;
-    DrawTextElm* draw_element =(DrawTextElm*) mpOGLWidget->getTimeLine()->getBlock(selected_block_point);
-    if (draw_element != NULL)
-        if (draw_element->getTypeId() != Element_type::Text)
-            return;
-
-    colorm = QColorDialog::getColor(draw_element->getMainFillColor(), this);
-
-    // QString col = colorm.name();
-    if(colorm.isValid())
+    if (selected_block_point.x() >= 0)
     {
-        // mpOGLWidget->setMainFillColor(colorm);
-        draw_element->setMainFillColor(colorm);
-        mSettings.setBoardFontColor(colorm);
+        DrawTextElm* draw_element =(DrawTextElm*) mpOGLWidget->getTimeLine()->getBlock(selected_block_point);
+        if (draw_element != NULL)
+            if (draw_element->getTypeId() == Element_type::Text)
+            {
+                colorm = QColorDialog::getColor(draw_element->getMainFillColor(), this);
+                if(!colorm.isValid())
+                    return;
+                draw_element->setMainFillColor(colorm);
+                return;
+            }
     }
 
-
-
+    colorm = QColorDialog::getColor(mSettings.getBoardFontColor(), this);
+    if(!colorm.isValid())
+        return;
+    mSettings.setBoardFontColor(colorm);
+    return;
 }
 void MainWindow::on_action_ZoomIn_triggered()
 {
@@ -1292,17 +1296,23 @@ bool MainWindow::on_action_Save_Project_triggered()
     }
 
     QFile file(curProjectFile);
+    setWindowTitle(QFileInfo(curProjectFile).baseName() + " - Open Board");
+
     if(file.open(QIODevice::WriteOnly))
     {
-        ui->statusBar->showMessage("project saving...");
+       // ui->statusBar->showMessage("project saving...");
+        status.setVisible(true);
+        status.setMaximum(mpOGLWidget->getTimeLine()->getMemberCount());
+        status.setValue(0);
 
-        mpOGLWidget->getTimeLine()->save(&file);
+        mpOGLWidget->getTimeLine()->save(&file, &status);
         QDataStream stream(&file);
         int state =   static_cast<int>(curentState.state);
         stream << curentState.advance_mode << state ;
         file.close();
         ui->statusBar->showMessage("project saved");
         mpOGLWidget->getTimeLine()->setIsProjectChanged(false);
+        status.setVisible(false);
         return true;
     }
     else
@@ -1320,21 +1330,9 @@ void MainWindow::on_action_Open_Project_triggered()
     qApp->processEvents();
     activateWindow();
 
-    if (mpOGLWidget->getTimeLine()->isProjectChanged())
-    {
-        QMessageBox::StandardButton reply;
-        reply = QMessageBox::question(0, "Test", "Are you want to save changes in current project?",
-                                      QMessageBox::Yes|QMessageBox::No | QMessageBox::Cancel);
-        if (reply == QMessageBox::Cancel)
-            return ;
-        else
-            if (reply == QMessageBox::Yes)
-            {
-                if (on_action_Save_Project_triggered() == false)
-                    return;
-            }
+    if(!trySaveProject())
+        return;
 
-    }
     mpOGLWidget->getTimeLine()->setIsProjectChanged(false);
     curProjectFile.clear();
     isActive = false;
@@ -1352,6 +1350,8 @@ void MainWindow::on_action_Open_Project_triggered()
     activateWindow();
     if(fileName.isEmpty())   return;
     curProjectFile = fileName;
+
+    setWindowTitle(QFileInfo(fileName).baseName() + " - Open Board");
 
     QFile file(curProjectFile);
     if(file.open(QIODevice::ReadOnly))
@@ -1412,15 +1412,27 @@ void MainWindow::on_action_New_Project_triggered()
 
     //qDebug() << "NEW_PROJECT";
     qDebug() << "on_action_New_Project_triggered";
-    trySaveProject();
+    if(!trySaveProject())
+       return;
     qDebug() << "trySaveProject";
     curProjectFile.clear();
     qDebug() << "curProjectFile.clear()";
-    //mpOGLWidget->getTimeLine()->emitResetProject();
+    setWindowTitle("New Project - Open Board");
     mpOGLWidget->getTimeLine()->resetProjectToDefault();
     qDebug() << "resetProjectToDefault";
     mpOGLWidget->getTimeLine()->setIsProjectChanged(false);
     mpOGLWidget->getTimeLine()->setBlocked(true);
+
+    disconnect(ui->actionRecord_to_file,SIGNAL(triggered()),this,  SLOT(on_action_Record_to_file_triggered()));
+    disconnect(a_record_to_file,SIGNAL(triggered()),this,  SLOT(on_action_Record_to_file_triggered()));
+
+
+    ui->actionRecord_to_file->setChecked(false);
+    a_record_to_file->setChecked( false);
+    isRecordToFile = false;//@BAG@ WAT
+
+    connect(ui->actionRecord_to_file,SIGNAL(triggered()),this,  SLOT(on_action_Record_to_file_triggered()));
+    connect(a_record_to_file,SIGNAL(triggered()),this,  SLOT(on_action_Record_to_file_triggered()));
 
     setEnabledToolBar(true);
     // //qDebug() << "AAAAAAAAAAAAAAAAAAAA3";
@@ -1438,8 +1450,7 @@ void MainWindow::on_action_New_Project_triggered()
         this->setCurentState(ProjectCreator::getProjectSetting(false, false));
     else
         this->setCurentState(ProjectCreator::getProjectSetting(true, false));
-    qDebug() << "111111111 curentState.state " <<(int) curentState.state;
-    ////qDebug() << "AAAAAAAAAAAAAAAAAAAA6";
+
 
     {
         setEnabledToolBar(false);
@@ -1816,7 +1827,7 @@ void MainWindow::onTextChanged()
         }
     //updateBlockFromTextEdit();
 
-        onTextChangeUpdateTimer.start();
+    onTextChangeUpdateTimer.start();
     textEdit->saveChanges();
     connect(textEdit, SIGNAL(textChanged()), this, SLOT(onTextChanged()));
     /*
@@ -1856,6 +1867,7 @@ void MainWindow::updateTextEditFromBlock(QPoint point)
             ui->check_use_speed_value->setChecked(text_elm->getBNeedCalcTime());
             connect(textEdit, SIGNAL(textChanged()), this, SLOT(onTextChanged()));
             ui->check_is_static->setChecked(text_elm->isStaticText());
+            ui->staticMomentSpin->setValue(text_elm->getStaticMoment());
             return;
         }
     }
@@ -1887,6 +1899,16 @@ void MainWindow::updateBlockFromTextEdit()
             int change_time = text_elm->getDrawTime();
             if(change_time < 100)
                 change_time = 100;
+
+            /*
+             *DEFAULT VALUE
+             */
+            if(text_elm->getTextFont().family() == "123")
+                text_elm->setTextFont(mSettings.getBoardFont());
+
+            if(text_elm->getMainFillColor().alpha() == 0)
+                text_elm->setMainFillColor(mSettings.getBoardFontColor());
+
             ui->expected_time->setText("EXPECTED TIME:  " + QString::number(change_time) + " ms");
             if(ui->check_use_speed_value->isChecked() && isActiveWindow() && !mpOGLWidget->getTimeLine()->getCurent_group())
             {
@@ -1897,6 +1919,48 @@ void MainWindow::updateBlockFromTextEdit()
             }
 
             text_elm->setStaticText(ui->check_is_static->isChecked());
+        }
+    }
+}
+
+void MainWindow::setCurentTextBlockStaticMoment(double value)
+{
+    qInfo() << "setCurentTextBlockStaticMoment <<S>> " << value;
+    QPoint point = mpOGLWidget->getTimeLine()->getSelectedBlockPoint();
+    //qDebug() << "IMAGE" << commandTextEdit->getPreviousCursorPosition();
+    if(point.x() != -1 )
+    {
+        DrawElement* elm = mpOGLWidget->getTimeLine()->getBlock(point);
+        if(elm->getTypeId() == Element_type::Text)
+        {
+
+            DrawTextElm *text_elm = (DrawTextElm *)elm;
+
+            if(value > 0)
+            {
+                text_elm->setStaticMoment(value);
+                return;
+            }
+            else
+            {
+                int currentValue = mpOGLWidget->getTimeLine()->getScalePointerPos();
+                qDebug()<< "currentValue" << currentValue;
+
+                if(currentValue < text_elm->getStartDrawTime())
+                {
+                    ui->staticMomentSpin->setValue(0);
+                    return;
+                }
+
+                if(currentValue > text_elm->getStartDrawTime() + text_elm->getLifeTime())
+                {
+                    ui->staticMomentSpin->setValue(1);
+                    return;
+                }
+
+                ui->staticMomentSpin->setValue((double)(currentValue - text_elm->getStartDrawTime())/text_elm->getLifeTime());
+            }
+
         }
     }
 }
@@ -2208,6 +2272,9 @@ void MainWindow::setEnabledToolBar(bool status)
     ui->spinBox_delayTB->setEnabled(status);
     ui->check_use_speed_value->setEnabled(status);
     ui->check_is_static->setEnabled(status);
+    ui->staticMomentButton->setEnabled(status);
+    ui->staticMomentSpin_2->setEnabled(status);
+    ui->staticMomentSpin->setEnabled(status);
 
     on_block_text_buttons_toolbar(status);
 
@@ -2292,8 +2359,8 @@ void MainWindow::on_block_text_buttons_toolbar(bool tt)
     this->ui->action_Select_all->setEnabled(tt);
     this->ui->action_Find->setEnabled(tt);
     this->ui->action_clearTB->setEnabled(tt);
-    this->ui->action_Font->setEnabled(tt);
-    this->ui->action_Color->setEnabled(tt);
+    /*this->ui->action_Font->setEnabled(tt);
+    this->ui->action_Color->setEnabled(tt);*/
 
 }
 
@@ -2359,4 +2426,25 @@ void MainWindow::setEnabledBoardFontColor(bool set_enabled)
     a_color_canvas->setEnabled(set_enabled);
     this->ui->action_Board_Color->setEnabled(set_enabled);
     this->ui->action_Board_Font->setEnabled(set_enabled);
+}
+
+void MainWindow::on_spinBox_speedTB_valueChanged(int arg1)
+{
+
+}
+
+void MainWindow::on_staticMomentSpin_valueChanged(double arg1)
+{
+    ui->staticMomentSpin_2->setValue(arg1*100);
+    setCurentTextBlockStaticMoment(arg1);
+}
+
+void MainWindow::on_staticMomentSpin_2_valueChanged(int value)
+{
+    ui->staticMomentSpin->setValue((double)value/100);
+}
+
+void MainWindow::on_staticMomentButton_clicked()
+{
+    setCurentTextBlockStaticMoment(-1);
 }

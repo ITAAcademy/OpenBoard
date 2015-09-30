@@ -13,6 +13,7 @@ class DrawTextElm : public DrawElement
 
     QList <Unit*>mUnitList;
     bool staticText = false;
+    double staticMoment = 1.0f;
     QString loggerText;
     QString unParsestring;
     Parser myParser;
@@ -127,6 +128,9 @@ public:
 
     bool isStaticText() const;
     void setStaticText(bool value);
+
+    double getStaticMoment() const;
+    void setStaticMoment(double value);
 
 private:
     void setTickTime(int value);

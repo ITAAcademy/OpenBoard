@@ -71,49 +71,49 @@ MouseArea
     }*/
 
     onPositionChanged : {
-         if ( isMoved )
-         {
-       timeControll.moveWindow()
-         // // //console.log("mouseX ="+mouseX+" mouseY ="+mouseY)
-         }
-       else
-         if (isChangingWidthLeft )
-         {
-             timeControll.resizeWindowWidth(true)
-         }
-         else
-           if (isChangingWidthRight )
-           {
-               timeControll.resizeWindowWidth(false)
-           }
-         else
-           if (isChangingHeightUp)
-         {
-            timeControll.resizeWindowHeight(true)
-         }
-           else
-             if (isChangingHeightDown)
-           {
-              timeControll.resizeWindowHeight(false)
-           }
-     else
- {
-              var div=5
-        if (mouseX <=div || mouseX >= parent.width - div )
+        if ( isMoved )
         {
-            cursorShape = Qt.SizeHorCursor
+            timeControll.moveWindow()
+            // // //console.log("mouseX ="+mouseX+" mouseY ="+mouseY)
         }
-       else
-            if (mouseY <=div || mouseY >= parent.height - div )
+        else
+            if (isChangingWidthLeft )
             {
-                cursorShape = Qt.SizeVerCursor
+                timeControll.resizeWindowWidth(true)
             }
-                else
+            else
+                if (isChangingWidthRight )
                 {
-                  isChangingHeightUp = isChangingHeightDown  = isChangingWidthLeft  = isChangingWidthRight = false
-                   cursorShape = Qt.ArrowCursor
+                    timeControll.resizeWindowWidth(false)
                 }
- }
+                else
+                    if (isChangingHeightUp)
+                    {
+                        timeControll.resizeWindowHeight(true)
+                    }
+                    else
+                        if (isChangingHeightDown)
+                        {
+                            timeControll.resizeWindowHeight(false)
+                        }
+                        else
+                        {
+                            var div=5
+                            if (mouseX <=div || mouseX >= parent.width - div )
+                            {
+                                cursorShape = Qt.SizeHorCursor
+                            }
+                            else
+                                if (mouseY <=div || mouseY >= parent.height - div )
+                                {
+                                    cursorShape = Qt.SizeVerCursor
+                                }
+                                else
+                                {
+                                    isChangingHeightUp = isChangingHeightDown  = isChangingWidthLeft  = isChangingWidthRight = false
+                                    cursorShape = Qt.ArrowCursor
+                                }
+                        }
 
 
     }

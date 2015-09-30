@@ -33,7 +33,7 @@ class MainWindow;
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
-
+    QProgressBar status;
 public:
 
     explicit MainWindow(QWidget *parent = 0);
@@ -194,8 +194,13 @@ public slots:
     void on_action_ZoomOut_triggered();
 private slots:
     void updateBlockFromTextEdit();
+    void setCurentTextBlockStaticMoment(double value);
     void on_actionAbout_Qt_triggered();
     void keyPressEvent(QKeyEvent *e);
+    void on_spinBox_speedTB_valueChanged(int arg1);
+    void on_staticMomentSpin_valueChanged(double arg1);
+    void on_staticMomentSpin_2_valueChanged(int value);
+    void on_staticMomentButton_clicked();
 };
 
 #endif // MAINWINDOW_H
