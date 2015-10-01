@@ -156,6 +156,7 @@ class ListControll : public QObject, public QQuickImageProvider
     Q_OBJECT
 
 
+    QPoint pos_to_append = QPoint(-1,-1);
     OGLWidget *p_drawWidget = NULL;
      int spaces_to_add = -1;
     QPoint curent_block = QPoint(-1,-1);
@@ -204,7 +205,7 @@ class ListControll : public QObject, public QQuickImageProvider
     bool isGroupChanged = false;
     QList <int> block_to_del;
 
-    bool force_append_block;
+    bool force_append_block = true;
 public:
 
     Q_INVOKABLE QPoint getCurentBlock();
@@ -250,6 +251,8 @@ public:
     Q_INVOKABLE bool getCtrlPressed();
 
     Q_INVOKABLE bool setSpacingBtwBlocks(int);
+     Q_INVOKABLE void setPosToAppend(QPoint point);
+     Q_INVOKABLE QPoint getPosToAppend();
     Q_INVOKABLE int getSpacingBtwBlocks();
     Q_INVOKABLE  bool isProjectChanged();
     Q_INVOKABLE  QRect getYellowRect();
@@ -364,6 +367,7 @@ public:
 
     Q_INVOKABLE DrawElement* getBlockFromBuffer();
     Q_INVOKABLE getBlockIndToAddFromPos(int col,int ind, int pos);
+    Q_INVOKABLE getBlockIndToAddFromPos(DrawElement * elm, int pos);
     Q_INVOKABLE getBlockSpaceToAddFromPos(int col,int ind); //call after getBlockIndToAddFromPos
     Q_INVOKABLE void logBlocksTypes(int col);
     void sendUpdateModel();

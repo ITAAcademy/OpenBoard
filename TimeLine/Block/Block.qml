@@ -400,13 +400,15 @@ Rectangle{
             if (isDrag)
             {
                 cursorShape = Qt.OpenHandCursor
-                animation_scale_small.running = true
-                animation_scale_x.running = true
-                animation_scale_y.running = true //99999999
-                shadow.visible = true
+               // animation_scale_small.running = true
+               // animation_scale_x.running = true
+               // animation_scale_y.running = true //99999999
+                root.opacity = 0.5
+                //shadow.visible = true
             }
             else
             {
+                root.opacity = 1
                 console.log("onIsDragChanged")
                 root.animation_scale_normal_FromXpos_cuz = root.x
                 root.animation_scale_normal_FromYpos_cuz = root.y
@@ -641,7 +643,7 @@ Rectangle{
 
                     var track_size_drop_in =  main222.dropEnteredBlock.globalRep.count
 
-                    var out_console = true
+                    var out_console = false
                     main222.zdvigWhenNormalAnim =  0
 
 
@@ -1150,7 +1152,7 @@ Rectangle{
                         {
                             console.log("move blcok from to")
                             // timeControll.moveBlockFromTo(main222.selectedBlockCol,main222.selectedBlockIndex,  divider.pos_to_append.y );
-                            main222.able_create_empty_block = false
+                           // main222.able_create_empty_block = false
                             root.animation_scale_normal_toXpos = root.x - scroll.flickableItem.contentX
                         }
                         // root.animation_scale_normal_toXpos = root.x - scroll.flickableItem.contentX //+ main222.p_scale_pointer.width
@@ -1237,7 +1239,7 @@ Rectangle{
         id: drop
         enabled : !timeControll.getCurent_group(colIndex, mIndex)
         visible: !timeControll.getCurent_group(colIndex, mIndex)
-        anchors.fill: parent
+        anchors.fill: root
         onEntered: {
 
 

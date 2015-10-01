@@ -112,7 +112,7 @@ Rectangle {
             enabled: true
             height: parent.width
             width: parent.width
-            checked: false
+            checked: true
             onCheckedChanged: {
                 main222.force_append_block = forcibly_append_block.checked
 
