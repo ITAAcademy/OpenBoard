@@ -211,17 +211,6 @@ void EffectsManager::setInversion(bool val)
 */
 
 
-bool EffectsManager::isAbleToDraw(){
-    return ableToDraw;
-}
-void EffectsManager::setAbleToDraw(bool isAble){
-    ableToDraw=isAble;
-    if (!isAble)
-    {
-        //qDebug() << "emit unableToDraw();";
-    }
-}
-
 bool EffectsManager::isActive()
 {
     return view.isActive();
