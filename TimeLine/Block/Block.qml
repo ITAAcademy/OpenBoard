@@ -10,7 +10,9 @@ Rectangle{
     property int mIndex
     property int colIndex
     property int xChange: 0
-    property bool bChangeSize: false
+    property int resize_capture_area_width : 15
+    property bool bChangeSizeRight: false
+    property bool bChangeSizeLeft: false
     property string title:  "value"
     property Repeater globalRep
     property string colorKey : "green"
@@ -418,7 +420,7 @@ z: 0
             /*if(timeControll.getCurent_group())
                 return;*/
             {
-            if(globalRep.isDrag === false &&  mouseX > root.width * 0.9) //mouseX < root.width * 0.1 ||/
+            if(globalRep.isDrag === false &&  (mouseX > root.width-resize_capture_area_width || mouseX < resize_capture_area_width)) //mouseX < root.width * 0.1 ||/
             {
                 cursorShape = Qt.SizeHorCursor;
 //            drop.visible = false;
@@ -438,13 +440,30 @@ z: 0
 
             xChange = oldMouseX - mouseX;
 
-            if(bChangeSize)
+            if(bChangeSizeRight)
             {
                 //console.log(xChange);
                 if(timeControll.getCurent_group())
                     root.width += timeControll.tryResizeMemberInCurentGroup(-xChange*main222.scaling, root.colIndex, root.mIndex)/main222.scaling;
                 else
                     root.width -= xChange;
+                //timeControll.setTestWidth(bar_track.index,root.width, mIndex);
+            }
+            if(bChangeSizeLeft)
+            {
+                //console.log(xChange);
+                if(timeControll.getCurent_group())
+                    root.width -= timeControll.tryResizeMemberInCurentGroup(-xChange*main222.scaling, root.colIndex, root.mIndex)/main222.scaling;
+                else
+                {
+
+                    root.width += xChange;
+                     drag.target = root;
+                    root.x -= xChange;
+
+                    drag.target = null;
+
+                }
                 //timeControll.setTestWidth(bar_track.index,root.width, mIndex);
 
             }
@@ -523,9 +542,13 @@ z: 0
     // //console.log("onPressed");
             drop.visible = false;
              drop.enabled = false;
-            if( mouseX > root.width * 0.9)
+            if( mouseX > root.width - resize_capture_area_width)
             {
-                bChangeSize = true;
+                bChangeSizeRight = true;
+                mouseArea.drag.target = null
+            }
+            else if(mouseX < resize_capture_area_width){
+                bChangeSizeLeft = true;
                 mouseArea.drag.target = null
             }
             else
@@ -1097,7 +1120,7 @@ z: 0
 root.globalRep.isDrag = false
             }
             else
-             if(bChangeSize)
+             if(bChangeSizeRight)
             {
                 mouseArea.drag.target = root;
                  if(!timeControll.getCurent_group())
@@ -1106,7 +1129,7 @@ root.globalRep.isDrag = false
                     root.width = timeControll.getBlockTime(root.colIndex, root.mIndex)/main222.scaling;
                 // item_col.width = timeControll.getMaxTrackTime()// item_col.childrenRect.width
 
-                 bChangeSize = false;
+                 bChangeSizeRight = false;
                  if(!timeControll.getCurent_group())
                  if (root.p_main222.dovodka_block)
 
@@ -1117,6 +1140,27 @@ root.globalRep.isDrag = false
                   root.globalRep.updateModel();
     ///console.log("2222222222222");
             }
+             else if(bChangeSizeLeft)
+                {
+                    mouseArea.drag.target = root;
+                     if(!timeControll.getCurent_group())
+                        timeControll.setBlockTime(colIndex, mIndex,root.width * main222.scaling);
+                     else
+                        root.width = timeControll.getBlockTime(root.colIndex, root.mIndex)/main222.scaling;
+                    // item_col.width = timeControll.getMaxTrackTime()// item_col.childrenRect.width
+
+                     bChangeSizeLeft = false;
+                     if(!timeControll.getCurent_group())
+                     if (root.p_main222.dovodka_block)
+
+                     {
+                         timeControll.attachBlock(root.colIndex, root.mIndex , 50)
+                         console.log("dovodka finish")
+                     }
+                      root.globalRep.updateModel();
+        ///console.log("2222222222222");
+                }
+
 
 
             shadow.visible = false
