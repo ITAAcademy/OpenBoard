@@ -132,11 +132,11 @@ void OGLWidget::drawTexture(int x, int y, int width, int height, GLuint texture,
     glPushMatrix();
 
     if (centreScaling)
-    glTranslatef(cx, cy, 0);
+        glTranslatef(cx, cy, 0);
     glScalef(scaleX, scaleY, 1.f);
     glRotatef(angle, 0, 0, 1);
     if (centreScaling)
-    glTranslatef(-cx, -cy, 0);
+        glTranslatef(-cx, -cy, 0);
 
     glBegin(GL_QUADS);
     //Draw Picture
@@ -348,9 +348,9 @@ void OGLWidget::paintBrushInBuffer(GLuint& texture,Brush& currentBrushOfDrawSyst
     if (shaderSupported)
         useShader(0);
 
-   // glEnable(GL_DEPTH_TEST);
+    // glEnable(GL_DEPTH_TEST);
 
-   // glBindTexture(GL_TEXTURE_2D,0);
+    // glBindTexture(GL_TEXTURE_2D,0);
     //glBindFramebuffer(GL_FRAMEBUFFER , 0); // Unbind our texture
 }
 
@@ -431,16 +431,30 @@ void OGLWidget::enableGrid(){
 void OGLWidget::processMouse()
 {
     if(isMousePress) {
-        GLint x1 = editingRectangle.rect.x();
-        GLint y1 = editingRectangle.rect.y();
-        GLint x2 = editingRectangle.rect.x()+editingRectangle.rect.width();
-        GLint y2 = editingRectangle.rect.y()+editingRectangle.rect.height();
-        m_manager.setAbleToDraw(able_drawing);
+        int x1 = editingRectangle.rect.x();
+        int y1 = editingRectangle.rect.y();
+        int x2 = editingRectangle.rect.x()+editingRectangle.rect.width();
+        int y2 = editingRectangle.rect.y()+editingRectangle.rect.height();
 
-        int leftCornerX1=x1-editingRectangle.leftCornerSize/2;
-        int leftCornerY1=y1-editingRectangle.leftCornerSize/2;
-        int leftCornerX2=x1 + editingRectangle.leftCornerSize/2;
-        int leftCornerY2=y1 + editingRectangle.leftCornerSize/2;
+        int leftTopCornerX1=x1-editingRectangle.cornerSize/2;
+        int leftTopCornerY1=y1-editingRectangle.cornerSize/2;
+        int leftTopCornerX2=x1 + editingRectangle.cornerSize/2;
+        int leftTopCornerY2=y1 + editingRectangle.cornerSize/2;
+
+        int rightTopCornerX1=x2-editingRectangle.cornerSize/2;
+        int rightTopCornerY1=y1-editingRectangle.cornerSize/2;
+        int rightTopCornerX2=x2 + editingRectangle.cornerSize/2;
+        int rightTopCornerY2=y1 + editingRectangle.cornerSize/2;
+
+        int leftBottomCornerX1=x1-editingRectangle.cornerSize/2;
+        int leftBottomCornerY1=y2-editingRectangle.cornerSize/2;
+        int leftBottomCornerX2=x1 + editingRectangle.cornerSize/2;
+        int leftBottomCornerY2=y2 + editingRectangle.cornerSize/2;
+
+        int rightBottomCornerX1=x2-editingRectangle.cornerSize/2;
+        int rightBottomCornerY1=y2-editingRectangle.cornerSize/2;
+        int rightBottomCornerX2=x2 + editingRectangle.cornerSize/2;
+        int rightBottomCornerY2=y2 + editingRectangle.cornerSize/2;
 
 
 
@@ -448,8 +462,27 @@ void OGLWidget::processMouse()
         //editingRectangle.setX(0);
         // editingRectangle.setY(0);
 
-        if (editingRectangle.editingRectangleMode==EDIT_RECTANGLE_UNBINDED && editingRectangle.isEditingRectangleVisible && !forceEditBoxDisable && !isPainting)
-            if ((mousePos.x() >= leftCornerX1 && mousePos.x() <= leftCornerX2) && (mousePos.y() >= leftCornerY1 && mousePos.y() <= leftCornerY2))
+
+
+        if (editingRectangle.editingRectangleMode==EDIT_RECTANGLE_UNBINDED &&
+                editingRectangle.isEditingRectangleVisible && !forceEditBoxDisable && !isPainting)
+        {
+
+            editingRectangle.currentCornerResize=RESIZE_CORNER_NONE;
+            if((mousePos.x() >= leftTopCornerX1 && mousePos.x() <= leftTopCornerX2)
+                    && (mousePos.y() >= leftTopCornerY1 && mousePos.y() <= leftTopCornerY2))
+                editingRectangle.currentCornerResize=ResizeCorner::RESIZE_CORNER_TOP_LEFT;
+            if ((mousePos.x() >= rightTopCornerX1 && mousePos.x() <= rightTopCornerX2)
+                    && (mousePos.y() >= rightTopCornerY1 && mousePos.y() <= rightTopCornerY2))
+                editingRectangle.currentCornerResize=ResizeCorner::RESIZE_CORNER_TOP_RIGHT;
+            if ((mousePos.x() >= leftBottomCornerX1 && mousePos.x() <= leftBottomCornerX2)
+                    && (mousePos.y() >= leftBottomCornerY1 && mousePos.y() <= leftBottomCornerY2))
+                editingRectangle.currentCornerResize=ResizeCorner::RESIZE_CORNER_BOTTOM_LEFT;
+            if ((mousePos.x() >= rightBottomCornerX1 && mousePos.x() <= rightBottomCornerX2)
+                    && (mousePos.y() >= rightBottomCornerY1 && mousePos.y() <= rightBottomCornerY2))
+                 editingRectangle.currentCornerResize=ResizeCorner::RESIZE_CORNER_BOTTOM_RIGHT;
+
+            if (editingRectangle.currentCornerResize!=RESIZE_CORNER_NONE)
             {
                 editingRectangle.editingRectangleMode=EDIT_RECTANGLE_RESIZE;
             }
@@ -460,12 +493,13 @@ void OGLWidget::processMouse()
             }
 
 
+        }
         switch(editingRectangle.editingRectangleMode){
 
         case EDIT_RECTANGLE_MOVE:
         {
             gridEnabled=true;
-            m_manager.setAbleToDraw(false);
+            //m_manager.setAbleToDraw(false);
             // // //qDebug()<<"EDIT_RECTANGLE_MOVE width"<<editingRectangle.rect.width();
             //if (isPainting)
             if(pressedShift)
@@ -482,28 +516,45 @@ void OGLWidget::processMouse()
         case EDIT_RECTANGLE_RESIZE:
         {
             gridEnabled=true;
-            m_manager.setAbleToDraw(false);
+           // m_manager.setAbleToDraw(false);
+            int x = mousePos.x();
+            int y = mousePos.y();
+            if (pressedShift){
+                QPoint closestPoint = windowGrid.closeToLCP(mousePos);
+                x = closestPoint.x();
+                y = closestPoint.y();
+            }
+            switch(editingRectangle.currentCornerResize)
+            {
+            //NEED ONLY TWO CASE - TOP_LEFT AND DEFAULT
+            case RESIZE_CORNER_TOP_LEFT:
+                editingRectangle.rect.setX(x);
+                editingRectangle.rect.setY(y);
+                break;
+            case RESIZE_CORNER_TOP_RIGHT:
+                editingRectangle.rect.setWidth(x-editingRectangle.rect.x());
+                editingRectangle.rect.setY(y);
+               // editingRectangle.rect.setHeight(y-editingRectangle.rect.y());
+                break;
+            case RESIZE_CORNER_BOTTOM_LEFT:
+                editingRectangle.rect.setX(x);
+                editingRectangle.rect.setHeight(y-editingRectangle.rect.y());
+                break;
+            case RESIZE_CORNER_BOTTOM_RIGHT:
+                editingRectangle.rect.setWidth(x-editingRectangle.rect.x());
+                editingRectangle.rect.setHeight(y-editingRectangle.rect.y());
+                break;
+            }
+
             // //qDebug()<<"EDIT_RECTANGLE_RESIZE";
             //  if (isPainting)
-            {
-                if (pressedShift)
-                {
-                    QPoint closestPoint = windowGrid.closeToLCP(mousePos);
-                    editingRectangle.rect.setX(closestPoint.x());
-                    editingRectangle.rect.setY(closestPoint.y());
-                }
-                else
-                {
-                    editingRectangle.rect.setX(mousePos.x());
-                    editingRectangle.rect.setY(mousePos.y());
-                }
-            }
+
 
             break;
         }
         }
         testRectangle();
-        if ( m_manager.isAbleToDraw() && prevMousePos != mousePos)
+        if ( able_drawing && prevMousePos != mousePos)
         {
             paintBrushInBuffer(mouseFBO);
             qDebug() << "paintBrushInBuffer";
@@ -569,8 +620,14 @@ void OGLWidget::initShaderPrograms()
     //shaderWindow.setParent(this);
     connect(&shaderWindow, SIGNAL(test()), this, SLOT(testInit()));
 
-    if (mainShader->initShader(MAIN_FRAGMENT_SHADER_PATH,MAIN_VERTEX_SHADER_PATH)==0)shaderSupported=true;
-   // mainShader->initShader(MAIN_FRAGMENT_SHADER_PATH,MAIN_VERTEX_SHADER_PATH);
+    if (mainShader->initShader(MAIN_FRAGMENT_SHADER_PATH,MAIN_VERTEX_SHADER_PATH)==0)
+		shaderSupported=true;
+    else
+        QMessageBox::information(
+                    this,tr("OpenBoard"),
+                    tr("Shaders aren't supported. Some features won't work.\n Try update drivers of videocard") );
+    // mainShader->initShader(MAIN_FRAGMENT_SHADER_PATH,MAIN_VERTEX_SHADER_PATH);
+
 
     ShaderProgramWrapper *alphaShader = new ShaderProgramWrapper(this);
     alphaShader->initShader(ALPHA_FRAGMENT_SHADER_PATH,ALPHA_VERTEX_SHADER_PATH);
@@ -585,7 +642,7 @@ void OGLWidget::initShaderPrograms()
     shaderPrograms.push_back(pixelizationShader);
 
     ShaderProgramWrapper *circlesShader = new ShaderProgramWrapper(this);
-   circlesShader->initShader(CIRCLES_FRAGMENT_SHADER_PATH,CIRCLES_VERTEX_SHADER_PATH);
+    circlesShader->initShader(CIRCLES_FRAGMENT_SHADER_PATH,CIRCLES_VERTEX_SHADER_PATH);
     shaderPrograms.push_back(circlesShader);
 
     ShaderProgramWrapper *turnThePageShader = new ShaderProgramWrapper(this);
@@ -685,7 +742,7 @@ OGLWidget::OGLWidget(QWidget *parent) :
     editingRectangle.rect.setHeight(100);
     editingRectangle.rect.setX(50);
     editingRectangle.rect.setY(50);
-    editingRectangle.leftCornerSize=10;
+    editingRectangle.cornerSize=15;
     bRecord = false;
     this->setWindowFlags(Qt::CustomizeWindowHint | Qt::Dialog | Qt::FramelessWindowHint | Qt::WindowTitleHint);
     qDebug() <<  "OGL WIDGET MID";
@@ -1298,6 +1355,9 @@ FBOWrapper OGLWidget::getMainFBO(){
 FBOWrapper OGLWidget::getPingPongFBO(){
     return pingpongFBO;
 }
+bool OGLWidget::isAbleDrawing(){
+    return able_drawing;
+}
 
 void OGLWidget::setAbleDrawing(bool value)
 {
@@ -1310,7 +1370,7 @@ void OGLWidget::clearFrameBuffer(FBOWrapper fboWrapper){
 }
 
 void OGLWidget::clearFrameBuffer(GLuint fbo){
-//const GLuint *value={0};
+    //const GLuint *value={0};
     makeCurrent();
     GLint curentBuff;
     glGetIntegerv(GL_FRAMEBUFFER_BINDING, &curentBuff);
@@ -1334,7 +1394,7 @@ void OGLWidget::clearFrameBuffer(GLuint fbo){
      // glBindFramebuffer(GL_FRAMEBUFFER , 0);
       // qDebug()<<"clearFrameBuffer";
 //        glClearBufferfi(GL_FRAMEBUFFER, fboWrapper.frameBuffer, 0, 0 );*/
-   // glBindFramebuffer(GL_FRAMEBUFFER , 0); // Bind our frame buffer for rendering
+    // glBindFramebuffer(GL_FRAMEBUFFER , 0); // Bind our frame buffer for rendering
 
 
 }
@@ -1499,16 +1559,31 @@ void OGLWidget::drawGlobalShader( QVector<ShaderProgramWrapper*> shaders)
 
 void OGLWidget::drawEditBox( int z)
 {
-    GLint x1 = editingRectangle.rect.x();
-    GLint y1 = editingRectangle.rect.y();
-    GLint x2 = editingRectangle.rect.x()+editingRectangle.rect.width();
-    GLint y2 = editingRectangle.rect.y()+editingRectangle.rect.height();
+    int x1 = editingRectangle.rect.x();
+    int y1 = editingRectangle.rect.y();
+    int x2 = editingRectangle.rect.x()+editingRectangle.rect.width();
+    int y2 = editingRectangle.rect.y()+editingRectangle.rect.height();
     // m_manager.setAbleToDraw(true);
 
-    int leftCornerX1=x1-editingRectangle.leftCornerSize/2;
-    int leftCornerY1=y1-editingRectangle.leftCornerSize/2;
-    int leftCornerX2=x1 + editingRectangle.leftCornerSize/2;
-    int leftCornerY2=y1 + editingRectangle.leftCornerSize/2;
+    int leftTopCornerX1=x1-editingRectangle.cornerSize/2;
+    int leftTopCornerY1=y1-editingRectangle.cornerSize/2;
+    int leftTopCornerX2=x1 + editingRectangle.cornerSize/2;
+    int leftTopCornerY2=y1 + editingRectangle.cornerSize/2;
+
+    int rightTopCornerX1=x2-editingRectangle.cornerSize/2;
+    int rightTopCornerY1=y1-editingRectangle.cornerSize/2;
+    int rightTopCornerX2=x2 + editingRectangle.cornerSize/2;
+    int rightTopCornerY2=y1 + editingRectangle.cornerSize/2;
+
+    int leftBottomCornerX1=x1-editingRectangle.cornerSize/2;
+    int leftBottomCornerY1=y2-editingRectangle.cornerSize/2;
+    int leftBottomCornerX2=x1 + editingRectangle.cornerSize/2;
+    int leftBottomCornerY2=y2 + editingRectangle.cornerSize/2;
+
+    int rightBottomCornerX1=x2-editingRectangle.cornerSize/2;
+    int rightBottomCornerY1=y2-editingRectangle.cornerSize/2;
+    int rightBottomCornerX2=x2 + editingRectangle.cornerSize/2;
+    int rightBottomCornerY2=y2 + editingRectangle.cornerSize/2;
 
     if (editingRectangle.isEditingRectangleVisible && !forceEditBoxDisable && !isPainting && getStatus()!= PLAY)
     {
@@ -1531,16 +1606,36 @@ void OGLWidget::drawEditBox( int z)
         glVertex3i(x1,y1, z);
         glEnd();
 
-        //left corner
+
         glColor3f(0.0f, 1.0f, 0.0f);
         glLineWidth(3);
         glBegin(GL_QUADS);   //We want to draw a quad, i.e. shape with four sides
         // glColor3i(1, 0, 0); //Set the colour to red
-        glVertex3i(leftCornerX1, leftCornerY1, z);            //Draw the four corners of the rectangle
-        glVertex3i(leftCornerX2, leftCornerY1, z);
-        glVertex3i(leftCornerX2, leftCornerY2, z);
-        glVertex3i(leftCornerX1, leftCornerY2, z);
+         //left top corner
+        glVertex3i(leftTopCornerX1, leftTopCornerY1, z);            //Draw the four corners of the rectangle
+        glVertex3i(leftTopCornerX2, leftTopCornerY1, z);
+        glVertex3i(leftTopCornerX2, leftTopCornerY2, z);
+        glVertex3i(leftTopCornerX1, leftTopCornerY2, z);
+         //right top corner
+        glVertex3i(rightTopCornerX1, rightTopCornerY1, z);            //Draw the four corners of the rectangle
+        glVertex3i(rightTopCornerX2, rightTopCornerY1, z);
+        glVertex3i(rightTopCornerX2, rightTopCornerY2, z);
+        glVertex3i(rightTopCornerX1, rightTopCornerY2, z);
+        //left bottom corner
+       glVertex3i(leftBottomCornerX1, leftBottomCornerY1, z);            //Draw the four corners of the rectangle
+       glVertex3i(leftBottomCornerX2, leftBottomCornerY1, z);
+       glVertex3i(leftBottomCornerX2, leftBottomCornerY2, z);
+       glVertex3i(leftBottomCornerX1, leftBottomCornerY2, z);
+       //right bottom corner
+      glVertex3i(rightBottomCornerX1, rightBottomCornerY1, z);            //Draw the four corners of the rectangle
+      glVertex3i(rightBottomCornerX2, rightBottomCornerY1, z);
+      glVertex3i(rightBottomCornerX2, rightBottomCornerY2, z);
+      glVertex3i(rightBottomCornerX1, rightBottomCornerY2, z);
+
         glEnd();
+
+
+
     }
 }
 
@@ -1678,18 +1773,18 @@ void OGLWidget::applyEffectsToCurrentBlock()
         case SLIDE_SHADER:
             ShaderEffect sEffect(shaderPrograms[shaderProgramIndex],shaderProgramIndex);
 
-        int startTime = blockEffect->getPropetrie("start_time");
-        int endTime = blockEffect->getPropetrie("end_time");
-        bool reverse = blockEffect->getPropetrie("inversion");
-        int count = blockEffect->getPropetrie("count");
-        int elmSize = blockEffect->getPropetrie("elementSize");
-        sEffect.setStartTimeMS(startTime);
-        sEffect.setEffectTimeHowLong(endTime-startTime);
-        sEffect.setReverse(reverse);
-        sEffect.setShaderWrapperIndex(shaderProgramIndex);
-        sEffect.setCount(count);
-        sEffect.setElementSize(elmSize);
-        timeLineEffects.push_back(sEffect);
+            int startTime = blockEffect->getPropetrie("start_time");
+            int endTime = blockEffect->getPropetrie("end_time");
+            bool reverse = blockEffect->getPropetrie("inversion");
+            int count = blockEffect->getPropetrie("count");
+            int elmSize = blockEffect->getPropetrie("elementSize");
+            sEffect.setStartTimeMS(startTime);
+            sEffect.setEffectTimeHowLong(endTime-startTime);
+            sEffect.setReverse(reverse);
+            sEffect.setShaderWrapperIndex(shaderProgramIndex);
+            sEffect.setCount(count);
+            sEffect.setElementSize(elmSize);
+            timeLineEffects.push_back(sEffect);
         }
     }
     qDebug() << "apply effect after for";
@@ -1702,64 +1797,64 @@ void OGLWidget::loadEffectFromCurrentBlockToEffectManager()
 {
     effectManager->setCurrentBlockIndex(timeLine->getSelectedBlockPoint());
 
- QPoint blockIndex = effectManager->getCurrentBlockIndex();
-// qDebug() << "CUR BLOCK(LOAD):"<<blockIndex;
- DrawElement *currentBlock = timeLine->getBlock(blockIndex);
-effectManager->clearEffects();
-effectManager->setBlockTime(currentBlock->getLifeTime());
-int indexes[shaderPrograms.length()];
-for (int i = 0; i < shaderPrograms.length();i++)
-    indexes[i]=0;
-qDebug() << "loadEffectFromCurrentBlockToEffectManager:"<<currentBlock->getEffects().length();
- for (ShaderEffect  currentEffect : currentBlock->getEffects())
- {
-   //  qDebug() << "cur EFFECT start TIME:"<<currentEffect.getStartTimeMS();
-     //qDebug() << "cur EFFECT howlong TIME:"<<currentEffect.getEffectTimeHowLong();
-Effect effect;
-int currentProgramIndex = currentEffect.getShaderWrapperIndex();
-indexes[currentProgramIndex]++;
-QString nameStart;
-switch(currentProgramIndex){
-case ALPHA_SHADER:
-    nameStart="alpha";
-    break;
-case SPIN_SHADER:
-    nameStart="spin";
-    break;
-case PIXELIZATION_SHADER:
-    nameStart="pixelization";
-    break;
-case CIRCLES_SHADER:
-    nameStart="circles";
-    break;
-case TURNTHEPAGE_SHADER:
-    nameStart="turnPage";
-    break;
-case RANDSQUARES_SHADER:
-    nameStart="squares";
-    break;
-case TRESHOLD_SHADER:
-    nameStart="treshold";
-    break;
-case SLIDE_SHADER:
-    nameStart="slide";
-    break;
-default:
-    nameStart="effect";
-    break;
-}
-effect.setName(nameStart+QString::number(indexes[currentProgramIndex]));
+    QPoint blockIndex = effectManager->getCurrentBlockIndex();
+    // qDebug() << "CUR BLOCK(LOAD):"<<blockIndex;
+    DrawElement *currentBlock = timeLine->getBlock(blockIndex);
+    effectManager->clearEffects();
+    effectManager->setBlockTime(currentBlock->getLifeTime());
+    int indexes[shaderPrograms.length()];
+    for (int i = 0; i < shaderPrograms.length();i++)
+        indexes[i]=0;
+    qDebug() << "loadEffectFromCurrentBlockToEffectManager:"<<currentBlock->getEffects().length();
+    for (ShaderEffect  currentEffect : currentBlock->getEffects())
+    {
+        //  qDebug() << "cur EFFECT start TIME:"<<currentEffect.getStartTimeMS();
+        //qDebug() << "cur EFFECT howlong TIME:"<<currentEffect.getEffectTimeHowLong();
+        Effect effect;
+        int currentProgramIndex = currentEffect.getShaderWrapperIndex();
+        indexes[currentProgramIndex]++;
+        QString nameStart;
+        switch(currentProgramIndex){
+        case ALPHA_SHADER:
+            nameStart="alpha";
+            break;
+        case SPIN_SHADER:
+            nameStart="spin";
+            break;
+        case PIXELIZATION_SHADER:
+            nameStart="pixelization";
+            break;
+        case CIRCLES_SHADER:
+            nameStart="circles";
+            break;
+        case TURNTHEPAGE_SHADER:
+            nameStart="turnPage";
+            break;
+        case RANDSQUARES_SHADER:
+            nameStart="squares";
+            break;
+        case TRESHOLD_SHADER:
+            nameStart="treshold";
+            break;
+        case SLIDE_SHADER:
+            nameStart="slide";
+            break;
+        default:
+            nameStart="effect";
+            break;
+        }
+        effect.setName(nameStart+QString::number(indexes[currentProgramIndex]));
 
 
- effect.setPropetrie("start_time",currentEffect.getStartTimeMS());
- effect.setPropetrie("end_time",currentEffect.getStartTimeMS()+currentEffect.getEffectTimeHowLong());
-effect.setPropetrie("inversion",currentEffect.getReverse());
-effect.setPropetrie("effect_type",currentEffect.getShaderWrapperIndex());
-effect.setPropetrie("count",currentEffect.getCount());
-effect.setPropetrie("elementSize",currentEffect.getElementSize());
- effectManager->addEffect(effect);
- }
- //effectManager->update();
+        effect.setPropetrie("start_time",currentEffect.getStartTimeMS());
+        effect.setPropetrie("end_time",currentEffect.getStartTimeMS()+currentEffect.getEffectTimeHowLong());
+        effect.setPropetrie("inversion",currentEffect.getReverse());
+        effect.setPropetrie("effect_type",currentEffect.getShaderWrapperIndex());
+        effect.setPropetrie("count",currentEffect.getCount());
+        effect.setPropetrie("elementSize",currentEffect.getElementSize());
+        effectManager->addEffect(effect);
+    }
+    //effectManager->update();
 
 
 }
@@ -1797,6 +1892,7 @@ void OGLWidget::mousePressEvent(QMouseEvent *event)
     if(event->button() == Qt::LeftButton)
     {
         //isMousePlay = false;
+        if (able_drawing)
         isPainting = true;
         stopShowLastDrawing();
         effectManager->hide();
@@ -1818,22 +1914,24 @@ void OGLWidget::mousePressEvent(QMouseEvent *event)
                                    mousePos.y() - editingRectangle.rect.y());
 
             QRect temp = editingRectangle.rect;
-            if (temp.x() <= mousePos.x() && temp.x() + temp.width() >= mousePos.x()
+            /*if (temp.x() <= mousePos.x() && temp.x() + temp.width() >= mousePos.x()
                     && temp.y() <= mousePos.y() && temp.y() + temp.height() >= mousePos.y()  )
-                isPainting = false;
+                isPainting = false;*/
 
             //for rectangle resize
-            GLint x1 = editingRectangle.rect.x();
-            GLint y1 = editingRectangle.rect.y();
+           /* GLint x1 = editingRectangle.rect.x();
+            GLint y1 = editingRectangle.rect.y();*/
 
-            int leftCornerX1=x1-editingRectangle.leftCornerSize/2;
-            int leftCornerY1=y1-editingRectangle.leftCornerSize/2;
-            int leftCornerX2=x1 + editingRectangle.leftCornerSize/2;
-            int leftCornerY2=y1 + editingRectangle.leftCornerSize/2;
+            /*int leftTopCornerX1=x1-editingRectangle.cornerSize/2;
+            int leftTopCornerY1=y1-editingRectangle.cornerSize/2;
+            int leftTopCornerX2=x1 + editingRectangle.cornerSize/2;
+            int leftTopCornerY2=y1 + editingRectangle.cornerSize/2;*/
 
-            if ((mousePos.x() >= leftCornerX1 && mousePos.x() <= leftCornerX2)
-                    && (mousePos.y() >= leftCornerY1 && mousePos.y() <= leftCornerY2))
-                isPainting = false;
+       //if( editingRectangle.editingRectangleMode==EDIT_RECTANGLE_RESIZE)
+
+          /*  if ((mousePos.x() >= leftTopCornerX1 && mousePos.x() <= leftTopCornerX2)
+                    && (mousePos.y() >= leftTopCornerY1 && mousePos.y() <= leftTopCornerY2))
+                isPainting = false;*/
         }
     }
 
@@ -2178,7 +2276,7 @@ void OGLWidget::pauseAnimated()
 
 void OGLWidget::brushParamsChanged()
 {
-    if (!m_manager.isAbleToDraw())return;
+    if (!able_drawing)return;
     if (isShaderSupported())
         m_manager.getCreatedBrush().color_img=m_manager.getCreatedBrush().img;
     else
@@ -2499,7 +2597,7 @@ void OGLWidget::myRenderText( QGLWidget* w, int x, int y,int z, const QString& t
 
 void OGLWidget::drawTextFromTexture( int x, int y,int z, const QString& text,GLuint index, const QColor& col , const QFont& font , float scaleX,float scaleY )
 {
-  //  qDebug() << "DTFT:"<<x << "     " << y;
+    //  qDebug() << "DTFT:"<<x << "     " << y;
     qglColor(col);
 
     if (text.isEmpty()) return;
@@ -2530,7 +2628,7 @@ void OGLWidget::drawTextFromTexture( int x, int y,int z, const QString& text,GLu
         }
     }
     // img = QGLWidget::convertToGLFormat(img);
-   // qDebug() << "before drawQImageFromTexture";
+    // qDebug() << "before drawQImageFromTexture";
 
     drawQImageFromTexture(x,y,img,index,z, true,scaleX,scaleY,false);
 
@@ -2757,7 +2855,7 @@ QPoint OGLWidget::drawWrapText(QString str)
 
 void OGLWidget::storeMousePos()
 {
-    if (isMousePress && m_manager.isAbleToDraw()){
+    if (isMousePress && able_drawing){
 
         if (drawBrushElm->getCoords().length()==0)drawBrushElm->addBrush(m_manager.getCreatedBrush());
         drawBrushElm->addCoord(QPoint(mousePos.x(),mousePos.y()));

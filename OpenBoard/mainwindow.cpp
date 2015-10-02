@@ -178,8 +178,10 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(a_show_last_drawing,SIGNAL(triggered()),this,  SLOT(on_actionShow_last_drawing_triggered()));
     toolBarBoard->addAction(a_show_last_drawing);
 
+    ui->actionSave_drawing->setEnabled(false);
+
     a_save_drawing = new QAction(this);
-    a_save_drawing->setEnabled(true);
+    a_save_drawing->setEnabled(false);
     a_save_drawing->setIcon(QPixmap(":/icons/Save-icon.png").scaled(QSize(16, 16)));
     a_save_drawing->setToolTip(tr("Save last drawing"));
     connect(a_save_drawing,SIGNAL(triggered()),this,  SLOT(on_actionSave_drawing_triggered()));
@@ -356,6 +358,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(ui->actionRecord_to_file,SIGNAL(triggered()),this,  SLOT(on_action_Record_to_file_triggered()));
     ui->actionRecord_to_file->setCheckable(true);
+
+
+
+
 
     a_send_to_youtube = new QAction(this);
     a_send_to_youtube->setEnabled(true);
@@ -743,7 +749,7 @@ void MainWindow::on_action_Show_triggered()
     a_clear_drawing->setEnabled(true);
     a_clear_drawingBuffer->setEnabled(true);
     a_show_last_drawing->setEnabled(true);
-    a_save_drawing->setEnabled(true);
+    a_save_drawing->setEnabled(a_able_to_draw->isChecked());
 
     // showBoardSettings();
 
@@ -754,11 +760,7 @@ void MainWindow::on_action_Show_triggered()
     ui->action_Show->setEnabled(false);
     a_hide->setEnabled(true);
     ui->action_Hide->setEnabled(true);
-    if (!mpOGLWidget->m_manager.isAbleToDraw())
-    {
-        a_save_drawing->setEnabled(false);
-        ui->actionSave_drawing->setEnabled(false);
-    }
+
 
 
     /*
@@ -2151,6 +2153,8 @@ void MainWindow::on_action_Pause_triggered()
 
 void MainWindow::on_action_Able_to_draw_Checked()
 {
+        a_save_drawing->setEnabled(a_able_to_draw->isChecked());
+        ui->actionSave_drawing->setEnabled(a_able_to_draw->isChecked());
     mpOGLWidget->setAbleDrawing(a_able_to_draw->isChecked());
 }
 
@@ -2370,7 +2374,7 @@ void MainWindow::on_blockRightToolbar_exceptPlayPauseStop(bool tt)
     a_clear_drawing->setEnabled(tt);
     a_clear_drawingBuffer->setEnabled(tt);
     a_show_last_drawing->setEnabled(tt);
-    a_save_drawing->setEnabled(tt);
+    //a_save_drawing->setEnabled(tt);
     a_open_project->setEnabled(tt);
     a_new_project->setEnabled(tt);
     a_save_project->setEnabled(tt);

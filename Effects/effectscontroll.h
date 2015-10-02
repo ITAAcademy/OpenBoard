@@ -56,9 +56,6 @@ public:
      * G/S
     */
 
-
-    bool isAbleToDraw();
-    void setAbleToDraw(bool val);
     bool isActive();
 
 

@@ -18,7 +18,7 @@ uniform float radial_blur;   // blur factor
         vec2(3.0,	0.015625)
 };*/
 vec2 Center=vec2(0.5, 0.5 ); ///center of the screen (could be any place)
-float BlurStart = 0f; /// blur offset
+float BlurStart = 0; /// blur offset
 //float BlurWidth = 0.1; ///how big it should be
 //float nsamples = 10;
 
