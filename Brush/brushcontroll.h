@@ -88,9 +88,6 @@ public:
     Q_INVOKABLE bool isColorValid(QString value);
     Q_INVOKABLE void update();
 
-
-    bool isAbleToDraw();
-    void setAbleToDraw(bool val);
     bool isActive();
 signals:
 //void colorChanged();
@@ -99,7 +96,6 @@ public slots:
 QImage requestImage(const QString &id, QSize *size, const QSize &requestedSize);
 void setFocus();
 private:
-bool ableToDraw=true;
     bool openBrushLibrary( QString path = "\\Preset\\Brushes");
 };
 

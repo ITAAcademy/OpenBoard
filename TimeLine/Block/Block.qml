@@ -10,7 +10,9 @@ Rectangle{
     property int mIndex
     property int colIndex
     property int xChange: 0
-    property bool bChangeSize: false
+    property int resize_capture_area_width : 15
+    property bool bChangeSizeRight: false
+    property bool bChangeSizeLeft: false
     property string title:  "value"
     property Repeater globalRep
     property string colorKey : "green"
@@ -483,13 +485,14 @@ Rectangle{
             /*if(timeControll.getCurent_group())
                 return;*/
             {
-                if(globalRep.isDrag === false &&  mouseX > root.width * 0.9) //mouseX < root.width * 0.1 ||/
-                {
-                    cursorShape = Qt.SizeHorCursor;
-                    //            drop.visible = false;
-                    //                drop.enabled = false;
-                    //    root.Drag.active =  false
-                    //console.log("eeeeeeeeeeeeeeeeeeeeeeeeeeee")
+            if(globalRep.isDrag === false &&  (mouseX > root.width-resize_capture_area_width || mouseX < resize_capture_area_width)) //mouseX < root.width * 0.1 ||/
+            {
+                cursorShape = Qt.SizeHorCursor;
+//            drop.visible = false;
+//                drop.enabled = false;
+            //    root.Drag.active =  false
+                //console.log("eeeeeeeeeeeeeeeeeeeeeeeeeeee")
+
 
                 }
                 else
@@ -503,14 +506,32 @@ Rectangle{
 
                 xChange = oldMouseX - mouseX;
 
-                if(bChangeSize)
+            if(bChangeSizeRight)
+            {
+                //console.log(xChange);
+                if(timeControll.getCurent_group())
+                    root.width += timeControll.tryResizeMemberInCurentGroup(-xChange*main222.scaling, root.colIndex, root.mIndex)/main222.scaling;
+                else
+                    root.width -= xChange;
+                //timeControll.setTestWidth(bar_track.index,root.width, mIndex);
+            }
+            if(bChangeSizeLeft)
+            {
+                //console.log(xChange);
+                if(timeControll.getCurent_group())
+                    root.width -= timeControll.tryResizeMemberInCurentGroup(-xChange*main222.scaling, root.colIndex, root.mIndex)/main222.scaling;
+                else
                 {
-                    //console.log(xChange);
-                    if(timeControll.getCurent_group())
-                        root.width += timeControll.tryResizeMemberInCurentGroup(-xChange*main222.scaling, root.colIndex, root.mIndex)/main222.scaling;
-                    else
-                        root.width -= xChange;
-                    //timeControll.setTestWidth(bar_track.index,root.width, mIndex);
+
+                    root.width += xChange;
+                     drag.target = root;
+                    root.x -= xChange;
+
+                    drag.target = null;
+
+                }
+                //timeControll.setTestWidth(bar_track.index,root.width, mIndex);
+
 
                 }
                 oldMouseX = mouseX;
@@ -590,17 +611,23 @@ Rectangle{
                         drag.target = root
                     else
                         drag.target = null
-                    // //console.log("onPressed");
-                    drop.visible = false;
-                    drop.enabled = false;
-                    if( mouseX > root.width * 0.9)
-                    {
-                        bChangeSize = true;
-                        mouseArea.drag.target = null
-                    }
-                    else
-                    {
-                        globalRep.isDrag = true;
+
+    // //console.log("onPressed");
+            drop.visible = false;
+             drop.enabled = false;
+            if( mouseX > root.width - resize_capture_area_width)
+            {
+                bChangeSizeRight = true;
+                mouseArea.drag.target = null
+            }
+            else if(mouseX < resize_capture_area_width){
+                bChangeSizeLeft = true;
+                mouseArea.drag.target = null
+            }
+            else
+            {
+            globalRep.isDrag = true;
+
 
                         //root.border.color  = "transparent"
 
@@ -1179,45 +1206,51 @@ Rectangle{
                     }
                    // main222.selectedBlockCol = divider.pos_to_append.x
 
-
-
-
-                    timeControll.setSelectedBlockPoint(main222.selectedBlockCol,main222.selectedBlockIndex)
-                }
-                root.globalRep.isDrag = false
+            timeControll.setSelectedBlockPoint(main222.selectedBlockCol,main222.selectedBlockIndex)
+                   }
+root.globalRep.isDrag = false
             }
             else
-                if(bChangeSize)
+             if(bChangeSizeRight)
+            {
+                mouseArea.drag.target = root;
+                 if(!timeControll.getCurent_group())
+                    timeControll.setBlockTime(colIndex, mIndex,root.width * main222.scaling);
+                 else
+                    root.width = timeControll.getBlockTime(root.colIndex, root.mIndex)/main222.scaling;
+                // item_col.width = timeControll.getMaxTrackTime()// item_col.childrenRect.width
+
+                 bChangeSizeRight = false;
+                 if(!timeControll.getCurent_group())
+                 if (root.p_main222.dovodka_block)
+
+                 {
+                     timeControll.attachBlock(root.colIndex, root.mIndex , 50)
+                     console.log("dovodka finish")
+                 }
+                  root.globalRep.updateModel();
+    ///console.log("2222222222222");
+            }
+             else if(bChangeSizeLeft)
                 {
                     mouseArea.drag.target = root;
-
-                    timeControll.deleteBlockToDel(root.colIndex)
-
-                    /* if(!timeControll.getCurent_group())
-                    {
-                        console.log("tttttttttttttttttttttttttttttttttttttttttttttttt")
+                     if(!timeControll.getCurent_group())
                         timeControll.setBlockTime(colIndex, mIndex,root.width * main222.scaling);
-                    }
-                    else
-                    {
-                         console.log("yyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyy")
+                     else
                         root.width = timeControll.getBlockTime(root.colIndex, root.mIndex)/main222.scaling;
-                    }*/
+                    // item_col.width = timeControll.getMaxTrackTime()// item_col.childrenRect.width
 
+                     bChangeSizeLeft = false;
+                     if(!timeControll.getCurent_group())
+                     if (root.p_main222.dovodka_block)
 
-
-                    bChangeSize = false;
-                    if(!timeControll.getCurent_group())
-                        if (root.p_main222.dovodka_block)
-
-                        {
-                            timeControll.attachBlock(root.colIndex, root.mIndex , 50)
-                            console.log("dovodka finish")
-                        }
-                    root.globalRep.updateModel();
-                    ///console.log("2222222222222");
+                     {
+                         timeControll.attachBlock(root.colIndex, root.mIndex , 50)
+                         console.log("dovodka finish")
+                     }
+                      root.globalRep.updateModel();
+        ///console.log("2222222222222");
                 }
-
 
             shadow.visible = false
 

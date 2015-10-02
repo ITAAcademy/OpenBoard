@@ -68,13 +68,6 @@ public:
      * G/S
     */
 
-
-
-
-    Q_INVOKABLE void update();
-
-
-
     bool isActive();
     QStack<QString> getMusicStack() const;
 
@@ -107,6 +100,8 @@ signals:
     void hideSignal();
     void currentBrushChanged();
     void filePathNameChanged(QString value);
+    void update();
+
 public slots:
     QImage requestImage(const QString &id, QSize *size, const QSize &requestedSize);
 void setFocus();

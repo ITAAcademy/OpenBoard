@@ -180,8 +180,10 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(a_show_last_drawing,SIGNAL(triggered()),this,  SLOT(on_actionShow_last_drawing_triggered()));
     toolBarBoard->addAction(a_show_last_drawing);
 
+    ui->actionSave_drawing->setEnabled(false);
+
     a_save_drawing = new QAction(this);
-    a_save_drawing->setEnabled(true);
+    a_save_drawing->setEnabled(false);
     a_save_drawing->setIcon(QPixmap(":/icons/Save-icon.png").scaled(QSize(16, 16)));
     a_save_drawing->setToolTip(tr("Save last drawing"));
     connect(a_save_drawing,SIGNAL(triggered()),this,  SLOT(on_actionSave_drawing_triggered()));
@@ -358,6 +360,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(ui->actionRecord_to_file,SIGNAL(triggered()),this,  SLOT(on_action_Record_to_file_triggered()));
     ui->actionRecord_to_file->setCheckable(true);
+
+
+
+
 
     a_send_to_youtube = new QAction(this);
     a_send_to_youtube->setEnabled(true);
@@ -681,6 +687,7 @@ bool MainWindow::event(QEvent * e) // overloading event(QEvent*) method of QMain
         mpOGLWidget->getTimeLine()->emitFocusLostSignal();
         mpOGLWidget->hideBrushManager();
         mpOGLWidget->hideEffectsManager();
+        mpOGLWidget->forceEditBoxDisable = true;
          /* QPoint current_pos = mpOGLWidget->pos();
           current_pos.setY(current_pos.y() + mpOGLWidget->height());
           mpOGLWidget->getTimeLine()->setViewPosition(current_pos);*/
@@ -698,6 +705,8 @@ bool MainWindow::event(QEvent * e) // overloading event(QEvent*) method of QMain
               activeOther = true;
           if(!activeOther)
               isActive = false;
+
+          mpOGLWidget->forceEditBoxDisable = ui->actionHide_editBox->isChecked();
           //qDebug() << "LOSE_ACTIVE_MAIN_WINDOW";
           break ;
 
@@ -742,7 +751,7 @@ void MainWindow::on_action_Show_triggered()
     a_clear_drawing->setEnabled(true);
     a_clear_drawingBuffer->setEnabled(true);
     a_show_last_drawing->setEnabled(true);
-    a_save_drawing->setEnabled(true);
+    a_save_drawing->setEnabled(a_able_to_draw->isChecked());
 
     // showBoardSettings();
 
@@ -753,11 +762,7 @@ void MainWindow::on_action_Show_triggered()
     ui->action_Show->setEnabled(false);
     a_hide->setEnabled(true);
     ui->action_Hide->setEnabled(true);
-    if (!mpOGLWidget->m_manager.isAbleToDraw())
-    {
-        a_save_drawing->setEnabled(false);
-        ui->actionSave_drawing->setEnabled(false);
-    }
+
 
 
     /*
@@ -2021,7 +2026,8 @@ void MainWindow::on_action_Play_triggered()
     //  // //qDebug() << mUnitList.size();
     // QString name = this->windowTitle();
     play = true;
-    //mpOGLWidget->editingRectangle.isEditingRectangleVisible = false;
+    mpOGLWidget->editingRectangle.isEditingRectangleVisible = false;
+
     if(mpOGLWidget->getStatus() != OGLWidget::PLAY )
     {
         if(mpOGLWidget->drawAnimated(ui->actionRecord_to_file->isChecked()))
@@ -2155,6 +2161,8 @@ void MainWindow::on_action_Pause_triggered()
 
 void MainWindow::on_action_Able_to_draw_Checked()
 {
+        a_save_drawing->setEnabled(a_able_to_draw->isChecked());
+        ui->actionSave_drawing->setEnabled(a_able_to_draw->isChecked());
     mpOGLWidget->setAbleDrawing(a_able_to_draw->isChecked());
 }
 
@@ -2374,7 +2382,7 @@ void MainWindow::on_blockRightToolbar_exceptPlayPauseStop(bool tt)
     a_clear_drawing->setEnabled(tt);
     a_clear_drawingBuffer->setEnabled(tt);
     a_show_last_drawing->setEnabled(tt);
-    a_save_drawing->setEnabled(tt);
+    //a_save_drawing->setEnabled(tt);
     a_open_project->setEnabled(tt);
     a_new_project->setEnabled(tt);
     a_save_project->setEnabled(tt);

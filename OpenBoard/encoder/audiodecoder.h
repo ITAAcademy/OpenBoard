@@ -104,6 +104,8 @@ public slots:
 
     void seekFile(int ms);// new remake for milisecond//@BAG@NicolasFix now work for uSecond (see FFmpeg)
     QByteArray getAudioFrombuffer();
+private slots:
+    bool seekFrame(int64_t frame);
 private:
     void initFormat();
     int getSampleFormatSize(AVSampleFormat frm);// for test

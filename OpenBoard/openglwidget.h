@@ -77,11 +77,13 @@ struct ColorMarker{
     QColor value;
 };
 enum EditingRectangleBindMode {EDIT_RECTANGLE_UNBINDED =0,EDIT_RECTANGLE_MOVE=1,EDIT_RECTANGLE_RESIZE=2};
+enum ResizeCorner {RESIZE_CORNER_TOP_LEFT,RESIZE_CORNER_TOP_RIGHT,RESIZE_CORNER_BOTTOM_LEFT,RESIZE_CORNER_BOTTOM_RIGHT,RESIZE_CORNER_NONE};
 class OGLWidget;
 
 struct RectangleEditor {
     QRect rect;
-    int leftCornerSize;
+    int cornerSize;
+    ResizeCorner currentCornerResize;
     volatile bool isEditingRectangleVisible = true;
     int editingRectangleMode = EDIT_RECTANGLE_UNBINDED;
 
@@ -169,7 +171,7 @@ public:
 
 
     //bool isEditingRectangleBindedToCursor = false;
-    RectangleEditor editingRectangle;//Draw element layout manager
+     RectangleEditor editingRectangle;//Draw element layout manager
     volatile bool forceEditBoxDisable = false;
 
     QImage brushBuffer;
@@ -308,6 +310,7 @@ public:
     DrawElement *getSelElm() const;
     void setSelElm(DrawElement *value);
 
+    bool isAbleDrawing();
 public slots:
     QSize imageLoadedPictureSizeSlot(QSize);
     void loadEffectFromCurrentBlockToEffectManager();

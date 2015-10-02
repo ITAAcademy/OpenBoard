@@ -52,6 +52,8 @@ public:
 
 public slots:
     qint64 getDTSFromMS(int ms);
+private slots:
+    bool seekFrame(int64_t frame);
 private:
     int initVideoDecoder();
 };

@@ -169,19 +169,9 @@ bool BrushManager::openBrushLibrary(QString path)
     qDebug() << "Image found    " << imageStack.length();
     qDebug() << brushPathsList;
     if (imageStack.length()>0)setCurentBrush(0);
-    else setAbleToDraw(false);
 }
 
-bool BrushManager::isAbleToDraw(){
-    return ableToDraw;
-}
-void BrushManager::setAbleToDraw(bool isAble){
-    ableToDraw=isAble;
-     if (!isAble)
-    {
-    //qDebug() << "emit unableToDraw();";
-     }
-}
+
 
 bool BrushManager::isActive()
 {

@@ -45,7 +45,7 @@ public:
     ~FFmpegHelp();
 
     Frame getNextFrame(qint64 time);
-    void restart();
+    void restart(int64_t startTime = 0);
     long int getDuration();
     long int getPTS();
 

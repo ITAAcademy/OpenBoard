@@ -4,13 +4,6 @@
 
 
 
-void FileManager::update()
-{
-    qApp->processEvents(QEventLoop::ExcludeUserInputEvents, 200);
-    //createdBrush.color_img = BrushPainter::getInstance()->applyColor(createdBrush);
-   // emit currentBrushChanged();
-}
-
 QStack<QString> FileManager::getMusicStack() const
 {
     return musicStack;
@@ -31,52 +24,52 @@ int FileManager::getVideoStackSize() const
     return videoStack.size();
 }
 
- int FileManager::getMusicStackSize() const
- {
-     return musicStack.size();
- }
+int FileManager::getMusicStackSize() const
+{
+    return musicStack.size();
+}
 
-  QString FileManager::getMusicStackAt(int index)
-  {
-      if (index > -1 && index <  musicStack.size())
+QString FileManager::getMusicStackAt(int index)
+{
+    if (index > -1 && index <  musicStack.size())
 
-          return musicStack[index];
-  }
+        return musicStack[index];
+}
 
-  QString FileManager::getImageStackAt(int index)
-  {
-      if (index > -1 && index <  imageStackPath.size())
-          return imageStackPath[index];
-      else
-          return "";
-  }
+QString FileManager::getImageStackAt(int index)
+{
+    if (index > -1 && index <  imageStackPath.size())
+        return imageStackPath[index];
+    else
+        return "";
+}
 
-  int FileManager::getImageStackSize()
-  {
-          return imageStackPath.size();
-  }
+int FileManager::getImageStackSize()
+{
+    return imageStackPath.size();
+}
 
-  QString FileManager::getMusicStackOnlyFilenameAt(int index)
-  {
-      if (index > -1 && index <  musicStackName.size())
-             return musicStackName[index];
-      else
-          return "";
-  }
+QString FileManager::getMusicStackOnlyFilenameAt(int index)
+{
+    if (index > -1 && index <  musicStackName.size())
+        return musicStackName[index];
+    else
+        return "";
+}
 
-  QString FileManager::getVideoStackOnlyFilenameAt(int index)
-  {
-      if (index > -1 && index <  videoStackName.size())
-             return videoStackName[index];
-  }
+QString FileManager::getVideoStackOnlyFilenameAt(int index)
+{
+    if (index > -1 && index <  videoStackName.size())
+        return videoStackName[index];
+}
 
-  QString FileManager::getVideoStackAt(int index)
-  {
-      if (index > -1 && index <  videoStack.size())
-          return videoStack[index];
-      else
-          return "";
-  }
+QString FileManager::getVideoStackAt(int index)
+{
+    if (index > -1 && index <  videoStack.size())
+        return videoStack[index];
+    else
+        return "";
+}
 
 void FileManager::setVideoStack(const QStack<QString> &value)
 {
@@ -111,7 +104,7 @@ void FileManager::hideIt()
 
 void FileManager::setColorize(bool val)
 {
-    colorize=val;
+    colorize = val;
 }
 
 FileManager::FileManager(QObject *parent) : QObject(parent), QQuickImageProvider(QQuickImageProvider::Image)
@@ -119,8 +112,8 @@ FileManager::FileManager(QObject *parent) : QObject(parent), QQuickImageProvider
     QTime midnight(0,0,0);
     qsrand(midnight.secsTo(QTime::currentTime()));
 
-    openBrushLibrary();
     qDebug() << "A6";
+    openBrushLibrary();
 
     if (qgetenv("QT_QUICK_CORE_PROFILE").toInt()) {\
         QSurfaceFormat f = view.format();\
@@ -129,25 +122,25 @@ FileManager::FileManager(QObject *parent) : QObject(parent), QQuickImageProvider
         view.setFormat(f);\
     }\
     qDebug() << "A7";
-  //  view.connect(view.engine(), SIGNAL(quit()), &app, SLOT(quit()));
+    //  view.connect(view.engine(), SIGNAL(quit()), &app, SLOT(quit()));
     new QQmlFileSelector(view.engine(), &view);
     cloneImg = new ImageClone(this);
-      qDebug() << "A8";
+    qDebug() << "A8";
 
     view.engine()->addImageProvider("loader2", cloneImg);
-     view.engine()->rootContext()->setContextProperty("brushControll", this);
-      qDebug() << "A9";
+    view.engine()->rootContext()->setContextProperty("brushControll", this);
+    qDebug() << "A9";
     view.setSource(QUrl("qrc:/main_filemanager.qml")); \
     qDebug() << "A13";
     view.setResizeMode(QQuickView::SizeRootObjectToView);
     qDebug() << "A14";
-    view.setPersistentOpenGLContext(true);
-      qDebug() << "A10";
+    // view.setPersistentOpenGLContext(true);
+    qDebug() << "A10";
     view.setColor("transparent");
     //viewsetFont(QFont("Segoe Script"));
 
 
-qDebug() << "A5";
+    qDebug() << "A5";
 }
 
 FileManager::~FileManager()
@@ -162,10 +155,22 @@ int FileManager::getBrushCount()
 
 void FileManager::show()
 {
+
+    if(imageStack.size() > 0)
+        imageStack.clear();
+    if(imageStackPath.size() > 0)
+        imageStackPath.clear();
+    if(musicStack.size() > 0)
+        musicStack.clear();
+    if(videoStack.size() > 0)
+        videoStack.clear();
+
+    openBrushLibrary();
+
     view.setFlags(Qt::CustomizeWindowHint | Qt::FramelessWindowHint | Qt::WindowTitleHint);
 
     if (QGuiApplication::platformName() == QLatin1String("qnx") || \
-          QGuiApplication::platformName() == QLatin1String("eglfs")) {\
+            QGuiApplication::platformName() == QLatin1String("eglfs")) {\
         view.showFullScreen();\
     } else {\
         view.show();\
@@ -182,8 +187,8 @@ void FileManager::hide()
 void FileManager::close()
 {
 
-        view.engine()->removeImageProvider("loader");
-        view.close();
+    view.engine()->removeImageProvider("loader");
+    view.close();
 
 }
 
@@ -222,7 +227,7 @@ void FileManager::setSize(int width, int height)
 
 QSize FileManager::getSize()
 {
-   return view.size();
+    return view.size();
 }
 
 
@@ -238,6 +243,7 @@ QImage FileManager::requestImage(const QString &id, QSize *size, const QSize& re
     {
         int i = id.rightRef(id.length() - 1).toInt();
         //qDebug() << i;
+        if(i < imageStack.size() && i >= 0)
         return imageStack[i];
     }
 
@@ -247,46 +253,47 @@ QImage FileManager::requestImage(const QString &id, QSize *size, const QSize& re
 bool FileManager::openBrushLibrary(QString path)
 {
     QString new_path = brushDir.currentPath()+path;
-    qDebug () << "OPENG BRUSH LIBRARY   "   ;
+    qDebug () << "OPENG FILE LIBRARY   "   ;
 
     QDir dir(new_path);
     brushPathsList = dir.entryList(QDir::Files);
     for(int i = 0; i < brushPathsList.length(); i++)
     {
-       QString temp_path = new_path + "\\" + brushPathsList[i];
+        QString temp_path = new_path + "\\" + brushPathsList[i];
 
-      QString extension = QFileInfo(temp_path).suffix();
+        QString extension = QFileInfo(temp_path).suffix();
 
-      //qDebug() << "Ext " << extension;
+        //qDebug() << "Ext " << extension;
         if (extension == "mp3" || extension == "wav" || extension == "flac")
         {
-              musicStack.push(temp_path);
-              musicStackName.push(brushPathsList[i]);
+            musicStack.push(temp_path);
+            musicStackName.push(brushPathsList[i]);
         }
         else
-          if (extension == "avi" || extension == "mp4" || extension == "mkv")
-          {
+            if (extension == "avi" || extension == "mp4" || extension == "mkv")
+            {
                 videoStack.push(temp_path);
                 videoStackName.push(brushPathsList[i]);
-          }
-        else
-          {
-              extension = QImageReader::imageFormat(temp_path);
-            if (extension != "")
-            {
-               QImage img = QImage(temp_path);
-              if(!img.isNull())
-              {
-                  imageStack.push(img);
-                  imageStackPath.push(temp_path);
-              }
             }
-          }
+            else
+            {
+                extension = QImageReader::imageFormat(temp_path);
+                if (extension != "")
+                {
+                    QImage img = QImage(temp_path);
+                    if(!img.isNull())
+                    {
+                        imageStack.push(img);
+                        imageStackPath.push(temp_path);
+                    }
+                }
+            }
     }
     qDebug() << "Image found    " << imageStack.length();
-     qDebug() << "Music found    " << musicStack.length();
-      qDebug() << "Video found    " << videoStack.length();
-   // qDebug() << brushPathsList;
+    qDebug() << "Music found    " << musicStack.length();
+    qDebug() << "Video found    " << videoStack.length();
+    emit update();
+    // qDebug() << brushPathsList;
 }
 
 
@@ -298,7 +305,7 @@ bool FileManager::isActive()
 
 void FileManager::setFocus()
 {
-   // view.setPosition(view.position());
+    // view.setPosition(view.position());
     if(view.isVisible())
     {
         view.setVisible(false);
@@ -338,21 +345,21 @@ void FileManager::resizeWindowWidth(bool left)
         int tt = posMouse.x() - view.x();
         if (tt < view.minimumWidth())
             tt = view.minimumWidth();
-      view.setWidth(tt)  ;
+        view.setWidth(tt)  ;
     }
     else
     {
         int tt = view.x();
-      view.setX(posMouse.x());
+        view.setX(posMouse.x());
 
-      tt = view.width() + tt - view.x();
-       if (tt < view.minimumWidth())
-       {
-           view.setX(view.x() + (tt - view.minimumWidth()));
-           tt = view.minimumWidth();
-       }
+        tt = view.width() + tt - view.x();
+        if (tt < view.minimumWidth())
+        {
+            view.setX(view.x() + (tt - view.minimumWidth()));
+            tt = view.minimumWidth();
+        }
 
-      view.setWidth(tt);
+        view.setWidth(tt);
     }
 }
 
@@ -364,20 +371,20 @@ void FileManager::resizeWindowHeight(bool up)
         int tt = posMouse.y() - view.y();
         if (tt < view.minimumHeight())
             tt = view.minimumHeight();
-      view.setHeight(tt)  ;
+        view.setHeight(tt)  ;
     }
     else
     {
         int tt = view.y();
-      view.setY(posMouse.y());
+        view.setY(posMouse.y());
 
-      tt = view.height() + tt - view.y();
-       if (tt < view.minimumHeight())
-       {
-           view.setY(view.y() + (tt - view.minimumHeight()));
-           tt = view.minimumHeight();
-       }
+        tt = view.height() + tt - view.y();
+        if (tt < view.minimumHeight())
+        {
+            view.setY(view.y() + (tt - view.minimumHeight()));
+            tt = view.minimumHeight();
+        }
 
-      view.setHeight(tt);
+        view.setHeight(tt);
     }
 }

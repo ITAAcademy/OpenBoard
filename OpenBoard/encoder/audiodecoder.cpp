@@ -25,10 +25,26 @@ qint64 AudioDecoder::getDTSFromMS(int ms)
     return (qint64) qCeil((double)(ms/(av_q2d(stream->time_base)*1000)) + stream->start_time);
 }
 
+bool AudioDecoder::seekFrame(int64_t frame)
+{
+
+    //printf("\t avformat_seek_file\n");
+    if(avformat_seek_file(formatContext, audioStream,0, frame, frame, AVSEEK_FLAG_FRAME) < 0)
+        return false;
+
+    avcodec_flush_buffers(formatContext->streams[audioStream]->codec);
+
+    return true;
+}
+
 void AudioDecoder::seekFile(int ms)
 {
     qDebug() << "seekFile();";
-    avformat_seek_file(formatContext, audioStream,INT64_MIN, ms, INT64_MAX, 0 );
+   // avformat_seek_file(formatContext, audioStream,INT64_MIN, ms, INT64_MAX, 0 );
+    int64_t desiredFrameNumber = av_rescale(ms, formatContext->streams[audioStream]->time_base.den, formatContext->streams[audioStream]->time_base.num);
+    desiredFrameNumber/=1000;
+
+    seekFrame(desiredFrameNumber);
     baseTime = 0;
     audioBuffer.clear();
 }
@@ -93,6 +109,11 @@ AudioDecoder::~AudioDecoder()
 {
     audio->stop();
     qDebug() << "S1";
+    av_free(optionsDict);
+    av_free(formatContext);
+    avcodec_free_context(&audioCodecContext);
+    av_free(audioCodec);
+
     delete audio;
     qDebug() << "S2";
 
@@ -108,10 +129,7 @@ AudioDecoder::~AudioDecoder()
     AVFrame         *out  = NULL;
     AVResampleContext *audio_cntx;
      */
-    av_free(optionsDict);
-    av_free(formatContext);
-    avcodec_free_context(&audioCodecContext);
-    av_free(audioCodec);
+
 }
 
 QByteArray AudioDecoder::nextFrame(qint64 time)
