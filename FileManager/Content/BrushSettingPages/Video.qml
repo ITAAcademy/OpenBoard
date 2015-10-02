@@ -10,7 +10,10 @@ Rectangle {
     property string cLoaderName: "loader"
     property int last_click_index : -1
      property Item p_rep
-
+    function update()
+    {
+        rep.model = brushControll.getVideoStackSize();
+    }
     ScrollView
     {
         id: scroll

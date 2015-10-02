@@ -27,7 +27,7 @@ public:
     QString getVidePath() const;
     void setVidePath(const QString &value);
 
-protected slots:
+public slots:
     void start();
     void stop();
 

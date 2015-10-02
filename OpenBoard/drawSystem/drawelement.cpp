@@ -471,7 +471,7 @@ bool DrawElement::loadTypeId(QIODevice* device)
     Element_type temp_2 ;
     temp_2 = (Element_type)(temp_type);
     setTypeId(temp_2);
-    qDebug() << "DrawElement::load temp_type = " <<(int) getTypeId();
+    qDebug() << "DrawElement::load temp_type = " << getTypeId();
 
 }
 bool DrawElement::loadRest(QIODevice* device, float version)

@@ -570,10 +570,6 @@ void OGLWidget::initShaderPrograms()
     connect(&shaderWindow, SIGNAL(test()), this, SLOT(testInit()));
 
     if (mainShader->initShader(MAIN_FRAGMENT_SHADER_PATH,MAIN_VERTEX_SHADER_PATH)==0)shaderSupported=true;
-    else
-        QMessageBox::information(
-                    this,tr("OpenBoard"),
-                    tr("Shaders aren't supported. Some features won't work.\n Try update drivers of videocard") );
    // mainShader->initShader(MAIN_FRAGMENT_SHADER_PATH,MAIN_VERTEX_SHADER_PATH);
 
     ShaderProgramWrapper *alphaShader = new ShaderProgramWrapper(this);
@@ -2099,6 +2095,7 @@ bool OGLWidget::drawAnimated(bool record)
     if(record)
     {
         editingRectangle.isEditingRectangleVisible = false;
+
         //QString fileName = QFileDialog::getSaveFileName(this, tr("Choose file..."), qApp->applicationDirPath(), tr("Videos (*.avi *.mp4)"), 0, QFileDialog::DontUseNativeDialog);
         //qDebug() << "OKKKKKKKKKKKKKKKKKKKKKKK";
         //  //qDebug() << "SHOW_FILE_NAME " << fileName;

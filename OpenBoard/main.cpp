@@ -1,6 +1,6 @@
 #include "mainwindow.h"
 #include <QApplication>
-#define DEBUG_TO_FILE "log.txt"
+//#define DEBUG_TO_FILE "log.txt"
 
 #ifdef DEBUG_TO_FILE
 
@@ -26,6 +26,10 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QS
         fprintf(file, "Fatal: %s (%s:%u, %s)\n", localMsg.constData(), context.file, context.line, context.function);
         printf("%s \n", localMsg.constData());
         abort();
+    default:
+        fprintf(file, "Info: %s (%s:%u, %s)\n", localMsg.constData(), context.file, context.line, context.function);
+        printf("%s \n", localMsg.constData());
+        break;
     }
     fclose(file);
 }

@@ -10,7 +10,7 @@ void DrawVideoElm::start()
 void DrawVideoElm::stop()
 {
     DrawElement::stop();
-    decoder.restart();
+    decoder.restart(0);
     pDrawWidget->clearAudioList();
 }
 
@@ -44,7 +44,7 @@ void DrawVideoElm::draw()
    // qDebug () << k << " " << keyCouter;
    // while( k > keyCouter)
     int k = 0;
-    pDrawWidget->encoderAddWaitFrame();
+
     if(bPlay && !bPause && pDrawWidget->getTimeLine()->getPlayTime() > 0 ) /// NEED FIX FOR SECOND BLOCK
     {
         pDrawWidget->clearFrameBuffer(fboWrapper);
@@ -52,7 +52,11 @@ void DrawVideoElm::draw()
         //qDebug() << startDrawTime;
         //pDrawWidget->drawQImage(0, 0, frame.videoFrame, z);
         pDrawWidget->drawQImageFromTexture(0, 0, frame.videoFrame, textureIndex, z);
-        pDrawWidget->addAudioToList(this, frame.audioFrame);
+        if(frame.audioFrame.size() > 0)
+        {
+            pDrawWidget->encoderAddWaitFrame();
+            pDrawWidget->addAudioToList(this, frame.audioFrame);
+        }
    //     qDebug() << "KEY    " << keyCouter;
         keyCouter++;
      /*   double qwe = (double)keyCouter/(decoder.getPTS() + 1);// for test :)
@@ -80,7 +84,7 @@ void DrawVideoElm::setVideoFile(QString path)
         videoValid = true;
 
     }
-    if(lifeTime < 1000)
+    if(lifeTime <= 1000)
         lifeTime = decoder.getDuration();
 }
 

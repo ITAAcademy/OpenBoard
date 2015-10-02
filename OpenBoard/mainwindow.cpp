@@ -679,6 +679,7 @@ bool MainWindow::event(QEvent * e) // overloading event(QEvent*) method of QMain
         mpOGLWidget->getTimeLine()->emitFocusLostSignal();
         mpOGLWidget->hideBrushManager();
         mpOGLWidget->hideEffectsManager();
+        mpOGLWidget->forceEditBoxDisable = true;
          /* QPoint current_pos = mpOGLWidget->pos();
           current_pos.setY(current_pos.y() + mpOGLWidget->height());
           mpOGLWidget->getTimeLine()->setViewPosition(current_pos);*/
@@ -696,6 +697,8 @@ bool MainWindow::event(QEvent * e) // overloading event(QEvent*) method of QMain
               activeOther = true;
           if(!activeOther)
               isActive = false;
+
+          mpOGLWidget->forceEditBoxDisable = ui->actionHide_editBox->isChecked();
           //qDebug() << "LOSE_ACTIVE_MAIN_WINDOW";
           break ;
 
@@ -2013,7 +2016,8 @@ void MainWindow::on_action_Play_triggered()
     //  // //qDebug() << mUnitList.size();
     // QString name = this->windowTitle();
     play = true;
-    //mpOGLWidget->editingRectangle.isEditingRectangleVisible = false;
+    mpOGLWidget->editingRectangle.isEditingRectangleVisible = false;
+
     if(mpOGLWidget->getStatus() != OGLWidget::PLAY )
     {
         if(mpOGLWidget->drawAnimated(ui->actionRecord_to_file->isChecked()))

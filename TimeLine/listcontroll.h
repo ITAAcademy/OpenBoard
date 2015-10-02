@@ -439,6 +439,7 @@ public slots:
     Q_INVOKABLE bool testIndexs(const int col, const int index);
     Q_INVOKABLE bool blockValid(const int col, const int index);
     Q_INVOKABLE bool blockValid(QPoint point);
+
 private slots:
     void drawYellowRectangle(QRect rect);
 };

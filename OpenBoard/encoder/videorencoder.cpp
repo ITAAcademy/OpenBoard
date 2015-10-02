@@ -294,6 +294,7 @@ void AV_REncoder::run()
                         }
                         m_encoder->encodeAudioData(res);
                     }
+                    waitForFrame--;
                 }
                 else if(waitForFrame == 0)
                 {

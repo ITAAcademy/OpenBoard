@@ -184,6 +184,16 @@ Rectangle{
                 brushControll.hide()
             }
         }
+
+       Connections{
+           target: brushControll
+           onUpdate:{
+               p_image.update();
+               p_audio.update();
+               p_video.update();
+           }
+       }
+
        // }
 
 }
