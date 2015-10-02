@@ -71,7 +71,7 @@ Rectangle{
     {
         console.log("function animRunX(value) = " +root.anim_run_value)
         root.anim_run_value = value
-        animation_run_x.running = true //9999
+      //  animation_run_x.running = true //9999
     }
 
 
@@ -380,8 +380,8 @@ Rectangle{
 
 
     Drag.active: mouseArea.drag.active
-    Drag.hotSpot.x: 10
-    Drag.hotSpot.y: 10
+    //Drag.hotSpot.x: 10
+    //Drag.hotSpot.y: 10
     //onYChanged: y=0;
 
     MouseArea {
@@ -394,6 +394,8 @@ Rectangle{
         enabled: !globalRep.isDrag
         hoverEnabled: true
 
+        Drag.hotSpot.x: 0
+        Drag.hotSpot.y: 0
         onIsDragChanged:  {
             console.log("mouseArea   onIsDragChanged")
 
@@ -1239,6 +1241,8 @@ Rectangle{
         id: drop
         enabled : !timeControll.getCurent_group(colIndex, mIndex)
         visible: !timeControll.getCurent_group(colIndex, mIndex)
+        Drag.hotSpot.x: 0
+        Drag.hotSpot.y: 0
         anchors.fill: root
         onEntered: {
 

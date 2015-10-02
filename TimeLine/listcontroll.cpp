@@ -782,22 +782,38 @@ int ListControll::getBlockIndToAddFromPos(int col,int ind, int pos )
                     else
                     {
                         //tracks[col].setTime( pos + mov_block_time);
-                        qDebug() << "FFFFFFFFFFFF " << tracks[col].getTime();
+                       // qDebug() << "FFFFFFFFFFFF " << tracks[col].getTime(); /////////////666666666666666666666
+                        if (elm_is_last)
+                        {
+                            qDebug() << "FFFFFFFFFFFF  salonamana";
+                        }
+                        else
+                        {
+                            DrawElement * next =  tracks[col].block[elm_index + 2];
+                            reduceEmptyBlocksFrom(col,elm_index+1,  pos + mov_block_time - next->getStartDrawTime());
+                            qDebug() << "FFFFFFFFFFFF  papapa" <<
+                                        next->getStartDrawTime() <<
+                                        "    " << pos;
+                        }
+
                     }
                     updateBlocksIndexFrom(col,0);
                     updateBlocksStartTimesFrom(col,0);
-                    recountMaxTrackTime();
+                     tracks[col].updateTime();
+                     recountMaxTrackTime();
                     return  get_ind;
                 }
                 else
                 {
                     getBlockIndToAddFromPos(move_block,move_block_start_time);
+
+                    return 1;
                 }
             }
-            else //Element_type != empty
+            else  //Element_type != empty
             {
                 int append_ind = pos_to_append.y();
-                if (force_append_block)
+                if (force_append_block )
                 {
                     qDebug() << "1111111111111111";
                     tracks[col].block.insert(append_ind, move_block);
@@ -815,15 +831,47 @@ int ListControll::getBlockIndToAddFromPos(int col,int ind, int pos )
                                 prev_time -= mov_block_time;
                                 prev_el->setLifeTime(prev_time);
                                 qDebug() << "1111111111111111    2";
+                                return 1;
                             }
                             else
                             {
                                 qDebug() << "1111111111111111 3";
                                 tracks[col].block.removeAt(append_ind - 1);
-                                tracks[col].addTime(mov_block_time - prev_time);
+                                // tracks[col].block.move(append_ind-1, append_ind);
+
+                                 removeBlock(col,append_ind-1,false,true,false);
+                                 tracks[col].block.insert(append_ind+1, move_block);
+                                //tracks[col].block.insert(append_ind,move_block);
+                               // tracks[col].addTime(mov_block_time - prev_time);
+                                 int temp_time = reduceEmptyBlocksFrom(col,append_ind+1,mov_block_time);
+                                /* if (temp_time > 0)
+                                     tracks[col].addTime( -mov_block_time + temp_time);*/
+
+                                updateBlocksIndexFrom(col,0);
+                                updateBlocksStartTimesFrom(col,0);
+                                /*DrawElement *lasta = tracks[col].block.last();
+                                tracks[col].setTime(lasta->getStartDrawTime() + lasta->getLifeTime());*/
+
+                                tracks[col].updateTime();
+
+                                recountMaxTrackTime();
+                                return 1;
                             }
 
 
+                        }
+                        else
+                        {
+
+                            int temp_time = reduceEmptyBlocksFrom(col,elm_index,mov_block_time);
+                            /*if (temp_time > 0)
+                                tracks[col].addTime( -mov_block_time + temp_time);
+                            */
+                            updateBlocksIndexFrom(col,0);
+                            updateBlocksStartTimesFrom(col,0);
+                             tracks[col].updateTime();
+                             recountMaxTrackTime();
+                            qDebug() << "pupupuppuu     09 090 9 0";
                         }
                     }
                     else
@@ -838,18 +886,48 @@ int ListControll::getBlockIndToAddFromPos(int col,int ind, int pos )
                                 {
                                     //tracks[col].addTime(\-mov_block_time);
                                     next_time -= mov_block_time;
-                                    next_el->setLifeTime(next_time);
+                                    next_el->setLifeTime(next_time); //////////////////////////////
+                                    /*  updateBlocksIndexFrom(col,0);
+                                    updateBlocksStartTimesFrom(col,0);
+
+                                    reduceEmptyBlocksFrom(col,elm_index,mov_block_time);*/
+
+                                    updateBlocksIndexFrom(col,0);
+                                    updateBlocksStartTimesFrom(col,0);
+                                     tracks[col].updateTime();
+                                     recountMaxTrackTime();
+                                    qDebug() << "poduska";
+                                    return 1;;
 
                                 }
                                 else
                                 {
                                     tracks[col].block.removeAt(append_ind + 1);
+
+
                                     tracks[col].addTime(mov_block_time - next_time);
+                                    int temp_time = reduceEmptyBlocksFrom(col,append_ind + 1,mov_block_time - next_time);\
+                                   /* if (temp_time > 0)
+                                        tracks[col].addTime( -mov_block_time + temp_time);*/
+
+                                    updateBlocksIndexFrom(col,0);
+                                    updateBlocksStartTimesFrom(col,0);
+                                     tracks[col].updateTime();
+                                     recountMaxTrackTime();
+                                    qDebug() << "tatuska";
+                                    return 1;
                                 }
                             }
                             else
                             {
-                                tracks[col].addTime(mov_block_time);
+                                tracks[col].addTime(mov_block_time); //nepravilno
+                                reduceEmptyBlocksFrom(col,elm_index - 1,mov_block_time);
+                                updateBlocksIndexFrom(col,0);
+                                updateBlocksStartTimesFrom(col,0);
+                                 tracks[col].updateTime();
+                                 recountMaxTrackTime();
+                                 qDebug() << "bubuska";
+                                return 1;
                             }
                         }
                         else
@@ -867,6 +945,11 @@ int ListControll::getBlockIndToAddFromPos(int col,int ind, int pos )
                         tracks[col].block.insert(append_ind, move_block);
                         tracks[col].addTime(mov_block_time);
                         qDebug() << "22222222222222";
+                        updateBlocksIndexFrom(col,0);
+                        updateBlocksStartTimesFrom(col,0);
+                         tracks[col].updateTime();
+                         recountMaxTrackTime();
+                        return 1;
                     }
                     else
                     {
@@ -879,6 +962,10 @@ int ListControll::getBlockIndToAddFromPos(int col,int ind, int pos )
                                 tracks[col].block.insert(append_ind, move_block);
                                 next_el->setLifeTime(next_el->getLifeTime() - mov_block_time);
                                 qDebug() << "333333333333333333333";
+                                updateBlocksIndexFrom(col,0);
+                                updateBlocksStartTimesFrom(col,0);
+                                 tracks[col].updateTime();
+                                 recountMaxTrackTime();
                                 return 1;
                             }
                             else
@@ -888,6 +975,10 @@ int ListControll::getBlockIndToAddFromPos(int col,int ind, int pos )
                                     tracks[col].block.removeAt(append_ind + 1);
                                     delete next_el;
                                     qDebug() << "44444444444444";
+                                    updateBlocksIndexFrom(col,0);
+                                    updateBlocksStartTimesFrom(col,0);
+                                     tracks[col].updateTime();
+                                     recountMaxTrackTime();
                                     return 1;
                                 }
                                 else
@@ -899,6 +990,10 @@ int ListControll::getBlockIndToAddFromPos(int col,int ind, int pos )
                                         tracks[col].block.removeAt(append_ind + 1);
                                         delete next_el;
                                         qDebug() << "55555555555555";
+                                        updateBlocksIndexFrom(col,0);
+                                        updateBlocksStartTimesFrom(col,0);
+                                         tracks[col].updateTime();
+                                         recountMaxTrackTime();
                                         return 1;
                                     }
                                     else
@@ -919,10 +1014,45 @@ int ListControll::getBlockIndToAddFromPos(int col,int ind, int pos )
                 }
             }
         }
-
     }
     getBlockIndToAddFromPos(move_block,move_block_start_time);
     return  get_ind;
+}
+
+int ListControll::reduceEmptyBlocksFrom(int col, int ind, int value)
+{
+    if (value <=0)
+        return 0;
+    if (ind < 0)
+        ind = 0;\
+    if (col < 0)
+        col = 0;
+
+    for (int i = ind; i < tracks[col].block.size(); i++)
+    {
+        DrawElement *elm = tracks[col].block[i];
+        if (elm->getTypeId()  == Element_type::Empty)
+        {
+            int time = elm->getLifeTime();
+            //time -=value;
+            if (time <= value)
+            {
+                tracks[col].addTime(-time);
+                value -= time;
+                tracks[col].block.removeAt(i);
+                delete elm;
+                i--;
+            }
+            else  // time > value
+            {
+                time -= value;
+                elm->setLifeTime(time);
+                tracks[col].addTime(-value);
+                return time;
+            }
+        }
+    }
+    return -1;
 }
 
 DrawElement* ListControll::getBlockFromBuffer()

@@ -40,6 +40,12 @@ public:
         prev_time = time;
         time = value;
     }
+    void updateTime()
+    {
+        DrawElement *lasta = block.last();
+        setTime(lasta->getStartDrawTime() + lasta->getLifeTime());
+    }
+
     void addTime(unsigned long int value)
     {
         prev_time = time;
@@ -257,6 +263,8 @@ public:
     Q_INVOKABLE  bool isProjectChanged();
     Q_INVOKABLE  QRect getYellowRect();
     Q_INVOKABLE  void setIsProjectChanged(bool);
+
+    Q_INVOKABLE  int reduceEmptyBlocksFrom(int col, int ind, int value);  //return not taked away time; or -1 if its time <= 0; or 0 if failed
     Q_INVOKABLE int getTrackSize(int col);
     Q_INVOKABLE QString getBlockKey(int col, int i) ;
     Q_INVOKABLE void addNewBlock(int col, QString str = QString("block"+ QString::number(qrand())), DrawElement *element = NULL);
