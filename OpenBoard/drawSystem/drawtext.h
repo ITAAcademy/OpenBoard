@@ -116,8 +116,8 @@ public:
     int getFirstSymbolOfString(int index, bool symbol = false);
     QPoint convertTextBoxToBufferIndex(int index, bool symbol = false);
     int getRowFromTextBoxIndex(int index, bool symbol);
-    bool drawAnimationFigure (int x, int y, int width, int height, double persent,OGLWidget::FigureType type, bool fill);
-    bool drawAnimationFigure (AnimationFigure &figure);
+    bool drawAnimationFigure (int x, int y, int width, int height, double persent, OGLWidget::FigureType type, bool fill, QPoint scale);
+    bool drawAnimationFigure (AnimationFigure &figure, QPoint scale);
     void setFillColor( QColor col);
     double getAnimationPersentOfCross() const;
     void setAnimationPersentOfCross(double value);
@@ -140,7 +140,7 @@ protected slots:
     void start();
 public slots:
     bool crossText();
-    bool crossTextDraw();
+    bool crossTextDraw(float scale_x, float scale_y);
     Q_INVOKABLE void crossOutWithAnimation(int n = 1);
 
 signals:

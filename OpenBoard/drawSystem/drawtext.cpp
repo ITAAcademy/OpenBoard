@@ -113,13 +113,13 @@ QPoint DrawTextElm::convertTextBoxToBufferIndex(int index, bool symbol)
 }
 
 
-bool DrawTextElm::drawAnimationFigure(AnimationFigure &figure)
+bool DrawTextElm::drawAnimationFigure(AnimationFigure &figure, QPoint scale)
 {
-    return drawAnimationFigure(figure.rect.x(), figure.rect.y(), figure.rect.width(), figure.rect.height(), animationPersentOfCross, (OGLWidget::FigureType)figure.type, figure.fill);
+    return drawAnimationFigure(figure.rect.x(), figure.rect.y(), figure.rect.width(), figure.rect.height(), animationPersentOfCross, (OGLWidget::FigureType)figure.type, figure.fill, scale);
 }
 
 
-bool DrawTextElm::drawAnimationFigure(int x, int y, int width, int height, double persent, OGLWidget::FigureType type, bool fill)
+bool DrawTextElm::drawAnimationFigure(int x, int y, int width, int height, double persent, OGLWidget::FigureType type, bool fill, QPoint scale)
 {
     isCrossingNow=true;
     //qDebug() << "wqweqweqwe "  << persent;
@@ -133,7 +133,7 @@ bool DrawTextElm::drawAnimationFigure(int x, int y, int width, int height, doubl
 
 
         // pDrawWidget->drawFigure(x,y,x + (width - x)*persent,height,type,fill);
-        pDrawWidget->drawFigure(x, y, x + (width - x)*persent, height, type, fill);
+        pDrawWidget->drawFigure(x , y , x + (width - x)*persent, height, type, fill, "#FF0000", 3* scale.y());
         //persent += animationPersentOfCross;
         // QThread::currentThread()->msleep(10);
         if(pDrawWidget->getStatus() == OGLWidget::STOP )
@@ -146,7 +146,7 @@ bool DrawTextElm::drawAnimationFigure(int x, int y, int width, int height, doubl
     }
     else
     {
-        pDrawWidget->drawFigure(x, y, width, height, type, fill);
+        pDrawWidget->drawFigure(x, y, width, height, type, fill, "#FF0000", 3*scale.y());
         isCrossingNow=false;
         return true;
     }
@@ -276,13 +276,14 @@ void DrawTextElm::draw()
     pDrawWidget->clearFrameBuffer(fboWrapper);
     pDrawWidget->clearFrameBuffer(renderFbo);
 
+    float koff1=(float)pDrawWidget->getWax()/width;
+    float  koff2=(float)pDrawWidget->getWay()/height;
+
     if(staticText)
     {
 
         //if (width>=height)koff=(float)pDrawWidget->getWax()/width;
         //else koff = (float)pDrawWidget->getWay()/height;
-        float koff1=(float)pDrawWidget->getWax()/width;
-        float  koff2=(float)pDrawWidget->getWay()/height;
         //if (koff1>koff2)koff=koff1;
         // else koff=koff2;*/
 
@@ -294,12 +295,14 @@ void DrawTextElm::draw()
         textFont.setFamily(mainTextFont.family());
         textFont.setStyleStrategy(QFont::PreferQuality);
         pt = textFont.pointSize();
-        lineHeight = LINE_HEIGHT ;
+        lineHeight = LINE_HEIGHT;
         QStringList list = unParsestring.split("\n");
+        line_y = fMetrics->height();
         for(int i = 0; i < list.length() /*&& i < (height/(lineHeight + pt)) - 1*/; i++)
         {
-            pDrawWidget->drawTextFromTexture(0, (i + 1)*(lineHeight + pt), z, list[i],textureIndex, mainFillColor, textFont,koff1,koff2);
+            pDrawWidget->drawTextFromTexture(0, line_y , z, list[i],textureIndex, mainFillColor, textFont,koff1,koff2);
             //pDrawWidget->myRenderText(pDrawWidget, 0, (i + 1)*(lineHeight + pt), z, unParsestring, mainFillColor, textFont);
+            line_y += lineHeight + pt;
         }
 
         pDrawWidget->enableShader();
@@ -353,7 +356,7 @@ void DrawTextElm::draw()
                     {
                         animationDelayCount = mUnitList.at(keyCouter)->delay;
                         animationDelayStart = current_time;
-                        crossTextDraw();
+                        crossTextDraw(koff1, koff2);
                     }
                     keyCouter++;
                     break;
@@ -372,8 +375,6 @@ void DrawTextElm::draw()
         setAnimationPersentOfCross( (double)(current_time - animationDelayStart)/animationDelayCount);
         // //qDebug() << realKeyValue <<"    KEY    " << keyCouter;
     }
-    float koff1=(float)pDrawWidget->getWax()/width;
-    float  koff2=(float)pDrawWidget->getWay()/height;
 
     drawTextBuffer(0, 0, pDrawWidget->getWax(), pDrawWidget->getWay(), z, true,koff1,koff2);
     curentCh = current_time;
@@ -495,9 +496,12 @@ void DrawTextElm::clearCanvas(int m_x, int m_y)
     indexRow = 0;
     indexW = 1;
     marginLeft = m_x;
-    marginTop = m_y;
+
     line_x = m_x;
-    line_y = lineHeight + pt;
+    lineHeight = LINE_HEIGHT;
+    pt = textFont.pointSize();
+    line_y = fMetrics->height();
+        marginTop = m_y;
     scroll = 0;
     //listStr[0] = 0;
 }
@@ -636,6 +640,7 @@ void DrawTextElm::drawTextBuffer( int m_x, int m_y, int m_width, int m_height, i
     //  // //qDebug() << indexRowInList << "   indexFirstDrawSymbol   :           " << indexFirstDrawSymbol << cross;
     //   // //qDebug() << "START draw with indexRowInList " << indexRowInList << "MAX elm " << maxElm << "CUR " << CurRow;
     int i = indexRowInList;
+//line_y = fMetrics->height();
     while( i < stringList.length() && i < indexRowInList + maxDrawElm)
     {
         //// //qDebug() << stringList[i] << "@";
@@ -698,7 +703,7 @@ void DrawTextElm::drawTextBuffer( int m_x, int m_y, int m_width, int m_height, i
             fillColor = colors[k].value;
             QString textToFill = stringList[i].mid(columnOfColorStrBegin,columnOfColorStrEnd-columnOfColorStrBegin);
             //qDebug() << "textToFill:"<<textToFill;
-            pDrawWidget->drawTextFromTexture(line_x,line_y,z,textToFill,textureIndex,fillColor,textFont,scaleX,scaleY);
+            pDrawWidget->drawTextFromTexture(line_x,line_y,z,textToFill,textureIndex, mainFillColor,textFont,scaleX,scaleY);
             //1234
             // pDrawWidget->fillText(textToFill,QColor("red"),fontishche, line_x , line_x, z,(float) scale);
             //  pDrawWidget->fillText("eeeeeeeeeeeeeeeeeeee",QColor("red"), QFont("Helvetica",40,40), 50 , 50, 0,(float) 1);
@@ -710,14 +715,13 @@ void DrawTextElm::drawTextBuffer( int m_x, int m_y, int m_width, int m_height, i
               // //qDebug()<< "textToWarp:" << textToWarp;
               // //qDebug()<<"rowOfColorStrBegin:"<<rowOfColorStrBegin;*/
         }
-
-        line_y += lineHeight + pt;
+        line_y += (lineHeight + pt);
         line_x = m_x;
         // localX=marginLeft;
         i++;
     }
     if(cross)
-        crossTextDraw();
+        crossTextDraw(scaleX, scaleY);
     pDrawWidget->setBusy(false);
 
     // updateGL();
@@ -1009,13 +1013,13 @@ void DrawTextElm::crossOutLastSymbol( int n)
 
 }
 
-bool DrawTextElm::crossTextDraw()
+bool DrawTextElm::crossTextDraw(float scale_x, float scale_y )
 {
     glDisable(GL_DEPTH);
 
     for( int i = 0; i < listOfAnimationFigure.length(); i++)
     {
-        if(drawAnimationFigure(listOfAnimationFigure[i]))
+        if(drawAnimationFigure(listOfAnimationFigure[i], QPoint(scale_x, scale_y)))
         {
             //   qDebug() << "LAST" << listOfAnimationFigure[i].start << "     " << listOfAnimationFigure[i].stop << "     " << cross.length();
             for( int j = listOfAnimationFigure[i].start; j < listOfAnimationFigure[i].stop; j++) // convert to cross without animation
@@ -1088,20 +1092,21 @@ bool DrawTextElm::crossTextDraw()
                 //drawAnimationFigure(x1, y, x2, y, LINE, 0);
                 if(pDrawWidget->getStatus()  == OGLWidget::PLAY) //curStatus
                 {
-                    listOfAnimationFigure.append(AnimationFigure(QRect(x1, y, x2, y), (int)OGLWidget::LINE, x, i));
+                    listOfAnimationFigure.append(AnimationFigure(QRect(x1 * scale_x, y*scale_y, x2 * scale_x, y *scale_y), (int)OGLWidget::LINE, x, i));
                     //    qDebug() << "FIRST" << x << "     " << i << "     " << cross.length();
                     for( int j = x; j < i; j++) // convert to cross without animation
                         cross[j] = 0;
                 }
                 else
                 {
-                    pDrawWidget->drawFigure(x1,y, x2, y, OGLWidget::LINE, false);
+                    pDrawWidget->drawFigure(x1* scale_x,y*scale_y, x2*scale_x, y*scale_y, OGLWidget::LINE, false, "#FF0000", 3*scale_y);
                 }
 
             }
             else{
                 //drawFigure(x1, y, x2, y, LINE, 0);
-                pDrawWidget->drawFigure(x1,y, x2, y, OGLWidget::LINE, false);
+
+                pDrawWidget->drawFigure(x1*scale_x,y*scale_y, x2*scale_x, y*scale_y, OGLWidget::LINE, false, "#FF0000", 3*scale_y);
                 // //qDebug() << "SECOND";
             }
             lastGood = false;

@@ -165,6 +165,5 @@ Rectangle{
                 x:5
                 visible: false
             }
-
         }
     }

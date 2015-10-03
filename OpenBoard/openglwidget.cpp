@@ -2310,13 +2310,13 @@ void OGLWidget::drawFigure(int x, int y, int x2, int y2, /*OGLWidget::*/FigureTy
 {
     //// //qDebug()<<"void OGLWidget::drawFigure";
     glDisable(GL_BLEND);
-    glEnable(GL_LINE_SMOOTH);
-    glHint(GL_LINE_SMOOTH_HINT,  GL_NICEST);
-    qglColor(QColor(Qt::red));
+    qglColor(col);
+    glLineWidth(size);
+    //glPointSize(200.0f);
     glBegin(GL_LINES);
-    glLineWidth(3.0f);
+
     glVertex2i( x,y);
-    glVertex2i( x2,y);
+    glVertex2i( x2,y2);
     // //qDebug()<<"x:"<<x;
     // //qDebug()<<"y:"<<y;
     // //qDebug()<<"x2:"<<x2;
