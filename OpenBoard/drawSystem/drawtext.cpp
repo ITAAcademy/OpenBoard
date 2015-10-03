@@ -295,12 +295,14 @@ void DrawTextElm::draw()
         textFont.setFamily(mainTextFont.family());
         textFont.setStyleStrategy(QFont::PreferQuality);
         pt = textFont.pointSize();
-        lineHeight = LINE_HEIGHT ;
+        lineHeight = LINE_HEIGHT;
         QStringList list = unParsestring.split("\n");
+        line_y = fMetrics->height();
         for(int i = 0; i < list.length() /*&& i < (height/(lineHeight + pt)) - 1*/; i++)
         {
-            pDrawWidget->drawTextFromTexture(0, (i + 1)*(lineHeight + pt), z, list[i],textureIndex, mainFillColor, textFont,koff1,koff2);
+            pDrawWidget->drawTextFromTexture(0, line_y , z, list[i],textureIndex, mainFillColor, textFont,koff1,koff2);
             //pDrawWidget->myRenderText(pDrawWidget, 0, (i + 1)*(lineHeight + pt), z, unParsestring, mainFillColor, textFont);
+            line_y += lineHeight + pt;
         }
 
         pDrawWidget->enableShader();
@@ -494,9 +496,12 @@ void DrawTextElm::clearCanvas(int m_x, int m_y)
     indexRow = 0;
     indexW = 1;
     marginLeft = m_x;
-    marginTop = m_y;
+
     line_x = m_x;
-    line_y = lineHeight + pt;
+    lineHeight = LINE_HEIGHT;
+    pt = textFont.pointSize();
+    line_y = fMetrics->height();
+        marginTop = m_y;
     scroll = 0;
     //listStr[0] = 0;
 }
@@ -635,6 +640,7 @@ void DrawTextElm::drawTextBuffer( int m_x, int m_y, int m_width, int m_height, i
     //  // //qDebug() << indexRowInList << "   indexFirstDrawSymbol   :           " << indexFirstDrawSymbol << cross;
     //   // //qDebug() << "START draw with indexRowInList " << indexRowInList << "MAX elm " << maxElm << "CUR " << CurRow;
     int i = indexRowInList;
+//line_y = fMetrics->height();
     while( i < stringList.length() && i < indexRowInList + maxDrawElm)
     {
         //// //qDebug() << stringList[i] << "@";
@@ -709,8 +715,7 @@ void DrawTextElm::drawTextBuffer( int m_x, int m_y, int m_width, int m_height, i
               // //qDebug()<< "textToWarp:" << textToWarp;
               // //qDebug()<<"rowOfColorStrBegin:"<<rowOfColorStrBegin;*/
         }
-
-        line_y += lineHeight + pt;
+        line_y += (lineHeight + pt);
         line_x = m_x;
         // localX=marginLeft;
         i++;
