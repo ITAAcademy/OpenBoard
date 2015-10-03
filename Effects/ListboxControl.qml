@@ -59,8 +59,10 @@ Rectangle {
                     onClicked:
                     {
                         //brushControll.setCurentBrush(brush.mIndex);
-                        effectsControll.removeEffect(target.getSelectedIndex())
-                        target.decSelectedIndex();
+                        var index =  target.getSelectedIndex()
+                        effectsControll.removeEffect(index);
+                        effectsControll.setCurrentEffectIndex(index-1);
+                        listBox.setSelectedIndex(index-1);
                         root.update();
                     }
                     onEntered: {
