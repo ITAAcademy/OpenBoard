@@ -318,7 +318,7 @@ void Group::setBoundRec(QRect value)
 
 void Group::calcBoundRec()
 {
-    qDebug() << "AAAAAAAAAAAAAAAAAAAAAAAA    777 " << this;
+    //qDebug() << "AAAAAAAAAAAAAAAAAAAAAAAA    777 " << this;
     if (this == NULL)
         return;
     if(!bValid || first.size() == 0)

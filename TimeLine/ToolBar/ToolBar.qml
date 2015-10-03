@@ -109,7 +109,8 @@ Rectangle {
         }
        CheckBox {
             id: forcibly_append_block
-            enabled: true
+            enabled: false
+            visible: false
             height: parent.width
             width: parent.width
             checked: true

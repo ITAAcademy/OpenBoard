@@ -15,6 +15,7 @@ Rectangle{
     property bool bChangeSizeLeft: false
     property string title:  "value"
     property Repeater globalRep
+    property Repeater columnRep
     property string colorKey : "green"
     property ColorOverlay p_color_overlay
     property bool double_click : false
@@ -73,7 +74,7 @@ Rectangle{
     {
         console.log("function animRunX(value) = " +root.anim_run_value)
         root.anim_run_value = value
-      //  animation_run_x.running = true //9999
+        //  animation_run_x.running = true //9999
     }
 
 
@@ -364,7 +365,10 @@ Rectangle{
         icon.width = icon.height;
         if (main222.maIsPressed === 1)
         {
-            timeControll.setBlockTime(colIndex, mIndex,root.width * main222.scaling,true);
+           if (timeControll.setBlockTimeBlockBalance(colIndex, mIndex,root.width * main222.scaling,true) )
+           {
+              // main222.updateTracksModel();
+           }
 
         }
         /* else
@@ -373,8 +377,47 @@ Rectangle{
         // console.log("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 
     }
-    onXChanged: {
+    onXChanged:
+    {
+        var m_x =  mapToItem(item_col, 0, 0).x;
+        var diff = m_x - x
+        if (m_x < 30 )
+        {
+            x = -diff + 30; //    mapFromItem(item_col, 100,0).x
 
+        }
+        /* else
+        {
+            console.log("main222.width " + main222.width);
+            console.log("tollbar.width " + tollbar.width);
+            console.log("scroll.flickableItem.contentX " + scroll.flickableItem.contentX);
+             console.log("m_x  " + m_x);
+            var zdvg = main222.width // - tollbar.width + scroll.flickableItem.contentX
+            if (m_x > zdvg )
+            {
+                x =zdvg  -diff + 30
+            }
+        }*/
+
+        // console.log("onXChanged " + m_x);
+    }
+    onYChanged:
+    {
+        var m_y = mapToItem(item_col, 0, 0).y
+        if (m_y < 0 )
+        {
+            y = -root.colIndex * root.height // mapFromItem(item_col, 0,0).y
+        }
+        else
+            if (m_y > item_col.height - root.height)
+            {
+
+                y = ( rep_columns.count- root.colIndex - 1) * root.height
+            }
+
+     main222.dropEnteredTrackIndex = Math.floor( (mapToItem(item_col, 0, 0).y) /root.height)
+
+        //console.log("onYChanged " + m_y);
     }
 
 
@@ -383,7 +426,7 @@ Rectangle{
 
     Drag.active: mouseArea.drag.active
     //Drag.hotSpot.x: 10
-    //Drag.hotSpot.y: 10
+    Drag.hotSpot.y: root.height/2
     //onYChanged: y=0;
 
     MouseArea {
@@ -404,11 +447,12 @@ Rectangle{
             if (isDrag)
             {
                 cursorShape = Qt.OpenHandCursor
-               // animation_scale_small.running = true
-               // animation_scale_x.running = true
-               // animation_scale_y.running = true //99999999
+                // animation_scale_small.running = true
+                // animation_scale_x.running = true
+                // animation_scale_y.running = true //99999999
                 root.opacity = 0.5
                 //shadow.visible = true
+
             }
             else
             {
@@ -433,7 +477,7 @@ Rectangle{
                 root.animation_scale_normal_toXpos =root.x - scroll.flickableItem.contentX //main222.dropEnteredBlock.x  + main222.zdvigWhenNormalAnim
                 if (main222.able_create_empty_block)
                 {
-                    console.log("main222.exitedFromDropArea = true         createEmptyBlock")
+
                     //timeControll.setBlockStartTime(root.colIndex, root.mIndex, root.x  * main222.scaling)
 
 
@@ -446,27 +490,48 @@ Rectangle{
                         if (root.mIndex === ind_add)
                         timeControll.addEmptyBlockAt(root.colIndex, ind_add ,space_add );
                     }*/
-                    timeControll.getBlockIndToAddFromPos(root.colIndex, root.mIndex,root.x  * main222.scaling)
-
+                    timeControll.getBlockIndToAddFromPos(root.colIndex, root.mIndex,root.x  * main222.scaling, main222.dropEnteredTrackIndex)
+                    console.log("main222.exitedFromDropArea = true         createEmptyBlock  main222.dropEnteredTrackIndex = " + main222.dropEnteredTrackIndex)
                     // timeControll.removeBlock(root.colIndex, root.mIndex,true,false); // cop buffer,       del last empty
 
                     //  timeControll.addBlockWithSpaceFromBufferAt(root.colIndex, ind_add, space_add );
                     //
 
                     //timeControll.createEmptyBlock(root.colIndex, root.mIndex)
+
                 }
                 main222.able_create_empty_block = true
 
 
-                root.p_bar_track.z += 200 //888
-                root.z += 200
+               // root.p_bar_track.z += 200 //888
 
-                animation_scale_normal.running = true //9999999
+
+               // animation_scale_normal.running = true //9999999   kalich
+                //root.p_bar_track.z -= 200
+                root.globalRep.z -= 200
+                if(root.p_main222.needUpdateModelWhereBlockDroped)
+                {
+                    root.p_main222.dropEnteredBlockItemGlobalRep.updateModel();
+                    root.p_main222.needUpdateModelWhereBlockDroped = false
+                }
+                root.globalRep.updateModel();
 
                 //function moveBlocksForAnim( from, to,  left_right,  value)
 
-                root.p_bar_track.z -= 200 //888
-                root.z -= 200
+                //root.p_bar_track.z -= 200 //888
+
+                if (root.p_main222.dropEnteredTrackIndex >= 0)
+                {
+
+                   // rep_columns
+
+                    root.columnRep.itemAt(root.p_main222.dropEnteredTrackIndex).getBlock(0).globalRep.updateModel()
+
+                   // itemAt(main222.dropEnteredTrackIndex).updateModel()
+                    root.p_main222.dropEnteredTrackIndex = -1
+                }
+
+
                 //root.p_main222.root_isDragChanged = true;
                 //console.log("onIsDragChanged end ------------------------------")
             }
@@ -485,13 +550,13 @@ Rectangle{
             /*if(timeControll.getCurent_group())
                 return;*/
             {
-            if(globalRep.isDrag === false &&  (mouseX > root.width-resize_capture_area_width || mouseX < resize_capture_area_width)) //mouseX < root.width * 0.1 ||/
-            {
-                cursorShape = Qt.SizeHorCursor;
-//            drop.visible = false;
-//                drop.enabled = false;
-            //    root.Drag.active =  false
-                //console.log("eeeeeeeeeeeeeeeeeeeeeeeeeeee")
+                if(globalRep.isDrag === false &&  (mouseX > root.width-resize_capture_area_width || mouseX < resize_capture_area_width)) //mouseX < root.width * 0.1 ||/
+                {
+                    cursorShape = Qt.SizeHorCursor;
+                    //            drop.visible = false;
+                    //                drop.enabled = false;
+                    //    root.Drag.active =  false
+                    //console.log("eeeeeeeeeeeeeeeeeeeeeeeeeeee")
 
 
                 }
@@ -506,31 +571,31 @@ Rectangle{
 
                 xChange = oldMouseX - mouseX;
 
-            if(bChangeSizeRight)
-            {
-                //console.log(xChange);
-                if(timeControll.getCurent_group())
-                    root.width += timeControll.tryResizeMemberInCurentGroup(-xChange*main222.scaling, root.colIndex, root.mIndex)/main222.scaling;
-                else
-                    root.width -= xChange;
-                //timeControll.setTestWidth(bar_track.index,root.width, mIndex);
-            }
-            if(bChangeSizeLeft)
-            {
-                //console.log(xChange);
-                if(timeControll.getCurent_group())
-                    root.width -= timeControll.tryResizeMemberInCurentGroup(-xChange*main222.scaling, root.colIndex, root.mIndex)/main222.scaling;
-                else
+                if(bChangeSizeRight)
                 {
-
-                    root.width += xChange;
-                     drag.target = root;
-                    root.x -= xChange;
-
-                    drag.target = null;
-
+                    //console.log(xChange);
+                    if(timeControll.getCurent_group())
+                        root.width += timeControll.tryResizeMemberInCurentGroup(-xChange*main222.scaling, root.colIndex, root.mIndex)/main222.scaling;
+                    else
+                        root.width -= xChange;
+                    //timeControll.setTestWidth(bar_track.index,root.width, mIndex);
                 }
-                //timeControll.setTestWidth(bar_track.index,root.width, mIndex);
+                if(bChangeSizeLeft)
+                {
+                    //console.log(xChange);
+                    if(timeControll.getCurent_group())
+                        root.width -= timeControll.tryResizeMemberInCurentGroup(-xChange*main222.scaling, root.colIndex, root.mIndex)/main222.scaling;
+                    else
+                    {
+
+                        root.width += xChange;
+                        drag.target = root;
+                        root.x -= xChange;
+
+                        drag.target = null;
+
+                    }
+                    //timeControll.setTestWidth(bar_track.index,root.width, mIndex);
 
 
                 }
@@ -540,12 +605,14 @@ Rectangle{
 
 
         onPressed: {
-           timeControll. logBlocksTypes(root.colIndex);
+            root.z += 200
+            timeControll. logBlocksTypes(root.colIndex);
             //main222.dropedtoDropArea = false
-            console.log("onPressed colIndex =" + root.colIndex + "  mIndex = " + root.mIndex)
+            console.log("onPressed colIndex =" + root.colIndex + "  mIndex = " + root.mIndex + " "
+                        + timeControll.getBlockStartTime(root.colIndex , root.mIndex ))
             main222.dropEntered = 0
             main222.maIsPressed = 1
-             main222.selectedBlockCol = root.colIndex
+            main222.selectedBlockCol = root.colIndex
             //root.animation_scale_normal_toXpos = root.x
             root.animation_scale_normal_toYpos = root.y
             divider.y = (root.height + main222.p_columns.spacing) * root.colIndex
@@ -612,21 +679,21 @@ Rectangle{
                     else
                         drag.target = null
 
-    // //console.log("onPressed");
-            drop.visible = false;
-             drop.enabled = false;
-            if( mouseX > root.width - resize_capture_area_width)
-            {
-                bChangeSizeRight = true;
-                mouseArea.drag.target = null
-            }
-            else if(mouseX < resize_capture_area_width){
-                bChangeSizeLeft = true;
-                mouseArea.drag.target = null
-            }
-            else
-            {
-            globalRep.isDrag = true;
+                    // //console.log("onPressed");
+                    drop.visible = false;
+                    drop.enabled = false;
+                    if( mouseX > root.width - resize_capture_area_width)
+                    {
+                        bChangeSizeRight = true;
+                        mouseArea.drag.target = null
+                    }
+                    else if(mouseX < resize_capture_area_width){
+                        bChangeSizeLeft = true;
+                        mouseArea.drag.target = null
+                    }
+                    else
+                    {
+                        globalRep.isDrag = true;
 
 
                         //root.border.color  = "transparent"
@@ -652,6 +719,7 @@ Rectangle{
             }
         }
         onReleased: {
+            root.z -= 200
             //root.border.color = "white"
             main222.p_scale_pointer.x = mouseX + root.x - scroll.flickableItem.contentX + main222.p_scale_pointer.width //1234
             // animation_scale_normal.running = true
@@ -1181,7 +1249,7 @@ Rectangle{
                         {
                             console.log("move blcok from to")
                             // timeControll.moveBlockFromTo(main222.selectedBlockCol,main222.selectedBlockIndex,  divider.pos_to_append.y );
-                           // main222.able_create_empty_block = false
+                            // main222.able_create_empty_block = false
                             root.animation_scale_normal_toXpos = root.x - scroll.flickableItem.contentX
                         }
                         // root.animation_scale_normal_toXpos = root.x - scroll.flickableItem.contentX //+ main222.p_scale_pointer.width
@@ -1204,52 +1272,53 @@ Rectangle{
                         //
                         //console.log(" rizni !!!!!!!!!!!!!!!!!!!!!!!!!!")
                     }
-                   // main222.selectedBlockCol = divider.pos_to_append.x
+                    // main222.selectedBlockCol = divider.pos_to_append.x
 
-            timeControll.setSelectedBlockPoint(main222.selectedBlockCol,main222.selectedBlockIndex)
-                   }
-root.globalRep.isDrag = false
+                    //timeControll.setSelectedBlockPoint(main222.selectedBlockCol,main222.selectedBlockIndex)
+                }
+                root.globalRep.isDrag = false
             }
             else
-             if(bChangeSizeRight)
-            {
-                mouseArea.drag.target = root;
-                 if(!timeControll.getCurent_group())
-                    timeControll.setBlockTime(colIndex, mIndex,root.width * main222.scaling);
-                 else
-                    root.width = timeControll.getBlockTime(root.colIndex, root.mIndex)/main222.scaling;
-                // item_col.width = timeControll.getMaxTrackTime()// item_col.childrenRect.width
-
-                 bChangeSizeRight = false;
-                 if(!timeControll.getCurent_group())
-                 if (root.p_main222.dovodka_block)
-
-                 {
-                     timeControll.attachBlock(root.colIndex, root.mIndex , 50)
-                     console.log("dovodka finish")
-                 }
-                  root.globalRep.updateModel();
-    ///console.log("2222222222222");
-            }
-             else if(bChangeSizeLeft)
+                if(bChangeSizeRight)
                 {
+                    console.log(" bChangeSizeRight         !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!:)::")
                     mouseArea.drag.target = root;
-                     if(!timeControll.getCurent_group())
+                    if(!timeControll.getCurent_group())
                         timeControll.setBlockTime(colIndex, mIndex,root.width * main222.scaling);
-                     else
+                    else
                         root.width = timeControll.getBlockTime(root.colIndex, root.mIndex)/main222.scaling;
                     // item_col.width = timeControll.getMaxTrackTime()// item_col.childrenRect.width
 
-                     bChangeSizeLeft = false;
-                     if(!timeControll.getCurent_group())
-                     if (root.p_main222.dovodka_block)
+                    bChangeSizeRight = false;
+                    if(!timeControll.getCurent_group())
+                        if (root.p_main222.dovodka_block)
 
-                     {
-                         timeControll.attachBlock(root.colIndex, root.mIndex , 50)
-                         console.log("dovodka finish")
-                     }
-                      root.globalRep.updateModel();
-        ///console.log("2222222222222");
+                        {
+                            timeControll.attachBlock(root.colIndex, root.mIndex , 50)
+                            console.log("dovodka finish")
+                        }
+                    root.globalRep.updateModel();
+                    ///console.log("2222222222222");
+                }
+                else if(bChangeSizeLeft)
+                {
+                    mouseArea.drag.target = root;
+                    if(!timeControll.getCurent_group())
+                        timeControll.setBlockTime(colIndex, mIndex,root.width * main222.scaling);
+                    else
+                        root.width = timeControll.getBlockTime(root.colIndex, root.mIndex)/main222.scaling;
+                    // item_col.width = timeControll.getMaxTrackTime()// item_col.childrenRect.width
+
+                    bChangeSizeLeft = false;
+                    if(!timeControll.getCurent_group())
+                        if (root.p_main222.dovodka_block)
+
+                        {
+                            timeControll.attachBlock(root.colIndex, root.mIndex , 50)
+                            console.log("dovodka finish")
+                        }
+                    root.globalRep.updateModel();
+                    ///console.log("2222222222222");
                 }
 
             shadow.visible = false
@@ -1259,9 +1328,6 @@ root.globalRep.isDrag = false
             root.p_main222.maIsPressed = 0
 
 
-        }
-        onEntered: {
-            // // //console.log(mouseX + " YY " + mouseY)
         }
     }
 
@@ -1279,7 +1345,11 @@ root.globalRep.isDrag = false
         anchors.fill: root
         onEntered: {
 
+            main222.dropEnteredTrackIndex = main_root.col_ind
+            //main_root.border.width = 3
 
+            divider.y = (root.height + main222.p_columns.spacing) * root.colIndex
+                    + time_scale.height - scroll.flickableItem.contentY
             // console.log("mamamamammaa   entered, mIndex = " + root.mIndex)
             main222.exitedFromDropArea = false
             main222.dropEnteredBlockIndex = root.mIndex
@@ -1309,6 +1379,7 @@ root.globalRep.isDrag = false
 
         }
         onExited: {
+            //main_root.border.width = 0
             divider.visible = false
             main222.exitedFromDropArea = true
             if (root.mIndex === 1)

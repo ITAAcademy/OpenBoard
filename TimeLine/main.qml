@@ -79,6 +79,7 @@ MouseAreaForWindowDraging{
         property int drop_blockX : -1
         property int drop_blockY : -1
         property int maIsPressed: 0
+        // property int maxTrackTime: 0
         property int dropEntered: 0
         property int blocks_num : 0
         property bool left_rigth_entered : false
@@ -110,7 +111,18 @@ MouseAreaForWindowDraging{
 
         property Item dropEnteredBlock
         property Item dropEnteredBlockItemGlobalRep
-        property int dropEnteredTrackIndex : 0
+        property int prev_dropEnteredTrackIndex : -1
+        property int dropEnteredTrackIndex : -1
+        onDropEnteredTrackIndexChanged: {
+            console.log("onDropEnteredTrackIndexChanged = " + dropEnteredTrackIndex)
+
+            if (p_last_track >= 0)
+                rep_columns.itemAt(p_last_track).setTrackBorder(0)
+            if (dropEnteredTrackIndex >= 0)
+                rep_columns.itemAt(dropEnteredTrackIndex).setTrackBorder(3)
+            p_last_track = dropEnteredTrackIndex;
+        }
+
         property real scaling :  timeControll.getScaleScrollChildren()
         property int minBlockWidth : 1000 / scaling
         property int isPlayPauseStop : 2
@@ -128,6 +140,7 @@ MouseAreaForWindowDraging{
         property Item  p_context_menu
         property Item  p_divider
         property Item  p_columns
+        property int  p_last_track : -1
         property Item  p_trackbar_which_block_dragged
 
         property int mX : 0
@@ -415,7 +428,9 @@ MouseAreaForWindowDraging{
             function updateBlockTime(col, index, time)
             {
                 console.log("OK" + time);
-                rep_columns.itemAt(col).getBlock(index).width = time/main222.scaling;
+                if (col >=0 && col < rep_columns.count)
+                    if (index >= 0 && index < rep_columns.itemAt(col).count )
+                        rep_columns.itemAt(col).getBlock(index).width = time/main222.scaling;
             }
 
             onBlockTimeSignel: {
@@ -947,14 +962,14 @@ MouseAreaForWindowDraging{
                         id: columns
                         width:  timeControll.getMaxTrackTime()
                         property Repeater globalRep
-                        spacing: 2
-                        onSpacingChanged: {
+                        // spacing: 2
+                        /*onSpacingChanged: {
                             timeControll.setSpacingBtwBlocks(columns.spacing)
-                        }
+                        }*/
 
                         Component.onCompleted: {
                             main222.p_columns = columns
-                            timeControll.setSpacingBtwBlocks(columns.spacing)
+                            //timeControll.setSpacingBtwBlocks(columns.spacing)
                         }
                         Repeater {
                             id: rep_columns
@@ -980,7 +995,8 @@ MouseAreaForWindowDraging{
                                 }
                                 function setColorize(indexa, color)
                                 {
-                                    repka.itemAt(indexa).p_color_overlay.color = color
+                                    if (indexa >=0 && indexa< repka.count)
+                                        repka.itemAt(indexa).p_color_overlay.color = color
                                     //  // //console.log("GGGGGGGGGG " + repka.itemAt(indexa).mX)
                                     // // //console.log("GGGGGGGGGG " + repka.itemAt(indexa).x)
                                     //main222.p_scale_pointer.x = repka.itemAt(indexa).x
@@ -1004,6 +1020,16 @@ MouseAreaForWindowDraging{
                                     trackbar.enableButtonsClick = value;
                                 }
 
+                                function setTrackBorder(value)
+                                {
+                                    // main222.p_last_main_root.border.width = 0; //-=-=-=
+                                    //main222.p_last_main_root = p_main_root;
+                                    p_main_root.border.width = value
+                                }
+
+
+                                property Item p_main_root: value
+
 
                                 property int mIndex: index
                                 ContentToolBar.TrackToolBar {
@@ -1017,10 +1043,18 @@ MouseAreaForWindowDraging{
                                     Rectangle {
                                         id:main_root
                                         x: 30
+                                        property int col_ind : index
                                         width: 4000
                                         height: 100
                                         color: "gray"
                                         border { color: "white"; width: 0 }
+                                        Component.onCompleted: {
+                                            bar_track.p_main_root = main_root;
+                                        }
+
+
+
+
                                         DropArea
                                         {
                                             enabled: false
@@ -1029,10 +1063,12 @@ MouseAreaForWindowDraging{
                                             onEntered:
                                             {
                                                 main_root.border.width = 3
+                                                main222.dropEnteredTrackIndex = main_root.col_ind
                                             }
                                             onExited:
                                             {
                                                 main_root.border.width = 0
+                                                //main222.dropEnteredTrackIndex = -1
                                             }
                                             //z: -50
                                         }
@@ -1080,6 +1116,7 @@ MouseAreaForWindowDraging{
                                                     ContentBlock.Block{
                                                     id: cool
                                                     globalRep : repka
+                                                    columnRep: rep_columns
                                                     p_trackbar : trackbar
                                                     p_bar_track : bar_track
                                                     p_border_color: timeControll.getBlockBorderColor(colIndex, mIndex)

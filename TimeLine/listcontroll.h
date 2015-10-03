@@ -219,7 +219,7 @@ public:
     Q_INVOKABLE void setCurentBlock (int col, int ind);
 
     int isPlayPauseStop = 3;
-    static const int blockHeightPlusSpacing = 102;
+    static const int blockHeightPlusSpacing = 100;
 
 
     bool save(QIODevice* device, QProgressBar *bar);
@@ -283,6 +283,7 @@ public:
     void setBlocks(int col,const  QList <DrawElement * > &value);
     Q_INVOKABLE   void setBlockKey(int col, int i, QString name);\
     Q_INVOKABLE void setBlockTime(int col, int i, int value, bool resize_next_empty = false);
+    Q_INVOKABLE bool setBlockTimeBlockBalance(int col, int ind, int value, bool resize_next_empty = false);
     Q_INVOKABLE void deleteBlockToDel(int col);
     Q_INVOKABLE void setBlockTimeWithUpdate(int col, int i, int value, bool visual);
     Q_INVOKABLE void setBlockStartTime(int col, int i, int value);
@@ -374,8 +375,8 @@ public:
     Q_INVOKABLE void addBlockWithSpaceFromBufferAt(int col, int ind,int space,   int life_time = -1 ,bool need_balance = false);
 
     Q_INVOKABLE DrawElement* getBlockFromBuffer();
-    Q_INVOKABLE getBlockIndToAddFromPos(int col,int ind, int pos);
-    Q_INVOKABLE getBlockIndToAddFromPos(DrawElement * elm, int pos);
+    Q_INVOKABLE getBlockIndToAddFromPos(int col,int ind, int pos, int col_dest = -1);
+    Q_INVOKABLE getBlockIndToAddFromPos(DrawElement * elm, int pos, int col_dest = -1);
     Q_INVOKABLE getBlockSpaceToAddFromPos(int col,int ind); //call after getBlockIndToAddFromPos
     Q_INVOKABLE void logBlocksTypes(int col);
     void sendUpdateModel();

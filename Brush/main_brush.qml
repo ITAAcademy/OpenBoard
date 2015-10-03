@@ -165,34 +165,6 @@ Rectangle{
                 x:5
                 visible: false
             }
-            Graph {
-                id: graph
-                anchors.fill: parent
-                anchors.margins: 100
-
-                function newSample(i) {
-                    return (Math.sin(i / 100.0 * Math.PI * 2) + 1) * 0.4 + Math.random() * 0.05;
-                }
-
-                Component.onCompleted: {
-                    for (var i=0; i<100; ++i)
-                        appendSample(newSample(i));
-                }
-
-                property int offset: 100;
-            }
-
-            Timer {
-                id: timer
-                interval: 500
-                repeat: true
-                running: true
-                onTriggered: {
-                    graph.removeFirstSample();
-                    graph.appendSample(graph.newSample(++graph.offset));
-                }
-
-            }
 
         }
     }

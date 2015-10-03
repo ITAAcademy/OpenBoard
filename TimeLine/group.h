@@ -22,7 +22,7 @@ class Group
 
     int first_col = 0;
     int blockHeight = 100;
-    int spacing_blocks = 2;
+    int spacing_blocks = 0;
     bool isGroupRecalculated = false;
     bool bValid = false;
 
