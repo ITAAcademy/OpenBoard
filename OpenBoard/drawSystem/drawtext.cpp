@@ -616,7 +616,7 @@ void DrawTextElm::drawTextBuffer( int m_x, int m_y, int m_width, int m_height, i
     pt = textFont.pointSize();
 
     clearCanvas(m_x, m_y);
-    int maxDrawElm = (height/(lineHeight + pt)) - 1;
+    int maxDrawElm = (height/(lineHeight + pt));
     ////qDebug() << "DRAW   "   <<  maxDrawElm;
     int CurRow = convertTextBoxToBufferIndex(cursorIndex).y();
     if(CurRow >= indexRowInList + maxDrawElm)
