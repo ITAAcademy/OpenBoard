@@ -175,6 +175,12 @@ bool ListControll::getCurent_group() const
     //   qDebug() << "RESSSSSSSS_GROUP   " << res;
     return res;
 }
+
+bool ListControll::redrawYellowRect()
+{
+    curent_group->calcBoundRec();
+    drawYellowRectangle(curent_group->getBoundRec());
+}
 bool ListControll::getCurent_group(int col, int index)
 {
     bool res;
@@ -215,6 +221,7 @@ QPoint ListControll::getCurent_groupMembers( int index )
 int ListControll::getCurent_groupMembersSize()
 {
     return curent_group->getMembersPosition().size();
+    curent_group->calcBoundRec();
 }
 
 
@@ -2006,7 +2013,6 @@ bool ListControll::updateYellowRectangle(int x, int y, int width, int height)
 void  ListControll::drawYellowRectangle(QRect rect)
 {
     yellow_rec = rect;
-
     emit drawRectangleSignal();
     qDebug() << "ListControll::drawRectangle emitted ";
 }
@@ -2091,8 +2097,8 @@ void ListControll::convertCurentBlockToText()
     connect(text,SIGNAL(sizeChangedSignal(int,int, int, bool)),
             this, SLOT(setBlockTimeWithUpdate(int, int, int, bool)));
 
-    emit updateSelectedBlock(selectedBlockPoint);
     calcPointedBlocks();
+    emit updateSelectedBlock(selectedBlockPoint);
     setBlocked(false);
 }
 
