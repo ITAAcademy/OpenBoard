@@ -718,8 +718,11 @@ bool MainWindow::event(QEvent * e) // overloading event(QEvent*) method of QMain
           e->ignore();
         } else {
           e->accept();
-          mpOGLWidget->show();
-          mpOGLWidget->getTimeLine()->show();
+          if(mpOGLWidget->isVisible())
+          {
+              mpOGLWidget->show();
+              mpOGLWidget->getTimeLine()->show();
+          }
         }
       }
     return QMainWindow::event(e) ;

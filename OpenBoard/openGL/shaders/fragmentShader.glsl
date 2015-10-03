@@ -1,9 +1,20 @@
 //#version 120
 //precision highp float;
+#define QUALITY 32
+#define N 20
+
 varying vec2 vUV;
 uniform sampler2D textureSampler;
 uniform vec4 toColor;
 uniform float radial_blur;   // blur factor
+
+
+
+// General parameters
+
+
+// Custom parameters
+const float GOLDEN_ANGLE = 2.399963229728653; // PI * (3.0 - sqrt(5.0))
 //uniform int bloorStep;
 /*vec4 smoothing(vec2 tc,sampler2D u_texture,vec2 u_Scale);
 
@@ -57,6 +68,20 @@ vec4 PS_RadialBlur(vec2 UV )
       }
 
      return SumColor / 12.0 * radial_bright;
+}
+
+vec4 blur(sampler2D t, vec2 c, float radius) {
+  vec4 sum = vec4(0.0);
+  float q = float(QUALITY);
+  // Using a "spiral" to propagate points.
+  for (int i=0; i<QUALITY; ++i) {
+    float fi = float(i);
+    float a = fi * GOLDEN_ANGLE;
+    float r = sqrt(fi / q) * radius;
+    vec2 p = c + r * vec2(cos(a), sin(a));
+    sum += texture2D(t, p);
+  }
+  return sum / q;
 }
 
 /*vec4 smoothing(vec2 tc,sampler2D u_texture,vec2 u_Scale){
