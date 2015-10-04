@@ -379,6 +379,7 @@ public:
     Q_INVOKABLE getBlockIndToAddFromPos(DrawElement * elm, int pos, int col_dest = -1);
     Q_INVOKABLE getBlockSpaceToAddFromPos(int col,int ind); //call after getBlockIndToAddFromPos
     Q_INVOKABLE void logBlocksTypes(int col);
+    Q_INVOKABLE void logBlocksDrawElColInd(int col);
     void sendUpdateModel();
 
     Q_INVOKABLE  float getScaleScrollChildren() const;

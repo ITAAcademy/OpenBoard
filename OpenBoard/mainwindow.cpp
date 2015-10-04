@@ -457,6 +457,8 @@ MainWindow::MainWindow(QWidget *parent) :
     a_color_canvas->setEnabled(false);
     this->ui->action_Board_Color->setEnabled(false);
     this->ui->action_Board_Font->setEnabled(false);
+
+
 }
 
 MainWindow::~MainWindow()

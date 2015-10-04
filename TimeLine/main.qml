@@ -425,16 +425,30 @@ MouseAreaForWindowDraging{
                     main222.ctrl_pressed = false;
             }
 
-            function updateBlockTime(col, index, time)
+            /*function updateBlockTime(col, index, time)
             {
-                console.log("OK" + time);
-                if (col >=0 && col < rep_columns.count)
-                    if (index >= 0 && index < rep_columns.itemAt(col).count )
+                console.log("updateBlockTime  " + col + " " + index + "  rep_columns.count = "  + rep_columns.count);
+                /*if (col >=0 && col < rep_columns.count)
+                {
+                     console.log("rep_columns.itemAt(col).count = " + rep_columns.itemAt(col).getCount()); //12345
+                    if (index >= 0 && index < rep_columns.itemAt(col).getCount() )
+                    {
+                        console.log("succesfull 3");
                         rep_columns.itemAt(col).getBlock(index).width = time/main222.scaling;
-            }
+                    }
+                }
+
+                rep_columns.itemAt(col).setBlockWidth(index,time/main222.scaling );
+            }*/
 
             onBlockTimeSignel: {
-                updateBlockTime(col, index, time);
+                // console.log("onBlockTimeSignel");
+                // updateBlockTime(col, index, time);
+               // if (main222.maIsPressed === 1)
+                {
+                    //console.log("onBlockTimeSignel  " + col + " " + index + "  rep_columns.count = "  + rep_columns.count);
+                    rep_columns.itemAt(col).setBlockWidth(index,time/main222.scaling );
+                }
             }
 
         }
@@ -1006,6 +1020,21 @@ MouseAreaForWindowDraging{
                                     // //console.log("repka.itemAt(indexa).x="+repka.itemAt(indexa).x)
 
                                     return repka.itemAt(indexa).x
+                                }
+
+                                function setBlockWidth (indexa, value)
+                                {
+                                    console.log(" function setBlockWidth (indexa = " + indexa +
+                                                " value = " + value)
+                                   // if (main222.maIsPressed === 0)
+                                     repka.itemAt(indexa).width = value
+                                }
+
+                                function getCount()
+                                {
+                                    // //console.log("repka.itemAt(indexa).x="+repka.itemAt(indexa).x)
+
+                                    return repka.count
                                 }
 
                                 function getBlock (indexa)

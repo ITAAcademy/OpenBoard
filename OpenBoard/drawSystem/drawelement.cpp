@@ -700,17 +700,20 @@ int DrawElement::getLifeTime()
  void DrawElement::setLifeTime(int value, bool feedBack, bool visual)
 {
     //qDebug() << "DrawElement::setLifeTime value = "<< value;
-    if(feedBack)
-    {
-        emit sizeChangedSignal(blockColumn, blockIndex, value, visual);
-        return;
-    }
+
 
     if (value >= 0)
         lifeTime = value;
     /*if(group_wich_el_belong != NULL)
         group_wich_el_belong->calcBoundRec();
     */
+    if(feedBack)
+    {
+        emit sizeChangedSignal(blockColumn, blockIndex, value, visual);
+        qDebug() << "emit sizeChangedSignal(blockColumn = " <<blockColumn<<
+                 "blockIndex = " <<  blockIndex << " value = " << value << " visual = " << visual;  //work
+        return;
+    }
 }
 
 int DrawElement::getStartDrawTime() const

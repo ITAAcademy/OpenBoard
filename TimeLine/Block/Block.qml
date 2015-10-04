@@ -347,7 +347,7 @@ Rectangle{
     z: 0
     onWidthChanged: {
         type = timeControll.getBlockTypeId(colIndex,mIndex)
-        //console.log("onWidthChanged    type = "  +type)
+       console.log("onWidthChanged    ind = "  + root.mIndex)
         if (root.type == 5)
         {
             if (width == 0)
@@ -365,10 +365,12 @@ Rectangle{
         icon.width = icon.height;
         if (main222.maIsPressed === 1)
         {
-           if (timeControll.setBlockTimeBlockBalance(colIndex, mIndex,root.width * main222.scaling,true) )
-           {
-              // main222.updateTracksModel();
-           }
+            if (timeControll.setBlockTimeBlockBalance(colIndex, mIndex,root.width * main222.scaling,true) )
+                //setBlockTime
+                //setBlockTimeBlockBalance
+            {
+                // main222.updateTracksModel();
+            }
 
         }
         /* else
@@ -415,7 +417,7 @@ Rectangle{
                 y = ( rep_columns.count- root.colIndex - 1) * root.height
             }
 
-     main222.dropEnteredTrackIndex = Math.floor( (mapToItem(item_col, 0, 0).y) /root.height)
+        main222.dropEnteredTrackIndex = Math.floor( (mapToItem(item_col, 0, 0).y) /root.height)
 
         //console.log("onYChanged " + m_y);
     }
@@ -476,6 +478,7 @@ Rectangle{
 
                 root.animation_scale_normal_toXpos =root.x - scroll.flickableItem.contentX //main222.dropEnteredBlock.x  + main222.zdvigWhenNormalAnim
                 if (main222.able_create_empty_block)
+                //if (main222.maIsPressed === 1)
                 {
 
                     //timeControll.setBlockStartTime(root.colIndex, root.mIndex, root.x  * main222.scaling)
@@ -503,10 +506,10 @@ Rectangle{
                 main222.able_create_empty_block = true
 
 
-               // root.p_bar_track.z += 200 //888
+                // root.p_bar_track.z += 200 //888
 
 
-               // animation_scale_normal.running = true //9999999   kalich
+                // animation_scale_normal.running = true //9999999   kalich
                 //root.p_bar_track.z -= 200
                 root.globalRep.z -= 200
                 if(root.p_main222.needUpdateModelWhereBlockDroped)
@@ -523,11 +526,11 @@ Rectangle{
                 if (root.p_main222.dropEnteredTrackIndex >= 0)
                 {
 
-                   // rep_columns
+                    // rep_columns
 
                     root.columnRep.itemAt(root.p_main222.dropEnteredTrackIndex).getBlock(0).globalRep.updateModel()
 
-                   // itemAt(main222.dropEnteredTrackIndex).updateModel()
+                    // itemAt(main222.dropEnteredTrackIndex).updateModel()
                     root.p_main222.dropEnteredTrackIndex = -1
                 }
 
@@ -606,7 +609,7 @@ Rectangle{
 
         onPressed: {
             root.z += 200
-            timeControll. logBlocksTypes(root.colIndex);
+            timeControll. logBlocksDrawElColInd(root.colIndex);
             //main222.dropedtoDropArea = false
             console.log("onPressed colIndex =" + root.colIndex + "  mIndex = " + root.mIndex + " "
                         + timeControll.getBlockStartTime(root.colIndex , root.mIndex ))
@@ -688,8 +691,8 @@ Rectangle{
                         mouseArea.drag.target = null
                     }
                     else if(mouseX < resize_capture_area_width){
-                        bChangeSizeLeft = true;
-                        mouseArea.drag.target = null
+                        // bChangeSizeLeft = true;
+                        // mouseArea.drag.target = null
                     }
                     else
                     {
@@ -1282,12 +1285,12 @@ Rectangle{
                 if(bChangeSizeRight)
                 {
                     console.log(" bChangeSizeRight         !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!:)::")
-                    mouseArea.drag.target = root;
+                    /* mouseArea.drag.target = root;
                     if(!timeControll.getCurent_group())
                         timeControll.setBlockTime(colIndex, mIndex,root.width * main222.scaling);
                     else
                         root.width = timeControll.getBlockTime(root.colIndex, root.mIndex)/main222.scaling;
-                    // item_col.width = timeControll.getMaxTrackTime()// item_col.childrenRect.width
+                   */ // item_col.width = timeControll.getMaxTrackTime()// item_col.childrenRect.width
 
                     bChangeSizeRight = false;
                     if(!timeControll.getCurent_group())
@@ -1302,13 +1305,13 @@ Rectangle{
                 }
                 else if(bChangeSizeLeft)
                 {
-                    mouseArea.drag.target = root;
+                    /*  mouseArea.drag.target = root;
                     if(!timeControll.getCurent_group())
                         timeControll.setBlockTime(colIndex, mIndex,root.width * main222.scaling);
                     else
                         root.width = timeControll.getBlockTime(root.colIndex, root.mIndex)/main222.scaling;
                     // item_col.width = timeControll.getMaxTrackTime()// item_col.childrenRect.width
-
+*/
                     bChangeSizeLeft = false;
                     if(!timeControll.getCurent_group())
                         if (root.p_main222.dovodka_block)
