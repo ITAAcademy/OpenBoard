@@ -86,11 +86,21 @@ void FileManager::setFilePathName(const QString &value)
     qDebug() << "AAAAAAAAAAA  FileManager::setFilePathName   " << value;
     filePathName = value;
     if (value != "")
+    {
+        qDebug() << "FileManager::setFilePathName      emit filePathNameChanged(value);";
         emit filePathNameChanged(value);
+    }
 }
 QDir FileManager::getBrushDir(){
     return brushDir;
 }
+
+void FileManager::hideIt()
+{
+    emit hideSignal();
+    this->hide();
+}
+
 
 void FileManager::setColorize(bool val)
 {

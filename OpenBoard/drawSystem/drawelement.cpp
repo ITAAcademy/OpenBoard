@@ -67,6 +67,7 @@ void DrawElement::setKey(const QString &value)
 }
 DrawElement::DrawElement(OGLWidget *drawWidget, QObject *parent) : QObject(parent)
 {
+    group_wich_el_belong = NULL;
     startDrawTime = 0;
     pDrawWidget = drawWidget;
     bPause = false;
@@ -690,24 +691,30 @@ void DrawElement::setZ(int value)
     z = value;
 }
 
-int DrawElement::getLifeTime() const
+int DrawElement::getLifeTime()
 {
-    return lifeTime;
+    int hna = lifeTime;
+    return hna;
 }
 
  void DrawElement::setLifeTime(int value, bool feedBack, bool visual)
 {
-    if(feedBack)
-    {
-        emit sizeChangedSignal(blockColumn, blockIndex, value, visual);
-        return;
-    }
+    //qDebug() << "DrawElement::setLifeTime value = "<< value;
+
 
     if (value >= 0)
         lifeTime = value;
     /*if(group_wich_el_belong != NULL)
         group_wich_el_belong->calcBoundRec();
     */
+    if(feedBack)
+    {
+        emit sizeChangedSignal(blockColumn, blockIndex, value, visual);
+      /*  qDebug() << "emit sizeChangedSignal(blockColumn = " <<blockColumn<<
+                 "blockIndex = " <<  blockIndex << " value = " << value << " visual = " << visual;  //work
+        */
+        return;
+    }
 }
 
 int DrawElement::getStartDrawTime() const
@@ -718,8 +725,8 @@ int DrawElement::getStartDrawTime() const
 void DrawElement::setStartDraw(int value)
 {
     startDrawTime = value;
-    if(group_wich_el_belong != NULL)
-        group_wich_el_belong->calcBoundRec();
+    /*if(group_wich_el_belong != NULL)
+        group_wich_el_belong->calcBoundRec();*/
 }
 
 QImage DrawElement::getIcon() const

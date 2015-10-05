@@ -119,8 +119,9 @@ public:
     int getZ() const;
     void setZ(int value);
 
-    int getLifeTime() const;
-    void setLifeTime(int value, bool feedBack = false, bool visual = true);
+     int getLifeTime() ;
+     void setLifeTime(int value, bool feedBack = false, bool visual = true);
+
 
     int getStartDrawTime() const;
     void setStartDraw(int value);

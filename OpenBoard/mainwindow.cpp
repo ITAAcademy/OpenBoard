@@ -2,6 +2,8 @@
 #include "ui_mainwindow.h"
 #include "../TimeLine/listcontroll.h"
 
+
+
 #define TIMER_VALUE         300
 
 #define WINDOW_POS          80,100,760,560
@@ -455,6 +457,8 @@ MainWindow::MainWindow(QWidget *parent) :
     a_color_canvas->setEnabled(false);
     this->ui->action_Board_Color->setEnabled(false);
     this->ui->action_Board_Font->setEnabled(false);
+
+
 }
 
 MainWindow::~MainWindow()
@@ -1215,7 +1219,7 @@ bool MainWindow::on_action_Save_as_triggered()
 {
 
     QString suf;
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"), directory,
+    QString fileName = QFileDialog::getSaveFileName(0, tr("Save File"), directory,
                                                     tr("Text Files (*.txt);;All Files (*.*)"), &suf, QFileDialog::DontUseNativeDialog | QFileDialog::DontConfirmOverwrite);
     fileName =  mSuffixFromFilter(suf, fileName);
 
@@ -1239,7 +1243,7 @@ void MainWindow::on_action_Open_triggered()
 {
     if (maybeSave())
     {
-        QString fileName = QFileDialog::getOpenFileName(this, tr("Open File"), directory,
+        QString fileName = QFileDialog::getOpenFileName(0, tr("Open File"), directory,
                                                         tr("Text Files (*.txt);;All Files (*.*)"), 0, QFileDialog::DontUseNativeDialog);
 
         openFile( fileName);
@@ -1293,9 +1297,11 @@ bool MainWindow::on_action_Save_Project_triggered()
         qApp->processEvents();
         activateWindow();
         QString suf;
-        QString fileName = QFileDialog::getSaveFileName(this,
-                                                        tr("Save project"), directory, tr("Project file (*.project )"), &suf, QFileDialog::DontUseNativeDialog | QFileDialog::DontConfirmOverwrite);
-        fileName =  mSuffixFromFilter(suf, fileName);
+
+       QString fileName = QFileDialog::getSaveFileName(0,
+        tr("Save project"), directory, tr("Project file (*.project )"), &suf, QFileDialog::DontUseNativeDialog | QFileDialog::DontConfirmOverwrite);
+       fileName =  mSuffixFromFilter(suf, fileName);
+
         isActive = true;
         qApp->processEvents();
         activateWindow();
@@ -1346,8 +1352,10 @@ void MainWindow::on_action_Open_Project_triggered()
     isActive = false;
     qApp->processEvents();
     activateWindow();
+
     //  mpOGLWidget->show();
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Open project"), directory, tr("Project file (*.project)"), 0, QFileDialog::DontUseNativeDialog);
+    QString fileName = QFileDialog::getOpenFileName(0, tr("Open project"), directory, tr("Project file (*.project)"), 0, QFileDialog::DontUseNativeDialog);
+
     //mpOGLWidget->hide();
     //qDebug() << "DDDDDDDDDDDDDDDDDDDDDDDDDDD fileName = " <<  fileName;
     isActive = true;
@@ -1379,7 +1387,7 @@ void MainWindow::on_action_Open_Project_triggered()
     }
     else
     {
-        QMessageBox::warning(this, "Error",tr("Project\'s opening failed") //щ
+        QMessageBox::warning(0, "Error",tr("Project\'s opening failed") //щ
                              .arg(curProjectFile).arg(file.errorString()));
         return ;
     }
@@ -1395,7 +1403,8 @@ bool MainWindow::trySaveProject()
     if (mpOGLWidget->getTimeLine()->isProjectChanged())
     {
         QMessageBox::StandardButton reply;
-        reply = QMessageBox::question(this, "Test", "Are you want to save changes in current project?",
+
+        reply = QMessageBox::question(0, "Test", "Are you want to save changes in current project?",
                                       QMessageBox::Yes|QMessageBox::No | QMessageBox::Cancel);
         if (reply == QMessageBox::Cancel)
             return false;
@@ -1917,6 +1926,7 @@ void MainWindow::updateBlockFromTextEdit()
             ui->expected_time->setText("EXPECTED TIME:  " + QString::number(change_time) + " ms");
             if(ui->check_use_speed_value->isChecked() && isActiveWindow() && !mpOGLWidget->getTimeLine()->getCurent_group())
             {
+                qDebug() << "void MainWindow::updateBlockFromTextEdit()";
                 mpOGLWidget->getTimeLine()->setBlockTime(point.x(), point.y(), change_time);
                 mpOGLWidget->getTimeLine()-> sendUpdateModel();
                 //mpOGLWidget->getTimeLine()->sendUpdateModel();
@@ -1929,7 +1939,7 @@ void MainWindow::updateBlockFromTextEdit()
 
 void MainWindow::setCurentTextBlockStaticMoment(double value)
 {
-    qInfo() << "setCurentTextBlockStaticMoment <<S>> " << value;
+    qDebug() << "setCurentTextBlockStaticMoment <<S>> " << value;
     QPoint point = mpOGLWidget->getTimeLine()->getSelectedBlockPoint();
     //qDebug() << "IMAGE" << commandTextEdit->getPreviousCursorPosition();
     if(point.x() != -1 )
@@ -2125,7 +2135,7 @@ void MainWindow::on_action_Stop_triggered()
 
 void MainWindow::on_action_youTube_triggered()
 {
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Choose file..."), qApp->applicationDirPath(), tr("Videos (*.avi *.mp4)"), 0, QFileDialog::DontUseNativeDialog);
+    QString fileName = QFileDialog::getOpenFileName(0, tr("Choose file..."), qApp->applicationDirPath(), tr("Videos (*.avi *.mp4)"), 0, QFileDialog::DontUseNativeDialog);
     if(fileName.size() != 0)
     {
         youtube= new YouTubeWrapper(QString(fileName),this);
@@ -2169,7 +2179,7 @@ void MainWindow::on_action_Record_to_file_triggered()
     if (!isRecordToFile)
     {
         QString suf;
-        QString fileName = QFileDialog::getSaveFileName(this, tr("Save File"), QString(),
+        QString fileName = QFileDialog::getSaveFileName(0, tr("Save File"), QString(),
                                                         tr("Videos (*.avi *.mp4)"), &suf, QFileDialog::DontUseNativeDialog | QFileDialog::DontConfirmOverwrite);
         fileName =  mSuffixFromFilter(suf, fileName);
 
@@ -2312,7 +2322,7 @@ void MainWindow::on_actionShow_last_drawing_triggered()
 void MainWindow::on_actionSave_drawing_triggered()
 {
     QString suf;
-    QString fileName = QFileDialog::getSaveFileName(this, tr("Choose file..."), qApp->applicationDirPath(), tr("Drawing (*.paint)"), &suf, QFileDialog::DontUseNativeDialog | QFileDialog::DontConfirmOverwrite);
+    QString fileName = QFileDialog::getSaveFileName(0, tr("Choose file..."), qApp->applicationDirPath(), tr("Drawing (*.paint)"), &suf, QFileDialog::DontUseNativeDialog | QFileDialog::DontConfirmOverwrite);
 
     fileName =  mSuffixFromFilter(suf, fileName);
     if(!fileName.size())
@@ -2323,7 +2333,7 @@ void MainWindow::on_actionSave_drawing_triggered()
 
 void MainWindow::on_actionLoad_drawing_temp_triggered()
 {
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Choose file..."), qApp->applicationDirPath(), tr("Drawing (*.paint)"), 0, QFileDialog::DontUseNativeDialog);
+    QString fileName = QFileDialog::getOpenFileName(0, tr("Choose file..."), qApp->applicationDirPath(), tr("Drawing (*.paint)"), 0, QFileDialog::DontUseNativeDialog);
     if(!fileName.size())
         return;
     mpOGLWidget->drawBrushElm->load(fileName);

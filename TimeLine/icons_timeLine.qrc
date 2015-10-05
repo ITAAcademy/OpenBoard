@@ -82,5 +82,9 @@
         <file>iphone_toolbar_icons/Audio.png</file>
         <file>iphone_toolbar_icons/ttHousehold-Tape-Measure-2-icon (2).png</file>
         <file>iphone_toolbar_icons/ttHousehold-Tape-Measure-2-icon (1).png</file>
+        <file>iphone_toolbar_icons/blue_library.png</file>
+        <file>iphone_toolbar_icons/bittorrent_plus.png</file>
+        <file>iphone_toolbar_icons/Shopping_cart_insert_Icon_72.png</file>
+        <file>iphone_toolbar_icons/Shopping_cart_insert_Icon_723.png</file>
     </qresource>
 </RCC>

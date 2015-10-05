@@ -267,7 +267,8 @@ ApplicationWindow  {
              onClicked: {
                  if (block_time_value.text < minBlockWidth)
                      block_time_value.text = minBlockWidth;
-                 timeControll.setBlockTime(mainwindow.columnIndex,mainwindow.blockIndex,block_time_value.text)
+                 timeControll.setBlockTime(mainwindow.columnIndex,mainwindow.blockIndex,block_time_value.text,true)
+                // timeControll.setBlockTime(colIndex, mIndex,root.width * main222.scaling,true);
                  timeControll.setBlockKey(mainwindow.columnIndex,mainwindow.blockIndex,block_name_value.text)
 
                  timeControll.setDrawX(mainwindow.columnIndex,mainwindow.blockIndex,block_X_value.text)

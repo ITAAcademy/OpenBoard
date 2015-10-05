@@ -46,7 +46,7 @@ ApplicationWindow  {
 
     function closeAnimateMenu()
     {
-timeControll.emitHideEffects();
+        timeControll.emitHideEffects();
     }
 
     function showIt(a,b, globRepa)
@@ -141,7 +141,7 @@ timeControll.emitHideEffects();
 
     function showAnimateBlockMenu()
     {
-       timeControll.emitOpenEffects();
+        timeControll.emitOpenEffects();
     }
 
     property int   minBlockWidth : 0
@@ -181,6 +181,7 @@ timeControll.emitHideEffects();
                 button_text: "left"
                 height: parent.height/3
                 onButtonClicked: {
+                    console.log("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^   timeControll.addBlockAt(columnIndex,blockIndex) left    ")
                     context_menu.closeIt()
                     timeControll.addBlockAt(columnIndex,blockIndex)
                     appen_block_items.visible = false
@@ -199,14 +200,20 @@ timeControll.emitHideEffects();
                 button_text: "right"
                 height: parent.height/3
                 onButtonClicked: {
-
+                    console.log("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^   timeControll.addBlockAt(columnIndex,blockIndex) right    ")
                     context_menu.closeIt()
+                    console.log("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^   timeControll.addBlockAt(columnIndex,blockIndex) right    2")
                     timeControll.addBlockAt(columnIndex,blockIndex+1)
+                    console.log("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^   timeControll.addBlockAt(columnIndex,blockIndex) right    3")
                     appen_block_items.visible = false
+                    console.log("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^   timeControll.addBlockAt(columnIndex,blockIndex) right    4")
                     //closeAnimateMenu()
                     main222.needToLightSelected = false;
+                    console.log("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^   timeControll.addBlockAt(columnIndex,blockIndex) right    5")
                     contextMenuFrame.globalRep.updateModel();
+                    console.log("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^   timeControll.addBlockAt(columnIndex,blockIndex) right    6")
                     but_append.color = contextMenuItem.color
+                    console.log("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^   timeControll.addBlockAt(columnIndex,blockIndex) right    7")
                 }
             }
             height: but_edit.height*2.5
@@ -292,18 +299,19 @@ timeControll.emitHideEffects();
                 button_text: "Load from file"
                 index: 3
                 onButtonClicked: {
+
                     context_menu.closeIt()
                     but_append.color = contextMenuItem.color
                     appen_block_items.visible = false
 
-                    /*var col= contextMenuItem.columnIndex;
-                var id = contextMenuItem.blockIndex;*/
-                    timeControll.loadFromFile();//removeBlock(col,id)
 
-                    // //console.log("AFTER 9999999999999999999999");
-                    //main222.selectedBlock.repaint();
-                    //contextMenuFrame. globalRep.updateModel();
+                    timeControll.setLoadF_manager(false)
+                    console.log("but_loadFile   colIndex = "+ contextMenuFrame.colIndex + " blockIndex = "+ contextMenuFrame.blockIndex)
+                    timeControll.setCurentBlock(main222.selectedBlockCol, main222.selectedBlockIndex)
 
+                    timeControll.loadFromFileVoid( "")
+
+                    //,"F://prohect/build-OpenBoard-Desktop_Qt_5_4_0_MinGW_32bit-Debug/Es2zT8Y.jpg")//removeBlock(col,id)
 
 
                 }
@@ -319,6 +327,8 @@ timeControll.emitHideEffects();
 
                     but_append.color = contextMenuItem.color
                     appen_block_items.visible = false
+                    timeControll.setCurentBlock(main222.selectedBlockCol,main222.selectedBlockIndex)
+                    timeControll.setLoadF_manager(false) //from file
                     timeControll.showF_manager()
                     timeControll.setPosDefaultF_manager()
 

@@ -5,7 +5,7 @@ import QtGraphicalEffects 1.0
 
 import "Block" as ContentBlock
 import "ToolBar" as ContentToolBar
-
+/*
     Item {
     id: item_col
     function addTrack()     {
@@ -57,5 +57,9 @@ import "ToolBar" as ContentToolBar
        item_col.p_trackbar.globalRep = item_col.children[1].globalRep
     }
 
-    }
+    }*/
+
+Rectangle{
+
+}
 

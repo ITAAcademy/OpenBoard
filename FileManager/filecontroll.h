@@ -49,6 +49,7 @@ class FileManager : public QObject, public QQuickImageProvider
 
     QString filePathName = "-1";
 public:
+    Q_INVOKABLE void hideIt();
     QDir getBrushDir();
     void setColorize(bool val);
       QStringList brushPathsList;
@@ -96,7 +97,7 @@ public:
     Q_INVOKABLE QSize getSize();
 
 signals:
-    //void colorChanged();
+    void hideSignal();
     void currentBrushChanged();
     void filePathNameChanged(QString value);
     void update();
