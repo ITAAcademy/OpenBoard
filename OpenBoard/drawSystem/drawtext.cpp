@@ -468,6 +468,7 @@ bool DrawTextElm::load_add(QDataStream &stream, float version)
     {
         stream >> staticMoment;
     }
+
     /*int sizeOfString = 0;
     stream >> sizeOfString;
     QByteArray data;

@@ -63,6 +63,42 @@ ApplicationWindow  {
             }
 
             Rectangle {
+                id: block_play_time
+                color: "black"
+                enabled: !timeControll.getCurent_group() //@BAG@//NICOlas
+                width: contextMenuItem.width // block_width_text + 10 + block_width_value.width
+                height: 40
+                border  { width: 2; color: "white" }
+                Text {
+                    id: block_play_time_text
+                    text: "Block play time (ms)"
+                    color: "white"
+                    anchors { verticalCenter: parent.verticalCenter; left: parent.left; leftMargin: 10 }
+                    font { pixelSize: 14 }
+                }
+                TextField   {
+                     id: block_play_time_value
+                     x: block_play_time.width - width - 10
+                     width: 200
+                     font { pixelSize: 14 }
+                     y: 7
+                    // minimumValue : minBlockWidth
+                     property string initText : timeControll.getBlockPlayTimeUntilFreeze(mainwindow.columnIndex,mainwindow.blockIndex)
+                    text: initText
+                   // color: text_color
+                    onFocusChanged:  {
+
+                        if (text.length ==0)
+                            text = initText;
+                        if(text< 1)
+                            text = 1
+
+                    }
+                }
+            }
+
+
+            Rectangle {
                 id: block_name
                 color: "black"
                 width: contextMenuItem.width // block_width_text + 10 + block_width_value.width
@@ -268,6 +304,8 @@ ApplicationWindow  {
                  if (block_time_value.text < minBlockWidth)
                      block_time_value.text = minBlockWidth;
                  timeControll.setBlockTime(mainwindow.columnIndex,mainwindow.blockIndex,block_time_value.text,true)
+                 timeControll.setBlockPlayTimeUntilFreeze(mainwindow.columnIndex,mainwindow.blockIndex,block_play_time_value.text)
+                // timeControll.setPlayTime(mainwindow.columnIndex,mainwindow.blockIndex,block_time_value.text,true)
                 // timeControll.setBlockTime(colIndex, mIndex,root.width * main222.scaling,true);
                  timeControll.setBlockKey(mainwindow.columnIndex,mainwindow.blockIndex,block_name_value.text)
 

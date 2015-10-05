@@ -95,7 +95,7 @@ bool DrawBrushElm::load_add(QDataStream &stream, float version)
     }
     
     if(coords.size() > 0)
-        tickTime = lifeTime/coords.size();
+        tickTime = playTimeUntilFreeze/coords.size();
 }
 bool DrawBrushElm::setDrawWidget(OGLWidget *value){
 
@@ -205,7 +205,7 @@ void DrawBrushElm::setLifeTime(int value, bool feedBack, bool visual)
         return;
 
     if(coords.size() > 0)
-        tickTime = lifeTime/coords.size();
+        tickTime = playTimeUntilFreeze/coords.size();
 }
 void DrawBrushElm::draw()
 {
@@ -217,7 +217,7 @@ void DrawBrushElm::draw()
     
     if (current_time > 0)
     {
-        int realKeyValue = qCeil((double)((current_time-startDrawTime)*coords.size()/lifeTime));
+        int realKeyValue = qCeil((double)((current_time-startDrawTime)*coords.size()/playTimeUntilFreeze));
         // qDebug() << "QQQQQQQQQQQQQQQQQQQQ" << keyCouter;
         if(keyCouter == 0)
         {
@@ -245,7 +245,7 @@ void DrawBrushElm::draw()
                 // pDrawWidget->bindBuffer(fboWrapper.frameBuffer);
                 pDrawWidget->bindBuffer(curentBuff);
                 pDrawWidget->clearFrameBuffer(curentBuff);
-                qDebug() << "CORRECT BUFFER:"<<curentBuff;
+                //qDebug() << "CORRECT BUFFER:"<<curentBuff;
                 pDrawWidget->drawTexture(0,0,renderFbo.tWidth, renderFbo.tHeight,
                                          renderFbo.bindedTexture, 0, 1, 1, z );
 

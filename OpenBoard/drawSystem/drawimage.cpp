@@ -76,7 +76,7 @@ void DrawImageElm::draw()
             gif->start();
 
             int playTime = pDrawWidget->getTimeLine()->getPlayTime();
-            int keyFrame = (playTime-startDrawTime)*gif->frameCount()/lifeTime;
+            int keyFrame = (playTime-startDrawTime)*gif->frameCount()/playTimeUntilFreeze;
             gif->jumpToFrame(keyFrame);
             gif->start();
 

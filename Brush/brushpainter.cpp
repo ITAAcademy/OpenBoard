@@ -16,6 +16,7 @@ void BrushPainter::close()
 }
  QImage BrushPainter::applyColor(Brush brush)
 {
+     qDebug()<< "apply color";
      QImage res(brush.img.size()*2, QImage::Format_RGBA8888_Premultiplied);
      res.fill(Qt::transparent);
      QPainter paint;

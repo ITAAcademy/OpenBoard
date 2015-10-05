@@ -24,7 +24,7 @@ class DrawBrushElm;
 class DrawElement;
 
 #define minBlockTime 1000
-#define VERSION 2.93
+#define VERSION 2.95
 
 bool isFileExists(QString path) ;
 
@@ -430,10 +430,13 @@ public:
     Q_INVOKABLE void setPosF_manager(int x,int y);
     Q_INVOKABLE void setPosDefaultF_manager();
     Q_INVOKABLE void hideF_manager();
+    Q_INVOKABLE int getBlockPlayTimeUntilFreeze(int col, int i);
+    Q_INVOKABLE void setBlockPlayTimeUntilFreeze(int col, int i,int val);
 
 
     OGLWidget *getP_drawWidget() const;
     void setP_drawWidget(OGLWidget *value);
+
 
 signals:
     void borderColorChangedSignal(int col,int ind, QString color);

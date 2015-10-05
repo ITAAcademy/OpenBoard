@@ -405,6 +405,18 @@ void DrawElement::setBlockBorderColor(const QString &value)
     emit borderColorChangedSignal(blockColumn, blockIndex, block_border_color);//@BAG@COLUM not init
     //emit borderColorChangedSignal(blockColumn,blockIndex,block_border_color);
 }
+
+int DrawElement::getPlayTimeUntilFreeze() const
+{
+    qDebug() <<"getPlayTimeUntilFreeze:"<<playTimeUntilFreeze;
+    return playTimeUntilFreeze;
+}
+
+void DrawElement::setPlayTimeUntilFreeze(int value)
+{
+    qDebug() << "setPlayTimeUntilFreeze:"<<value;
+    playTimeUntilFreeze = value;
+}
 void DrawElement::draw()
 {
 
@@ -487,6 +499,10 @@ bool DrawElement::loadRest(QIODevice* device, float version)
     int effectsLength = 0;
     stream >> anim_state_time.state >>  anim_state_time.time;
     stream >> effectsLength;
+    if(version > 2.94)
+    {
+        stream >> playTimeUntilFreeze;
+    }
     //qDebug() << "effectsLength:"<<effectsLength;
     effects.clear();
     effects.resize(effectsLength);
@@ -532,6 +548,8 @@ bool DrawElement::save(QIODevice* device, QProgressBar *bar) //-=-=-=
 
     stream << anim_state_time.state <<  anim_state_time.time;
     stream << effects.length();
+    stream << playTimeUntilFreeze;
+
     for (int i = 0 ; i < effects.length();i++)
         effects[i].save(stream,VERSION);
 
