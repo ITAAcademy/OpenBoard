@@ -391,7 +391,7 @@ Group *DrawElement::getGroupWichElBelong() const
 void DrawElement::setGroupWichElBelong(Group *value)
 {
     group_wich_el_belong = value;
-    qDebug() << "OOOOOOOOOOOOOOOO group_wich_el_belong = " << group_wich_el_belong;
+   // qDebug() << "OOOOOOOOOOOOOOOO group_wich_el_belong = " << group_wich_el_belong;
 }
 
 QString DrawElement::getBlockBorderColor() const

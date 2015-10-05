@@ -219,7 +219,7 @@ public:
     Q_INVOKABLE void setCurentBlock (int col, int ind);
 
     int isPlayPauseStop = 3;
-    static const int blockHeightPlusSpacing = 100;
+    static const int blockHeightPlusSpacing = 70;
 
 
     bool save(QIODevice* device, QProgressBar *bar);

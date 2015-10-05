@@ -157,7 +157,7 @@ MouseAreaForWindowDraging{
 
         onCtrl_pressedChanged: {
             timeControll.setCtrlPressed(ctrl_pressed)
-            //console.log("AAAAAAAAAAAAAAAAAAAAA main222.ctrl_pressed" + ctrl_pressed)
+            console.log("AAAAAAAAAAAAAAAAAAAAA main222.ctrl_pressed = " + ctrl_pressed)
         }
         Keys.onPressed: {
             //console.log("AAAAAAAAAAAAAAAAAAAAA " + event.key)

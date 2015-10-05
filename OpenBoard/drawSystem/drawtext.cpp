@@ -412,7 +412,7 @@ QString DrawTextElm::getUnParsestring() const
 
 void DrawTextElm::setUnParsestring(const QString &valueUnParss, const QString &valueLogger)
 {
-    qDebug() << " DrawTextElm::setUnParsestring:"<<unParsestring;
+    //qDebug() << " DrawTextElm::setUnParsestring:"<<unParsestring;
     unParsestring = valueUnParss;
     loggerText = valueLogger;
     // //qDebug() << value;

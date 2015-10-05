@@ -29,7 +29,8 @@ Rectangle{
         {
             drop.visible = false
             background_rec.visible = 1 //-=-=
-            background_rec.opacity = 0.5
+            root.opacity = 0.2
+            //p_border_image.visible = false
             background_rec.enabled = true
             icon_coloroverlay.visible = false
             mouseArea.enabled = false
@@ -40,6 +41,7 @@ Rectangle{
             background_rec.visible = true //-=-=
             background_rec.enabled = true
             background_rec.opacity = 1
+           //  p_border_image.visible = true
             icon_coloroverlay.visible = true
             mouseArea.enabled = true
         }
@@ -49,6 +51,8 @@ Rectangle{
     onP_border_colorChanged: {
         border_image.border.color = p_border_color
     }
+
+    property Item p_border_image
 
     property int animation_scale_normal_toYpos : 0
     property int animation_scale_normal_toXpos : 0
@@ -212,7 +216,7 @@ Rectangle{
                 color: "transparent"
 
                 Component.onCompleted: {
-                    //root.p_border_color = border.color
+                   root.p_border_image = border_image
                 }
             }
         }
@@ -614,8 +618,8 @@ Rectangle{
              root.p_bar_track.z += 200
             timeControll. logBlocksDrawElColInd(root.colIndex);
             //main222.dropedtoDropArea = false
-            console.log("onPressed colIndex =" + root.colIndex + "  mIndex = " + root.mIndex + " "
-                        + timeControll.getBlockStartTime(root.colIndex , root.mIndex ))
+            /*console.log("onPressed colIndex =" + root.colIndex + "  mIndex = " + root.mIndex + " "
+                        + timeControll.getBlockStartTime(root.colIndex , root.mIndex ))*/
             main222.dropEntered = 0
             main222.maIsPressed = 1
             main222.selectedBlockCol = root.colIndex

@@ -279,7 +279,8 @@ bool Group::isGroupValid()
             else
             {
                 isRealValid = false;
-                break;
+               //break;
+                return false;
             }
         }
         first.append(members[columns[first_try]][indexs.first()]);
@@ -289,8 +290,8 @@ bool Group::isGroupValid()
     }
 
     bValid = isRealValid;
-    if(!isRealValid)
-        return false;
+   /* if(!isRealValid)
+        return false;*/
 
     unsigned long int startTime = first.first()->getStartDrawTime();
     unsigned long int stopTime = last.first()->getStartDrawTime() + last.first()->getLifeTime();
@@ -346,6 +347,7 @@ bool Group::addTo(DrawElement *element)
     }
 
     members[element->getBlockColumn()][element->getBlockIndex()] = element;
+    element->setGroupWichElBelong(this);
     return true;
 
     qDebug() << "Size " << members.size();
@@ -365,7 +367,12 @@ bool Group::removeFromGroup(DrawElement *element)
     {
         members[element->getBlockColumn()].remove(element->getBlockIndex());
         if(members[element->getBlockColumn()].size() == 0)
+        {
             members.remove(element->getBlockColumn());
+
+        }
+        element->setGroupWichElBelong(NULL);
+        //element->setBlockBorderColor("white");
         return true;
     }
     return false;
