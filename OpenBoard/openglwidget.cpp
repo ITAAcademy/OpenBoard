@@ -502,9 +502,18 @@ void OGLWidget::processMouse()
             //m_manager.setAbleToDraw(false);
             // // //qDebug()<<"EDIT_RECTANGLE_MOVE width"<<editingRectangle.rect.width();
             //if (isPainting)
+            /*if (pressedShift){
+                QPoint closestPoint = windowGrid.closeToLCP(QPoint(editingRectangle.rect.x(),editingRectangle.rect.y()));
+                x = closestPoint.x();
+                y = closestPoint.y();
+                editingRectangle.rect.setX(x);
+                editingRectangle.rect.setY(y);
+            }*/
+
             if(pressedShift)
             {
-                QPoint closestPoint = windowGrid.closeToLCP(mousePos);
+              //  QPoint closestPoint = windowGrid.closeToLCP(mousePos);
+                 QPoint closestPoint = windowGrid.closeToLCP(QPoint(mousePos.x() - mousePressPos.x(),mousePos.y() - mousePressPos.y()));
                 editingRectangle.rect.moveTo(closestPoint);
             }
             else
@@ -702,6 +711,16 @@ void OGLWidget::setShaderSupported(bool value)
 {
     shaderSupported=value;
 }
+bool OGLWidget::isHiddenByButton() const
+{
+    return hiddenByButton;
+}
+
+void OGLWidget::setHiddenByButton(bool value)
+{
+    hiddenByButton = value;
+}
+
 
 void OGLWidget::setFrameRate(int fps)
 {

@@ -718,9 +718,10 @@ bool MainWindow::event(QEvent * e) // overloading event(QEvent*) method of QMain
           e->ignore();
         } else {
           e->accept();
+          if (!mpOGLWidget->isHiddenByButton())
+           mpOGLWidget->show();
           if(mpOGLWidget->isVisible())
           {
-              mpOGLWidget->show();
               mpOGLWidget->getTimeLine()->show();
           }
         }
@@ -763,7 +764,7 @@ void MainWindow::on_action_Show_triggered()
     ui->action_Show->setEnabled(false);
     a_hide->setEnabled(true);
     ui->action_Hide->setEnabled(true);
-
+    mpOGLWidget->setHiddenByButton(false);
 
 
     /*
@@ -835,6 +836,7 @@ void MainWindow::on_action_Hide_triggered()
     // if(mpOGLWidget->getStatus() == mpOGLWidget->PLAY || mpOGLWidget->getStatus() == mpOGLWidget->PAUSE)
     //  mpOGLWidget->stopAnimated();
     mpOGLWidget->hide();
+    mpOGLWidget->setHiddenByButton(true);
     mpOGLWidget->getTimeLine()->hide();
     //  mpOGLWidget->close();*/
     // delete mpOGLWidget;

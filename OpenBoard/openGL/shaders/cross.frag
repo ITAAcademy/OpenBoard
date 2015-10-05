@@ -20,5 +20,5 @@ vec2(gl_TexCoord[0]));
         //vec3 color = vec3(position.x);
         vec3 color = vec3(colorID*colorID2);
         //gl_FragColor =vec4(col.rgb*color.rgb/2,col.a);
-        gl_FragColor =vec4(col.rgb*color.rgb/2,0.35);
+        gl_FragColor =vec4(sqrt(col.rgb*color.rgb),0.35);
 }

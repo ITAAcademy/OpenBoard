@@ -143,7 +143,7 @@ public:
     QVector<ShaderProgramWrapper*> getShaderPrograms();
     bool isShaderSupported();
     void setShaderSupported(bool value);
-
+    bool hiddenByButton = true;
     BrushManager m_manager;
     bool sucsessLoadTexture;
     void setFrameRate(int frameRate);
@@ -311,6 +311,9 @@ public:
     void setSelElm(DrawElement *value);
 
     bool isAbleDrawing();
+    bool isHiddenByButton() const;
+    void setHiddenByButton(bool value);
+
 public slots:
     QSize imageLoadedPictureSizeSlot(QSize);
     void loadEffectFromCurrentBlockToEffectManager();
