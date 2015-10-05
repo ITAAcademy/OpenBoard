@@ -710,8 +710,9 @@ int DrawElement::getLifeTime()
     if(feedBack)
     {
         emit sizeChangedSignal(blockColumn, blockIndex, value, visual);
-        qDebug() << "emit sizeChangedSignal(blockColumn = " <<blockColumn<<
+      /*  qDebug() << "emit sizeChangedSignal(blockColumn = " <<blockColumn<<
                  "blockIndex = " <<  blockIndex << " value = " << value << " visual = " << visual;  //work
+        */
         return;
     }
 }

@@ -264,6 +264,7 @@ public:
     Q_INVOKABLE  QRect getYellowRect();
     Q_INVOKABLE  void setIsProjectChanged(bool);
 
+    Q_INVOKABLE  int reduceEmptyBlocksFromV2(int col, int ind, int value);
     Q_INVOKABLE  int reduceEmptyBlocksFrom(int col, int ind, int value);  //return not taked away time; or -1 if its time <= 0; or 0 if failed
     Q_INVOKABLE int getTrackSize(int col);
     Q_INVOKABLE QString getBlockKey(int col, int i) ;

@@ -444,7 +444,7 @@ MouseAreaForWindowDraging{
             onBlockTimeSignel: {
                 // console.log("onBlockTimeSignel");
                 // updateBlockTime(col, index, time);
-               // if (main222.maIsPressed === 1)
+                if (main222.maIsPressed === 1)
                 {
                     //console.log("onBlockTimeSignel  " + col + " " + index + "  rep_columns.count = "  + rep_columns.count);
                     rep_columns.itemAt(col).setBlockWidth(index,time/main222.scaling );
@@ -571,7 +571,7 @@ MouseAreaForWindowDraging{
             }
 
             visible : false
-            height : 100
+            height : 70
             width : 30
             z: 600
             x: 100
@@ -1024,9 +1024,9 @@ MouseAreaForWindowDraging{
 
                                 function setBlockWidth (indexa, value)
                                 {
-                                    console.log(" function setBlockWidth (indexa = " + indexa +
-                                                " value = " + value)
-                                   // if (main222.maIsPressed === 0)
+                                    /*console.log(" function setBlockWidth (indexa = " + indexa +
+                                                " value = " + value)*/
+
                                      repka.itemAt(indexa).width = value
                                 }
 
@@ -1065,46 +1065,30 @@ MouseAreaForWindowDraging{
                                     id: trackbar
                                     width: 30
                                     property int mIndex: index
-                                    height: main_root.height
+                                    height: 70// main_root.height
                                     z:12
                                     x: 0
+                                   // y: parent.height/4
+                                    //y:  mapFromItem(item_col, 0, 0).y
                                     colIndex : index
                                     Rectangle {
                                         id:main_root
-                                        x: 30
+                                        //x: 30
                                         property int col_ind : index
                                         width: 4000
-                                        height: 100
-                                        color: "gray"
-                                        border { color: "white"; width: 0 }
+                                        height: 70
+                                        color: "transparent"
+                                        border { color: "lawngreen"; width: 0}
+                                        z: blocks.z + 1
                                         Component.onCompleted: {
                                             bar_track.p_main_root = main_root;
                                         }
-
-
-
-
-                                        DropArea
-                                        {
-                                            enabled: false
-                                            id: main_root_MA
-                                            anchors.fill: main_root
-                                            onEntered:
-                                            {
-                                                main_root.border.width = 3
-                                                main222.dropEnteredTrackIndex = main_root.col_ind
-                                            }
-                                            onExited:
-                                            {
-                                                main_root.border.width = 0
-                                                //main222.dropEnteredTrackIndex = -1
-                                            }
-                                            //z: -50
-                                        }
+                                    }
 
                                         Row {
                                             id: blocks
                                             //  height: 220
+                                            x: 30
                                             Repeater {
                                                 id: repka
                                                 Component.onCompleted: {
@@ -1149,7 +1133,7 @@ MouseAreaForWindowDraging{
                                                     p_trackbar : trackbar
                                                     p_bar_track : bar_track
                                                     p_border_color: timeControll.getBlockBorderColor(colIndex, mIndex)
-                                                    height:  100
+                                                    height:  70
                                                     mIndex: index
                                                     p_divider: divider
                                                     colIndex:  bar_track.mIndex
@@ -1186,7 +1170,7 @@ MouseAreaForWindowDraging{
                                             }
                                         }
 
-                                    }
+                                    //}
                                     Component.onCompleted: {
                                         trackbar.globalRep = repka
                                         main222.p_trackbar = trackbar

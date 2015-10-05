@@ -18,8 +18,8 @@ Rectangle {
     Image {
         id: icon
         anchors.fill: parent
-        anchors.margins: 5
-        width: parent.width - 5
+        anchors.margins: 1
+        width: parent.width //- 5
         height: parent.height
         source: root.icon_source
         Text {

@@ -347,7 +347,7 @@ Rectangle{
     z: 0
     onWidthChanged: {
         type = timeControll.getBlockTypeId(colIndex,mIndex)
-       console.log("onWidthChanged    ind = "  + root.mIndex)
+      // console.log("onWidthChanged    ind = "  + root.mIndex)
         if (root.type == 5)
         {
             if (width == 0)
@@ -417,7 +417,7 @@ Rectangle{
                 y = ( rep_columns.count- root.colIndex - 1) * root.height
             }
 
-        main222.dropEnteredTrackIndex = Math.floor( (mapToItem(item_col, 0, 0).y) /root.height)
+        main222.dropEnteredTrackIndex = Math.floor( (mapToItem(item_col, 0, root.height/2).y) /root.height)
 
         //console.log("onYChanged " + m_y);
     }
@@ -511,7 +511,9 @@ Rectangle{
 
                 // animation_scale_normal.running = true //9999999   kalich
                 //root.p_bar_track.z -= 200
-                root.globalRep.z -= 200
+               // root.globalRep.z -= 200
+                /*root.z -= 200
+                 root.p_bar_track.z -= 200*/
                 if(root.p_main222.needUpdateModelWhereBlockDroped)
                 {
                     root.p_main222.dropEnteredBlockItemGlobalRep.updateModel();
@@ -609,6 +611,7 @@ Rectangle{
 
         onPressed: {
             root.z += 200
+             root.p_bar_track.z += 200
             timeControll. logBlocksDrawElColInd(root.colIndex);
             //main222.dropedtoDropArea = false
             console.log("onPressed colIndex =" + root.colIndex + "  mIndex = " + root.mIndex + " "
@@ -712,8 +715,8 @@ Rectangle{
                         main222.clicked_blockId = root.mIndex
                         main222.clicked_blockX = root.x
                         main222.clicked_blockY = root.y
-                        root.z += 200
-                        root.p_bar_track.z += 200
+                       /* root.z += 200
+                        root.p_bar_track.z += 200*/
                         //main222.p_trackbar_which_block_dragged = root.p_trackbar
                         //globalRep.z += 200
 
@@ -722,7 +725,9 @@ Rectangle{
             }
         }
         onReleased: {
-            root.z -= 200
+           //timeControll. deleteBlockToDel(root.colIndex);
+            root.p_main222.maIsPressed = 0
+           // root.z -= 200
             //root.border.color = "white"
             main222.p_scale_pointer.x = mouseX + root.x - scroll.flickableItem.contentX + main222.p_scale_pointer.width //1234
             // animation_scale_normal.running = true
@@ -1328,7 +1333,7 @@ Rectangle{
 
 
             cursorShape = Qt.ArrowCursor;
-            root.p_main222.maIsPressed = 0
+
 
 
         }
@@ -1344,7 +1349,7 @@ Rectangle{
         enabled : !timeControll.getCurent_group(colIndex, mIndex)
         visible: !timeControll.getCurent_group(colIndex, mIndex)
         Drag.hotSpot.x: 0
-        Drag.hotSpot.y: 0
+        Drag.hotSpot.y: root.height/2
         anchors.fill: root
         onEntered: {
 

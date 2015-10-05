@@ -20,7 +20,7 @@ Rectangle {
     Column{
         parent: cool_main
         width: root_toolbar.width
-        x: 0
+        //x: widt
         y: ((mapFromItem(item_col, root_toolbar.parent.x, root_toolbar.parent.y).y + (height/4)))
         height: root_toolbar.height
         function restore()
@@ -32,8 +32,8 @@ Rectangle {
         Buutton{
             id: butAddText
             title_text: ""
-            height: parent.width
-            width: parent.width
+            height: parent.width*2/3
+            width: height
           icon_source : "qrc:/iphone_toolbar_icons/bittorrent_plus.png"
           //
           ma_enabled :root_toolbar.enableButtonsClick
@@ -57,8 +57,8 @@ Rectangle {
         Buutton{
             id: butAdd
             title_text: ""
-            height: parent.width
-            width: parent.width
+           height: parent.width*2/3
+            width: height
           icon_source : "qrc:/iphone_toolbar_icons/blue_library.png"
           //
           ma_enabled :root_toolbar.enableButtonsClick
@@ -82,8 +82,8 @@ Rectangle {
         Buutton{
             id: butRemove
             title_text: ""
-            height: parent.width
-            width: parent.width
+           height: parent.width*2/3
+            width: height
             icon_source : "qrc:/iphone_toolbar_icons/delete.png"
             ma_enabled : root_toolbar.enableButtonsClick
             onClicked: {
