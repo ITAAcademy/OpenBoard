@@ -1309,8 +1309,10 @@ bool MainWindow::on_action_Save_Project_triggered()
         curProjectFile = fileName;
     }
 
+    QFile backupFile(curProjectFile+".bak");
     QFile file(curProjectFile);
     setWindowTitle(QFileInfo(curProjectFile).baseName() + " - Open Board");
+
 
     if(file.open(QIODevice::WriteOnly))
     {
@@ -1327,7 +1329,7 @@ bool MainWindow::on_action_Save_Project_triggered()
         ui->statusBar->showMessage("project saved");
         mpOGLWidget->getTimeLine()->setIsProjectChanged(false);
         status.setVisible(false);
-        return true;
+
     }
     else
     {
@@ -1335,6 +1337,33 @@ bool MainWindow::on_action_Save_Project_triggered()
                              .arg(curProjectFile).arg(file.errorString()));
         return false;
     }
+    if(backupFile.open(QIODevice::WriteOnly))
+    {
+       // ui->statusBar->showMessage("project saving...");
+        status.setVisible(true);
+        status.setMaximum(mpOGLWidget->getTimeLine()->getMemberCount());
+        status.setValue(0);
+
+        mpOGLWidget->getTimeLine()->save(&backupFile, &status);
+        QDataStream stream(&backupFile);
+        int state =   static_cast<int>(curentState.state);
+        stream << curentState.advance_mode << state ;
+        backupFile.close();
+        ui->statusBar->showMessage("project saved");
+        mpOGLWidget->getTimeLine()->setIsProjectChanged(false);
+        status.setVisible(false);
+
+    }
+    else
+    {
+        QMessageBox::warning(this, "Error",tr("Project\'s saving failed") //щ
+                             .arg(curProjectFile+".bak").arg(backupFile.errorString()));
+        return false;
+    }
+
+
+
+      return true;
 }
 
 void MainWindow::on_action_Open_Project_triggered()
@@ -2465,3 +2494,5 @@ void MainWindow::on_staticMomentButton_clicked()
 {
     setCurentTextBlockStaticMoment(-1);
 }
+
+
