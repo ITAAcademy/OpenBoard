@@ -36,7 +36,7 @@ void ListControll::setSelectedBlockPoint(const QPoint &value)
                 if (bl_group == NULL)
                 {
                     //qDebug() << "IIIIIIIIIIIIIIIIIIIIIIII 111111111111";
-                   // curent_group = &test_group;
+                    // curent_group = &test_group;
                     if (curent_group->addTo(draw_el))
                     {
                         need_calc_bound_rec = true;
@@ -224,7 +224,7 @@ void ListControll::setSelectedBlockPoint(const QPoint &value)
                 }
 
             }
-
+    \
     if(value != selectedBlockPoint)
     {
 
@@ -402,7 +402,7 @@ QPoint ListControll::getCurent_groupMembers( int index )
 
 int ListControll::getCurent_groupMembersSize()
 {
-     curent_group->calcBoundRec();
+    curent_group->calcBoundRec();
     return curent_group->getMembersPosition().size();
 
 }
@@ -2641,8 +2641,8 @@ void ListControll::setCtrlPressed(bool value)
             {
                 if (curent_group->isGroupValid())
                 {
-                   //
-                  // curent_group = new Group();
+                    //
+                    // curent_group = new Group();
                     curent_group->setBlocksBorderColor("blue");
                     curent_group->initGroupBlocks();
                     drawYellowRectangle(curent_group->getBoundRec());
@@ -2719,6 +2719,8 @@ bool ListControll::attachBlock(int col, int index, int value)
         for (int y=0; y < tracks[i].block.size(); y++)
         {
             DrawElement *draw_el2 = tracks[i].block[y];
+            if (draw_el2->getTypeId() == Element_type::Empty)
+                continue;
             int temp_dovodka = from_width - draw_el2->getLifeTime() - draw_el2->getStartDrawTime();
             //qDebug() << "temp_dovodka =   "<< temp_dovodka;
             if (abs(temp_dovodka) <=  abs(value) && (abs(temp_dovodka) <  abs(dovod_value) ))
@@ -2729,8 +2731,9 @@ bool ListControll::attachBlock(int col, int index, int value)
             }
         }
     }
-
-    ctrl_pressed = value;
+    if (value_setted)
+        draw_el->setLifeTime(draw_el->getLifeTime() - dovod_value);
+    // ctrl_pressed = value;
 }
 
 QRect ListControll::getYellowRect()
