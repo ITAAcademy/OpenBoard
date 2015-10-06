@@ -257,15 +257,22 @@ bool Group::isGroupValid()
     membersPositionList.clear();
     bValid = false;
 
-    if(members.size() == 0)
+    if(members.size() < 1)
         return false;
+    else
+        if(members.size() == 1)
+        {
+            BlockType btype = members[0];
+            if (btype.size() <2)
+                return false;
+        }
 
     bool isRealValid = true;
     QList<int> columns = members.keys();
     qStableSort(columns.begin(), columns.end());
 
-    int first_try = 0;
-    while(first_try < columns.size() && isRealValid)
+    /* int first_try = 0;
+    while(first_try < columns.size())
     {
         QList<int> indexs = members[columns[first_try]].keys();
         qStableSort(indexs.begin(), indexs.end());
@@ -288,11 +295,52 @@ bool Group::isGroupValid()
         last.append(members[columns[first_try]][indexs.last()]);
 
         first_try++;
+    }*/
+
+    DrawElement * temp = NULL;
+    //BlockType
+    foreach(BlockType blokType, members)
+    {
+        foreach(DrawElement * elm, blokType)
+            /* for (int i = 0; i < members.size(); i++)
+             for (int k = 0; k < members[i].size(); k++)*/
+        {
+            // DrawElement * elm =  members[i][k];
+            //qDebug() << "col = " << elm->getBlockColumn()<< "  ind = " << elm->getBlockIndex()  << " type = " << elm->getTypeId();
+            if (temp != NULL)
+            {
+                int col_t = temp->getBlockColumn();
+                int col_e = elm->getBlockColumn();
+                if (col_t == col_e)
+                {
+                    int ind_t = temp->getBlockIndex();
+                    int ind_e = elm->getBlockIndex();
+
+                    if (ind_t + 1 != ind_e)
+                        return false;
+                }
+            }
+            temp = elm;
+
+        }
     }
 
-    bValid = isRealValid;
+
+    /*int cnt = 0;
+    foreach(DrawElement * elm, first)
+    {
+        int col = elm->getBlockColumn();
+        int ind0 = elm->getBlockIndex();
+        int ind1 =  last[cnt]->getBlockIndex();
+        for (int i=ind0 ; i <= ind1; i++ )
+        {
+            if ()
+        }
+    }*/
+
+    // bValid = isRealValid;
     /* if(!isRealValid)
-        return false;*/
+        return false;
 
     unsigned long int startTime = first.first()->getStartDrawTime();
     unsigned long int stopTime = last.first()->getStartDrawTime() + last.first()->getLifeTime();
@@ -308,8 +356,8 @@ bool Group::isGroupValid()
 
     calcBoundRec();
 
-    bValid = isRealValid;
-    return isRealValid;
+    bValid = isRealValid;*/
+    return true;
 }
 
 
