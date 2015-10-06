@@ -36,11 +36,12 @@ void ListControll::setSelectedBlockPoint(const QPoint &value)
                 if (bl_group == NULL)
                 {
                     //qDebug() << "IIIIIIIIIIIIIIIIIIIIIIII 111111111111";
-
-                    if (addBlockToGroup(draw_el))
+curent_group = &test_group;
+                    if (curent_group->addTo(draw_el))
                     {
                         need_calc_bound_rec = true;
                         isGroupChanged = true;
+                       // curent_group = &test_group;
                         draw_el->setBlockBorderColor(colora);
                         //emit borderColorChangedSignal(value.x(), value.y(), colora);
                         qDebug() << "ListControll::setSelectedBlockPoint adding block to group succesfull";
@@ -117,12 +118,13 @@ void ListControll::setSelectedBlockPoint(const QPoint &value)
                 else
                 {
                     colora = "white";
-                    Group * temp = draw_el->getGroupWichElBelong();
-                    if(curent_group == bl_group)
+                    //Group * temp = draw_el->getGroupWichElBelong();
+                   /* if(&test_group == bl_group)
+                    {
                         if (test_group.removeFromGroup(draw_el))
                         {
                             draw_el->setBlockBorderColor("white");
-                           // emit borderColorChangedSignal(value.x(), value.y(), colora);
+                            // emit borderColorChangedSignal(value.x(), value.y(), colora);
                             if (el_ind > 0)
                             {
                                 DrawElement *prev = tracks[el_col].block[el_ind - 1];
@@ -131,9 +133,9 @@ void ListControll::setSelectedBlockPoint(const QPoint &value)
                                     int prev_type = prev->getTypeId() ;
                                     //Group * prev_group = prev->getGroupWichElBelong();
                                     //Group *p_test_group = &test_group;
-                                    qDebug() << "draw_el gr = " << temp << " prev gr = "<< prev->getGroupWichElBelong();
+                                  //  qDebug() << "draw_el gr = " << temp << " prev gr = "<< prev->getGroupWichElBelong();
                                     if (prev_type == Element_type::Empty)
-                                        if (prev->getGroupWichElBelong() == temp)
+                                        if (prev->getGroupWichElBelong() == bl_group)
                                         {
                                             if ( test_group.removeFromGroup(prev) )
                                                 need_calc_bound_rec = true;
@@ -146,7 +148,7 @@ void ListControll::setSelectedBlockPoint(const QPoint &value)
                                 if (next != NULL)
                                 {
                                     if (next->getTypeId() == Element_type::Empty)
-                                        if (next->getGroupWichElBelong() == temp)
+                                        if (next->getGroupWichElBelong() == bl_group)
                                         {
                                             if ( test_group.removeFromGroup(next) )
                                                 need_calc_bound_rec = true;
@@ -155,8 +157,56 @@ void ListControll::setSelectedBlockPoint(const QPoint &value)
                             }
 
                         }
-                        else
-                            qDebug() << "AAAAAAA removing block to group failed!!!!!!!!!!";
+                    }*/
+                   //else
+                        if(curent_group == bl_group)
+                        {
+                            if (curent_group->removeFromGroup(draw_el))
+                            {
+                                test_group.removeFromGroup(draw_el);
+                                draw_el->setBlockBorderColor("white");
+                                // emit borderColorChangedSignal(value.x(), value.y(), colora);
+                                if (el_ind > 0)
+                                {
+                                    DrawElement *prev = tracks[el_col].block[el_ind - 1];
+                                    if (prev != NULL)
+                                    {
+                                        int prev_type = prev->getTypeId() ;
+                                        //Group * prev_group = prev->getGroupWichElBelong();
+                                        //Group *p_test_group = &test_group;
+                                        //qDebug() << "draw_el gr = " << temp << " prev gr = "<< prev->getGroupWichElBelong();
+                                        if (prev_type == Element_type::Empty)
+                                            if (prev->getGroupWichElBelong() == bl_group)
+                                            {
+                                                if ( curent_group->removeFromGroup(prev) )
+                                                {
+                                                    need_calc_bound_rec = true;
+                                                test_group.removeFromGroup(prev);
+                                                }
+                                            }
+                                    }
+                                }
+                                if (el_ind < tracks[el_col].block.size() - 1 )
+                                {
+                                    DrawElement *next = tracks[el_col].block[el_ind + 1];
+                                    if (next != NULL)
+                                    {
+                                        if (next->getTypeId() == Element_type::Empty)
+                                            if (next->getGroupWichElBelong() == bl_group)
+                                            {
+                                                if ( curent_group->removeFromGroup(next) )
+                                                {
+                                                    test_group.removeFromGroup(next);
+                                                    need_calc_bound_rec = true;
+                                                }
+                                            }
+                                    }
+                                }
+
+                            }
+                        }
+                    else
+                        qDebug() << "AAAAAAA removing block to group failed!!!!!!!!!!";
                     //addBlockToGroup(draw_el);
                     //qDebug() << "IIIIIIIIIIIIIIIIIIIIIIII 222222222222222222";
                 }
@@ -183,40 +233,59 @@ void ListControll::setSelectedBlockPoint(const QPoint &value)
 
         if(!ctrl_pressed)
         {
-            //test_group =  !!!!!!!!!!!!!!!!
-            if (test_group.isGroupValid())
+
+            if (curent_group != NULL)
             {
-                test_group.calcBoundRec();
-
-                DrawElement *elm = getBlock(selectedBlockPoint);
-                if(elm != NULL  && elm->getGroupWichElBelong() != NULL)
-                {
-                    elm->getGroupWichElBelong()->setBlocksBorderColor("white");
-                    removeRectangle();
-                }
-
-                elm = getBlock(value);
-
-                if(elm != NULL && elm->getGroupWichElBelong() != NULL)
-                {
-                    elm->getGroupWichElBelong()->setBlocksBorderColor("blue");
-                    curent_group = elm->getGroupWichElBelong();
-                    drawYellowRectangle(curent_group->getBoundRec());
-                    qDebug() << "rawYellowRectangle(curent_group->getBoundRec());";
-                }
-                else
-                {
-                    qDebug() << NULL;
-                    curent_group = NULL;
-                }
+                removeRectangle();
+                curent_group->setBlocksBorderColor("white");
             }
-            else
+            curent_group = NULL;
+            //if (blockValid(value))
             {
-                test_group.setBlocksBorderColor("white");
-                test_group.deInitGroupBlocks();
-                test_group.clear();
+                //DrawElement *select =  tracks[value.x()].block[value.y()];
+                DrawElement *elm = getBlock(value);
+                if (elm != NULL)
+                {
+                    Group * t_group  = elm->getGroupWichElBelong();
+                    if (t_group != NULL)
+                    {
+                        curent_group = t_group;
+                        if (t_group->isGroupValid())
+                        {
+                            t_group->calcBoundRec();
+
+                            //DrawElement *elm = getBlock(selectedBlockPoint);
+                            if(elm != NULL  && elm->getGroupWichElBelong() != NULL)
+                            {
+                                elm->getGroupWichElBelong()->setBlocksBorderColor("white");
+                                removeRectangle();
+                            }
+
+                            elm = getBlock(value);
+
+                            if(elm != NULL && elm->getGroupWichElBelong() != NULL)
+                            {
+                                elm->getGroupWichElBelong()->setBlocksBorderColor("blue");
+                                //curent_group = elm->getGroupWichElBelong();
+                                drawYellowRectangle(curent_group->getBoundRec());
+                                qDebug() << "rawYellowRectangle(curent_group->getBoundRec());";
+                            }
+                            else
+                            {
+                                qDebug() << NULL;
+                                //curent_group = NULL;
+                            }
+                        }
+                        else
+                        {
+                            t_group->setBlocksBorderColor("white");
+                            t_group->deInitGroupBlocks();
+                            t_group->clear();
 
 
+                        }
+                    }
+                }
             }
 
         }
@@ -2600,7 +2669,7 @@ void ListControll::setCtrlPressed(bool value)
                 if(curent_group != NULL && test_group.getMembersSize() == 0)
                 {
                     curent_group->deInitGroupBlocks();//@BAG@
-                    delete curent_group;
+                    //delete curent_group;
                     curent_group = NULL;
                 }
                 qDebug() <<"2222222222  test_group.isGroupValid() = false";
