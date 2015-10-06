@@ -671,46 +671,46 @@ bool MainWindow::event(QEvent * e) // overloading event(QEvent*) method of QMain
 {
     switch(e->type())
     {
-        // ...
+    // ...
 
-        case QEvent::WindowActivate : {
+    case QEvent::WindowActivate : {
         if(!isActive)
-          {
-              if(mpOGLWidget->isVisible()) // get focus for windows
-              {
-                  mpOGLWidget->getTimeLine()->setFocus();
-                  //childIsActive = true;
-              }
-              isActive = true;
-             qApp->processEvents();
-             activateWindow();
-              isActive = true;
-          }
+        {
+            if(mpOGLWidget->isVisible()) // get focus for windows
+            {
+                mpOGLWidget->getTimeLine()->setFocus();
+                //childIsActive = true;
+            }
+            isActive = true;
+            qApp->processEvents();
+            activateWindow();
+            isActive = true;
+        }
         mpOGLWidget->getTimeLine()->emitFocusLostSignal();
         mpOGLWidget->hideBrushManager();
         mpOGLWidget->hideEffectsManager();
         mpOGLWidget->forceEditBoxDisable = true;
-         /* QPoint current_pos = mpOGLWidget->pos();
+        /* QPoint current_pos = mpOGLWidget->pos();
           current_pos.setY(current_pos.y() + mpOGLWidget->height());
           mpOGLWidget->getTimeLine()->setViewPosition(current_pos);*/
-          updateBlockFromTextEdit();
-          //qDebug() << "SET_ACTIVE_MAIN_WINDOW";
-          break ;
-      }
+        updateBlockFromTextEdit();
+        //qDebug() << "SET_ACTIVE_MAIN_WINDOW";
+        break ;
+    }
 
-      case QEvent::WindowDeactivate :
-          // lost focus
-          bool activeOther = false;
-          if(mpOGLWidget->isActiveWindow())
-              activeOther = true;
-          if(mpOGLWidget->getTimeLine()->isActiveWindow())
-              activeOther = true;
-          if(!activeOther)
-              isActive = false;
+    case QEvent::WindowDeactivate :
+        // lost focus
+        bool activeOther = false;
+        if(mpOGLWidget->isActiveWindow())
+            activeOther = true;
+        if(mpOGLWidget->getTimeLine()->isActiveWindow())
+            activeOther = true;
+        if(!activeOther)
+            isActive = false;
 
-          mpOGLWidget->forceEditBoxDisable = ui->actionHide_editBox->isChecked();
-          //qDebug() << "LOSE_ACTIVE_MAIN_WINDOW";
-          break ;
+        mpOGLWidget->forceEditBoxDisable = ui->actionHide_editBox->isChecked();
+        //qDebug() << "LOSE_ACTIVE_MAIN_WINDOW";
+        break ;
 
     } ;
 
@@ -718,17 +718,17 @@ bool MainWindow::event(QEvent * e) // overloading event(QEvent*) method of QMain
         if (isMinimized()) {
             mpOGLWidget->getTimeLine()->hide();
             mpOGLWidget->hide();
-          isActive = false;
-          e->ignore();
+            isActive = false;
+            e->ignore();
         } else {
-          e->accept();
-          if(mpOGLWidget->isVisible())
-          {
-              mpOGLWidget->show();
-              mpOGLWidget->getTimeLine()->show();
-          }
+            e->accept();
+            if(mpOGLWidget->isVisible())
+            {
+                mpOGLWidget->show();
+                mpOGLWidget->getTimeLine()->show();
+            }
         }
-      }
+    }
     return QMainWindow::event(e) ;
 }
 
@@ -1238,16 +1238,24 @@ bool MainWindow::on_action_Save_triggered()
 }
 
 void MainWindow::on_action_Open_triggered()
-{
-    if (maybeSave())
+{\
+    QPoint sel_block = mpOGLWidget->getTimeLine()->getSelectedBlockPoint();
+    if (sel_block.x() < 0 || sel_block.y() < 0)
+    {
+        QMessageBox::warning(0, "Error",tr("You don`t choose block"));
+        return;
+    }
+    // if (maybeSave())
     {
         QString fileName = QFileDialog::getOpenFileName(0, tr("Open File"), directory,
-                                                        tr("Text Files (*.txt);;All Files (*.*)"), 0, QFileDialog::DontUseNativeDialog);
+                                                        tr("All Files (*.*)"), 0, QFileDialog::DontUseNativeDialog);
 
-        openFile( fileName);
+        mpOGLWidget->getTimeLine()->setLoadF_manager(false);
+        mpOGLWidget->getTimeLine()->loadFromFileVoid(fileName);
+        //openFile( fileName);
     }
-    textEdit->openText();
-    commandTextEdit->openText();
+    /* textEdit->openText();
+    commandTextEdit->openText();*/
 }
 
 bool MainWindow::openFile(QString fileName)
@@ -1296,9 +1304,9 @@ bool MainWindow::on_action_Save_Project_triggered()
         activateWindow();
         QString suf;
 
-       QString fileName = QFileDialog::getSaveFileName(0,
-        tr("Save project"), directory, tr("Project file (*.project )"), &suf, QFileDialog::DontUseNativeDialog | QFileDialog::DontConfirmOverwrite);
-       fileName =  mSuffixFromFilter(suf, fileName);
+        QString fileName = QFileDialog::getSaveFileName(0,
+                                                        tr("Save project"), directory, tr("Project file (*.project )"), &suf, QFileDialog::DontUseNativeDialog | QFileDialog::DontConfirmOverwrite);
+        fileName =  mSuffixFromFilter(suf, fileName);
 
         isActive = true;
         qApp->processEvents();
@@ -1312,7 +1320,7 @@ bool MainWindow::on_action_Save_Project_triggered()
 
     if(file.open(QIODevice::WriteOnly))
     {
-       // ui->statusBar->showMessage("project saving...");
+        // ui->statusBar->showMessage("project saving...");
         status.setVisible(true);
         status.setMaximum(mpOGLWidget->getTimeLine()->getMemberCount());
         status.setValue(0);
@@ -1425,7 +1433,7 @@ void MainWindow::on_action_New_Project_triggered()
     //qDebug() << "NEW_PROJECT";
     qDebug() << "on_action_New_Project_triggered";
     if(!trySaveProject())
-       return;
+        return;
     qDebug() << "trySaveProject";
     curProjectFile.clear();
     qDebug() << "curProjectFile.clear()";
@@ -2166,8 +2174,8 @@ void MainWindow::on_action_Pause_triggered()
 
 void MainWindow::on_action_Able_to_draw_Checked()
 {
-        a_save_drawing->setEnabled(a_able_to_draw->isChecked());
-        ui->actionSave_drawing->setEnabled(a_able_to_draw->isChecked());
+    a_save_drawing->setEnabled(a_able_to_draw->isChecked());
+    ui->actionSave_drawing->setEnabled(a_able_to_draw->isChecked());
     mpOGLWidget->setAbleDrawing(a_able_to_draw->isChecked());
 }
 

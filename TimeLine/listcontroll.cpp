@@ -1682,13 +1682,15 @@ DrawElement* ListControll::loadFromFile( QString path)
 
 void ListControll::loadFromFileVoid( QString path)
 {
-    loadFromFile(curent_block.x(),  curent_block.y(),  path);
+     loadFromFile(selectedBlockPoint.x(),  selectedBlockPoint.y(),  path);
+   // loadFromFile(curent_block.x(),  curent_block.y(),  path);
 }
 
 
 
 DrawElement* ListControll::loadFromFile(int col, int ind, QString path,bool emit_update)
 {
+
     if (emit_update)
         if ( load_from_file_or_library )
             return NULL;
@@ -1719,8 +1721,14 @@ DrawElement* ListControll::loadFromFile(int col, int ind, QString path,bool emit
     }
 
 
+
     if (emit_update)
     {
+        if (!blockValid(col,ind))
+        {
+            delete elm;
+            return NULL;
+        }
         DrawElement* temp = tracks[col].block[ind]; ///////!!!!!!!!!!!!!!!!!!!!
         int new_life_time = elm->getLifeTime();
 
