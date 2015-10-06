@@ -704,7 +704,7 @@ void DrawTextElm::drawTextBuffer( int m_x, int m_y, int m_width, int m_height, i
             fillColor = colors[k].value;
             QString textToFill = stringList[i].mid(columnOfColorStrBegin,columnOfColorStrEnd-columnOfColorStrBegin);
             //qDebug() << "textToFill:"<<textToFill;
-            pDrawWidget->drawTextFromTexture(line_x,line_y,z,textToFill,textureIndex, mainFillColor,textFont,scaleX,scaleY);
+            pDrawWidget->drawTextFromTexture(line_x,line_y,z,textToFill,textureIndex, fillColor,textFont,scaleX,scaleY);
             //1234
             // pDrawWidget->fillText(textToFill,QColor("red"),fontishche, line_x , line_x, z,(float) scale);
             //  pDrawWidget->fillText("eeeeeeeeeeeeeeeeeeee",QColor("red"), QFont("Helvetica",40,40), 50 , 50, 0,(float) 1);

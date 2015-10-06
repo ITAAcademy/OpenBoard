@@ -95,7 +95,7 @@ void UnitCommand::pause(DrawTextElm *canvas)
 {
     //QThread::msleep(unit_data.toULong()*100);
    // canvas->update();
-    delay = unit_data.toULong()*1000;
+    delay = unit_data.toULong()*100;
     canvas->crossText();
     //canvas->pause(unit_data.toULong()*1000);
 }
