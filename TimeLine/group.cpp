@@ -18,7 +18,7 @@ QRect bound_rec;
 
 bool Group::setBoundRec(int x1, int y1, int width  , int height)
 {
-   bound_rec = QRect(x1,y1,width,height);
+    bound_rec = QRect(x1,y1,width,height);
 }
 
 bool Group::setBoundRec(int x1 ,int width)
@@ -44,18 +44,18 @@ void Group::setSpacingBlocks(int value)
     spacing_blocks = value;
 }
 
- int Group::getMembersSize()
- {
-     return members.size();
- }
+int Group::getMembersSize()
+{
+    return members.size();
+}
 
- void Group::clear()
- {
+void Group::clear()
+{
     members.clear();
     first.clear();
     last.clear();
     membersPositionList.clear();
- }
+}
 
 void Group::setBlocksBorderColor(QString color)
 {
@@ -63,7 +63,8 @@ void Group::setBlocksBorderColor(QString color)
     foreach ( BlockType value, members) {
         foreach ( DrawElement *elm, value)
         {
-            elm->setBlockBorderColor(color);
+            if (elm != NULL)
+                elm->setBlockBorderColor(color);
         }
     }
 
@@ -84,7 +85,7 @@ void Group::initGroupBlocks()
 
 void Group::deInitGroupBlocks()
 {
-  /*  if(!bValid)
+    /*  if(!bValid)
         return;
 */
     foreach ( BlockType value, members) {
@@ -138,7 +139,7 @@ long Group::tryGroupResize(long shift)
     return res;
 }
 
- long Group::tryMemberResize(long shift, int col, int index)
+long Group::tryMemberResize(long shift, int col, int index)
 {
     BlockType list = members[col];
     QList<int> keys = list.keys();
@@ -165,7 +166,7 @@ long Group::tryGroupResize(long shift)
     {
         return 0;
     }
-///////////////////////////////////////////////////////////
+    ///////////////////////////////////////////////////////////
     unsigned long int res = 0;
     int not_null = 0;
     for(int i = after; i < list.size(); i++)// zaminutu na for z kluchiv
@@ -189,57 +190,57 @@ long Group::tryGroupResize(long shift)
     //qDebug() << localShift*not_null;
     list[index]->setLifeTime(ka + list[index]->getLifeTime());
     return ka;
- }
+}
 
- bool Group::tryMemberReverce(DrawElement *in, DrawElement *out)
- {
-     out->setGroupWichElBelong(in->getGroupWichElBelong());
-     in->setGroupWichElBelong(NULL);
-     members[in->getBlockColumn()][in->getBlockIndex()] = out;
-     membersPositionList.clear();
-     isGroupValid();
- }
-
-
- QMap<int, BlockType> Group::getMembers() const
- {
-     return members;
- }
-
- QPoint Group::getMembersPosition(int index)
- {
-     return getMembersPosition()[index];
- }
-
- QList<QPoint> Group::getMembersPosition()
- {
-     if(!membersPositionList.isEmpty())
-         return membersPositionList;
-
-     foreach ( BlockType value, members) {
-         foreach ( DrawElement *elm, value)
-             membersPositionList.append(QPoint(elm->getBlockColumn(), elm->getBlockIndex()));
-     }
-
-     return membersPositionList;
- }
-
- QList<DrawElement *> Group::getFirst() const
- {
-     return first;
- }
-
- QList<DrawElement *> Group::getLast() const
- {
-     return last;
- }
- void Group::calcNotNullMembers()
- {
+bool Group::tryMemberReverce(DrawElement *in, DrawElement *out)
+{
+    out->setGroupWichElBelong(in->getGroupWichElBelong());
+    in->setGroupWichElBelong(NULL);
+    members[in->getBlockColumn()][in->getBlockIndex()] = out;
+    membersPositionList.clear();
+    isGroupValid();
+}
 
 
- }
+QMap<int, BlockType> Group::getMembers() const
+{
+    return members;
+}
 
- unsigned long Group::calcMaxMemberTime(int col, int index)
+QPoint Group::getMembersPosition(int index)
+{
+    return getMembersPosition()[index];
+}
+
+QList<QPoint> Group::getMembersPosition()
+{
+    if(!membersPositionList.isEmpty())
+        return membersPositionList;
+
+    foreach ( BlockType value, members) {
+        foreach ( DrawElement *elm, value)
+            membersPositionList.append(QPoint(elm->getBlockColumn(), elm->getBlockIndex()));
+    }
+
+    return membersPositionList;
+}
+
+QList<DrawElement *> Group::getFirst() const
+{
+    return first;
+}
+
+QList<DrawElement *> Group::getLast() const
+{
+    return last;
+}
+void Group::calcNotNullMembers()
+{
+
+
+}
+
+unsigned long Group::calcMaxMemberTime(int col, int index)
 {
 
 }
@@ -279,7 +280,7 @@ bool Group::isGroupValid()
             else
             {
                 isRealValid = false;
-               //break;
+                //break;
                 return false;
             }
         }
@@ -290,7 +291,7 @@ bool Group::isGroupValid()
     }
 
     bValid = isRealValid;
-   /* if(!isRealValid)
+    /* if(!isRealValid)
         return false;*/
 
     unsigned long int startTime = first.first()->getStartDrawTime();

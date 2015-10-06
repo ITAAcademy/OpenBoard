@@ -173,7 +173,7 @@ class ListControll : public QObject, public QQuickImageProvider
     OGLWidget *drawWidget;
     int curent_block_group_num = -1;
     QList <Group> block_groups;
-    Group test_group;
+    //Group test_group;
     Group *curent_group = NULL;
     bool isEditBlockShow = false;
     bool isProjectChange = false;
@@ -250,8 +250,8 @@ public:
     bool isActiveWindow();
     Q_INVOKABLE bool attachBlock(int col, int index, int value);
 
-    Q_INVOKABLE bool addBlockToGroup(DrawElement* block);
-    Q_INVOKABLE bool addBlockToGroup(int col,int ind);
+    Q_INVOKABLE bool addBlockToCurentGroup(DrawElement* block);
+    Q_INVOKABLE bool addBlockToCurentGroup(int col,int ind);
     Q_INVOKABLE bool removeBlockFromGroup(DrawElement* block);
     Q_INVOKABLE void setCtrlPressed(bool value);
     Q_INVOKABLE bool getCtrlPressed();
