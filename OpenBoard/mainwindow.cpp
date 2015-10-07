@@ -2496,3 +2496,13 @@ void MainWindow::on_staticMomentButton_clicked()
 }
 
 
+
+void MainWindow::on_check_whole_words_clicked()
+{
+
+}
+
+void MainWindow::on_check_show_text_cursor_clicked(bool checked)
+{
+   mpOGLWidget->setShowTextCursor(checked);
+}

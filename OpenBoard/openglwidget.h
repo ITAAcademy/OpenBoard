@@ -314,6 +314,10 @@ public:
     bool isHiddenByButton() const;
     void setHiddenByButton(bool value);
 
+    void drawRectangle(int x, int y, int x2, int y2, QColor col, bool fill=true, float lineSize=5);
+    bool isShowTextCursor() const;
+    void setShowTextCursor(bool value);
+
 public slots:
     QSize imageLoadedPictureSizeSlot(QSize);
     void loadEffectFromCurrentBlockToEffectManager();
@@ -386,6 +390,7 @@ private slots:
     void storeMousePos();
 
 private:
+    bool showTextCursor = false;
     bool gridEnabled = false;
     int GRID_CELL_SIZE = 50;
     Grid windowGrid;

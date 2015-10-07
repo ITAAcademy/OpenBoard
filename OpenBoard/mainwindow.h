@@ -201,6 +201,8 @@ private slots:
     void on_staticMomentSpin_valueChanged(double arg1);
     void on_staticMomentSpin_2_valueChanged(int value);
     void on_staticMomentButton_clicked();
+    void on_check_whole_words_clicked();
+    void on_check_show_text_cursor_clicked(bool checked);
 };
 
 #endif // MAINWINDOW_H
