@@ -77,6 +77,7 @@ public:
     ~DrawTextElm();
     void clearBuffer();
     void draw();
+    void drawTextCursor(int cursorRow, int cursorColumn, float scaleX=1, float scaleY=1);
     void setLifeTime(int value, bool feedBack, bool visual);
     QList<Unit *> unitList() const;
     void setUnitList(const QList<Unit *> &unitList);
@@ -133,6 +134,8 @@ public:
     void setStaticMoment(double value);
 
 private:
+    bool textCursorVisible = true;
+    int drawFrameNumber = 0;
     void setTickTime(int value);
     bool load_add(QDataStream &stream, float version);
     bool save_add(QDataStream &stream);

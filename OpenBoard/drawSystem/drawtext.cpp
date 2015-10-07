@@ -265,6 +265,9 @@ void DrawTextElm::clearBuffer()
 
 void DrawTextElm::draw()
 {
+    drawFrameNumber%=25;
+    drawFrameNumber++;
+    if (drawFrameNumber==1 || drawFrameNumber==13)textCursorVisible=!textCursorVisible;
     // qDebug() << "void DrawTextElm::draw()" << pDrawWidget->getTimeLine()->getPlayTime();
 
     GLint curentBuff;
@@ -379,6 +382,13 @@ void DrawTextElm::draw()
     drawTextBuffer(0, 0, pDrawWidget->getWax(), pDrawWidget->getWay(), z, true,koff1,koff2);
     curentCh = current_time;
 
+         //pDrawWidget->drawTextFromTexture(0, line_y , z, list[i],textureIndex, mainFillColor, textFont,koff1,koff2);
+         //pDrawWidget->myRenderText(pDrawWidget, 0, (i + 1)*(lineHeight + pt), z, unParsestring, mainFillColor, textFont);
+
+
+     //
+
+
     /*
      * render renderBuff
      */
@@ -387,6 +397,20 @@ void DrawTextElm::draw()
     pDrawWidget->clearFrameBuffer(curentBuff);
     pDrawWidget->drawTexture(0,0,renderFbo.tWidth, renderFbo.tHeight,
                              renderFbo.bindedTexture, 0, 1, 1, z );
+}
+
+void DrawTextElm::drawTextCursor(int cursorRow, int cursorColumn,float scaleX,float scaleY)
+{
+if (!pDrawWidget->isShowTextCursor())return;
+    int cursorWidth = 5;
+    int cursorHeight = fMetrics->height();
+    int cursorPosY = lineHeight+pt;
+        cursorPosY *=cursorRow;
+     QString textBeforeCursor = stringList[cursorRow].mid(0,cursorColumn);
+    int cursorPosX =marginLeft + fMetrics->width(textBeforeCursor);
+    float drawWidth =(cursorPosX+cursorWidth)*scaleX;
+            float drawHeight = (cursorPosY+cursorHeight)*scaleY;
+    pDrawWidget->drawRectangle(cursorPosX*scaleX,cursorPosY*scaleY,drawWidth,drawHeight,QColor(Qt::white));
 }
 
 void DrawTextElm::setLifeTime(int value, bool feedBack, bool visual)
@@ -468,6 +492,7 @@ bool DrawTextElm::load_add(QDataStream &stream, float version)
     {
         stream >> staticMoment;
     }
+
     /*int sizeOfString = 0;
     stream >> sizeOfString;
     QByteArray data;
@@ -616,7 +641,7 @@ void DrawTextElm::drawTextBuffer( int m_x, int m_y, int m_width, int m_height, i
     pt = textFont.pointSize();
 
     clearCanvas(m_x, m_y);
-    int maxDrawElm = (height/(lineHeight + pt)) - 1;
+    int maxDrawElm = (height/(lineHeight + pt));
     ////qDebug() << "DRAW   "   <<  maxDrawElm;
     int CurRow = convertTextBoxToBufferIndex(cursorIndex).y();
     if(CurRow >= indexRowInList + maxDrawElm)
@@ -703,7 +728,7 @@ void DrawTextElm::drawTextBuffer( int m_x, int m_y, int m_width, int m_height, i
             fillColor = colors[k].value;
             QString textToFill = stringList[i].mid(columnOfColorStrBegin,columnOfColorStrEnd-columnOfColorStrBegin);
             //qDebug() << "textToFill:"<<textToFill;
-            pDrawWidget->drawTextFromTexture(line_x,line_y,z,textToFill,textureIndex, mainFillColor,textFont,scaleX,scaleY);
+            pDrawWidget->drawTextFromTexture(line_x,line_y,z,textToFill,textureIndex, fillColor,textFont,scaleX,scaleY);
             //1234
             // pDrawWidget->fillText(textToFill,QColor("red"),fontishche, line_x , line_x, z,(float) scale);
             //  pDrawWidget->fillText("eeeeeeeeeeeeeeeeeeee",QColor("red"), QFont("Helvetica",40,40), 50 , 50, 0,(float) 1);
@@ -723,7 +748,10 @@ void DrawTextElm::drawTextBuffer( int m_x, int m_y, int m_width, int m_height, i
     if(cross)
         crossTextDraw(scaleX, scaleY);
     pDrawWidget->setBusy(false);
-
+    int cursorRow = convertTextBoxToBufferIndex(cursorIndex).y();
+    int cursorColumn = convertTextBoxToBufferIndex(cursorIndex).x();
+    if (textCursorVisible)
+  drawTextCursor(cursorRow,cursorColumn,scaleX,scaleY);
     // updateGL();
 
 }

@@ -14,6 +14,10 @@ Rectangle
     function getSelectedIndex(){
         return listBox.currentIndex;
     }
+    function setSelectedIndex(val){
+        listBox.currentIndex = val;
+    }
+
     function updateEffectBody(){
 
     }

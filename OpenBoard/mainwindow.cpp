@@ -721,12 +721,14 @@ bool MainWindow::event(QEvent * e) // overloading event(QEvent*) method of QMain
             isActive = false;
             e->ignore();
         } else {
-            e->accept();
-            if(mpOGLWidget->isVisible())
-            {
-                mpOGLWidget->show();
-                mpOGLWidget->getTimeLine()->show();
-            }
+
+          e->accept();
+          if (!mpOGLWidget->isHiddenByButton())
+           mpOGLWidget->show();
+          if(mpOGLWidget->isVisible())
+          {
+              mpOGLWidget->getTimeLine()->show();
+          }
         }
     }
     return QMainWindow::event(e) ;
@@ -767,7 +769,7 @@ void MainWindow::on_action_Show_triggered()
     ui->action_Show->setEnabled(false);
     a_hide->setEnabled(true);
     ui->action_Hide->setEnabled(true);
-
+    mpOGLWidget->setHiddenByButton(false);
 
 
     /*
@@ -839,6 +841,7 @@ void MainWindow::on_action_Hide_triggered()
     // if(mpOGLWidget->getStatus() == mpOGLWidget->PLAY || mpOGLWidget->getStatus() == mpOGLWidget->PAUSE)
     //  mpOGLWidget->stopAnimated();
     mpOGLWidget->hide();
+    mpOGLWidget->setHiddenByButton(true);
     mpOGLWidget->getTimeLine()->hide();
     //  mpOGLWidget->close();*/
     // delete mpOGLWidget;
@@ -1315,8 +1318,10 @@ bool MainWindow::on_action_Save_Project_triggered()
         curProjectFile = fileName;
     }
 
+    QFile backupFile(curProjectFile+".bak");
     QFile file(curProjectFile);
     setWindowTitle(QFileInfo(curProjectFile).baseName() + " - Open Board");
+
 
     if(file.open(QIODevice::WriteOnly))
     {
@@ -1333,7 +1338,7 @@ bool MainWindow::on_action_Save_Project_triggered()
         ui->statusBar->showMessage("project saved");
         mpOGLWidget->getTimeLine()->setIsProjectChanged(false);
         status.setVisible(false);
-        return true;
+
     }
     else
     {
@@ -1341,6 +1346,33 @@ bool MainWindow::on_action_Save_Project_triggered()
                              .arg(curProjectFile).arg(file.errorString()));
         return false;
     }
+    if(backupFile.open(QIODevice::WriteOnly))
+    {
+       // ui->statusBar->showMessage("project saving...");
+        status.setVisible(true);
+        status.setMaximum(mpOGLWidget->getTimeLine()->getMemberCount());
+        status.setValue(0);
+
+        mpOGLWidget->getTimeLine()->save(&backupFile, &status);
+        QDataStream stream(&backupFile);
+        int state =   static_cast<int>(curentState.state);
+        stream << curentState.advance_mode << state ;
+        backupFile.close();
+        ui->statusBar->showMessage("project saved");
+        mpOGLWidget->getTimeLine()->setIsProjectChanged(false);
+        status.setVisible(false);
+
+    }
+    else
+    {
+        QMessageBox::warning(this, "Error",tr("Project\'s saving failed") //щ
+                             .arg(curProjectFile+".bak").arg(backupFile.errorString()));
+        return false;
+    }
+
+
+
+      return true;
 }
 
 void MainWindow::on_action_Open_Project_triggered()
@@ -2470,4 +2502,16 @@ void MainWindow::on_staticMomentSpin_2_valueChanged(int value)
 void MainWindow::on_staticMomentButton_clicked()
 {
     setCurentTextBlockStaticMoment(-1);
+}
+
+
+
+void MainWindow::on_check_whole_words_clicked()
+{
+
+}
+
+void MainWindow::on_check_show_text_cursor_clicked(bool checked)
+{
+   mpOGLWidget->setShowTextCursor(checked);
 }

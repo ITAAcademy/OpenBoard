@@ -502,9 +502,18 @@ void OGLWidget::processMouse()
             //m_manager.setAbleToDraw(false);
             // // //qDebug()<<"EDIT_RECTANGLE_MOVE width"<<editingRectangle.rect.width();
             //if (isPainting)
+            /*if (pressedShift){
+                QPoint closestPoint = windowGrid.closeToLCP(QPoint(editingRectangle.rect.x(),editingRectangle.rect.y()));
+                x = closestPoint.x();
+                y = closestPoint.y();
+                editingRectangle.rect.setX(x);
+                editingRectangle.rect.setY(y);
+            }*/
+
             if(pressedShift)
             {
-                QPoint closestPoint = windowGrid.closeToLCP(mousePos);
+              //  QPoint closestPoint = windowGrid.closeToLCP(mousePos);
+                 QPoint closestPoint = windowGrid.closeToLCP(QPoint(mousePos.x() - mousePressPos.x(),mousePos.y() - mousePressPos.y()));
                 editingRectangle.rect.moveTo(closestPoint);
             }
             else
@@ -702,6 +711,16 @@ void OGLWidget::setShaderSupported(bool value)
 {
     shaderSupported=value;
 }
+bool OGLWidget::isHiddenByButton() const
+{
+    return hiddenByButton;
+}
+
+void OGLWidget::setHiddenByButton(bool value)
+{
+    hiddenByButton = value;
+}
+
 
 void OGLWidget::setFrameRate(int fps)
 {
@@ -2355,6 +2374,51 @@ void OGLWidget::drawFigure(int x, int y, int x2, int y2, /*OGLWidget::*/FigureTy
 
 }
 
+void OGLWidget::drawRectangle(int x, int y, int x2, int y2, QColor col,bool fill,float lineSize)
+{
+    //// //qDebug()<<"void OGLWidget::drawFigure";
+    glDisable(GL_BLEND);
+    qglColor(col);
+    glLineWidth(lineSize);
+    //glPointSize(200.0f);
+    glBegin(GL_QUADS);
+    glVertex2i( x,y);
+    glVertex2i( x2,y);
+    glVertex2i( x2,y2);
+    glVertex2i( x,y2);
+    glEnd();
+    glDisable(GL_LINE_SMOOTH);
+    glEnable(GL_BLEND);
+
+    /*QString sColor = QString("rgba(%1, %2, %3, %4)").arg(col.red()).arg(col.green()).arg(col.blue()).arg(col.alpha());
+    QMetaObject::invokeMethod(canvas, "drawFigure",
+            Q_ARG(QVariant, QVariant(x)),
+            Q_ARG(QVariant, QVariant(y)),
+            Q_ARG(QVariant, QVariant(width)),
+            Q_ARG(QVariant, QVariant(height)),
+            Q_ARG(QVariant, QVariant(type)),
+            Q_ARG(QVariant, QVariant(fill)),
+                              Q_ARG(QVariant, QVariant(size)),
+                              Q_ARG(QVariant, QVariant(sColor)));*/
+    /*switch (type){
+    case LINE:
+
+
+        glEnable(GL_LINE_SMOOTH);
+        glHint(GL_LINE_SMOOTH_HINT,  GL_NICEST);
+
+        glBegin(GL_LINES);
+           glVertex3f( x,y,0);
+           glVertex3f( x+width,y+height,0);
+         //glVertex3f( 0,0,0);
+        // glVertex3f( 100,100,0);
+           glEnd();
+        glDisable(GL_LINE_SMOOTH);
+        break;
+    }*/
+
+}
+
 
 
 
@@ -2863,6 +2927,16 @@ void OGLWidget::storeMousePos()
         // //qDebug()<<"position stored:"<<QCursor::pos();
     }
 }
+bool OGLWidget::isShowTextCursor() const
+{
+    return showTextCursor;
+}
+
+void OGLWidget::setShowTextCursor(bool value)
+{
+    showTextCursor = value;
+}
+
 
 
 

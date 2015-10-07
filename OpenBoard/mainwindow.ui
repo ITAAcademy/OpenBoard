@@ -402,6 +402,16 @@
             <number>9</number>
            </property>
            <item>
+            <widget class="QCheckBox" name="check_show_text_cursor">
+             <property name="styleSheet">
+              <string notr="true">color : rgb(255, 255, 255)</string>
+             </property>
+             <property name="text">
+              <string>Show text cursor</string>
+             </property>
+            </widget>
+           </item>
+           <item>
             <layout class="QHBoxLayout" name="horizontalLayout_3">
              <property name="sizeConstraint">
               <enum>QLayout::SetMinimumSize</enum>

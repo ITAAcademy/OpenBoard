@@ -115,6 +115,7 @@ ApplicationWindow  {
         window2.selectedBlock = main222.selectedBlock
 
         window2.globalRep = contextMenuFrame.globalRep
+
         window2.minBlockWidth = contextMenuFrame.minBlockWidth
         var mouse_pos = timeControll.getMousePosition()
         window2.x = mouse_pos.x - temp/2

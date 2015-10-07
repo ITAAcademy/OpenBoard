@@ -47,8 +47,8 @@ quint64 Parser::processTimeOfUnits(QList<Unit*> list, int &globalPause, int &com
              }
              else if (((UnitCommand*)unit)->getUnitCommandType()=="Pause")
              {
-                 resultTime += delayMS + unit->unit_data.toInt() * 1000;
-                 globalPause += unit->unit_data.toInt() * 1000;
+                 resultTime += delayMS + unit->unit_data.toInt() * 100;
+                 globalPause += unit->unit_data.toInt() * 100;
              }
              else
                  commandSize++;
