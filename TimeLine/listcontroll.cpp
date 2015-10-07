@@ -213,7 +213,7 @@ void ListControll::setSelectedBlockPoint(const QPoint &value)
                 if (need_calc_bound_rec)
                 {
                     // if (test_group.isGroupValid())
-                    // curent_group->calcBoundRec();
+                   // curent_group->calcBoundRec();
                     /* else
                     {
                         test_group.setBlocksBorderColor("white");
@@ -248,7 +248,7 @@ void ListControll::setSelectedBlockPoint(const QPoint &value)
                     if (t_group != NULL)
                     {
                         curent_group = t_group;
-                        // if (t_group->isGroupValid())
+                       // if (t_group->isGroupValid())
                         {
 
 
@@ -271,7 +271,7 @@ void ListControll::setSelectedBlockPoint(const QPoint &value)
                                 qDebug() << "rawYellowRectangle(curent_group->getBoundRec());";
                             }
                         }
-                        /* else
+                       /* else
                         {
                             t_group->setBlocksBorderColor("white");
                             t_group->deInitGroupBlocks();
@@ -1621,10 +1621,7 @@ void ListControll::addBlockAt(int col, int ind,  DrawElement *element, int life_
     {
 
         if(element->getLifeTime() < def_min_block_width)
-        {
             element->setLifeTime(def_min_block_width);
-            //  element->setPlayTimeUntilFreeze(def_min_block_width);
-        }
     }
 
     //int last_block_ind = tracks[col].block.size();
@@ -1654,12 +1651,11 @@ void ListControll::addBlockAt(int col, int ind,  DrawElement *element, int life_
     calcPointedBlocks();
 
     qDebug() << "AAAAAAAAA  time = "  << tracks[col].getTime();
-
 }
 
 
 
-void ListControll::addNewTrack()
+void ListControll::addNewTrack( )
 {
     QList <DrawElement * >  temp;
     // temp.append(Element());
@@ -1692,7 +1688,6 @@ DrawElement* ListControll::loadFromFile( QString path)
     return loadFromFile(curent_block.x(),  curent_block.y(),  path);
 }
 
-
 void ListControll::loadFromFileVoid( QString path)
 {
     loadFromFile(selectedBlockPoint.x(),  selectedBlockPoint.y(),  path);
@@ -1710,6 +1705,7 @@ DrawElement* ListControll::loadFromFile(int col, int ind, QString path,bool emit
     qDebug() << "loadFromFile(): col = " << col << " IND = " << ind;
     setBlocked(true);
     qApp->processEvents();
+
     QString open;
     if ( path == "")
         open =  QFileDialog::getOpenFileName(0, QString(), QString(), QString(), 0, QFileDialog::DontUseNativeDialog);
@@ -1733,6 +1729,7 @@ DrawElement* ListControll::loadFromFile(int col, int ind, QString path,bool emit
     }
 
 
+
     if (emit_update)
     {
         if (!blockValid(col,ind))
@@ -1742,7 +1739,6 @@ DrawElement* ListControll::loadFromFile(int col, int ind, QString path,bool emit
         }
         DrawElement* temp = tracks[col].block[ind]; ///////!!!!!!!!!!!!!!!!!!!!
         int new_life_time = elm->getLifeTime();
-
 
         //elm->copy(temp);
         elm->setLifeTime(temp->getLifeTime());
@@ -1794,11 +1790,6 @@ DrawElement* ListControll::loadFromFile(int col, int ind, QString path,bool emit
     return elm;
 }
 
-bool ListControll::removeLastBlock(int col)
-{
-    return removeBlock(col,tracks[col].block.size() - 1,false);
-}
-
 int ListControll::lastNotEmptyBlockIndexBeginFrom(int col, int ind )
 {
     if (!blockValid(col,ind))
@@ -1814,11 +1805,13 @@ int ListControll::lastNotEmptyBlockIndexBeginFrom(int col, int ind )
     return rez;
 }
 
+bool ListControll::removeLastBlock(int col)
+{
+    return removeBlock(col,tracks[col].block.size() - 1,false);
+}
 
 bool ListControll::removeLastTrack()
 {
-    curent_group = NULL;
-    //test_group.clear();
     removeRectangle();
 
     setBlocked(true);
@@ -1855,8 +1848,6 @@ bool ListControll::removeLastTrack()
 
 bool ListControll::removeTrack(int col)
 {
-    curent_group = NULL;
-    //test_group.clear();
     removeRectangle();
 
     isBlocked = true;
@@ -2241,13 +2232,10 @@ void ListControll::setBlockTime(int col, int i,int value, bool resize_next_empty
 
     tracks[col].addTime(value - elm->getLifeTime());
     elm->setLifeTime(value);
-    // elm->setPlayTimeUntilFreeze(value);
 
     recountMaxTrackTime();
 
 }
-
-
 
 void ListControll::setBlockTimeWithUpdate(int col, int i, int value, bool visual)
 {
@@ -2257,7 +2245,6 @@ void ListControll::setBlockTimeWithUpdate(int col, int i, int value, bool visual
     // if(visual)
     emit blockTimeSignel(col, i, value);
 }
-
 
 
 bool ListControll::balanceBlocksIfIsGroups(int col0, int ind0 , bool calc_time_change)
@@ -2342,25 +2329,20 @@ void ListControll::setCurentBlock (int col, int ind)
     setCurentBlock(QPoint(col,ind));
 }
 
-
 bool ListControll::checkBlockValidGroup(DrawElement *elm)
 {
-    /* if(elm->getGroupWichElBelong() != NULL)
+   /* if(elm->getGroupWichElBelong() != NULL)
     {
-        if(elm->getGroupWichElBelong() != NULL)
+        Group *groupTemp = elm->getGroupWichElBelong();
+        if(!groupTemp->isGroupValid())
         {
-            Group *groupTemp = elm->getGroupWichElBelong();
-            if(!groupTemp->isGroupValid())
-            {
-                groupTemp->deInitGroupBlocks();
-                delete groupTemp;
-                removeRectangle();
-            }
+            groupTemp->deInitGroupBlocks();
+            delete groupTemp;
+            removeRectangle();
         }
     }*/
 
 }
-
 
 void ListControll::updateBlocksStartTimesFrom(int col0,int ind0, bool withGroup)
 {
@@ -2380,37 +2362,45 @@ void ListControll::updateBlocksStartTimesFrom(int col0,int ind0, bool withGroup)
     for (int i=ind0; i < tracks[col0].block.size(); i++)
     {
 
-        // if(updatedGroup != tracks[col0].block[i]->getGroupWichElBelong() && tracks[col0].block[i]->getGroupWichElBelong() != NULL && !tracks[col0].block[i]->getGroupWichElBelong()->isGroupValid())
+        DrawElement *temp_el = tracks[col0].block[i - 1];
+        int draw_time = temp_el->getStartDrawTime()  + temp_el->getLifeTime();
+        tracks[col0].block[i]->setStartDraw(draw_time);
+    }
+
+    if(false)
+        for (int i=ind0; i < tracks[col0].block.size(); i++)
         {
-            updatedGroup = tracks[col0].block[i]->getGroupWichElBelong();
-            /*if( updatedGroup->getMembers().contains(col0) &&  updatedGroup->getMembers()[col0].contains(ind0))
+            //if(updatedGroup != tracks[col0].block[i]->getGroupWichElBelong() && tracks[col0].block[i]->getGroupWichElBelong() != NULL && !tracks[col0].block[i]->getGroupWichElBelong()->isGroupValid())
+            {
+                updatedGroup = tracks[col0].block[i]->getGroupWichElBelong();
+                /*if( updatedGroup->getMembers().contains(col0) &&  updatedGroup->getMembers()[col0].contains(ind0))
                     continue;*/
 
-            if(delta > 0)
-            {
-                DrawElement *deltaElm = new DrawElement();
-                deltaElm->setLifeTime(delta);
-                deltaElm->setKey("NULL2");
-                addBlockAt(col0, i - 1, deltaElm);
-                updateBlocksStartTimesFrom(col0, 0, false);
-            }
-            else
-            {
-                foreach(DrawElement* elm, updatedGroup->getFirst())
+                if(delta > 0)
                 {
-                    if(elm->getBlockColumn() != col0)
+                    DrawElement *deltaElm = new DrawElement();
+                    deltaElm->setLifeTime(delta);
+                    deltaElm->setKey("NULL2");
+                    addBlockAt(col0, i - 1, deltaElm);
+                    updateBlocksStartTimesFrom(col0, 0, false);
+                }
+                else
+                {
+                    foreach(DrawElement* elm, updatedGroup->getFirst())
                     {
-                        qDebug() << "UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU ";
-                        DrawElement *deltaElm = new DrawElement();
-                        deltaElm->setLifeTime(-delta);
-                        deltaElm->setKey("NULL");
-                        addBlockAt(elm->getBlockColumn(), elm->getBlockIndex() - 1, deltaElm);
+                        if(elm->getBlockColumn() != col0)
+                        {
+                            qDebug() << "UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU ";
+                            DrawElement *deltaElm = new DrawElement();
+                            deltaElm->setLifeTime(-delta);
+                            deltaElm->setKey("NULL");
+                            addBlockAt(elm->getBlockColumn(), elm->getBlockIndex() - 1, deltaElm);
+                        }
+                        updateBlocksStartTimesFrom(elm->getBlockColumn(), 0, false);
                     }
-                    updateBlocksStartTimesFrom(elm->getBlockColumn(), 0, false);
                 }
             }
         }
-    }
     //   sendUpdateModel();
 }
 
@@ -2555,19 +2545,6 @@ int ListControll::getBlockTime(int col, int i )
         return -1;
     return tracks[col].block[i]->getLifeTime();
 }
-int ListControll::getBlockPlayTimeUntilFreeze(int col, int i )
-{
-    if(!testIndexs(col, i))
-        return -1;
-    return tracks[col].block[i]->getPlayTimeUntilFreeze();
-}
-
-void ListControll::setBlockPlayTimeUntilFreeze(int col, int i, int val)
-{
-    DrawElement *elm =  tracks[col].block[i];
-    elm->setPlayTimeUntilFreeze(val);
-}
-
 
 DrawElement * ListControll::getBlock(int col, int i)
 {
@@ -2600,9 +2577,15 @@ int ListControll::getTrackSize(int col)
 {
     if(!testIndexs(col, -1))
         return -1;
+
     int temp = tracks[col].block.size();
     // //qDebug()  << "FHFHHFHFHFHFH getTrackSize = " << temp;
     return temp;
+}
+
+bool ListControll::isProjectChanged()
+{
+    return isProjectChange;
 }
 
 bool ListControll::addBlockToCurentGroup(int col,int ind)
@@ -2616,28 +2599,44 @@ bool  ListControll::addBlockToCurentGroup(DrawElement* block)
 {
     qDebug() << "bool  ListControll::addBlockToGroup(DrawElement* block)";
     if (block == NULL)
+    {
+        qDebug() << " ListControll::addBlockToGroup failed: block is null";
         return false;
-    curent_group->addTo(block);
-}
+    }
+    if (block->getGroupWichElBelong() !=  NULL)
+    {
+        qDebug() << " ListControll::addBlockToGroup failed: block group not null";
+        return false;
+    }
 
-bool ListControll::isProjectChanged()
-{
-    return isProjectChange;
-}
-/*
-bool ListControll::addBlockToGroup(int col,int ind)
-{
-    if (!blockValid(col,ind))
-        return false;
-    return addBlockToGroup(tracks[col].block[ind]);
-}*/
+    qDebug() << " ListControll::addBlockToGroup          block->getGroupWichElBelong() == NULL";
+    /*if (curent_block_group_num == -1)
+         {
+             Group temp_group;
+            block_groups.append(temp_group);
+            block_groups.last().addTo(block);
+            curent_block_group_num = block_groups.size() - 1;
+            qDebug() << " ListControll::addBlockToGroup 1";
 
-bool ListControll::isCurentGroupValid()
-{
-    if (curent_group == NULL)
+         }
+         else
+         {
+             block_groups[curent_block_group_num].addTo(block);
+             qDebug() << " ListControll::addBlockToGroup 2";
+         }*/
+    if(curent_group->addTo(block))
+    {
+        return true;
+    }
+    else
+    {
+        qDebug() << " ListControll::addBlockToGroup failed";
         return false;
-    return true;
-           // curent_group->isGroupValid();
+    }
+
+
+    return false;
+
 }
 
 bool  ListControll::removeBlockFromGroup(DrawElement* block)
@@ -2645,6 +2644,14 @@ bool  ListControll::removeBlockFromGroup(DrawElement* block)
     if (block->getGroupWichElBelong() == NULL)
         return false;
     return (block->getGroupWichElBelong()->removeFromGroup(block));
+}
+
+bool ListControll::isCurentGroupValid()
+{
+    if (curent_group == NULL)
+        return false;
+    //curent_group->calcBoundRec();
+
 }
 
 void ListControll::setCtrlPressed(bool value)
@@ -2657,14 +2664,14 @@ void ListControll::setCtrlPressed(bool value)
 
             if (curent_group != NULL)
             {
-                QList< QList < QRect > > tracks_typeLife_curGroup;
-                for (int i = 0; i < tracks.size(); i++)
-                    for (int k = 0; k < tracks[i].block.size(); k++)
-                    {
-                        DrawElement *elmo = tracks[i].block[k];
-                        bool in_group = (elmo->getGroupWichElBelong() == curent_group);
-                        tracks_typeLife_curGroup[i][k] = QRect(elmo->getTypeId(),elmo->getLifeTime(),in_group,0);
-                    }
+                 QList< QList < QRect > > tracks_typeLife_curGroup;
+                 for (int i = 0; i < tracks.size(); i++)
+                     for (int k = 0; k < tracks[i].block.size(); k++)
+                     {
+                         DrawElement *elmo = tracks[i].block[k];
+                         bool in_group = (elmo->getGroupWichElBelong() == curent_group);
+                         tracks_typeLife_curGroup[i][k] = QRect(elmo->getTypeId(),elmo->getLifeTime(),in_group,0);
+                     }
                 if (curent_group->isGroupValid(tracks_typeLife_curGroup)) //QQQQQQQQQQQQQQ
                 {
                     //
@@ -2719,9 +2726,9 @@ void ListControll::setCtrlPressed(bool value)
             curent_group = new Group();
             block_groups.append(curent_group);
             curent_group->setIndex(block_groups.size() - 1);
-
         }
     }
+
     ctrl_pressed = value;
 }
 
@@ -2764,17 +2771,17 @@ bool ListControll::attachBlock(int col, int index, int value)
     int dovod_value = 65534;
     bool value_setted = false;
 
-     for (int i=0; i < tracks.size() ;  i++)
-    for (int y=0; y < tracks[i].block.size() ;  y++)
+    for (int i=0; ;  i++)
     {
-        DrawElement *draw_el2 = tracks[i].block[y];
-        if (draw_el2->getTypeId() == Element_type::Empty)
-            continue;
-        int temp_dovodka = from_width - draw_el2->getLifeTime() - draw_el2->getStartDrawTime();
-        //qDebug() << "temp_dovodka =   "<< temp_dovodka;
-        if (abs(temp_dovodka) <=  abs(value) && (abs(temp_dovodka) <  abs(dovod_value) ))
+        if (i == col)
+            i++;
+        if (i >= tracks.size())
+            break;
+        for (int y=0; y < tracks[i].block.size(); y++)
         {
             DrawElement *draw_el2 = tracks[i].block[y];
+            if (draw_el2->getTypeId() == Element_type::Empty)
+                continue;
             int temp_dovodka = from_width - draw_el2->getLifeTime() - draw_el2->getStartDrawTime();
             //qDebug() << "temp_dovodka =   "<< temp_dovodka;
             if (abs(temp_dovodka) <=  abs(value) && (abs(temp_dovodka) <  abs(dovod_value) ))
@@ -2785,7 +2792,6 @@ bool ListControll::attachBlock(int col, int index, int value)
             }
         }
     }
-
     if (value_setted)
         draw_el->setLifeTime(draw_el->getLifeTime() - dovod_value);
     // ctrl_pressed = value;
@@ -3614,7 +3620,18 @@ bool ListControll::blockValid(QPoint point)
 {
     return blockValid(point.x(),point.y());
 }
+int ListControll::getBlockPlayTimeUntilFreeze(int col, int i )
+    {
+        if(!testIndexs(col, i))
+            return -1;
+        return tracks[col].block[i]->getPlayTimeUntilFreeze();
+    }
 
+    void ListControll::setBlockPlayTimeUntilFreeze(int col, int i, int val)
+    {
+        DrawElement *elm =  tracks[col].block[i];
+        elm->setPlayTimeUntilFreeze(val);
+    }
 
 
 
