@@ -22,6 +22,7 @@ void ListControll::setSelectedBlockPoint(const QPoint &value)
 
     // qDebug() << "AAAAAAAAAAAAAAAAAAAAAAA  ListControll::setSelectedBlockPoint  " <<(int)  getBlock(value)->getTypeId();
     //if (false)
+    ctrl_pressed = false;
     if (ctrl_pressed)
         if ( value.x() != -1) //glWindInited &&
             if ( blockValid(value.x(), value.y()))  //crash
@@ -212,7 +213,7 @@ void ListControll::setSelectedBlockPoint(const QPoint &value)
                 if (need_calc_bound_rec)
                 {
                     // if (test_group.isGroupValid())
-                    curent_group->calcBoundRec();
+                   // curent_group->calcBoundRec();
                     /* else
                     {
                         test_group.setBlocksBorderColor("white");
@@ -247,9 +248,9 @@ void ListControll::setSelectedBlockPoint(const QPoint &value)
                     if (t_group != NULL)
                     {
                         curent_group = t_group;
-                        if (t_group->isGroupValid())
+                       // if (t_group->isGroupValid())
                         {
-                            t_group->calcBoundRec();
+
 
                             //DrawElement *elm = getBlock(selectedBlockPoint);
                             if(elm != NULL  && elm->getGroupWichElBelong() != NULL)
@@ -263,19 +264,21 @@ void ListControll::setSelectedBlockPoint(const QPoint &value)
                             if(elm != NULL && elm->getGroupWichElBelong() != NULL)
                             {
                                 elm->getGroupWichElBelong()->setBlocksBorderColor("blue");
-                                //curent_group = elm->getGroupWichElBelong();
                                 drawYellowRectangle(curent_group->getBoundRec());
+                                //curent_group = elm->getGroupWichElBelong();
+                                // t_group->calcBoundRec(); !!!!!!!!!!!!!!!!
+                                //drawYellowRectangle(curent_group->getBoundRec());
                                 qDebug() << "rawYellowRectangle(curent_group->getBoundRec());";
                             }
                         }
-                        else
+                       /* else
                         {
                             t_group->setBlocksBorderColor("white");
                             t_group->deInitGroupBlocks();
                             t_group->clear();
 
 
-                        }
+                        }*/
                     }
                 }
             }
@@ -357,12 +360,13 @@ bool ListControll::getCurent_group() const
     //   qDebug() << "RESSSSSSSS_GROUP   " << res;
     return res;
 }
-
+/*
 bool ListControll::redrawYellowRect()
 {
     curent_group->calcBoundRec();
     drawYellowRectangle(curent_group->getBoundRec());
-}
+}*/
+
 bool ListControll::getCurent_group(int col, int index)
 {
     bool res;
@@ -402,7 +406,7 @@ QPoint ListControll::getCurent_groupMembers( int index )
 
 int ListControll::getCurent_groupMembersSize()
 {
-    curent_group->calcBoundRec();
+    //curent_group->calcBoundRec();
     return curent_group->getMembersPosition().size();
 
 }
@@ -836,6 +840,7 @@ void ListControll::addNewBlock(int col, QString str, DrawElement *element)
     if (maxTrackTime <  temp_time)
         maxTrackTime =  temp_time;
     calcPointedBlocks();
+
 
     qDebug() << "void ListControll::addNewBlock(   track time = " << tracks[col].getTime();
 }
@@ -1682,8 +1687,8 @@ DrawElement* ListControll::loadFromFile( QString path)
 
 void ListControll::loadFromFileVoid( QString path)
 {
-     loadFromFile(selectedBlockPoint.x(),  selectedBlockPoint.y(),  path);
-   // loadFromFile(curent_block.x(),  curent_block.y(),  path);
+    loadFromFile(selectedBlockPoint.x(),  selectedBlockPoint.y(),  path);
+    // loadFromFile(curent_block.x(),  curent_block.y(),  path);
 }
 
 
@@ -2241,11 +2246,11 @@ void ListControll::setBlockTimeWithUpdate(int col, int i, int value, bool visual
 
 bool ListControll::balanceBlocksIfIsGroups(int col0, int ind0 , bool calc_time_change)
 {
-    for(int i = 0; i < tracks.size(); i++)
+    /*for(int i = 0; i < tracks.size(); i++)
         for(int j = 0; j < tracks[i].block.size(); j++)
         {
             checkBlockValidGroup(tracks[i].block[j]);
-        }
+        }*/
     /* if (!blockValid(col0,ind0))
         return false;
      long delta;
@@ -2323,7 +2328,7 @@ void ListControll::setCurentBlock (int col, int ind)
 
 bool ListControll::checkBlockValidGroup(DrawElement *elm)
 {
-    if(elm->getGroupWichElBelong() != NULL)
+   /* if(elm->getGroupWichElBelong() != NULL)
     {
         Group *groupTemp = elm->getGroupWichElBelong();
         if(!groupTemp->isGroupValid())
@@ -2332,7 +2337,7 @@ bool ListControll::checkBlockValidGroup(DrawElement *elm)
             delete groupTemp;
             removeRectangle();
         }
-    }
+    }*/
 
 }
 
@@ -2362,7 +2367,7 @@ void ListControll::updateBlocksStartTimesFrom(int col0,int ind0, bool withGroup)
     if(false)
         for (int i=ind0; i < tracks[col0].block.size(); i++)
         {
-            if(updatedGroup != tracks[col0].block[i]->getGroupWichElBelong() && tracks[col0].block[i]->getGroupWichElBelong() != NULL && !tracks[col0].block[i]->getGroupWichElBelong()->isGroupValid())
+            //if(updatedGroup != tracks[col0].block[i]->getGroupWichElBelong() && tracks[col0].block[i]->getGroupWichElBelong() != NULL && !tracks[col0].block[i]->getGroupWichElBelong()->isGroupValid())
             {
                 updatedGroup = tracks[col0].block[i]->getGroupWichElBelong();
                 /*if( updatedGroup->getMembers().contains(col0) &&  updatedGroup->getMembers()[col0].contains(ind0))
@@ -2638,8 +2643,17 @@ bool  ListControll::removeBlockFromGroup(DrawElement* block)
     return (block->getGroupWichElBelong()->removeFromGroup(block));
 }
 
+bool ListControll::isCurentGroupValid()
+{
+    if (curent_group == NULL)
+        return false;
+    //curent_group->calcBoundRec();
+
+}
+
 void ListControll::setCtrlPressed(bool value)
 {
+    //drawYellowRectangle(QRect(1000 ,  140  , 2001  , 141));
     if (group_changed)
         if (ctrl_pressed && !value)
         {
@@ -2647,20 +2661,54 @@ void ListControll::setCtrlPressed(bool value)
 
             if (curent_group != NULL)
             {
-                if (curent_group->isGroupValid())
+                 QList< QList < QRect > > tracks_typeLife_curGroup;
+                 for (int i = 0; i < tracks.size(); i++)
+                     for (int k = 0; k < tracks[i].block.size(); k++)
+                     {
+                         DrawElement *elmo = tracks[i].block[k];
+                         bool in_group = (elmo->getGroupWichElBelong() == curent_group);
+                         tracks_typeLife_curGroup[i][k] = QRect(elmo->getTypeId(),elmo->getLifeTime(),in_group,0);
+                     }
+                if (curent_group->isGroupValid(tracks_typeLife_curGroup)) //QQQQQQQQQQQQQQ
                 {
                     //
                     // curent_group = new Group();
+                    /*if (curent_group_buffer != NULL)
+                        delete curent_group_buffer;*/
+                    //curent_group_buffer = new Group(*(curent_group));
                     curent_group->setBlocksBorderColor("blue");
                     curent_group->initGroupBlocks();
+                    curent_group->calcBoundRec();
+
                     drawYellowRectangle(curent_group->getBoundRec());
+
+                    curent_group->makeBackup();
                 }
                 else
                 {
                     curent_group->setBlocksBorderColor("white");
                     curent_group->deInitGroupBlocks();
-                    delete curent_group;
-                    curent_group = NULL;
+                    block_groups.removeAt(curent_group->getIndex());
+                    if (curent_group->ablelRebuckup())
+                    {
+                        curent_group->reloadFromBuckup();
+                        curent_group->initGroupBlocks();
+
+                        //curent_group->calcBoundRec();
+                    }
+                    else
+                    {
+                        delete curent_group;
+                    }
+
+                    /* if (curent_group_buffer != NULL)
+                    {
+                        curent_group = curent_group_buffer;
+                        curent_group_buffer = NULL;
+
+                        curent_group->setBlocksBorderColor("blue");
+                        curent_group->initGroupBlocks();
+                    }*/
                     //curent_group.setBlocksBorderColor("green");
                 }
             }
@@ -2673,6 +2721,8 @@ void ListControll::setCtrlPressed(bool value)
         if(curent_group == NULL)
         {
             curent_group = new Group();
+            block_groups.append(curent_group);
+            curent_group->setIndex(block_groups.size() - 1);
         }
     }
 
@@ -3035,7 +3085,7 @@ bool ListControll::load(QIODevice* device)
         {
             group->addTo(getBlock(pos));
         }
-        group->isGroupValid();
+        //group->isGroupValid();
         group->initGroupBlocks();
     }
 

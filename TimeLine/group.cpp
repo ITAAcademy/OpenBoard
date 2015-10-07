@@ -14,17 +14,17 @@ Group::~Group()
 
 QList <DrawElement*> members;
 INT64 sum_length;
-QRect bound_rec;
+//QRect bound_rec;
 
 bool Group::setBoundRec(int x1, int y1, int width  , int height)
 {
-    bound_rec = QRect(x1,y1,width,height);
+    // bound_rec = QRect(x1,y1,width,height);
 }
 
 bool Group::setBoundRec(int x1 ,int width)
 {
-    bound_rec.setX(x1);
-    bound_rec.setWidth(width);
+    /* bound_rec.setX(x1);
+    bound_rec.setWidth(width);*/
 }
 
 QRect Group::getBoundRec()
@@ -98,7 +98,8 @@ void Group::deInitGroupBlocks()
 
 long Group::tryGroupResize(long shift)
 {
-    unsigned long maxCount_MinSize = 0;
+    unsigned long int res = 0;
+    /* unsigned long maxCount_MinSize = 0;
     foreach ( BlockType value, members) {
         if(value.size() > maxCount_MinSize)
             maxCount_MinSize = value.size();
@@ -117,7 +118,7 @@ long Group::tryGroupResize(long shift)
         }
         return maxCount_MinSize;
     }
-    unsigned long int res = 0;
+
     foreach ( BlockType value, members) {
 
         int not_null = 0;
@@ -135,7 +136,7 @@ long Group::tryGroupResize(long shift)
         }
     }
     res /= members.size();
-    bound_rec.setWidth(res);
+    bound_rec.setWidth(res);*/
     return res;
 }
 
@@ -198,7 +199,7 @@ bool Group::tryMemberReverce(DrawElement *in, DrawElement *out)
     in->setGroupWichElBelong(NULL);
     members[in->getBlockColumn()][in->getBlockIndex()] = out;
     membersPositionList.clear();
-    isGroupValid();
+    //isGroupValid();
 }
 
 
@@ -234,10 +235,20 @@ QList<DrawElement *> Group::getLast() const
 {
     return last;
 }
+
+int Group::getIndex() const
+{
+    return index;
+}
+
+void Group::setIndex(int value)
+{
+    index = value;
+}
 void Group::calcNotNullMembers()
 {
-
-
+    
+    
 }
 
 unsigned long Group::calcMaxMemberTime(int col, int index)
@@ -250,7 +261,7 @@ bool variantLessThan(const int &v1, const int &v2)
     return v1 < v2;
 }
 
-bool Group::isGroupValid()
+bool Group::isGroupValid(QList< QList < QRect > > tracks) //QPoint = block type, life_time; width == 1 mean block is in this group,else 0
 {
     first.clear();
     last.clear();
@@ -262,7 +273,8 @@ bool Group::isGroupValid()
     else
         if(members.size() == 1)
         {
-            BlockType btype = members[0];
+            // BlockType btype2 = members[0];
+            BlockType btype = *(members.begin());
             if (btype.size() <2)
                 return false;
         }
@@ -299,18 +311,39 @@ bool Group::isGroupValid()
 
     DrawElement * temp = NULL;
     //BlockType
+    int x2 = 0;
+    int x1 = 65534;
+    int y2 = 0;
+    int y1 = 65534;
+
     foreach(BlockType blokType, members)
     {
         foreach(DrawElement * elm, blokType)
             /* for (int i = 0; i < members.size(); i++)
              for (int k = 0; k < members[i].size(); k++)*/
         {
+            int start_time = elm->getStartDrawTime();
+            int end_time = start_time + elm->getLifeTime();
+            if (x1 > start_time)
+                x1 = start_time;
+
+            if (x2 < end_time )
+                x2 = end_time;
+
+            int col_e = elm->getBlockColumn();
+            int top = col_e * 70;
+            if (y1 > top )
+                y1 = top;
+            int bottom = top + 70;
+            if (y2 < bottom)
+                y2 = bottom;
+
             // DrawElement * elm =  members[i][k];
             //qDebug() << "col = " << elm->getBlockColumn()<< "  ind = " << elm->getBlockIndex()  << " type = " << elm->getTypeId();
             if (temp != NULL)
             {
                 int col_t = temp->getBlockColumn();
-                int col_e = elm->getBlockColumn();
+
                 if (col_t == col_e)
                 {
                     int ind_t = temp->getBlockIndex();
@@ -319,8 +352,17 @@ bool Group::isGroupValid()
                     if (ind_t + 1 != ind_e)
                         return false;
                 }
+                /*else
+                {
+                    if (col_t + 1 != col_e)
+                    {
+                        return false;
+                    }
+                }*/
             }
             temp = elm;
+
+
 
         }
     }
@@ -357,9 +399,57 @@ bool Group::isGroupValid()
     calcBoundRec();
 
     bValid = isRealValid;*/
+    int col1 = members.first().first()->getBlockColumn();
+    int col2 = members.last().first()->getBlockColumn();
+    for (int i = col1; i <=col2; i++)
+    {
+        int prev_end = 0;
+        for (int k = 0; k < tracks[i].size(); k++)
+        {
+            int life = tracks[i][k].y();
+            if (tracks[i][k].x() != Element_type::Empty && tracks[i][k].width() == 0)
+            {
+
+                int cur_end = prev_end + life;
+                if ( ( x1 <= prev_end && prev_end <= x2) || ( x1 <= cur_end && cur_end <= x2))
+                {
+                    return false;
+                }
+
+            }
+            prev_end += life;
+        }
+    }
+
+
+
+
+
+
+
+            bValid = true;
+    bound_rec.setTopLeft(QPoint(x1,y1));
+    bound_rec.setBottomRight(QPoint(x2,y2));
+    qDebug() << "bool Group::isGroupValid()  TRUEEEEEEEEEEEE   " << bound_rec.x() << " " <<
+                bound_rec.y() << " " << bound_rec.width() << " " << bound_rec.height();
     return true;
 }
 
+void Group::makeBackup()
+{
+    members_buckup = members;
+    able_to_do_rebackup = true;
+}
+
+bool Group::ablelRebuckup()
+{
+    return able_to_do_rebackup;
+}
+
+void Group::reloadFromBuckup()
+{
+    members = members_buckup;
+}
 
 void Group::setBoundRec(QRect value)
 {
@@ -369,11 +459,11 @@ void Group::setBoundRec(QRect value)
 void Group::calcBoundRec()
 {
     //qDebug() << "AAAAAAAAAAAAAAAAAAAAAAAA    777 " << this;
-    if (this == NULL)
-        return;
+    /* int aa = -1;
     if(!bValid || first.size() == 0)
         return;
 
+    qDebug() << "AAAAAAAAAAAAAAAAAAAAAAAA    777 " ;
     left.setX(first.first()->getStartDrawTime());
     left.setY(first.first()->getBlockColumn() * ListControll::blockHeightPlusSpacing);//@BAG@
 
@@ -381,7 +471,7 @@ void Group::calcBoundRec()
     right.setY((last.last()->getBlockColumn() + 1)* ListControll::blockHeightPlusSpacing - left.y());//@BAG@
 
     bound_rec.setRect(left.x(), left.y(), right.x(), right.y());
-
+*/
 }
 
 bool Group::addTo(DrawElement *element)

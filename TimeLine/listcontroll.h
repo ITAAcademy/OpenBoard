@@ -28,6 +28,8 @@ class DrawElement;
 
 bool isFileExists(QString path) ;
 
+
+
 struct Track {
 private:
     unsigned long int time = 0 ;
@@ -162,6 +164,8 @@ class ListControll : public QObject, public QQuickImageProvider
     Q_OBJECT
 
 
+
+
     QPoint pos_to_append = QPoint(-1,-1);
     OGLWidget *p_drawWidget = NULL;
      int spaces_to_add = -1;
@@ -172,7 +176,7 @@ class ListControll : public QObject, public QQuickImageProvider
     FileManager f_manager;
     OGLWidget *drawWidget;
     int curent_block_group_num = -1;
-    QList <Group> block_groups;
+    QList <Group* > block_groups;
     //Group test_group;
     Group *curent_group = NULL;
     bool isEditBlockShow = false;
@@ -214,6 +218,7 @@ class ListControll : public QObject, public QQuickImageProvider
     bool force_append_block = true;
 public:
 
+    bool isCurentGroupValid();
     Q_INVOKABLE QPoint getCurentBlock();
    Q_INVOKABLE void setCurentBlock (QPoint value);
     Q_INVOKABLE void setCurentBlock (int col, int ind);
@@ -412,7 +417,7 @@ public:
 
     Q_INVOKABLE bool getCurent_group() const;
     Q_INVOKABLE bool createEmptyBlock(int col);
-    Q_INVOKABLE bool redrawYellowRect();
+    //Q_INVOKABLE bool redrawYellowRect();
 
     Q_INVOKABLE bool getCurent_group(int col, int index) ;
     Q_INVOKABLE long tryResizeCurentGroup(int shift);

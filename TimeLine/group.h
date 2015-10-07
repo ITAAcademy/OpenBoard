@@ -11,10 +11,13 @@ typedef QMap<int, DrawElement*> BlockType;
 class Group
 {
 
+    int index = -1;
     QMap<int, BlockType > members;
+    QMap<int, BlockType > members_buckup;
     QRect bound_rec;
     QPoint left;
     QPoint right;
+    bool able_to_do_rebackup = false;
     QList<QPoint> membersPositionList;
 
     QList <DrawElement*> first;
@@ -30,6 +33,9 @@ class Group
     void calcNotNullMembers();
     unsigned long calcMaxMemberTime(int col, int index);
 public:
+    void makeBackup();
+    void reloadFromBuckup();
+    bool ablelRebuckup();
     void setBoundRec(QRect);
     bool setBoundRec(int , int , int, int);
     bool setBoundRec(int , int );
@@ -37,7 +43,7 @@ public:
     int getMembersSize();
     void clear();
     void setBlocksBorderColor(QString color);
-    bool isGroupValid();
+    bool isGroupValid(QList< QList < QRect > > tracks);
     void initGroupBlocks();
     void deInitGroupBlocks();
     long int tryGroupResize( long int shift);
@@ -58,6 +64,8 @@ public:
     QPoint getMembersPosition( int index );
     QList<DrawElement *> getFirst() const;
     QList<DrawElement *> getLast() const;
+    int getIndex() const;
+    void setIndex(int value);
 };
 
 #endif // GROUP_H
