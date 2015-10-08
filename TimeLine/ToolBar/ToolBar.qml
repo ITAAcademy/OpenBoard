@@ -15,7 +15,7 @@ Rectangle {
     property Buutton p_button_pause
     property Buutton p_button_stop
     property CheckBox p_chb_dovodka
-    property CheckBox p_forcibly_append_block
+    property CheckBox p_chb_resize_force
     Column{
         width: parent.width
         height: parent.height
@@ -71,6 +71,46 @@ Rectangle {
                 root.p_chb_dovodka = chb_dovodka
             }
         }
+        CheckBox {
+            id: chb_resize_force
+            enabled: true
+            height: parent.width
+            width: parent.width
+            checked: false
+            property string p_chb_image_source
+            onCheckedChanged: {
+                main222.force_resize_block = chb_resize_force.checked
+            }
+
+            style: CheckBoxStyle {
+                indicator: Rectangle {
+                    implicitWidth: chb_resize_force.width
+                    implicitHeight: chb_resize_force.height
+                    radius: 3
+                    border.color: chb_resize_force.activeFocus ? "yellow" : "black"
+                    border.width: 1
+                    Image {
+                        id: chb_resize_force_off
+                        visible: !control.checked
+                        source: "qrc:/../OpenBoard/icons/resize-hor-icon disabled.png"
+                        anchors.margins: 4
+                        anchors.fill: parent
+                    }
+                    Image {
+                        id: chb_resize_force_on
+                        visible: control.checked
+                        source: "qrc:/../OpenBoard/icons/resize-hor-icon.png"
+                        anchors.margins: 4
+                        anchors.fill: parent
+                    }
+                }
+            }
+
+            Component.onCompleted: {
+                root.p_chb_resize_force = chb_resize_force
+            }
+        }
+
 
         Buutton{
             id: butRemoveTrack
@@ -107,45 +147,6 @@ Rectangle {
                 }
             }
         }
-       CheckBox {
-            id: forcibly_append_block
-            enabled: false
-            visible: false
-            height: parent.width
-            width: parent.width
-            checked: true
-            onCheckedChanged: {
-                main222.force_append_block = forcibly_append_block.checked
-
-            }
-                style: CheckBoxStyle {
-                    indicator: Rectangle {
-                        implicitWidth: forcibly_append_block.width
-                        implicitHeight: forcibly_append_block.height
-                        radius: 3
-                        border.color: forcibly_append_block.activeFocus ? "yellow" : "black"
-                        border.width: 1
-                        Image {
-                            id: app_image_off
-                            visible: !control.checked
-                            source: "qrc:/iphone_toolbar_icons/Shopping_cart_insert_Icon_723.png"
-                            anchors.margins: 4
-                            anchors.fill: parent
-                        }
-                        Image {
-                            id: app_image
-                            visible: control.checked
-                            source: "qrc:/iphone_toolbar_icons/Shopping_cart_insert_Icon_72.png"
-                            anchors.margins: 4
-                            anchors.fill: parent
-                        }
-                    }
-                }
-
-                Component.onCompleted: {
-                    root.p_forcibly_append_block = forcibly_append_block
-                }
-            }
 
         /* Buutton{
             id: butPlay

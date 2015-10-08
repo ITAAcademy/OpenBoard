@@ -215,7 +215,7 @@ class ListControll : public QObject, public QQuickImageProvider
     bool isGroupChanged = false;
     QList <int> block_to_del;
 
-    bool force_append_block = true;
+    bool force_resize_block = false;
 public:
 
     bool isCurentGroupValid();
@@ -275,7 +275,7 @@ public:
     Q_INVOKABLE QString getBlockKey(int col, int i) ;
     Q_INVOKABLE void addNewBlock(int col, QString str = QString("block"+ QString::number(qrand())), DrawElement *element = NULL);
 
-     Q_INVOKABLE void setForceAppendBlock(bool value);
+     Q_INVOKABLE void setForceResizeBlock(bool value);
 
 
     Q_INVOKABLE   int getBlockTypeId(int col,int ind);
@@ -288,7 +288,7 @@ public:
     Q_INVOKABLE void reverseBlocks(int col, int init_pos, int end_pos);
     void setBlocks(int col,const  QList <DrawElement * > &value);
     Q_INVOKABLE   void setBlockKey(int col, int i, QString name);\
-    Q_INVOKABLE void setBlockTime(int col, int i, int value, bool resize_next_empty = false);
+    Q_INVOKABLE int setBlockTime(int col, int i, int value, bool resize_next_empty = false);
     Q_INVOKABLE bool setBlockTimeBlockBalance(int col, int ind, int value, bool resize_next_empty = false);
     Q_INVOKABLE void deleteBlockToDel(int col);
     Q_INVOKABLE void setBlockTimeWithUpdate(int col, int i, int value, bool visual);
@@ -381,8 +381,8 @@ public:
     Q_INVOKABLE void addBlockWithSpaceFromBufferAt(int col, int ind,int space,   int life_time = -1 ,bool need_balance = false);
 
     Q_INVOKABLE DrawElement* getBlockFromBuffer();
-    Q_INVOKABLE getBlockIndToAddFromPos(int col,int ind, int pos, int col_dest = -1);
-    Q_INVOKABLE getBlockIndToAddFromPos(DrawElement * elm, int pos, int col_dest = -1);
+    Q_INVOKABLE getBlockIndToAddFromPos(int col,int ind, int pos, int col_dest = -1,bool remove_movable_block = true);
+    Q_INVOKABLE getBlockIndToAddFromPos(DrawElement * elm, int pos, int col_dest = -1); //dont delete draw_elm
     Q_INVOKABLE getBlockSpaceToAddFromPos(int col,int ind); //call after getBlockIndToAddFromPos
     Q_INVOKABLE void logBlocksTypes(int col);
     Q_INVOKABLE void logBlocksDrawElColInd(int col);
