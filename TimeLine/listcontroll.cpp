@@ -906,32 +906,44 @@ void ListControll::logBlocksDrawElColInd(int col)
 }
 
 
-int ListControll::getBlockIndToAddFromPos(DrawElement * move_block, int pos, int col_dest  )
-{
-    return getBlockIndToAddFromPos(elm->getBlockColumn(),elm->getBlockIndex(),pos,col_dest, false );
-}
-
-
-
 int ListControll::getBlockIndToAddFromPos(int col,int ind, int pos, int col_dest,bool remove_movable_block )
 {
-
-    qDebug() << "         DAAAAAAAAAAAAAAAAAAAAAAAAA                  !!!!!!!!!!!!!!!!!!!                      ee";
     if (!blockValid(col,ind))
         return -1;
-
-    int get_ind = -1;
     DrawElement * move_block = tracks[col].block[ind];
 
     if (remove_movable_block)
         removeBlock(col,ind,false,true,false); // dont delete draw element
 
-   // getBlockIndToAddFromPos(move_block,)
+    // getBlockIndToAddFromPos(move_block,)
 
     if (col_dest >= 0)
     {
         col = col_dest;
         qDebug() << "col = col_dest = " << col_dest;
+    }
+
+    return getBlockIndToAddFromPos(move_block,pos,col );
+}
+
+
+
+
+int ListControll::getBlockIndToAddFromPos(DrawElement * move_block, int pos, int col_dest  )
+{
+    int get_ind = -1;
+
+
+    int col;
+    int ind = move_block->getBlockIndex();
+
+    if (col_dest >= 0)
+    {
+        col = col_dest;
+    }
+    else
+    {
+        col = move_block->getBlockColumn();
     }
 
     int move_block_start_time = move_block->getStartDrawTime();
@@ -2196,7 +2208,7 @@ int ListControll::setBlockTime(int col, int i,int value, bool resize_next_empty)
     qDebug() << "   force_resize_block = " << force_resize_block;
     if (!force_resize_block)
     {
-                if (i < tracks[col].block.size() - 1)
+        if (i < tracks[col].block.size() - 1)
         {
             DrawElement *next = tracks[col].block[i+1];
             int next_time = next->getLifeTime();
