@@ -86,5 +86,7 @@
         <file>iphone_toolbar_icons/bittorrent_plus.png</file>
         <file>iphone_toolbar_icons/Shopping_cart_insert_Icon_72.png</file>
         <file>iphone_toolbar_icons/Shopping_cart_insert_Icon_723.png</file>
+        <file>../OpenBoard/icons/resize-hor-icon disabled.png</file>
+        <file>../OpenBoard/icons/resize-hor-icon.png</file>
     </qresource>
 </RCC>

@@ -82,15 +82,16 @@ MouseAreaForWindowDraging{
         // property int maxTrackTime: 0
         property int dropEntered: 0
         property int blocks_num : 0
+        property int  prev_block_time : -1
         property bool left_rigth_entered : false
         property bool block_zayshow_sprava : false
         property Item p_toolbar
         property bool dovodka_block : false
 
-        property bool force_append_block : false
-        onForce_append_blockChanged:
+        property bool force_resize_block : false
+        onForce_resize_blockChanged:
         {
-            timeControll.setForceAppendBlock(force_append_block);
+            timeControll.setForceResizeBlock(force_resize_block);
 
         }
         property bool able_create_empty_block : true

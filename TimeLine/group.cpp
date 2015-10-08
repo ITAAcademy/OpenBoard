@@ -280,6 +280,10 @@ bool Group::isGroupValid(QList< QList < QRect > > tracks) //QPoint = block type,
         }
 
     bool isRealValid = true;
+
+    bValid = true;
+    return bValid;
+
     QList<int> columns = members.keys();
     qStableSort(columns.begin(), columns.end());
 
@@ -411,7 +415,7 @@ bool Group::isGroupValid(QList< QList < QRect > > tracks) //QPoint = block type,
             {
 
                 int cur_end = prev_end + life;
-                if ( ( x1 <= prev_end && prev_end <= x2) || ( x1 <= cur_end && cur_end <= x2))
+                if ( ( x1 <= prev_end && prev_end < x2) || ( x1 <= cur_end && cur_end < x2))
                 {
                     return false;
                 }
