@@ -210,7 +210,7 @@ int Parser::ParsingLine(QList<Unit*> &list,  QString &str, quint64& timeSpendToD
                 int count = 0;
                 if(exp.exactMatch((QString)str[i+2]))
                 {
-                    while(exp.exactMatch((QString)str[i+2]) && count++ < 2)
+                    while(exp.exactMatch((QString)str[i+2]) && count++ < 3)
                     {
                         pars_line += str[i+2];
                         i++;
@@ -233,20 +233,43 @@ int Parser::ParsingLine(QList<Unit*> &list,  QString &str, quint64& timeSpendToD
                 UnitCommand* command = new UnitCommand();
                 command->setUnitCommandType("ChangeColor");
 
-                QRegExp exp("[0-9a-f]");
+                QRegExp expColor("[0-9a-f]");
                 pars_line.clear();
                 pars_line += "#";
                 int tmp = 0;
-                while(exp.exactMatch((QString)str[i+2]) &&  tmp < 6 )
+                while(expColor.exactMatch((QString)str[i+2]) &&  tmp < 6 )
                 {
                     pars_line += str[i+2];
                     i++; tmp++;
                 }
+                qDebug() << "after color match";
                 if(tmp < 6)
                 {
                     state = i;
                     // //qDebug() << "color error";
                     break;
+                }
+
+                if (str.length()>(i+2) && str[i+2]=='-')//+1 because minimum 1 digit must excist after '-'
+                {
+                    qDebug() << "IN str.length()>(i+2) && str[i+2]==-'-' ";
+                   pars_line += str[i+2];
+                   i++;
+                   if (str.length()==(i+3))
+                   {
+                       qDebug() << "in str.length()==(i+3)";
+                       state=i;
+                       break;
+                   }
+                }
+                tmp = 0;
+                QRegExp expCount("[0-9]");
+                while(expCount.exactMatch((QString)str[i+2]) &&  tmp < 3 )
+                {
+                    qDebug() << "QRegExp value";
+                    pars_line += str[i+2];
+                    tmp++;
+                    i++;
                 }
 
                 command->setUnitData(pars_line);

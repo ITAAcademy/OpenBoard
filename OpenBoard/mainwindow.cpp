@@ -1691,7 +1691,16 @@ void MainWindow::on_animationBtn_clicked()
             textEdit->setPlainText(textInField);
         }
         else {
-            int delta = commandTextEdit->textCursor().selectionEnd()-commandTextEdit->textCursor().selectionStart();
+            int indexStart = commandTextEdit->textCursor().selectionStart();
+            int indexEnd = commandTextEdit->textCursor().selectionEnd();
+            int firstIndex = (indexStart < indexEnd ? indexStart : indexEnd);
+            int secondIndex = (indexStart > indexEnd ? indexStart : indexEnd);
+            QString disperseStr = commandTextEdit->toPlainText().mid(firstIndex,secondIndex-firstIndex);
+            int skipNewLinesCount = disperseStr.count('\n');
+            int delta = indexEnd-indexStart;
+            delta-=skipNewLinesCount;
+            qDebug() << "DELTA_ANIMATED_CROSS:"<<delta;
+            qDebug() << "skipNewLinesCount:"<<skipNewLinesCount;
             if (commandTextEdit->textCursor().position()!=commandTextEdit->textCursor().selectionEnd())
             {
                 textInField.chop(6);//Видаляємо перехід вліво КОСТИЛЯКА НА ЛОМАЦІ ))
@@ -1727,7 +1736,15 @@ void MainWindow::on_crossBtn_clicked()
             textEdit->setPlainText(textInField);
         }
         else {
-            int delta = commandTextEdit->textCursor().selectionEnd()-commandTextEdit->textCursor().selectionStart();
+            int indexStart = commandTextEdit->textCursor().selectionStart();
+            int indexEnd = commandTextEdit->textCursor().selectionEnd();
+            int firstIndex = (indexStart < indexEnd ? indexStart : indexEnd);
+            int secondIndex = (indexStart > indexEnd ? indexStart : indexEnd);
+            QString disperseStr = commandTextEdit->toPlainText().mid(firstIndex,secondIndex-firstIndex);
+            int skipNewLinesCount = disperseStr.count('\n');
+            int delta = indexEnd-indexStart;
+            delta-=skipNewLinesCount;
+            if (delta<0)delta=0;
             if (commandTextEdit->textCursor().position()!=commandTextEdit->textCursor().selectionEnd())
             { textInField.chop(6);//Видаляємо перехід вліво КОСТИЛЯКА НА ЛОМАЦІ ))
                 QTextCursor tCursor = commandTextEdit->textCursor();
@@ -1762,9 +1779,55 @@ void MainWindow::on_colorBtn_pressed()
         QString text = ui->action_colorTB->text();
         textColorName = colorPkr.name();
         text += textColorName;
+        qDebug() << "COLOR TEXT:"<<text;
         text.remove(2,1);
+        //Count
+        int charCount = 0;
+          //text += QString("%1").arg(charCount, 3, 10, QChar('0'));
+        //
+        QString textInField;
         if( isCommandTextEditFocused )
-            textEdit->appendNoNL(text);
+        {
+            textInField = textEdit->toPlainText();
+                  // if (commandTextEdit->toPlainText().isEmpty())return;
+                   if (commandTextEdit->textCursor().selectionEnd()-
+                       commandTextEdit->textCursor().selectionStart()==0)
+                   {
+                       textInField +=text;
+                       textEdit->setPlainText(textInField);
+                   }
+                   else {
+                       textInField +=text;
+                       /*int delta = commandTextEdit->textCursor().selectionEnd()-
+                                   commandTextEdit->textCursor().selectionStart();*/
+                       int indexStart = commandTextEdit->textCursor().selectionStart();
+                       int indexEnd = commandTextEdit->textCursor().selectionEnd();
+                       int firstIndex = (indexStart < indexEnd ? indexStart : indexEnd);
+                       int secondIndex = (indexStart > indexEnd ? indexStart : indexEnd);
+                       qDebug() << "colorbtn  index start:"<<indexStart;
+                       qDebug() << "colorbtn  index end:"<<indexEnd;
+
+                       QString disperseStr = commandTextEdit->toPlainText().mid(firstIndex,secondIndex-firstIndex);
+                       int skipNewLinesCount = disperseStr.count('\n');
+                       int delta = indexEnd-indexStart;
+                       //delta-=skipNewLinesCount;
+
+
+                       if (commandTextEdit->textCursor().position()!=
+                           commandTextEdit->textCursor().selectionEnd())
+                       {   //textInField.chop(6);
+                           QTextCursor tCursor = commandTextEdit->textCursor();
+                           tCursor.clearSelection();
+                           commandTextEdit->setTextCursor(tCursor);
+                       }
+                      if (commandTextEdit->textCursor().position()!=
+                                                  commandTextEdit->textCursor().selectionStart())
+                       delta=-delta;
+                       textInField +=QString("%1").arg(delta, 3, 10, QChar('0'));
+                       textEdit->setPlainText(textInField);
+                   }
+          //  textEdit->appendNoNL(text);
+        }
         else
             textEdit->insertPlainText(text);
     }
@@ -2514,4 +2577,14 @@ void MainWindow::on_check_whole_words_clicked()
 void MainWindow::on_check_show_text_cursor_clicked(bool checked)
 {
    mpOGLWidget->setShowTextCursor(checked);
+}
+
+void MainWindow::on_speedBtn_released()
+{
+
+}
+
+void MainWindow::on_crossBtn_released()
+{
+
 }

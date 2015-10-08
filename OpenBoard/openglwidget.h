@@ -75,6 +75,7 @@ using namespace QtAV;
 struct ColorMarker{
     int startIndex;
     QColor value;
+    bool useDefaulColor = false;
 };
 enum EditingRectangleBindMode {EDIT_RECTANGLE_UNBINDED =0,EDIT_RECTANGLE_MOVE=1,EDIT_RECTANGLE_RESIZE=2};
 enum ResizeCorner {RESIZE_CORNER_TOP_LEFT,RESIZE_CORNER_TOP_RIGHT,RESIZE_CORNER_BOTTOM_LEFT,RESIZE_CORNER_BOTTOM_RIGHT,RESIZE_CORNER_NONE};

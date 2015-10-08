@@ -774,6 +774,7 @@ OGLWidget::OGLWidget(QWidget *parent) :
     //
     ColorMarker startMarker;
     startMarker.startIndex=0;
+    startMarker.useDefaulColor=true;
     //startMarker.value=getMainFillColor();
 
 
