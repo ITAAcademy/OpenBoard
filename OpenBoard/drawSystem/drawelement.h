@@ -150,7 +150,7 @@ public:
 
     void copy(DrawElement *elm);
     setFBOWrapper(FBOWrapper wrapper);
-    bool save_image(QDataStream &stream, QString filePath,QImage::Format format = QImage::Format_ARGB32);
+    bool save_image(QDataStream &stream, QString filePath);
     int getBlockIndex() const;
     void setBlockIndex(int value);
 
