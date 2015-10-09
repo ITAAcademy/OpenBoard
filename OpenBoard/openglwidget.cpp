@@ -727,9 +727,12 @@ void OGLWidget::setFrameRate(int fps)
     frameRate=fps;
 }
 
-OGLWidget::OGLWidget(QWidget *parent) :
-    QGLWidget(parent)
+OGLWidget::OGLWidget(QWidget *parent, QGLFormat format) :
+    QGLWidget(format,parent)
 {
+
+   // glFormat.setProfile( QGLFormat::CoreProfile ); // Requires >=Qt-4.8.0
+    //glFormat.setSampleBuffers( true );
     qDebug() <<  "OGL WIDGET COnstructor start";
     setFixedSize(GLWIDGET_SIZE);
     wax=width(); way=height(); // начальный размер окна
@@ -774,6 +777,7 @@ OGLWidget::OGLWidget(QWidget *parent) :
     //
     ColorMarker startMarker;
     startMarker.startIndex=0;
+    startMarker.useDefaulColor=true;
     //startMarker.value=getMainFillColor();
 
 
@@ -838,6 +842,7 @@ OGLWidget::OGLWidget(QWidget *parent) :
 
     //qDebug() << "@@@@@@@@@@@@@@@@@@@@@@@@@@  glGetString(GL_VERSION)  " << glGetString(GL_VERSION) ;
 }
+
 void OGLWidget::bindBuffer(GLuint buffer){
 
     glBindFramebuffer(GL_FRAMEBUFFER,buffer);

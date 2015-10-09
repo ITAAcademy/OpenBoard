@@ -358,11 +358,26 @@ void KeyloggerTE::focusInEvent( QFocusEvent * ev )
 }
 
 void KeyloggerTE::mousePressEvent(QMouseEvent *eventPress){
+
   QPlainTextEdit::mousePressEvent(eventPress);
     int delta = textCursor().position() - previousCursorPosition;
+    int firstIndex = (textCursor().position() < previousCursorPosition ? textCursor().position() : previousCursorPosition);
+    int secondIndex = (textCursor().position() > previousCursorPosition ? textCursor().position() : previousCursorPosition);
     previousCursorPosition=textCursor().position();
 
+    qDebug() << "STRING OF TEXTEDIT:"<<toPlainText();
+    qDebug() <<"firstIndex:"<<firstIndex;
+    qDebug() <<"secondIndex:"<<secondIndex;
+    QString disperseStr = toPlainText().mid(firstIndex,secondIndex-firstIndex);
+
+   // qDebug() <<"DISPERSE:"<<disperseStr;
+    //int skipNewLinesCount = textCursor().selection().toPlainText().count('\n');
       QString textInField = destination->toPlainText();
+      int skipNewLinesCount = disperseStr.count('\n');
+     qDebug() << "SKIP_NEW_LINES_COUNT:"<<skipNewLinesCount;
+     /*if(delta>0)delta-=skipNewLinesCount;
+     if(delta<0)delta+=skipNewLinesCount;*/
+
       if (delta>0)
       textInField +=QString("\\mr%1").arg(delta, 3, 10, QChar('0'));
       else if (delta<0)
@@ -380,11 +395,17 @@ void KeyloggerTE::mousePressEvent(QMouseEvent *eventPress){
 //// //qDebug() << "cursor changed";
 }
 void KeyloggerTE::mouseReleaseEvent(QMouseEvent *eventPress){
+       QString disperseStr = textCursor().selection().toPlainText();
+       qDebug() << "DISPERSE_STRING:"<<disperseStr;
     QPlainTextEdit::mouseReleaseEvent(eventPress);
     int delta = textCursor().position() - previousCursorPosition;
     previousCursorPosition=textCursor().position();
 
       QString textInField = destination->toPlainText();
+      int skipNewLinesCount = disperseStr.count('\n');
+     qDebug() << "SKIP_NEW_LINES_COUNT:"<<skipNewLinesCount;
+     /*if(delta>0)delta-=skipNewLinesCount;
+     if(delta<0)delta+=skipNewLinesCount;*/
       if (delta>0)
         textInField +=QString("\\mr%1").arg(delta, 3, 10, QChar('0'));
       else if (delta<0)

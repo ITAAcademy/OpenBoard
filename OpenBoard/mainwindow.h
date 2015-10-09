@@ -16,7 +16,7 @@
 #include <QMenu>
 #include <QAction>
 #include "openglwidget.h"
-
+#include <QGLFormat>
 #include <QDebug>
 #include "settings.h"
 #include "parser/parser.h"
@@ -203,6 +203,8 @@ private slots:
     void on_staticMomentButton_clicked();
     void on_check_whole_words_clicked();
     void on_check_show_text_cursor_clicked(bool checked);
+    void on_speedBtn_released();
+    void on_crossBtn_released();
 };
 
 #endif // MAINWINDOW_H

@@ -250,7 +250,8 @@ void DrawTextElm::clearBuffer()
     colors.clear();
     ColorMarker startMarker;
     startMarker.startIndex=0;
-    startMarker.value=getMainFillColor();
+    //startMarker.value=getMainFillColor();
+    startMarker.useDefaulColor=true;
     colors.append(startMarker);
     cross.clear();
     cross.append(0); // для визова зачеркування якщо стрічка зацінчується
@@ -725,7 +726,9 @@ void DrawTextElm::drawTextBuffer( int m_x, int m_y, int m_width, int m_height, i
             }
             line_x += fMetrics->width(textToWarp);
             //setFillColor(colors[k].value);
+            if (!colors[k].useDefaulColor)
             fillColor = colors[k].value;
+            else fillColor = mainFillColor;
             QString textToFill = stringList[i].mid(columnOfColorStrBegin,columnOfColorStrEnd-columnOfColorStrBegin);
             //qDebug() << "textToFill:"<<textToFill;
             pDrawWidget->drawTextFromTexture(line_x,line_y,z,textToFill,textureIndex, fillColor,textFont,scaleX,scaleY);

@@ -26,10 +26,34 @@ void UnitCommand::changeColor(DrawTextElm *canvas)
 {
    // canvas->setFillColor(QColor(unit_data));
     // //qDebug() << "void UnitCommand::changeColor(DrawTextElm *canvas)";
-    ColorMarker marker;
-    marker.startIndex=canvas->getCursorIndex();
-    marker.value=unit_data;
-    canvas->colors.push_back(marker);
+    ColorMarker startMarker;
+    qDebug() << "change color cursor index:"<<canvas->getCursorIndex();
+      int len = unit_data.length();
+      QString countString="0";
+      if (len-7>0)countString=unit_data.mid(7,len-7);//-7 because # symbol presents in string
+      int count =countString.toInt();
+      qDebug()<<"COUNT:"<<count;
+      if (count>0)//colorize characters at right
+    startMarker.startIndex=canvas->getCursorIndex();
+      else startMarker.startIndex=canvas->getCursorIndex()+count;//colorize characters at left
+    startMarker.value=unit_data.mid(0,7);//MAYBE PROBLEM || BUG (need 7) check later
+
+
+
+    qDebug() << "UNIT_DATA:"<<unit_data;
+    qDebug() << "COUNT_STRING:"<<countString;
+    canvas->colors.push_back(startMarker);
+    if (count!=0)
+    {
+        ColorMarker endMarker;
+        if (count>0)
+        endMarker.startIndex = canvas->getCursorIndex()+count;
+        else endMarker.startIndex = canvas->getCursorIndex();
+        //endMarker.value="#000000";//NOT USED, USE CANVAS COLOR
+        endMarker.useDefaulColor = true;
+        canvas->colors.push_back(endMarker);
+    }
+
     qSort(canvas->colors.begin(),canvas->colors.end(),isLower);
 }
 

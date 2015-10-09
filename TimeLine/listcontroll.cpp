@@ -213,7 +213,7 @@ void ListControll::setSelectedBlockPoint(const QPoint &value)
                 if (need_calc_bound_rec)
                 {
                     // if (test_group.isGroupValid())
-                    // curent_group->calcBoundRec();
+                   // curent_group->calcBoundRec();
                     /* else
                     {
                         test_group.setBlocksBorderColor("white");
@@ -248,7 +248,7 @@ void ListControll::setSelectedBlockPoint(const QPoint &value)
                     if (t_group != NULL)
                     {
                         curent_group = t_group;
-                        // if (t_group->isGroupValid())
+                       // if (t_group->isGroupValid())
                         {
 
 
@@ -271,7 +271,7 @@ void ListControll::setSelectedBlockPoint(const QPoint &value)
                                 qDebug() << "rawYellowRectangle(curent_group->getBoundRec());";
                             }
                         }
-                        /* else
+                       /* else
                         {
                             t_group->setBlocksBorderColor("white");
                             t_group->deInitGroupBlocks();
@@ -2280,7 +2280,7 @@ int ListControll::setBlockTime(int col, int i,int value, bool resize_next_empty)
     elm->setLifeTime(value);
 
     recountMaxTrackTime();
-
+	
     return value;
 
 }
@@ -2379,7 +2379,7 @@ void ListControll::setCurentBlock (int col, int ind)
 
 bool ListControll::checkBlockValidGroup(DrawElement *elm)
 {
-    /* if(elm->getGroupWichElBelong() != NULL)
+   /* if(elm->getGroupWichElBelong() != NULL)
     {
         Group *groupTemp = elm->getGroupWichElBelong();
         if(!groupTemp->isGroupValid())
@@ -2434,6 +2434,7 @@ void ListControll::updateBlocksStartTimesFrom(int col0,int ind0, bool withGroup)
                 }
                 else
                 {
+
                     foreach(DrawElement* elm, updatedGroup->getFirst())
                     {
                         if(elm->getBlockColumn() != col0)
@@ -2868,18 +2869,16 @@ void ListControll::setCtrlPressed(bool value)
 
             if (curent_group != NULL)
             {
-                QList< QList < QRect > > tracks_typeLife_curGroup;
-                for (int i = 0; i < tracks.size(); i++)
-                {
-                    QList < QRect > temp_list;
-                    for (int k = 0; k < tracks[i].block.size(); k++)
-                    {
-                        DrawElement *elmo = tracks[i].block[k];
-                        bool in_group = (elmo->getGroupWichElBelong() == curent_group);
-                        temp_list.append(QRect(elmo->getTypeId(),elmo->getLifeTime(),in_group,0));
-                    }
-                    tracks_typeLife_curGroup.append(temp_list);
-                }
+
+                 QList< QList < QRect > > tracks_typeLife_curGroup;
+                 for (int i = 0; i < tracks.size(); i++)
+                     for (int k = 0; k < tracks[i].block.size(); k++)
+                     {
+                         DrawElement *elmo = tracks[i].block[k];
+                         bool in_group = (elmo->getGroupWichElBelong() == curent_group);
+                         tracks_typeLife_curGroup[i][k] = QRect(elmo->getTypeId(),elmo->getLifeTime(),in_group,0);
+                     }
+
                 if (curent_group->isGroupValid(tracks_typeLife_curGroup)) //QQQQQQQQQQQQQQ
                 {
                     //
@@ -3828,19 +3827,21 @@ bool ListControll::blockValid(QPoint point)
 {
     return blockValid(point.x(),point.y());
 }
-
 int ListControll::getBlockPlayTimeUntilFreeze(int col, int i )
-{
-    if(!testIndexs(col, i))
-        return -1;
-    return tracks[col].block[i]->getPlayTimeUntilFreeze();
-}
+    {
+        if(!testIndexs(col, i))
+            return -1;
+        return tracks[col].block[i]->getPlayTimeUntilFreeze();
+    }
 
-void ListControll::setBlockPlayTimeUntilFreeze(int col, int i, int val)
-{
-    DrawElement *elm =  tracks[col].block[i];
-    elm->setPlayTimeUntilFreeze(val);
-}
+
+    void ListControll::setBlockPlayTimeUntilFreeze(int col, int i, int val)
+    {
+        DrawElement *elm =  tracks[col].block[i];
+        elm->setPlayTimeUntilFreeze(val);
+    }
+
+
 
 
 
