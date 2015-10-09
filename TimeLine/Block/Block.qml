@@ -413,17 +413,22 @@ Rectangle{
     }
     onYChanged:
     {
-        var m_y = mapToItem(item_col, 0, 0).y
-        if (m_y < 0 )
-        {
-            y = -root.colIndex * root.height // mapFromItem(item_col, 0,0).y
-        }
+        if (main222.drag_group)
+            y = 0;
         else
-            if (m_y > item_col.height - root.height)
+        {
+            var m_y = mapToItem(item_col, 0, 0).y
+            if (m_y < 0 )
             {
-
-                y = ( rep_columns.count- root.colIndex - 1) * root.height
+                y = -root.colIndex * root.height // mapFromItem(item_col, 0,0).y
             }
+            else
+                if (m_y > item_col.height - root.height)
+                {
+
+                    y = ( rep_columns.count- root.colIndex - 1) * root.height
+                }
+        }
 
         main222.dropEnteredTrackIndex = Math.floor( (mapToItem(item_col, 0, root.height/2).y) /root.height)
 
@@ -460,13 +465,13 @@ Rectangle{
                 // animation_scale_small.running = true
                 // animation_scale_x.running = true
                 // animation_scale_y.running = true //99999999
-                root.opacity = 0.5
+               // root.opacity = 0.5
                 //shadow.visible = true
 
             }
             else
             {
-                root.opacity = 1
+               // root.opacity = 1
                 console.log("onIsDragChanged")
                 root.animation_scale_normal_FromXpos_cuz = root.x
                 root.animation_scale_normal_FromYpos_cuz = root.y
@@ -563,8 +568,35 @@ Rectangle{
 
         onMouseXChanged: {
             // if (context_menu.visible === false) //123rr
+            var map_mouseX = mapToItem(item_col,mouseX - 30 - main222.press_mouseX ,0).x
+          //  console.log("mouseX map = " + map_mouseX)
+          //  console.log("mouseX = " + mouseX)
             /*if(timeControll.getCurent_group())
                 return;*/
+            if (main222.drag_group /*&& Math.abs(main222.press_mouseX  - mouseX) > 10*/ )
+            {
+               // main222.press_mouseX = 65534;
+
+               /* var zdvig_mouse;
+                if (map_mouseX > main222.press_block_x)
+                zdvig_mouse = 2*main222.press_mouseX
+                else
+                    zdvig_mouse = main222.press_mouseX
+
+                map_mouseX -= zdvig_mouse
+                main222.press_block_x = map_mouseX*/
+
+
+                timeControll.addBlockStartTimeGroup(colIndex, mIndex,( map_mouseX ) * main222.scaling)
+                //main222.miss_drag = true
+                // main222.press_block_x
+                /*if (val === -1)
+                    root.width = timeControll.getBlockStartTime(root.colIndex,root.mIndex)/main222.scaling
+                else
+                    root.width = val / main222.scaling*/
+            }
+          // main222.miss_drag = !main222.miss_drag
+
 
             {
                 if(globalRep.isDrag === false &&  (mouseX > root.width-resize_capture_area_width || mouseX < resize_capture_area_width)) //mouseX < root.width * 0.1 ||/
@@ -701,8 +733,20 @@ Rectangle{
                     double_click_timer.running = true
 
                     context_menu.closeIt()
-                    if (!main222.ctrl_pressed && !timeControll.getCurent_group())
-                        drag.target = root
+                    if (!main222.ctrl_pressed)
+                    {
+                        if(!timeControll.getCurent_group())
+                        {
+                            drag.target = root
+                        }
+                        else
+                        {
+                            drag.target = null
+                            main222.drag_group = true
+                            main222.press_mouseX = mouseX
+                            main222.press_block_x = root.x
+                        }
+                    }
                     else
                         drag.target = null
 
@@ -746,6 +790,8 @@ Rectangle{
             }
         }
         onReleased: {
+            main222.press_block_x = -1
+            main222.drag_group = false
             //timeControll. deleteBlockToDel(root.colIndex);
             root.p_main222.maIsPressed = 0
             // root.z -= 200
