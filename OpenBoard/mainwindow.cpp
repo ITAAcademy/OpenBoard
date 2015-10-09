@@ -38,8 +38,24 @@ MainWindow::MainWindow(QWidget *parent) :
     curProjectFile.clear();
     //// //qDebug() <<directory;
     //    connect(&drawThread, SIGNAL(started()), this, SLOT(myfunction())); //cant have parameter sorry, when using connect
+    QGLFormat qglFormat;
+        qglFormat.setVersion(4,3);  // get expected output with (3,1) and below, else blank window
+       qglFormat.setProfile(QGLFormat::CompatibilityProfile);
+       qglFormat.setSampleBuffers(true);
 
-    mpOGLWidget = new OGLWidget(this);
+    mpOGLWidget = new OGLWidget(this,qglFormat);
+    QString versionString(QLatin1String(reinterpret_cast<const char*>(glGetString(GL_VERSION))));
+       qDebug() << "Driver Version String:" << versionString;
+       qDebug() << "Current Context:" << mpOGLWidget->format();
+       QGLFormat::OpenGLVersionFlags flags = QGLFormat::openGLVersionFlags();
+       if(flags & QGLFormat::OpenGL_Version_3_0) qDebug() << "3.0 or higher supported";
+       else qDebug() << "minimal version of shaders (3.0) not supported";
+       if(flags & QGLFormat::OpenGL_Version_3_1) qDebug() << "3.1 or higher supported";
+   // glFormat.setVersion( 3, 1 );
+   // glFormat.setDoubleBuffer(true);
+
+    //mpOGLWidget->context()->setFormat(glFormat);
+     qDebug() << "OpenGL Versions Supported: " << QGLFormat::openGLVersionFlags();
     // gs(Qt::CustomizeWindowHint | Qt::FramelessWindowHint | Qt::WindowTitleHint);
     //mpOGLWidget->setAttribute(Qt::WA_ShowModal);
     //mpOGLWidget->setWindowFlags (Qt::CustomizeWindowHint | Qt::FramelessWindowHint | Qt::WindowTitleHint);

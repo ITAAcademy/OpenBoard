@@ -197,7 +197,8 @@ public:
     /*
      * |Events
      */
-    explicit OGLWidget(QWidget *parent = 0);
+    explicit OGLWidget(QWidget *parent = 0,QGLFormat format = QGLFormat());
+
     ~OGLWidget();
     void moveEvent(QMoveEvent *event);
     void paintEvent(QPaintEvent * event);

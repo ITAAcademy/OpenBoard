@@ -16,7 +16,7 @@
 #include <QMenu>
 #include <QAction>
 #include "openglwidget.h"
-
+#include <QGLFormat>
 #include <QDebug>
 #include "settings.h"
 #include "parser/parser.h"
