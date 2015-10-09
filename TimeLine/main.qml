@@ -109,7 +109,7 @@ MouseAreaForWindowDraging{
         property bool drag_group : false
         property bool miss_drag : false
         property int press_mouseX : -1
-         property int press_block_x : -1
+        property int press_block_x : -1
 
         onExitedFromDropAreaChanged: {
             //console.log("exitedFromDropArea = " + exitedFromDropArea)
@@ -210,6 +210,42 @@ MouseAreaForWindowDraging{
                                                     if (event.key === 45)
                                                         timeControll.zoomMinus()
             }
+            else
+            {
+                var step = 10;
+                if (event.key === Qt.Key_Left)
+                {
+                    console.log("event.key === Qt.Key_Left")
+                    if (timeControll.isBlockInGroup(main222.selectedBlockCol,main222.selectedBlockIndex))
+                    {
+                        timeControll.addBlockStartTimeGroup(main222.selectedBlockCol,main222.selectedBlockIndex, -step * main222.scaling)
+                        main222.updateTracksModel()
+                    }
+                    else
+                    {
+                        timeControll.addBlockStartTime(main222.selectedBlockCol,main222.selectedBlockIndex, -step * main222.scaling)
+                        rep_columns.itemAt(main222.selectedBlockCol).getBlock(main222.selectedBlockIndex).globalRep.updateModel()
+
+                    }
+                }
+                else
+                    if (event.key === Qt.Key_Right)
+                    {
+                        console.log("event.key === Qt.Key_Right")
+                        if (timeControll.isBlockInGroup(main222.selectedBlockCol,main222.selectedBlockIndex))
+                        {
+                            console.log("event.key === Qt.Key_Right AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+                            timeControll.addBlockStartTimeGroup(main222.selectedBlockCol,main222.selectedBlockIndex, step * main222.scaling)
+                            main222.updateTracksModel()
+                        }
+                        else
+                        {
+                            timeControll.addBlockStartTime(main222.selectedBlockCol,main222.selectedBlockIndex, step * main222.scaling)
+                            ///main222.selectedBlock.globalRep.updateModel()
+                            rep_columns.itemAt(main222.selectedBlockCol).getBlock(main222.selectedBlockIndex).globalRep.updateModel()
+                        }
+                    }
+            }
 
         }
         Keys.onReleased: {
@@ -272,9 +308,9 @@ MouseAreaForWindowDraging{
 
             scroll.enabled = true
             scale_pointer.enabled = true
-          //  tollbar.p_button_RemoveTrack.enabled = true
-          //  tollbar.p_button_AddTrack.enabled = true
-          //  tollbar.p_button_play.enabled = true
+            //  tollbar.p_button_RemoveTrack.enabled = true
+            //  tollbar.p_button_AddTrack.enabled = true
+            //  tollbar.p_button_play.enabled = true
 
             tollbar.p_button_pause.enabled = false
         }
@@ -1033,7 +1069,7 @@ MouseAreaForWindowDraging{
                                     /*console.log(" function setBlockWidth (indexa = " + indexa +
                                                 " value = " + value)*/
 
-                                     repka.itemAt(indexa).width = value
+                                    repka.itemAt(indexa).width = value
                                 }
 
                                 function getCount()
@@ -1074,7 +1110,7 @@ MouseAreaForWindowDraging{
                                     height: 70// main_root.height
                                     z:12
                                     x: 0
-                                   // y: parent.height/4
+                                    // y: parent.height/4
                                     //y:  mapFromItem(item_col, 0, 0).y
                                     colIndex : index
                                     Rectangle {
@@ -1091,90 +1127,90 @@ MouseAreaForWindowDraging{
                                         }
                                     }
 
-                                        Row {
-                                            id: blocks
-                                            //  height: 220
-                                            x: 30
-                                            Repeater {
-                                                id: repka
-                                                Component.onCompleted: {
-                                                    trackbar.globalRep = repka
-                                                    trackbar.p_main222 = main222
-                                                }
-                                                property bool isDrag : false
-                                                model:  timeControll.getTrackSize(trackbar.mIndex)//     bar_track.mIndex)
-                                                function updateModel()      {
-                                                    // console.log("AAAAAAAAAAAAAAAAAA updateModel")
-                                                    model = 0
-                                                    model =  timeControll.getTrackSize(bar_track.mIndex)
-                                                    item_col.width = (timeControll.getMaxTrackTime()) / main222.scaling + 31
-                                                    if (main222.needToLightSelected && main222.selectedBlockIndex !== -1 )
-                                                    {
-                                                        rep_columns.itemAt(main222.selectedBlockCol).setColorize(main222.selectedBlockIndex,"#8000FF00")
-
-                                                    }
-
-                                                    timeControll.calcPointedBlocks();
-                                                    timeControll.setIsProjectChanged(true)
-                                                    gc();
-                                                }
-                                                function moveBlockForAnim(ind,   value) //left_right -1 or 1
+                                    Row {
+                                        id: blocks
+                                        //  height: 220
+                                        x: 30
+                                        Repeater {
+                                            id: repka
+                                            Component.onCompleted: {
+                                                trackbar.globalRep = repka
+                                                trackbar.p_main222 = main222
+                                            }
+                                            property bool isDrag : false
+                                            model:  timeControll.getTrackSize(trackbar.mIndex)//     bar_track.mIndex)
+                                            function updateModel()      {
+                                                // console.log("AAAAAAAAAAAAAAAAAA updateModel")
+                                                model = 0
+                                                model =  timeControll.getTrackSize(bar_track.mIndex)
+                                                item_col.width = (timeControll.getMaxTrackTime()) / main222.scaling + 31
+                                                if (main222.needToLightSelected && main222.selectedBlockIndex !== -1 )
                                                 {
-                                                    repka.itemAt(ind).animRunX( value)
+                                                    rep_columns.itemAt(main222.selectedBlockCol).setColorize(main222.selectedBlockIndex,"#8000FF00")
+
                                                 }
 
-                                                function moveBlocksForAnim( from, to,   value) //left_right -1 or 1
+                                                timeControll.calcPointedBlocks();
+                                                timeControll.setIsProjectChanged(true)
+                                                gc();
+                                            }
+                                            function moveBlockForAnim(ind,   value) //left_right -1 or 1
+                                            {
+                                                repka.itemAt(ind).animRunX( value)
+                                            }
+
+                                            function moveBlocksForAnim( from, to,   value) //left_right -1 or 1
+                                            {
+                                                console.log("  function moveBlocksForAnim( from, to,   value)")
+                                                for (var i = from; i <= to; i++)
                                                 {
-                                                    console.log("  function moveBlocksForAnim( from, to,   value)")
-                                                    for (var i = from; i <= to; i++)
-                                                    {
-                                                        repka.itemAt(i).animRunX(repka.itemAt(i).x + value)
-                                                    }
+                                                    repka.itemAt(i).animRunX(repka.itemAt(i).x + value)
                                                 }
-                                                delegate:
-                                                    ContentBlock.Block{
-                                                    id: cool
-                                                    globalRep : repka
-                                                    columnRep: rep_columns
-                                                    p_trackbar : trackbar
-                                                    p_bar_track : bar_track
-                                                    p_border_color: timeControll.getBlockBorderColor(colIndex, mIndex)
-                                                    height:  70
-                                                    mIndex: index
-                                                    p_divider: divider
-                                                    colIndex:  bar_track.mIndex
-                                                    width:  timeControll.getBlockTime(colIndex, mIndex) / main222.scaling
-                                                    p_main222: main222
+                                            }
+                                            delegate:
+                                                ContentBlock.Block{
+                                                id: cool
+                                                globalRep : repka
+                                                columnRep: rep_columns
+                                                p_trackbar : trackbar
+                                                p_bar_track : bar_track
+                                                p_border_color: timeControll.getBlockBorderColor(colIndex, mIndex)
+                                                height:  70
+                                                mIndex: index
+                                                p_divider: divider
+                                                colIndex:  bar_track.mIndex
+                                                width:  timeControll.getBlockTime(colIndex, mIndex) / main222.scaling
+                                                p_main222: main222
 
-                                                    title: timeControll.getBlockKey(colIndex,mIndex)
+                                                title: timeControll.getBlockKey(colIndex,mIndex)
 
-                                                    /* time_scale_valueRecX : time_scale_value.mX
+                                                /* time_scale_valueRecX : time_scale_value.mX
                                                time_scale_valueRecY : time_scale_value.mY*/
 
-                                                    /* p_mouse_area.onPositionChanged: {
+                                                /* p_mouse_area.onPositionChanged: {
                                                   time_scale_value.mX = scrollMA.mouseX
                                                     time_scale_value.mY = scrollMA.mouseY
                                                }*/
-                                                }
-                                                onModelChanged: {
-                                                    columns.width =  timeControll.getMaxTrackTime() //* main222.scaling
+                                            }
+                                            onModelChanged: {
+                                                columns.width =  timeControll.getMaxTrackTime() //* main222.scaling
 
-
-                                                }
 
                                             }
-                                            Component.onCompleted: {
 
-                                                /* var pnt2 = new Point(-1,-1)
+                                        }
+                                        Component.onCompleted: {
+
+                                            /* var pnt2 = new Point(-1,-1)
                                            timeControll.setSelectedBlockPoint(pnt2)*/
-                                                // main222.p_trackbar.globalRep.updateModel()
-                                                /*   // //console.log("item_col.p_columns.globalRep " + item_col.p_columns.globalRep)
+                                            // main222.p_trackbar.globalRep.updateModel()
+                                            /*   // //console.log("item_col.p_columns.globalRep " + item_col.p_columns.globalRep)
                                            // //console.log("cool.repka " + cool.repka)
                                            item_col.p_columns.globalRep = cool.repka
                                            // //console.log("REPKA " + item_col.p_columns.globalRep)*/
-                                                //item_col.main_root = main_root
-                                            }
+                                            //item_col.main_root = main_root
                                         }
+                                    }
 
                                     //}
                                     Component.onCompleted: {

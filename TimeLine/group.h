@@ -43,7 +43,7 @@ public:
     int getMembersSize();
     void clear();
     void setBlocksBorderColor(QString color);
-    bool isGroupValid(QList< QList < QRect > > tracks);
+    bool isGroupValid();
     void initGroupBlocks();
     void deInitGroupBlocks();
     long int tryGroupResize( long int shift);

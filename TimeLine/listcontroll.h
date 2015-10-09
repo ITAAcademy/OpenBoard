@@ -294,8 +294,12 @@ public:
     Q_INVOKABLE void setBlockTimeWithUpdate(int col, int i, int value, bool visual);
     Q_INVOKABLE int setBlockStartTime(int col, int i, int value, bool move_group = false);
     Q_INVOKABLE int setBlockStartTime(DrawElement *elm, int value, bool move_group = false);// if return -1 then ime was setted, but dont the value you write
+    Q_INVOKABLE int setBlockStartTimeGroup(int col,int ind,int value ) ;
     Q_INVOKABLE int addBlockStartTimeGroup(int col,int ind,int value ) ;
     Q_INVOKABLE int getBlockStartTime(int col, int i);
+    Q_INVOKABLE int addBlockStartTime(int col,int ind,int value );
+     Q_INVOKABLE Group * getBlockGroup(int col, int ind);
+    Q_INVOKABLE bool isBlockInGroup(int col, int ind);
     //Q_INVOKABLE bool setBlockDrawElemet(DrawElement *elm, int col, int i);
     Q_INVOKABLE   bool removeBlock(int col, int i, bool copy_in__buffer = true, bool del_last_empty = true,  bool del_draw_el = true );
     Q_INVOKABLE int getBlockTime(int col, int i) ;

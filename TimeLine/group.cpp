@@ -261,7 +261,7 @@ bool variantLessThan(const int &v1, const int &v2)
     return v1 < v2;
 }
 
-bool Group::isGroupValid(QList< QList < QRect > > tracks) //QPoint = block type, life_time; width == 1 mean block is in this group,else 0
+bool Group::isGroupValid() //QPoint = block type, life_time; width == 1 mean block is in this group,else 0
 {
     first.clear();
     last.clear();
@@ -320,11 +320,11 @@ bool Group::isGroupValid(QList< QList < QRect > > tracks) //QPoint = block type,
     int y2 = 0;
     int y1 = 65534;
 
-    foreach(BlockType blokType, members)
+    /*foreach(BlockType blokType, members)
     {
         foreach(DrawElement * elm, blokType)
-            /* for (int i = 0; i < members.size(); i++)
-             for (int k = 0; k < members[i].size(); k++)*/
+             for (int i = 0; i < members.size(); i++)
+             for (int k = 0; k < members[i].size(); k++)
         {
             int start_time = elm->getStartDrawTime();
             int end_time = start_time + elm->getLifeTime();
@@ -356,20 +356,13 @@ bool Group::isGroupValid(QList< QList < QRect > > tracks) //QPoint = block type,
                     if (ind_t + 1 != ind_e)
                         return false;
                 }
-                /*else
-                {
-                    if (col_t + 1 != col_e)
-                    {
-                        return false;
-                    }
-                }*/
             }
             temp = elm;
 
 
 
         }
-    }
+    }*/
 
 
     /*int cnt = 0;
@@ -403,7 +396,7 @@ bool Group::isGroupValid(QList< QList < QRect > > tracks) //QPoint = block type,
     calcBoundRec();
 
     bValid = isRealValid;*/
-    int col1 = members.first().first()->getBlockColumn();
+  /*  int col1 = members.first().first()->getBlockColumn();
     int col2 = members.last().first()->getBlockColumn();
     for (int i = col1; i <=col2; i++)
     {
@@ -435,7 +428,7 @@ bool Group::isGroupValid(QList< QList < QRect > > tracks) //QPoint = block type,
     bound_rec.setTopLeft(QPoint(x1,y1));
     bound_rec.setBottomRight(QPoint(x2,y2));
     qDebug() << "bool Group::isGroupValid()  TRUEEEEEEEEEEEE   " << bound_rec.x() << " " <<
-                bound_rec.y() << " " << bound_rec.width() << " " << bound_rec.height();
+                bound_rec.y() << " " << bound_rec.width() << " " << bound_rec.height();*/
     return true;
 }
 

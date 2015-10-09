@@ -573,7 +573,7 @@ Rectangle{
           //  console.log("mouseX = " + mouseX)
             /*if(timeControll.getCurent_group())
                 return;*/
-            if (main222.drag_group /*&& Math.abs(main222.press_mouseX  - mouseX) > 10*/ )
+            if (main222.drag_group && Math.abs(main222.press_mouseX  - mouseX) > 10 )
             {
                // main222.press_mouseX = 65534;
 
@@ -587,7 +587,7 @@ Rectangle{
                 main222.press_block_x = map_mouseX*/
 
 
-                timeControll.addBlockStartTimeGroup(colIndex, mIndex,( map_mouseX ) * main222.scaling)
+                timeControll.setBlockStartTimeGroup(colIndex, mIndex,( map_mouseX ) * main222.scaling)
                 //main222.miss_drag = true
                 // main222.press_block_x
                 /*if (val === -1)
