@@ -2460,20 +2460,176 @@ void ListControll::updateBlocksIndexFrom(int col, int ind)
         tracks[col].block[k]->setBlockIndex(k);
 }
 
-void ListControll::setBlockStartTime(int col, int i,int value)
+int ListControll::addBlockStartTimeGroup(int col,int ind,int value ) //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
+{
+    DrawElement * elm = tracks[col].block[ind];
+    if (elm == NULL)
+        return -1;
+    Group * group = elm->getGroupWichElBelong();
+    if (group == NULL)
+        return -1;
+
+    QMap < int, BlockType > columns =  group->getMembers();
+
+    int elm_start = elm->getStartDrawTime();
+    value -=elm_start;
+    if (value == 0)
+        return elm_start;
+
+    int min_zdvig = value;
+
+
+    //value+= elm_start;
+    // int zdvig = value -  elm_start;
+    //foreach(BlockType btype, columns)
+    //foreach (DrawElement * draw_el, btype)
+    {
+
+        DrawElement * draw_el = elm;
+        // setBlockStartTime(draw_el->getBlockColumn(),draw_el->getBlockIndex(),value, true);]
+        int el_ind = draw_el->getBlockIndex();
+        int el_col = draw_el->getBlockColumn();
+        int track_size = tracks[el_col].block.size();
+        int start = draw_el->getStartDrawTime();
+        int life = draw_el->getLifeTime();
+        int end = start + life;
+
+        if (!force_resize_block)
+        {
+            if (value > 0)
+            {
+                if (el_ind < track_size - 1)
+                {
+                    DrawElement *next = tracks[el_col].block[el_ind + 1];
+
+                    /* if (next->getTypeId() == Element_type::Empty )
+                    {
+                        if (el_ind < track_size - 2)
+                        {
+                            DrawElement * next_p = tracks[el_col].block[el_ind + 2];
+                            if (next_p->getGroupWichElBelong() != group)
+                            {
+                                next = next_p;
+                            }
+                        }
+                    }*/
+                    int next_start = next->getStartDrawTime() + next->getLifeTime(); //cuz nex block empty
+
+                    int able_zdvig = next_start - end;
+                    if (min_zdvig > able_zdvig)
+                        min_zdvig = able_zdvig;
+                    if (min_zdvig < 0)
+                        min_zdvig = 0;
+
+
+                }
+            }
+            else
+            {
+
+                /////////
+                //if (zdvig < 0)
+                {
+                    if (el_ind > 0)
+                    {
+                        DrawElement *prev = tracks[el_col].block[el_ind - 1];
+
+                        /*if (prev->getTypeId() == Element_type::Empty )
+                        {
+                            if (el_ind > 1)
+                            {
+                                prev = tracks[el_col].block[el_ind - 2];
+                            }
+                        }*/
+                        int prev_end = prev->getStartDrawTime() ;//+ prev->getLifeTime();
+                        int diff =prev_end - elm_start ; //how mush get left a able to do
+
+
+                        if (diff > min_zdvig )
+                        {
+                            min_zdvig = diff;
+                        }
+                        if (min_zdvig > 0)
+                            min_zdvig = 0;
+
+                    }
+                }
+            }
+            //////////
+
+        }
+
+
+    }
+
+    qDebug() << "@@@@@@@@@@@@@@@   min_zdvig = " << min_zdvig;
+
+    /* foreach(BlockType btype, columns)
+        foreach (DrawElement * draw_el, btype)*/
+    {
+        DrawElement * draw_el = elm;
+        draw_el->setStartDraw(draw_el->getStartDrawTime() + min_zdvig);
+        //if (min_zdvig > 0)
+        {
+            if (ind > 0)
+            {
+                DrawElement *prev = tracks[col].block[ind - 1];
+                prev->setLifeTime(prev->getLifeTime() + min_zdvig, true);
+                reduceEmptyBlocksFromV2(col,ind + 1, min_zdvig);
+                updateBlocksStartTimesFrom(col,ind);
+
+            }
+            else
+                if (ind < tracks[col].block.size() - 1)
+                {
+                    DrawElement *next = tracks[col].block[ind + 1];
+                    next->setLifeTime(next->getLifeTime() + min_zdvig, true);
+                }
+        }
+
+    }
+
+
+
+
+}
+
+
+int ListControll::setBlockStartTime(DrawElement * elm,int value, bool move_group )
+{
+    if (value < 0)
+    {
+        value = 1;
+    }
+
+
+
+
+
+
+
+
+    elm->setStartDraw(value);
+
+
+}
+
+int ListControll::setBlockStartTime(int col, int i,int value, bool move_group )
 {
 
     qDebug() << "void ListControll::setBlockStartTime(int col, int i,int value)";
 
 
-    if(testIndexs(col, i))
+    if (!blockValid(col,i))
+        return -1;
+    if (value < 0)
     {
-        if (value < 0)
-        {
-            value = 1;
-        }
-        tracks[col].block[i]->setStartDraw(value);
+        value = 1;
     }
+
+    DrawElement * elm = tracks[col].block[i];
+
+    setBlockStartTime( elm, value,  move_group );
 
 
     //qDebug() << "value = " << value;
@@ -2906,7 +3062,7 @@ ListControll::ListControll(/*OGLWidget *drawWidget ,*/QObject *parent) : QObject
 
     /* view.setWidth(1200);
    view.setHeight(600);*/
-
+    qDebug() << "@@@@@@@@@@@@@@@@@@@@@@@@@@  glGetString(GL_VERSION)  " << (GL_VERSION) ;//glGetString
 }
 
 volatile bool ListControll::getBlocked() const

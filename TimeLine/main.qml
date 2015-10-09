@@ -106,6 +106,10 @@ MouseAreaForWindowDraging{
         property bool needUpdateModelWhereBlockDroped : false
         property int zdvigWhenNormalAnim : 0
         property bool exitedFromDropArea : false
+        property bool drag_group : false
+        property bool miss_drag : false
+        property int press_mouseX : -1
+         property int press_block_x : -1
 
         onExitedFromDropAreaChanged: {
             //console.log("exitedFromDropArea = " + exitedFromDropArea)
@@ -268,9 +272,9 @@ MouseAreaForWindowDraging{
 
             scroll.enabled = true
             scale_pointer.enabled = true
-            tollbar.p_button_RemoveTrack.enabled = true
-            tollbar.p_button_AddTrack.enabled = true
-            tollbar.p_button_play.enabled = true
+          //  tollbar.p_button_RemoveTrack.enabled = true
+          //  tollbar.p_button_AddTrack.enabled = true
+          //  tollbar.p_button_play.enabled = true
 
             tollbar.p_button_pause.enabled = false
         }
@@ -282,9 +286,9 @@ MouseAreaForWindowDraging{
             scale_pointer.enabled = true
             tollbar.p_button_RemoveTrack.enabled = true
             tollbar.p_button_AddTrack.enabled = true
-            tollbar.p_button_play.enabled = true
-            tollbar.p_button_stop.enabled = false
-            tollbar.p_button_pause.enabled = false
+            //tollbar.p_button_play.enabled = true
+            //tollbar.p_button_stop.enabled = false
+            //tollbar.p_button_pause.enabled = false
 
             scroll.flickableItem.contentX = 0
             scale_pointer.x = 0// timeControll.getMaxTrackTime() + scale_pointer.width/2 - scroll.flickableItem.contentX;

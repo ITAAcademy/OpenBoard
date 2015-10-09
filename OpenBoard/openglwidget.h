@@ -124,7 +124,7 @@ struct FBOWrapper{
     int errorStatus= -1;
     int tWidth=0,tHeight=0;
 };
-class OGLWidget : public QGLWidget, protected QOpenGLFunctions_3_0
+class OGLWidget : public QGLWidget, protected  QOpenGLFunctions_3_0
 {
     Q_OBJECT
     // Q_PROPERTY(QString  drawText READ getDrawText WRITE setDrawText NOTIFY drawTextChanged)

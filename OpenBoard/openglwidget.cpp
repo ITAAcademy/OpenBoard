@@ -835,11 +835,14 @@ OGLWidget::OGLWidget(QWidget *parent) :
     qDebug() <<  "OGL WIDGET COnstructor end";
     connect(effectManager,SIGNAL(hideSignal()),this,SLOT(applyEffectsToCurrentBlock()));
     connect(effectManager,SIGNAL(showSignal()),this,SLOT(loadEffectFromCurrentBlockToEffectManager()));
+
+    //qDebug() << "@@@@@@@@@@@@@@@@@@@@@@@@@@  glGetString(GL_VERSION)  " << glGetString(GL_VERSION) ;
 }
 void OGLWidget::bindBuffer(GLuint buffer){
 
     glBindFramebuffer(GL_FRAMEBUFFER,buffer);
 }
+
 QOpenGLFunctions_3_0* OGLWidget::getOglFuncs(){
     return oglFuncs;
 }
