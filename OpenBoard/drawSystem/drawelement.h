@@ -121,11 +121,11 @@ public:
     void setZ(int value);
 
      int getLifeTime() ;
-     void setLifeTime(int value, bool feedBack = false, bool visual = true);
+     int setLifeTime(int value, bool feedBack = false, bool visual = true);
 
 
     int getStartDrawTime() const;
-    void setStartDraw(int value);
+    int setStartDraw(int value);
 
     QImage getIcon() const;
     void setIcon(const QImage &value);

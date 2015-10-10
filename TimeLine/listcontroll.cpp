@@ -2479,6 +2479,67 @@ int ListControll::setBlockStartTimeGroup(int col,int ind,int value )
     addBlockStartTimeGroup(col,ind,value);
 }
 
+int ListControll::setBlockTimeLeft(int col,int ind,int value )
+{
+    qDebug() << "##############   value = " << value;
+    if (!blockValid(col,ind))
+        return -1;
+    DrawElement * elm = tracks[col].block[ind];
+    if (elm == NULL)
+        return -1;
+    int life = elm->getLifeTime(); // 1000
+    int start = elm->getStartDrawTime(); //5000
+    //value -= elm->getStartDrawTime();
+    if (value < 0)
+        value = 0;
+    //value = 5500
+    int set_time = 0;
+    DrawElement *prev = NULL;
+    if (ind > 0)
+    {
+        prev = tracks[col].block[ind - 1];
+        int prev_end = prev->getStartDrawTime() ;//3000
+        if (value < start)
+        {
+            if (prev_end > value )
+            {
+                value = prev_end;
+                set_time = value - start ;
+            }
+            else
+            {
+                set_time = value - start ;
+            }
+            if (set_time > 0)
+                set_time = 0;
+        }
+        else
+        {
+            set_time = value - start ;
+            if (set_time < 0)
+                set_time = 0;
+        }
+    }
+
+    if (set_time == 0)
+        return -1;
+
+    int set_life_time = elm->setLifeTime(life - set_time, true);
+    if ( set_life_time == -1)
+        return -1;
+
+    int set_start = setBlockStartTime(col,ind,value);
+    if (set_start  == -1)
+        return -1;
+
+    if (prev != NULL)
+        if (prev->setLifeTime(prev->getLifeTime() + ( set_time),true ) == -1)
+            return -1;
+
+
+    return set_life_time;
+}
+
 int ListControll::addBlockStartTime(int col,int ind,int value )
 {
     if (!blockValid(col,ind))
@@ -2593,7 +2654,7 @@ int ListControll::addBlockStartTimeGroup(int col,int ind,int value ) //@@@@@@@@@
                         int next_start = next->getStartDrawTime() + next->getLifeTime(); //cuz nex block empty
 
                         int able_zdvig = next->getLifeTime();// next_start - end;
-                        qDebug()<< "@@@@@@@@@@@@@@@@@@@@@@  able_zdvig = " << able_zdvig;
+                        // qDebug()<< "@@@@@@@@@@@@@@@@@@@@@@  able_zdvig = " << able_zdvig;
                         if (min_zdvig > able_zdvig)
                             min_zdvig = able_zdvig;
                         if (min_zdvig < 0)
@@ -2631,7 +2692,7 @@ int ListControll::addBlockStartTimeGroup(int col,int ind,int value ) //@@@@@@@@@
             }
         }
 
-   // qDebug() << "@@@@@@@@@@@@@@@   min_zdvig = " << min_zdvig;
+    // qDebug() << "@@@@@@@@@@@@@@@   min_zdvig = " << min_zdvig;
 
     foreach(BlockType btype, columns)
         foreach (DrawElement * draw_el, btype)
@@ -2673,17 +2734,9 @@ int ListControll::setBlockStartTime(DrawElement * elm,int value, bool move_group
 {
     if (value < 0)
     {
-        value = 1;
+        value = 0;
     }
-
-
-
-
-
-
-
-
-    elm->setStartDraw(value);
+    return elm->setStartDraw(value);
 
 
 }
@@ -2698,12 +2751,14 @@ int ListControll::setBlockStartTime(int col, int i,int value, bool move_group )
         return -1;
     if (value < 0)
     {
-        value = 1;
+        value = 0;
     }
 
     DrawElement * elm = tracks[col].block[i];
 
     setBlockStartTime( elm, value,  move_group );
+
+    return value;
 
 
     //qDebug() << "value = " << value;

@@ -465,13 +465,13 @@ Rectangle{
                 // animation_scale_small.running = true
                 // animation_scale_x.running = true
                 // animation_scale_y.running = true //99999999
-               // root.opacity = 0.5
+                // root.opacity = 0.5
                 //shadow.visible = true
 
             }
             else
             {
-               // root.opacity = 1
+                // root.opacity = 1
                 console.log("onIsDragChanged")
                 root.animation_scale_normal_FromXpos_cuz = root.x
                 root.animation_scale_normal_FromYpos_cuz = root.y
@@ -569,15 +569,15 @@ Rectangle{
         onMouseXChanged: {
             // if (context_menu.visible === false) //123rr
             var map_mouseX = mapToItem(item_col,mouseX - 30 - main222.press_mouseX ,0).x
-          //  console.log("mouseX map = " + map_mouseX)
-          //  console.log("mouseX = " + mouseX)
+            // console.log("mouseX map = " + (map_mouseX + main222.press_mouseX))
+            //  console.log("mouseX = " + mouseX)
             /*if(timeControll.getCurent_group())
                 return;*/
             if (main222.drag_group && Math.abs(main222.press_mouseX  - mouseX) > 10 )
             {
-               // main222.press_mouseX = 65534;
+                // main222.press_mouseX = 65534;
 
-               /* var zdvig_mouse;
+                /* var zdvig_mouse;
                 if (map_mouseX > main222.press_block_x)
                 zdvig_mouse = 2*main222.press_mouseX
                 else
@@ -595,7 +595,7 @@ Rectangle{
                 else
                     root.width = val / main222.scaling*/
             }
-          // main222.miss_drag = !main222.miss_drag
+            // main222.miss_drag = !main222.miss_drag
 
 
             {
@@ -634,28 +634,54 @@ Rectangle{
                     else
                         root.width = val / main222.scaling
 
+                    /* if (val === -1)
+                        root.x = timeControll.getBlockStartTime(root.colIndex,root.mIndex)/main222.scaling
+                    else
+                        root.x = val / main222.scaling*/
 
                     //timeControll.setTestWidth(bar_track.index,root.width, mIndex);
                 }
-                if(bChangeSizeLeft)
-                {
-                    //console.log(xChange);
-                    /* if(timeControll.getCurent_group())
+                else
+                    if(bChangeSizeLeft)
+                    {
+                        map_mouseX = mapToItem(item_col,mouseX -30/*-30 - main222.press_mouseX*/,0).x
+                        // var val = timeControll.setBlockStartTime(colIndex, mIndex,map_mouseX * main222.scaling,true)
+                        // var val = timeControll.setBlockTimeLeft(colIndex, mIndex,map_mouseX * main222.scaling,true)
+                        // var val = timeControll.setBlockStartTime(colIndex, mIndex,(map_mouseX + root.x) * main222.scaling,true)
+                        var baba = main222.scaling * map_mouseX;
+                        var val = timeControll.setBlockTimeLeft(colIndex, mIndex,(baba) ,true)
+                        //var val = timeControll.setBlockStartTime(colIndex, mIndex,(baba) * main222.scaling,true)
+                        console.log("@@@@@@@@@@@@@@@@@@@@ baba = " + (baba * main222.scaling))
+                        console.log("@@@@@@@@@@@@@@@@@@@@ val = " + val)
+
+
+                        if (val === -1)
+                        {
+                            root.x = timeControll.getBlockStartTime(root.colIndex,root.mIndex)/main222.scaling
+                            root.width = timeControll.getBlockTime(root.colIndex,root.mIndex)/main222.scaling
+                        }
+                        else
+                        {
+                            /*root.width = val / main222.scaling
+                            root.x = timeControll.getBlockStartTime(root.colIndex,root.mIndex)/main222.scaling*/
+                        }
+                        //console.log(xChange);
+                        /* if(timeControll.getCurent_group())
                         root.width -= timeControll.tryResizeMemberInCurentGroup(-xChange*main222.scaling, root.colIndex, root.mIndex)/main222.scaling;
                     else*/
-                    {
+                        {
 
-                        /*root.width += xChange;
+                            /*root.width += xChange;
                         drag.target = root;
                         root.x -= xChange;
 
                         drag.target = null;*/
 
+                        }
+                        //timeControll.setTestWidth(bar_track.index,root.width, mIndex);
+
+
                     }
-                    //timeControll.setTestWidth(bar_track.index,root.width, mIndex);
-
-
-                }
                 oldMouseX = mouseX;
             }
         }
@@ -758,9 +784,10 @@ Rectangle{
                         bChangeSizeRight = true;
                         mouseArea.drag.target = null
                     }
-                    else if(mouseX < resize_capture_area_width){
-                        // bChangeSizeLeft = true;
-                        // mouseArea.drag.target = null
+                    else if(mouseX < resize_capture_area_width)
+                    {
+                        bChangeSizeLeft = true;
+                        mouseArea.drag.target = null
                     }
                     else
                     {

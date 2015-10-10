@@ -298,6 +298,7 @@ public:
     Q_INVOKABLE int addBlockStartTimeGroup(int col,int ind,int value ) ;
     Q_INVOKABLE int getBlockStartTime(int col, int i);
     Q_INVOKABLE int addBlockStartTime(int col,int ind,int value );
+    Q_INVOKABLE int setBlockTimeLeft(int col,int ind,int value );
      Q_INVOKABLE Group * getBlockGroup(int col, int ind);
     Q_INVOKABLE bool isBlockInGroup(int col, int ind);
     //Q_INVOKABLE bool setBlockDrawElemet(DrawElement *elm, int col, int i);

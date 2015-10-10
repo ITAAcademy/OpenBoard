@@ -233,7 +233,7 @@ void DrawElement::paint()
 
 
 
-              //qDebug() << ":"<<playTime-beginAtTime;
+                //qDebug() << ":"<<playTime-beginAtTime;
 
 
                 if (bPlay && ((playTime >= beginAtTime && playTime <= endAtTime) || lifeTime == effects[i].getEffectTimeHowLong()))//endAtTime + 50 if flickering !!!
@@ -269,7 +269,7 @@ void DrawElement::paint()
                     }
                     else
                     {
-                         qDebug()<<"drawToFirstBuffer:"<<fboWrapper.frameBuffer;
+                        qDebug()<<"drawToFirstBuffer:"<<fboWrapper.frameBuffer;
                         pDrawWidget->bindBuffer(fboWrapper.frameBuffer);
                         pDrawWidget->clearFrameBuffer(fboWrapper);
                         // float keyFrame = (float)(pDrawWidget->getTimeLine()->getPlayTime()-startDrawTime)/lifeTime;//MOVE UP LATER
@@ -283,7 +283,7 @@ void DrawElement::paint()
 
 
                     }
-                     pDrawWidget->useShader(0);
+                    pDrawWidget->useShader(0);
                     effectsUsedInOneTime++;
                     drawToSecondBuffer=!drawToSecondBuffer;
                 }
@@ -349,7 +349,7 @@ void DrawElement::paint()
 
         //pDrawWidget->useShader(0);
 
-       /* if(aspectRatio)
+        /* if(aspectRatio)
         {
             if (width>height)
             pDrawWidget->paintBufferOnScreen(fboWrapper,x, y, width, width, z);
@@ -391,7 +391,7 @@ Group *DrawElement::getGroupWichElBelong() const
 void DrawElement::setGroupWichElBelong(Group *value)
 {
     group_wich_el_belong = value;
-   // qDebug() << "OOOOOOOOOOOOOOOO group_wich_el_belong = " << group_wich_el_belong;
+    // qDebug() << "OOOOOOOOOOOOOOOO group_wich_el_belong = " << group_wich_el_belong;
 }
 
 QString DrawElement::getBlockBorderColor() const
@@ -715,24 +715,31 @@ int DrawElement::getLifeTime()
     return hna;
 }
 
- void DrawElement::setLifeTime(int value, bool feedBack, bool visual)
+int DrawElement::setLifeTime(int value, bool feedBack, bool visual)
 {
     //qDebug() << "DrawElement::setLifeTime value = "<< value;
 
+    if (this->getTypeId() !=Element_type::Empty)
+        if (value < minBlockTime)
+            return -1;
+        else
+            if (value < 0)
+                return -1;
 
-    if (value >= 0)
-        lifeTime = value;
+
+    lifeTime = value;
     /*if(group_wich_el_belong != NULL)
         group_wich_el_belong->calcBoundRec();
     */
     if(feedBack)
     {
         emit sizeChangedSignal(blockColumn, blockIndex, value, visual);
-      /*  qDebug() << "emit sizeChangedSignal(blockColumn = " <<blockColumn<<
+        /*  qDebug() << "emit sizeChangedSignal(blockColumn = " <<blockColumn<<
                  "blockIndex = " <<  blockIndex << " value = " << value << " visual = " << visual;  //work
         */
-        return;
+
     }
+    return value;
 }
 
 int DrawElement::getStartDrawTime() const
@@ -740,9 +747,10 @@ int DrawElement::getStartDrawTime() const
     return startDrawTime;
 }
 
-void DrawElement::setStartDraw(int value)
+int DrawElement::setStartDraw(int value)
 {
     startDrawTime = value;
+    return value;
     /*if(group_wich_el_belong != NULL)
         group_wich_el_belong->calcBoundRec();*/
 }
