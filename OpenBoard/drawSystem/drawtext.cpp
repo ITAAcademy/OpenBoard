@@ -360,7 +360,7 @@ void DrawTextElm::draw()
                     {
                         animationDelayCount = mUnitList.at(keyCouter)->delay;
                         animationDelayStart = current_time;
-                        crossTextDraw(koff1, koff2);
+                       // crossTextDraw(koff1, koff2);
                     }
                     keyCouter++;
                     break;
@@ -1071,6 +1071,7 @@ bool DrawTextElm::crossTextDraw(float scale_x, float scale_y )
 
     glEnable(GL_DEPTH);
     int y;
+    int yIndex;
     int x1, x2, x;
     bool lastGood = false;
     bool needNextRow = false;
@@ -1089,11 +1090,11 @@ bool DrawTextElm::crossTextDraw(float scale_x, float scale_y )
             {
                 x1 = marginLeft + fMetrics->width(stringList[conv.y()].left(conv.x()));
                 x = i;
-                y = /*(lineHeight + pt)* */  convertTextBoxToBufferIndex(i, true).y();
+                yIndex = /*(lineHeight + pt)* */  convertTextBoxToBufferIndex(i, true).y();
                 lastGood = true;
                 continue;
             }
-            if(conv.y() == y)
+            if(conv.y() == yIndex)
             {
                 if(i != cross.length() - 1)
                     continue;
@@ -1108,11 +1109,13 @@ bool DrawTextElm::crossTextDraw(float scale_x, float scale_y )
             QPoint conv = convertTextBoxToBufferIndex(i - 1, true);
             //    conv = convertTextBoxToBufferIndex(i + conv.y() + 1);
             // //qDebug() << "YYYYYYYYYYYYYYYYYYYYYYY" << y;
-            y -=   indexRowInList;
+            yIndex -=   indexRowInList;
+           // yIndex++;
             // //qDebug() << "YYYYYYYYYYYYYYYYYYYYYYY2" << y;
-            ++y *= lineHeight + pt;
+            y=fMetrics->height()/2;
+            y += (lineHeight + pt)*yIndex;
             // QRect rect = fm.boundingRect( text);
-            y -= 0.5f * fMetrics->height();// first paid + midle LABEL1
+            //y -= fMetrics->height();// first paid + midle LABEL1
 
             x2 = marginLeft + fMetrics->width(stringList[conv.y()].left(conv.x() + 1));
             y += marginTop;
