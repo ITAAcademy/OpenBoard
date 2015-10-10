@@ -130,33 +130,68 @@ bool DrawBrushElm::save_add(QDataStream &stream)
     stream << coords;
     stream << brushes.length();
     QSet<int> usedImageIndexes;
+
     for (BrushBeginingIndex brushI : brushes)
     {
         if (brushI.brush.imageIndex!=-1)
             usedImageIndexes.insert(brushI.brush.imageIndex);
     }
     int usedImageIndexesCount=usedImageIndexes.size();
-    stream << usedImageIndexesCount;
+
     qDebug() << "save usedImageIndexes:"<<usedImageIndexesCount;
     
     //pDrawWidget->m_manager;
     QString path = "\\Preset\\Brushes";
     QString new_path =  pDrawWidget->m_manager.getBrushDir().currentPath()+path;
-    QDir dir(new_path);
+    //QDir dir(new_path);
     // pDrawWidget->m_manager.brushPathsList
+    if(!pDrawWidget->m_manager.brushPathsList.isEmpty())
+    {
+        stream << usedImageIndexesCount;
     for(int i = 0; i < usedImageIndexesCount; i++)
     {
         int brushImageIndex = usedImageIndexes.values()[i];
         //qDebug() << "new_path:"<<new_path + "\\" + usedImageIndexes.values()[i];
-        QImage img = QImage(new_path + "\\" + pDrawWidget->m_manager.brushPathsList[brushImageIndex]);
+
         //brushImages.push_back();
         stream <<usedImageIndexes.values()[i];
         int resultStatus = 0;
         qDebug() << "last path:"<<lastPath;
-        if (!lastPath.isEmpty())
-            resultStatus = save_image(stream,lastPath,img.format());
+        if (!lastPath.isEmpty() && QFile::exists(lastPath))
+        {
+            qDebug()<<"save img using link begin";
+            resultStatus = save_image(stream,lastPath);
+            qDebug()<<"save img using link end";
+        }
         else
+        {
+            qDebug() << "last path is empty";
+
+            QString pathOfImage;
+           pathOfImage=new_path + "\\" + pDrawWidget->m_manager.brushPathsList[brushImageIndex];
+            if(QFile::exists(pathOfImage))
+            {
+                qDebug()<<"file excist in library";
+             QImage img = QImage(pathOfImage);
             save_image(stream, img );
+            }
+            else{
+                qDebug() << "path is not excist";
+                save_image(stream, brushes[brushImageIndex].brush.img );
+            }
+        }
+        qDebug() << "end of save image";
+    }
+    }
+    else
+    {
+        stream << brushes.count();
+        qDebug() << "use img without path";
+        for(int i = 0; i < brushes.count(); i++)
+         {
+            stream << brushes[i].brush.imageIndex;
+             save_image(stream, brushes[i].brush.img);
+         }
     }
     
     for (BrushBeginingIndex &brushBeginingIndex : brushes)

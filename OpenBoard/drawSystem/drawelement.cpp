@@ -542,7 +542,7 @@ bool DrawElement::save(QIODevice* device, QProgressBar *bar) //-=-=-=
     //save_image(stream, icon);
     // qDebug() << "qwewqewqeqewqQQQQ  " << lastPath;
     if (!lastPath.isEmpty())
-        resultStatus = save_image(stream,lastPath,icon.format());
+        resultStatus = save_image(stream,lastPath);
     else
         save_image(stream, icon );
 
@@ -860,7 +860,7 @@ bool DrawElement::save_image(QDataStream &stream, QImage img)
 }
 
 
-bool DrawElement::save_image(QDataStream &stream, QString filePath,QImage::Format format)
+bool DrawElement::save_image(QDataStream &stream, QString filePath)
 {
     stream << (int)0 << (int)0 << (int)0;
     QFile file(filePath);
