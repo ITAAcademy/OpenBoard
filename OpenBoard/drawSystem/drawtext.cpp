@@ -680,6 +680,7 @@ void DrawTextElm::drawTextBuffer( int m_x, int m_y, int m_width, int m_height, i
         //  }
         //  // //qDebug() << "C:"<<colors.length();
         // qDebug() << "colors.length()"<<colors.length();
+        QStack<QColor> colorStack;
         for (int k = 0 ; k< colors.length();k++)
         {
             int columnOfColorStrBegin;
@@ -727,12 +728,20 @@ void DrawTextElm::drawTextBuffer( int m_x, int m_y, int m_width, int m_height, i
             line_x += fMetrics->width(textToWarp);
             //setFillColor(colors[k].value);
             if (!colors[k].useDefaulColor)
+            {
             fillColor = colors[k].value;
+            colorStack.push(colors[k].value);
+            }
             else{
-                if (k-2>=0 && colors[k-1].useDefaulColor==true)
+                if(colorStack.length()>0)
+                colorStack.pop();
+               if(colorStack.length()>0)
+                fillColor=colorStack.pop();
+               else  fillColor = mainFillColor;
+               /* if (k-2>=0 && colors[k-1].useDefaulColor==false)
                     fillColor=colors[k-2].value;
                 else
-                fillColor = mainFillColor;
+                fillColor = mainFillColor;*/
             }
             QString textToFill = stringList[i].mid(columnOfColorStrBegin,columnOfColorStrEnd-columnOfColorStrBegin);
             //qDebug() << "textToFill:"<<textToFill;

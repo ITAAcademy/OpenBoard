@@ -61,13 +61,21 @@ void UnitCommand::changeColor(DrawTextElm *canvas)
                 if (canvas->colors[i].terminant!=NULL)
                     //delete canvas->colors[i].terminant;
                 {
-                    qDebug () << "canvas->colors[i].terminant!=NULL";
                     ColorMarker beginMarker =canvas->colors[i];
                     qDebug() << "beforeremoveall";
-                canvas->colors.removeAll(*(beginMarker.terminant));
+
+                    if (canvas->colors[i].terminant->startIndex>endMarker.startIndex)
+                        canvas->colors[i].startIndex=endMarker.startIndex+1;
+                    else
+                    {
+                        canvas->colors.removeAll(*(beginMarker.terminant));
+                         canvas->colors.removeAt(i);
+                    }
+                    qDebug () << "canvas->colors[i].terminant!=NULL";
+
                 //canvas->colors.removeAll(beginMarker);
                 qDebug() << "beforeremoveat";
-                canvas->colors.removeAt(i);
+               ;
                 qDebug() << "delete terminant";
                 }
                 else
@@ -81,6 +89,10 @@ canvas->colors.push_back(endMarker);
     canvas->colors.push_back(startMarker);
 
     qSort(canvas->colors.begin(),canvas->colors.end(),isLower);
+    qDebug()<<"colors:";
+    for (int i = 0; i < canvas->colors.length();i++)
+        qDebug()<<"startIndex:"<<canvas->colors[i].startIndex
+               <<"useDefaulColor:"<<canvas->colors[i].useDefaulColor;
 }
 
 void UnitCommand::nextLine(DrawTextElm *canvas)
