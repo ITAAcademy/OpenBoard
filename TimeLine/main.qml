@@ -215,34 +215,34 @@ MouseAreaForWindowDraging{
                 var step = 10;
                 if (event.key === Qt.Key_Left)
                 {
-                    console.log("event.key === Qt.Key_Left")
+                   // console.log("event.key === Qt.Key_Left")
                     if (timeControll.isBlockInGroup(main222.selectedBlockCol,main222.selectedBlockIndex))
                     {
                         timeControll.addBlockStartTimeGroup(main222.selectedBlockCol,main222.selectedBlockIndex, -step * main222.scaling)
-                        main222.updateTracksModel()
+                       // main222.updateTracksModel()
                     }
                     else
                     {
                         timeControll.addBlockStartTime(main222.selectedBlockCol,main222.selectedBlockIndex, -step * main222.scaling)
-                        rep_columns.itemAt(main222.selectedBlockCol).getBlock(main222.selectedBlockIndex).globalRep.updateModel()
+                       // rep_columns.itemAt(main222.selectedBlockCol).getBlock(main222.selectedBlockIndex).globalRep.updateModel()
 
                     }
                 }
                 else
                     if (event.key === Qt.Key_Right)
                     {
-                        console.log("event.key === Qt.Key_Right")
+                        //console.log("event.key === Qt.Key_Right")
                         if (timeControll.isBlockInGroup(main222.selectedBlockCol,main222.selectedBlockIndex))
                         {
-                            console.log("event.key === Qt.Key_Right AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+                           // console.log("event.key === Qt.Key_Right AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
                             timeControll.addBlockStartTimeGroup(main222.selectedBlockCol,main222.selectedBlockIndex, step * main222.scaling)
-                            main222.updateTracksModel()
+                            //main222.updateTracksModel()
                         }
                         else
                         {
                             timeControll.addBlockStartTime(main222.selectedBlockCol,main222.selectedBlockIndex, step * main222.scaling)
                             ///main222.selectedBlock.globalRep.updateModel()
-                            rep_columns.itemAt(main222.selectedBlockCol).getBlock(main222.selectedBlockIndex).globalRep.updateModel()
+                            //rep_columns.itemAt(main222.selectedBlockCol).getBlock(main222.selectedBlockIndex).globalRep.updateModel()
                         }
                     }
             }
@@ -486,7 +486,7 @@ MouseAreaForWindowDraging{
             onBlockTimeSignel: {
                 // console.log("onBlockTimeSignel");
                 // updateBlockTime(col, index, time);
-                if (main222.maIsPressed === 1)
+               // if (main222.maIsPressed === 1)
                 {
                     //console.log("onBlockTimeSignel  " + col + " " + index + "  rep_columns.count = "  + rep_columns.count);
                     rep_columns.itemAt(col).setBlockWidth(index,time/main222.scaling );

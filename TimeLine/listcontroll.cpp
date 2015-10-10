@@ -2592,7 +2592,7 @@ int ListControll::addBlockStartTimeGroup(int col,int ind,int value ) //@@@@@@@@@
                     }*/
                         int next_start = next->getStartDrawTime() + next->getLifeTime(); //cuz nex block empty
 
-                        int able_zdvig = next_start - end;
+                        int able_zdvig = next->getLifeTime();// next_start - end;
                         qDebug()<< "@@@@@@@@@@@@@@@@@@@@@@  able_zdvig = " << able_zdvig;
                         if (min_zdvig > able_zdvig)
                             min_zdvig = able_zdvig;
@@ -2615,8 +2615,8 @@ int ListControll::addBlockStartTimeGroup(int col,int ind,int value ) //@@@@@@@@@
                                 prev = tracks[el_col].block[el_ind - 2];
                             }
                         }*/
-                        int prev_end = prev->getStartDrawTime() ;//+ prev->getLifeTime();
-                        int diff =prev_end - elm_start ; //how mush get left a able to do
+                        //int prev_end = prev->getStartDrawTime() ;//+ prev->getLifeTime();
+                        int diff =  -prev->getLifeTime();    //prev_end - elm_start ; //how mush get left a able to do
 
 
                         if (diff > min_zdvig )
