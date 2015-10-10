@@ -42,17 +42,43 @@ void UnitCommand::changeColor(DrawTextElm *canvas)
 
     qDebug() << "UNIT_DATA:"<<unit_data;
     qDebug() << "COUNT_STRING:"<<countString;
-    canvas->colors.push_back(startMarker);
+
+    ColorMarker endMarker;
     if (count!=0)
-    {
-        ColorMarker endMarker;
+    { 
         if (count>0)
         endMarker.startIndex = canvas->getCursorIndex()+count;
         else endMarker.startIndex = canvas->getCursorIndex();
         //endMarker.value="#000000";//NOT USED, USE CANVAS COLOR
         endMarker.useDefaulColor = true;
-        canvas->colors.push_back(endMarker);
+        startMarker.terminant=&endMarker;
+        qDebug()<<"before for";
+        for (int i=0;i<canvas->colors.length();i++){
+            if ((canvas->colors[i].startIndex>=startMarker.startIndex) &&
+                    (canvas->colors[i].startIndex <= endMarker.startIndex))
+            {
+                qDebug()<< "before null check";
+                if (canvas->colors[i].terminant!=NULL)
+                    //delete canvas->colors[i].terminant;
+                {
+                    qDebug () << "canvas->colors[i].terminant!=NULL";
+                    ColorMarker beginMarker =canvas->colors[i];
+                    qDebug() << "beforeremoveall";
+                canvas->colors.removeAll(*(beginMarker.terminant));
+                //canvas->colors.removeAll(beginMarker);
+                qDebug() << "beforeremoveat";
+                canvas->colors.removeAt(i);
+                qDebug() << "delete terminant";
+                }
+                else
+                canvas->colors.removeAt(i);
+            }
     }
+
+
+    }
+canvas->colors.push_back(endMarker);
+    canvas->colors.push_back(startMarker);
 
     qSort(canvas->colors.begin(),canvas->colors.end(),isLower);
 }
