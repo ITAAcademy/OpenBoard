@@ -2596,6 +2596,11 @@ int ListControll::addBlockStartTime(int col,int ind,int value )
         this->emitBlockEditedSignal();
 
     }
+
+    if (force_resize_block)
+    {
+        tracks[col].updateTime();
+    }
 }
 
 int ListControll::addBlockStartTimeGroup(int col,int ind,int value ) //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
@@ -2632,15 +2637,26 @@ int ListControll::addBlockStartTimeGroup(int col,int ind,int value ) //@@@@@@@@@
             int life = draw_el->getLifeTime();
             int end = start + life;
 
-            if (!force_resize_block)
+            bool is_next_in_this_group = false;
+            for (int k = el_ind + 1; k < getTrackSize(el_col); k++)
             {
-                if (value > 0)
+                if (getBlockGroup(el_col,k) == group)
                 {
-                    if (el_ind < track_size - 1)
+                    is_next_in_this_group = true;
+                    break;
+                }
+            }
+            if (!is_next_in_this_group)
+            {
+                if (!force_resize_block)
+                {
+                    if (value > 0)
                     {
-                        DrawElement *next = tracks[el_col].block[el_ind + 1];
+                        if (el_ind < track_size - 1)
+                        {
+                            DrawElement *next = tracks[el_col].block[el_ind + 1];
 
-                        /* if (next->getTypeId() == Element_type::Empty )
+                            /* if (next->getTypeId() == Element_type::Empty )
                     {
                         if (el_ind < track_size - 2)
                         {
@@ -2651,42 +2667,44 @@ int ListControll::addBlockStartTimeGroup(int col,int ind,int value ) //@@@@@@@@@
                             }
                         }
                     }*/
-                        int next_start = next->getStartDrawTime() + next->getLifeTime(); //cuz nex block empty
+                            int next_start = next->getStartDrawTime() + next->getLifeTime(); //cuz nex block empty
 
-                        int able_zdvig = next->getLifeTime();// next_start - end;
-                        // qDebug()<< "@@@@@@@@@@@@@@@@@@@@@@  able_zdvig = " << able_zdvig;
-                        if (min_zdvig > able_zdvig)
-                            min_zdvig = able_zdvig;
-                        if (min_zdvig < 0)
-                            min_zdvig = 0;
+                            int able_zdvig = next->getLifeTime();// next_start - end;
+                            // qDebug()<< "@@@@@@@@@@@@@@@@@@@@@@  able_zdvig = " << able_zdvig;
+
+                            if (min_zdvig > able_zdvig)
+                                min_zdvig = able_zdvig;
+                            if (min_zdvig < 0)
+                                min_zdvig = 0;
 
 
+                        }
                     }
-                }
-                else
-                {
-                    if (el_ind > 0)
+                    else
                     {
-                        DrawElement *prev = tracks[el_col].block[el_ind - 1];
+                        if (el_ind > 0)
+                        {
+                            DrawElement *prev = tracks[el_col].block[el_ind - 1];
 
-                        /*if (prev->getTypeId() == Element_type::Empty )
+                            /*if (prev->getTypeId() == Element_type::Empty )
                         {
                             if (el_ind > 1)
                             {
                                 prev = tracks[el_col].block[el_ind - 2];
                             }
                         }*/
-                        //int prev_end = prev->getStartDrawTime() ;//+ prev->getLifeTime();
-                        int diff =  -prev->getLifeTime();    //prev_end - elm_start ; //how mush get left a able to do
+                            //int prev_end = prev->getStartDrawTime() ;//+ prev->getLifeTime();
+                            int diff =  -prev->getLifeTime();    //prev_end - elm_start ; //how mush get left a able to do
 
 
-                        if (diff > min_zdvig )
-                        {
-                            min_zdvig = diff;
+                            if (diff > min_zdvig )
+                            {
+                                min_zdvig = diff;
+                            }
+                            if (min_zdvig > 0)
+                                min_zdvig = 0;
+
                         }
-                        if (min_zdvig > 0)
-                            min_zdvig = 0;
-
                     }
                 }
             }
@@ -2721,8 +2739,13 @@ int ListControll::addBlockStartTimeGroup(int col,int ind,int value ) //@@@@@@@@@
                         next->setLifeTime(next->getLifeTime() + min_zdvig, true);
                     }*/
             }
+            if (force_resize_block)
+            {
+                tracks[el_col].updateTime();
+            }
 
         }
+
 
 
 
