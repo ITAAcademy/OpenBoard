@@ -248,11 +248,8 @@ void DrawTextElm::clearBuffer()
 {
     qDebug() << "CLEAR_TEXT_BUFFER";
     colors.clear();
-    ColorMarker startMarker;
-    startMarker.startIndex=0;
+
     //startMarker.value=getMainFillColor();
-    startMarker.useDefaulColor=true;
-    colors.append(startMarker);
     cross.clear();
     cross.append(0); // для визова зачеркування якщо стрічка зацінчується
     stringList.clear();
@@ -549,6 +546,7 @@ void DrawTextElm::insertToBuffer(const QChar ch)
 
     //  DrawTextElm(convertedIndex.y());
     listChars.append(ch);
+    colors.insert(convertedIndex.x(),currentColor);
     //qDebug() << "1234567890             " << str;
     emit drawTextChanged();
 
@@ -680,16 +678,51 @@ void DrawTextElm::drawTextBuffer( int m_x, int m_y, int m_width, int m_height, i
         //  }
         //  // //qDebug() << "C:"<<colors.length();
         // qDebug() << "colors.length()"<<colors.length();
-        QStack<QColor> colorStack;
-        for (int k = 0 ; k< colors.length();k++)
+        struct ColorMarker{
+            int charCount;
+            QColor color;
+        };
+    QVector<ColorMarker> colorMarkers;
+    QColor lastColor;
+    int charsOfThisColor = 0;
+     if (colors.length()>0)
+     {
+         lastColor=colors[0];
+         charsOfThisColor++;
+     }
+     // qDebug() << "colors.length():"<<colors.length();
+     qDebug() << "comparsion of colors:";
+    for (int k=1;k<colors.length();k++)
+    {
+        qDebug() << "comparsion of colors:";
+        qDebug() << "colors[k]:"<<colors[k];
+        qDebug() << "lastColor:"<<lastColor;
+
+        qDebug() << "charsOfThisColor:"<<charsOfThisColor;
+        //ZIGZAG:DRAW COLORED TEXT
+        if (colors[k]==lastColor)charsOfThisColor++;
+        if(colors[k]!=lastColor || k==colors.length()-1){
+            ColorMarker marker;
+            marker.color=lastColor;
+            marker.charCount=charsOfThisColor;
+            colorMarkers.append(marker);
+            lastColor=colors[k];
+            charsOfThisColor=1;
+        }
+
+    }
+
+   // qDebug() << "colorMarkers length:"<<colorMarkers.length();
+        int colorStartIndex=0;
+        for (int k = 0 ; k< colorMarkers.length();k++)
         {
             int columnOfColorStrBegin;
             int columnOfColorStrEnd;
 
-            int rowOfColorStrBegin =  convertTextBoxToBufferIndex(colors[k].startIndex).y();//Рядок в якому починається стрічка з кольором
+            int rowOfColorStrBegin =  convertTextBoxToBufferIndex(colorStartIndex).y();//Рядок в якому починається стрічка з кольором
             int rowOfColorStrEnd = 0;
             //Якщо не дійшли до останнього кольору, то встановл. рядок кінця стрічи з початку наступної кольорової
-            if (k<colors.length()-1)rowOfColorStrEnd=convertTextBoxToBufferIndex(colors[k+1].startIndex ).y();
+            if (k<colors.length()-1)rowOfColorStrEnd=convertTextBoxToBufferIndex(colorStartIndex+colorMarkers[k].charCount ).y();
             //Якщо останній колір, то така стрічка закінчується в останньому рядку
             else rowOfColorStrEnd=stringList.length()-1;
             //Якщо ColorIndex в цій стрічці відсутній, то переходим на інший ColorIndex
@@ -697,21 +730,21 @@ void DrawTextElm::drawTextBuffer( int m_x, int m_y, int m_width, int m_height, i
                 continue;
             //Якщо на рядку, в якому починається кольорова стрічка — то стовпчик початку берем одразу з QList<ColorIndex> colors
             if (i==rowOfColorStrBegin)
-                columnOfColorStrBegin =  convertTextBoxToBufferIndex(colors[k].startIndex ).x();
+                columnOfColorStrBegin =  convertTextBoxToBufferIndex(colorStartIndex ).x();
             //Інакше стовпчик початку - нульовий стовпчик . Інфа 100%
             else columnOfColorStrBegin = 0;
             //Якщо на останньому кольорі, то стовпчик кінця — індекс останнього символу стрічки.
             if (k==colors.length()-1) columnOfColorStrEnd =  stringList[i].length();
             else
                 //якщо не останній колір і на останній стрічці, то стовпчик кінця — стовпчик початку наступної стрічки з кольором
-                if (i==stringList.length()-1)  columnOfColorStrEnd =  convertTextBoxToBufferIndex(colors[k+1].startIndex ).x();
+                if (i==stringList.length()-1)  columnOfColorStrEnd =  convertTextBoxToBufferIndex(colorStartIndex+colorMarkers[k].charCount ).x();
             //Якщо не останній колір і не остання стрічка, то стовпчик кінця —
                 else
                 {
                     //Якщо в цій самій стрічці починається інша кольорова стрічка то кінцевий стовпчик поточної
                     //Кольорової стрічки - це почато наступної
-                    if (convertTextBoxToBufferIndex(colors[k+1].startIndex ).y()==i)
-                        columnOfColorStrEnd =  convertTextBoxToBufferIndex(colors[k+1].startIndex ).x();
+                    if (convertTextBoxToBufferIndex(colorStartIndex+colorMarkers[k].charCount ).y()==i)
+                        columnOfColorStrEnd =  convertTextBoxToBufferIndex(colorStartIndex+colorMarkers[k].charCount).x();
                     //Інакше КС(кінцевий стовпчик) — це кінець стрічки
                     else columnOfColorStrEnd =  stringList[i].length();
                 }
@@ -721,41 +754,17 @@ void DrawTextElm::drawTextBuffer( int m_x, int m_y, int m_width, int m_height, i
                 textToWarp= stringList[i].mid(0,columnOfColorStrBegin);
             else  {
                 int  columnOfColorStrBeginPrev=0;
-                if (convertTextBoxToBufferIndex(colors[k-1].startIndex ).y()==i)
-                    columnOfColorStrBeginPrev=convertTextBoxToBufferIndex(colors[k-1].startIndex ).x();
+                if (convertTextBoxToBufferIndex(colorStartIndex-colorMarkers[k-1].charCount ).y()==i)
+                    columnOfColorStrBeginPrev=convertTextBoxToBufferIndex(colorStartIndex-colorMarkers[k-1].charCount ).x();
                 textToWarp= stringList[i].mid(columnOfColorStrBeginPrev,columnOfColorStrBegin-columnOfColorStrBeginPrev);
             }
             line_x += fMetrics->width(textToWarp);
             //setFillColor(colors[k].value);
-            if (!colors[k].useDefaulColor)
-            {
-            fillColor = colors[k].value;
-            colorStack.push(colors[k].value);
-            }
-            else{
-                if(colorStack.length()>0)
-                colorStack.pop();
-               if(colorStack.length()>0)
-                fillColor=colorStack.pop();
-               else  fillColor = mainFillColor;
-               /* if (k-2>=0 && colors[k-1].useDefaulColor==false)
-                    fillColor=colors[k-2].value;
-                else
-                fillColor = mainFillColor;*/
-            }
+            fillColor = colorMarkers[k].color;
             QString textToFill = stringList[i].mid(columnOfColorStrBegin,columnOfColorStrEnd-columnOfColorStrBegin);
             //qDebug() << "textToFill:"<<textToFill;
             pDrawWidget->drawTextFromTexture(line_x,line_y,z,textToFill,textureIndex, fillColor,textFont,scaleX,scaleY);
-            //1234
-            // pDrawWidget->fillText(textToFill,QColor("red"),fontishche, line_x , line_x, z,(float) scale);
-            //  pDrawWidget->fillText("eeeeeeeeeeeeeeeeeeee",QColor("red"), QFont("Helvetica",40,40), 50 , 50, 0,(float) 1);
-            // localX+=fMetrics->width(textToFill);
-            //setFillColor(QColor(255,255,255));//Костиль, удалити, вистачить верхнього setColor, добавити на початок colors колір канви
-            /*  // //qDebug() << "columnOfColorStrEnd:" << columnOfColorStrEnd;
-             // //qDebug() << "columnOfColorStrBegin:" << columnOfColorStrBegin;
-            // //qDebug()<<"textToFill:"<<textToFill;
-              // //qDebug()<< "textToWarp:" << textToWarp;
-              // //qDebug()<<"rowOfColorStrBegin:"<<rowOfColorStrBegin;*/
+        colorStartIndex+=colorMarkers[k].charCount;
         }
         line_y += (lineHeight + pt);
         line_x = m_x;
@@ -928,35 +937,12 @@ bool DrawTextElm::setDrawWidget(OGLWidget *value)
 
 void DrawTextElm::deleteFromBuffer(int n)
 {
-
+//ZIGZAG:INSERT COLOR DELETION
+    colors.remove(n);
     crossText();
     int mustDell = qAbs(n);
     int crossCursor = cursorIndex - convertTextBoxToBufferIndex(cursorIndex).y();
     int i = n;
-    int deletePositionBegin = cursorIndex;
-    QStack<int> colorsToDelete;
-    for (int numOfColor = 0; numOfColor < colors.length();numOfColor++){
-        ColorMarker& colorMarker = colors[numOfColor];
-        bool isLast = numOfColor==colors.length()-1;
-        int& startIndex = colorMarker.startIndex;
-        if (deletePositionBegin+n<startIndex)startIndex-=n-deletePositionBegin;
-        else if (!isLast)
-        {
-            int nextColorStartIndex = colors[numOfColor+1].startIndex;
-            if ( deletePositionBegin+n < nextColorStartIndex )
-            {
-                startIndex -=n-deletePositionBegin;
-            }
-            else colorsToDelete.push(numOfColor);
-        }
-        // {
-        // colorsToDelete.push(startIndex);
-        // }
-    }
-    while (!colorsToDelete.isEmpty()){
-        colors.removeAt(colorsToDelete.pop());
-    }
-
     while( i != 0)
     {
         if(i > 0)

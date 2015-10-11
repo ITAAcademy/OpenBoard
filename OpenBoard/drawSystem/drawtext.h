@@ -71,8 +71,10 @@ public:
     QFont getTextFont() const;
     void setTextFont(const QFont &value);
     bool setDrawWidget(OGLWidget *value);
-    QList<ColorMarker> colors;
+    QVector<QColor> colors;
+    QVector<bool>colorsStatus;
     int curentPauseValue = 0;
+    QColor currentColor;
     explicit DrawTextElm( OGLWidget *drawWidget = NULL, QObject *parent = 0);
     ~DrawTextElm();
     void clearBuffer();

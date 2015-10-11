@@ -1809,7 +1809,7 @@ void MainWindow::on_colorBtn_pressed()
                    if (commandTextEdit->textCursor().selectionEnd()-
                        commandTextEdit->textCursor().selectionStart()==0)
                    {
-                       textInField +=text;
+                       textInField +=text+"000";
                        textEdit->setPlainText(textInField);
                    }
                    else {

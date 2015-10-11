@@ -17,16 +17,17 @@ void UnitCommand::setUnitCommandType(QString str)
 {
     Type = str;
 }
-bool isLower(const ColorMarker &c1,const ColorMarker &c2)
+/*bool isLower(const ColorMarker &c1,const ColorMarker &c2)
 {
     return c1.startIndex < c2.startIndex;
-}
+}*/
 
 void UnitCommand::changeColor(DrawTextElm *canvas)
 {
    // canvas->setFillColor(QColor(unit_data));
     // //qDebug() << "void UnitCommand::changeColor(DrawTextElm *canvas)";
-    ColorMarker startMarker;
+   int startIndex;
+   int endIndex;
     qDebug() << "change color cursor index:"<<canvas->getCursorIndex();
       int len = unit_data.length();
       QString countString="0";
@@ -34,65 +35,26 @@ void UnitCommand::changeColor(DrawTextElm *canvas)
       int count =countString.toInt();
       qDebug()<<"COUNT:"<<count;
       if (count>0)//colorize characters at right
-    startMarker.startIndex=canvas->getCursorIndex();
-      else startMarker.startIndex=canvas->getCursorIndex()+count;//colorize characters at left
-    startMarker.value=unit_data.mid(0,7);//MAYBE PROBLEM || BUG (need 7) check later
-
-
-
-    qDebug() << "UNIT_DATA:"<<unit_data;
-    qDebug() << "COUNT_STRING:"<<countString;
-
-    ColorMarker endMarker;
+    startIndex=canvas->getCursorIndex();
+      else startIndex=canvas->getCursorIndex()+count;//colorize characters at left
+    QColor color = unit_data.mid(0,7);//MAYBE PROBLEM || BUG (need 7) check later
     if (count!=0)
-    { 
+    {
+        qDebug() << "count!=0";
+    //ZIGZAG:COLOR CHANGING
         if (count>0)
-        endMarker.startIndex = canvas->getCursorIndex()+count;
-        else endMarker.startIndex = canvas->getCursorIndex();
-        //endMarker.value="#000000";//NOT USED, USE CANVAS COLOR
-        endMarker.useDefaulColor = true;
-        startMarker.terminant=&endMarker;
-        qDebug()<<"before for";
-        for (int i=0;i<canvas->colors.length();i++){
-            if ((canvas->colors[i].startIndex>=startMarker.startIndex) &&
-                    (canvas->colors[i].startIndex <= endMarker.startIndex))
-            {
-                qDebug()<< "before null check";
-                if (canvas->colors[i].terminant!=NULL)
-                    //delete canvas->colors[i].terminant;
-                {
-                    ColorMarker beginMarker =canvas->colors[i];
-                    qDebug() << "beforeremoveall";
+               endIndex = canvas->getCursorIndex()+count;
+               else endIndex = canvas->getCursorIndex();
 
-                    if (canvas->colors[i].terminant->startIndex>endMarker.startIndex)
-                        canvas->colors[i].startIndex=endMarker.startIndex+1;
-                    else
-                    {
-                        canvas->colors.removeAll(*(beginMarker.terminant));
-                         canvas->colors.removeAt(i);
-                    }
-                    qDebug () << "canvas->colors[i].terminant!=NULL";
-
-                //canvas->colors.removeAll(beginMarker);
-                qDebug() << "beforeremoveat";
-               ;
-                qDebug() << "delete terminant";
-                }
-                else
-                canvas->colors.removeAt(i);
-            }
+        qDebug() << "count:"<<count<<"startindex:"<<startIndex << "endindex:"<<endIndex;
+        for (int i=startIndex;i<endIndex;i++)
+    canvas->colors[i]=color;
+    }
+    else{
+        qDebug() << "count==0";
+        canvas->currentColor=color;
     }
 
-
-    }
-canvas->colors.push_back(endMarker);
-    canvas->colors.push_back(startMarker);
-
-    qSort(canvas->colors.begin(),canvas->colors.end(),isLower);
-    qDebug()<<"colors:";
-    for (int i = 0; i < canvas->colors.length();i++)
-        qDebug()<<"startIndex:"<<canvas->colors[i].startIndex
-               <<"useDefaulColor:"<<canvas->colors[i].useDefaulColor;
 }
 
 void UnitCommand::nextLine(DrawTextElm *canvas)
@@ -107,15 +69,10 @@ void UnitCommand::boardClean(DrawTextElm *canvas)
 }
 
 void UnitCommand::moveLeft(DrawTextElm *canvas, int n){
-    canvas->moveCursor(-n);
-// //qDebug() <<"Moved left";
-
-//INSERT CODE
+canvas->moveCursor(-n);
 }
 void UnitCommand::moveRight(DrawTextElm* canvas, int n){
-// //qDebug() <<"Moved right " << n;
 canvas->moveCursor(n);
-//INSERT CODE
 }
 
 void UnitCommand::deletePreChar(DrawTextElm *canvas)
