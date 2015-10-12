@@ -252,7 +252,7 @@ int Parser::ParsingLine(QList<Unit*> &list,  QString &str, quint64& timeSpendToD
 
                 if (str.length()>(i+2) && str[i+2]=='-')//+1 because minimum 1 digit must excist after '-'
                 {
-                    qDebug() << "IN str.length()>(i+2) && str[i+2]==-'-' ";
+                    //qDebug() << "IN str.length()>(i+2) && str[i+2]==-'-' ";
                    pars_line += str[i+2];
                    i++;
                    if (str.length()==(i+3))
@@ -266,7 +266,7 @@ int Parser::ParsingLine(QList<Unit*> &list,  QString &str, quint64& timeSpendToD
                 QRegExp expCount("[0-9]");
                 while(expCount.exactMatch((QString)str[i+2]) &&  tmp < 3 )
                 {
-                    qDebug() << "QRegExp value";
+                    //qDebug() << "QRegExp value";
                     pars_line += str[i+2];
                     tmp++;
                     i++;
