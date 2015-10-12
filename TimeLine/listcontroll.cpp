@@ -1722,14 +1722,15 @@ DrawElement* ListControll::loadFromFile(int col, int ind, QString path,bool emit
             return NULL;
     qDebug() << "loadFromFile(): col = " << col << " IND = " << ind;
     setBlocked(true);
+    qDebug() << "loadFromFile() 2";
     qApp->processEvents();
-
+qDebug() << "loadFromFile() 3";
     QString open;
     if ( path == "")
         open =  QFileDialog::getOpenFileName(0, QString(), QString(), QString(), 0, QFileDialog::DontUseNativeDialog);
     else
         open = path;
-
+qDebug() << "loadFromFile() 4 " << open;
 
     DrawElement *elm = GenerationDrawElement(open,NULL,NULL);
     if(elm == NULL)
@@ -1737,7 +1738,7 @@ DrawElement* ListControll::loadFromFile(int col, int ind, QString path,bool emit
         qDebug() << "loadFromFile(): elm == NULL";
         return NULL;
     }
-
+qDebug() << "loadFromFile() 5";
 
     if (elm->getTypeId() == Element_type::Image && p_drawWidget != NULL) //123_123
     {
@@ -1745,11 +1746,12 @@ DrawElement* ListControll::loadFromFile(int col, int ind, QString path,bool emit
         elm->setSize(p_drawWidget->imageLoadedPictureSizeSlot(image_size));
 
     }
-
+qDebug() << "loadFromFile() 6";
 
 
     if (emit_update)
     {
+        qDebug() << "loadFromFile() 7";
         if (!blockValid(col,ind))
         {
             delete elm;
@@ -1757,14 +1759,14 @@ DrawElement* ListControll::loadFromFile(int col, int ind, QString path,bool emit
         }
         DrawElement* temp = tracks[col].block[ind]; ///////!!!!!!!!!!!!!!!!!!!!
         int new_life_time = elm->getLifeTime();
-
+qDebug() << "loadFromFile() 8";
         //elm->copy(temp);
         elm->setLifeTime(temp->getLifeTime());
         elm->setStartDraw(temp->getStartDrawTime());
         elm->setZ(col);
         elm->setBlockColumn(col);
         elm->setBlockIndex(ind);
-
+qDebug() << "loadFromFile() 9";
 
         //elm->setParent(temp->getParent());
         // elm->setGroupWichElBelong(temp->getGroupWichElBelong());
@@ -1772,7 +1774,7 @@ DrawElement* ListControll::loadFromFile(int col, int ind, QString path,bool emit
 
         tracks[col].block[ind] = elm;
         delete temp;
-
+qDebug() << "loadFromFile() 10";
         //zaloop
         /*      if(life_time == 1000)
             setBlockTime(col, ind, new_life_time);
@@ -1781,9 +1783,10 @@ DrawElement* ListControll::loadFromFile(int col, int ind, QString path,bool emit
 
         updateBlocksStartTimesFrom(col,0);
         calcPointedBlocks();
+        qDebug() << "loadFromFile() 11";
     }
 
-
+qDebug() << "loadFromFile() 12";
     connect(elm,SIGNAL(borderColorChangedSignal(int,int,QString)),
             this,SIGNAL(borderColorChangedSignal(int,int,QString)));
     qDebug() << "LIFE_TIME  2";
