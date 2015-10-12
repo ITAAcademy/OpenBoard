@@ -148,7 +148,7 @@ static DrawElement *loadDrawElement(QIODevice *device, float version)
                 // delete  draw_element;
                  draw_element = (DrawElement*) elm;
      }
-
+     else
      if(typeId == Element_type::Image)
      {
         DrawImageElm *elm = new DrawImageElm(NULL,NULL);
@@ -159,7 +159,7 @@ static DrawElement *loadDrawElement(QIODevice *device, float version)
                  //draw_element->getIcon().save("blaaaaaaaaaaaaaaaaaaaaaa.jpg");
 
      }
-
+    else
      if(typeId == Element_type::Brushh)
      {
         DrawBrushElm *elm = new DrawBrushElm(NULL,NULL);
@@ -167,7 +167,7 @@ static DrawElement *loadDrawElement(QIODevice *device, float version)
                  //delete  draw_element;
                  draw_element = (DrawElement*) elm;
      }
-
+else
      if(typeId == Element_type::Empty)
      {
         DrawElement *elm = new DrawElement(NULL,NULL);
@@ -175,6 +175,7 @@ static DrawElement *loadDrawElement(QIODevice *device, float version)
                  //delete  draw_element;
                  draw_element = (DrawElement*) elm;
      }
+     else
      if(typeId == Element_type::Video)
      {
         DrawVideoElm *elm = new DrawVideoElm(NULL,NULL);
@@ -191,6 +192,7 @@ static DrawElement *loadDrawElement(QIODevice *device, float version)
                      delete elm;
                  }
      }
+     else
      if(typeId == Element_type::Audio)
      {
         DrawAudioElm *elm = new DrawAudioElm(NULL,NULL);
