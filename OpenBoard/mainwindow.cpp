@@ -44,6 +44,13 @@ MainWindow::MainWindow(QWidget *parent) :
     qglFormat.setSampleBuffers(true);
 
     mpOGLWidget = new OGLWidget(this,qglFormat);
+
+
+    connect(ui->check_use_speed_value,SIGNAL(clicked()),this,SLOT(connectUZVandSVF()));
+
+
+
+
     QString versionString(QLatin1String(reinterpret_cast<const char*>(glGetString(GL_VERSION))));
     qDebug() << "Driver Version String:" << versionString;
     qDebug() << "Current Context:" << mpOGLWidget->format();
@@ -756,6 +763,32 @@ bool MainWindow::event(QEvent * e) // overloading event(QEvent*) method of QMain
 
 
     return QMainWindow::event(e) ;
+
+}
+
+
+void MainWindow::connectUZVandSVF( )
+{
+    if ( ui->check_use_speed_value->isChecked())
+        connect(mpOGLWidget->getTimeLine(),SIGNAL(dontUseThisValue()),this,SLOT(setUseThisValueFalse()));
+}
+
+void MainWindow::setUseThisValueFalse( )
+{
+    ListControll *t_line = mpOGLWidget->getTimeLine();
+    //disconnect(t_line,SIGNAL(dontUseThisValue()),this,SLOT(setUseThisValueFalse()));
+    DrawElement *elm = t_line->getSelectedBlock();
+    if (elm->getTypeId() == Element_type::Text)
+    {
+        //disconnect(ui->check_use_speed_value,SIGNAL(clicked()),this,SLOT(connectUZVandSVF()));
+        DrawTextElm * telm = (DrawTextElm *) elm;
+        telm->setBNeedTime(false);
+        ui->check_use_speed_value->setChecked(false);
+       // connect(ui->check_use_speed_value,SIGNAL(clicked()),this,SLOT(connectUZVandSVF()));
+    }
+
+    //connect(t_line,SIGNAL(dontUseThisValue()),this,SLOT(setUseThisValueFalse()));
+
 }
 
 void MainWindow::moveEvent(QMoveEvent *event)
@@ -1985,6 +2018,8 @@ void MainWindow::onTextChanged()
    }*/
 }
 
+
+
 void MainWindow::updateTextEditFromBlock(QPoint point)
 {
 
@@ -2052,7 +2087,8 @@ void MainWindow::updateBlockFromTextEdit()
             if(ui->check_use_speed_value->isChecked() && isActiveWindow() && !mpOGLWidget->getTimeLine()->getCurent_group())
             {
                 qDebug() << "void MainWindow::updateBlockFromTextEdit()";
-                mpOGLWidget->getTimeLine()->setBlockTime(point.x(), point.y(), change_time);
+                bool resize_empty = mpOGLWidget->getTimeLine()->getForceResizeBlock();
+                mpOGLWidget->getTimeLine()->setBlockTime(point.x(), point.y(), change_time,resize_empty,false);
                 mpOGLWidget->getTimeLine()-> sendUpdateModel();
                 //mpOGLWidget->getTimeLine()->sendUpdateModel();
             }

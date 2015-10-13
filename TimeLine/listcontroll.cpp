@@ -802,6 +802,11 @@ void ListControll::setForceResizeBlock(bool value)
     qDebug() << "void ListControll::setForceResizeBlock " << force_resize_block;
 }
 
+bool ListControll::getForceResizeBlock()
+{
+    return force_resize_block;
+}
+
 
 void ListControll::addNewBlock(int col, QString str, DrawElement *element)
 {
@@ -828,6 +833,9 @@ void ListControll::addNewBlock(int col, QString str, DrawElement *element)
             this, SIGNAL(borderColorChangedSignal(int,int,QString)));
     connect(element, SIGNAL(sizeChangedSignal(int,int, int, bool)),
             this, SLOT(setBlockTimeWithUpdate(int, int, int, bool)));
+    connect(element,SIGNAL(dontUseThisValue()),
+            this, SIGNAL(dontUseThisValue()));
+
     qDebug() << "ListControll::addNewBlock     last_block_ind = " << last_block_ind;
 
 
@@ -1647,6 +1655,9 @@ void ListControll::addBlockAt(int col, int ind,  DrawElement *element, int life_
             this, SIGNAL(borderColorChangedSignal(int,int,QString)));
     connect(element, SIGNAL(sizeChangedSignal(int,int, int, bool)),
             this, SLOT(setBlockTimeWithUpdate(int, int, int, bool)));
+    connect(element,SIGNAL(dontUseThisValue()),
+            this, SIGNAL(dontUseThisValue()));
+
     element->setBlockColumn(col);
     element->setBlockIndex(ind);
 
@@ -1792,6 +1803,9 @@ qDebug() << "loadFromFile() 12";
     qDebug() << "LIFE_TIME  2";
     connect(elm,SIGNAL(sizeChangedSignal(int,int, int, bool)),
             this, SLOT(setBlockTimeWithUpdate(int, int, int, bool)));
+    connect(elm,SIGNAL(dontUseThisValue()),
+            this, SIGNAL(dontUseThisValue()));
+
 
     qDebug() << "LIFE_TIME  3";
     QFileInfo file_info(path);
@@ -2180,7 +2194,7 @@ bool ListControll::setBlockTimeBlockBalance(int col, int ind, int value, bool re
 
 
 
-int ListControll::setBlockTime(int col, int i,int value, bool resize_next_empty)
+int ListControll::setBlockTime(int col, int i,int value, bool resize_next_empty, bool use_value)
 {
     if(!blockValid(col,i))
         return -1;
@@ -2280,7 +2294,7 @@ int ListControll::setBlockTime(int col, int i,int value, bool resize_next_empty)
         balanceBlocksIfIsGroups(col,i);*/
 
    // tracks[col].addTime(value - elm->getLifeTime());
-    elm->setLifeTime(value);
+    elm->setLifeTime(value,false,true, use_value);
 
     updateBlocksStartTimesFrom(col,i+1);
     tracks[col].updateTime();
@@ -3482,10 +3496,14 @@ bool ListControll::load(QIODevice* device)
     for (int k=0; k< tracks.size(); k++)
         for (int i=0; i< tracks[k].block.size(); i++)
         {
-            connect(tracks[k].block[i],SIGNAL(borderColorChangedSignal(int,int,QString)),
+            DrawElement *el_connect = tracks[k].block[i];
+            connect(el_connect,SIGNAL(borderColorChangedSignal(int,int,QString)),
                     this,SIGNAL(borderColorChangedSignal(int,int,QString)));
-            connect(tracks[k].block[i],SIGNAL(sizeChangedSignal(int,int, int, bool)),
+            connect(el_connect,SIGNAL(sizeChangedSignal(int,int, int, bool)),
                     this, SLOT(setBlockTimeWithUpdate(int, int, int, bool)));
+            connect(el_connect,SIGNAL(dontUseThisValue()),
+                    this, SIGNAL(dontUseThisValue()));
+
         }
     // add group
     int numGroups;
@@ -4006,6 +4024,9 @@ void ListControll::convertCurentBlockToText()
             this,SIGNAL(borderColorChangedSignal(int,int,QString)));
     connect(text,SIGNAL(sizeChangedSignal(int,int, int, bool)),
             this, SLOT(setBlockTimeWithUpdate(int, int, int, bool)));
+    connect(elm,SIGNAL(dontUseThisValue()),
+            this, SIGNAL(dontUseThisValue()));
+
 
     calcPointedBlocks();
     emit updateSelectedBlock(selectedBlockPoint);
@@ -4025,6 +4046,15 @@ bool ListControll::blockValid(const int col, const int index)
     if( col > -1 && index > -1 && col < tracks.size() && index < tracks[col].block.size()  )
         return true;
     return false;
+}
+
+DrawElement* ListControll::getSelectedBlock()
+{
+    QPoint sel_p = selectedBlockPoint;
+    if(!blockValid(sel_p))
+        return NULL;
+    DrawElement *elm = this->getBlock(sel_p);
+    return elm;
 }
 
 

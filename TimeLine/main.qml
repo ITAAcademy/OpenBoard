@@ -295,9 +295,9 @@ MouseAreaForWindowDraging{
             scale_pointer.enabled = false
             tollbar.p_button_RemoveTrack.enabled = false
             tollbar.p_button_AddTrack.enabled = false
-            tollbar.p_button_play.enabled = false
+            /*tollbar.p_button_play.enabled = false
             tollbar.p_button_stop.enabled = true
-            tollbar.p_button_pause.enabled = true
+            tollbar.p_button_pause.enabled = true*/
 
         }
         function pause()
@@ -655,6 +655,8 @@ MouseAreaForWindowDraging{
             onYChanged: y = 0
             onXChanged: {
 
+                if (x < 20)
+                    x = 20
                /* var zdvig = 20 - scroll.flickableItem.contentX
                 if (zdvig < 0)
                 {
