@@ -28,7 +28,7 @@ FFmpegHelp::~FFmpegHelp()
 int FFmpegHelp::initFF(QString path)
 {
     // qDebug() << "start initFF";
-    formatContext = (AVFormatContext*)openVideoStream( path );
+    formatContext = (AVFormatContext*)openVideoStream( path.toStdString().c_str() );
     if (formatContext == NULL)
         return 0;
     //videoThread.start();

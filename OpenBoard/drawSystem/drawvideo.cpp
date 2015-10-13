@@ -80,7 +80,7 @@ void DrawVideoElm::setVideoFile(QString path)
     if(file.exists())
     {
         if(decoder.initFF(path) != NULL)
-            videPath = path;
+            videPath = path.toStdString().c_str();
         videoValid = true;
 
     }
