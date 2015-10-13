@@ -799,9 +799,9 @@ void DrawTextElm::drawTextBuffer( int m_x, int m_y, int m_width, int m_height, i
             line_x += fMetrics->width(textToWarp);
             //setFillColor(colors[k].value);
             fillColor = colorMarkers[k].color;
-            qDebug() << "draw color k:"<<k;
+           // qDebug() << "draw color k:"<<k;
             QString textToFill = stringList[i].mid(columnOfColorStrBegin,columnOfColorStrEnd-columnOfColorStrBegin);
-            qDebug() << "textToFill:"<<textToFill;
+           // qDebug() << "textToFill:"<<textToFill;
             pDrawWidget->drawTextFromTexture(line_x,line_y,z,textToFill,textureIndex, fillColor,textFont,scaleX,scaleY);
         //colorStartIndex+=textToFill.length()+textToWarp.length();//colorMarkers[k].charCount;//ZIGZAG:WHICH OF THESE ?
         }
@@ -985,14 +985,19 @@ void DrawTextElm::deleteFromBuffer(int n)
     crossText();
     int mustDell = qAbs(n);
     int crossCursor = cursorIndex - convertTextBoxToBufferIndex(cursorIndex).y();
-    colors.remove(n);
+
     int i = n;
     while( i != 0)
     {
-        if(i > 0)
+        if(i > 0){
             cross.removeAt(crossCursor);
+            colors.remove(crossCursor);
+        }
         else
+        {
             cross.removeAt(crossCursor + n);
+            colors.remove(crossCursor + n);
+        }
         if(i > 0)
             i--;
         else

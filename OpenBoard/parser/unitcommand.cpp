@@ -38,16 +38,16 @@ void UnitCommand::changeColor(DrawTextElm *canvas)
       else count+=canvas->convertTextBoxToBufferIndex(canvas->getCursorIndex()).y();
       qDebug()<<"COUNT:"<<count;
       if (count>0)//colorize characters at right
-    startIndex=canvas->getCursorIndex()-canvas->convertTextBoxToBufferIndex(canvas->getCursorIndex()).y();
-      else startIndex=canvas->getCursorIndex()-canvas->convertTextBoxToBufferIndex(canvas->getCursorIndex()).y()+count;//colorize characters at left
+    startIndex=cursorIndex;
+      else startIndex=cursorIndex+count;//colorize characters at left
     QColor color = unit_data.mid(0,7);//MAYBE PROBLEM || BUG (need 7) check later
     if (count!=0)
     {
         qDebug() << "count!=0";
     //ZIGZAG:COLOR CHANGING
         if (count>0)
-               endIndex = canvas->getCursorIndex()-canvas->convertTextBoxToBufferIndex(canvas->getCursorIndex()).y()+count;
-               else endIndex = canvas->getCursorIndex()-canvas->convertTextBoxToBufferIndex(canvas->getCursorIndex()).y();
+               endIndex = cursorIndex+count;
+               else endIndex = cursorIndex;
 
         qDebug() << "count:"<<count<<"startindex:"<<startIndex << "endindex:"<<endIndex;
         for (int i=startIndex;i<endIndex;i++)

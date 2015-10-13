@@ -242,7 +242,7 @@ int Parser::ParsingLine(QList<Unit*> &list,  QString &str, quint64& timeSpendToD
                     pars_line += str[i+2];
                     i++; tmp++;
                 }
-                qDebug() << "after color match";
+                //qDebug() << "after color match";
                 if(tmp < 6)
                 {
                     state = i;
