@@ -28,23 +28,26 @@ void UnitCommand::changeColor(DrawTextElm *canvas)
     // //qDebug() << "void UnitCommand::changeColor(DrawTextElm *canvas)";
    int startIndex;
    int endIndex;
+   int cursorIndex = canvas->getCursorIndex()-canvas->convertTextBoxToBufferIndex(canvas->getCursorIndex()).y();
     qDebug() << "change color cursor index:"<<canvas->getCursorIndex();
       int len = unit_data.length();
       QString countString="0";
       if (len-7>0)countString=unit_data.mid(7,len-7);//-7 because # symbol presents in string
       int count =countString.toInt();
+      if(count>=0)count-=canvas->convertTextBoxToBufferIndex(canvas->getCursorIndex()).y();
+      else count+=canvas->convertTextBoxToBufferIndex(canvas->getCursorIndex()).y();
       qDebug()<<"COUNT:"<<count;
       if (count>0)//colorize characters at right
-    startIndex=canvas->getCursorIndex();
-      else startIndex=canvas->getCursorIndex()+count;//colorize characters at left
+    startIndex=canvas->getCursorIndex()-canvas->convertTextBoxToBufferIndex(canvas->getCursorIndex()).y();
+      else startIndex=canvas->getCursorIndex()-canvas->convertTextBoxToBufferIndex(canvas->getCursorIndex()).y()+count;//colorize characters at left
     QColor color = unit_data.mid(0,7);//MAYBE PROBLEM || BUG (need 7) check later
     if (count!=0)
     {
         qDebug() << "count!=0";
     //ZIGZAG:COLOR CHANGING
         if (count>0)
-               endIndex = canvas->getCursorIndex()+count;
-               else endIndex = canvas->getCursorIndex();
+               endIndex = canvas->getCursorIndex()-canvas->convertTextBoxToBufferIndex(canvas->getCursorIndex()).y()+count;
+               else endIndex = canvas->getCursorIndex()-canvas->convertTextBoxToBufferIndex(canvas->getCursorIndex()).y();
 
         qDebug() << "count:"<<count<<"startindex:"<<startIndex << "endindex:"<<endIndex;
         for (int i=startIndex;i<endIndex;i++)

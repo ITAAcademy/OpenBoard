@@ -708,7 +708,7 @@ void DrawTextElm::drawTextBuffer( int m_x, int m_y, int m_width, int m_height, i
             marker.charCount=charsOfThisColor;
             int colorMarkerLength = colorMarkers.length();
             if (colorMarkerLength>0)marker.startIndex=colorMarkers[colorMarkerLength-1].
-                    startIndex+colorMarkers[colorMarkerLength-1].charCount;
+                    startIndex+colorMarkers[colorMarkerLength-1].charCount;//ZIGZAG +1?
             colorMarkers.append(marker);
             charsOfThisColor=0;
         }
@@ -720,7 +720,7 @@ void DrawTextElm::drawTextBuffer( int m_x, int m_y, int m_width, int m_height, i
            charsOfThisColor++;
            int colorMarkerLength = colorMarkers.length();
            if (colorMarkerLength>0)marker.startIndex=colorMarkers[colorMarkerLength-1].
-                   startIndex+colorMarkers[colorMarkerLength-1].charCount;
+                   startIndex+colorMarkers[colorMarkerLength-1].charCount;// ZIGZAG: +1?
            marker.color=colors[colors.length()-1];
        }
        else  marker.color=mainFillColor;
@@ -768,21 +768,21 @@ void DrawTextElm::drawTextBuffer( int m_x, int m_y, int m_width, int m_height, i
                 continue;
             //Якщо на рядку, в якому починається кольорова стрічка — то стовпчик початку берем одразу з QList<ColorIndex> colors
             if (i==rowOfColorStrBegin)
-                columnOfColorStrBegin =  convertTextBoxToBufferIndex(colorMarkers[k].startIndex ).x();
+                columnOfColorStrBegin =  convertTextBoxToBufferIndex(colorMarkers[k].startIndex ).x()+i;
             //Інакше стовпчик початку - нульовий стовпчик . Інфа 100%
             else columnOfColorStrBegin = 0;
             //Якщо на останньому кольорі, то стовпчик кінця — індекс останнього символу стрічки.
-            if (k==colorMarkers.length()-1) columnOfColorStrEnd =  stringList[i].length();
+            if (k==colorMarkers.length()-1) columnOfColorStrEnd =  stringList[i].length()+i;
             else
                 //якщо не останній колір і на останній стрічці, то стовпчик кінця — стовпчик початку наступної стрічки з кольором
-                if (i==stringList.length()-1)  columnOfColorStrEnd =  convertTextBoxToBufferIndex(colorMarkers[k+1].startIndex ).x();
+                if (i==stringList.length()-1)  columnOfColorStrEnd =  convertTextBoxToBufferIndex(colorMarkers[k+1].startIndex ).x()+i;
             //Якщо не останній колір і не остання стрічка, то стовпчик кінця —
                 else
                 {
                     //Якщо в цій самій стрічці починається інша кольорова стрічка то кінцевий стовпчик поточної
                     //Кольорової стрічки - це почато наступної
                     if (convertTextBoxToBufferIndex(colorMarkers[k+1].startIndex ).y()==i)
-                        columnOfColorStrEnd =  convertTextBoxToBufferIndex(colorMarkers[k+1].startIndex).x();
+                        columnOfColorStrEnd =  convertTextBoxToBufferIndex(colorMarkers[k+1].startIndex).x()+i;
                     //Інакше КС(кінцевий стовпчик) — це кінець стрічки
                     else columnOfColorStrEnd =  stringList[i].length();
                 }
@@ -809,6 +809,9 @@ void DrawTextElm::drawTextBuffer( int m_x, int m_y, int m_width, int m_height, i
         line_x = m_x;
         // localX=marginLeft;
         i++;
+
+
+
     }
     if(cross)
         crossTextDraw(scaleX, scaleY);
