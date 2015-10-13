@@ -34,8 +34,8 @@ void UnitCommand::changeColor(DrawTextElm *canvas)
       QString countString="0";
       if (len-7>0)countString=unit_data.mid(7,len-7);//-7 because # symbol presents in string
       int count =countString.toInt();
-      if(count>=0)count-=canvas->convertTextBoxToBufferIndex(canvas->getCursorIndex()).y();
-      else count+=canvas->convertTextBoxToBufferIndex(canvas->getCursorIndex()).y();
+      if(count>0)count-=canvas->convertTextBoxToBufferIndex(canvas->getCursorIndex()).y();
+      else if(count<0)count+=canvas->convertTextBoxToBufferIndex(canvas->getCursorIndex()).y();
       qDebug()<<"COUNT:"<<count;
       if (count>0)//colorize characters at right
     startIndex=cursorIndex;
