@@ -39,23 +39,23 @@ MainWindow::MainWindow(QWidget *parent) :
     //// //qDebug() <<directory;
     //    connect(&drawThread, SIGNAL(started()), this, SLOT(myfunction())); //cant have parameter sorry, when using connect
     QGLFormat qglFormat;
-        qglFormat.setVersion(4,3);  // get expected output with (3,1) and below, else blank window
-       qglFormat.setProfile(QGLFormat::CompatibilityProfile);
-       qglFormat.setSampleBuffers(true);
+    qglFormat.setVersion(4,3);  // get expected output with (3,1) and below, else blank window
+    qglFormat.setProfile(QGLFormat::CompatibilityProfile);
+    qglFormat.setSampleBuffers(true);
 
     mpOGLWidget = new OGLWidget(this,qglFormat);
     QString versionString(QLatin1String(reinterpret_cast<const char*>(glGetString(GL_VERSION))));
-       qDebug() << "Driver Version String:" << versionString;
-       qDebug() << "Current Context:" << mpOGLWidget->format();
-       QGLFormat::OpenGLVersionFlags flags = QGLFormat::openGLVersionFlags();
-       if(flags & QGLFormat::OpenGL_Version_3_0) qDebug() << "3.0 or higher supported";
-       else qDebug() << "minimal version of shaders (3.0) not supported";
-       if(flags & QGLFormat::OpenGL_Version_3_1) qDebug() << "3.1 or higher supported";
-   // glFormat.setVersion( 3, 1 );
-   // glFormat.setDoubleBuffer(true);
+    qDebug() << "Driver Version String:" << versionString;
+    qDebug() << "Current Context:" << mpOGLWidget->format();
+    QGLFormat::OpenGLVersionFlags flags = QGLFormat::openGLVersionFlags();
+    if(flags & QGLFormat::OpenGL_Version_3_0) qDebug() << "3.0 or higher supported";
+    else qDebug() << "minimal version of shaders (3.0) not supported";
+    if(flags & QGLFormat::OpenGL_Version_3_1) qDebug() << "3.1 or higher supported";
+    // glFormat.setVersion( 3, 1 );
+    // glFormat.setDoubleBuffer(true);
 
     //mpOGLWidget->context()->setFormat(glFormat);
-     qDebug() << "OpenGL Versions Supported: " << QGLFormat::openGLVersionFlags();
+    qDebug() << "OpenGL Versions Supported: " << QGLFormat::openGLVersionFlags();
     // gs(Qt::CustomizeWindowHint | Qt::FramelessWindowHint | Qt::WindowTitleHint);
     //mpOGLWidget->setAttribute(Qt::WA_ShowModal);
     //mpOGLWidget->setWindowFlags (Qt::CustomizeWindowHint | Qt::FramelessWindowHint | Qt::WindowTitleHint);
@@ -738,13 +738,13 @@ bool MainWindow::event(QEvent * e) // overloading event(QEvent*) method of QMain
             e->ignore();
         } else {
 
-          e->accept();
-          if (!mpOGLWidget->isHiddenByButton())
-           mpOGLWidget->show();
-          if(mpOGLWidget->isVisible())
-          {
-              mpOGLWidget->getTimeLine()->show();
-          }
+            e->accept();
+            if (!mpOGLWidget->isHiddenByButton())
+                mpOGLWidget->show();
+            if(mpOGLWidget->isVisible())
+            {
+                mpOGLWidget->getTimeLine()->show();
+            }
         }
     }
     return QMainWindow::event(e) ;
@@ -1364,7 +1364,7 @@ bool MainWindow::on_action_Save_Project_triggered()
     }
     if(backupFile.open(QIODevice::WriteOnly))
     {
-       // ui->statusBar->showMessage("project saving...");
+        // ui->statusBar->showMessage("project saving...");
         status.setVisible(true);
         status.setMaximum(mpOGLWidget->getTimeLine()->getMemberCount());
         status.setValue(0);
@@ -1388,7 +1388,7 @@ bool MainWindow::on_action_Save_Project_triggered()
 
 
 
-      return true;
+    return true;
 }
 
 void MainWindow::on_action_Open_Project_triggered()
@@ -1799,50 +1799,50 @@ void MainWindow::on_colorBtn_pressed()
         text.remove(2,1);
         //Count
         int charCount = 0;
-          //text += QString("%1").arg(charCount, 3, 10, QChar('0'));
+        //text += QString("%1").arg(charCount, 3, 10, QChar('0'));
         //
         QString textInField;
         if( isCommandTextEditFocused )
         {
             textInField = textEdit->toPlainText();
-                  // if (commandTextEdit->toPlainText().isEmpty())return;
-                   if (commandTextEdit->textCursor().selectionEnd()-
-                       commandTextEdit->textCursor().selectionStart()==0)
-                   {
-                       textInField +=text+"000";
-                       textEdit->setPlainText(textInField);
-                   }
-                   else {
-                       textInField +=text;
-                       /*int delta = commandTextEdit->textCursor().selectionEnd()-
+            // if (commandTextEdit->toPlainText().isEmpty())return;
+            if (commandTextEdit->textCursor().selectionEnd()-
+                    commandTextEdit->textCursor().selectionStart()==0)
+            {
+                textInField +=text+"000";
+                textEdit->setPlainText(textInField);
+            }
+            else {
+                textInField +=text;
+                /*int delta = commandTextEdit->textCursor().selectionEnd()-
                                    commandTextEdit->textCursor().selectionStart();*/
-                       int indexStart = commandTextEdit->textCursor().selectionStart();
-                       int indexEnd = commandTextEdit->textCursor().selectionEnd();
-                       int firstIndex = (indexStart < indexEnd ? indexStart : indexEnd);
-                       int secondIndex = (indexStart > indexEnd ? indexStart : indexEnd);
-                       qDebug() << "colorbtn  index start:"<<indexStart;
-                       qDebug() << "colorbtn  index end:"<<indexEnd;
+                int indexStart = commandTextEdit->textCursor().selectionStart();
+                int indexEnd = commandTextEdit->textCursor().selectionEnd();
+                int firstIndex = (indexStart < indexEnd ? indexStart : indexEnd);
+                int secondIndex = (indexStart > indexEnd ? indexStart : indexEnd);
+                qDebug() << "colorbtn  index start:"<<indexStart;
+                qDebug() << "colorbtn  index end:"<<indexEnd;
 
-                       QString disperseStr = commandTextEdit->toPlainText().mid(firstIndex,secondIndex-firstIndex);
-                       int skipNewLinesCount = disperseStr.count('\n');
-                       int delta = indexEnd-indexStart;
-                       //delta-=skipNewLinesCount;
+                QString disperseStr = commandTextEdit->toPlainText().mid(firstIndex,secondIndex-firstIndex);
+                int skipNewLinesCount = disperseStr.count('\n');
+                int delta = indexEnd-indexStart;
+                //delta-=skipNewLinesCount;
 
 
-                       if (commandTextEdit->textCursor().position()!=
-                           commandTextEdit->textCursor().selectionEnd())
-                       {   //textInField.chop(6);
-                           QTextCursor tCursor = commandTextEdit->textCursor();
-                           tCursor.clearSelection();
-                           commandTextEdit->setTextCursor(tCursor);
-                       }
-                      if (commandTextEdit->textCursor().position()!=
-                                                  commandTextEdit->textCursor().selectionStart())
-                       delta=-delta;
-                       textInField +=QString("%1").arg(delta, 3, 10, QChar('0'));
-                       textEdit->setPlainText(textInField);
-                   }
-          //  textEdit->appendNoNL(text);
+                if (commandTextEdit->textCursor().position()!=
+                        commandTextEdit->textCursor().selectionEnd())
+                {   //textInField.chop(6);
+                    QTextCursor tCursor = commandTextEdit->textCursor();
+                    tCursor.clearSelection();
+                    commandTextEdit->setTextCursor(tCursor);
+                }
+                if (commandTextEdit->textCursor().position()!=
+                        commandTextEdit->textCursor().selectionStart())
+                    delta=-delta;
+                textInField +=QString("%1").arg(delta, 3, 10, QChar('0'));
+                textEdit->setPlainText(textInField);
+            }
+            //  textEdit->appendNoNL(text);
         }
         else
             textEdit->insertPlainText(text);
@@ -2278,6 +2278,12 @@ void MainWindow::on_action_Pause_triggered()
         mpOGLWidget->pauseAnimated();
         mpOGLWidget->getTimeLine()->pause();
     }
+    on_blockRightToolbar_exceptPlayPauseStop(true);
+    this->ui->action_Hide->setEnabled(true);
+    a_hide->setEnabled(true);
+    showBoardSettings();
+    updateTextEditFromBlock(mpOGLWidget->getTimeLine()->getSelectedBlockPoint());
+    updateEditWidgets();
 
 }
 
@@ -2592,7 +2598,7 @@ void MainWindow::on_check_whole_words_clicked()
 
 void MainWindow::on_check_show_text_cursor_clicked(bool checked)
 {
-   mpOGLWidget->setShowTextCursor(checked);
+    mpOGLWidget->setShowTextCursor(checked);
 }
 
 void MainWindow::on_speedBtn_released()
