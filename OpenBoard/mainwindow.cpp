@@ -118,6 +118,7 @@ MainWindow::MainWindow(QWidget *parent) :
         mSettings.setMainWindowRect(geometry());
         mSettings.setMainWindowTitle(windowTitle());
         mSettings.setMainWindowFont(font());
+        mSettings.setBoardFont(font());
         mSettings.setMainWindowColor(QColor(255,255,255));
         QColor col (255,255,255);
         mSettings.setBoardFontColor(QColor(255,255,255));
@@ -125,7 +126,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
         QFont sfont("Tahoma", 10);
         mSettings.setBoardFont(QFont("Tahoma",20,1,false));
-        mSettings.saveSettings();
+        mSettings.saveSettings(mSettings.getSettings());
+        mSettings.saveSettings(mSettings.getDefaultSettings());
     }
 
     setWindowTitle("Open Board");
@@ -135,6 +137,7 @@ MainWindow::MainWindow(QWidget *parent) :
     //commandTextEdit->setTextColor(mSettings.getMainWindowColor());
     this->textEdit->setFont(mSettings.getMainWindowFont());
     commandTextEdit->setFont(mSettings.getMainWindowFont());
+    mpOGLWidget->setFont(mSettings.getBoardFont());
 
     toolBar= new QToolBar(this);
     toolBarBoard= new QToolBar(this);
@@ -479,6 +482,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 MainWindow::~MainWindow()
 {
+    //mSettings.saveSettings(mSettings.getSettings());
     mSettings.setMainWindowRect(geometry());
     mpOGLWidget->getTimeLine()->close();
     //drawThread.quit();
@@ -931,6 +935,7 @@ void MainWindow::on_action_Board_Font_triggered()
                 qDebug() <<"MainWindow::on_action_Board_Font_triggered() font underline  = " <<  font.underline() ;
                 //qDebug() <<"MainWindow::on_action_Board_Font_triggered() italic" << font.italic() ;
                 draw_element->setTextFont(font);
+                draw_element->setDefaultFont(false);
                 return;
 
             }
@@ -951,17 +956,40 @@ void MainWindow::on_action_Board_Font_triggered()
 
 void MainWindow::on_action_Reset_default_triggered()
 {
-    QFont font = (QFont("Tahoma",10,1,false));
+   /* QFont font = (QFont("Tahoma",10,1,false));
     ui->menuBar->setFont(font);
     textEdit->setFont(font);
-
     //textEdit->setTextColor("#000000");
     //commandTextEdit->setTextColor("#000000");
     commandTextEdit->setFont(font);
+    */
+    mSettings.loadDefaultSettings();
+    this->textEdit->setFont(mSettings.getMainWindowFont());
+    commandTextEdit->setFont(mSettings.getMainWindowFont());
+
+   QPoint point = mpOGLWidget->getTimeLine()->getSelectedBlockPoint();
+   if(point.x() != -1 )
+   {
+       DrawElement* elm = mpOGLWidget->getTimeLine()->getBlock(point);
+       if(elm->getTypeId() == Element_type::Text)
+       {
+
+           DrawTextElm *text_elm = (DrawTextElm *)elm;
+               text_elm->setTextFont(mSettings.getBoardFont());
+               text_elm->setMainFillColor(mSettings.getBoardFontColor());
+
+       }
+   }
+
+
+
+
+
+    mpOGLWidget->setFont(mSettings.getBoardFont());
+
     QString temp = textEdit->toPlainText();
     textEdit->clear();
     textEdit->insertPlainText(temp);
-
     ui->action_Show->setEnabled(false);
     a_show->setEnabled(false);
     // setFont(font);
@@ -1006,14 +1034,15 @@ void MainWindow::on_action_Board_Color_triggered()
                 if(!colorm.isValid())
                     return;
                 draw_element->setMainFillColor(colorm);
+                draw_element->setDefaultFontColor(false);
+                //mSettings.setBoardFontColor(colorm);
                 return;
             }
     }
-
     colorm = QColorDialog::getColor(mSettings.getBoardFontColor(), this);
-    if(!colorm.isValid())
-        return;
     mSettings.setBoardFontColor(colorm);
+    //if(!colorm.isValid())
+        //return;
     return;
 }
 void MainWindow::on_action_ZoomIn_triggered()
@@ -2034,10 +2063,10 @@ void MainWindow::updateBlockFromTextEdit()
             /*
              *DEFAULT VALUE
              */
-            if(text_elm->getTextFont().family() == "123")
+            if(text_elm->getDefaultFont())
                 text_elm->setTextFont(mSettings.getBoardFont());
 
-            if(text_elm->getMainFillColor().alpha() == 0)
+            if(text_elm->getDefaultFontColor())
                 text_elm->setMainFillColor(mSettings.getBoardFontColor());
 
             ui->expected_time->setText("EXPECTED TIME:  " + QString::number(change_time) + " ms");

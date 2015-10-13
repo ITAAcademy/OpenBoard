@@ -32,21 +32,29 @@ public:
     const QColor    &getMainWindowColor ()const;
       const QFont   &getBoardFont       ()const;
       const QColor    &getBoardFontColor  ()const;
-      void saveSettings();
-      void loadSettings();
+      void saveSettings(QSettings *settings= NULL);
+      void loadSettings(QSettings *settings);
+      void loadDefaultSettings();
+      QSettings *getDefaultSettings() const;
+      void setDefaultSettings(QSettings *value);
+
+      QSettings *getSettings() const;
+      void setSettings(QSettings *settings);
+
 private:
 
 
 
-    bool        isFirstRun;
-    QString     mainWindowTitle;
-    QRect       mainWindowRect;
+      bool        isFirstRun;
+      QString     mainWindowTitle;
+      QRect       mainWindowRect;
     QFont       mainWindowFont;
     QColor      mainWindowColor;
        QFont     boardFont;
        QColor      boardFontColor;
 
     QSettings   *mSettings;
+    QSettings   *defaultSettings;
 };
 
 #endif // SETTINGS_H

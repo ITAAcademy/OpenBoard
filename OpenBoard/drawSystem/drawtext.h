@@ -10,8 +10,9 @@
 class DrawTextElm : public DrawElement
 {
     Q_OBJECT
-
     QList <Unit*>mUnitList;
+    bool defaultFontColor = true;
+    bool defaultFont = true;
     bool staticText = false;
     double staticMoment = 1.0f;
     QString loggerText;
@@ -134,6 +135,12 @@ public:
 
     double getStaticMoment() const;
     void setStaticMoment(double value);
+
+    bool getDefaultFontColor() const;
+    void setDefaultFontColor(bool value);
+
+    bool getDefaultFont() const;
+    void setDefaultFont(bool value);
 
 private:
     bool textCursorVisible = true;

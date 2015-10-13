@@ -24,7 +24,7 @@ class DrawBrushElm;
 class DrawElement;
 
 #define minBlockTime 1000
-#define VERSION 2.96
+#define VERSION 2.97
 
 bool isFileExists(QString path) ;
 

@@ -1,5 +1,5 @@
 #include "settings.h"
-
+#include "qdebug.h"
 
 pSettings::pSettings() :
     isFirstRun(false)
@@ -7,84 +7,107 @@ pSettings::pSettings() :
 {
 
     mSettings = new QSettings("settings.ini", QSettings::IniFormat);
-    loadSettings();
+    defaultSettings = new QSettings("default.ini",QSettings::IniFormat);
+    loadSettings(mSettings);
 
 }
 
 pSettings::~pSettings()
 {
-    saveSettings();
+    saveSettings(mSettings);
 
     if(mSettings != 0)
         delete mSettings;
 }
 
-void pSettings::saveSettings()
+void pSettings::saveSettings(QSettings * settings )
 {
-    mSettings->remove("MainWindow/font");
-        mSettings->setValue("FirstRun/IsRunFirst",  true);
-        mSettings->setValue("MainWindow/title",     mainWindowTitle);
-        mSettings->setValue("MainWindow/position",  mainWindowRect);
+    settings->remove("MainWindow/font");
+        settings->setValue("FirstRun/IsRunFirst",  true);
+        settings->setValue("MainWindow/title",     mainWindowTitle);
+        settings->setValue("MainWindow/position",  mainWindowRect);
 
 
-        mSettings->setValue("MainWindow/fontColor",     mainWindowColor.name());
+        settings->setValue("MainWindow/fontColor",     mainWindowColor.name());
 
         QString fFamily = mainWindowFont.family();
         int fSize = mainWindowFont.pointSize();
-        mSettings->setValue("MainWindow/fontFamily",      fFamily);
-        mSettings->setValue("MainWindow/fontSize",      fSize);
-        mSettings->setValue("MainWindow/fontItalic",      mainWindowFont.italic());
-        mSettings->setValue("MainWindow/fontBold",      mainWindowFont.bold());
-        mSettings->setValue("MainWindow/fontStrike",      mainWindowFont.strikeOut());
-        mSettings->setValue("MainWindow/fontUnderline",      mainWindowFont.underline());
+        settings->setValue("MainWindow/fontFamily",      fFamily);
+        settings->setValue("MainWindow/fontSize",      fSize);
+        settings->setValue("MainWindow/fontItalic",      mainWindowFont.italic());
+        settings->setValue("MainWindow/fontBold",      mainWindowFont.bold());
+        settings->setValue("MainWindow/fontStrike",      mainWindowFont.strikeOut());
+        settings->setValue("MainWindow/fontUnderline",      mainWindowFont.underline());
 
-        mSettings->setValue("Board/fontColor",          boardFontColor.name());
+        settings->setValue("Board/fontColor",          boardFontColor.name());
 
         QString fbFamily = boardFont.family();
         int fbSize = boardFont.pointSize();
-        mSettings->setValue("Board/fontFamily",      fbFamily);
-        mSettings->setValue("Board/fontSize",      fbSize);
-        mSettings->setValue("Board/fontItalic",      boardFont.italic());
-        mSettings->setValue("Board/fontBold",      boardFont.bold());
-        mSettings->setValue("Board/fontStrike",      boardFont.strikeOut());
-        mSettings->setValue("Board/fontUnderline",      boardFont.underline());
+        settings->setValue("Board/fontFamily",      fbFamily);
+        settings->setValue("Board/fontSize",      fbSize);
+        settings->setValue("Board/fontItalic",      boardFont.italic());
+        settings->setValue("Board/fontBold",      boardFont.bold());
+        settings->setValue("Board/fontStrike",      boardFont.strikeOut());
+        settings->setValue("Board/fontUnderline",      boardFont.underline());
 
 
 }
+void pSettings::loadDefaultSettings(){
+loadSettings(defaultSettings);
+}
+QSettings *pSettings::getDefaultSettings() const
+{
+    return defaultSettings;
+}
+
+void pSettings::setDefaultSettings(QSettings *value)
+{
+    defaultSettings = value;
+}
+QSettings *pSettings::getSettings() const
+{
+    return mSettings;
+}
+
+void pSettings::setSettings(QSettings *settings)
+{
+    mSettings = settings;
+}
 
 
-void pSettings::loadSettings()
+
+void pSettings::loadSettings(QSettings *settings)
 {
 
-    if(mSettings->value("FirstRun/IsRunFirst").toBool() == false)
+    if(settings->value("FirstRun/IsRunFirst").toBool() == false)
         isFirstRun = true;
 
-    mainWindowTitle = mSettings->value("MainWindow/title") .toString();
-    mainWindowRect  = mSettings->value("MainWindow/position") .toRect();
+    mainWindowTitle = settings->value("MainWindow/title") .toString();
+    mainWindowRect  = settings->value("MainWindow/position") .toRect();
 
-    mainWindowColor = mSettings->value("MainWindow/fontColor") .toString();
-    mainWindowFont.setFamily(mSettings->value("MainWindow/fontFamily").toString());
-  //  mainWindowFont = mSettings->value("MainWindow/fontColor").toString();
-    mainWindowFont.setPointSize(mSettings->value("MainWindow/fontSize").toInt());
-    mainWindowFont.setItalic(mSettings->value("MainWindow/fontItalic").toBool());
-    mainWindowFont.setBold(mSettings->value("MainWindow/fontBold").toBool());
-    mainWindowFont.setStrikeOut(mSettings->value("MainWindow/fontStrike").toBool());
-    mainWindowFont.setUnderline(mSettings->value("MainWindow/fontUnderline").toBool());
+    mainWindowColor = settings->value("MainWindow/fontColor") .toString();
+    mainWindowFont.setFamily(settings->value("MainWindow/fontFamily").toString());
+  //  mainWindowFont = settings->value("MainWindow/fontColor").toString();
+    mainWindowFont.setPointSize(settings->value("MainWindow/fontSize").toInt());
+    mainWindowFont.setItalic(settings->value("MainWindow/fontItalic").toBool());
+    mainWindowFont.setBold(settings->value("MainWindow/fontBold").toBool());
+    mainWindowFont.setStrikeOut(settings->value("MainWindow/fontStrike").toBool());
+    mainWindowFont.setUnderline(settings->value("MainWindow/fontUnderline").toBool());
 
-    boardFont.setFamily(mSettings->value("Board/fontFamily").toString());
-    boardFont.setPointSize(mSettings->value("Board/fontSize").toInt());
-    boardFont.setPointSize(mSettings->value("Board/fontSize").toInt());
-    boardFont.setItalic(mSettings->value("Board/fontItalic").toBool());
-    boardFont.setBold(mSettings->value("Board/fontBold").toBool());
-    boardFont.setStrikeOut(mSettings->value("Board/fontStrike").toBool());
-    boardFont.setUnderline(mSettings->value("Board/fontUnderline").toBool());
+    boardFont.setFamily(settings->value("Board/fontFamily").toString());
+    boardFont.setPointSize(settings->value("Board/fontSize").toInt());
+    boardFont.setPointSize(settings->value("Board/fontSize").toInt());
+    boardFont.setItalic(settings->value("Board/fontItalic").toBool());
+    boardFont.setBold(settings->value("Board/fontBold").toBool());
+    boardFont.setStrikeOut(settings->value("Board/fontStrike").toBool());
+    boardFont.setUnderline(settings->value("Board/fontUnderline").toBool());
 
-    boardFontColor = mSettings->value("Board/fontColor").toString();
-   //  mainWindowFont.fromString(mSettings->value("MainWindow/font") .toString());
-    //QString sFont = QString(mSettings->value("Board/font").toString());
+    boardFontColor = settings->value("Board/fontColor").toString();
+   //  mainWindowFont.fromString(settings->value("MainWindow/font") .toString());
+    //QString sFont = QString(settings->value("Board/font").toString());
     //boardFont.fromString(sFont);
   // QFont ftemp ()
-   // boardFont =  qvariant_cast<QFont>(mSettings->value("Board/font").toUInt());
+   // boardFont =  qvariant_cast<QFont>(settings->value("Board/font").toUInt());
 
 
 }
@@ -115,11 +138,13 @@ void pSettings::setMainWindowFont(const QFont &aFont)
 void pSettings::setBoardFont(const QFont &bFont)
 {
     boardFont = bFont;
+     qDebug() << "setBoardFont";
 }
 //!!!!!!!!!!!!!
 void pSettings::setBoardFontColor(const QColor &bColor)
 {
     boardFontColor = bColor;
+           qDebug() << "setBoardFontColor";
 }
 
 const bool &pSettings::FirstRun()const

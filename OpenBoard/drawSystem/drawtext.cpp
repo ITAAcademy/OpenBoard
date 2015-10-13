@@ -492,6 +492,11 @@ bool DrawTextElm::load_add(QDataStream &stream, float version)
     {
         stream >> staticMoment;
     }
+    if(version > 2.96)
+    {
+        stream >> defaultFont;
+        stream >> defaultFontColor;
+    }
 
     /*int sizeOfString = 0;
     stream >> sizeOfString;
@@ -510,6 +515,7 @@ bool DrawTextElm::save_add(QDataStream &stream)
     // //qDebug() << "IN " << unParsestring.length();
     stream.writeRawData(unParsestring.toLatin1().data(), unParsestring.length());*/
     stream << unParsestring << loggerText << textCursor << prevTextCursor << mainTextFont << mainFillColor << bCalcTime << staticText << staticMoment;
+    stream <<  defaultFont<<defaultFontColor;
 }
 
 void DrawTextElm::clearCanvas(int m_x, int m_y)
@@ -933,6 +939,28 @@ double DrawTextElm::getStaticMoment() const
 void DrawTextElm::setStaticMoment(double value)
 {
     staticMoment = value;
+}
+
+bool DrawTextElm::getDefaultFontColor() const
+{
+    return defaultFontColor;
+}
+
+void DrawTextElm::setDefaultFontColor(bool value)
+{
+    defaultFontColor = value;
+    qDebug() << "setDefaultFontColor";
+}
+
+bool DrawTextElm::getDefaultFont() const
+{
+    return defaultFont;
+}
+
+void DrawTextElm::setDefaultFont(bool value)
+{
+    defaultFont = value;
+    qDebug() << "setDefaultFont";
 }
 QFont DrawTextElm::getTextFont() const
 {
