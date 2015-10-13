@@ -1,13 +1,17 @@
 #include "mainwindow.h"
 #include <QApplication>
-//#define DEBUG_TO_FILE "log.txt"
+#define DEBUG_TO_FILE "log.txt"
+
+
 
 #ifdef DEBUG_TO_FILE
+
 
 void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QString &msg)
 {
     QByteArray localMsg = msg.toLocal8Bit();
     FILE *file = fopen(DEBUG_TO_FILE, "a");
+    //FILE *file = fopen(DEBUG_TO_FILE, "a");
     if(file != NULL)
     switch (type) {
     case QtDebugMsg:

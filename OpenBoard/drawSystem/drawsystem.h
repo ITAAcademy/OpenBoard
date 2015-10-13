@@ -57,79 +57,83 @@ static DrawElement *GenerationDrawElement( QString path, OGLWidget *drawWidget =
         elm->setKey(target.baseName());
         return (DrawElement*) elm;
     }
-    if(format == "jpg" || format == "png" || format == "gif")
-    {
-        DrawImageElm *elm = new DrawImageElm(drawWidget, parent);
-        elm->setDrawImage(QImage(path));
-        elm->setLastPath(path);
-        if(format == "gif")
+    else
+        if(format == "jpg" || format == "png" || format == "gif")
         {
-            QMovie *movie = new QMovie(path);
-            elm->setGif(movie);
-            elm->setGIF(true);
+            DrawImageElm *elm = new DrawImageElm(drawWidget, parent);
+            elm->setDrawImage(QImage(path));
+            elm->setLastPath(path);
+            if(format == "gif")
+            {
+                QMovie *movie = new QMovie(path);
+                elm->setGif(movie);
+                elm->setGIF(true);
+            }
+            elm->setTypeId(Element_type::Image);
+            elm->setKey(target.baseName());
+            return (DrawElement*) elm;
         }
-        elm->setTypeId(Element_type::Image);
-        elm->setKey(target.baseName());
-        return (DrawElement*) elm;
-    }
+        else
 
-
-    /*
+            /*
      * TEXT
      */
-    if(format == "txt" || format == "doc")
-    {
-        DrawTextElm *elm = new DrawTextElm(drawWidget, parent);
-        QFile file(path);
-        file.open(QFile::ReadOnly);
-        QString data(file.readAll());
-        file.close();
+            if(format == "txt" || format == "doc")
+            {
+                DrawTextElm *elm = new DrawTextElm(drawWidget, parent);
+                QFile file(path);
+                file.open(QFile::ReadOnly);
+                QString data(file.readAll());
+                file.close();
 
 
-        file.open(QFile::ReadOnly);
-        QTextStream instream(&file);
-        QString line = instream.readLine();
+                file.open(QFile::ReadOnly);
+                QTextStream instream(&file);
+                QString line = instream.readLine();
 
-        data.replace('\t', "    ");
-        qDebug() << "AAAAA " << line;
-        elm->setUnParsestring(data, data);
-        elm->setTypeId(Element_type::Text);
-        elm->setKey(target.baseName());
-        return (DrawElement*) elm;
-    }
-    if(format == "text")
-    {
-        DrawTextElm *elm = new DrawTextElm(drawWidget, parent);
-        elm->load(path);
-        elm->setTypeId(Element_type::Text);
-        return (DrawElement*) elm;
-    }
-    if(format == "paint"){
-        DrawBrushElm *elm = new DrawBrushElm(drawWidget, parent);
-        elm->load(path);
-        elm->setTypeId(Element_type::Brushh);
-        elm->setKey(target.baseName());
-        return (DrawElement*) elm;
-    }
-    if(format == "avi" || format == "mp4" || format == "mkv")
-    {
-        DrawVideoElm *elm = new DrawVideoElm(drawWidget, parent);
-        elm->setVideoFile(path);
-        elm->setTypeId(Element_type::Video);
-        elm->setKey(target.baseName());
-        qDebug() << "Create video object successful";
-        return (DrawElement*) elm;
-    }
-
-    if(format == "mp3" || format == "flac" || format == "wav")
-    {
-        DrawAudioElm *elm = new DrawAudioElm(drawWidget, parent);
-        elm->setAudioFile(path);
-        elm->setTypeId(Element_type::Audio);
-        elm->setKey(target.baseName());
-        qDebug() << "Create audio object successful";
-        return (DrawElement*) elm;
-    }
+                data.replace('\t', "    ");
+                qDebug() << "AAAAA " << line;
+                elm->setUnParsestring(data, data);
+                elm->setTypeId(Element_type::Text);
+                elm->setKey(target.baseName());
+                return (DrawElement*) elm;
+            }
+            else
+                if(format == "text")
+                {
+                    DrawTextElm *elm = new DrawTextElm(drawWidget, parent);
+                    elm->load(path);
+                    elm->setTypeId(Element_type::Text);
+                    return (DrawElement*) elm;
+                }
+                else
+                    if(format == "paint"){
+                        DrawBrushElm *elm = new DrawBrushElm(drawWidget, parent);
+                        elm->load(path);
+                        elm->setTypeId(Element_type::Brushh);
+                        elm->setKey(target.baseName());
+                        return (DrawElement*) elm;
+                    }
+                    else
+                        if(format == "avi" || format == "mp4" || format == "mkv")
+                        {
+                            DrawVideoElm *elm = new DrawVideoElm(drawWidget, parent);
+                            elm->setVideoFile(path);
+                            elm->setTypeId(Element_type::Video);
+                            elm->setKey(target.baseName());
+                            qDebug() << "Create video object successful";
+                            return (DrawElement*) elm;
+                        }
+                        else
+                            if(format == "mp3" || format == "flac" || format == "wav")
+                            {
+                                DrawAudioElm *elm = new DrawAudioElm(drawWidget, parent);
+                                elm->setAudioFile(path);
+                                elm->setTypeId(Element_type::Audio);
+                                elm->setKey(target.baseName());
+                                qDebug() << "Create audio object successful";
+                                return (DrawElement*) elm;
+                            }
     return NULL;
 }
 
@@ -137,77 +141,79 @@ static DrawElement *loadDrawElement(QIODevice *device, float version)
 {
     DrawElement *draw_element = new DrawElement(NULL,NULL);
 
-     draw_element->loadTypeId(device);
+    draw_element->loadTypeId(device);
 
     Element_type typeId = draw_element->getTypeId();// Element_type::Image;//static_cast<Element_type>(temp_type);
 
-     if(typeId == Element_type::Text)
-     {
-         DrawTextElm *elm = new DrawTextElm(NULL);
-                 elm->loadRest(device, version);
-                // delete  draw_element;
-                 draw_element = (DrawElement*) elm;
-     }
+    if(typeId == Element_type::Text)
+    {
+        DrawTextElm *elm = new DrawTextElm(NULL);
+        elm->loadRest(device, version);
+        // delete  draw_element;
+        draw_element = (DrawElement*) elm;
+    }
+    else
+        if(typeId == Element_type::Image)
+        {
+            DrawImageElm *elm = new DrawImageElm(NULL,NULL);
+            elm->loadRest(device, version);
+            //delete  draw_element;
+            elm->setDrawImage(elm->getIcon());
+            draw_element = (DrawElement*) elm;
+            //draw_element->getIcon().save("blaaaaaaaaaaaaaaaaaaaaaa.jpg");
 
-     if(typeId == Element_type::Image)
-     {
-        DrawImageElm *elm = new DrawImageElm(NULL,NULL);
-                 elm->loadRest(device, version);
-                 //delete  draw_element;
-                 elm->setDrawImage(elm->getIcon());
-                 draw_element = (DrawElement*) elm;
-                 //draw_element->getIcon().save("blaaaaaaaaaaaaaaaaaaaaaa.jpg");
-
-     }
-
-     if(typeId == Element_type::Brushh)
-     {
-        DrawBrushElm *elm = new DrawBrushElm(NULL,NULL);
-                 elm->loadRest(device, version);
-                 //delete  draw_element;
-                 draw_element = (DrawElement*) elm;
-     }
-
-     if(typeId == Element_type::Empty)
-     {
-        DrawElement *elm = new DrawElement(NULL,NULL);
-                 elm->loadRest(device, version);
-                 //delete  draw_element;
-                 draw_element = (DrawElement*) elm;
-     }
-     if(typeId == Element_type::Video)
-     {
-        DrawVideoElm *elm = new DrawVideoElm(NULL,NULL);
-                 elm->loadRest(device, version);
-                 //delete  draw_element;
-                // if (elm->isVidePathValid())
-                      if (isFileExists(elm->getVidePath()))
+        }
+        else
+            if(typeId == Element_type::Brushh)
+            {
+                DrawBrushElm *elm = new DrawBrushElm(NULL,NULL);
+                elm->loadRest(device, version);
+                //delete  draw_element;
+                draw_element = (DrawElement*) elm;
+            }
+            else
+                if(typeId == Element_type::Empty)
+                {
+                    DrawElement *elm = new DrawElement(NULL,NULL);
+                    elm->loadRest(device, version);
+                    //delete  draw_element;
                     draw_element = (DrawElement*) elm;
-                 else
-                 {
-                     draw_element = new DrawElement(NULL,NULL);
-                     draw_element->copy(elm);
-                     draw_element->setKey(elm->getKey());
-                     delete elm;
-                 }
-     }
-     if(typeId == Element_type::Audio)
-     {
-        DrawAudioElm *elm = new DrawAudioElm(NULL,NULL);
-                 elm->loadRest(device, version);
-                 //delete  draw_element;
-                 if (isFileExists(elm->getFilePath()))
-                    draw_element = (DrawElement*) elm;
-                 else
-                 {
-                     draw_element = new DrawElement(NULL,NULL);
-                     draw_element->copy(elm);
-                     draw_element->setKey(elm->getKey());
-                     delete elm;
-                 }
+                }
+                else
+                    if(typeId == Element_type::Video)
+                    {
+                        DrawVideoElm *elm = new DrawVideoElm(NULL,NULL);
+                        elm->loadRest(device, version);
+                        //delete  draw_element;
+                        // if (elm->isVidePathValid())
+                        if (isFileExists(elm->getVidePath()))
+                            draw_element = (DrawElement*) elm;
+                        else
+                        {
+                            draw_element = new DrawElement(NULL,NULL);
+                            draw_element->copy(elm);
+                            draw_element->setKey(elm->getKey());
+                            delete elm;
+                        }
+                    }
+                    else
+                        if(typeId == Element_type::Audio)
+                        {
+                            DrawAudioElm *elm = new DrawAudioElm(NULL,NULL);
+                            elm->loadRest(device, version);
+                            //delete  draw_element;
+                            if (isFileExists(elm->getFilePath()))
+                                draw_element = (DrawElement*) elm;
+                            else
+                            {
+                                draw_element = new DrawElement(NULL,NULL);
+                                draw_element->copy(elm);
+                                draw_element->setKey(elm->getKey());
+                                delete elm;
+                            }
 
 
-     }
+                        }
 
     return draw_element;
     //qDebug() << "load block[i]:  " << i;

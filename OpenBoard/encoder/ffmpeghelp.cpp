@@ -29,6 +29,8 @@ int FFmpegHelp::initFF(QString path)
 {
     // qDebug() << "start initFF";
     formatContext = (AVFormatContext*)openVideoStream( path );
+    if (formatContext == NULL)
+        return 0;
     //videoThread.start();
     //audioThread.start();
     // qDebug() << "FORMAT "   << formatContext;
@@ -133,8 +135,9 @@ AVFormatContext* FFmpegHelp::openVideoStream( QString path)
     //AVFormatContext * videoFormatContext = new AVFormatContext();
 
     path = path + "\0";
-    char *str = new char[path.size() + 5];
-    strcpy( str, path.toLatin1().data());
+   // char *str = new char[path.size() + 5];
+    const char *str = path.toStdString().c_str();
+    //strcpy( str, path.toLatin1().data());
     //  strcpy( str, path.toLatin1().data());
     //qDebug() << "Input path:  " << path;
     //qDebug() << "Input path:  " << str;
