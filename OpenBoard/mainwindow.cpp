@@ -715,6 +715,7 @@ bool MainWindow::event(QEvent * e) // overloading event(QEvent*) method of QMain
     }
 
     case QEvent::WindowDeactivate :
+    {
         // lost focus
         bool activeOther = false;
         if(mpOGLWidget->isActiveWindow())
@@ -727,26 +728,33 @@ bool MainWindow::event(QEvent * e) // overloading event(QEvent*) method of QMain
         mpOGLWidget->forceEditBoxDisable = ui->actionHide_editBox->isChecked();
         //qDebug() << "LOSE_ACTIVE_MAIN_WINDOW";
         break ;
+    }
 
-    } ;
-
-    if (e->type() == QEvent::WindowStateChange) {
+    case QEvent::WindowStateChange :
+    {
         if (isMinimized()) {
             mpOGLWidget->getTimeLine()->hide();
             mpOGLWidget->hide();
             isActive = false;
             e->ignore();
-        } else {
-
+        }
+        else
+        {
             e->accept();
             if (!mpOGLWidget->isHiddenByButton())
                 mpOGLWidget->show();
-            if(mpOGLWidget->isVisible())
+            //if(mpOGLWidget->isVisible())
             {
                 mpOGLWidget->getTimeLine()->show();
             }
         }
+        break;
     }
+
+
+    } ;
+
+
     return QMainWindow::event(e) ;
 }
 
@@ -1392,7 +1400,7 @@ bool MainWindow::on_action_Save_Project_triggered()
 }
 
 void MainWindow::on_action_Open_Project_triggered()
-{   
+{
 
     isActive = true;
     qApp->processEvents();
