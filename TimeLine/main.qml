@@ -270,8 +270,8 @@ MouseAreaForWindowDraging{
         function play()    {
             if (isPlayPauseStop === 1)
             {
-                scroll.flickableItem.contentX =  main222.saveScrollX
-                scale_pointer.x = main222.saveScalePointerX
+                //scroll.flickableItem.contentX =  main222.saveScrollX
+                //scale_pointer.x = main222.saveScalePointerX
             }
             else
             {
@@ -295,9 +295,9 @@ MouseAreaForWindowDraging{
             scale_pointer.enabled = false
             tollbar.p_button_RemoveTrack.enabled = false
             tollbar.p_button_AddTrack.enabled = false
-            tollbar.p_button_play.enabled = false
+            /*tollbar.p_button_play.enabled = false
             tollbar.p_button_stop.enabled = true
-            tollbar.p_button_pause.enabled = true
+            tollbar.p_button_pause.enabled = true*/
 
         }
         function pause()
@@ -655,29 +655,21 @@ MouseAreaForWindowDraging{
             onYChanged: y = 0
             onXChanged: {
 
-                //  if (x===0)     x = scroll.flickableItem.width
-                //  //console.log("1000")
-                // var half_scale_pointer_width = -scale_pointer.width/2
-                var zdvig = 20 - scroll.flickableItem.contentX
-                // // //console.log(" 3 scroll.flickableItem.contentX = " + scroll.flickableItem.contentX )
-                // //console.log("10001")
+                if (x < 20)
+                    x = 20
+               /* var zdvig = 20 - scroll.flickableItem.contentX
                 if (zdvig < 0)
                 {
-                    zdvig = -width/2//   zdvig = 0;
-                    // //console.log("10002")
+                    zdvig = -width/2
                 }
-                // //console.log("10003")
                 if (x<zdvig)
                 {
-                    // //console.log("10004")
                     scroll.flickableItem.contentX -= zdvig -scale_pointer.x
                     if (scroll.flickableItem.contentX < 0)
                     {
                         scroll.flickableItem.contentX = 0;
-                        // //console.log("10005")
                     }
                     scale_pointer.x = zdvig
-                    ////console.log("10006")
                 }
                 else
                 {
@@ -700,55 +692,13 @@ MouseAreaForWindowDraging{
                             if (scroll.flickableItem.contentX  >  sad)
                                 scroll.flickableItem.contentX = sad;
                             x = temp
-                            // timeControll.stop();
-                            // main222.stop()
                         }
                     }
 
-                    /*  else
-                {
-                temp = scroll.width -width - 3  /// scroll.x + scroll.width - main222.p_trackbar.width*1.4
-              //   //console.log("10007")
-                if (x> temp)
-                {
-                   // //console.log("DAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa")
-                    if (real_time  >= scroll.width  )
-                    {
-                        // //console.log("10008")
-                    scroll.flickableItem.contentX += (x - temp)
-                    var sad = real_time - scroll.width +17 // scroll.flickableItem.contentWidth - scroll.width + 10
-                    if (scroll.flickableItem.contentX  >  sad)
-                    {
-                         ////console.log("10009")
-                            scroll.flickableItem.contentX = sad;
-                        //timeControll.stop();
-                       // x-=3;
-                    }
-                    }
-                    else
-                       {
-                        timeControll.stop();
-                        //x = temp
-                         ////console.log("10010")
-                    }
-                    x = temp
-                }
-            }*/
-                }
+
+                }*/
 
                 timeControll.setScalePointerPos((x  -20 + scroll.flickableItem.contentX)* main222.scaling);
-                //   //console.log("JJJJJJJJJJJJJJJJ " + timeControll.getScalePointerPos())
-                /* if (main222.isPlayPauseStop !== 0)
-            {
-                timeControll.calcPointedBlocks();
-               ////console.log("AAAAAAAAAAAWWWWWWWWWWWWWWWWWWWWWWW")
-                ////console.log("getScalePointerPos = " + timeControll.getScalePointerPos())
-
-            }*/
-
-                // // //console.log("x + scroll.flickableItem.contentX = "+x +" + " + scroll.flickableItem.contentX
-
-                ////console.log("scale_pointer X = " +(x+width/2))
 
             }
 

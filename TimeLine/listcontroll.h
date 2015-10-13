@@ -276,6 +276,7 @@ public:
     Q_INVOKABLE void addNewBlock(int col, QString str = QString("block"+ QString::number(qrand())), DrawElement *element = NULL);
 
      Q_INVOKABLE void setForceResizeBlock(bool value);
+     Q_INVOKABLE bool getForceResizeBlock();
 
 
     Q_INVOKABLE   int getBlockTypeId(int col,int ind);
@@ -288,7 +289,7 @@ public:
     Q_INVOKABLE void reverseBlocks(int col, int init_pos, int end_pos);
     void setBlocks(int col,const  QList <DrawElement * > &value);
     Q_INVOKABLE   void setBlockKey(int col, int i, QString name);\
-    Q_INVOKABLE int setBlockTime(int col, int i, int value, bool resize_next_empty = false);
+    Q_INVOKABLE int setBlockTime(int col, int i, int value, bool resize_next_empty = false, bool use_value = true);
     Q_INVOKABLE bool setBlockTimeBlockBalance(int col, int ind, int value, bool resize_next_empty = false);
     Q_INVOKABLE void deleteBlockToDel(int col);
     Q_INVOKABLE void setBlockTimeWithUpdate(int col, int i, int value, bool visual);
@@ -453,6 +454,7 @@ public:
 signals:
     void borderColorChangedSignal(int col,int ind, QString color);
     // void sizeChangedSignal(int,int,unsigned long);
+    void dontUseThisValue();
     void loadFromFileSignal();
     void drawRectangleSignal();
     void removeRectangleSignal();
@@ -517,6 +519,8 @@ public slots:
     Q_INVOKABLE bool testIndexs(const int col, const int index);
     Q_INVOKABLE bool blockValid(const int col, const int index);
     Q_INVOKABLE bool blockValid(QPoint point);
+
+    Q_INVOKABLE DrawElement* getSelectedBlock();
 
 private slots:
     void drawYellowRectangle(QRect rect);

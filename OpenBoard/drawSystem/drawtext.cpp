@@ -696,7 +696,7 @@ void DrawTextElm::drawTextBuffer( int m_x, int m_y, int m_width, int m_height, i
          charsOfThisColor++;
      }*/
      // qDebug() << "colors.length():"<<colors.length();
-    qDebug() << "colors:";
+    //qDebug() << "colors:";
     for (int k=0;k<colors.length()-1;k++)
     {
    // qDebug()<<colors[k].name();

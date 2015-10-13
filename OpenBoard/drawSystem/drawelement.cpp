@@ -715,7 +715,7 @@ int DrawElement::getLifeTime()
     return hna;
 }
 
-int DrawElement::setLifeTime(int value, bool feedBack, bool visual)
+int DrawElement::setLifeTime(int value, bool feedBack, bool visual,bool use_value)
 {
     //qDebug() << "DrawElement::setLifeTime value = "<< value;
 
@@ -726,6 +726,13 @@ int DrawElement::setLifeTime(int value, bool feedBack, bool visual)
             if (value < 0)
                 return -1;
 
+    if (use_value)
+        emit dontUseThisValue();
+    /*if (typeId == Text)
+    {
+        DrawTextElm *tempo = (DrawTextElm*) this;
+        tempo->setBNeedTime(false);
+    }*/
 
     lifeTime = value;
     /*if(group_wich_el_belong != NULL)

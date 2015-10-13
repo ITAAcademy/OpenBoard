@@ -121,7 +121,7 @@ public:
     void setZ(int value);
 
      int getLifeTime() ;
-     int setLifeTime(int value, bool feedBack = false, bool visual = true);
+     int setLifeTime(int value, bool feedBack = false, bool visual = true, bool use_value = true);
 
 
     int getStartDrawTime() const;
@@ -170,6 +170,7 @@ public:
     void setPlayTimeUntilFreeze(int value);
 
 signals:
+    void dontUseThisValue();
     void borderColorChangedSignal(int col, int ind ,QString color);
     void sizeChangedSignal(int col, int ind, int newSize, bool visual = true);
 

@@ -112,6 +112,9 @@ public slots:
     void show_color_dialog();
 
 private slots:
+
+    void connectUZVandSVF( );
+    void setUseThisValueFalse( );
     void on_action_Record_to_file_triggered();
 
     void on_action_Able_to_draw_Checked();
