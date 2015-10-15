@@ -4012,10 +4012,10 @@ void ListControll::convertCurentBlockToText()
     DrawElement* elm = tracks[selectedBlockPoint.x()].block[selectedBlockPoint.y()];
     DrawTextElm *text = new DrawTextElm(NULL);
     text->copy(elm);
-    if(elm->getGroupWichElBelong() != NULL)
+   /* if(elm->getGroupWichElBelong() != NULL)
     {
         elm->getGroupWichElBelong()->tryMemberReverce(elm, text);
-    }
+    }*/
     delete elm;
     tracks[selectedBlockPoint.x()].block[selectedBlockPoint.y()] = text;
     text->setBlockColumn(selectedBlockPoint.x());
@@ -4024,7 +4024,7 @@ void ListControll::convertCurentBlockToText()
             this,SIGNAL(borderColorChangedSignal(int,int,QString)));
     connect(text,SIGNAL(sizeChangedSignal(int,int, int, bool)),
             this, SLOT(setBlockTimeWithUpdate(int, int, int, bool)));
-    connect(elm,SIGNAL(dontUseThisValue()),
+    connect(text,SIGNAL(dontUseThisValue()),
             this, SIGNAL(dontUseThisValue()));
 
 

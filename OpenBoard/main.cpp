@@ -1,6 +1,6 @@
 #include "mainwindow.h"
 #include <QApplication>
-//#define DEBUG_TO_FILE "log.txt"
+#define DEBUG_TO_FILE "log.txt"
 
 
 
