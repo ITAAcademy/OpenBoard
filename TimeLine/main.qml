@@ -312,7 +312,7 @@ MouseAreaForWindowDraging{
             //  tollbar.p_button_AddTrack.enabled = true
             //  tollbar.p_button_play.enabled = true
 
-            tollbar.p_button_pause.enabled = false
+            //tollbar.p_button_pause.enabled = false
         }
 
         function stop()
@@ -656,8 +656,16 @@ MouseAreaForWindowDraging{
             onXChanged: {
 
                 if (x < 20)
+                {
+                    var new_val =scroll.flickableItem.contentX - (20 - x)
+                    if (new_val < 0)
+                        new_val = 0
+                    scroll.flickableItem.contentX = new_val
                     x = 20
-               /* var zdvig = 20 - scroll.flickableItem.contentX
+                }
+               // else
+                {
+                var zdvig = 20 - scroll.flickableItem.contentX
                 if (zdvig < 0)
                 {
                     zdvig = -width/2
@@ -696,7 +704,11 @@ MouseAreaForWindowDraging{
                     }
 
 
-                }*/
+                }
+                }
+               /* var max_val = scroll.width - width
+               if (x > max_val)
+                   x = max_val;*/
 
                 timeControll.setScalePointerPos((x  -20 + scroll.flickableItem.contentX)* main222.scaling);
 
