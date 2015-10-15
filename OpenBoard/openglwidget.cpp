@@ -465,7 +465,7 @@ void OGLWidget::processMouse()
 
 
         if (editingRectangle.editingRectangleMode==EDIT_RECTANGLE_UNBINDED &&
-                editingRectangle.isEditingRectangleVisible && !forceEditBoxDisable && !isPainting)
+                editingRectangle.isEditingRectangleVisible && !forceEditBoxDisable && !able_drawing)
         {
 
             editingRectangle.currentCornerResize=RESIZE_CORNER_NONE;
@@ -563,14 +563,15 @@ void OGLWidget::processMouse()
         }
         }
         testRectangle();
-        if ( able_drawing && prevMousePos != mousePos)
+        qDebug()<<"curStatus:"<<curStatus;
+        if ((curStatus != PLAY) &&  able_drawing  && (prevMousePos != mousePos) )
         {
             paintBrushInBuffer(mouseFBO);
             qDebug() << "paintBrushInBuffer";
         }
     }
 
-    if (showingLastDrawing )
+    if (showingLastDrawing && curStatus!=PLAY )
     {
         if (drawBrushElm->getBrushes().length()<=0)
         {
@@ -754,8 +755,6 @@ OGLWidget::OGLWidget(QWidget *parent, QGLFormat format) :
     connect(timeLine,SIGNAL(focusFoundSignal()),this,SLOT(hideBrushManager()));
     connect(timeLine,SIGNAL(focusFoundSignal()),this,SLOT(hideEffectsManager()));
 
-
-    isPainting = false;
     selElm = NULL; //because it undefined
 
     //qRegisterMetaType<DrawData>("DrawData");
@@ -918,6 +917,10 @@ void OGLWidget::paintBufferOnScreen( FBOWrapper buffer,int x, int y, int width, 
 void OGLWidget::paintBrushInBuffer(FBOWrapper fboWrapper) {
     if (able_drawing)
     {
+           qDebug() << "paint brush in buffer";
+        GLint currentBuff;
+        glGetIntegerv(GL_FRAMEBUFFER_BINDING, &currentBuff);
+
         glBindFramebuffer(GL_FRAMEBUFFER , fboWrapper.frameBuffer); // Bind our frame buffer for rendering
         //glPushAttrib(GL_VIEWPORT_BIT | GL_ENABLE_BIT); // Push our glEnable and glViewport states
         //glViewport(0, 0, window_width, window_height); // Set the size of the frame buffer view port
@@ -1059,7 +1062,7 @@ void OGLWidget::paintBrushInBuffer(FBOWrapper fboWrapper) {
 
 
         glBindTexture(GL_TEXTURE_2D,0);
-        glBindFramebuffer(GL_FRAMEBUFFER , 0); // Unbind our texture
+        glBindFramebuffer(GL_FRAMEBUFFER , currentBuff); // Unbind our texture
         //FRAMEBUFFER PART
 
 
@@ -1491,7 +1494,7 @@ void OGLWidget::paintGL()
  *  DRAW BRUSHES
 */
 
-    if(curStatus == STOP)
+    if(curStatus != PLAY)
         paintBufferOnScreen(mouseFBO,0, 0, wax, way,-100);
     /*
  *  APPLY SHADER EFFECT
@@ -1610,7 +1613,7 @@ void OGLWidget::drawEditBox( int z)
     int rightBottomCornerX2=x2 + editingRectangle.cornerSize/2;
     int rightBottomCornerY2=y2 + editingRectangle.cornerSize/2;
 
-    if (editingRectangle.isEditingRectangleVisible && !forceEditBoxDisable && !isPainting && getStatus()!= PLAY)
+    if (editingRectangle.isEditingRectangleVisible && !forceEditBoxDisable && !able_drawing && getStatus()!= PLAY)
     {
 
         // paintBufferOnScreen(0, 0, wax, way);
@@ -1917,8 +1920,6 @@ void OGLWidget::mousePressEvent(QMouseEvent *event)
     if(event->button() == Qt::LeftButton)
     {
         //isMousePlay = false;
-        if (able_drawing)
-        isPainting = true;
         stopShowLastDrawing();
         effectManager->hide();
         if (getIsBrushWindowOpened())
@@ -2026,7 +2027,6 @@ void OGLWidget::mouseReleaseEvent(QMouseEvent *event)
         editingRectangle.rect.setHeight(this->height());
     */
 
-    isPainting = false;
 }
 
 void OGLWidget::mouseMoveEvent ( QMouseEvent * event ){
@@ -2925,7 +2925,7 @@ QPoint OGLWidget::drawWrapText(QString str)
 
 void OGLWidget::storeMousePos()
 {
-    if (isMousePress && able_drawing){
+    if (isMousePress && able_drawing && curStatus!=PLAY){
 
         if (drawBrushElm->getCoords().length()==0)drawBrushElm->addBrush(m_manager.getCreatedBrush());
         drawBrushElm->addCoord(QPoint(mousePos.x(),mousePos.y()));
