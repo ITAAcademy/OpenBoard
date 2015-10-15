@@ -118,7 +118,11 @@ static DrawElement *GenerationDrawElement( QString path, OGLWidget *drawWidget =
                         if(format == "avi" || format == "mp4" || format == "mkv")
                         {
                             DrawVideoElm *elm = new DrawVideoElm(drawWidget, parent);
-                            elm->setVideoFile(path);
+                            if (elm->setVideoFile(path) == false)
+                            {
+                                delete elm;
+                                return NULL;
+                            }
                             elm->setTypeId(Element_type::Video);
                             elm->setKey(target.baseName());
                             qDebug() << "Create video object successful";

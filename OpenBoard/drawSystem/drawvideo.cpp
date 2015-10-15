@@ -72,15 +72,17 @@ bool DrawVideoElm::isVidePathValid()
     return  videoValid = true;
 }
 
-void DrawVideoElm::setVideoFile(QString path)
+bool DrawVideoElm::setVideoFile(QString path)
 {
     videoValid = false;
 
     QFile file(path);
     if(file.exists())
     {
-        if(decoder.initFF(path) != NULL)
+        if(decoder.initFF(path) != 0)
             videPath = path;
+        else
+            return false;
         videoValid = true;
 
     }
