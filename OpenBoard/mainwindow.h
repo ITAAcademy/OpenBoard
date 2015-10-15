@@ -197,13 +197,11 @@ public slots:
     void on_action_ZoomOut_triggered();
 private slots:
     void updateBlockFromTextEdit();
-    void setCurentTextBlockStaticMoment(double value);
+
     void on_actionAbout_Qt_triggered();
     void keyPressEvent(QKeyEvent *e);
     void on_spinBox_speedTB_valueChanged(int arg1);
-    void on_staticMomentSpin_valueChanged(double arg1);
-    void on_staticMomentSpin_2_valueChanged(int value);
-    void on_staticMomentButton_clicked();
+
     void on_check_whole_words_clicked();
     void on_check_show_text_cursor_clicked(bool checked);
     void on_speedBtn_released();

@@ -2070,7 +2070,6 @@ void MainWindow::updateTextEditFromBlock(QPoint point)
             ui->check_use_speed_value->setChecked(text_elm->getBNeedCalcTime());
             connect(textEdit, SIGNAL(textChanged()), this, SLOT(onTextChanged()));
             ui->check_is_static->setChecked(text_elm->isStaticText());
-            ui->staticMomentSpin->setValue(text_elm->getStaticMoment());
             return;
         }
     }
@@ -2123,48 +2122,6 @@ void MainWindow::updateBlockFromTextEdit()
             }
 
             text_elm->setStaticText(ui->check_is_static->isChecked());
-        }
-    }
-}
-
-void MainWindow::setCurentTextBlockStaticMoment(double value)
-{
-    qDebug() << "setCurentTextBlockStaticMoment <<S>> " << value;
-    QPoint point = mpOGLWidget->getTimeLine()->getSelectedBlockPoint();
-    //qDebug() << "IMAGE" << commandTextEdit->getPreviousCursorPosition();
-    if(point.x() != -1 )
-    {
-        DrawElement* elm = mpOGLWidget->getTimeLine()->getBlock(point);
-        if(elm->getTypeId() == Element_type::Text)
-        {
-
-            DrawTextElm *text_elm = (DrawTextElm *)elm;
-
-            if(value > 0)
-            {
-                text_elm->setStaticMoment(value);
-                return;
-            }
-            else
-            {
-                int currentValue = mpOGLWidget->getTimeLine()->getScalePointerPos();
-                qDebug()<< "currentValue" << currentValue;
-
-                if(currentValue < text_elm->getStartDrawTime())
-                {
-                    ui->staticMomentSpin->setValue(0);
-                    return;
-                }
-
-                if(currentValue > text_elm->getStartDrawTime() + text_elm->getLifeTime())
-                {
-                    ui->staticMomentSpin->setValue(1);
-                    return;
-                }
-
-                ui->staticMomentSpin->setValue((double)(currentValue - text_elm->getStartDrawTime())/text_elm->getLifeTime());
-            }
-
         }
     }
 }
@@ -2485,9 +2442,7 @@ void MainWindow::setEnabledToolBar(bool status)
     ui->spinBox_delayTB->setEnabled(status);
     ui->check_use_speed_value->setEnabled(status);
     ui->check_is_static->setEnabled(status);
-    ui->staticMomentButton->setEnabled(status);
-    ui->staticMomentSpin_2->setEnabled(status);
-    ui->staticMomentSpin->setEnabled(status);
+
 
     on_block_text_buttons_toolbar(status);
 
@@ -2645,24 +2600,6 @@ void MainWindow::on_spinBox_speedTB_valueChanged(int arg1)
 {
 
 }
-
-void MainWindow::on_staticMomentSpin_valueChanged(double arg1)
-{
-    ui->staticMomentSpin_2->setValue(arg1*100);
-    setCurentTextBlockStaticMoment(arg1);
-}
-
-void MainWindow::on_staticMomentSpin_2_valueChanged(int value)
-{
-    ui->staticMomentSpin->setValue((double)value/100);
-}
-
-void MainWindow::on_staticMomentButton_clicked()
-{
-    setCurentTextBlockStaticMoment(-1);
-}
-
-
 
 void MainWindow::on_check_whole_words_clicked()
 {

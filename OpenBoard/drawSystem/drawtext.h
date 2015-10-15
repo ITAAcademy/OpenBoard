@@ -14,7 +14,6 @@ class DrawTextElm : public DrawElement
     bool defaultFontColor = true;
     bool defaultFont = true;
     bool staticText = false;
-    double staticMoment = 1.0f;
     QString loggerText;
     QString unParsestring;
     Parser myParser;
@@ -133,8 +132,6 @@ public:
     bool isStaticText() const;
     void setStaticText(bool value);
 
-    double getStaticMoment() const;
-    void setStaticMoment(double value);
 
     bool getDefaultFontColor() const;
     void setDefaultFontColor(bool value);
