@@ -435,7 +435,6 @@ private:
     int currentLastDrawingPointIterator = 0;
     //GLuint ShaderProgram;
     bool firstUpdate = true;
-    bool isPainting;
     QImage img;
     ListControll *timeLine = NULL;
     EffectsManager *effectManager = NULL;
