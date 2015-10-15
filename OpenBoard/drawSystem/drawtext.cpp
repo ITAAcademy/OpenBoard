@@ -902,7 +902,7 @@ void DrawTextElm::setMainFillColor(const QColor &value)
 {
     mainFillColor = value;
     setFillColor(value);
-    currentColor=value;
+    //currentColor=value;
 }
 
 
