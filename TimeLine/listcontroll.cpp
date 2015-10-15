@@ -1062,7 +1062,9 @@ int ListControll::getBlockIndToAddFromPos(DrawElement * move_block, int pos, int
             else //nit empty
             {
                 //if (append_ind > 0
-                int append_ind = pos_to_append.y() - 1;
+                int append_ind = pos_to_append.y() ;
+                if (col == move_block->getBlockColumn())
+                    append_ind--;
                 //qDebug() << "KKKKKKKKKKKKKKKKKKK  " << append_ind;
                 /*if (force_resize_block ) //двигаєм
                 {
