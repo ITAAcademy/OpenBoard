@@ -995,11 +995,14 @@ int ListControll::getBlockIndToAddFromPos(DrawElement * move_block, int pos, int
 
     //logBlocksTypes(col);
     //if (false)
-    foreach (DrawElement* elm,tracks[col].block )
+    tracks[col].updateTime();
+    track_time = tracks[col].getTime();
+    for (int m = 0; m < track_size; m++)
+        //foreach (DrawElement* elm,tracks[col].block )
     {
         /*  if( elm->getBlockIndex() == ind)
             continue;*/
-
+        DrawElement* elm = tracks[col].block[m];
         if (elm == NULL)
         {
             qDebug() << " if (elm == NULL)         continue";
@@ -1015,491 +1018,168 @@ int ListControll::getBlockIndToAddFromPos(DrawElement * move_block, int pos, int
         {
             if (elm->getTypeId() == Element_type::Empty)
             {
-                if (pos + mov_block_time <= end || force_resize_block)     //if (force_append_block)
+                int new_val = pos - start;
+                if (pos + mov_block_time <= end) //влазе в пустоту   +++++++
                 {
-                    int elm_index = elm->getBlockIndex();
-                    int new_time = pos - start;
-                    bool elm_is_last = (elm_index == track_size - 1 ||
-                                        move_block->getBlockIndex() == track_size - 1);// ? true : false;
-                    elm->setLifeTime( new_time);
-                    tracks[col].block.insert(elm_index + 1, move_block);
-
-                    int right_emp_time = end - pos - mov_block_time;
-                    if (!elm_is_last && right_emp_time > 0 )
-                    {
-                        int next_index = elm_index + 2;
-                        DrawElement* next_el = tracks[col].block[next_index];
-
-                        if (next_el->getTypeId() != Element_type::Empty)
-                        {
-                            /* DrawElement* right_empty = new DrawElement(NULL,NULL);
-                            right_empty->setLifeTime(right_emp_time);
-                            tracks[col].block.insert(elm_index + 2,right_empty);
-                            right_empty->setBlockColumn(col);
-                            right_empty->setBlockIndex(elm_index + 2);
-                            */
-                            addEmptyBlockAt(col,elm_index + 2  ,right_emp_time);
-                            /* connect(right_empty, SIGNAL(borderColorChangedSignal(int,int,QString)),
-                                        this, SIGNAL(borderColorChangedSignal(int,int,QString)));
-                                connect(right_empty, SIGNAL(sizeChangedSignal(int,int, int, bool)),
-                                        this, SLOT(setBlockTimeWithUpdate(int, int, int, bool)));*/
-                            qDebug() << "AAAAAAAAAAAA " << tracks[col].getTime();
-                        }
-                        else
-                        {
-                            next_el->setLifeTime(next_el->getLifeTime() + right_emp_time );
-                            tracks[col].addTime(right_emp_time);
-                            qDebug() << "BBBBBBBBBBBB " << tracks[col].getTime();
-                        }
-                        qDebug() << " tracks[col].addTime(" <<  right_emp_time;
-                        // tracks[col].setTime( pos + mov_block_time + right_emp_time);
-                    }
-                    else
-                    {
-                        //tracks[col].setTime( pos + mov_block_time);
-                        // qDebug() << "FFFFFFFFFFFF " << tracks[col].getTime(); /////////////666666666666666666666
-                        if (elm_is_last)
-                        {
-                            int val = start + life - mov_block_time - pos;
-                            /* DrawElement* right_empty = new DrawElement(NULL,NULL);
-                            right_empty->setLifeTime(val);
-                            tracks[col].block.insert(elm_index + 2 ,right_empty);
-                            right_empty->setBlockColumn(col);
-                            right_empty->setBlockIndex(elm_index + 2);
-                            */
-                            addEmptyBlockAt(col,elm_index + 2  ,val);
-                            /* connect(right_empty, SIGNAL(borderColorChangedSignal(int,int,QString)),
-                                        this, SIGNAL(borderColorChangedSignal(int,int,QString)));
-                                connect(right_empty, SIGNAL(sizeChangedSignal(int,int, int, bool)),
-                                        this, SLOT(setBlockTimeWithUpdate(int, int, int, bool)));*/
-                            qDebug() << "FFFFFFFFFFFF  salonamana66  "<<val;
-                        }
-                        else
-                        {
-                            DrawElement * next =  tracks[col].block[elm_index + 2];
-                            reduceEmptyBlocksFrom(col,elm_index+1,  pos + mov_block_time - next->getStartDrawTime());
-                            qDebug() << "FFFFFFFFFFFF  papapa" <<
-                                        next->getStartDrawTime() <<
-                                        "    " << pos;
-                        }
-
-                    }
+                    DrawElement *empta = new DrawElement(NULL,NULL);
+                    empta->setLifeTime(new_val);
+                    connect(empta, SIGNAL(sizeChangedSignal(int,int, int, bool)),
+                            this, SLOT(setBlockTimeWithUpdate(int, int, int, bool)));
+                    tracks[col].block.insert(m , empta);
+                    tracks[col].block.insert(m + 1, move_block);
                     updateBlocksIndexFrom(col,0);
                     updateBlocksStartTimesFrom(col,0);
+                    reduceEmptyBlocksFromV2(col,m + 2 ,mov_block_time + new_val);
                     tracks[col].updateTime();
                     recountMaxTrackTime();
-                    return  get_ind;
+                    break;
                 }
-                else
+                else   // не влазе в пустоту
                 {
-                    getBlockIndToAddFromPos(move_block,move_block_start_time);
-
-                   /* tracks[move_block->get].block.insert(move_block->getBlockIndex(), move_block);
-                                            tracks[col].addTime(mov_block_time);
-                                            qDebug() << "22222222222222";
-                                            updateBlocksIndexFrom(col,0);
-
-                                            updateBlocksStartTimesFrom(col,0);
-                                            tracks[col].updateTime();
-                                            recountMaxTrackTime();*/
-
-                    return 1;
-                }
-            }
-            else  //Element_type != empty
-            {
-                int append_ind = pos_to_append.y();
-
-                if (force_resize_block )
-                {
-                    qDebug() << "1111111111111111";
-                    //addEmptyBlockAt(col, append_ind , 500); //12345'
-                    //this->addBlockAt(col, append_ind );
-                    tracks[col].block.insert(append_ind, move_block);
-                    //addEmptyBlockAt(col, append_ind , 1001); //12345'
-                    // addEmptyBlockAt(col, append_ind + 1 , 0); //12345
-                    //addEmptyBlockAt(col, append_ind , 0); //12345'
-                    //append_ind += 1;
-                    //this->addBlockAt(col, append_ind + 1 );
-
-                    if (append_ind > 0 && append_ind == elm_index)
+                    if (force_resize_block ) //двигаєм  ++++++
                     {
-                        DrawElement* prev_el = tracks[col].block[elm_index - 1];
-                        if (prev_el->getTypeId() == Element_type::Empty)
-                        {
-                            int prev_time = prev_el->getLifeTime();
-
-                            if (prev_time >mov_block_time)
-                            {
-                                //tracks[col].addTime(\-mov_block_time);
-                                prev_time -= mov_block_time;
-                                prev_el->setLifeTime(prev_time);
-                                /*for (int j = elm_index + 1; j < tracks[col].block.size(); j++)
-                                {
-                                    DrawElement *elma = tracks[col].block[j];
-                                    if (elma->getTypeId()  == Element_type::Empty)
-                                    {
-                                        int time = elma->getLifeTime();
-                                        //time -=value;
-                                        if (time <= mov_block_time)
-                                        {
-                                           // tracks[col].addTime(-time);
-                                            mov_block_time -= time;
-                                            tracks[col].block.removeAt(j);
-                                            delete elma;
-                                            j--;
-                                        }
-                                        else  // time > value
-                                        {
-                                            time -= mov_block_time;
-                                            elma->setLifeTime(time);
-                                            //tracks[col].addTime(-value);
-                                            j = tracks[col].block.size();
-                                        }
-                                    }
-                                }*/
-                                qDebug() << "1111111111111111    2";
-                                updateBlocksIndexFrom(col,0);
-                                updateBlocksStartTimesFrom(col,0);
-                                tracks[col].updateTime();
-                                recountMaxTrackTime();
-                                // return 1;
-                            }
-                            else
-                            {
-                                qDebug() << "1111111111111111 3";
-                                /*tracks[col].block.removeAt(append_ind - 1);
-                                // tracks[col].block.move(append_ind-1, append_ind);
-
-                                 removeBlock(col,append_ind-1,false,true,false);
-                                 tracks[col].block.insert(append_ind+1, move_block);
-                                //tracks[col].block.insert(append_ind,move_block);
-                               // tracks[col].addTime(mov_block_time - prev_time);
-                                 int temp_time = reduceEmptyBlocksFrom(col,append_ind+1,mov_block_time);*/
-                                /* if (temp_time > 0)
-                                     tracks[col].addTime( -mov_block_time + temp_time);*/
-
-                                reduceEmptyBlocksFromV2(col,elm_index,mov_block_time);
-                                /* for (int j = elm_index; j < tracks[col].block.size(); j++)
-                                {
-                                    DrawElement *elma = tracks[col].block[j];
-                                    if (elma->getTypeId()  == Element_type::Empty)
-                                    {
-                                        int time = elma->getLifeTime();
-                                        //time -=value;
-                                        if (time <= mov_block_time)
-                                        {
-                                            // tracks[col].addTime(-time);
-                                            mov_block_time -= time;
-                                            tracks[col].block.removeAt(j);
-                                            delete elma;
-                                            j--;
-                                        }
-                                        else  // time > value
-                                        {
-                                            time -= mov_block_time;
-                                            elma->setLifeTime(time);
-                                            //tracks[col].addTime(-value);
-                                            j = tracks[col].block.size();
-                                        }
-                                    }
-                                }*/
-
-                                updateBlocksIndexFrom(col,0);
-                                updateBlocksStartTimesFrom(col,0);
-                                tracks[col].updateTime();
-                                recountMaxTrackTime();
-                                //return 1;
-                            }
-
-
-                        }
-                        else
-                        {
-
-                            int temp_time = reduceEmptyBlocksFrom(col,elm_index,mov_block_time);
-                            /*if (temp_time > 0)
-                                tracks[col].addTime( -mov_block_time + temp_time);
-                            */
-                            updateBlocksIndexFrom(col,0);
-                            updateBlocksStartTimesFrom(col,0);
-                            tracks[col].updateTime();
-                            recountMaxTrackTime();
-                            qDebug() << "pupupuppuu     09 090 9 0";
-                            //return 1;;
-                        }
-                    }
-                    else
-                    {
-                        if (append_ind < tracks[col].block.size() - 1 && append_ind == elm_index + 1)
-                        {
-                            DrawElement* next_el = tracks[col].block[append_ind + 1];
-                            if (next_el->getTypeId() == Element_type::Empty)
-                            {
-                                int next_time = next_el->getLifeTime();
-                                if (next_time >mov_block_time)
-                                {
-                                    //tracks[col].addTime(\-mov_block_time);
-                                    next_time -= mov_block_time;
-                                    next_el->setLifeTime(next_time);
-                                    /*  updateBlocksIndexFrom(col,0);
-                                    updateBlocksStartTimesFrom(col,0);
-
-                                    reduceEmptyBlocksFrom(col,elm_index,mov_block_time);*/
-
-                                    updateBlocksIndexFrom(col,0);
-                                    updateBlocksStartTimesFrom(col,0);
-                                    tracks[col].updateTime();
-                                    recountMaxTrackTime();
-                                    qDebug() << "poduska";
-                                    //return 1;;
-
-                                }
-                                else
-                                {
-                                    tracks[col].block.removeAt(append_ind + 1);
-
-
-                                    tracks[col].addTime(mov_block_time - next_time);
-                                    int temp_time = reduceEmptyBlocksFrom(col,append_ind + 1,mov_block_time - next_time);\
-                                    /* if (temp_time > 0)
-                                        tracks[col].addTime( -mov_block_time + temp_time);*/
-
-                                    updateBlocksIndexFrom(col,0);
-                                    updateBlocksStartTimesFrom(col,0);
-                                    tracks[col].updateTime();
-                                    recountMaxTrackTime();
-                                    qDebug() << "tatuska";
-                                    // return 1;
-                                }
-                            }
-                            else
-                            {
-                                tracks[col].addTime(mov_block_time); //nepravilno
-                                reduceEmptyBlocksFrom(col,elm_index - 1,mov_block_time);
-                                updateBlocksIndexFrom(col,0);
-                                updateBlocksStartTimesFrom(col,0);
-                                tracks[col].updateTime();
-                                recountMaxTrackTime();
-                                qDebug() << "bubuska";  ////9999999999999999999999
-                                //return 1;
-                            }
-                        }
-                        else
-                        {
-
-                            /* if (pos_to_append.y() == elm_index + 1)
-                                tracks[col].block.move(append_ind,append_ind - 1);*/
-                            int mov_index = move_block->getBlockIndex();
-                            if (mov_index < elm_index)
-                            {
-                                if (elm_index < pos_to_append.y())
-                                {
-                                    if (pos_to_append.y() < mov_index)
-                                    {
-                                        qDebug() << "buba 1";  // ok
-
-                                    }
-                                    else
-                                    {
-                                        qDebug() << "buba 2";
-                                    }
-                                }
-                                else
-                                {
-                                    if (pos_to_append.y() < mov_index)
-                                    {
-                                        qDebug() << "buba 3";
-
-                                    }
-                                    else
-                                    {
-                                        qDebug() << "buba 4";
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                if (elm_index < pos_to_append.y())
-                                {
-                                    if (pos_to_append.y() < mov_index)
-                                    {
-                                        qDebug() << "buba 11";  // ok
-
-                                    }
-                                    else
-                                    {
-                                        qDebug() << "buba 12"; // ok
-                                        /* if (pos_to_append.y() == elm_index + 1)
-                                            tracks[col].block.move(append_ind,append_ind - 1);*/
-                                    }
-                                }
-                                else
-                                {
-                                    if (pos_to_append.y() < mov_index)
-                                    {
-                                        qDebug() << "buba 13";
-
-                                    }
-                                    else
-                                    {
-                                        qDebug() << "buba 14";
-                                    }
-                                }
-                            }
-
-
-
-
-                            /*if (mov_index < elm_index)
-                            {
-                                if (pos_to_append.y() < elm_index + 2)
-                                {
-                                    qDebug() << "baba 1";
-                                }
-                                else
-                                {
-                                    qDebug() << "baba 2";
-                                }
-                            }
-                            else
-                            {
-                                if (pos_to_append.y() < elm_index + 2)
-                                {
-                                    qDebug() << "baba 3";
-                                }
-                                else
-                                {
-                                    qDebug() << "baba 4";
-                                }
-
-                            }*/
-                            /* int new_tim = elm->getLifeTime() - mov_block_time;
-                            if (new_tim > 0)
-                                elm->setLifeTime(new_tim);
-                            else
-                            {
-                                elm->setLifeTime(0);
-                                /*delete elm;
-                                tracks[col].block.removeAt(append_ind - 1);
-
-                            }*/
-
-
-                            reduceEmptyBlocksFrom(col,elm_index ,mov_block_time);
-                            updateBlocksIndexFrom(col,0);
-                            updateBlocksStartTimesFrom(col,0);
-                            tracks[col].updateTime();
-                            recountMaxTrackTime();
-                            qDebug() << "ta nu _____________________________________________=-=-=-=-  pos_to_append  = "<< pos_to_append << "  elm_index = " << elm_index
-                                     << "  mov_index = " << mov_index;
-                            // return 1;
-
-                        }
-                    }
-                    addEmptyBlockAt(col, append_ind , 0); //12345'
-                    addEmptyBlockAt(col, append_ind-1 , 0); //12345'
-                    //this->addBlockAt(col, append_ind );
-                    // tracks[col].addTime(mov_block_time);
-
-                    return 1;
-                }
-                else // force_append_block
-                {
-                    if (append_ind == track_size)
-                    {
-                        tracks[col].block.insert(append_ind, move_block);
-                        tracks[col].addTime(mov_block_time);
-                        qDebug() << "22222222222222";
+                        elm->setLifeTime(new_val);
+                        tracks[col].block.insert(m + 1, move_block);
+                        DrawElement *empta = new DrawElement(NULL,NULL);
+                        empta->setLifeTime(0);
+                        connect(empta, SIGNAL(sizeChangedSignal(int,int, int, bool)),
+                                this, SLOT(setBlockTimeWithUpdate(int, int, int, bool)));
+                        tracks[col].block.insert(m + 2 , empta);
                         updateBlocksIndexFrom(col,0);
-
                         updateBlocksStartTimesFrom(col,0);
+
                         tracks[col].updateTime();
                         recountMaxTrackTime();
-                        return 1;
-                    }/////////////////////////yyyyyyyyyyyyyyyyyyyyyyyyyyyyy
-                    else
-                        if (append_ind == track_size + 1)
-                        {
-
-                            tracks[col].block.append(move_block);
-                            qDebug() << "22222222222222  tt";
-                            updateBlocksIndexFrom(col,0);
-
-                            updateBlocksStartTimesFrom(col,0);
-                            tracks[col].updateTime();
-                            recountMaxTrackTime();
-                            return 1;
-                        }
-                    else
-                        if (append_ind < tracks[col].block.size() - 1)
-                        {
-                            DrawElement* next_el = tracks[col].block[append_ind];
-                            if (next_el != NULL)
-                            {
-                                if (next_el->getTypeId() == Element_type::Empty)
-                                {
-                                    int next_el_time = next_el->getLifeTime();
-                                    if (next_el_time > mov_block_time)
-                                    {
-                                        tracks[col].block.insert(append_ind, move_block);
-                                        next_el->setLifeTime(next_el->getLifeTime() - mov_block_time);
-                                        qDebug() << "333333333333333333333";
-                                        updateBlocksIndexFrom(col,0);
-                                        updateBlocksStartTimesFrom(col,0);
-                                        tracks[col].updateTime();
-                                        recountMaxTrackTime();
-                                        return 1;
-                                    }
-                                    else
-                                        if (next_el_time == mov_block_time)
-                                        {
-                                            tracks[col].block.insert(append_ind, move_block);
-                                            tracks[col].block.removeAt(append_ind + 1);
-                                            delete next_el;
-                                            qDebug() << "44444444444444";
-                                            updateBlocksIndexFrom(col,0);
-                                            updateBlocksStartTimesFrom(col,0);
-                                            tracks[col].updateTime();
-                                            recountMaxTrackTime();
-                                            return 1;
-                                        }
-                                        else
-                                        {
-                                            if (next_el_time >= minBlockTime)
-                                            {
-                                                move_block->setLifeTime(next_el_time);
-                                                tracks[col].block.insert(append_ind, move_block);
-                                                tracks[col].block.removeAt(append_ind + 1);
-                                                delete next_el;
-                                                qDebug() << "55555555555555";
-                                                updateBlocksIndexFrom(col,0);
-                                                updateBlocksStartTimesFrom(col,0);
-                                                tracks[col].updateTime();
-                                                recountMaxTrackTime();
-                                                return 1;
-                                            }
-                                            else
-                                            {
-                                                qDebug() << "666666666666666666";
-                                                return getBlockIndToAddFromPos(move_block,move_block_start_time);
-                                            }
-                                        }
-                                    /* tracks[col].block.insert(append_ind, move_block);
-                            next_el->setLifeTime(next_el->getLifeTime());
-                            tracks[col].addTime(mov_block_time);*/
-
-                                }
-                            }
-
-
-                        }
-                    //getBlockIndToAddFromPos(move_block,move_block_start_time);
+                        break;
+                    }
+                    else // не влазе в пустоту - вертаєм на місце  +++
+                    {
+                        getBlockIndToAddFromPos(move_block,move_block_start_time);
+                        break;
+                    }
                 }
             }
+            else //nit empty
+            {
+                //if (append_ind > 0
+                int append_ind = pos_to_append.y() - 1;
+                //qDebug() << "KKKKKKKKKKKKKKKKKKK  " << append_ind;
+                /*if (force_resize_block ) //двигаєм
+                {
+                    qDebug() << "KKKKKKKKK         1";
+                }
+                else*/
+                {
+                    if (append_ind == elm->getBlockIndex())
+                    {
+                        DrawElement* prev_el = tracks[col].block[m - 1];
+                        if (prev_el->getLifeTime() < mov_block_time) //не взлазе перед блочком
+                        {
+                            if (!force_resize_block ) //+++++++++++++
+                            {
+                                qDebug() << "KKKKKKKKK         2";
+                                getBlockIndToAddFromPos(move_block,move_block_start_time);
+                                break;
+                            }
+                            else //+++++++++++++
+                            {
+                                DrawElement *empta = new DrawElement(NULL,NULL);
+                                empta->setLifeTime(0);
+                                connect(empta, SIGNAL(sizeChangedSignal(int,int, int, bool)),
+                                        this, SLOT(setBlockTimeWithUpdate(int, int, int, bool)));
+
+                                tracks[col].block.insert(m , move_block);
+                                tracks[col].block.insert(m  + 1 , empta);
+
+                                updateBlocksIndexFrom(col,0);
+                                updateBlocksStartTimesFrom(col,0);
+                                reduceEmptyBlocksFromV2(col,m  ,mov_block_time);
+                                tracks[col].updateTime();
+                                qDebug() << "KKKKKKKKK         22";
+                            }
+                        }
+                        else  //++++++++
+                        {
+                            prev_el->setLifeTime(prev_el->getLifeTime() - mov_block_time);
+                            tracks[col].block.insert(m , move_block);
+                            DrawElement *empta = new DrawElement(NULL,NULL);
+                            empta->setLifeTime(0);
+                            connect(empta, SIGNAL(sizeChangedSignal(int,int, int, bool)),
+                                    this, SLOT(setBlockTimeWithUpdate(int, int, int, bool)));
+                            tracks[col].block.insert(m + 1 , empta);
+                            updateBlocksIndexFrom(col,0);
+                            updateBlocksStartTimesFrom(col,0);
+                            tracks[col].updateTime();
+                            qDebug() << "KKKKKKKKK         3";
+                            break;
+                        }
+                    }
+                    else
+                    {
+                        if (m == track_size - 1 ) //+++++++++++
+                        {
+                            tracks[col].block.insert(m + 1, move_block);
+                            updateBlocksIndexFrom(col,0);
+                            updateBlocksStartTimesFrom(col,0);
+                            tracks[col].updateTime();
+                            qDebug() << "KKKKKKKKK         35";
+                            break;
+                        }
+                        else
+                        {
+                            DrawElement* next = tracks[col].block[m + 1];
+                            int next_life_time = next->getLifeTime();
+                            if (next_life_time < mov_block_time) //не взлазе after блочкa
+                            {
+                                if (!force_resize_block )  //++++++++++++++++++
+                                {
+                                    qDebug() << "KKKKKKKKK         20";
+                                    getBlockIndToAddFromPos(move_block,move_block_start_time);
+                                    break;
+                                }
+                                else
+                                {
+                                    DrawElement *empta = new DrawElement(NULL,NULL);
+                                    empta->setLifeTime(0);
+                                    connect(empta, SIGNAL(sizeChangedSignal(int,int, int, bool)),
+                                            this, SLOT(setBlockTimeWithUpdate(int, int, int, bool)));
+
+                                    tracks[col].block.insert(m + 1 , move_block);
+                                    tracks[col].block.insert(m  + 1 , empta);
+
+                                    next->setLifeTime(0);
+                                    updateBlocksIndexFrom(col,0);
+                                    updateBlocksStartTimesFrom(col,0);
+                                    reduceEmptyBlocksFromV2(col,m  ,mov_block_time - next_life_time);
+                                    tracks[col].updateTime();
+                                    qDebug() << "KKKKKKKKK         22";
+                                }
+                            }
+                            else  // +++++++++
+                            {
+                                next->setLifeTime(next->getLifeTime() - mov_block_time);
+                                DrawElement *empta = new DrawElement(NULL,NULL);
+                                empta->setLifeTime(0);
+                                connect(empta, SIGNAL(sizeChangedSignal(int,int, int, bool)),
+                                        this, SLOT(setBlockTimeWithUpdate(int, int, int, bool)));
+                                tracks[col].block.insert(m  + 1 , empta);
+                                tracks[col].block.insert(m + 2, move_block);
+                                updateBlocksIndexFrom(col,0);
+                                updateBlocksStartTimesFrom(col,0);
+                                tracks[col].updateTime();
+                                qDebug() << "KKKKKKKKK         30";
+                                break;
+                            }
+                        }
+                    }
+
+                }
+
+            }
+
         }
     }
-    getBlockIndToAddFromPos(move_block,move_block_start_time);
+
     return  get_ind;
 }
 
