@@ -137,7 +137,7 @@ AVFormatContext* FFmpegHelp::openVideoStream( QString path)
     //  close();
     //AVFormatContext * videoFormatContext = new AVFormatContext();
 
-    path = path + "\0";
+   // path = path + "\0";
    // char *str = new char[path.size() + 5];
     const char *str = path.toStdString().c_str();
     //strcpy( str, path.toLatin1().data());
