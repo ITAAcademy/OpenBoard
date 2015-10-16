@@ -143,17 +143,22 @@ static DrawElement *GenerationDrawElement( QString path, OGLWidget *drawWidget =
 
 static DrawElement *loadDrawElement(QIODevice *device, float version)
 {
-    DrawElement *draw_element = new DrawElement(NULL,NULL);
+    DrawElement *draw_element  = new DrawElement(NULL,NULL);
 
     draw_element->loadTypeId(device);
 
     Element_type typeId = draw_element->getTypeId();// Element_type::Image;//static_cast<Element_type>(temp_type);
+   /* if (typeId >= Element_type::Last_forProtect)
+    {
+        typeId = (Element_type::Text);
+        draw_element->setTypeId(typeId);
+    }*/
 
     if(typeId == Element_type::Text)
     {
-        DrawTextElm *elm = new DrawTextElm(NULL);
+        DrawTextElm *elm = new DrawTextElm(NULL,NULL);
         elm->loadRest(device, version);
-        // delete  draw_element;
+        delete  draw_element;
         draw_element = (DrawElement*) elm;
     }
     else
@@ -161,7 +166,7 @@ static DrawElement *loadDrawElement(QIODevice *device, float version)
         {
             DrawImageElm *elm = new DrawImageElm(NULL,NULL);
             elm->loadRest(device, version);
-            //delete  draw_element;
+            delete  draw_element;
             elm->setDrawImage(elm->getIcon());
             draw_element = (DrawElement*) elm;
             //draw_element->getIcon().save("blaaaaaaaaaaaaaaaaaaaaaa.jpg");
@@ -172,7 +177,7 @@ static DrawElement *loadDrawElement(QIODevice *device, float version)
             {
                 DrawBrushElm *elm = new DrawBrushElm(NULL,NULL);
                 elm->loadRest(device, version);
-                //delete  draw_element;
+                delete  draw_element;
                 draw_element = (DrawElement*) elm;
             }
             else
@@ -185,11 +190,15 @@ static DrawElement *loadDrawElement(QIODevice *device, float version)
                         DrawTextElm *elm_t = new DrawTextElm(NULL,NULL);
                         elm_t->copy(elm);
                         elm_t->setKey(elm->getKey());
+                         delete  draw_element;
                         draw_element = (DrawTextElm*) elm_t;
                         delete elm;
                     }
                     else
+                    {
+                         delete  draw_element;
                         draw_element = (DrawElement*) elm;
+                    }
 
                 }
                 else
@@ -200,12 +209,21 @@ static DrawElement *loadDrawElement(QIODevice *device, float version)
                         //delete  draw_element;
                         // if (elm->isVidePathValid())
                         if (isFileExists(elm->getVidePath()))
+                        {
+                             delete  draw_element;
                             draw_element = (DrawElement*) elm;
+                        }
                         else
                         {
-                            draw_element = new DrawElement(NULL,NULL);
+                            /* draw_element = new DrawElement(NULL,NULL);
                             draw_element->copy(elm);
                             draw_element->setKey(elm->getKey());
+                            delete elm;*/
+                            DrawTextElm *elm_t = new DrawTextElm(NULL,NULL);
+                            elm_t->copy(elm);
+                            elm_t->setKey(elm->getKey());
+                             delete  draw_element;
+                            draw_element = (DrawElement *) elm_t;
                             delete elm;
                         }
                     }
@@ -216,18 +234,26 @@ static DrawElement *loadDrawElement(QIODevice *device, float version)
                             elm->loadRest(device, version);
                             //delete  draw_element;
                             if (isFileExists(elm->getFilePath()))
+                            {
+                                 delete  draw_element;
                                 draw_element = (DrawElement*) elm;
+                            }
                             else
                             {
-                                draw_element = new DrawElement(NULL,NULL);
+                                /*draw_element = new DrawElement(NULL,NULL);
                                 draw_element->copy(elm);
                                 draw_element->setKey(elm->getKey());
+                                delete elm;*/
+                                DrawTextElm *elm_t = new DrawTextElm(NULL,NULL);
+                                elm_t->copy(elm);
+                                elm_t->setKey(elm->getKey());
+                                 delete  draw_element;
+                                draw_element = (DrawElement *) elm_t;
                                 delete elm;
                             }
 
 
                         }
-
     return draw_element;
     //qDebug() << "load block[i]:  " << i;
 }
