@@ -180,8 +180,17 @@ static DrawElement *loadDrawElement(QIODevice *device, float version)
                 {
                     DrawElement *elm = new DrawElement(NULL,NULL);
                     elm->loadRest(device, version);
-                    //delete  draw_element;
-                    draw_element = (DrawElement*) elm;
+                    if (version < 2.95)
+                    {
+                        DrawTextElm *elm_t = new DrawTextElm(NULL,NULL);
+                        elm_t->copy(elm);
+                        elm_t->setKey(elm->getKey());
+                        draw_element = (DrawTextElm*) elm_t;
+                        delete elm;
+                    }
+                    else
+                        draw_element = (DrawElement*) elm;
+
                 }
                 else
                     if(typeId == Element_type::Video)

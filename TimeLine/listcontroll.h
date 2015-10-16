@@ -24,7 +24,7 @@ class DrawBrushElm;
 class DrawElement;
 
 #define minBlockTime 1000
-#define VERSION 2.97
+#define VERSION 2.98
 
 bool isFileExists(QString path) ;
 
@@ -133,6 +133,12 @@ public:
         //return true;
         for (int i=0; i< blocks_size; i++)
         {
+           /* if (version < 2.95)
+            {
+                DrawElement *empt = new DrawElement(NULL,NULL);
+                empt->setLifeTime(500);
+                block.append(empt);
+            }*/
             block.append(loadDrawElement(device, version));
         }
         // qDebug() << "block size" << block.size();
@@ -142,6 +148,8 @@ public:
     {
         for (int i=0; i< block.size(); i++)
         {
+
+
             qDebug()<<"clear i:"<<i;
             if(block[i] != NULL)
             {

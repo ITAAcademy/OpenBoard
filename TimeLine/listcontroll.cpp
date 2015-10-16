@@ -3202,7 +3202,20 @@ bool ListControll::load(QIODevice* device)
     }
     //@ CRASH IN RELEASE BUT WORK IN DEBUG @
     //  qApp->processEvents(QEventLoop::AllEvents,10000);
+
     for (int k=0; k< tracks.size(); k++)
+    {
+        if (version < 2.95)
+        {
+            for (int i=0; i< tracks[k].block.size();)
+            {
+                addEmptyBlockAt(k, i, 0);
+                i+=2;
+            }
+            updateBlocksIndexFrom(k,0);
+            updateBlocksStartTimesFrom(k,0);
+        }
+
         for (int i=0; i< tracks[k].block.size(); i++)
         {
             DrawElement *el_connect = tracks[k].block[i];
@@ -3214,6 +3227,8 @@ bool ListControll::load(QIODevice* device)
                     this, SIGNAL(dontUseThisValue()));
 
         }
+
+    }
     // add group
     int numGroups;
     stream >> numGroups;
