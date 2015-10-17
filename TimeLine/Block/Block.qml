@@ -692,128 +692,88 @@ Rectangle{
             root.z += 200
             root.p_bar_track.z += 200
             timeControll. logBlocksDrawElColInd(root.colIndex);
-            //main222.dropedtoDropArea = false
-            /*console.log("onPressed colIndex =" + root.colIndex + "  mIndex = " + root.mIndex + " "
-                        + timeControll.getBlockStartTime(root.colIndex , root.mIndex ))*/
             main222.dropEntered = 0
             main222.maIsPressed = 1
             main222.selectedBlockCol = root.colIndex
-            //root.animation_scale_normal_toXpos = root.x
             root.animation_scale_normal_toYpos = root.y
             divider.y = (root.height + main222.p_columns.spacing) * root.colIndex
                     + time_scale.height - scroll.flickableItem.contentY
             divider.x =  root.x + root.width - divider.width/2 + tollbar.width - scroll.flickableItem.contentX  //1234
-
             divider.pos_to_append.x = root.colIndex
             divider.pos_to_append.y =  root.mIndex
-
             main222.dropEnteredBlockIndex = -1
-
             timeControll.setSelectedBlockPoint(root.colIndex,root.mIndex);
-
             main222.selectedBlockCol = root.colIndex
             main222.selectedBlockIndex = root.mIndex
-
             main222.selectedBlock = root;
             context_menu.globalRep = root.globalRep
-
-            // console.log("AAAAAAAAAAAAAAAAAA "+ main222.selectedBlockCol +" " + main222.selectedBlockIndex)
             if(main222.selectedBlock !== null)
                 main222.selectedBlock.hideMenu();
             timeControll.emitFocusFoundSignal();
-            //main222.p_scale_pointer.x = -500
-            //console.log("AAAAAAAAAAAAAAA " + timeControll.getBlockStartTime(root.colIndex,root.mIndex))
             main222.p_scale_pointer.x = mouseX + root.x - scroll.flickableItem.contentX + main222.p_scale_pointer.width //1234
-
-
-
-
+            main222.clicked_blockId = root.mIndex
+            main222.clicked_blockX = root.x
+            main222.clicked_blockY = root.y
             main222.needToLightSelected = true
             for (var y=0; y< rep_columns.model; y++)
                 rep_columns.itemAt(y).abortColorize()
-
             icon_coloroverlay.color = "#8000FF00"
-
-
-            // blocks.itemAt(i).icon_coloroverlay.color = "#00000000"
-            //columns.childAt()
-            // //console.log("onPressed: mIndex="+mIndex+" colIndex="+ colIndex + " time = " + timeControll.getBlockTime(colIndex,mIndex))
+            mouseArea.drag.target = null
             if (mouse.button == Qt.RightButton)
             {
                 context_menu.showIt(main222.p_scale_pointer.x, mouseY + root.colIndex * (root.height + 2)
                                     - scroll.flickableItem.contentY,root)
-                drag.target = null
             }
             else
             {
-                if (root.double_click )
+                context_menu.closeIt()
+                if( mouseX > root.width - resize_capture_area_width)
                 {
-                    //context_menu.show(-1000, -1000,root.globalRep)
-                    if (!main222.ctrl_pressed)
-                        context_menu.showEditBlock()
-                    root.double_click = false
+                    bChangeSizeRight = true;
+                   // mouseArea.drag.target = null
+                }
+                else if(mouseX < resize_capture_area_width)
+                {
+                    bChangeSizeLeft = true;
+                    //mouseArea.drag.target = null
                 }
                 else
-                {
-                    root.double_click = true
-                    double_click_timer.running = true
-
-                    context_menu.closeIt()
-                    if (!main222.ctrl_pressed)
+                    if (root.double_click )
                     {
-                        if(!timeControll.getCurent_group())
+                        if (!main222.ctrl_pressed)
+                            context_menu.showEditBlock()
+                        root.double_click = false
+                    }
+                    else
+                    {
+                        root.double_click = true
+                        double_click_timer.running = true
+
+
+                        if (!main222.ctrl_pressed)
                         {
-                            drag.target = root
+                            if(!timeControll.getCurent_group())
+                            {
+                                drag.target = root
+                                globalRep.isDrag = true;
+                                drop.visible = false;
+                                drop.enabled = false;
+                            }
+                            else
+                            {
+                               // drag.target = null
+                                main222.drag_group = true
+                                main222.press_mouseX = mouseX
+                                main222.press_block_x = root.x
+                            }
                         }
                         else
                         {
-                            drag.target = null
-                            main222.drag_group = true
-                            main222.press_mouseX = mouseX
-                            main222.press_block_x = root.x
+                            //drag.target = null
+                            drag.target = root
+                            globalRep.isDrag = false;
                         }
                     }
-                    else
-                        drag.target = null
-
-                    // //console.log("onPressed");
-                    drop.visible = false;
-                    drop.enabled = false;
-                    if( mouseX > root.width - resize_capture_area_width)
-                    {
-                        bChangeSizeRight = true;
-                        mouseArea.drag.target = null
-                    }
-                    else if(mouseX < resize_capture_area_width)
-                    {
-                        bChangeSizeLeft = true;
-                        mouseArea.drag.target = null
-                    }
-                    else
-                    {
-                        globalRep.isDrag = true;
-
-
-                        //root.border.color  = "transparent"
-
-
-
-
-
-                        /*   mouseY + root.colIndex * (root.height + 2)
-                                                 - scroll.flickableItem.contentY  */
-
-
-                        main222.clicked_blockId = root.mIndex
-                        main222.clicked_blockX = root.x
-                        main222.clicked_blockY = root.y
-                        /* root.z += 200
-                        root.p_bar_track.z += 200*/
-                        //main222.p_trackbar_which_block_dragged = root.p_trackbar
-                        //globalRep.z += 200
-
-                    }
-                }
             }
         }
         onReleased: {
