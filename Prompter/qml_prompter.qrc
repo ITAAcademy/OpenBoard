@@ -1,0 +1,15 @@
+<RCC>
+    <qresource prefix="/">
+        <file>mainWindow.qml</file>
+        <file>Preset/Brushes/standart.PNG</file>
+        <file>Content/Separator.qml</file>
+        <file>Content/brush_skeen.png</file>
+        <file>Content/Button.qml</file>
+        <file>Listbox.qml</file>
+        <file>ListboxControl.qml</file>
+        <file>Content/cancel_32.png</file>
+        <file>Content/plus_button_32.png</file>
+        <file>Content/arrow_right_24.png</file>
+        <file>MouseAreaForWindowDraging.qml</file>
+    </qresource>
+</RCC>
