@@ -44,8 +44,13 @@ public:
     }
     void updateTime()
     {
-        DrawElement *lasta = block.last();
-        setTime(lasta->getStartDrawTime() + lasta->getLifeTime());
+        if (block.size() == 0)
+            setTime(0);
+        else
+        {
+            DrawElement *lasta = block.last();
+            setTime(lasta->getStartDrawTime() + lasta->getLifeTime());
+        }
     }
 
     void addTime(unsigned long int value)
@@ -133,7 +138,7 @@ public:
         //return true;
         for (int i=0; i< blocks_size; i++)
         {
-           /* if (version < 2.95)
+            /* if (version < 2.95)
             {
                 DrawElement *empt = new DrawElement(NULL,NULL);
                 empt->setLifeTime(500);
@@ -176,7 +181,7 @@ class ListControll : public QObject, public QQuickImageProvider
 
     QPoint pos_to_append = QPoint(-1,-1);
     OGLWidget *p_drawWidget = NULL;
-     int spaces_to_add = -1;
+    int spaces_to_add = -1;
     QPoint curent_block = QPoint(-1,-1);
     bool load_from_file_or_library;
 
@@ -228,7 +233,7 @@ public:
 
     bool isCurentGroupValid();
     Q_INVOKABLE QPoint getCurentBlock();
-   Q_INVOKABLE void setCurentBlock (QPoint value);
+    Q_INVOKABLE void setCurentBlock (QPoint value);
     Q_INVOKABLE void setCurentBlock (int col, int ind);
 
     int isPlayPauseStop = 3;
@@ -270,8 +275,8 @@ public:
     Q_INVOKABLE bool getCtrlPressed();
 
     Q_INVOKABLE bool setSpacingBtwBlocks(int);
-     Q_INVOKABLE void setPosToAppend(QPoint point);
-     Q_INVOKABLE QPoint getPosToAppend();
+    Q_INVOKABLE void setPosToAppend(QPoint point);
+    Q_INVOKABLE QPoint getPosToAppend();
     Q_INVOKABLE int getSpacingBtwBlocks();
     Q_INVOKABLE  bool isProjectChanged();
     Q_INVOKABLE  QRect getYellowRect();
@@ -283,8 +288,8 @@ public:
     Q_INVOKABLE QString getBlockKey(int col, int i) ;
     Q_INVOKABLE void addNewBlock(int col, QString str = QString("block"+ QString::number(qrand())), DrawElement *element = NULL);
 
-     Q_INVOKABLE void setForceResizeBlock(bool value);
-     Q_INVOKABLE bool getForceResizeBlock();
+    Q_INVOKABLE void setForceResizeBlock(bool value);
+    Q_INVOKABLE bool getForceResizeBlock();
 
 
     Q_INVOKABLE   int getBlockTypeId(int col,int ind);
@@ -308,7 +313,7 @@ public:
     Q_INVOKABLE int getBlockStartTime(int col, int i);
     Q_INVOKABLE int addBlockStartTime(int col,int ind,int value );
     Q_INVOKABLE int setBlockTimeLeft(int col,int ind,int value );
-     Q_INVOKABLE Group * getBlockGroup(int col, int ind);
+    Q_INVOKABLE Group * getBlockGroup(int col, int ind);
     Q_INVOKABLE bool isBlockInGroup(int col, int ind);
     //Q_INVOKABLE bool setBlockDrawElemet(DrawElement *elm, int col, int i);
     Q_INVOKABLE   bool removeBlock(int col, int i, bool copy_in__buffer = true, bool del_last_empty = true,  bool del_draw_el = true );
