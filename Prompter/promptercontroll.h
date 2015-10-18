@@ -20,6 +20,7 @@
 #define WINDOW_SIZE_WIDTH_MIN 300
 #define WINDOW_SIZE_HEIGHT_MIN 200
 
+enum PromptErrorStatus{PROMPT_SUCCESS,PROMPT_CONCURENT_ERROR,PROMPT_INDEX_OUT_OF_RANGE};
 
 class PrompterManager : public QObject, public QQuickImageProvider
 {
@@ -33,6 +34,7 @@ class PrompterManager : public QObject, public QQuickImageProvider
     QPoint framaMousePosition;
     QPoint prevMousePosition;
 public:
+
     explicit PrompterManager(QObject *parent = 0);
     ~PrompterManager();
     void show();
@@ -49,11 +51,12 @@ public:
     Q_INVOKABLE void  setFramaMousePosition( const int x,const int y) ;
     Q_INVOKABLE void setFramaMousePosition( const QPoint x);
     Q_INVOKABLE void setPrevMousePosition  ();
-    Q_INVOKABLE void addPrompt(int startTime,int lifeTime,QString text);
-    Q_INVOKABLE bool setPromptStartTimeAt(int index,int startTime);
-    Q_INVOKABLE bool setPromptLifeTimeAt(int index,int lifeTime);
-    Q_INVOKABLE bool setPromptTextAt(int index,QString text);
+    Q_INVOKABLE int addPrompt(int startTime,int lifeTime,QString text);
+    Q_INVOKABLE int setPromptStartTimeAt(int index,int startTime);
+    Q_INVOKABLE int setPromptLifeTimeAt(int index,int lifeTime);
+    Q_INVOKABLE int setPromptTextAt(int index,QString text);
 
+    bool checkTimeisCorrect(int startTime, int lifeTime, int indexOfChangedElement);
 signals:
     void showSignal();
     void hideSignal();
@@ -61,6 +64,7 @@ signals:
 public slots:
     void setFocus();
     Q_INVOKABLE void update();
+
 private:
     QList<QObject*> promptsData;
      QPoint currentBlockIndex;

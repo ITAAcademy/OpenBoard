@@ -187,35 +187,73 @@ void  PrompterManager::setPrevMousePosition()
 {
     prevMousePosition = QCursor::pos();
 }
-
-void PrompterManager::addPrompt(int startTime, int lifeTime, QString text)
-{
-    promptsData.push_back(new PromptItem(startTime,lifeTime,text));
-    view.engine()->rootContext()->setContextProperty("promptsData",QVariant::fromValue(promptsData));
+bool LessThan (const QObject *c1,  const QObject *c2){
+    const PromptItem* typed1 = qobject_cast<const PromptItem*>(c1);
+    const PromptItem* typed2= qobject_cast<const PromptItem*>(c2);
+    //qDebug()<<"c1:"<<typed1->startTime();
+   // qDebug()<<"c2:"<<typed2->startTime();
+return typed1->startTime() < typed2->startTime();
 }
 
-bool PrompterManager::setPromptStartTimeAt(int index, int startTime)
+int PrompterManager::addPrompt(int startTime, int lifeTime, QString text)
 {
-    if (index>=promptsData.length()) return false;
+    if(!checkTimeisCorrect(startTime,lifeTime,-1))
+    {
+        qDebug() << "PROMPT_CONCURENT_ERROR";
+        return PROMPT_CONCURENT_ERROR;
+    }
+    promptsData.push_back(new PromptItem(startTime,lifeTime,text));
+qSort(promptsData.begin(),promptsData.end(),LessThan);
+ view.engine()->rootContext()->setContextProperty("promptsData",QVariant::fromValue(promptsData));
+    return PROMPT_SUCCESS;
+}
+
+int PrompterManager::setPromptStartTimeAt(int index, int startTime)
+{
+    if (index>=promptsData.length()) return PROMPT_INDEX_OUT_OF_RANGE;
     PromptItem *item = (PromptItem*)promptsData[index];
     item->setStartTime(startTime);
+    qSort(promptsData.begin(),promptsData.end(),LessThan);
+     view.engine()->rootContext()->setContextProperty("promptsData",QVariant::fromValue(promptsData));
+    return PROMPT_SUCCESS;
+}
+bool PrompterManager::checkTimeisCorrect(int startTime,int lifeTime,int indexOfChangedElement){
+    for (int i = 0; i<promptsData.length();i++){
+        if (i==indexOfChangedElement)continue;
+        PromptItem *item = (PromptItem*)promptsData[i];
+
+        const int itemStartTime = item->startTime();
+        const int itemLifeTime = item->lifeTime();
+        bool intersectionOfTimeInterval = !((startTime>itemStartTime && startTime>itemStartTime+itemLifeTime) ||
+                (startTime+lifeTime<itemStartTime && startTime+lifeTime<itemStartTime+itemLifeTime));
+        if (intersectionOfTimeInterval)return false;
+    }
     return true;
 }
 
-bool PrompterManager::setPromptLifeTimeAt(int index, int lifeTime)
+int PrompterManager::setPromptLifeTimeAt(int index, int lifeTime)
 {
-    if (index>=promptsData.length()) return false;
+    if (index>=promptsData.length()) return PROMPT_INDEX_OUT_OF_RANGE;
     PromptItem *item = (PromptItem*)promptsData[index];
+    if(!checkTimeisCorrect(item->startTime(),lifeTime,index))
+    {
+        qDebug() << "PROMPT_CONCURENT_ERROR";
+        return PROMPT_CONCURENT_ERROR;
+    }
     item->setLifeTime(lifeTime);
-    return true;
+    qSort(promptsData.begin(),promptsData.end(),LessThan);
+     view.engine()->rootContext()->setContextProperty("promptsData",QVariant::fromValue(promptsData));
+    return PROMPT_SUCCESS;
 }
 
-bool PrompterManager::setPromptTextAt(int index, QString text)
+int PrompterManager::setPromptTextAt(int index, QString text)
 {
-    if (index>=promptsData.length()) return false;
+    if (index>=promptsData.length()) return PROMPT_INDEX_OUT_OF_RANGE;
     PromptItem *item = (PromptItem*)promptsData[index];
     item->setPromptText(text);
-    return true;
+    qSort(promptsData.begin(),promptsData.end(),LessThan);
+     view.engine()->rootContext()->setContextProperty("promptsData",QVariant::fromValue(promptsData));
+    return PROMPT_SUCCESS;
 }
 void  PrompterManager::setFramaMousePosition( const int x,const int y)
 {

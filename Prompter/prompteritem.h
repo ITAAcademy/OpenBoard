@@ -22,6 +22,7 @@ public:
 
         QString promptText();
         void setPromptText(const QString &text);
+
 signals:
     void startTimeChanged();
     void lifeTimeChanged();

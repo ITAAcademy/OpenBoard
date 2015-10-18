@@ -5,6 +5,8 @@ PromptItem::PromptItem(QObject *parent): QObject(parent)
 
 }
 
+
+
 PromptItem::PromptItem(int startTime, int lifeTime, const QString &text)
 {
 this->m_startTime=startTime;
@@ -51,4 +53,7 @@ void PromptItem::setPromptText(const QString &text)
         emit promptTextChanged();
     }
 }
+
+
+
 

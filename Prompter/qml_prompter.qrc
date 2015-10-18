@@ -5,7 +5,6 @@
         <file>Content/Separator.qml</file>
         <file>Content/brush_skeen.png</file>
         <file>Content/Button.qml</file>
-        <file>Listbox.qml</file>
         <file>ListboxControl.qml</file>
         <file>Content/cancel_32.png</file>
         <file>Content/plus_button_32.png</file>
