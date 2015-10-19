@@ -104,6 +104,13 @@ void PrompterManager::setCurrentBlockIndex(const QPoint &value)
 {
     currentBlockIndex = value;
 }
+void PrompterManager::setCurrentBlockTime(int newTime){
+    if (currentBlockTime!=newTime)blockTimeChanged(newTime);
+    currentBlockTime=newTime;
+}
+int PrompterManager::getCurrentBlockTime(){
+    return currentBlockTime;
+}
 
 void PrompterManager::moveWindow()
 {

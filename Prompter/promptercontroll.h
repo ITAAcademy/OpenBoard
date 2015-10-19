@@ -44,9 +44,13 @@ public:
     bool isActive();
     QPoint getCurrentBlockIndex() const;
     void setCurrentBlockIndex(const QPoint &value);
+    void setCurrentBlockTime(int newTime);
+    Q_INVOKABLE int getCurrentBlockTime();
+
     Q_INVOKABLE void moveWindow( ) ;
     Q_INVOKABLE void resizeWindowWidth(bool left) ;
     Q_INVOKABLE void resizeWindowHeight(bool up) ;
+
 
     Q_INVOKABLE void  setFramaMousePosition( const int x,const int y) ;
     Q_INVOKABLE void setFramaMousePosition( const QPoint x);
@@ -60,6 +64,7 @@ public:
 signals:
     void showSignal();
     void hideSignal();
+    void blockTimeChanged(int newValue);
     void setBlockTimeSignal(int val);
 public slots:
     void setFocus();
@@ -68,6 +73,7 @@ public slots:
 private:
     QList<QObject*> promptsData;
      QPoint currentBlockIndex;
+     int currentBlockTime;
     int blockTime = 0;
     bool showed=false;
    // QStringList dataListLabels;

@@ -33,7 +33,8 @@ Rectangle{
         visible:false
         onAccepted: {
             //console.log("And of course you could only agree.")
-            Qt.quit()
+            //Qt.quit()
+            visible=false;
         }
         //Component.onCompleted: visible = true
     }
@@ -50,13 +51,13 @@ Rectangle{
             id:scrollView
 
             width:parent.width
-            height:root.height-root.border.width*2;
+            height:root.height-root.border.width*2-statusBar.height;
 
             ListView {
 
                 //property alias btnAdd : btnAdd
                 id:listView
-                spacing: 3
+                //spacing: 3
                 header:
                     Row{
                     Rectangle{
@@ -96,6 +97,13 @@ Rectangle{
 
                 width:parent.width-root.border.width*2
                 height:parent.height
+                Connections {
+                    target: prompterControll
+                    onBlockTimeChanged: {
+                        console.log("block time changed");
+                    }
+                }
+
                 model: promptsData
                 delegate:Rectangle {
                     property int delegateWidth : root.width-root.border.width*2
@@ -314,10 +322,19 @@ Rectangle{
                         var emptyFieldsExist = (newStartTimeValue.length<1 || newLifeTimeValue.length<1 || newPromptTextValue.length<1);
                         var isValuesCorrect = (newStartTimeValue>=0 && newLifeTimeValue>0);
                             if (emptyFieldsExist || !isValuesCorrect)
+                            {
+                                statusBar.setStatusText("empty field not allowed");
                                 return; //empty fields not allowed;
-                            prompterControll.addPrompt(newStartTimeValue,newLifeTimeValue,newPromptTextValue);
+                            }
+                            var operationResult=prompterControll.addPrompt(newStartTimeValue,newLifeTimeValue,newPromptTextValue);
+                            if(operationResult===0)
+                            {
                             clearNewPromptRow();
                             console.log("prompt added");
+                            }
+                            else if (operationResult===1)
+                                statusBar.setStatusText("Error, time values intersection detected");
+                                //messageDialog.setVisible(true);
                         }
                     }
                 }
@@ -325,6 +342,19 @@ Rectangle{
 
             }
 
+        }
+        StatusBar{
+            id:statusBar
+            function setStatusText(val){
+                statusText.text=val;
+            }
+
+            width:parent.width
+            Text{
+                id:statusText
+                width:parent.width
+                text:"test"
+            }
         }
 
     }
