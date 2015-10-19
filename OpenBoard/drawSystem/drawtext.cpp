@@ -444,6 +444,7 @@ void DrawTextElm::setUnParsestring(const QString &valueUnParss, const QString &v
     globalDeltaComandSize = 0;
     //qDebug() << "START";
     myParser.ParsingLine(mUnitList, unParsestring, drawTime, globalPauseLifeTime, globalDeltaComandSize, delay);
+    playTimeUntilFreeze=drawTime;
     //qDebug() << "STOP";
     UnitCommand* command = new UnitCommand();
     command->setUnitCommandType("Update");
@@ -482,18 +483,19 @@ void DrawTextElm::setTickTime(int value)
 
 bool DrawTextElm::load_add(QDataStream &stream, float version)
 {
-    stream >> unParsestring >> loggerText >> textCursor >> prevTextCursor >> mainTextFont >> mainFillColor >> bCalcTime;
+    stream >> unParsestring >> loggerText >> textCursor >> prevTextCursor >> mainTextFont
+            >> mainFillColor >> bCalcTime;
     setUnParsestring(unParsestring, loggerText);
-    if(version > 2.8)
+    if(version > 2.801)
     {
         stream >> staticText;
     }
-    if(version > 2.9 && version <= 2.96)
+    if(version  > 2.901 && version < 2.961)
     {
         double temp;
         stream >> temp;//static moment not used now but it present in old project DEPRECATED
     }
-    if(version > 2.96)
+    if(version > 2.961)
     {
         stream >> defaultFont;
         stream >> defaultFontColor;

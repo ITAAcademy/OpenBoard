@@ -16,7 +16,7 @@
 
 class Group;
 
-enum Element_type { Text, Video, Audio, Image,Brushh,Empty};
+enum Element_type { Text, Video, Audio, Image,Brushh,Empty,Last_forProtect};
 
 struct AnimStateTime{
     int state; //no anim = 0,begin = 1,end = 2, begin & end =3
