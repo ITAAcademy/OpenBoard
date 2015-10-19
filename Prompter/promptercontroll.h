@@ -1,5 +1,5 @@
-#ifndef EFFECTSCONTROL_H
-#define EFFECTSCONTROL_H
+#ifndef PROMPT_CONTROLLER_H
+#define PROMPT_CONTROLLER_H
 #include <QObject>
 #include <QQuickImageProvider>
 #include <QDir>
@@ -14,7 +14,7 @@
 #include <QDebug>
 #include <QFont>
 #include <QQuickItem>
-#include <prompteritem.h>
+#include "prompteritem.h"
 #define WINDOW_SIZE_WIDTH_DEFAULT 800
 #define WINDOW_SIZE_HEIGHT_DEFAULT 400
 #define WINDOW_SIZE_WIDTH_MIN 300
@@ -59,7 +59,7 @@ public:
     Q_INVOKABLE int setPromptTextAt(int index,QString text);
 
     bool checkTimeisCorrect(int startTime, int lifeTime, int indexOfChangedElement);
-    void determineAndSelectCurrentLineByTime(int time);
+
 signals:
     void showSignal();
     void hideSignal();
@@ -68,6 +68,7 @@ signals:
 
 public slots:
     void setFocus();
+    void determineAndSelectCurrentLineByTime(int time);
     Q_INVOKABLE void update();
 
 private:

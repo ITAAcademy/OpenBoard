@@ -6,6 +6,6 @@
         <file>Content/cancel_32.png</file>
         <file>Content/plus_button_32.png</file>
         <file>Content/arrow_right_24.png</file>
-        <file>MouseAreaForWindowDraging.qml</file>
+        <file>WindowDragingMouseArea.qml</file>
     </qresource>
 </RCC>

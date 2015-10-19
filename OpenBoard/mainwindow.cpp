@@ -492,6 +492,8 @@ MainWindow::~MainWindow()
     //mSettings.saveSettings(mSettings.getSettings());
     mSettings.setMainWindowRect(geometry());
     mpOGLWidget->getTimeLine()->close();
+   mpOGLWidget->getPrompterManager()->close();
+
     //drawThread.quit();
     if(toolBar != NULL)
         delete toolBar;
@@ -745,6 +747,10 @@ bool MainWindow::event(QEvent * e) // overloading event(QEvent*) method of QMain
     {
         if (isMinimized()) {
             mpOGLWidget->getTimeLine()->hide();
+            if(mpOGLWidget->getIsPrompterManagerOpened())
+            {
+                mpOGLWidget->getPrompterManager()->hide();
+            }
             mpOGLWidget->hide();
             isActive = false;
             e->ignore();
@@ -757,6 +763,10 @@ bool MainWindow::event(QEvent * e) // overloading event(QEvent*) method of QMain
             //if(mpOGLWidget->isVisible())
             {
                 mpOGLWidget->getTimeLine()->show();
+                if(mpOGLWidget->getIsPrompterManagerOpened())
+                {
+                mpOGLWidget->getPrompterManager()->show();
+                }
             }
         }
         break;
@@ -904,6 +914,7 @@ void MainWindow::on_action_Hide_triggered()
     mpOGLWidget->hide();
     mpOGLWidget->setHiddenByButton(true);
     mpOGLWidget->getTimeLine()->hide();
+    mpOGLWidget->getPrompterManager()->hide();
     //  mpOGLWidget->close();*/
     // delete mpOGLWidget;
     ui->action_Pause->setEnabled(false);
@@ -2619,4 +2630,18 @@ void MainWindow::on_speedBtn_released()
 void MainWindow::on_crossBtn_released()
 {
 
+}
+
+void MainWindow::on_actionShow_prompter_triggered()
+{
+    if (mpOGLWidget->getIsPrompterManagerOpened())
+    {
+        ui->actionShow_prompter->setText("Show prompter");
+    mpOGLWidget->hidePrompterManager();
+    }
+    else
+    {
+        ui->actionShow_prompter->setText("Hide prompter");
+    mpOGLWidget->showPrompterManager();
+    }
 }

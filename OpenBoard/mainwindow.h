@@ -206,6 +206,7 @@ private slots:
     void on_check_show_text_cursor_clicked(bool checked);
     void on_speedBtn_released();
     void on_crossBtn_released();
+    void on_actionShow_prompter_triggered();
 };
 
 #endif // MAINWINDOW_H

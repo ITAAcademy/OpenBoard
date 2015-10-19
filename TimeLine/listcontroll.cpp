@@ -2797,6 +2797,8 @@ bool ListControll::isCurentGroupValid()
 
 }
 
+
+
 void ListControll::setCtrlPressed(bool value)
 {
     //drawYellowRectangle(QRect(1000 ,  140  , 2001  , 141));
@@ -3297,6 +3299,7 @@ void ListControll::setScalePointerPos( int x)
 {
     scale_pointer_pos = x;
     calcPointedBlocks();
+    emit scalePointerXChanged(x);
     //// //qDebug() << "RRRRRRRRRRRRRRR scale_pointer_pos=" << scale_pointer_pos;
 }
 

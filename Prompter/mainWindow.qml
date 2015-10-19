@@ -22,7 +22,7 @@ Rectangle{
     property int newStartTimeValue : 0
     property string newPromptTextValue : ""
 
-    MouseAreaForWindowDraging{
+    WindowDragingMouseArea{
         id: framaMA
         anchors.fill:   root
     }
@@ -116,6 +116,7 @@ Rectangle{
                         onSelectCurrentLineInListSignal: {
                         if (val==indexOfThisDelegate)mainRow.setRowColor("green");
                         else if (val>indexOfThisDelegate)mainRow.setRowColor("red");
+                        else mainRow.setRowColor("white");
                         }
                     }
                     border.width: 1

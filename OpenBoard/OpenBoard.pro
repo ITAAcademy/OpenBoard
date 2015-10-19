@@ -44,7 +44,9 @@ SOURCES += main.cpp\
     ../FileManager/filecontroll.cpp \
     ../FileManager/filepainter.cpp \
     ../Effects/effect.cpp \
-    ../Effects/effectscontroll.cpp
+    ../Effects/effectscontroll.cpp \
+    ../Prompter/prompteritem.cpp    \
+    ../Prompter/promptercontroll.cpp
 
 
 
@@ -88,9 +90,9 @@ HEADERS  += mainwindow.h \
     ../FileManager/filecontroll.h \
     ../FileManager/filepainter.h \
     ../Effects/effect.h \
-    ../Effects/effectscontroll.h
-
-
+    ../Effects/effectscontroll.h \
+    ../Prompter/prompteritem.h  \
+    ../Prompter/promptercontroll.h
 
 FORMS    += mainwindow.ui \
     youtube/logindialog.ui \
@@ -104,7 +106,8 @@ RESOURCES += \
     ../NewProject/qml_new_project.qrc \
     shaders.qrc \
     ../FileManager/qml_filemanager.qrc \
-    ../Effects/qml_effects.qrc
+    ../Effects/qml_effects.qrc \
+    ../Prompter/qml_prompter.qrc
     RC_FILE = myapp.rc
 
 #unix {
@@ -173,7 +176,12 @@ DISTFILES += \
     ../Effects/Content/Separator.qml \
     ../Effects/Listbox.qml \
     ../Effects/ListboxControl.qml \
-    ../Effects/mainEffectWindow.qml
+    ../Effects/mainEffectWindow.qml \
+    ../Prompter/EffectsManager.pro.user \
+    ../Prompter/Prompter.pro.user \
+    ../Prompter/mainWindow.qml \
+    ../Prompter/WindowDragingMouseArea.qml
 
 SUBDIRS += \
-    ../Effects/EffectsManager.pro
+    ../Effects/EffectsManager.pro \
+    ../Prompter/Prompter.pro

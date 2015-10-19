@@ -452,6 +452,7 @@ public:
 
 
 signals:
+    void scalePointerXChanged(int val);
     void borderColorChangedSignal(int col,int ind, QString color);
     // void sizeChangedSignal(int,int,unsigned long);
     void dontUseThisValue();
