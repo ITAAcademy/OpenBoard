@@ -1,7 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file>mainWindow.qml</file>
-        <file>Preset/Brushes/standart.PNG</file>
         <file>Content/brush_skeen.png</file>
         <file>Content/Button.qml</file>
         <file>Content/cancel_32.png</file>

@@ -27,9 +27,9 @@ void PromptItem::setStartTime(const int &startTime)
     }
 }
 
-bool PromptItem::isTimeInRange(int time)
+bool PromptItem::isIncludeTimeValue(int time)
 {
-     if (time>=startTime && time <= startTime+lifeTime()) return true;
+     if (time>=m_startTime && time <= m_startTime+m_lifeTime) return true;
      return false;
 }
 

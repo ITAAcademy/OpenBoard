@@ -16,6 +16,7 @@ public:
 
         int startTime() const;
         void setStartTime(const int &startTime);
+        bool isIncludeTimeValue(int time);
 
         int lifeTime() const;
         void setLifeTime(const int &lifeTime);
