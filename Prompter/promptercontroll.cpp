@@ -95,21 +95,13 @@ void PrompterManager::setFocus()
     }
 
 }
-QPoint PrompterManager::getCurrentBlockIndex() const
-{
-    return currentBlockIndex;
-}
 
-void PrompterManager::setCurrentBlockIndex(const QPoint &value)
-{
-    currentBlockIndex = value;
+void PrompterManager::setCurrentTime(int newTime){
+    if (currentTime!=newTime)emit currentTimeChanged(newTime);
+    currentTime=newTime;
 }
-void PrompterManager::setCurrentBlockTime(int newTime){
-    if (currentBlockTime!=newTime)blockTimeChanged(newTime);
-    currentBlockTime=newTime;
-}
-int PrompterManager::getCurrentBlockTime(){
-    return currentBlockTime;
+int PrompterManager::getCurrentTime(){
+    return currentTime;
 }
 
 void PrompterManager::moveWindow()
@@ -236,6 +228,21 @@ bool PrompterManager::checkTimeisCorrect(int startTime,int lifeTime,int indexOfC
         if (intersectionOfTimeInterval)return false;
     }
     return true;
+}
+
+void PrompterManager::determineAndSelectCurrentLineByTime(int time)
+{
+    int index = -1;
+    for (int i = 0 ; i < promptsData.length(); i++){
+        PromptItem *singleElement = (PromptItem*)promptsData[i];
+        if (singleElement->isIncludeTimeValue(time))
+        {
+            index = i;
+            break;
+        }
+    }
+    if (index<0) return;
+    emit selectCurrentLineInListSignal(index);
 }
 
 int PrompterManager::setPromptLifeTimeAt(int index, int lifeTime)

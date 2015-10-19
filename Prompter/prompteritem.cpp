@@ -24,7 +24,13 @@ void PromptItem::setStartTime(const int &startTime)
     if (startTime != m_startTime) {
             m_startTime = startTime;
             emit startTimeChanged();
-        }
+    }
+}
+
+bool PromptItem::isTimeInRange(int time)
+{
+     if (time>=startTime && time <= startTime+lifeTime()) return true;
+     return false;
 }
 
 int PromptItem::lifeTime() const

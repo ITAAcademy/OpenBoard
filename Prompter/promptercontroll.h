@@ -42,10 +42,8 @@ public:
     void close();
     QQmlContext* getRootContext();
     bool isActive();
-    QPoint getCurrentBlockIndex() const;
-    void setCurrentBlockIndex(const QPoint &value);
-    void setCurrentBlockTime(int newTime);
-    Q_INVOKABLE int getCurrentBlockTime();
+    void setCurrentTime(int newTime);
+    Q_INVOKABLE int getCurrentTime();
 
     Q_INVOKABLE void moveWindow( ) ;
     Q_INVOKABLE void resizeWindowWidth(bool left) ;
@@ -61,19 +59,20 @@ public:
     Q_INVOKABLE int setPromptTextAt(int index,QString text);
 
     bool checkTimeisCorrect(int startTime, int lifeTime, int indexOfChangedElement);
+    void determineAndSelectCurrentLineByTime(int time);
 signals:
     void showSignal();
     void hideSignal();
-    void blockTimeChanged(int newValue);
-    void setBlockTimeSignal(int val);
+    void currentTimeChanged(int val);
+    void selectCurrentLineInListSignal(int val);
+
 public slots:
     void setFocus();
     Q_INVOKABLE void update();
 
 private:
     QList<QObject*> promptsData;
-     QPoint currentBlockIndex;
-     int currentBlockTime;
+     int currentTime;
     int blockTime = 0;
     bool showed=false;
    // QStringList dataListLabels;

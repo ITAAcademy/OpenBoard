@@ -99,10 +99,11 @@ Rectangle{
                 height:parent.height
                 Connections {
                     target: prompterControll
-                    onBlockTimeChanged: {
-                        console.log("block time changed");
+                    onCurrentTimeChanged: {
+                        console.log("time changed");
                     }
                 }
+
 
                 model: promptsData
                 delegate:Rectangle {
@@ -110,7 +111,13 @@ Rectangle{
                     property int delegateSingleElementHeight : 50
                     property int indexOfThisDelegate: index
                     width: delegateWidth; height: childrenRect.height
-
+                    Connections {
+                        target: prompterControll
+                        onSelectCurrentLineInListSignal: {
+                        if (val==indexOfThisDelegate)mainRow.setRowColor("green");
+                        else if (val>indexOfThisDelegate)mainRow.setRowColor("red");
+                        }
+                    }
                     border.width: 1
 
                     color: "grey"
@@ -119,8 +126,14 @@ Rectangle{
                         id: mainRow
                         height:childrenRect.height
                         width:parent.width
+                        function setRowColor(col){
+                           textInputStartTimeRect.color=col;
+                            textInputLifeTimeRect.color=col;
+                            textInputPromtTextRect.color=col;
+                        }
 
                         Rectangle{
+                            id: textInputStartTimeRect
                             width: textInputStartTime.width
                             height: textInputStartTime.height
                             border.color: "#4b4b4b"
@@ -149,6 +162,7 @@ Rectangle{
                             }
                         }
                         Rectangle{
+                            id:textInputLifeTimeRect
                             width: textInputLifeTime.width
                             height: textInputLifeTime.height
                             border.width:1
@@ -314,8 +328,9 @@ Rectangle{
                         }
                     }
                     Button{
+                        iconSource: "qrc:/Content/plus_button_32.png";
                         id: btnAdd
-                        text:'Add'
+
                         signal clearNewPromptRow();
                         onClicked:
                         {
