@@ -48,6 +48,7 @@ protected:
     AnimStateTime anim_state_time;
     FBOWrapper fboWrapper;
 
+    float border = 0;
     QImage icon;
     QByteArray iconData;
 
@@ -60,6 +61,7 @@ protected:
     int startDrawTime;
     int x, y, z, width, height;
     int keyCouter = 0;
+
     bool aspectRatio = false;
     QTimer lifeTimer;
     QElapsedTimer tickTimer;
@@ -104,8 +106,8 @@ public:
     void setPosition(QPoint pos);
     void setPosition( int x, int y);
     void setDelay(int d);
-    void setSize( QSize pos );
-    void setSize( int width, int height);
+    virtual void setSize( QSize pos );
+    virtual void setSize( int width, int height);
     QSize getSize();
 
     void setRect (QRect rect);
@@ -168,6 +170,9 @@ public:
     clearEffects();
     int getPlayTimeUntilFreeze() const;
     void setPlayTimeUntilFreeze(int value);
+
+    float getBorder() const;
+     void setBorder(float value);
 
 signals:
     void dontUseThisValue();

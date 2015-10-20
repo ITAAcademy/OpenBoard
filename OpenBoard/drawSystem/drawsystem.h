@@ -254,6 +254,13 @@ static DrawElement *loadDrawElement(QIODevice *device, float version)
 
 
                         }
+    if (version > 3.001)
+    {
+        int border;
+        QDataStream stream(device);
+        stream >> border;
+        draw_element->setBorder(border);
+    }
     return draw_element;
     //qDebug() << "load block[i]:  " << i;
 }

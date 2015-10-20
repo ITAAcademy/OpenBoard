@@ -417,9 +417,19 @@ void DrawElement::setPlayTimeUntilFreeze(int value)
     qDebug() << "setPlayTimeUntilFreeze:"<<value;
     playTimeUntilFreeze = value;
 }
+
+float DrawElement::getBorder() const
+{
+    return border;
+}
+
+void DrawElement::setBorder(float value)
+{
+    border = value;
+}
 void DrawElement::draw()
 {
-
+    
 }
 
 QVector<ShaderEffect> DrawElement::getEffects()
@@ -559,6 +569,8 @@ bool DrawElement::save(QIODevice* device, QProgressBar *bar) //-=-=-=
         bar->setValue(bar->value() + 1);
         qApp->processEvents();
     }
+
+    stream << border;
 }
 
 bool DrawElement::save(QString path)
@@ -654,8 +666,7 @@ void DrawElement::setDelay(int d)
 
 void DrawElement::setSize(QSize pos)
 {
-    width = pos.width();
-    height = pos.height();
+    setSize(pos.width(), pos.height());
 }
 
 void DrawElement::setSize(int width, int height)
@@ -770,6 +781,7 @@ QImage DrawElement::getIcon() const
 void DrawElement::setIcon(const QImage &value)
 {
     icon = value;
+    //icon = QImage("E:/картинки/Фото0051.jpg");
 }
 
 bool DrawElement::getPause() const

@@ -537,19 +537,23 @@ void OGLWidget::processMouse()
             {
             //NEED ONLY TWO CASE - TOP_LEFT AND DEFAULT
             case RESIZE_CORNER_TOP_LEFT:
+                qDebug() << "POP       1";
                 editingRectangle.rect.setX(x);
                 editingRectangle.rect.setY(y);
                 break;
             case RESIZE_CORNER_TOP_RIGHT:
+                qDebug() << "POP       2";
                 editingRectangle.rect.setWidth(x-editingRectangle.rect.x());
                 editingRectangle.rect.setY(y);
                // editingRectangle.rect.setHeight(y-editingRectangle.rect.y());
                 break;
             case RESIZE_CORNER_BOTTOM_LEFT:
+                qDebug() << "POP       3";
                 editingRectangle.rect.setX(x);
                 editingRectangle.rect.setHeight(y-editingRectangle.rect.y());
                 break;
             case RESIZE_CORNER_BOTTOM_RIGHT:
+                qDebug() << "POP       4";
                 editingRectangle.rect.setWidth(x-editingRectangle.rect.x());
                 editingRectangle.rect.setHeight(y-editingRectangle.rect.y());
                 break;

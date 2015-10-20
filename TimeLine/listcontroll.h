@@ -24,7 +24,7 @@ class DrawBrushElm;
 class DrawElement;
 
 #define minBlockTime 1000
-#define VERSION 3.00
+#define VERSION 3.01
 
 bool isFileExists(QString path) ;
 
@@ -354,6 +354,9 @@ public:
 
     Q_INVOKABLE void setBlockIcon(int col, int i, QImage icon);
     Q_INVOKABLE QImage getBlockIcon(int col, int i);
+
+    Q_INVOKABLE int getDrawBorder(int col, int ind);
+    Q_INVOKABLE bool setDrawBorder(int col, int ind, int value);
 
     Q_INVOKABLE void setDrawX(int col, int i, int value);
     Q_INVOKABLE int getDrawX(int col, int i);

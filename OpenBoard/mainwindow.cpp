@@ -1625,7 +1625,7 @@ void MainWindow::on_action_New_Project_triggered()
                 qDebug () << "VIDEO_EDIT_TEXT BEGIN-1";
                 // qApp->processEvents();
                 qDebug () << "VIDEO_EDIT_TEXT BEGIN-2";
-                first->setDrawImage(load);
+                first->setDrawImage(load,true);
                 qDebug () << "VIDEO_EDIT_TEXT BEGIN-3";
 
                 qDebug () << "VIDEO_EDIT_TEXT MID";
@@ -1633,7 +1633,7 @@ void MainWindow::on_action_New_Project_triggered()
                 DrawImageElm *last = new DrawImageElm();
                 QImage load2(curentState.lastImage);
                 //qApp->processEvents();
-                last->setDrawImage(load2);
+                last->setDrawImage(load2,true);
                 last->setFBOWrapper(mpOGLWidget->initFboWrapper(mpOGLWidget->getWax(),mpOGLWidget->getWay()));
 
                 first->setTypeId(Element_type::Image);

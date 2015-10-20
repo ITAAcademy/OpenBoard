@@ -2631,6 +2631,27 @@ int ListControll::getDrawX(int col, int i)
     return tracks[col].block[i]->getX() ;
 }
 
+int ListControll::getDrawBorder(int col, int ind)
+{
+    if(!testIndexs(col, ind))
+        return -1;
+    DrawElement *elm = tracks[col].block[ind];
+    /*if (elm->getTypeId() != Element_type::Image)
+        return -1;*/
+    return elm->getBorder() ;
+}
+
+bool ListControll::setDrawBorder(int col, int ind, int value)
+{
+    if(!testIndexs(col, ind))
+        return false;
+    DrawElement *elm = tracks[col].block[ind];
+    /*if (elm->getTypeId() != Element_type::Image)
+        return false;*/
+    elm->setBorder(value);
+    return true;
+}
+
 void ListControll::setDrawY(int col, int i, int value)
 {
     tracks[col].block[i]->setY (value);

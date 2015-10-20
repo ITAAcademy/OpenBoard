@@ -279,6 +279,36 @@ ApplicationWindow  {
                 }
             }
 
+            Rectangle {
+                id: block_border
+                color: "black"
+                width: contextMenuItem.width // block_width_text + 10 + block_width_value.width
+                height: 40
+                border  { width: 2; color: "white" }
+                Text {
+                    id: block_border_text
+                    text: "Draw\'s pading for frame"
+                    color: "white"
+                    anchors { verticalCenter: parent.verticalCenter; left: parent.left; leftMargin: 10 }
+                    font { pixelSize: 14 }
+                }
+                TextField   {
+                     id: block_border_value
+                     x: block_width.width - width - 10
+                     width: 200
+                     font { pixelSize: 14 }
+                     y: 7
+                    // minimumValue : minBlockWidth
+                     property string initText : timeControll.getDrawBorder(mainwindow.columnIndex,mainwindow.blockIndex)
+                    text: initText
+                   // color: text_color
+                    onFocusChanged:  {
+                        if (text.length ==0)
+                            text = initText;
+                    }
+                }
+            }
+
 
             /*
              Q_INVOKABLE void setDrawX(int col, int i, int value);
@@ -313,6 +343,7 @@ ApplicationWindow  {
                  timeControll.setDrawY(mainwindow.columnIndex,mainwindow.blockIndex,block_Y_value.text)
                  timeControll.setDrawZ(mainwindow.columnIndex,mainwindow.blockIndex,block_Z_value.text)
                  timeControll.setDrawSize(mainwindow.columnIndex,mainwindow.blockIndex,block_Width_value.text,block_Height_value.text)
+                 timeControll.setDrawBorder(mainwindow.columnIndex,mainwindow.blockIndex, block_border_value.text)
 
                 timeControll.emitBlockEditedSignal()
                // mainwindow.globalRep.updateModel()
