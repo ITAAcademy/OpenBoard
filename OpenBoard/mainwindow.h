@@ -39,6 +39,12 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     void setViewState(VIEW_STATE state);
+    QString getLogFileName() const;
+    void setLogFileName(const QString &value);
+
+    QString getLogFileDateName() const;
+    void setLogFileDateName(const QString &value);
+
 public slots:
     bool openFile(QString fileName);
     void doUndoRedoStart();
@@ -143,6 +149,8 @@ private slots:
 
 
 private:
+    QString logFileName="";
+    QString logFileDateName="";
     bool may_to_enable_BoardFontColor;
     bool firstNewProjectCreating = true;
     bool isRecordToFile = false;

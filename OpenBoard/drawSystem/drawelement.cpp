@@ -570,7 +570,7 @@ bool DrawElement::save(QIODevice* device, QProgressBar *bar) //-=-=-=
         qApp->processEvents();
     }
 
-    stream << border;
+    //stream << border;
 }
 
 bool DrawElement::save(QString path)

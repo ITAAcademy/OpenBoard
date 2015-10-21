@@ -212,7 +212,7 @@ void DrawImageElm::setSize(int width, int height)
 {
     this->width = width;
     this->height = height;
-    setBorder(0.2);
+   // setBorder(0.2);
 
 }
 

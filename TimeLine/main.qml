@@ -380,6 +380,11 @@ MouseAreaForWindowDraging{
 
 
             }
+            onMaxTrackSizeChange: {
+                //console.log( "onMaxTrackSizeChange")
+                main222.p_columns.width =  timeControll.getMaxTrackTime();
+                item_col.width = (main222.p_columns.width) / main222.scaling + 31
+            }
 
             onBorderColorChangedSignal :
             {

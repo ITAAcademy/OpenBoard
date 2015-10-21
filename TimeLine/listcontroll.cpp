@@ -19,6 +19,7 @@ QString ListControll::getBlockBorderColor(int col,int ind)
 
 void ListControll::setSelectedBlockPoint(const QPoint &value)
 {
+   // tracks[0].block[99999]->getLifeTime();
 
     // qDebug() << "AAAAAAAAAAAAAAAAAAAAAAA  ListControll::setSelectedBlockPoint  " <<(int)  getBlock(value)->getTypeId();
     //if (false)
@@ -38,16 +39,17 @@ void ListControll::setSelectedBlockPoint(const QPoint &value)
                 {
                     //qDebug() << "IIIIIIIIIIIIIIIIIIIIIIII 111111111111";
                     // curent_group = &test_group;
-                    if (curent_group->addTo(draw_el))
-                    {
-                        need_calc_bound_rec = true;
-                        isGroupChanged = true;
-                        // curent_group = &test_group;
-                        draw_el->setBlockBorderColor(colora);
-                        //emit borderColorChangedSignal(value.x(), value.y(), colora);
-                        qDebug() << "ListControll::setSelectedBlockPoint adding block to group succesfull";
+                    if (curent_group != NULL) ///3456
+                        if (curent_group->addTo(draw_el))
+                        {
+                            need_calc_bound_rec = true;
+                            isGroupChanged = true;
+                            // curent_group = &test_group;
+                            draw_el->setBlockBorderColor(colora);
+                            //emit borderColorChangedSignal(value.x(), value.y(), colora);
+                            qDebug() << "ListControll::setSelectedBlockPoint adding block to group succesfull";
 
-                        /* if (el_ind > 1)
+                            /* if (el_ind > 1)
                         {
                             DrawElement *prev = tracks[el_col].block[el_ind - 1];
                             DrawElement *prev_p =  tracks[el_col].block[el_ind - 2];
@@ -85,35 +87,35 @@ void ListControll::setSelectedBlockPoint(const QPoint &value)
                         }*/
 
 
-                    }
-                    else
-                    {
-                        draw_el->setBlockBorderColor("white");
-                        if (el_ind > 0)
+                        }
+                        else
                         {
-                            DrawElement *prev = tracks[el_col].block[el_ind - 1];
-                            if (prev != NULL)
+                            draw_el->setBlockBorderColor("white");
+                            if (el_ind > 0)
                             {
-                                if (prev->getTypeId() == Element_type::Empty && prev->getGroupWichElBelong()  == curent_group)
+                                DrawElement *prev = tracks[el_col].block[el_ind - 1];
+                                if (prev != NULL)
                                 {
-                                    removeBlockFromGroup(prev);
-                                    need_calc_bound_rec = true;
+                                    if (prev->getTypeId() == Element_type::Empty && prev->getGroupWichElBelong()  == curent_group)
+                                    {
+                                        removeBlockFromGroup(prev);
+                                        need_calc_bound_rec = true;
+                                    }
+                                }
+                            }
+                            if (el_ind < tracks[el_col].block.size() - 1 )
+                            {
+                                DrawElement *next = tracks[el_col].block[el_ind + 1];
+                                if (next != NULL)
+                                {
+                                    if (next->getTypeId() == Element_type::Empty && next->getGroupWichElBelong()  == curent_group)
+                                    {
+                                        removeBlockFromGroup(next);
+                                        need_calc_bound_rec = true;
+                                    }
                                 }
                             }
                         }
-                        if (el_ind < tracks[el_col].block.size() - 1 )
-                        {
-                            DrawElement *next = tracks[el_col].block[el_ind + 1];
-                            if (next != NULL)
-                            {
-                                if (next->getTypeId() == Element_type::Empty && next->getGroupWichElBelong()  == curent_group)
-                                {
-                                    removeBlockFromGroup(next);
-                                    need_calc_bound_rec = true;
-                                }
-                            }
-                        }
-                    }
                     // draw_el->setGroupWichElBelong(bl_group);
                 }
                 else
@@ -237,6 +239,7 @@ void ListControll::setSelectedBlockPoint(const QPoint &value)
                 removeRectangle();
                 curent_group->setBlocksBorderColor("white");
             }
+
             curent_group = NULL;
             //if (blockValid(value))
             {
@@ -587,37 +590,41 @@ bool ListControll::removeBlock(int col, int i, bool copy_in__buffer, bool del_la
     tracks[col].block[i] = temp;
     if (del_draw_el)
         delete elm;
-    elm = tracks[col].block[i];
+    // elm = tracks[col].block[i];
 
     if (i > 0)
     {
         DrawElement *prev = tracks[col].block[i -1];
-        int type = prev->getTypeId();
-        if (type == Element_type::Empty )
+        if (prev != NULL)
         {
-            prev->setLifeTime( prev->getLifeTime() + l_time);
-            // tracks[col].addTime(l_time);
-            tracks[col].block.removeAt(i);
-            delete elm;
-            elm = prev;
+            int type = prev->getTypeId();
+            if (type == Element_type::Empty )
+            {
+                int p_time = prev->getLifeTime();
+                prev->setLifeTime( p_time + l_time,false,true, false );
+                // tracks[col].addTime(l_time);
+                tracks[col].block.removeAt(i);
+                delete temp;
+                temp = prev;
 
-            i--; //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\
-            updateBlocksIndexFrom(col,i);
+                i--; //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                updateBlocksIndexFrom(col,i);
 
-
-
+            }
         }
     }
+
     if (i +1 < tracks[col].block.size() )
     {
         DrawElement * next_el = tracks[col].block[i + 1];
-        if (next_el->getTypeId() == Element_type::Empty)
-        {
-            l_time = elm->getLifeTime();
-            elm->setLifeTime(next_el->getLifeTime() + l_time);
-            // tracks[col].addTime(l_time);
-            tracks[col].block.removeAt(i + 1);
-        }
+        if (next_el != NULL)
+            if (next_el->getTypeId() == Element_type::Empty)
+            {
+                l_time = temp->getLifeTime();
+                temp->setLifeTime(next_el->getLifeTime() + l_time,false,true, false);
+                // tracks[col].addTime(l_time);
+                tracks[col].block.removeAt(i + 1);
+            }
     }
     if (del_last_empty)
     {
@@ -845,12 +852,16 @@ void ListControll::addNewBlock(int col, QString str, DrawElement *element)
     tracks[col].block.append(element);
     addEmptyBlockAt(col, tracks[col].block.size() - 1 , 0);
 
+    updateBlocksStartTimesFrom(col,0);
     //tracks[col].addTime(element->getLifeTime());
     tracks[col].updateTime();
     long temp_time = tracks[col].getTime();
-    updateBlocksStartTimesFrom(col,0);
+
     if (maxTrackTime <  temp_time)
         maxTrackTime =  temp_time;
+
+    //recountMaxTrackTime();
+
     calcPointedBlocks();
 
 
@@ -2223,6 +2234,7 @@ int ListControll::setBlockStartTimeGroup(int col,int ind,int value )
         return elm_start;
 
     addBlockStartTimeGroup(col,ind,value);
+
 }
 
 int ListControll::setBlockTimeLeft(int col,int ind,int value )
@@ -2516,6 +2528,8 @@ int ListControll::addBlockStartTimeGroup(int col,int ind,int value ) //@@@@@@@@@
 
                         reduceEmptyBlocksFromV2(el_col,el_ind + 1, min_zdvig);
                         updateBlocksStartTimesFrom(el_col,ind);
+                       // updateBlocksIndexFrom(el_col,0);
+                        tracks[el_col].updateTime();
 
                     }
                     /* else
@@ -2525,19 +2539,16 @@ int ListControll::addBlockStartTimeGroup(int col,int ind,int value ) //@@@@@@@@@
                         next->setLifeTime(next->getLifeTime() + min_zdvig, true);
                     }*/
                 }
-                if (force_resize_block)
+                /*if (force_resize_block)
                 {
                     tracks[el_col].updateTime();
-                }
+                }*/
             }
 
         }
     }
-
-
-
-
-
+     recountMaxTrackTime(); //8899
+     emit maxTrackSizeChange();
 }
 
 
@@ -2876,6 +2887,7 @@ void ListControll::setCtrlPressed(bool value)
                     else
                     {
                         delete curent_group;
+                        curent_group = NULL;
                     }
 
                     /* if (curent_group_buffer != NULL)

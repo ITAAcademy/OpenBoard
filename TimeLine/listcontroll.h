@@ -497,6 +497,8 @@ signals:
     void focusFoundSignal();
     void imageLoadedPictureSizeSignal(QSize);
 
+    void maxTrackSizeChange();
+
     //void setScalePointerPosSignal(int value);
 public slots:
     Q_INVOKABLE bool addNewBlockFromLibrary(int col, QString str , DrawElement *element = NULL);

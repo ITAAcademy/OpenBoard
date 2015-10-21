@@ -497,6 +497,24 @@ MainWindow::~MainWindow()
         delete toolBar;
     delete ui;
     delete mpOGLWidget;
+    qDebug() <<"MainWindow::~MainWindow() ";
+    //   QString logFileName="";
+    //   QString logFileDateName="";
+
+    if (logFileDateName != "")
+    {
+        QFile file_r(logFileDateName);
+        file_r.open( QIODevice::ReadOnly);
+        QByteArray text =   file_r.readAll();
+        file_r.close();
+
+        QFile file(logFileName);
+        file.open( QIODevice::WriteOnly);
+        file.write(text, qstrlen(text));        // write to stderr
+        file.close();
+
+        QFile::remove(logFileDateName);
+    }
 }
 
 void MainWindow::setViewState(VIEW_STATE state)
@@ -788,7 +806,7 @@ void MainWindow::setUseThisValueFalse( )
         DrawTextElm * telm = (DrawTextElm *) elm;
         telm->setBNeedTime(false);
         ui->check_use_speed_value->setChecked(false);
-       // connect(ui->check_use_speed_value,SIGNAL(clicked()),this,SLOT(connectUZVandSVF()));
+        // connect(ui->check_use_speed_value,SIGNAL(clicked()),this,SLOT(connectUZVandSVF()));
     }
 
     //connect(t_line,SIGNAL(dontUseThisValue()),this,SLOT(setUseThisValueFalse()));
@@ -997,7 +1015,7 @@ void MainWindow::on_action_Board_Font_triggered()
 
 void MainWindow::on_action_Reset_default_triggered()
 {
-   /* QFont font = (QFont("Tahoma",10,1,false));
+    /* QFont font = (QFont("Tahoma",10,1,false));
     ui->menuBar->setFont(font);
     textEdit->setFont(font);
     //textEdit->setTextColor("#000000");
@@ -1008,19 +1026,19 @@ void MainWindow::on_action_Reset_default_triggered()
     this->textEdit->setFont(mSettings.getMainWindowFont());
     commandTextEdit->setFont(mSettings.getMainWindowFont());
 
-   QPoint point = mpOGLWidget->getTimeLine()->getSelectedBlockPoint();
-   if(point.x() != -1 )
-   {
-       DrawElement* elm = mpOGLWidget->getTimeLine()->getBlock(point);
-       if(elm->getTypeId() == Element_type::Text)
-       {
+    QPoint point = mpOGLWidget->getTimeLine()->getSelectedBlockPoint();
+    if(point.x() != -1 )
+    {
+        DrawElement* elm = mpOGLWidget->getTimeLine()->getBlock(point);
+        if(elm->getTypeId() == Element_type::Text)
+        {
 
-           DrawTextElm *text_elm = (DrawTextElm *)elm;
-               text_elm->setTextFont(mSettings.getBoardFont());
-               text_elm->setMainFillColor(mSettings.getBoardFontColor());
+            DrawTextElm *text_elm = (DrawTextElm *)elm;
+            text_elm->setTextFont(mSettings.getBoardFont());
+            text_elm->setMainFillColor(mSettings.getBoardFontColor());
 
-       }
-   }
+        }
+    }
 
 
 
@@ -1083,7 +1101,7 @@ void MainWindow::on_action_Board_Color_triggered()
     colorm = QColorDialog::getColor(mSettings.getBoardFontColor(), this);
     mSettings.setBoardFontColor(colorm);
     //if(!colorm.isValid())
-        //return;
+    //return;
     return;
 }
 void MainWindow::on_action_ZoomIn_triggered()
@@ -1487,6 +1505,11 @@ void MainWindow::on_action_Open_Project_triggered()
     qApp->processEvents();
     activateWindow();
     if(fileName.isEmpty())   return;
+    if (ui->actionRecord_to_file->isChecked())
+    {
+        ui->actionRecord_to_file->setChecked(false);
+        a_record_to_file->setChecked( false);
+    }
     curProjectFile = fileName;
 
     setWindowTitle(QFileInfo(fileName).baseName() + " - Open Board");
@@ -1495,6 +1518,7 @@ void MainWindow::on_action_Open_Project_triggered()
     if(file.open(QIODevice::ReadOnly))
     {
         ui->statusBar->showMessage("project opening...");
+
 
 
         mpOGLWidget->getTimeLine()->load(&file);
@@ -1701,6 +1725,7 @@ void MainWindow::delay_released()
     /* QTextCursor prev_cursor = textEdit->textCursor();
     prev_cursor.setPosition(QTextCursor::End);*/
     QString text = QString("\\p%1").arg(ui->spinBox_delayTB->value(), 2, 10, QChar('0'));
+    qDebug() << "LLLLLLLLLLLLLLLLLLLLLLL  " << text;
     // emit textEdit->setFocus();
     //  textEdit->setTextCursor(prev_cursor);
     if( isCommandTextEditFocused )
@@ -2595,6 +2620,26 @@ void MainWindow::setEnabledBoardFontColor(bool set_enabled)
     this->ui->action_Board_Color->setEnabled(set_enabled);
     this->ui->action_Board_Font->setEnabled(set_enabled);
 }
+QString MainWindow::getLogFileDateName() const
+{
+    return logFileDateName;
+}
+
+void MainWindow::setLogFileDateName(const QString &value)
+{
+    logFileDateName = value;
+}
+
+QString MainWindow::getLogFileName() const
+{
+    return logFileName;
+}
+
+void MainWindow::setLogFileName(const QString &value)
+{
+    logFileName = value;
+}
+
 
 void MainWindow::on_spinBox_speedTB_valueChanged(int arg1)
 {
