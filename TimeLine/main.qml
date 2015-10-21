@@ -659,7 +659,6 @@ MouseAreaForWindowDraging{
 
             onYChanged: y = 0
             onXChanged: {
-
                 if (x < 20)
                 {
                     var new_val =scroll.flickableItem.contentX - (20 - x)

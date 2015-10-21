@@ -27,13 +27,17 @@
 #include <QList>
 #include "GLWidget/grid.h"
 #include "../Effects/effectscontroll.h"
+#include "../Prompter/promptercontroll.h"
 
+//class PrompterManager;
 class ListControll;
 struct BrushBeginingIndex;
 class DrawTextElm;
 class DrawBrushElm;
 class DrawElement;
 class ShaderProgramWrapper;
+class PrompterManager;
+
 
 
 /*
@@ -85,6 +89,7 @@ using namespace QtAV;
 enum EditingRectangleBindMode {EDIT_RECTANGLE_UNBINDED =0,EDIT_RECTANGLE_MOVE=1,EDIT_RECTANGLE_RESIZE=2};
 enum ResizeCorner {RESIZE_CORNER_TOP_LEFT,RESIZE_CORNER_TOP_RIGHT,RESIZE_CORNER_BOTTOM_LEFT,RESIZE_CORNER_BOTTOM_RIGHT,RESIZE_CORNER_NONE};
 class OGLWidget;
+
 
 struct RectangleEditor {
     QRect rect;
@@ -325,6 +330,9 @@ public:
     bool isShowTextCursor() const;
     void setShowTextCursor(bool value);
 
+
+    bool getIsPrompterManagerOpened();
+
 public slots:
     QSize imageLoadedPictureSizeSlot(QSize);
     void loadEffectFromCurrentBlockToEffectManager();
@@ -371,6 +379,7 @@ public slots:
 
 
     ListControll* getTimeLine();
+    PrompterManager *getPrompterManager();
 
     void displayText(const QString &text, QColor color,QFont font);
     void testRectangle();
@@ -383,6 +392,8 @@ public slots:
     void testInit();
     void encoderAddWaitFrame();
     void showEffectsManager();
+    void showPrompterManager();
+    void hidePrompterManager();
 signals:
     void windowUpdating(int frameRate);
     void pauseSignal();
@@ -438,6 +449,7 @@ private:
     QImage img;
     ListControll *timeLine = NULL;
     EffectsManager *effectManager = NULL;
+    PrompterManager *prompterManager = NULL;
 
     Brush currentBrushOfLastDrawing;
     // GLuint    fbo,// The frame buffer object
@@ -509,6 +521,7 @@ private:
 
     bool isBrushWindowOpened = false;//set in true state when brush window opened
     bool isEffectsManagerOpened = false;
+    bool isPrompterManagerOpened = false;
 protected:
     void destroy(bool destroyWindow, bool destroySubWindow);
     void initializeGL(); // Метод для инициализирования opengl

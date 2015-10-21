@@ -3,6 +3,7 @@
 //#include <qglfunctions.h>
 #include "drawSystem/drawsystem.h"
 #include "../TimeLine/listcontroll.h"
+//#include "../Prompter/promptercontroll.h"
 
 /*
  *scroll
@@ -745,9 +746,13 @@ OGLWidget::OGLWidget(QWidget *parent, QGLFormat format) :
     timeLine = new ListControll(this);
     timeLine->setP_drawWidget(this);
     effectManager = new EffectsManager(this);
+    prompterManager = new PrompterManager(this);
+    //showPrompterManager();
     connect(timeLine,SIGNAL(stopSignal()),this,SIGNAL(stopSignal()));
     connect(timeLine,SIGNAL(playSignal()),this,SIGNAL(startSignal()));
     connect(timeLine,SIGNAL(pauseSignal()),this,SIGNAL(pauseSignal()));
+
+    connect(timeLine,SIGNAL(scalePointerXChanged(int)),prompterManager,SLOT(determineAndSelectCurrentLineByTime(int)));
 
     connect(this,SIGNAL(windowUpdating(int)),timeLine,SLOT(addMsToTimerValue(int)));
 
@@ -864,7 +869,8 @@ OGLWidget::~OGLWidget()
         delete timeLine;
     if (effectManager!=NULL)
         delete effectManager;
-
+    if (prompterManager!=NULL)
+        delete prompterManager;
     if(m_encoder != NULL);
     delete m_encoder;
 
@@ -1901,6 +1907,15 @@ void OGLWidget::showEffectsManager(){
     isEffectsManagerOpened=true;
 }
 
+void OGLWidget::showPrompterManager(){
+    prompterManager->show();
+    isPrompterManagerOpened=true;
+}
+void OGLWidget::hidePrompterManager(){
+    prompterManager->hide();
+    isPrompterManagerOpened=false;
+}
+
 
 
 void OGLWidget::mousePressEvent(QMouseEvent *event)
@@ -2437,6 +2452,11 @@ void OGLWidget::generateFrames()
 {
 
 }
+bool OGLWidget::getIsPrompterManagerOpened()
+{
+    return isPrompterManagerOpened;
+}
+
 int OGLWidget::getCurStatus() const
 {
     return (int) curStatus;
@@ -2954,6 +2974,10 @@ ListControll* OGLWidget::getTimeLine()
 {
     return timeLine;
 }
+PrompterManager* OGLWidget::getPrompterManager(){
+    return prompterManager;
+}
+
 
 void OGLWidget::testWrap(int kIndexOfRow)
 {
