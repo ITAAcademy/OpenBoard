@@ -23,6 +23,10 @@ Rectangle{
     property Item p_bar_track
     property Item  p_main222
     property Item  p_drag
+    property Item  p_anim_pointer
+    property int p_anim_pointer_x
+
+
     property int type : timeControll.getBlockTypeIdInt(colIndex,mIndex)
     onTypeChanged: {
         if (type == 5)
@@ -181,6 +185,31 @@ Rectangle{
                 }
 
             }
+            Rectangle {
+                id: anim_pointer
+                color: "yellow"
+                y: 0
+                onYChanged: {
+                    y = 0
+                }
+                height: parent.height
+                width: 5
+                x: -300 //timeControll.getBlockPlayTimeUntilFreeze(root.colIndex,root.mIndex)
+                onXChanged: {
+                    //console.log("anim_pointer.x = " + x)
+                }
+
+                Component.onCompleted: {
+                    root.p_anim_pointer = anim_pointer
+                    root.p_anim_pointer_x = anim_pointer.x
+                   /* if (root.type == 5)
+                        anim_pointer.visible = false*/
+                  //  else
+                       // anim_pointer.x = timeControll.getBlockPlayTimeUntilFreeze(root.colIndex,root.mIndex)/main222.scaling
+                }
+                z: 5
+            }
+
             ColorOverlay {
                 id: icon_coloroverlay
                 anchors.fill: icon
@@ -688,6 +717,7 @@ Rectangle{
 
 
         onPressed: {
+            root.p_anim_pointer.x = timeControll.getBlockPlayTimeUntilFreeze(root.colIndex,root.mIndex)/main222.scaling
             main222.prev_block_time = root.width
             root.z += 200
             root.p_bar_track.z += 200
@@ -730,7 +760,7 @@ Rectangle{
                 if( mouseX > root.width - resize_capture_area_width)
                 {
                     bChangeSizeRight = true;
-                   // mouseArea.drag.target = null
+                    // mouseArea.drag.target = null
                 }
                 else if(mouseX < resize_capture_area_width)
                 {
@@ -761,7 +791,7 @@ Rectangle{
                             }
                             else
                             {
-                               // drag.target = null
+                                // drag.target = null
                                 main222.drag_group = true
                                 main222.press_mouseX = mouseX
                                 main222.press_block_x = root.x
@@ -777,6 +807,8 @@ Rectangle{
             }
         }
         onReleased: {
+
+            root.p_anim_pointer.x = timeControll.getBlockPlayTimeUntilFreeze(root.colIndex,root.mIndex)/main222.scaling
             main222.press_block_x = -1
             main222.drag_group = false
             //timeControll. deleteBlockToDel(root.colIndex);
@@ -1382,14 +1414,8 @@ Rectangle{
                     root.globalRep.updateModel();
                     ///console.log("2222222222222");
                 }
-
             shadow.visible = false
-
-
             cursorShape = Qt.ArrowCursor;
-
-
-
         }
     }
 

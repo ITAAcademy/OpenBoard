@@ -19,7 +19,7 @@ QString ListControll::getBlockBorderColor(int col,int ind)
 
 void ListControll::setSelectedBlockPoint(const QPoint &value)
 {
-   // tracks[0].block[99999]->getLifeTime();
+    // tracks[0].block[99999]->getLifeTime();
 
     // qDebug() << "AAAAAAAAAAAAAAAAAAAAAAA  ListControll::setSelectedBlockPoint  " <<(int)  getBlock(value)->getTypeId();
     //if (false)
@@ -814,6 +814,11 @@ bool ListControll::getForceResizeBlock()
     return force_resize_block;
 }
 
+void ListControll::logForTest()
+{
+    qDebug() << "HHHHH ______ HHHHHH _____";
+}
+
 
 void ListControll::addNewBlock(int col, QString str, DrawElement *element)
 {
@@ -822,16 +827,17 @@ void ListControll::addNewBlock(int col, QString str, DrawElement *element)
         DrawTextElm *dr_text = new DrawTextElm(NULL,NULL);
         element = (DrawElement*) dr_text;
     }
-
+    int last_block_ind = tracks[col].block.size();
     if(element->getLifeTime() < def_min_block_width)
     {
         element->setLifeTime(def_min_block_width);
         element->setPlayTimeUntilFreeze(def_min_block_width);
+
     }
     element->setKey(str);
 
 
-    int last_block_ind = tracks[col].block.size();
+
 
 
     element->setBlockColumn(col);
@@ -842,6 +848,12 @@ void ListControll::addNewBlock(int col, QString str, DrawElement *element)
             this, SLOT(setBlockTimeWithUpdate(int, int, int, bool)));
     connect(element,SIGNAL(dontUseThisValue()),
             this, SIGNAL(dontUseThisValue()));
+    connect(element,SIGNAL(playTimeUntilFreezeChangeSignal(int,int,int)),
+            this, SIGNAL(setBlockPlayTimeUntilFreezeSignal(int,int,int)));
+    /*
+    connect(element,SIGNAL(playTimeUntilFreezeChangeSignal(int,int,int)),
+            this, SLOT(logForTest()));*/
+
 
     qDebug() << "ListControll::addNewBlock     last_block_ind = " << last_block_ind;
 
@@ -1393,6 +1405,11 @@ void ListControll::addBlockAt(int col, int ind,  DrawElement *element, int life_
             this, SLOT(setBlockTimeWithUpdate(int, int, int, bool)));
     connect(element,SIGNAL(dontUseThisValue()),
             this, SIGNAL(dontUseThisValue()));
+    connect(element,SIGNAL(playTimeUntilFreezeChangeSignal(int,int,int)),
+            this, SIGNAL(setBlockPlayTimeUntilFreezeSignal(int,int,int)));
+    /*
+    connect(element,SIGNAL(playTimeUntilFreezeChangeSignal(int,int,int)),
+            this, SLOT(logForTest()));*/
 
     element->setBlockColumn(col);
     element->setBlockIndex(ind);
@@ -1543,8 +1560,10 @@ DrawElement* ListControll::loadFromFile(int col, int ind, QString path,bool emit
             this, SLOT(setBlockTimeWithUpdate(int, int, int, bool)));
     connect(elm,SIGNAL(dontUseThisValue()),
             this, SIGNAL(dontUseThisValue()));
+    connect(elm,SIGNAL(playTimeUntilFreezeChangeSignal(int,int,int)),
+            this, SIGNAL(playTimeUntilFreezeChangeSignal(int,int,int)));
 
-
+    elm->setPlayTimeUntilFreeze(elm->getPlayTimeUntilFreeze());
     qDebug() << "LIFE_TIME  3";
     QFileInfo file_info(path);
 
@@ -2038,6 +2057,7 @@ int ListControll::setBlockTime(int col, int i,int value, bool resize_next_empty,
     tracks[col].updateTime();
     recountMaxTrackTime();
 
+    qDebug() << "HHHHHHHHHHH  " << elm->getPlayTimeUntilFreeze();
     return value;
 
 }
@@ -2528,7 +2548,7 @@ int ListControll::addBlockStartTimeGroup(int col,int ind,int value ) //@@@@@@@@@
 
                         reduceEmptyBlocksFromV2(el_col,el_ind + 1, min_zdvig);
                         updateBlocksStartTimesFrom(el_col,ind);
-                       // updateBlocksIndexFrom(el_col,0);
+                        // updateBlocksIndexFrom(el_col,0);
                         tracks[el_col].updateTime();
 
                     }
@@ -2547,8 +2567,8 @@ int ListControll::addBlockStartTimeGroup(int col,int ind,int value ) //@@@@@@@@@
 
         }
     }
-     recountMaxTrackTime(); //8899
-     emit maxTrackSizeChange();
+    recountMaxTrackTime(); //8899
+    emit maxTrackSizeChange();
 }
 
 
@@ -3252,6 +3272,8 @@ bool ListControll::load(QIODevice* device)
         //qDebug() << "load blocks size in track" << temp.block.size();
         tracks.append(temp);
 
+        updateBlocksIndexFrom(i, 0);
+        updateBlocksStartTimesFrom(i, 0);
     }
     //@ CRASH IN RELEASE BUT WORK IN DEBUG @
     //  qApp->processEvents(QEventLoop::AllEvents,10000);
@@ -3265,9 +3287,11 @@ bool ListControll::load(QIODevice* device)
                 addEmptyBlockAt(k, i, 0);
                 i+=2;
             }
-            updateBlocksIndexFrom(k,0);
-            updateBlocksStartTimesFrom(k,0);
+            updateBlocksIndexFrom(k, 0);
+            updateBlocksStartTimesFrom(k, 0);
         }
+
+
 
         for (int i=0; i< tracks[k].block.size(); i++)
         {
@@ -3276,10 +3300,17 @@ bool ListControll::load(QIODevice* device)
                     this,SIGNAL(borderColorChangedSignal(int,int,QString)));
             connect(el_connect,SIGNAL(sizeChangedSignal(int,int, int, bool)),
                     this, SLOT(setBlockTimeWithUpdate(int, int, int, bool)));
-            connect(el_connect,SIGNAL(dontUseThisValue()),
-                    this, SIGNAL(dontUseThisValue()));
+            if (el_connect->getTypeId() != Element_type::Empty)
+            {
+                connect(el_connect,SIGNAL(dontUseThisValue()),
+                        this, SIGNAL(dontUseThisValue()));
+                connect(el_connect,SIGNAL(playTimeUntilFreezeChangeSignal(int,int,int)),
+                        this, SIGNAL(setBlockPlayTimeUntilFreezeSignal(int,int,int)));
+                el_connect->setPlayTimeUntilFreeze(el_connect->getPlayTimeUntilFreeze());
+            }
 
         }
+        //updateBlocksPlayTimeUntilFreeze(k);
 
     }
     // add group
@@ -3842,16 +3873,28 @@ bool ListControll::blockValid(QPoint point)
 }
 int ListControll::getBlockPlayTimeUntilFreeze(int col, int i )
 {
-    if(!testIndexs(col, i))
+    if(!blockValid(col, i))
         return -1;
     return tracks[col].block[i]->getPlayTimeUntilFreeze();
+}
+
+int ListControll::updateBlocksPlayTimeUntilFreeze(int col)
+{
+    if(!blockValid(col, 0))
+        return -1;
+    foreach(DrawElement *elm, tracks[col].block)
+        if (elm->getTypeId() != Element_type::Empty)
+            elm->setPlayTimeUntilFreeze(elm->getPlayTimeUntilFreeze());
 }
 
 
 void ListControll::setBlockPlayTimeUntilFreeze(int col, int i, int val)
 {
+    if(!blockValid(col, i))
+        return;
     DrawElement *elm =  tracks[col].block[i];
     elm->setPlayTimeUntilFreeze(val);
+    qDebug() << "RRRRRRRRRRRRRRR     void ListControll::setBlockPlayTimeUntilFreeze(int col, int i, int val) ";
 }
 
 

@@ -6,28 +6,27 @@ ApplicationWindow  {
     id: mainwindow
     property int blockIndex: 0
     property int columnIndex: 0
-     property int   minBlockWidth : 1000
+    property int   minBlockWidth : 1000
     property Item selectedBlock
-
     property Repeater globalRep
 
     Rectangle {
-    id: contextMenuItem
-    signal menuSelected(int index) // index{1: Select All, 2: Remove Selected}
-    property bool isOpen: false
+        id: contextMenuItem
+        signal menuSelected(int index) // index{1: Select All, 2: Remove Selected}
+        property bool isOpen: false
 
-    width: 400
-    height: 400
-     color: "gray"
-     property color text_color: "white"
+        width: 400
+        height: 400
+        color: "gray"
+        property color text_color: "white"
 
-  // onWindowChanged:   timeControll.setIsEditBlockShow(true) //when show
-     Column {
-         id: columns
-         spacing: 1
-         width: parent.width
-         height: children.height * children.length
-         anchors { verticalCenter: parent.verticalCenter; left: parent.left; leftMargin: 3 }
+        // onWindowChanged:   timeControll.setIsEditBlockShow(true) //when show
+        Column {
+            id: columns
+            spacing: 1
+            width: parent.width
+            height: children.height * children.length
+            anchors { verticalCenter: parent.verticalCenter; left: parent.left; leftMargin: 3 }
 
             Rectangle {
                 id: block_width
@@ -42,17 +41,17 @@ ApplicationWindow  {
                     color: "white"
                     anchors { verticalCenter: parent.verticalCenter; left: parent.left; leftMargin: 10 }
                     font { pixelSize: 14 }
-                }             
+                }
                 TextField   {
-                     id: block_time_value
-                     x: block_width.width - width - 10
-                     width: 200
-                     font { pixelSize: 14 }
-                     y: 7
+                    id: block_time_value
+                    x: block_width.width - width - 10
+                    width: 200
+                    font { pixelSize: 14 }
+                    y: 7
                     // minimumValue : minBlockWidth
-                     property string initText : timeControll.getBlockTime(mainwindow.columnIndex,mainwindow.blockIndex)
+                    property string initText : timeControll.getBlockTime(mainwindow.columnIndex,mainwindow.blockIndex)
                     text: initText
-                   // color: text_color
+                    // color: text_color
                     onFocusChanged:  {
                         if (text.length ==0)
                             text = initText;
@@ -77,15 +76,16 @@ ApplicationWindow  {
                     font { pixelSize: 14 }
                 }
                 TextField   {
-                     id: block_play_time_value
-                     x: block_play_time.width - width - 10
-                     width: 200
-                     font { pixelSize: 14 }
-                     y: 7
+                    id: block_play_time_value
+                    x: block_play_time.width - width - 10
+                    width: 200
+                    font { pixelSize: 14 }
+                    y: 7
                     // minimumValue : minBlockWidth
-                     property string initText : timeControll.getBlockPlayTimeUntilFreeze(mainwindow.columnIndex,mainwindow.blockIndex)
+                    property string initText : timeControll.getBlockPlayTimeUntilFreeze(mainwindow.columnIndex,mainwindow.blockIndex)
                     text: initText
-                   // color: text_color
+                    // color: text_color
+
                     onFocusChanged:  {
 
                         if (text.length ==0)
@@ -112,15 +112,15 @@ ApplicationWindow  {
                     font { pixelSize: 14 }
                 }
                 TextField   {
-                     id: block_name_value
-                     x: block_width.width - width - 10
-                     width: 200
-                     font { pixelSize: 14 }
-                     y: 7
+                    id: block_name_value
+                    x: block_width.width - width - 10
+                    width: 200
+                    font { pixelSize: 14 }
+                    y: 7
                     // minimumValue : minBlockWidth
-                     property string initText : timeControll.getBlockKey(mainwindow.columnIndex,mainwindow.blockIndex)
+                    property string initText : timeControll.getBlockKey(mainwindow.columnIndex,mainwindow.blockIndex)
                     text: initText
-                   // color: text_color
+                    // color: text_color
                     onFocusChanged:  {
                         if (text.length ==0)
                             text = initText;
@@ -143,15 +143,15 @@ ApplicationWindow  {
                     font { pixelSize: 14 }
                 }
                 TextField   {
-                     id: block_X_value
-                     x: block_width.width - width - 10
-                     width: 200
-                     font { pixelSize: 14 }
-                     y: 7
+                    id: block_X_value
+                    x: block_width.width - width - 10
+                    width: 200
+                    font { pixelSize: 14 }
+                    y: 7
                     // minimumValue : minBlockWidth
-                     property string initText : timeControll.getDrawX(mainwindow.columnIndex,mainwindow.blockIndex)
+                    property string initText : timeControll.getDrawX(mainwindow.columnIndex,mainwindow.blockIndex)
                     text: initText
-                   // color: text_color
+                    // color: text_color
                     onFocusChanged:  {
                         if (text.length ==0)
                             text = initText;
@@ -173,15 +173,15 @@ ApplicationWindow  {
                     font { pixelSize: 14 }
                 }
                 TextField   {
-                     id: block_Y_value
-                     x: block_width.width - width - 10
-                     width: 200
-                     font { pixelSize: 14 }
-                     y: 7
+                    id: block_Y_value
+                    x: block_width.width - width - 10
+                    width: 200
+                    font { pixelSize: 14 }
+                    y: 7
                     // minimumValue : minBlockWidth
-                     property string initText : timeControll.getDrawY(mainwindow.columnIndex,mainwindow.blockIndex)
+                    property string initText : timeControll.getDrawY(mainwindow.columnIndex,mainwindow.blockIndex)
                     text: initText
-                   // color: text_color
+                    // color: text_color
                     onFocusChanged:  {
                         if (text.length ==0)
                             text = initText;
@@ -203,15 +203,15 @@ ApplicationWindow  {
                     font { pixelSize: 14 }
                 }
                 TextField   {
-                     id: block_Z_value
-                     x: block_width.width - width - 10
-                     width: 200
-                     font { pixelSize: 14 }
-                     y: 7
+                    id: block_Z_value
+                    x: block_width.width - width - 10
+                    width: 200
+                    font { pixelSize: 14 }
+                    y: 7
                     // minimumValue : minBlockWidth
-                     property string initText : timeControll.getDrawZ(mainwindow.columnIndex,mainwindow.blockIndex)
+                    property string initText : timeControll.getDrawZ(mainwindow.columnIndex,mainwindow.blockIndex)
                     text: initText
-                   // color: text_color
+                    // color: text_color
                     onFocusChanged:  {
                         if (text.length ==0)
                             text = initText;
@@ -233,15 +233,15 @@ ApplicationWindow  {
                     font { pixelSize: 14 }
                 }
                 TextField   {
-                     id: block_Width_value
-                     x: block_width.width - width - 10
-                     width: 200
-                     font { pixelSize: 14 }
-                     y: 7
+                    id: block_Width_value
+                    x: block_width.width - width - 10
+                    width: 200
+                    font { pixelSize: 14 }
+                    y: 7
                     // minimumValue : minBlockWidth
-                     property string initText : timeControll.getDrawSize(mainwindow.columnIndex,mainwindow.blockIndex).width
+                    property string initText : timeControll.getDrawSize(mainwindow.columnIndex,mainwindow.blockIndex).width
                     text: initText
-                   // color: text_color
+                    // color: text_color
                     onFocusChanged:  {
                         if (text.length ==0)
                             text = initText;
@@ -263,15 +263,15 @@ ApplicationWindow  {
                     font { pixelSize: 14 }
                 }
                 TextField   {
-                     id: block_Height_value
-                     x: block_width.width - width - 10
-                     width: 200
-                     font { pixelSize: 14 }
-                     y: 7
+                    id: block_Height_value
+                    x: block_width.width - width - 10
+                    width: 200
+                    font { pixelSize: 14 }
+                    y: 7
                     // minimumValue : minBlockWidth
-                     property string initText : timeControll.getDrawSize(mainwindow.columnIndex,mainwindow.blockIndex).height
+                    property string initText : timeControll.getDrawSize(mainwindow.columnIndex,mainwindow.blockIndex).height
                     text: initText
-                   // color: text_color
+                    // color: text_color
                     onFocusChanged:  {
                         if (text.length ==0)
                             text = initText;
@@ -281,6 +281,7 @@ ApplicationWindow  {
 
             Rectangle {
                 id: block_border
+                visible: false
                 color: "black"
                 width: contextMenuItem.width // block_width_text + 10 + block_width_value.width
                 height: 40
@@ -293,15 +294,15 @@ ApplicationWindow  {
                     font { pixelSize: 14 }
                 }
                 TextField   {
-                     id: block_border_value
-                     x: block_width.width - width - 10
-                     width: 200
-                     font { pixelSize: 14 }
-                     y: 7
+                    id: block_border_value
+                    x: block_width.width - width - 10
+                    width: 200
+                    font { pixelSize: 14 }
+                    y: 7
                     // minimumValue : minBlockWidth
-                     property string initText : timeControll.getDrawBorder(mainwindow.columnIndex,mainwindow.blockIndex)
+                    property string initText : timeControll.getDrawBorder(mainwindow.columnIndex,mainwindow.blockIndex)
                     text: initText
-                   // color: text_color
+                    // color: text_color
                     onFocusChanged:  {
                         if (text.length ==0)
                             text = initText;
@@ -324,45 +325,45 @@ ApplicationWindow  {
 
 */
 
-     }
-         Button {
-             id: but_ok
-             y: contextMenuItem.height - 10 -height
+        }
+        Button {
+            id: but_ok
+            y: contextMenuItem.height - 10 -height
             x: 10
-             text: "OK"
-             onClicked: {
-                 if (block_time_value.text < minBlockWidth)
-                     block_time_value.text = minBlockWidth;
-                 timeControll.setBlockTime(mainwindow.columnIndex,mainwindow.blockIndex,block_time_value.text,true)
-                 timeControll.setBlockPlayTimeUntilFreeze(mainwindow.columnIndex,mainwindow.blockIndex,block_play_time_value.text)
+            text: "OK"
+            onClicked: {
+                if (block_time_value.text < minBlockWidth)
+                    block_time_value.text = minBlockWidth;
+                timeControll.setBlockTime(mainwindow.columnIndex,mainwindow.blockIndex,block_time_value.text,true)
+                timeControll.setBlockPlayTimeUntilFreeze(mainwindow.columnIndex,mainwindow.blockIndex,block_play_time_value.text)
                 // timeControll.setPlayTime(mainwindow.columnIndex,mainwindow.blockIndex,block_time_value.text,true)
                 // timeControll.setBlockTime(colIndex, mIndex,root.width * main222.scaling,true);
-                 timeControll.setBlockKey(mainwindow.columnIndex,mainwindow.blockIndex,block_name_value.text)
+                timeControll.setBlockKey(mainwindow.columnIndex,mainwindow.blockIndex,block_name_value.text)
 
-                 timeControll.setDrawX(mainwindow.columnIndex,mainwindow.blockIndex,block_X_value.text)
-                 timeControll.setDrawY(mainwindow.columnIndex,mainwindow.blockIndex,block_Y_value.text)
-                 timeControll.setDrawZ(mainwindow.columnIndex,mainwindow.blockIndex,block_Z_value.text)
-                 timeControll.setDrawSize(mainwindow.columnIndex,mainwindow.blockIndex,block_Width_value.text,block_Height_value.text)
-                 timeControll.setDrawBorder(mainwindow.columnIndex,mainwindow.blockIndex, block_border_value.text)
+                timeControll.setDrawX(mainwindow.columnIndex,mainwindow.blockIndex,block_X_value.text)
+                timeControll.setDrawY(mainwindow.columnIndex,mainwindow.blockIndex,block_Y_value.text)
+                timeControll.setDrawZ(mainwindow.columnIndex,mainwindow.blockIndex,block_Z_value.text)
+                timeControll.setDrawSize(mainwindow.columnIndex,mainwindow.blockIndex,block_Width_value.text,block_Height_value.text)
+                timeControll.setDrawBorder(mainwindow.columnIndex,mainwindow.blockIndex, block_border_value.text)
 
                 timeControll.emitBlockEditedSignal()
-               // mainwindow.globalRep.updateModel()
-                 //console.log("AAAAAAAAAAAAAAAAAAAA "+ mainwindow.columnIndex +" " + mainwindow.blockIndex)
-                 mainwindow.selectedBlock.updateTrackWhereIsBlock()
+                // mainwindow.globalRep.updateModel()
+                //console.log("AAAAAAAAAAAAAAAAAAAA "+ mainwindow.columnIndex +" " + mainwindow.blockIndex)
+                mainwindow.selectedBlock.updateTrackWhereIsBlock()
                 mainwindow.close();
                 mainwindow.destroy();
-             }
-         }
-         Button {
-             id: but_cancel
-             y: contextMenuItem.height - 10 - height
-             x: contextMenuItem.width - 10 - width
-             text: "CANCEL"
-           onClicked: {
-               mainwindow.close();
-               mainwindow.destroy();
-           }
-         }
+            }
+        }
+        Button {
+            id: but_cancel
+            y: contextMenuItem.height - 10 - height
+            x: contextMenuItem.width - 10 - width
+            text: "CANCEL"
+            onClicked: {
+                mainwindow.close();
+                mainwindow.destroy();
+            }
+        }
 
     }
 }

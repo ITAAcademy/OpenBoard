@@ -123,6 +123,7 @@ static DrawElement *GenerationDrawElement( QString path, OGLWidget *drawWidget =
                                 delete elm;
                                 return NULL;
                             }
+
                             elm->setTypeId(Element_type::Video);
                             elm->setKey(target.baseName());
                             qDebug() << "Create video object successful";
@@ -148,7 +149,7 @@ static DrawElement *loadDrawElement(QIODevice *device, float version)
     draw_element->loadTypeId(device);
 
     Element_type typeId = draw_element->getTypeId();// Element_type::Image;//static_cast<Element_type>(temp_type);
-   /* if (typeId >= Element_type::Last_forProtect)
+    /* if (typeId >= Element_type::Last_forProtect)
     {
         typeId = (Element_type::Text);
         draw_element->setTypeId(typeId);
@@ -190,13 +191,13 @@ static DrawElement *loadDrawElement(QIODevice *device, float version)
                         DrawTextElm *elm_t = new DrawTextElm(NULL,NULL);
                         elm_t->copy(elm);
                         elm_t->setKey(elm->getKey());
-                         delete  draw_element;
+                        delete  draw_element;
                         draw_element = (DrawTextElm*) elm_t;
                         delete elm;
                     }
                     else
                     {
-                         delete  draw_element;
+                        delete  draw_element;
                         draw_element = (DrawElement*) elm;
                     }
 
@@ -210,7 +211,7 @@ static DrawElement *loadDrawElement(QIODevice *device, float version)
                         // if (elm->isVidePathValid())
                         if (isFileExists(elm->getVidePath()))
                         {
-                             delete  draw_element;
+                            delete  draw_element;
                             draw_element = (DrawElement*) elm;
                         }
                         else
@@ -222,7 +223,7 @@ static DrawElement *loadDrawElement(QIODevice *device, float version)
                             DrawTextElm *elm_t = new DrawTextElm(NULL,NULL);
                             elm_t->copy(elm);
                             elm_t->setKey(elm->getKey());
-                             delete  draw_element;
+                            delete  draw_element;
                             draw_element = (DrawElement *) elm_t;
                             delete elm;
                         }
@@ -235,7 +236,7 @@ static DrawElement *loadDrawElement(QIODevice *device, float version)
                             //delete  draw_element;
                             if (isFileExists(elm->getFilePath()))
                             {
-                                 delete  draw_element;
+                                delete  draw_element;
                                 draw_element = (DrawElement*) elm;
                             }
                             else
@@ -247,7 +248,7 @@ static DrawElement *loadDrawElement(QIODevice *device, float version)
                                 DrawTextElm *elm_t = new DrawTextElm(NULL,NULL);
                                 elm_t->copy(elm);
                                 elm_t->setKey(elm->getKey());
-                                 delete  draw_element;
+                                delete  draw_element;
                                 draw_element = (DrawElement *) elm_t;
                                 delete elm;
                             }

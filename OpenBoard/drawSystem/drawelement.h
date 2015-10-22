@@ -56,7 +56,8 @@ protected:
     QVector<ShaderEffect> effects;
     int lifeTime = 0;
     int tickTime;
-    int playTimeUntilFreeze = 1000;//zero value can crash program if another value not assigned before play.. causing by div by zero exception :(
+    int playTimeUntilFreeze;//zero value can crash program if another value not assigned before play.. causing by div by zero exception :(
+
     int delay;
     int startDrawTime;
     int x, y, z, width, height;
@@ -175,11 +176,13 @@ public:
      void setBorder(float value);
 
 signals:
+    void playTimeUntilFreezeChangeSignal(int col,int ind, int value);
     void dontUseThisValue();
     void borderColorChangedSignal(int col, int ind ,QString color);
     void sizeChangedSignal(int col, int ind, int newSize, bool visual = true);
 
 public slots:
+
 
 
     QMovie *load_Movie(QDataStream &stream);

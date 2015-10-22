@@ -85,6 +85,7 @@ bool DrawVideoElm::setVideoFile(QString path)
             return false;
         videoValid = true;
 
+        setPlayTimeUntilFreeze(decoder.getDuration());
     }
     if(lifeTime <= 1000)
         lifeTime = decoder.getDuration();

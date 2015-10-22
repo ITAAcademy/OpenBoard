@@ -24,7 +24,7 @@ class DrawBrushElm;
 class DrawElement;
 
 #define minBlockTime 1000
-#define VERSION 3.01
+#define VERSION 3.00
 
 bool isFileExists(QString path) ;
 
@@ -134,7 +134,7 @@ public:
         QDataStream stream(device);
         stream >> blocks_size ;
         stream.readRawData((char*)&time, sizeof(unsigned long int));
-        //qDebug() << "Track::load  blocks_size = " << blocks_size;
+        qDebug() << "num of loaded blocks  " << blocks_size;
         //return true;
         for (int i=0; i< blocks_size; i++)
         {
@@ -144,7 +144,8 @@ public:
                 empt->setLifeTime(500);
                 block.append(empt);
             }*/
-            block.append(loadDrawElement(device, version));
+            DrawElement *element = loadDrawElement(device, version);
+            block.append(element);
         }
         // qDebug() << "block size" << block.size();
         return true;
@@ -290,6 +291,7 @@ public:
 
     Q_INVOKABLE void setForceResizeBlock(bool value);
     Q_INVOKABLE bool getForceResizeBlock();
+
 
 
     Q_INVOKABLE   int getBlockTypeId(int col,int ind);
@@ -460,6 +462,7 @@ public:
     Q_INVOKABLE void setPosDefaultF_manager();
     Q_INVOKABLE void hideF_manager();
     Q_INVOKABLE int getBlockPlayTimeUntilFreeze(int col, int i);
+    Q_INVOKABLE int updateBlocksPlayTimeUntilFreeze(int col);
     Q_INVOKABLE void setBlockPlayTimeUntilFreeze(int col, int i,int val);
 
 
@@ -468,6 +471,7 @@ public:
 
 
 signals:
+    void setBlockPlayTimeUntilFreezeSignal(int col, int ind, int value);
     void scalePointerXChanged(int val);
     void borderColorChangedSignal(int col,int ind, QString color);
     // void sizeChangedSignal(int,int,unsigned long);
@@ -502,6 +506,7 @@ signals:
 
     //void setScalePointerPosSignal(int value);
 public slots:
+     void logForTest();
     Q_INVOKABLE bool addNewBlockFromLibrary(int col, QString str , DrawElement *element = NULL);
     Q_INVOKABLE bool addNewBlockFromLibrary( QString str , DrawElement *element = NULL);
     Q_INVOKABLE DrawElement* loadFromFile(int col, int ind, QString path = "",bool emit_update = true);

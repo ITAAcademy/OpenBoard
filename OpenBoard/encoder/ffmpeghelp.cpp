@@ -25,6 +25,8 @@ FFmpegHelp::~FFmpegHelp()
 
 }
 
+
+
 int FFmpegHelp::initFF(QString path)
 {
     // qDebug() << "start initFF";

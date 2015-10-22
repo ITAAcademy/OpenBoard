@@ -65,8 +65,12 @@ void DrawElement::setKey(const QString &value)
 {
     key = value;
 }
+
+
 DrawElement::DrawElement(OGLWidget *drawWidget, QObject *parent) : QObject(parent)
 {
+
+    setPlayTimeUntilFreeze(1000);
     group_wich_el_belong = NULL;
     startDrawTime = 0;
     pDrawWidget = drawWidget;
@@ -416,6 +420,7 @@ void DrawElement::setPlayTimeUntilFreeze(int value)
 {
     qDebug() << "setPlayTimeUntilFreeze:"<<value;
     playTimeUntilFreeze = value;
+    emit playTimeUntilFreezeChangeSignal(this->blockColumn,blockIndex,value);
 }
 
 float DrawElement::getBorder() const
@@ -512,6 +517,7 @@ bool DrawElement::loadRest(QIODevice* device, float version)
     if(version > 2.94)
     {
         stream >> playTimeUntilFreeze;
+        setPlayTimeUntilFreeze(playTimeUntilFreeze);
     }
     //qDebug() << "effectsLength:"<<effectsLength;
     effects.clear();
@@ -545,7 +551,8 @@ bool DrawElement::save(QIODevice* device, QProgressBar *bar) //-=-=-=
 
     int temp_type = static_cast<int>(typeId);
     int resultStatus=0;
-    qDebug() << "DrawElement::sav temp_type = " << temp_type;
+    if (typeId != Element_type::Empty)
+        qDebug() << "DrawElement::save playTimeUntilFreeze = " << playTimeUntilFreeze;
     stream << temp_type << key << lifeTime << tickTime << startDrawTime << x << y << z
            << width << height << keyCouter << blockIndex << blockColumn;
     //if (typeId == Element_type::Image)

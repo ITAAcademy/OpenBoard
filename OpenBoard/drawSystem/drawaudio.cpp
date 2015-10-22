@@ -67,6 +67,7 @@ void DrawAudioElm::setAudioFile(QString path)
             audioPath = path;
 
     }
+    playTimeUntilFreeze = decoder.getDuration();
     if(lifeTime < 1000)
         lifeTime = decoder.getDuration();
 }

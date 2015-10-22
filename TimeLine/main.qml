@@ -129,7 +129,11 @@ MouseAreaForWindowDraging{
             p_last_track = dropEnteredTrackIndex;
         }
 
-        property real scaling :  timeControll.getScaleScrollChildren()
+        property real scaling :   timeControll.getScaleScrollChildren()
+        onScalingChanged: {
+            console.log("onScalingChanged = " + scaling);
+        }
+
         property int minBlockWidth : 1000 / scaling
         property int isPlayPauseStop : 2
         // property int torepainting : 1
@@ -215,16 +219,16 @@ MouseAreaForWindowDraging{
                 var step = 10;
                 if (event.key === Qt.Key_Left)
                 {
-                   // console.log("event.key === Qt.Key_Left")
+                    // console.log("event.key === Qt.Key_Left")
                     if (timeControll.isBlockInGroup(main222.selectedBlockCol,main222.selectedBlockIndex))
                     {
                         timeControll.addBlockStartTimeGroup(main222.selectedBlockCol,main222.selectedBlockIndex, -step * main222.scaling)
-                       // main222.updateTracksModel()
+                        // main222.updateTracksModel()
                     }
                     else
                     {
                         timeControll.addBlockStartTime(main222.selectedBlockCol,main222.selectedBlockIndex, -step * main222.scaling)
-                       // rep_columns.itemAt(main222.selectedBlockCol).getBlock(main222.selectedBlockIndex).globalRep.updateModel()
+                        // rep_columns.itemAt(main222.selectedBlockCol).getBlock(main222.selectedBlockIndex).globalRep.updateModel()
 
                     }
                 }
@@ -234,7 +238,7 @@ MouseAreaForWindowDraging{
                         //console.log("event.key === Qt.Key_Right")
                         if (timeControll.isBlockInGroup(main222.selectedBlockCol,main222.selectedBlockIndex))
                         {
-                           // console.log("event.key === Qt.Key_Right AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
+                            // console.log("event.key === Qt.Key_Right AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
                             timeControll.addBlockStartTimeGroup(main222.selectedBlockCol,main222.selectedBlockIndex, step * main222.scaling)
                             //main222.updateTracksModel()
                         }
@@ -366,6 +370,12 @@ MouseAreaForWindowDraging{
 
         Connections {
             target: timeControll
+            onSetBlockPlayTimeUntilFreezeSignal:
+            {
+                console.log("onSetBlockPlayTimeUntilFreezeSignal value = " + value/main222.scaling
+                            + "  col = " + col + " ind = " + ind);
+                rep_columns.itemAt(col).getBlock(ind).p_anim_pointer.x = value/main222.scaling
+            }
 
             onPlaySignal: {
                 main222.play()
@@ -491,7 +501,7 @@ MouseAreaForWindowDraging{
             onBlockTimeSignel: {
                 // console.log("onBlockTimeSignel");
                 // updateBlockTime(col, index, time);
-               // if (main222.maIsPressed === 1)
+                // if (main222.maIsPressed === 1)
                 {
                     //console.log("onBlockTimeSignel  " + col + " " + index + "  rep_columns.count = "  + rep_columns.count);
                     rep_columns.itemAt(col).setBlockWidth(index,time/main222.scaling );
@@ -667,50 +677,50 @@ MouseAreaForWindowDraging{
                     scroll.flickableItem.contentX = new_val
                     x = 20
                 }
-               // else
+                // else
                 {
-                var zdvig = 20 - scroll.flickableItem.contentX
-                if (zdvig < 0)
-                {
-                    zdvig = -width/2
-                }
-                if (x<zdvig)
-                {
-                    scroll.flickableItem.contentX -= zdvig -scale_pointer.x
-                    if (scroll.flickableItem.contentX < 0)
+                    var zdvig = 20 - scroll.flickableItem.contentX
+                    if (zdvig < 0)
                     {
-                        scroll.flickableItem.contentX = 0;
+                        zdvig = -width/2
                     }
-                    scale_pointer.x = zdvig
-                }
-                else
-                {
-                    var atempa = 1
-                    var contentWidth =   scroll.flickableItem.contentWidth - width/2 - atempa
-                    if (x > contentWidth)
-                        x = contentWidth
+                    if (x<zdvig)
+                    {
+                        scroll.flickableItem.contentX -= zdvig -scale_pointer.x
+                        if (scroll.flickableItem.contentX < 0)
+                        {
+                            scroll.flickableItem.contentX = 0;
+                        }
+                        scale_pointer.x = zdvig
+                    }
                     else
                     {
-
-
-                        var real_time = timeControll.getMaxTrackTime() / main222.scaling - atempa //1234
-                        var temp = scroll.width-30    // real_time - scroll.flickableItem.contentX + width
-                        if (x  > temp )
+                        var atempa = 1
+                        var contentWidth =   scroll.flickableItem.contentWidth - width/2 - atempa
+                        if (x > contentWidth)
+                            x = contentWidth
+                        else
                         {
-                            //   //console.log("HAAAAAAAAAAA")
 
-                            scroll.flickableItem.contentX += (x - temp)
-                            var sad = real_time - scroll.width +50 // scroll.flickableItem.contentWidth - scroll.width + 10
-                            if (scroll.flickableItem.contentX  >  sad)
-                                scroll.flickableItem.contentX = sad;
-                            x = temp
+
+                            var real_time = timeControll.getMaxTrackTime() / main222.scaling - atempa //1234
+                            var temp = scroll.width-30    // real_time - scroll.flickableItem.contentX + width
+                            if (x  > temp )
+                            {
+                                //   //console.log("HAAAAAAAAAAA")
+
+                                scroll.flickableItem.contentX += (x - temp)
+                                var sad = real_time - scroll.width +50 // scroll.flickableItem.contentWidth - scroll.width + 10
+                                if (scroll.flickableItem.contentX  >  sad)
+                                    scroll.flickableItem.contentX = sad;
+                                x = temp
+                            }
                         }
+
+
                     }
-
-
                 }
-                }
-               /* var max_val = scroll.width - width
+                /* var max_val = scroll.width - width
                if (x > max_val)
                    x = max_val;*/
 
@@ -1115,10 +1125,13 @@ MouseAreaForWindowDraging{
                                                     rep_columns.itemAt(main222.selectedBlockCol).setColorize(main222.selectedBlockIndex,"#8000FF00")
 
                                                 }
+                                              /*  for (var i=0; i < model; i++ )
+                                                    repka.itemAt(i).p_anim_pointer.x = timeControll.getBlockPlayTimeUntilFreeze(main222.selectedBlockCol,main222.selectedBlockIndex)/main222.scaling*/
 
                                                 timeControll.calcPointedBlocks();
                                                 timeControll.setIsProjectChanged(true)
                                                 gc();
+
                                             }
                                             function moveBlockForAnim(ind,   value) //left_right -1 or 1
                                             {
@@ -1144,6 +1157,7 @@ MouseAreaForWindowDraging{
                                                 height:  70
                                                 mIndex: index
                                                 p_divider: divider
+                                                p_anim_pointer_x: timeControll.getBlockPlayTimeUntilFreeze(root.colIndex,root.mIndex)
                                                 colIndex:  bar_track.mIndex
                                                 width:  timeControll.getBlockTime(colIndex, mIndex) / main222.scaling
                                                 p_main222: main222

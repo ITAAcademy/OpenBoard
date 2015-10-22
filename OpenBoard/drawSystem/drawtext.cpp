@@ -359,7 +359,7 @@ void DrawTextElm::draw()
                     {
                         animationDelayCount = mUnitList.at(keyCouter)->delay;
                         animationDelayStart = current_time;
-                       // crossTextDraw(koff1, koff2);
+                        // crossTextDraw(koff1, koff2);
                     }
                     keyCouter++;
                     break;
@@ -382,11 +382,11 @@ void DrawTextElm::draw()
     drawTextBuffer(0, 0, pDrawWidget->getWax(), pDrawWidget->getWay(), z, true,koff1,koff2);
     curentCh = current_time;
 
-         //pDrawWidget->drawTextFromTexture(0, line_y , z, list[i],textureIndex, mainFillColor, textFont,koff1,koff2);
-         //pDrawWidget->myRenderText(pDrawWidget, 0, (i + 1)*(lineHeight + pt), z, unParsestring, mainFillColor, textFont);
+    //pDrawWidget->drawTextFromTexture(0, line_y , z, list[i],textureIndex, mainFillColor, textFont,koff1,koff2);
+    //pDrawWidget->myRenderText(pDrawWidget, 0, (i + 1)*(lineHeight + pt), z, unParsestring, mainFillColor, textFont);
 
 
-     //
+    //
 
 
     /*
@@ -401,15 +401,15 @@ void DrawTextElm::draw()
 
 void DrawTextElm::drawTextCursor(int cursorRow, int cursorColumn,float scaleX,float scaleY)
 {
-if (!pDrawWidget->isShowTextCursor())return;
+    if (!pDrawWidget->isShowTextCursor())return;
     int cursorWidth = 5;
     int cursorHeight = fMetrics->height();
     int cursorPosY = lineHeight+pt;
-        cursorPosY *=cursorRow;
-     QString textBeforeCursor = stringList[cursorRow].mid(0,cursorColumn);
+    cursorPosY *=cursorRow;
+    QString textBeforeCursor = stringList[cursorRow].mid(0,cursorColumn);
     int cursorPosX =marginLeft + fMetrics->width(textBeforeCursor);
     float drawWidth =(cursorPosX+cursorWidth)*scaleX;
-            float drawHeight = (cursorPosY+cursorHeight)*scaleY;
+    float drawHeight = (cursorPosY+cursorHeight)*scaleY;
     pDrawWidget->drawRectangle(cursorPosX*scaleX,cursorPosY*scaleY,drawWidth,drawHeight,QColor(Qt::white));
 }
 
@@ -421,7 +421,7 @@ void DrawTextElm::setLifeTime(int value, bool feedBack, bool visual)
 
     if(mUnitList.size() != 0 && (mUnitList.size() - globalDeltaComandSize  - 1) != 0)
         tickTime = ((lifeTime - globalPauseLifeTime)/(mUnitList.size() - globalDeltaComandSize  - 1));
-    //qDebug() << "tickTime4:"<<tickTime;
+   qDebug() << "DrawTextElm::setLifeTime    fffffffffffffff:";
 
 }
 
@@ -444,7 +444,7 @@ void DrawTextElm::setUnParsestring(const QString &valueUnParss, const QString &v
     globalDeltaComandSize = 0;
     //qDebug() << "START";
     myParser.ParsingLine(mUnitList, unParsestring, drawTime, globalPauseLifeTime, globalDeltaComandSize, delay);
-    playTimeUntilFreeze=drawTime;
+    setPlayTimeUntilFreeze(drawTime);
     //qDebug() << "STOP";
     UnitCommand* command = new UnitCommand();
     command->setUnitCommandType("Update");
@@ -535,7 +535,7 @@ void DrawTextElm::clearCanvas(int m_x, int m_y)
     lineHeight = LINE_HEIGHT;
     pt = textFont.pointSize();
     line_y = fMetrics->height();
-        marginTop = m_y;
+    marginTop = m_y;
     scroll = 0;
     //listStr[0] = 0;
 }
@@ -566,7 +566,7 @@ void DrawTextElm::insertToBuffer(const QChar ch)
     /*if (crossIndex>colors.size()-1){
         colors.resize(crossIndex*2);
     }*/
-        colors.insert(crossIndex,currentColor);
+    colors.insert(crossIndex,currentColor);
     //qDebug() << "1234567890             " << str;
     emit drawTextChanged();
 
@@ -684,30 +684,30 @@ void DrawTextElm::drawTextBuffer( int m_x, int m_y, int m_width, int m_height, i
     //  // //qDebug() << indexRowInList << "   indexFirstDrawSymbol   :           " << indexFirstDrawSymbol << cross;
     //   // //qDebug() << "START draw with indexRowInList " << indexRowInList << "MAX elm " << maxElm << "CUR " << CurRow;
     int i = indexRowInList;
-//line_y = fMetrics->height();
+    //line_y = fMetrics->height();
     struct ColorMarker{
         int charCount=0;
         QColor color;
         int startIndex=0;
     };
     QVector<ColorMarker> colorMarkers;
-   // QColor lastColor;
+    // QColor lastColor;
     int charsOfThisColor = 0;
     /* if (colors.length()>0)
      {
          lastColor=colors[0];
          charsOfThisColor++;
      }*/
-     // qDebug() << "colors.length():"<<colors.length();
+    // qDebug() << "colors.length():"<<colors.length();
     //qDebug() << "colors:";
     for (int k=0;k<colors.length()-1;k++)
     {
-   // qDebug()<<colors[k].name();
+        // qDebug()<<colors[k].name();
         /*qDebug() << "comparsion of colors:";
         qDebug() << "colors[k]:"<<colors[k];
         qDebug() << "lastColor:"<<lastColor;*/
 
-       // qDebug() << "charsOfThisColor:"<<charsOfThisColor;
+        // qDebug() << "charsOfThisColor:"<<charsOfThisColor;
         //ZIGZAG:DRAW COLORED TEXT
         if (colors[k]==colors[k+1])charsOfThisColor++;
         else{
@@ -723,19 +723,19 @@ void DrawTextElm::drawTextBuffer( int m_x, int m_y, int m_width, int m_height, i
         }
 
     }
-        ColorMarker marker;
-       if(colors.length()>0)
-       {
-           charsOfThisColor++;
-           int colorMarkerLength = colorMarkers.length();
-           if (colorMarkerLength>0)marker.startIndex=colorMarkers[colorMarkerLength-1].
-                   startIndex+colorMarkers[colorMarkerLength-1].charCount;// ZIGZAG: +1?
-           marker.color=colors[colors.length()-1];
-       }
-       else  marker.color=mainFillColor;
+    ColorMarker marker;
+    if(colors.length()>0)
+    {
+        charsOfThisColor++;
+        int colorMarkerLength = colorMarkers.length();
+        if (colorMarkerLength>0)marker.startIndex=colorMarkers[colorMarkerLength-1].
+                startIndex+colorMarkers[colorMarkerLength-1].charCount;// ZIGZAG: +1?
+        marker.color=colors[colors.length()-1];
+    }
+    else  marker.color=mainFillColor;
 
-       marker.charCount=charsOfThisColor;
-       colorMarkers.append(marker);
+    marker.charCount=charsOfThisColor;
+    colorMarkers.append(marker);
 
     /*for (int k = 0 ; k < colorMarkers.length();k++){
         qDebug() << "colorMarkers "<<k<<":"<<colorMarkers[k].charCount << "startIndex"<<colorMarkers[k].startIndex;
@@ -744,7 +744,7 @@ void DrawTextElm::drawTextBuffer( int m_x, int m_y, int m_width, int m_height, i
     while( i < stringList.length() && i < indexRowInList + maxDrawElm)
     {
         //// //qDebug() << stringList[i] << "@";
-       // QStringList tabulationStr = stringList[i].split("\t");
+        // QStringList tabulationStr = stringList[i].split("\t");
         //TODO SET TEXT COLOR TO CANVAS COLOR
         //setFillColor(fillColor);
         // for(int j = 0; j < tabulationStr.size(); j++)
@@ -757,12 +757,12 @@ void DrawTextElm::drawTextBuffer( int m_x, int m_y, int m_width, int m_height, i
 
 
 
-   // qDebug() << "colorMarkers length:"<<colorMarkers.length();
-       // qDebug()<<"foreach colorMarkers i:"<<i;
-       // int colorStartIndex=0;
+        // qDebug() << "colorMarkers length:"<<colorMarkers.length();
+        // qDebug()<<"foreach colorMarkers i:"<<i;
+        // int colorStartIndex=0;
         for (int k = 0 ; k< colorMarkers.length();k++)
         {
-           // qDebug() <<"k:"<<k<<"colorStartIndex:"<<colorStartIndex;
+            // qDebug() <<"k:"<<k<<"colorStartIndex:"<<colorStartIndex;
             int columnOfColorStrBegin;
             int columnOfColorStrEnd;
 
@@ -808,11 +808,11 @@ void DrawTextElm::drawTextBuffer( int m_x, int m_y, int m_width, int m_height, i
             line_x += fMetrics->width(textToWarp);
             //setFillColor(colors[k].value);
             fillColor = colorMarkers[k].color;
-           // qDebug() << "draw color k:"<<k;
+            // qDebug() << "draw color k:"<<k;
             QString textToFill = stringList[i].mid(columnOfColorStrBegin,columnOfColorStrEnd-columnOfColorStrBegin);
-           // qDebug() << "textToFill:"<<textToFill;
+            // qDebug() << "textToFill:"<<textToFill;
             pDrawWidget->drawTextFromTexture(line_x,line_y,z,textToFill,textureIndex, fillColor,textFont,scaleX,scaleY);
-        //colorStartIndex+=textToFill.length()+textToWarp.length();//colorMarkers[k].charCount;//ZIGZAG:WHICH OF THESE ?
+            //colorStartIndex+=textToFill.length()+textToWarp.length();//colorMarkers[k].charCount;//ZIGZAG:WHICH OF THESE ?
         }
         line_y += (lineHeight + pt);
         line_x = m_x;
@@ -828,7 +828,7 @@ void DrawTextElm::drawTextBuffer( int m_x, int m_y, int m_width, int m_height, i
     int cursorRow = convertTextBoxToBufferIndex(cursorIndex).y();
     int cursorColumn = convertTextBoxToBufferIndex(cursorIndex).x();
     if (textCursorVisible)
-  drawTextCursor(cursorRow,cursorColumn,scaleX,scaleY);
+        drawTextCursor(cursorRow,cursorColumn,scaleX,scaleY);
     // updateGL();
 
 }
@@ -1001,7 +1001,7 @@ bool DrawTextElm::setDrawWidget(OGLWidget *value)
 
 void DrawTextElm::deleteFromBuffer(int n)
 {
-//ZIGZAG:INSERT COLOR DELETION
+    //ZIGZAG:INSERT COLOR DELETION
 
     crossText();
     int mustDell = qAbs(n);
@@ -1180,7 +1180,7 @@ bool DrawTextElm::crossTextDraw(float scale_x, float scale_y )
             //    conv = convertTextBoxToBufferIndex(i + conv.y() + 1);
             // //qDebug() << "YYYYYYYYYYYYYYYYYYYYYYY" << y;
             yIndex -=   indexRowInList;
-           // yIndex++;
+            // yIndex++;
             // //qDebug() << "YYYYYYYYYYYYYYYYYYYYYYY2" << y;
             y=fMetrics->height()/2;
             y += (lineHeight + pt)*yIndex;
