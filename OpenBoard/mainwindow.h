@@ -164,6 +164,7 @@ private:
     QMessageBox messAbout;
     //   GLWidget        *mpGLWidget;
     OGLWidget       *mpOGLWidget;
+    int lastInpuAnimTime;
     YouTubeWrapper *youtube;
     QToolBar *toolBar;
     QToolBar *toolBarBoard;
@@ -205,6 +206,7 @@ public slots:
     void on_action_ZoomOut_triggered();
 private slots:
     void updateBlockFromTextEdit();
+    void updateBlockAnimTime();
 
     void on_actionAbout_Qt_triggered();
     void keyPressEvent(QKeyEvent *e);
@@ -215,6 +217,10 @@ private slots:
     void on_speedBtn_released();
     void on_crossBtn_released();
     void on_actionShow_prompter_triggered();
+    void on_slider_speedTB_2_valueChanged(int value);
+    void on_slider_speedTB_2_sliderReleased();
+    void on_spinBox_speedTB_2_valueChanged(int arg1);
+    void on_check_use_speed_value_2_clicked();
 };
 
 #endif // MAINWINDOW_H

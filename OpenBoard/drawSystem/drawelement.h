@@ -41,6 +41,7 @@ class DrawElement : public QObject
 
 protected:
 
+    bool use_anim_time = false;
     QString block_border_color = "white";
     Group *group_wich_el_belong = NULL;
     int blockIndex = -1;
@@ -76,6 +77,8 @@ protected:
     QString lastPath;
     virtual void draw();
 public:
+    bool useAnimTime();
+    void setUseAnimTime(bool value);
     QVector<ShaderEffect> getEffects();
     void setAnimStateTime(AnimStateTime);
     void setAnimStateTime(int , int);

@@ -160,6 +160,16 @@ void DrawElement::setAnimState(int value)
         effects[i].setShaderWrapper(pDrawWidget->getShaderPrograms()[effects[i].getShaderWrapperIndex()]);
 }
 
+bool DrawElement::useAnimTime()
+{
+    return use_anim_time;
+}
+
+void DrawElement::setUseAnimTime(bool value)
+{
+    use_anim_time = value;
+}
+
 void DrawElement::setAnimTime(int value)
 {
     if (value > this->getLifeTime())
