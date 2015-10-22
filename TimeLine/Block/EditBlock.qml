@@ -345,7 +345,7 @@ ApplicationWindow  {
                 timeControll.setDrawZ(mainwindow.columnIndex,mainwindow.blockIndex,block_Z_value.text)
                 timeControll.setDrawSize(mainwindow.columnIndex,mainwindow.blockIndex,block_Width_value.text,block_Height_value.text)
                 timeControll.setDrawBorder(mainwindow.columnIndex,mainwindow.blockIndex, block_border_value.text)
-
+                timeControll.setBlockPlayTimeUntilFreeze(mainwindow.columnIndex,mainwindow.blockIndex,block_play_time_value.text)
                 timeControll.emitBlockEditedSignal()
                 // mainwindow.globalRep.updateModel()
                 //console.log("AAAAAAAAAAAAAAAAAAAA "+ mainwindow.columnIndex +" " + mainwindow.blockIndex)

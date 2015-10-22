@@ -334,7 +334,12 @@ void DrawTextElm::draw()
             animationDelayStart = 1;
             curentPauseValue = 0;
         }
-        int realKeyValue = qRound((double)(current_time - (curentPauseValue + startDrawTime)) / (double)((playTimeUntilFreeze - globalPauseLifeTime)/(mUnitList.size() - 1)));
+        long t_play_time;
+        if (bCalcTime)
+            t_play_time = playTimeUntilFreeze;
+        else
+            t_play_time = lifeTime;
+        int realKeyValue = qRound((double)(current_time - (curentPauseValue + startDrawTime)) / (double)((t_play_time - globalPauseLifeTime)/(mUnitList.size() - 1)));
         //qDebug() << mUnitList.size() << "            qwe         "<< realKeyValue;
         // //qDebug() << "cur " << current_time;
         ////qDebug() << "start " << startDrawTime;
@@ -421,7 +426,7 @@ void DrawTextElm::setLifeTime(int value, bool feedBack, bool visual)
 
     if(mUnitList.size() != 0 && (mUnitList.size() - globalDeltaComandSize  - 1) != 0)
         tickTime = ((lifeTime - globalPauseLifeTime)/(mUnitList.size() - globalDeltaComandSize  - 1));
-   qDebug() << "DrawTextElm::setLifeTime    fffffffffffffff:";
+    qDebug() << "DrawTextElm::setLifeTime    fffffffffffffff:";
 
 }
 

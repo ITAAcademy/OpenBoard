@@ -69,8 +69,7 @@ void DrawElement::setKey(const QString &value)
 
 DrawElement::DrawElement(OGLWidget *drawWidget, QObject *parent) : QObject(parent)
 {
-
-    setPlayTimeUntilFreeze(1000);
+    playTimeUntilFreeze = 1000;
     group_wich_el_belong = NULL;
     startDrawTime = 0;
     pDrawWidget = drawWidget;
