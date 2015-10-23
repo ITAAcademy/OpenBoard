@@ -46,6 +46,7 @@ public:
     void setLogFileDateName(const QString &value);
 
 public slots:
+    void selectedBlockTimeUpdate(int value);
     bool openFile(QString fileName);
     void doUndoRedoStart();
     void onCommandFocusSet();

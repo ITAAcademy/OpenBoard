@@ -449,7 +449,8 @@ void DrawTextElm::setUnParsestring(const QString &valueUnParss, const QString &v
     globalDeltaComandSize = 0;
     //qDebug() << "START";
     myParser.ParsingLine(mUnitList, unParsestring, drawTime, globalPauseLifeTime, globalDeltaComandSize, delay);
-    setPlayTimeUntilFreeze(drawTime);
+    if (!use_anim_time)
+        setPlayTimeUntilFreeze(drawTime);
     //qDebug() << "STOP";
     UnitCommand* command = new UnitCommand();
     command->setUnitCommandType("Update");

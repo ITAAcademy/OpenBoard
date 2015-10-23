@@ -472,6 +472,8 @@ public:
 
 signals:
     void setBlockPlayTimeUntilFreezeSignal(int col, int ind, int value);
+    void setBlockPlayTimeUntilFreezeSignal2(int value);
+
     void scalePointerXChanged(int val);
     void borderColorChangedSignal(int col,int ind, QString color);
     // void sizeChangedSignal(int,int,unsigned long);
@@ -497,6 +499,7 @@ signals:
     void saveProjectSignel();
     void resetProjectSignel();
     void blockTimeSignel(int col, int index, int time);
+     void blockTimeSignel2(int time);
 
     void focusLostSignal();
     void focusFoundSignal();
@@ -506,6 +509,7 @@ signals:
 
     //void setScalePointerPosSignal(int value);
 public slots:
+    void emitSetBlockPlayTimeUntilFreezeSignal2(int col, int ind, int value);
      void logForTest();
     Q_INVOKABLE bool addNewBlockFromLibrary(int col, QString str , DrawElement *element = NULL);
     Q_INVOKABLE bool addNewBlockFromLibrary( QString str , DrawElement *element = NULL);

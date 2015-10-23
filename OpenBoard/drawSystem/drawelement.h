@@ -173,13 +173,14 @@ public:
     addEffect(ShaderEffect effect);
     clearEffects();
     int getPlayTimeUntilFreeze() const;
-    void setPlayTimeUntilFreeze(int value);
+    void setPlayTimeUntilFreeze(int value, bool emit_value = true);
 
     float getBorder() const;
      void setBorder(float value);
 
 signals:
     void playTimeUntilFreezeChangeSignal(int col,int ind, int value);
+    void playTimeUntilFreezeChangeSignal2( int value);
     void dontUseThisValue();
     void borderColorChangedSignal(int col, int ind ,QString color);
     void sizeChangedSignal(int col, int ind, int newSize, bool visual = true);

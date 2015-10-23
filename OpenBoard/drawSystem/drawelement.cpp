@@ -425,11 +425,12 @@ int DrawElement::getPlayTimeUntilFreeze() const
     return playTimeUntilFreeze;
 }
 
-void DrawElement::setPlayTimeUntilFreeze(int value)
+void DrawElement::setPlayTimeUntilFreeze(int value, bool emit_value)
 {
     qDebug() << "setPlayTimeUntilFreeze:"<<value;
     playTimeUntilFreeze = value;
-    emit playTimeUntilFreezeChangeSignal(this->blockColumn,blockIndex,value);
+    if (emit_value)
+        emit playTimeUntilFreezeChangeSignal(this->blockColumn,blockIndex,value);
 }
 
 float DrawElement::getBorder() const

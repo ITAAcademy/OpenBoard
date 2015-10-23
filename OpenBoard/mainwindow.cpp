@@ -48,7 +48,14 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(ui->check_use_speed_value,SIGNAL(clicked()),this,SLOT(connectUZVandSVF()));
 
+    connect(mpOGLWidget->getTimeLine(), SIGNAL(setBlockPlayTimeUntilFreezeSignal2(int)),
+            this, SLOT(on_slider_speedTB_2_valueChanged(int))); //99090
 
+    connect(mpOGLWidget->getTimeLine(), SIGNAL(blockTimeSignel2(int)),
+            this, SLOT(selectedBlockTimeUpdate(int)));
+    /*
+    connect(element,SIGNAL(playTimeUntilFreezeChangeSignal(int,int,int)),
+                this, SIGNAL(setBlockPlayTimeUntilFreezeSignal(int,int,int)));*/
 
 
     QString versionString(QLatin1String(reinterpret_cast<const char*>(glGetString(GL_VERSION))));
@@ -2097,9 +2104,11 @@ void MainWindow::updateTextEditFromBlock(QPoint point)
         DrawElement* elm = mpOGLWidget->getTimeLine()->getBlock(point);
         lastInpuAnimTime = elm->getPlayTimeUntilFreeze();
         int life_time = elm->getLifeTime();
+        ui->slider_speedTB_2->setMaximum(life_time);
         ui->spinBox_speedTB_2->setMaximum(life_time);
         ui->spinBox_speedTB_2->setValue(lastInpuAnimTime);
-        ui->slider_speedTB_2->setMaximum(life_time);
+
+
         ui->check_use_speed_value_2->setChecked(elm->useAnimTime());
         if(elm->getTypeId() == Element_type::Text)
         {
@@ -2723,7 +2732,7 @@ void MainWindow::updateBlockAnimTime()
                 DrawElement *elm = t_line->getSelectedBlock();
                 if(elm != NULL)
                 {
-                    elm->setPlayTimeUntilFreeze(lastInpuAnimTime);
+                    elm->setPlayTimeUntilFreeze(lastInpuAnimTime,false);
                 }
             }
         }
@@ -2733,16 +2742,28 @@ void MainWindow::on_slider_speedTB_2_valueChanged(int value)
 {
     lastInpuAnimTime = value;
     disconnect(ui->spinBox_speedTB_2,SIGNAL(valueChanged(int)),ui->slider_speedTB_2,SLOT(setValue(int)));
+    disconnect(mpOGLWidget->getTimeLine(), SIGNAL(setBlockPlayTimeUntilFreezeSignal2(int)),
+               this, SLOT(on_slider_speedTB_2_valueChanged(int))); //
+
     ui->spinBox_speedTB_2->setValue(lastInpuAnimTime);
-    connect(ui->spinBox_speedTB_2,SIGNAL(valueChanged(int)),ui->slider_speedTB_2,SLOT(setValue(int)));
+
+
     updateBlockAnimTime();
+    connect(ui->spinBox_speedTB_2,SIGNAL(valueChanged(int)),ui->slider_speedTB_2,SLOT(setValue(int)));
+    connect(mpOGLWidget->getTimeLine(), SIGNAL(setBlockPlayTimeUntilFreezeSignal2(int)),
+            this, SLOT(on_slider_speedTB_2_valueChanged(int))); //
 }
 
 
 void MainWindow::on_spinBox_speedTB_2_valueChanged(int arg1)
 {
-    lastInpuAnimTime = arg1;
-    //ui->slider_speedTB_2->setValue(lastInpuAnimTime);
+
+}
+
+void MainWindow::selectedBlockTimeUpdate(int value)
+{
+    ui->slider_speedTB_2->setMaximum(value);
+    ui->spinBox_speedTB_2->setMaximum(value);
 }
 
 void MainWindow::on_check_use_speed_value_2_clicked()
@@ -2755,8 +2776,12 @@ void MainWindow::on_check_use_speed_value_2_clicked()
             DrawElement *elm = t_line->getSelectedBlock();
             if(elm != NULL)
             {
-                elm->setUseAnimTime(ui->check_use_speed_value_2->isChecked());
+                bool is_true = ui->check_use_speed_value_2->isChecked();
+                elm->setUseAnimTime(is_true);
+                if (is_true)
+                     elm->setPlayTimeUntilFreeze(lastInpuAnimTime,false);
             }
         }
     }
+
 }

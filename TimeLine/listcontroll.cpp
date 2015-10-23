@@ -819,6 +819,11 @@ void ListControll::logForTest()
     qDebug() << "HHHHH ______ HHHHHH _____";
 }
 
+void ListControll::emitSetBlockPlayTimeUntilFreezeSignal2(int col, int ind, int value)
+{
+    emit setBlockPlayTimeUntilFreezeSignal2(value);
+}
+
 
 void ListControll::addNewBlock(int col, QString str, DrawElement *element)
 {
@@ -850,6 +855,8 @@ void ListControll::addNewBlock(int col, QString str, DrawElement *element)
             this, SIGNAL(dontUseThisValue()));
     connect(element,SIGNAL(playTimeUntilFreezeChangeSignal(int,int,int)),
             this, SIGNAL(setBlockPlayTimeUntilFreezeSignal(int,int,int)));
+
+
     /*
     connect(element,SIGNAL(playTimeUntilFreezeChangeSignal(int,int,int)),
             this, SLOT(logForTest()));*/
@@ -1561,7 +1568,7 @@ DrawElement* ListControll::loadFromFile(int col, int ind, QString path,bool emit
     connect(elm,SIGNAL(dontUseThisValue()),
             this, SIGNAL(dontUseThisValue()));
     connect(elm,SIGNAL(playTimeUntilFreezeChangeSignal(int,int,int)),
-            this, SIGNAL(playTimeUntilFreezeChangeSignal(int,int,int)));
+            this, SIGNAL(setBlockPlayTimeUntilFreezeSignal(int,int,int)));
 
     elm->setPlayTimeUntilFreeze(elm->getPlayTimeUntilFreeze());
     qDebug() << "LIFE_TIME  3";
@@ -2058,6 +2065,7 @@ int ListControll::setBlockTime(int col, int i,int value, bool resize_next_empty,
     recountMaxTrackTime();
 
     qDebug() << "HHHHHHHHHHH  " << elm->getPlayTimeUntilFreeze();
+    blockTimeSignel2(value);
     return value;
 
 }
@@ -3062,7 +3070,8 @@ ListControll::ListControll(/*OGLWidget *drawWidget ,*/QObject *parent) : QObject
 
     /* view.setWidth(1200);
    view.setHeight(600);*/
-    qDebug() << "@@@@@@@@@@@@@@@@@@@@@@@@@@  glGetString(GL_VERSION)  " << (GL_VERSION) ;//glGetString
+    connect(this,SIGNAL(setBlockPlayTimeUntilFreezeSignal(int,int,int)),
+            this, SLOT (emitSetBlockPlayTimeUntilFreezeSignal2(int,int,int)));
 }
 
 volatile bool ListControll::getBlocked() const

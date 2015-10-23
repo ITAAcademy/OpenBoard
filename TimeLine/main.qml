@@ -372,8 +372,8 @@ MouseAreaForWindowDraging{
             target: timeControll
             onSetBlockPlayTimeUntilFreezeSignal:
             {
-                console.log("onSetBlockPlayTimeUntilFreezeSignal value = " + value/main222.scaling
-                            + "  col = " + col + " ind = " + ind);
+               /* console.log("onSetBlockPlayTimeUntilFreezeSignal value = " + value/main222.scaling
+                            + "  col = " + col + " ind = " + ind);*/
                 rep_columns.itemAt(col).getBlock(ind).p_anim_pointer.x = value/main222.scaling
             }
 
