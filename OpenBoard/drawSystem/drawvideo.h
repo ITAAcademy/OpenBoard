@@ -26,6 +26,7 @@ public:
     bool setDrawWidget(OGLWidget *value);
     QString getVidePath() const;
     void setVidePath(const QString &value);
+    long getDuration();
 
 public slots:
     void start();

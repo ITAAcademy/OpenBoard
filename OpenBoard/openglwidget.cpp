@@ -745,6 +745,7 @@ OGLWidget::OGLWidget(QWidget *parent, QGLFormat format) :
     init = false;
     timeLine = new ListControll(this);
     timeLine->setP_drawWidget(this);
+
     effectManager = new EffectsManager(this);
     prompterManager = new PrompterManager(this);
     //showPrompterManager();

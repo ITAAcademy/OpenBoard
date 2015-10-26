@@ -109,7 +109,7 @@ void FFmpegHelp::restart(int64_t startTime)
         aDecoder->seekFile(startTime);
     }
 
-   if((type  & VideoType) != 0)
+    if((type  & VideoType) != 0)
     {
         vDecoder->seekFile(startTime);
     }
@@ -139,8 +139,8 @@ AVFormatContext* FFmpegHelp::openVideoStream( QString path)
     //  close();
     //AVFormatContext * videoFormatContext = new AVFormatContext();
 
-   // path = path + "\0";
-   // char *str = new char[path.size() + 5];
+    // path = path + "\0";
+    // char *str = new char[path.size() + 5];
     const char *str = path.toStdString().c_str();
     //strcpy( str, path.toLatin1().data());
     //  strcpy( str, path.toLatin1().data());
@@ -163,12 +163,13 @@ AVFormatContext* FFmpegHelp::openVideoStream( QString path)
     // Open video file
     //qDebug() << "start open ff  " << str;
     if(avformat_open_input(&formatContext, str, NULL, NULL)!=0)
+    //if(avformat_open_input(&formatContext, path, NULL, NULL)!=0)
     {
         QFile file(str);
         if(file.isOpen())
             qDebug() << "open file\n\t" ;
-
-        return NULL; // Couldn't open file
+        else
+            return NULL; // Couldn't open file
     }
 
     // Retrieve stream information

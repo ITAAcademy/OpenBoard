@@ -126,6 +126,7 @@ static DrawElement *GenerationDrawElement( QString path, OGLWidget *drawWidget =
 
                             elm->setTypeId(Element_type::Video);
                             elm->setKey(target.baseName());
+                            elm->setLifeTime(elm->getDuration()); //9959
                             qDebug() << "Create video object successful";
                             return (DrawElement*) elm;
                         }
@@ -136,6 +137,7 @@ static DrawElement *GenerationDrawElement( QString path, OGLWidget *drawWidget =
                                 elm->setAudioFile(path);
                                 elm->setTypeId(Element_type::Audio);
                                 elm->setKey(target.baseName());
+                                elm->setLifeTime(elm->getDuration());
                                 qDebug() << "Create audio object successful";
                                 return (DrawElement*) elm;
                             }

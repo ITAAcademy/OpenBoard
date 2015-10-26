@@ -86,6 +86,8 @@ DrawElement::DrawElement(OGLWidget *drawWidget, QObject *parent) : QObject(paren
     typeId = Element_type::Empty;
     fboWrapper.errorStatus = -1;
 
+    show_text_cursor = false;
+    use_anim_time = 2;
     if(pDrawWidget != NULL)
     {
         connect(pDrawWidget, SIGNAL(startSignal()), this, SLOT(start()));
@@ -160,12 +162,12 @@ void DrawElement::setAnimState(int value)
         effects[i].setShaderWrapper(pDrawWidget->getShaderPrograms()[effects[i].getShaderWrapperIndex()]);
 }
 
-bool DrawElement::useAnimTime()
+int DrawElement::useAnimTime()
 {
     return use_anim_time;
 }
 
-void DrawElement::setUseAnimTime(bool value)
+void DrawElement::setUseAnimTime(int value)
 {
     use_anim_time = value;
 }
@@ -428,6 +430,8 @@ int DrawElement::getPlayTimeUntilFreeze() const
 void DrawElement::setPlayTimeUntilFreeze(int value, bool emit_value)
 {
     qDebug() << "setPlayTimeUntilFreeze:"<<value;
+    if (value > lifeTime)
+        value = lifeTime;
     playTimeUntilFreeze = value;
     if (emit_value)
         emit playTimeUntilFreezeChangeSignal(this->blockColumn,blockIndex,value);
@@ -516,8 +520,18 @@ bool DrawElement::loadRest(QIODevice* device, float version)
 {
     //qDebug() << "load rest begin";
     QDataStream stream(device);
-    stream  >> key >> lifeTime >> tickTime >> startDrawTime >> x >> y >> z >>
-            width >> height >> keyCouter>> blockIndex >> blockColumn;
+    stream  >> key ;
+    if (version > 3.00008)
+        stream.readRawData((char*)&lifeTime, sizeof(quint64));
+    else
+        stream >> lifeTime;
+    stream >> tickTime;
+    if (version > 3.00008)
+        stream.readRawData((char*)&startDrawTime, sizeof(quint64));
+    else
+        stream >> startDrawTime ;
+    stream >> x >> y >> z >>
+                width >> height >> keyCouter>> blockIndex >> blockColumn;
     //if (typeId == Element_type::Image)
     icon = load_image(stream);
 
@@ -549,6 +563,10 @@ bool DrawElement::loadRest(QIODevice* device, float version)
         effects[i].load(stream, version);
     }
 
+    if(version > 3.0008) // >3.001 - float feature
+    {
+        stream >> use_anim_time;
+    }
     // qDebug() << "load rest end";
     load_add(stream, version);
     // qDebug() << "load add";
@@ -563,8 +581,12 @@ bool DrawElement::save(QIODevice* device, QProgressBar *bar) //-=-=-=
     int resultStatus=0;
     if (typeId != Element_type::Empty)
         qDebug() << "DrawElement::save playTimeUntilFreeze = " << playTimeUntilFreeze;
-    stream << temp_type << key << lifeTime << tickTime << startDrawTime << x << y << z
-           << width << height << keyCouter << blockIndex << blockColumn;
+    stream << temp_type << key ;
+    stream.writeRawData((char*)&lifeTime, sizeof(quint64));
+    stream   << tickTime ;
+    stream.writeRawData((char*)&startDrawTime, sizeof(quint64));
+    stream << x << y << z
+             << width << height << keyCouter << blockIndex << blockColumn;
     //if (typeId == Element_type::Image)
     //save_image(stream, icon);
     // qDebug() << "qwewqewqeqewqQQQQ  " << lastPath;
@@ -579,6 +601,8 @@ bool DrawElement::save(QIODevice* device, QProgressBar *bar) //-=-=-=
 
     for (int i = 0 ; i < effects.length();i++)
         effects[i].save(stream,VERSION);
+
+    stream << use_anim_time;
 
     save_add(stream);
     if(bar != NULL)
@@ -737,22 +761,33 @@ void DrawElement::setZ(int value)
     z = value;
 }
 
-int DrawElement::getLifeTime()
+quint64 DrawElement::getLifeTime()
 {
-    int hna = lifeTime;
-    return hna;
+    return lifeTime;
 }
 
-int DrawElement::setLifeTime(int value, bool feedBack, bool visual,bool use_value)
+
+
+void DrawElement::setShowTextCursor(bool value)
+{
+    show_text_cursor = value;
+}
+
+bool DrawElement::getShowTextCursor()
+{
+    return show_text_cursor;
+}
+
+quint64 DrawElement::setLifeTime(quint64 value, bool feedBack, bool visual,bool use_value)
 {
     //qDebug() << "DrawElement::setLifeTime value = "<< value;
 
     if (this->getTypeId() !=Element_type::Empty)
         if (value < minBlockTime)
             return -1;
-        else
+        /*else
             if (value < 0)
-                return -1;
+                return -1;*/
 
     if (use_value)
         emit dontUseThisValue();
@@ -777,12 +812,12 @@ int DrawElement::setLifeTime(int value, bool feedBack, bool visual,bool use_valu
     return value;
 }
 
-int DrawElement::getStartDrawTime() const
+quint64 DrawElement::getStartDrawTime() const
 {
     return startDrawTime;
 }
 
-int DrawElement::setStartDraw(int value)
+quint64 DrawElement::setStartDraw(quint64 value)
 {
     startDrawTime = value;
     return value;

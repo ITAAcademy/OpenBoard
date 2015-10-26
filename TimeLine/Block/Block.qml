@@ -25,7 +25,10 @@ Rectangle{
     property Item  p_drag
     property Item  p_anim_pointer
     property int p_anim_pointer_x
-
+    onP_anim_pointerChanged: {
+        anim_pointer.x =  p_anim_pointer_x
+        console.log("onP_anim_pointerChanged   = " + p_anim_pointer_x)
+    }
 
     property int type : timeControll.getBlockTypeIdInt(colIndex,mIndex)
     onTypeChanged: {
@@ -193,19 +196,19 @@ Rectangle{
                     y = 0
                 }
                 height: parent.height
-                width: 5
-                x: -300 //timeControll.getBlockPlayTimeUntilFreeze(root.colIndex,root.mIndex)
+                width: 1
+                x: timeControll.getBlockPlayTimeUntilFreeze(root.colIndex,root.mIndex)/main222.scaling
                 onXChanged: {
-                    //console.log("anim_pointer.x = " + x)
+                    console.log("anim_pointer.x = " + x)
                 }
 
                 Component.onCompleted: {
                     root.p_anim_pointer = anim_pointer
-                    root.p_anim_pointer_x = anim_pointer.x
-                   /* if (root.type == 5)
+                    //root.p_anim_pointer_x = anim_pointer.x
+                    /* if (root.type == 5)
                         anim_pointer.visible = false*/
-                  //  else
-                       // anim_pointer.x = timeControll.getBlockPlayTimeUntilFreeze(root.colIndex,root.mIndex)/main222.scaling
+                    //  else
+                    // anim_pointer.x = timeControll.getBlockPlayTimeUntilFreeze(root.colIndex,root.mIndex)/main222.scaling
                 }
                 z: 5
             }
@@ -470,7 +473,7 @@ Rectangle{
 
     Drag.active: mouseArea.drag.active
     //Drag.hotSpot.x: 10
-    Drag.hotSpot.y: root.height/2
+    //Drag.hotSpot.y: root.height/2
     //onYChanged: y=0;
 
     MouseArea {
@@ -567,12 +570,27 @@ Rectangle{
 
                 //root.p_bar_track.z -= 200 //888
 
-                if (root.p_main222.dropEnteredTrackIndex >= 0)
+                var entered_block_index = root.p_main222.dropEnteredTrackIndex;
+                if (entered_block_index >= 0)
                 {
 
                     // rep_columns
 
-                    root.columnRep.itemAt(root.p_main222.dropEnteredTrackIndex).getBlock(0).globalRep.updateModel()
+                    /* if (entered_block_index === root.colIndex)
+                    {
+                     // root.globalRep.updateModel();
+                        //root.columnRep.itemAt(entered_block_index).getBlock(0).globalRep.updateModel() //55555555
+                    }
+                    else
+                        root.p_main222.p_trackbar.globalRep.updateModel()*/
+
+                    var block = root.columnRep.itemAt(entered_block_index).getBlock(0);
+                  /*  if (block !== null)
+                        block.globalRep.updateModel() //55555555
+                    else
+                        root.p_main222.p_trackbar.globalRep.updateModel()*/
+
+                    root.columnRep.itemAt(entered_block_index).getTrackBar().globalRep.updateModel()
 
                     // itemAt(main222.dropEnteredTrackIndex).updateModel()
                     root.p_main222.dropEnteredTrackIndex = -1
@@ -581,6 +599,7 @@ Rectangle{
 
                 //root.p_main222.root_isDragChanged = true;
                 //console.log("onIsDragChanged end ------------------------------")
+                // root.p_main222.updateTracksModel()
             }
 
             // root.globalRep.updateModel()
@@ -602,7 +621,7 @@ Rectangle{
             //  console.log("mouseX = " + mouseX)
             /*if(timeControll.getCurent_group())
                 return;*/
-            if (main222.drag_group && Math.abs(main222.press_mouseX  - mouseX) > 10 )
+            if (main222.drag_group && Math.abs(main222.press_mouseX  - mouseX) > 1 )
             {
                 // main222.press_mouseX = 65534;
 
@@ -785,6 +804,7 @@ Rectangle{
                             if(!timeControll.getCurent_group())
                             {
                                 drag.target = root
+                                //main222.blocks_of_groups = timeControll.getBlocksInCurrentGroup()
                                 globalRep.isDrag = true;
                                 drop.visible = false;
                                 drop.enabled = false;
@@ -809,6 +829,7 @@ Rectangle{
         onReleased: {
 
             root.p_anim_pointer.x = timeControll.getBlockPlayTimeUntilFreeze(root.colIndex,root.mIndex)/main222.scaling
+            // console.log("onReleased    " + root.p_anim_pointer.x)
             main222.press_block_x = -1
             main222.drag_group = false
             //timeControll. deleteBlockToDel(root.colIndex);

@@ -24,6 +24,12 @@ void DrawVideoElm::setVidePath(const QString &value)
 {
     videPath = value;
 }
+
+long DrawVideoElm::getDuration()
+{
+    return decoder.getDuration();
+}
+
 DrawVideoElm::DrawVideoElm(OGLWidget *drawWidget, QObject *parent) : DrawElement(drawWidget, parent)
 {
     setType("video");

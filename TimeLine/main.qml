@@ -73,6 +73,12 @@ MouseAreaForWindowDraging{
         }
         width: childrenRect.width ///main222.width + 20
         //height: childrenRect.height //main222.height + 20
+        property int max_time : 4000
+        onMax_timeChanged: {
+            if (max_time < 4000)
+                max_time = 4000;
+        }
+
         property int clicked_blockId : -1
         property int clicked_blockX : -1
         property int clicked_blockY : -1
@@ -110,6 +116,8 @@ MouseAreaForWindowDraging{
         property bool miss_drag : false
         property int press_mouseX : -1
         property int press_block_x : -1
+
+        property variant blocks_of_groups : []
 
         onExitedFromDropAreaChanged: {
             //console.log("exitedFromDropArea = " + exitedFromDropArea)
@@ -170,33 +178,33 @@ MouseAreaForWindowDraging{
             console.log("AAAAAAAAAAAAAAAAAAAAA main222.ctrl_pressed = " + ctrl_pressed)
         }
         Keys.onPressed: {
-            //console.log("AAAAAAAAAAAAAAAAAAAAA " + event.key)
+            console.log("AAAAAAAAAAAAAAAAAAAAA " + event.key)
             if(event.modifiers & Qt.ControlModifier) {
                 main222.ctrl_pressed = true
                 ////console.log("AAAAAAAAAAAAAAAAAAAAA " + ctrl_pressed)
-                if (event.key === Qt.Key_C )
+                if (event.key === Qt.Key_C || event.key === 67 )
                     timeControll.copyBlockToBuffer();
                 else
-                    if (event.key === Qt.Key_V )
+                    if (event.key === Qt.Key_V || event.key === 86)
                         timeControll.pasteBlockFromBuffer();
                     else
-                        if (event.key === Qt.Key_T )
+                        if (event.key === Qt.Key_T || event.key === 84)
                         {
                             timeControll.setBlockTimeFromBuffer()
                             main222.selectedBlock. globalRep.updateModel()
                         }
                         else
-                            if (event.key === Qt.Key_R)
+                            if (event.key === Qt.Key_R|| event.key === 82)
                             {
                                 timeControll.setBlockPositionSizeFromBuffer();
                             }
                             else
-                                if (event.key === Qt.Key_E)
+                                if (event.key === Qt.Key_E || event.key === 69)
                                 {
                                     timeControll.setBlockEffectsFromBuffer();
                                 }
                                 else
-                                    if ((event.key === Qt.Key_S || event.key === 1067) && (event.modifiers & Qt.ShiftModifier))
+                                    if ((event.key === Qt.Key_S || event.key === 1067 || event.key === 1030) && (event.modifiers & Qt.ShiftModifier))
                                     {
                                         timeControll.emitSaveProject();
                                         main222.ctrl_pressed = false;
@@ -208,10 +216,10 @@ MouseAreaForWindowDraging{
                                             if ((event.key === Qt.Key_N || event.key === 1058) && (event.modifiers & Qt.ShiftModifier))
                                                 timeControll.emitNewProject();
                                             else
-                                                if (event.key === 43)
+                                                if (event.key === 45)
                                                     timeControll.zoomPlus()
                                                 else
-                                                    if (event.key === 45)
+                                                    if (event.key === 43)
                                                         timeControll.zoomMinus()
             }
             else
@@ -219,7 +227,7 @@ MouseAreaForWindowDraging{
                 var step = 10;
                 if (event.key === Qt.Key_Left)
                 {
-                    // console.log("event.key === Qt.Key_Left")
+                     console.log("event.key === Qt.Key_Left")
                     if (timeControll.isBlockInGroup(main222.selectedBlockCol,main222.selectedBlockIndex))
                     {
                         timeControll.addBlockStartTimeGroup(main222.selectedBlockCol,main222.selectedBlockIndex, -step * main222.scaling)
@@ -240,11 +248,13 @@ MouseAreaForWindowDraging{
                         {
                             // console.log("event.key === Qt.Key_Right AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA")
                             timeControll.addBlockStartTimeGroup(main222.selectedBlockCol,main222.selectedBlockIndex, step * main222.scaling)
+
                             //main222.updateTracksModel()
                         }
                         else
                         {
                             timeControll.addBlockStartTime(main222.selectedBlockCol,main222.selectedBlockIndex, step * main222.scaling)
+
                             ///main222.selectedBlock.globalRep.updateModel()
                             //rep_columns.itemAt(main222.selectedBlockCol).getBlock(main222.selectedBlockIndex).globalRep.updateModel()
                         }
@@ -370,6 +380,10 @@ MouseAreaForWindowDraging{
 
         Connections {
             target: timeControll
+            onMaxTrackTimeChanged: {
+                main222.max_time = value
+            }
+
             onSetBlockPlayTimeUntilFreezeSignal:
             {
                /* console.log("onSetBlockPlayTimeUntilFreezeSignal value = " + value/main222.scaling
@@ -1019,6 +1033,7 @@ MouseAreaForWindowDraging{
                             delegate:
                                 Row {
                                 id: bar_track
+                                property int cIndex : index
                                 function abortColorize()
                                 {
                                     for (var i=0; i< repka.model; i++)
@@ -1062,6 +1077,13 @@ MouseAreaForWindowDraging{
                                     return repka.itemAt(indexa)
                                 }
 
+                                function getTrackBar()
+                                {
+                                    // //console.log("repka.itemAt(indexa).x="+repka.itemAt(indexa).x)
+
+                                    return trackbar;
+                                }
+
                                 function enableTrackbarsButtons(value)
                                 {
                                     trackbar.enableButtonsClick = value;
@@ -1093,7 +1115,7 @@ MouseAreaForWindowDraging{
                                         id:main_root
                                         //x: 30
                                         property int col_ind : index
-                                        width: 4000
+                                        width: main222.max_time
                                         height: 70
                                         color: "transparent"
                                         border { color: "lawngreen"; width: 0}
@@ -1157,7 +1179,7 @@ MouseAreaForWindowDraging{
                                                 height:  70
                                                 mIndex: index
                                                 p_divider: divider
-                                                p_anim_pointer_x: timeControll.getBlockPlayTimeUntilFreeze(root.colIndex,root.mIndex)
+                                                p_anim_pointer_x: timeControll.getBlockPlayTimeUntilFreeze(trackbar.mIndex,index)/main222.scaling
                                                 colIndex:  bar_track.mIndex
                                                 width:  timeControll.getBlockTime(colIndex, mIndex) / main222.scaling
                                                 p_main222: main222

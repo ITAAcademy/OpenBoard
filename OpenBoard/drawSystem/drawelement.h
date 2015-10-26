@@ -41,7 +41,7 @@ class DrawElement : public QObject
 
 protected:
 
-    bool use_anim_time = false;
+    int use_anim_time = 2; //0 - use anim time, 1 - use text time, 2 - use life time
     QString block_border_color = "white";
     Group *group_wich_el_belong = NULL;
     int blockIndex = -1;
@@ -55,12 +55,12 @@ protected:
 
     QString key;
     QVector<ShaderEffect> effects;
-    int lifeTime = 0;
+    quint64 lifeTime = 0;
     int tickTime;
     int playTimeUntilFreeze;//zero value can crash program if another value not assigned before play.. causing by div by zero exception :(
 
     int delay;
-    int startDrawTime;
+    quint64 startDrawTime;
     int x, y, z, width, height;
     int keyCouter = 0;
 
@@ -76,9 +76,12 @@ protected:
 
     QString lastPath;
     virtual void draw();
-public:
-    bool useAnimTime();
-    void setUseAnimTime(bool value);
+    bool show_text_cursor;
+public:    
+    void setShowTextCursor(bool value);
+    bool getShowTextCursor();
+    int useAnimTime();
+    void setUseAnimTime(int value);
     QVector<ShaderEffect> getEffects();
     void setAnimStateTime(AnimStateTime);
     void setAnimStateTime(int , int);
@@ -126,12 +129,12 @@ public:
     int getZ() const;
     void setZ(int value);
 
-     int getLifeTime() ;
-     int setLifeTime(int value, bool feedBack = false, bool visual = true, bool use_value = true);
+     quint64 getLifeTime() ;
+     quint64 setLifeTime(quint64 value, bool feedBack = false, bool visual = true, bool use_value = true);
 
 
-    int getStartDrawTime() const;
-    int setStartDraw(int value);
+    quint64 getStartDrawTime() const;
+    quint64 setStartDraw(quint64 value);
 
     QImage getIcon() const;
     void setIcon(const QImage &value);
@@ -183,7 +186,7 @@ signals:
     void playTimeUntilFreezeChangeSignal2( int value);
     void dontUseThisValue();
     void borderColorChangedSignal(int col, int ind ,QString color);
-    void sizeChangedSignal(int col, int ind, int newSize, bool visual = true);
+    void sizeChangedSignal(int col, int ind, quint64 newSize, bool visual = true);
 
 public slots:
 

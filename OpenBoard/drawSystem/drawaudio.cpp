@@ -24,6 +24,12 @@ DrawAudioElm::DrawAudioElm(OGLWidget *drawWidget, QObject *parent) : DrawElement
 
 }
 
+long DrawAudioElm::getDuration()
+{
+    return decoder.getDuration();
+}
+
+
 DrawAudioElm::~DrawAudioElm()
 {
 

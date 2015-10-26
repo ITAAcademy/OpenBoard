@@ -24,6 +24,7 @@ public:
     bool save_add(QDataStream &stream);
     bool setDrawWidget(OGLWidget *value);
     QString getFilePath();
+    long getDuration();
 protected slots:
     void start();
     void stop();

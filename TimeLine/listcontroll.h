@@ -24,7 +24,7 @@ class DrawBrushElm;
 class DrawElement;
 
 #define minBlockTime 1000
-#define VERSION 3.00
+#define VERSION 3.001
 
 bool isFileExists(QString path) ;
 
@@ -32,12 +32,12 @@ bool isFileExists(QString path) ;
 
 struct Track {
 private:
-    unsigned long int time = 0 ;
-    unsigned long int prev_time =  0;
-    unsigned long int time_change =  0;
+    quint64 time = 0 ;
+    quint64 prev_time =  0;
+    quint64 time_change =  0;
 
 public:
-    void setTime(unsigned long int value)
+    void setTime(quint64 value)
     {
         prev_time = time;
         time = value;
@@ -53,27 +53,27 @@ public:
         }
     }
 
-    void addTime(unsigned long int value)
+    void addTime(quint64 value)
     {
         prev_time = time;
         time += value;
     }
-    unsigned long int getTime()
+    quint64 getTime()
     {
         return time;
     }
-    unsigned long int getTimeChange()
+    quint64 getTimeChange()
     {
         return time_change;
     }
 
-    unsigned long int calcTimeChange()
+    quint64 calcTimeChange()
     {
         time_change = time - prev_time;
         return time_change;
     }
 
-    void setTimeChange(unsigned long int value)
+    void setTimeChange(quint64 value)
     {
         time_change = value;
     }
@@ -86,7 +86,7 @@ public:
     {
 
     }
-    Track( int time ,QList <DrawElement *> block ) {
+    Track( quint64 time ,QList <DrawElement *> block ) {
         this-> time = time;
         this-> block = block;
     }
@@ -115,7 +115,7 @@ public:
     {
         QDataStream stream(device);
         stream << block.size() ;
-        stream.writeRawData((char*)&time, sizeof(unsigned long int));
+        stream.writeRawData((char*)&time, sizeof(quint64));
         qDebug() << "num of saved blocks " << block.size();
         for (int i=0; i< block.size(); i++)
         {
@@ -133,7 +133,10 @@ public:
         int blocks_size;
         QDataStream stream(device);
         stream >> blocks_size ;
-        stream.readRawData((char*)&time, sizeof(unsigned long int));
+        if (version > 3.00008) //136 136
+            stream.readRawData((char*)&time, sizeof(quint64));
+        else
+            stream.readRawData((char*)&time, sizeof(unsigned long int));
         qDebug() << "num of loaded blocks  " << blocks_size;
         //return true;
         for (int i=0; i< blocks_size; i++)
@@ -195,7 +198,7 @@ class ListControll : public QObject, public QQuickImageProvider
     Group *curent_group = NULL;
     bool isEditBlockShow = false;
     bool isProjectChange = false;
-    unsigned long int maxTrackTime ;
+    quint64 maxTrackTime = 0;
     float scale_scroll_children = 10.0;
     float zoom_speed = 1.0;
     QQuickView view;
@@ -275,6 +278,7 @@ public:
     Q_INVOKABLE void setCtrlPressed(bool value);
     Q_INVOKABLE bool getCtrlPressed();
 
+    bool updateMaxTrackTime(quint64 temp_time);
     Q_INVOKABLE bool setSpacingBtwBlocks(int);
     Q_INVOKABLE void setPosToAppend(QPoint point);
     Q_INVOKABLE QPoint getPosToAppend();
@@ -307,12 +311,12 @@ public:
     Q_INVOKABLE int setBlockTime(int col, int i, int value, bool resize_next_empty = false, bool use_value = true);
     Q_INVOKABLE bool setBlockTimeBlockBalance(int col, int ind, int value, bool resize_next_empty = false);
     Q_INVOKABLE void deleteBlockToDel(int col);
-    Q_INVOKABLE void setBlockTimeWithUpdate(int col, int i, int value, bool visual);
+    Q_INVOKABLE void setBlockTimeWithUpdate(int col, int i, quint64 value, bool visual);
     Q_INVOKABLE int setBlockStartTime(int col, int i, int value, bool move_group = false);
     Q_INVOKABLE int setBlockStartTime(DrawElement *elm, int value, bool move_group = false);// if return -1 then ime was setted, but dont the value you write
     Q_INVOKABLE int setBlockStartTimeGroup(int col,int ind,int value ) ;
     Q_INVOKABLE int addBlockStartTimeGroup(int col,int ind,int value ) ;
-    Q_INVOKABLE int getBlockStartTime(int col, int i);
+    Q_INVOKABLE quint64 getBlockStartTime(int col, int i);
     Q_INVOKABLE int addBlockStartTime(int col,int ind,int value );
     Q_INVOKABLE int setBlockTimeLeft(int col,int ind,int value );
     Q_INVOKABLE Group * getBlockGroup(int col, int ind);
@@ -446,6 +450,7 @@ public:
     //Q_INVOKABLE bool redrawYellowRect();
 
     Q_INVOKABLE bool getCurent_group(int col, int index) ;
+    Q_INVOKABLE QList<DrawElement *> getBlocksInCurrentGroup();
     Q_INVOKABLE long tryResizeCurentGroup(int shift);
     Q_INVOKABLE long tryResizeMemberInCurentGroup(int shift, int col, int index);
     Q_INVOKABLE QPoint getCurent_groupMembers(int index);
@@ -471,8 +476,10 @@ public:
 
 
 signals:
+    void maxTrackTimeChanged(quint64 value);
+    void loadTextFileSignal();
     void setBlockPlayTimeUntilFreezeSignal(int col, int ind, int value);
-    void setBlockPlayTimeUntilFreezeSignal2(int value);
+    void setBlockPlayTimeUntilFreezeSignal2(quint64 value);
 
     void scalePointerXChanged(int val);
     void borderColorChangedSignal(int col,int ind, QString color);
@@ -493,13 +500,14 @@ signals:
     void blockEditedSignal();
 
     void updateSelectedBlock(QPoint point);\
+    void updateSelectBlock();\
 
     void newProjectSignel();
     void openProjectSignel();
     void saveProjectSignel();
     void resetProjectSignel();
     void blockTimeSignel(int col, int index, int time);
-     void blockTimeSignel2(int time);
+    void blockTimeSignel2(int time);
 
     void focusLostSignal();
     void focusFoundSignal();
@@ -510,7 +518,7 @@ signals:
     //void setScalePointerPosSignal(int value);
 public slots:
     void emitSetBlockPlayTimeUntilFreezeSignal2(int col, int ind, int value);
-     void logForTest();
+    void logForTest();
     Q_INVOKABLE bool addNewBlockFromLibrary(int col, QString str , DrawElement *element = NULL);
     Q_INVOKABLE bool addNewBlockFromLibrary( QString str , DrawElement *element = NULL);
     Q_INVOKABLE DrawElement* loadFromFile(int col, int ind, QString path = "",bool emit_update = true);

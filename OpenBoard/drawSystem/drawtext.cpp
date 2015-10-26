@@ -234,6 +234,8 @@ DrawTextElm::DrawTextElm(OGLWidget *drawWidget, QObject *parent) : DrawElement(d
     setTextFont(QFont("123")); //444
     mainFillColor = QColor(0,0,0,0);
 
+    use_anim_time = 2;
+
 }
 
 DrawTextElm::~DrawTextElm()
@@ -335,10 +337,19 @@ void DrawTextElm::draw()
             curentPauseValue = 0;
         }
         long t_play_time;
-        if (bCalcTime)
+       /* if (bCalcTime)
             t_play_time = playTimeUntilFreeze;
         else
-            t_play_time = lifeTime;
+            t_play_time = lifeTime;*/
+
+        if (use_anim_time == 2)
+          t_play_time = lifeTime;
+        else
+            if (use_anim_time == 1)
+              t_play_time = drawTime;
+            else
+                if (use_anim_time == 0)
+                  t_play_time = playTimeUntilFreeze;
         int realKeyValue = qRound((double)(current_time - (curentPauseValue + startDrawTime)) / (double)((t_play_time - globalPauseLifeTime)/(mUnitList.size() - 1)));
         //qDebug() << mUnitList.size() << "            qwe         "<< realKeyValue;
         // //qDebug() << "cur " << current_time;
@@ -449,7 +460,7 @@ void DrawTextElm::setUnParsestring(const QString &valueUnParss, const QString &v
     globalDeltaComandSize = 0;
     //qDebug() << "START";
     myParser.ParsingLine(mUnitList, unParsestring, drawTime, globalPauseLifeTime, globalDeltaComandSize, delay);
-    if (!use_anim_time)
+    if (use_anim_time == 1)
         setPlayTimeUntilFreeze(drawTime);
     //qDebug() << "STOP";
     UnitCommand* command = new UnitCommand();
@@ -506,6 +517,10 @@ bool DrawTextElm::load_add(QDataStream &stream, float version)
         stream >> defaultFont;
         stream >> defaultFontColor;
     }
+    if (version > 3.00008)
+    {
+        stream >> show_text_cursor;
+    }
 
     /*int sizeOfString = 0;
     stream >> sizeOfString;
@@ -524,7 +539,7 @@ bool DrawTextElm::save_add(QDataStream &stream)
     // //qDebug() << "IN " << unParsestring.length();
     stream.writeRawData(unParsestring.toLatin1().data(), unParsestring.length());*/
     stream << unParsestring << loggerText << textCursor << prevTextCursor << mainTextFont << mainFillColor << bCalcTime << staticText;
-    stream <<  defaultFont<<defaultFontColor;
+    stream <<  defaultFont<<defaultFontColor << show_text_cursor;
 }
 
 void DrawTextElm::clearCanvas(int m_x, int m_y)

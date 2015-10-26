@@ -69,7 +69,7 @@ public slots:
     void on_action_youTube_triggered();
     void on_action_Clear_TextEdit_triggered();
     void onTextChanged();
-    void updateTextEditFromBlock(QPoint point);
+    void updateTextEditFromBlock();
     void updateVisibleTextEdit( bool state);
 
     //    settings
@@ -88,6 +88,7 @@ public slots:
     void on_action_Select_all_triggered();
     void on_action_Find_triggered();
     void search();
+    void updateBlockUseAnimTime(int value);
 
     //    file
     void on_action_Exit_triggered();
@@ -133,7 +134,7 @@ private slots:
     void on_slider_speedTB_valueChanged(int value);
     void hideBoardSettings();
     void showBoardSettings();
-    void setEnabledToolBar( bool status );
+    void setEnabledToolBar( bool status, Element_type type = Element_type::Text );
     void on_actionShow_last_drawing_triggered();
 
     void on_actionSave_drawing_triggered();
@@ -222,6 +223,8 @@ private slots:
     void on_slider_speedTB_2_sliderReleased();
     void on_spinBox_speedTB_2_valueChanged(int arg1);
     void on_check_use_speed_value_2_clicked();
+    void on_check_use_block_time_clicked();
+    void on_check_use_speed_value_clicked();
 };
 
 #endif // MAINWINDOW_H

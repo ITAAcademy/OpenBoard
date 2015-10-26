@@ -46,16 +46,20 @@ MainWindow::MainWindow(QWidget *parent) :
     mpOGLWidget = new OGLWidget(this,qglFormat);
 
 
+    ListControll *t_line = mpOGLWidget->getTimeLine();
     connect(ui->check_use_speed_value,SIGNAL(clicked()),this,SLOT(connectUZVandSVF()));
 
-    connect(mpOGLWidget->getTimeLine(), SIGNAL(setBlockPlayTimeUntilFreezeSignal2(int)),
+    connect(t_line, SIGNAL(setBlockPlayTimeUntilFreezeSignal2(int)),
             this, SLOT(on_slider_speedTB_2_valueChanged(int))); //99090
 
-    connect(mpOGLWidget->getTimeLine(), SIGNAL(blockTimeSignel2(int)),
+    connect(t_line, SIGNAL(blockTimeSignel2(int)),
             this, SLOT(selectedBlockTimeUpdate(int)));
+
+    connect(t_line,SIGNAL(loadTextFileSignal()),this,SLOT(updateTextEditFromBlock()));
     /*
     connect(element,SIGNAL(playTimeUntilFreezeChangeSignal(int,int,int)),
                 this, SIGNAL(setBlockPlayTimeUntilFreezeSignal(int,int,int)));*/
+
 
 
     QString versionString(QLatin1String(reinterpret_cast<const char*>(glGetString(GL_VERSION))));
@@ -457,7 +461,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(mpOGLWidget->getTimeLine(), SIGNAL(saveProjectSignel()), this, SLOT(on_action_Save_Project_triggered()));
 
     connect(mpOGLWidget->getTimeLine(),SIGNAL(loadFromFileSignal()),this,SLOT(updateBlockFromTextEdit()));
-    connect(mpOGLWidget->getTimeLine(), SIGNAL(updateSelectedBlock(QPoint)), this, SLOT(updateTextEditFromBlock(QPoint)));
+    connect(mpOGLWidget->getTimeLine(), SIGNAL(updateSelectBlock()), this, SLOT(updateTextEditFromBlock()));
     //    connect(commandTextEdit, SIGNAL(widgetVisibilityChanged(bool)), this, SLOT(updateVisibleTextEdit(bool)));
 
     connect(mpOGLWidget,SIGNAL(stopShowLastDrawingSignal()),this,SLOT(onStopShowLastDrawing()));
@@ -494,6 +498,9 @@ MainWindow::MainWindow(QWidget *parent) :
     this->ui->action_Board_Color->setEnabled(false);
     this->ui->action_Board_Font->setEnabled(false);
 
+    ui->check_is_static->setEnabled(false);
+    ui->check_show_text_cursor->setEnabled(false);
+    ui->check_use_speed_value->setEnabled(false);
 
 }
 
@@ -920,7 +927,7 @@ void MainWindow::on_action_Show_triggered()
 
     ui->action_Pause->setEnabled(false);
     a_pause->setEnabled(false);
-    updateTextEditFromBlock(mpOGLWidget->getTimeLine()->getSelectedBlockPoint());
+    updateTextEditFromBlock();//mpOGLWidget->getTimeLine()->getSelectedBlockPoint());
     mpOGLWidget->update();
     activateWindow();
 
@@ -1686,8 +1693,8 @@ void MainWindow::on_action_New_Project_triggered()
 
                 DrawTextElm *text = new DrawTextElm();
 
-                first->setLifeTime(curentState.firsTime);
-                last->setLifeTime(curentState.lastTime);
+                first->setLifeTime((quint64)curentState.firsTime);
+                last->setLifeTime((quint64)curentState.lastTime);
 
                 first->setSize(mpOGLWidget->width(), mpOGLWidget->height());
                 last->setSize(mpOGLWidget->width(), mpOGLWidget->height());
@@ -2095,42 +2102,86 @@ void MainWindow::onTextChanged()
 
 
 
-void MainWindow::updateTextEditFromBlock(QPoint point)
+void MainWindow::updateTextEditFromBlock()
 {
 
-    if(point.x() != -1)
+    // .. if(point.x() != -1)
+
+
+    if(mpOGLWidget != NULL)
     {
-        //qDebug() << "updateTextEditFromBlock  " << point;
-        DrawElement* elm = mpOGLWidget->getTimeLine()->getBlock(point);
-        lastInpuAnimTime = elm->getPlayTimeUntilFreeze();
-        int life_time = elm->getLifeTime();
-        ui->slider_speedTB_2->setMaximum(life_time);
-        ui->spinBox_speedTB_2->setMaximum(life_time);
-        ui->spinBox_speedTB_2->setValue(lastInpuAnimTime);
-
-
-        ui->check_use_speed_value_2->setChecked(elm->useAnimTime());
-        if(elm->getTypeId() == Element_type::Text)
+        ListControll *t_line = mpOGLWidget->getTimeLine();
+        if(t_line != NULL)
         {
-            DrawTextElm *text_elm = (DrawTextElm *)elm;
-            setEnabledToolBar(true);
-            disconnect(textEdit, SIGNAL(textChanged()), this, SLOT(onTextChanged()));
+            DrawElement *elm = t_line->getSelectedBlock();
+            if(elm != NULL)
+            {
+                //DrawElement* elm = mpOGLWidget->getTimeLine()->getBlock(point);
+                lastInpuAnimTime = elm->getPlayTimeUntilFreeze();
+                int life_time = elm->getLifeTime();
+                ui->expected_time_2->setText(QString::number(life_time) + " ms");
+                ui->slider_speedTB_2->setMaximum(life_time);
+                ui->spinBox_speedTB_2->setMaximum(life_time);
+                // ui->spinBox_speedTB_2->setValue(lastInpuAnimTime);
+
+                int anim_state = elm->useAnimTime();
+                ui->check_use_block_time->setChecked(false);
+                ui->check_use_speed_value_2->setChecked(false);
+                ui->check_use_speed_value->setChecked(false);
+
+                ui->check_show_text_cursor->setChecked(false);
+                ui->check_is_static->setChecked(false);
+
+                qDebug() << "void MainWindow::updateTextEditFromBlock(QPoint point)  = " << elm->useAnimTime();
+
+                if(elm->getTypeId() == Element_type::Text)
+                {
+                    ui->check_is_static->setEnabled(true);
+                    ui->check_show_text_cursor->setEnabled(true);
+                    ui->check_use_speed_value->setEnabled(true);
+
+                    switch (anim_state)
+                    {
+                    case 0:
+                        on_check_use_speed_value_2_clicked();
+                        break;
+                    case 1:
+                        on_check_use_speed_value_clicked();
+                        break;
+                    case 2:
+                        on_check_use_block_time_clicked();
+                        break;
+                    }
+
+                    DrawTextElm *text_elm = (DrawTextElm *)elm;
+                    setEnabledToolBar(true);
+                    disconnect(textEdit, SIGNAL(textChanged()), this, SLOT(onTextChanged()));
+                    textEdit->newText();
+                    commandTextEdit->newText();
+                    commandTextEdit->setPlainText(text_elm->getLoggerText());
+                    commandTextEdit->setPreviousCursorPosition(text_elm->getPrevTextCursor());
+                    commandTextEdit->textCursor().setPosition(text_elm->getTextCursor());
+                    textEdit->setPlainText(text_elm->getUnParsestring());
+                    ui->check_use_speed_value->setChecked(text_elm->getBNeedCalcTime());
+                    connect(textEdit, SIGNAL(textChanged()), this, SLOT(onTextChanged()));
+                    ui->check_is_static->setChecked(text_elm->isStaticText());
+                    ui->check_show_text_cursor->setChecked(elm->getShowTextCursor());
+                    return;
+                }
+                else
+                {
+                    ui->check_is_static->setEnabled(false);
+                    ui->check_show_text_cursor->setEnabled(false);
+                    ui->check_use_speed_value->setEnabled(false);
+                }
+            }
+            //qDebug() << "DISABLE INPUT";
             textEdit->newText();
             commandTextEdit->newText();
-            commandTextEdit->setPlainText(text_elm->getLoggerText());
-            commandTextEdit->setPreviousCursorPosition(text_elm->getPrevTextCursor());
-            commandTextEdit->textCursor().setPosition(text_elm->getTextCursor());
-            textEdit->setPlainText(text_elm->getUnParsestring());
-            ui->check_use_speed_value->setChecked(text_elm->getBNeedCalcTime());
-            connect(textEdit, SIGNAL(textChanged()), this, SLOT(onTextChanged()));
-            ui->check_is_static->setChecked(text_elm->isStaticText());
-            return;
+            setEnabledToolBar(false);
         }
+
     }
-    //qDebug() << "DISABLE INPUT";
-    textEdit->newText();
-    commandTextEdit->newText();
-    setEnabledToolBar(false);
 }
 
 void MainWindow::updateBlockFromTextEdit()
@@ -2166,6 +2217,7 @@ void MainWindow::updateBlockFromTextEdit()
                 text_elm->setMainFillColor(mSettings.getBoardFontColor());
 
             ui->expected_time->setText(QString::number(change_time) + " ms");
+
             if(ui->check_use_speed_value->isChecked() && isActiveWindow() && !mpOGLWidget->getTimeLine()->getCurent_group())
             {
                 qDebug() << "void MainWindow::updateBlockFromTextEdit()";
@@ -2182,7 +2234,7 @@ void MainWindow::updateBlockFromTextEdit()
 
 void MainWindow::updateVisibleTextEdit(bool state)
 {
-    updateTextEditFromBlock(mpOGLWidget->getTimeLine()->getSelectedBlockPoint());
+    updateTextEditFromBlock();//mpOGLWidget->getTimeLine()->getSelectedBlockPoint());
     commandTextEdit->textCursor().setPosition(commandTextEdit->getPreviousCursorPosition());
 }
 
@@ -2317,7 +2369,7 @@ void MainWindow::on_action_Stop_triggered()
         ui->action_Play->setText("Play");
 
         showBoardSettings();
-        updateTextEditFromBlock(mpOGLWidget->getTimeLine()->getSelectedBlockPoint());
+        updateTextEditFromBlock();//mpOGLWidget->getTimeLine()->getSelectedBlockPoint());
 
         //if last selected block dont have text type, text*s toolbar buttons dont must be enabled
         /*ListControll *temp_TL = mpOGLWidget->getTimeLine();
@@ -2366,7 +2418,7 @@ void MainWindow::on_action_Pause_triggered()
     this->ui->action_Hide->setEnabled(true);
     a_hide->setEnabled(true);
     showBoardSettings();
-    updateTextEditFromBlock(mpOGLWidget->getTimeLine()->getSelectedBlockPoint());
+    updateTextEditFromBlock();//mpOGLWidget->getTimeLine()->getSelectedBlockPoint());
     updateEditWidgets();
 
 }
@@ -2481,7 +2533,7 @@ void MainWindow::showBoardSettings()
     setEnabledToolBar(true);
 }
 
-void MainWindow::setEnabledToolBar(bool status)
+void MainWindow::setEnabledToolBar(bool status, Element_type type)
 {
     ui->speedBtn->setEnabled(status);
     ui->crossBtn->setEnabled(status);
@@ -2497,12 +2549,15 @@ void MainWindow::setEnabledToolBar(bool status)
     ui->spinBox_speedTB->setEnabled(status);
     ui->spinBox_speedTB_2->setEnabled(status);
     ui->spinBox_delayTB->setEnabled(status);
-    ui->check_use_speed_value->setEnabled(status);
-    ui->check_use_speed_value_2->setEnabled(status);
-    ui->check_is_static->setEnabled(status);
 
+    ui->check_use_block_time->setEnabled(status);
+    ui->check_use_speed_value_2->setEnabled(status);
 
     on_block_text_buttons_toolbar(status);
+    if (status)
+        if (type != Element_type::Text)
+            return;
+
 
 }
 
@@ -2687,6 +2742,16 @@ void MainWindow::on_check_whole_words_clicked()
 void MainWindow::on_check_show_text_cursor_clicked(bool checked)
 {
     mpOGLWidget->setShowTextCursor(checked);
+    if(mpOGLWidget != NULL)
+    {
+        ListControll *t_line = mpOGLWidget->getTimeLine();
+        if(t_line != NULL)
+        {
+            DrawElement *elm = t_line->getSelectedBlock();
+            if(elm != NULL)
+                elm->setShowTextCursor(checked);
+        }
+    }
 }
 
 void MainWindow::on_speedBtn_released()
@@ -2723,19 +2788,19 @@ void MainWindow::on_slider_speedTB_2_sliderReleased()
 
 void MainWindow::updateBlockAnimTime()
 {
-    if (ui->check_use_speed_value_2->isChecked())
-        if(mpOGLWidget != NULL)
+    // if (ui->check_use_speed_value_2->isChecked())
+    if(mpOGLWidget != NULL)
+    {
+        ListControll *t_line = mpOGLWidget->getTimeLine();
+        if(t_line != NULL)
         {
-            ListControll *t_line = mpOGLWidget->getTimeLine();
-            if(t_line != NULL)
+            DrawElement *elm = t_line->getSelectedBlock();
+            if(elm != NULL)
             {
-                DrawElement *elm = t_line->getSelectedBlock();
-                if(elm != NULL)
-                {
-                    elm->setPlayTimeUntilFreeze(lastInpuAnimTime,false);
-                }
+                elm->setPlayTimeUntilFreeze(lastInpuAnimTime,false);
             }
         }
+    }
 }
 
 void MainWindow::on_slider_speedTB_2_valueChanged(int value)
@@ -2752,6 +2817,8 @@ void MainWindow::on_slider_speedTB_2_valueChanged(int value)
     connect(ui->spinBox_speedTB_2,SIGNAL(valueChanged(int)),ui->slider_speedTB_2,SLOT(setValue(int)));
     connect(mpOGLWidget->getTimeLine(), SIGNAL(setBlockPlayTimeUntilFreezeSignal2(int)),
             this, SLOT(on_slider_speedTB_2_valueChanged(int))); //
+
+    //on_check_use_speed_value_2_clicked();
 }
 
 
@@ -2766,7 +2833,83 @@ void MainWindow::selectedBlockTimeUpdate(int value)
     ui->spinBox_speedTB_2->setMaximum(value);
 }
 
+
+
+void MainWindow::on_check_use_block_time_clicked()
+{
+
+    ui->check_use_speed_value->setChecked(false);
+    ui->check_use_speed_value_2->setChecked(false);
+    ui->check_use_block_time->setChecked(true);
+    //updateBlockUseAnimTime(2);
+    if(mpOGLWidget != NULL)
+    {
+        ListControll *t_line = mpOGLWidget->getTimeLine();
+        if(t_line != NULL)
+        {
+            DrawElement *elm = t_line->getSelectedBlock();
+            if(elm != NULL)
+            {
+                ui->spinBox_speedTB_2->setValue(elm->getLifeTime());
+                elm->setUseAnimTime(2);
+            }
+        }
+    }
+}
+
 void MainWindow::on_check_use_speed_value_2_clicked()
+{
+    ui->check_use_block_time->setChecked(false);
+    ui->check_use_speed_value->setChecked(false);
+    ui->check_use_speed_value_2->setChecked(true);
+
+    // updateBlockUseAnimTime(0);
+
+    if(mpOGLWidget != NULL)
+    {
+        ListControll *t_line = mpOGLWidget->getTimeLine();
+        if(t_line != NULL)
+        {
+            DrawElement *elm = t_line->getSelectedBlock();
+            if(elm != NULL)
+            {
+                ui->spinBox_speedTB_2->setValue(elm->getPlayTimeUntilFreeze());
+                elm->setUseAnimTime(0);
+            }
+        }
+    }
+}
+
+
+
+
+void MainWindow::on_check_use_speed_value_clicked()
+{
+    ui->check_use_block_time->setChecked(false);
+    ui->check_use_speed_value_2->setChecked(false);
+    ui->check_use_speed_value->setChecked(true);
+
+    if(mpOGLWidget != NULL)
+    {
+        ListControll *t_line = mpOGLWidget->getTimeLine();
+        if(t_line != NULL)
+        {
+            DrawTextElm *elm = (DrawTextElm *) t_line->getSelectedBlock();
+            if(elm != NULL)
+            {
+                int time = elm->getDrawTime();
+                if (elm->getLifeTime() < time)
+                    t_line->setBlockTime(elm->getBlockColumn(),elm->getBlockIndex(),time);
+                ui->spinBox_speedTB_2->setValue(time);
+                elm->setUseAnimTime(1);
+                // ui->spinBox_speedTB_2->setValue(time); //887
+            }
+        }
+    }
+    //updateBlockUseAnimTime(1);
+}
+
+void MainWindow::updateBlockUseAnimTime(int value)
 {
     if(mpOGLWidget != NULL)
     {
@@ -2776,12 +2919,9 @@ void MainWindow::on_check_use_speed_value_2_clicked()
             DrawElement *elm = t_line->getSelectedBlock();
             if(elm != NULL)
             {
-                bool is_true = ui->check_use_speed_value_2->isChecked();
-                elm->setUseAnimTime(is_true);
-                if (is_true)
-                     elm->setPlayTimeUntilFreeze(lastInpuAnimTime,false);
+                elm->setUseAnimTime(value);
+                qDebug() << "void MainWindow::updateBlockUseAnimTime(int value)  = " << elm->useAnimTime();
             }
         }
     }
-
 }
