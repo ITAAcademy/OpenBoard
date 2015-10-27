@@ -446,8 +446,10 @@ void ListControll::recountMaxTrackTime()
     for (int i=0; i < tracks.size(); i++)
     {
         quint64 temp_time = tracks[i].getTime();
-        updateMaxTrackTime(temp_time);
+        if (maxTrackTime < temp_time)
+            maxTrackTime = temp_time;
     }
+    emit maxTrackTimeChanged(maxTrackTime);
 }
 
 void ListControll::showF_manager(QPoint pos)
@@ -882,7 +884,8 @@ void ListControll::addNewBlock(int col, QString str, DrawElement *element)
 
 
 
-
+    if (getBlockIndToAddFromPos(element,scale_pointer_pos,-1,false)) //741
+        return;
 
     tracks[col].block.append(element);
     addEmptyBlockAt(col, tracks[col].block.size() - 1 , 0);
@@ -962,6 +965,8 @@ void ListControll::logBlocksDrawElColInd(int col)
 }
 
 
+
+
 int ListControll::getBlockIndToAddFromPos(int col,int ind, int pos, int col_dest,bool remove_movable_block )
 {
     if (!blockValid(col,ind))
@@ -985,7 +990,7 @@ int ListControll::getBlockIndToAddFromPos(int col,int ind, int pos, int col_dest
 
 
 
-int ListControll::getBlockIndToAddFromPos(DrawElement * move_block, int pos, int col_dest  )
+bool ListControll::getBlockIndToAddFromPos(DrawElement * move_block, int pos, int col_dest , bool reback_block )
 {
     int get_ind = -1;
 
@@ -994,6 +999,7 @@ int ListControll::getBlockIndToAddFromPos(DrawElement * move_block, int pos, int
 
     int col;
     int ind = move_block->getBlockIndex();
+    bool rezult = false;
 
     if (col_dest >= 0)
     {
@@ -1059,7 +1065,7 @@ int ListControll::getBlockIndToAddFromPos(DrawElement * move_block, int pos, int
         tracks[col].updateTime();
         recountMaxTrackTime();
         move_block->setBlockColumn(col);
-        return get_ind;
+        return true;
     }
 
 
@@ -1105,6 +1111,7 @@ int ListControll::getBlockIndToAddFromPos(DrawElement * move_block, int pos, int
                     tracks[col].updateTime();
                     recountMaxTrackTime();
                     move_block->setBlockColumn(col);
+                    return true;
                     break;
                 }
                 else   // не влазе в пустоту
@@ -1124,11 +1131,14 @@ int ListControll::getBlockIndToAddFromPos(DrawElement * move_block, int pos, int
                         tracks[col].updateTime();
                         recountMaxTrackTime();
                         move_block->setBlockColumn(col);
+                        return true;
                         break;
                     }
                     else // не влазе в пустоту - вертаєм на місце  +++
                     {
-                        getBlockIndToAddFromPos(move_block,move_block_start_time);
+                        if (reback_block)
+                            getBlockIndToAddFromPos(move_block,move_block_start_time);
+                            return false;
                         break;
                     }
                 }
@@ -1154,7 +1164,9 @@ int ListControll::getBlockIndToAddFromPos(DrawElement * move_block, int pos, int
                             if (!force_resize_block ) //+++++++++++++
                             {
                                 qDebug() << "KKKKKKKKK         2";
-                                getBlockIndToAddFromPos(move_block,move_block_start_time);
+                                if (reback_block)
+                                    getBlockIndToAddFromPos(move_block,move_block_start_time);
+                                    return false;
                                 break;
                             }
                             else //+++++++++++++
@@ -1175,6 +1187,7 @@ int ListControll::getBlockIndToAddFromPos(DrawElement * move_block, int pos, int
                                 move_block->setBlockColumn(col);
                                 empta->setBlockColumn(col);
                                 qDebug() << "KKKKKKKKK         22";
+                                return true;
                                 break;
                             }
                         }
@@ -1192,6 +1205,7 @@ int ListControll::getBlockIndToAddFromPos(DrawElement * move_block, int pos, int
                             tracks[col].updateTime();
                             qDebug() << "KKKKKKKKK         3";
                             move_block->setBlockColumn(col);
+                            return true;
                             break;
                         }
                     }
@@ -1205,6 +1219,7 @@ int ListControll::getBlockIndToAddFromPos(DrawElement * move_block, int pos, int
                             tracks[col].updateTime();
                             qDebug() << "KKKKKKKKK         35";
                             move_block->setBlockColumn(col);
+                            return true;
                             break;
                         }
                         else
@@ -1216,7 +1231,9 @@ int ListControll::getBlockIndToAddFromPos(DrawElement * move_block, int pos, int
                                 if (!force_resize_block )  //++++++++++++++++++
                                 {
                                     qDebug() << "KKKKKKKKK         20";
-                                    getBlockIndToAddFromPos(move_block,move_block_start_time);
+                                    if (reback_block)
+                                        getBlockIndToAddFromPos(move_block,move_block_start_time);
+                                        return false;
                                     break;
                                 }
                                 else
@@ -1238,6 +1255,7 @@ int ListControll::getBlockIndToAddFromPos(DrawElement * move_block, int pos, int
                                     move_block->setBlockColumn(col);
                                     empta->setBlockColumn(col);
                                     qDebug() << "KKKKKKKKK         22";
+                                    return true;
                                     break;
                                 }
                             }
@@ -1256,6 +1274,7 @@ int ListControll::getBlockIndToAddFromPos(DrawElement * move_block, int pos, int
                                 qDebug() << "KKKKKKKKK         30";
                                 move_block->setBlockColumn(col);
                                 empta->setBlockColumn(col);
+                                return true;
                                 break;
                             }
                         }
@@ -1502,11 +1521,7 @@ void ListControll::addNewTrack( )
         tracks[last_track_ind].block[k]->setBlockColumn(last_track_ind);
     }
 
-    /*if (maxTrackTime < temp_traclwidth)
-    {
-        maxTrackTime = temp_traclwidth; //1234
-        emit maxTrackTimeChanged(maxTrackTime);
-    }*/
+
     updateMaxTrackTime(temp_traclwidth);
     calcPointedBlocks();
 }
@@ -3115,7 +3130,7 @@ bool ListControll::attachBlockLeft(int col, int index, int value)
         draw_el->setLifeTime(draw_el->getLifeTime() + dovod_value);
         draw_el->setStartDraw(from_begin - dovod_value);*/
         //   setBlockTime(col,index,draw_el->getLifeTime() - dovod_value);
-       /* qDebug() << "DOVODKA21 life = " << life;
+        /* qDebug() << "DOVODKA21 life = " << life;
         from_begin = dovod_value;
         setBlockTimeLeft(col,index,from_begin);
         qDebug() << "DOVODKA22 life = " << life << " dov_val = " << dovod_value;*/
