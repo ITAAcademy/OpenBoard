@@ -3050,6 +3050,83 @@ int ListControll::getSpacingBtwBlocks()
     return spacing_btw_blocks;
 }
 
+bool ListControll::attachBlockLeft(int col, int index, int value)
+{
+    if (!blockValid(col,index))
+        return false;
+    if (value < 0)
+        value = 0;
+    value *=scale_scroll_children;
+    qDebug() << "DOVODKA start";
+    DrawElement *draw_el = tracks[col].block[index];
+    quint64 from_begin = draw_el->getStartDrawTime();
+    quint64 life = draw_el->getLifeTime();
+    int dovod_value = 65534;
+    bool value_setted = false;
+
+    for (int i=0; ;  i++)
+    {
+        if (i == col)
+            i++;
+        if (i >= tracks.size())
+            break;
+        for (int y=0; y < tracks[i].block.size(); y++)
+        {
+            DrawElement *draw_el2 = tracks[i].block[y];
+            if (draw_el2->getTypeId() == Element_type::Empty)
+                continue;
+            quint64 el2_start = draw_el2->getStartDrawTime();
+            quint64 el2_end = draw_el2->getLifeTime() + el2_start;
+            int temp_dovodka;
+            if (from_begin < el2_start)
+            {
+                temp_dovodka = el2_start - from_begin;
+                temp_dovodka *= -1;
+            }
+            else
+            {
+                if (from_begin < el2_end)
+                {
+                    int temp_dovodka_1 = from_begin - el2_start;
+                    int temp_dovodka_2 = el2_end - from_begin;
+                    if (abs(temp_dovodka_1) < abs(temp_dovodka_2))
+                        temp_dovodka = temp_dovodka_1;
+                    else
+                        temp_dovodka = -temp_dovodka_2;
+                }
+                else
+                {
+                    temp_dovodka = from_begin - el2_end;
+                }
+            }
+            //qDebug() << "temp_dovodka =   "<< temp_dovodka;
+            if (abs(temp_dovodka) <=  abs(value) && (abs(temp_dovodka) <  abs(dovod_value) ))
+            {
+                dovod_value = temp_dovodka;
+                // qDebug() << "dovodka value =   "<< dovod_value;
+                value_setted = true;
+            }
+        }
+    }
+    if (value_setted)
+    {
+        setBlockTimeLeft(col,index,from_begin - dovod_value);
+        /*
+        draw_el->setLifeTime(draw_el->getLifeTime() + dovod_value);
+        draw_el->setStartDraw(from_begin - dovod_value);*/
+        //   setBlockTime(col,index,draw_el->getLifeTime() - dovod_value);
+       /* qDebug() << "DOVODKA21 life = " << life;
+        from_begin = dovod_value;
+        setBlockTimeLeft(col,index,from_begin);
+        qDebug() << "DOVODKA22 life = " << life << " dov_val = " << dovod_value;*/
+        /*reduceEmptyBlocksFromV2(col,index,-dovod_value);
+        updateBlocksStartTimesFrom(col,index);*/
+        tracks[col].updateTime();
+    }
+    // ctrl_pressed = value;
+}
+
+
 bool ListControll::attachBlock(int col, int index, int value)
 {
     if (!blockValid(col,index))
@@ -3057,7 +3134,7 @@ bool ListControll::attachBlock(int col, int index, int value)
     value *=scale_scroll_children;
     qDebug() << "DOVODKA start";
     DrawElement *draw_el = tracks[col].block[index];
-    int from_width = draw_el->getLifeTime() + draw_el->getStartDrawTime();
+    quint64 from_width = draw_el->getLifeTime() + draw_el->getStartDrawTime();
     qDebug() << "from_width =   "<< from_width;
     int dovod_value = 65534;
     bool value_setted = false;

@@ -1429,7 +1429,7 @@ Rectangle{
                         if (root.p_main222.dovodka_block)
 
                         {
-                            timeControll.attachBlock(root.colIndex, root.mIndex , 50)
+                            timeControll.attachBlockLeft(root.colIndex, root.mIndex , 50)
                             console.log("dovodka finish")
                         }
                     root.globalRep.updateModel();

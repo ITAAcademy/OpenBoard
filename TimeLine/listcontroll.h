@@ -271,7 +271,7 @@ public:
     bool isVisible();
     bool isActiveWindow();
     Q_INVOKABLE bool attachBlock(int col, int index, int value);
-
+    Q_INVOKABLE bool attachBlockLeft(int col, int index, int value);
     Q_INVOKABLE bool addBlockToCurentGroup(DrawElement* block);
     Q_INVOKABLE bool addBlockToCurentGroup(int col,int ind);
     Q_INVOKABLE bool removeBlockFromGroup(DrawElement* block);
