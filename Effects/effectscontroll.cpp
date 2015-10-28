@@ -55,8 +55,11 @@ EffectsManager::EffectsManager(QObject *parent) : QObject(parent), QQuickImagePr
 
 
     //viewsetFont(QFont("Segoe Script"));
-
-
+/*
+    QSize t_size(300,300);
+    view.setMaximumSize(t_size);
+    view.setMinimumSize(t_size);
+*/
 }
 
 EffectsManager::~EffectsManager()

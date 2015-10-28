@@ -7,7 +7,7 @@ QTime cut_time = QDateTime::currentDateTime().time();
 QString log_time = QString("log ") + QString::number( cut_time.hour()) + QString("_") +
         QString::number(cut_time.minute())  + QString("_") + QString::number(cut_time.second()) + QString(".txt") ;
 //const char * deb_file = log_time.toStdString().data();
-#define DEBUG_TO_FILE  "log.txt"
+//#define DEBUG_TO_FILE  "log.txt"
 //log_time.toStdString().c_str()
 //"log.txt"
 //currentDateTime().toString("h:m:s ap")
