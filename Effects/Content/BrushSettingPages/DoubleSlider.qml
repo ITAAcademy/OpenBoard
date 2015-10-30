@@ -40,7 +40,7 @@ Item{
 
     }
     onValue2Changed: {
-
+    console.log("onValue2Changed");
         handle2.x = 2 + (root.value2 - root.minimum2) * root.xMax2 / (root.maximum2 - root.minimum2);
         //if (handle1.x>handle2.x)handle2.x=handle1.x;
        /* if(!size_value2.focus)

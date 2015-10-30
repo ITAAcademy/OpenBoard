@@ -143,6 +143,7 @@ class OGLWidget : public QGLWidget, protected  QOpenGLFunctions_3_0
     ShaderTest shaderWindow;
 
 signals:
+    void showEffectsManagerSignal();
     void stopShowLastDrawingSignal();
 public:
     void zoomGrid(int val);

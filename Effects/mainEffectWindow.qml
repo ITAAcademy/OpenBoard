@@ -13,6 +13,10 @@ Rectangle{
         blockTime=val;
         console.log("setBlockTime:"+blockTime);
     }
+    Connections{
+        target:effectsControll
+        onShowSignal: loadEffectParams();
+    }
 
     function loadEffectParams(){
         var startTime  = effectsControll.getCurrentEffectProperty("start_time")
@@ -33,17 +37,19 @@ Rectangle{
         switch(effectType)
         {
         case 0:
-            //default:
+            console.log("effectsPanelAlpha");
             effectsPanelAlpha.setStartTime(startTime);
             effectsPanelAlpha.setEndTime(endTime);
             effectsPanelAlpha.setInverted(inversion);
             break;
         case 1:
+            console.log("effectsPanelSpin");
             effectsPanelSpin.setStartTime(startTime);
             effectsPanelSpin.setEndTime(endTime);
             effectsPanelSpin.setInverted(inversion);
             break;
         case 2:
+            console.log("effectsPanelPixelization");
             if (elementSize>effectsPanelPixelization.elementSizeSlider.maximum)
                 elementSize = effectsPanelPixelization.elementSizeSlider.maximum
             if (elementSize<effectsPanelPixelization.elementSizeSlider.minimum)
@@ -55,6 +61,7 @@ Rectangle{
             effectsControll.setCurrentEffectProperty("elementSize",elementSize)
             break;
         case 3:
+            console.log("effectsPanelCircles");
              if (count>effectsPanelCircles.countSlider.maximum)
                  count = effectsPanelCircles.countSlider.maximum
              if (count<effectsPanelCircles.countSlider.minimum)
@@ -67,31 +74,35 @@ Rectangle{
 
             break;
         case 4:
+            console.log("effectsTurnthepage");
             effectsTurnthepage.setStartTime(startTime);
             effectsTurnthepage.setEndTime(endTime);
             effectsTurnthepage.setInverted(inversion);
             break;
         case 5:
+            console.log("effectsRandomSquares");
             effectsRandomSquares.setStartTime(startTime);
             effectsRandomSquares.setEndTime(endTime);
             effectsRandomSquares.setInverted(inversion);
             break;
         case 6:
+            console.log("effectsTreshold");
             effectsTreshold.setStartTime(startTime);
             effectsTreshold.setEndTime(endTime);
             effectsTreshold.setInverted(inversion);
+            break;
         case 7:
+            console.log("effectsSlide");
             effectsSlide.setStartTime(startTime);
             effectsSlide.setEndTime(endTime);
             effectsSlide.setInverted(inversion);
-
+        break;
 
         }
     }
 
     Connections {
         target: effectsControll
-
         onSetBlockTimeSignal: setBlockTime(val);
 
     }
@@ -146,7 +157,10 @@ Rectangle{
                     target: listBox.listBox
                     onCurrentIndexChanged: {
                         //  effectsControll.setCurrentEffectProperty("effect_type",currentIndex);
-                        loadEffectParams()
+                        //TODO
+
+                        loadEffectParams();
+                        secondColumn.processZ();
 
                         //effectsControll.setCurrentEffectProperty("effect_type",currentIndex)
                     }
@@ -239,7 +253,32 @@ Rectangle{
                 }*/
 
             }
+            function processZ(){
+               effectsPanelAlpha.z=0;
+                effectsPanelSpin.z=0;
+                effectsPanelPixelization.z=0;
+                effectsPanelCircles.z=0;
+                effectsTurnthepage.z=0;
+                effectsRandomSquares.z=0;
+                effectsTreshold.z=0;
+                effectsSlide.z=0;
+                if (isEffectAlpha)effectsPanelAlpha.z=1;
+                else
+                if (isEffectSpin)effectsPanelSpin.z=1;
+                else
+                if(isEffectPixelization)effectsPanelPixelization.z=1;
+                else
+                if(isEffectCircles)effectsPanelCircles.z=1;
+                else
+                if(isEffectTurnthepage)effectsTurnthepage.z=1;
+                else
+                if(isEffectRandomSquares)effectsRandomSquares.z=1;
+                else
+                if (isEffectTreshold)effectsTreshold.z=1;
+                else
+                if (isEffectSlide)effectsSlide.z=1;
 
+            }
 
             SettingPages.EffectAlpha{
                 id:effectsPanelAlpha
@@ -247,7 +286,7 @@ Rectangle{
                 color: root.color
                 width:secondColumn.width
                 height:parent.height-combo.height
-                visible:isEffectAlpha && !isEmptyList && !isNonSelected
+                visible:!isEmptyList && !isNonSelected
 
             }
             SettingPages.EffectSpin{
@@ -256,7 +295,7 @@ Rectangle{
                 color: root.color
                 width:secondColumn.width
                 height:parent.height-combo.height
-                visible:isEffectSpin && !isEmptyList && !isNonSelected
+                visible:!isEmptyList && !isNonSelected
 
             }
             SettingPages.EffectPixelization{
@@ -265,7 +304,7 @@ Rectangle{
                 color: root.color
                 width:secondColumn.width
                 height:parent.height-combo.height
-                visible:isEffectPixelization && !isEmptyList && !isNonSelected
+                visible:!isEmptyList && !isNonSelected
 
             }
             SettingPages.EffectCircles{
@@ -274,7 +313,7 @@ Rectangle{
                 color: root.color
                 width:secondColumn.width
                 height:parent.height-combo.height
-                visible:isEffectCircles && !isEmptyList && !isNonSelected
+                visible:!isEmptyList && !isNonSelected
 
             }
             SettingPages.EffectTurnthepage{
@@ -283,7 +322,7 @@ Rectangle{
                 color: root.color
                 width:secondColumn.width
                 height:parent.height-combo.height
-                visible:isEffectTurnthepage && !isEmptyList && !isNonSelected
+                visible:!isEmptyList && !isNonSelected
 
             }
             SettingPages.EffectRandomsquares{
@@ -292,7 +331,7 @@ Rectangle{
                 color: root.color
                 width:secondColumn.width
                 height:parent.height-combo.height
-                visible:isEffectRandomSquares && !isEmptyList && !isNonSelected
+                visible:!isEmptyList && !isNonSelected
 
             }
             SettingPages.EffectTreshold{
@@ -301,7 +340,7 @@ Rectangle{
                 color: root.color
                 width:secondColumn.width
                 height:parent.height-combo.height
-                visible:isEffectTreshold && !isEmptyList && !isNonSelected
+                visible: !isEmptyList && !isNonSelected
             }
             SettingPages.EffectSlide{
                 id:effectsSlide
@@ -309,7 +348,7 @@ Rectangle{
                 color: root.color
                 width:secondColumn.width
                 height:parent.height-combo.height
-                visible:isEffectSlide && !isEmptyList && !isNonSelected
+                visible:!isEmptyList && !isNonSelected
             }
         }
 
