@@ -319,7 +319,7 @@ void DrawTextElm::draw()
     }
 
     int current_time;
-    if(!bPlay)
+    if(pDrawWidget->getTimeLine()->getPlayTime() <= 0)
         current_time =  pDrawWidget->getTimeLine()->getScalePointerPos();
     else
         current_time =  pDrawWidget->getTimeLine()->getPlayTime();
@@ -327,7 +327,7 @@ void DrawTextElm::draw()
     if (current_time > 0 && mUnitList.size() != 1)
     {
         // //qDebug() << "startDrawTime:"<<startDrawTime;
-        if((keyCouter == 0 || !bPlay) && curentCh != current_time )
+        if((keyCouter == 0 || pDrawWidget->getTimeLine()->getPlayTime() <= 0) && curentCh != current_time )
         {
             clearCanvas();
             clearBuffer();
@@ -360,7 +360,7 @@ void DrawTextElm::draw()
 
         while( keyCouter < mUnitList.size() && listOfAnimationFigure.isEmpty() && (keyCouter <= realKeyValue || mUnitList[keyCouter]->unitType == 1) )
         {
-            if(!bPlay)
+            if(!pDrawWidget->getTimeLine()->getPlayTime() <= 0)
                 current_time =  pDrawWidget->getTimeLine()->getScalePointerPos();
             else
                 current_time =  pDrawWidget->getTimeLine()->getPlayTime();
@@ -368,7 +368,7 @@ void DrawTextElm::draw()
             //if ()
             {
                 mUnitList.at(keyCouter)->draw(this);
-                if( bPlay && mUnitList.at(keyCouter)->delay > 0)
+                if( pDrawWidget->getTimeLine()->getPlayTime() <= 0 && mUnitList.at(keyCouter)->delay > 0)
                 {
                     curentPauseValue += mUnitList.at(keyCouter)->delay;
                     if(mUnitList[keyCouter]->unitType == 1 && ((UnitCommand*) mUnitList[keyCouter])->getUnitCommandType() == "ErasePreChar")

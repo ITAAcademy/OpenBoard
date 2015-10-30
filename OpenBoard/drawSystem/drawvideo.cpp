@@ -34,7 +34,6 @@ DrawVideoElm::DrawVideoElm(OGLWidget *drawWidget, QObject *parent) : DrawElement
 {
     setType("video");
     setTypeId(Element_type::Video);
-    bPlay = false;
     delta = 0;
 
 }
@@ -51,7 +50,7 @@ void DrawVideoElm::draw()
    // while( k > keyCouter)
     int k = 0;
 
-    if(bPlay && !bPause && pDrawWidget->getTimeLine()->getPlayTime() > 0 ) /// NEED FIX FOR SECOND BLOCK
+    if(!bPause && pDrawWidget->getTimeLine()->getPlayTime() > 0 ) /// NEED FIX FOR SECOND BLOCK
     {
         pDrawWidget->clearFrameBuffer(fboWrapper);
         FFmpegHelp::Frame frame = decoder.getNextFrame(pDrawWidget->getTimeLine()->getPlayTime() - startDrawTime);

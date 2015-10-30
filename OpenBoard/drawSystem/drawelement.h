@@ -71,7 +71,6 @@ protected:
     Element_type typeId;
     OGLWidget *pDrawWidget;
     bool bPause;
-    bool bPlay;
     bool effectChange = false;
 
     QString lastPath;
