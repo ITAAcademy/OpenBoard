@@ -1,5 +1,6 @@
 import QtQuick 2.0
 import QtGraphicalEffects 1.0
+import QtQuick.Controls.Styles 1.2
 import QtQuick.Controls 1.2
 Rectangle {
     id: root
@@ -24,6 +25,43 @@ Rectangle {
         //verticalScrollBarPolicy: Qt.ScrollBarAlwaysOn
         width: parent.width
         height: parent.height
+        property int borderSize: 5
+        style: ScrollViewStyle{
+            scrollBarBackground : Rectangle{
+                implicitHeight: scroll.borderSize
+                implicitWidth: scroll.borderSize
+                x:1
+                color: "#333"
+            }
+            decrementControl :
+                Rectangle{
+                height: 0
+                width: 20
+                color: "transparent"
+            }
+            incrementControl  :
+                Rectangle{
+                implicitHeight: 0
+                implicitWidth: 0
+                color: "transparent"
+            }
+            corner  :
+                Rectangle{
+                implicitHeight: scroll.borderSize
+                implicitWidth: scroll.borderSize
+                x:1
+                color: "#333"
+            }
+            handle:
+                Rectangle{
+                color: "#555"
+                y: scroll.borderSize/2
+                x: scroll.borderSize/2
+                implicitHeight: scroll.borderSize/2
+                radius: 10
+                implicitWidth: implicitHeight
+            }
+        }
     Grid{
         id: view
         //anchors.fill: parent

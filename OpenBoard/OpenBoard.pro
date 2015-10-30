@@ -46,7 +46,8 @@ SOURCES += main.cpp\
     ../Effects/effect.cpp \
     ../Effects/effectscontroll.cpp \
     ../Prompter/prompteritem.cpp    \
-    ../Prompter/promptercontroll.cpp
+    ../Prompter/promptercontroll.cpp \
+    ../Prompter/audiorecorder.cpp
 
 
 
@@ -92,7 +93,8 @@ HEADERS  += mainwindow.h \
     ../Effects/effect.h \
     ../Effects/effectscontroll.h \
     ../Prompter/prompteritem.h  \
-    ../Prompter/promptercontroll.h
+    ../Prompter/promptercontroll.h \
+    ../Prompter/audiorecorder.h
 
 FORMS    += mainwindow.ui \
     youtube/logindialog.ui \

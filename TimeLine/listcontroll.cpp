@@ -2368,7 +2368,7 @@ int ListControll::setBlockTimeLeft(int col,int ind,int value )
         }
     }
 
-    if (set_time == 0)
+    if (set_time == 0 || value > start + life)
         return -1;
 
     int set_life_time = elm->setLifeTime(life - set_time, true);

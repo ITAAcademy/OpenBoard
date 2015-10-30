@@ -633,8 +633,6 @@ Rectangle{
 
                 map_mouseX -= zdvig_mouse
                 main222.press_block_x = map_mouseX*/
-
-
                 timeControll.setBlockStartTimeGroup(colIndex, mIndex,( map_mouseX ) * main222.scaling)
                 //main222.miss_drag = true
                 // main222.press_block_x
@@ -645,7 +643,7 @@ Rectangle{
             }
             // main222.miss_drag = !main222.miss_drag
 
-
+            if( main222.selectedBlock == root )
             {
                 if(globalRep.isDrag === false &&  (mouseX > root.width-resize_capture_area_width || mouseX < resize_capture_area_width)) //mouseX < root.width * 0.1 ||/
                 {

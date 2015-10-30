@@ -1812,12 +1812,13 @@ void OGLWidget::applyEffectsToCurrentBlock()
         case SLIDE_SHADER:
             ShaderEffect sEffect(shaderPrograms[shaderProgramIndex],shaderProgramIndex);
 
-            int startTime = blockEffect->getPropetrie("start_time");
-            int endTime = blockEffect->getPropetrie("end_time");
+            int startTime = qFloor(blockEffect->getPropetrie("start_time"));
+            int endTime = qFloor(blockEffect->getPropetrie("end_time"));
             bool reverse = blockEffect->getPropetrie("inversion");
             int count = blockEffect->getPropetrie("count");
             int elmSize = blockEffect->getPropetrie("elementSize");
             sEffect.setStartTimeMS(startTime);
+           // qDebug() << "SHOW   " << blockEffect->getPropetrie("start_time");
             sEffect.setEffectTimeHowLong(endTime-startTime);
             sEffect.setReverse(reverse);
             sEffect.setShaderWrapperIndex(shaderProgramIndex);
@@ -1826,11 +1827,11 @@ void OGLWidget::applyEffectsToCurrentBlock()
             timeLineEffects.push_back(sEffect);
         }
     }
-    qDebug() << "apply effect after for";
+   // qDebug() << "apply effect after for";
 
-    qDebug() << "selectedBlockIndex"<<blockIndex.x()<<" "<<blockIndex.y();
+   // qDebug() << "selectedBlockIndex" << blockIndex.x()<<" "<<blockIndex.y();
     timeLine->getBlock(blockIndex)->setEffects(timeLineEffects);
-    qDebug() << "apply effect end";
+ //   qDebug() << "apply effect end";
 }
 void OGLWidget::loadEffectFromCurrentBlockToEffectManager()
 {

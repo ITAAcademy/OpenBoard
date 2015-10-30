@@ -245,16 +245,15 @@ void DrawElement::paint()
 
                 int endAtTime = beginAtTime + effects[i].getEffectTimeHowLong();
                 float keyFrame = 1;
+             //   qDebug() << ":"<<playTime-beginAtTime;
+                qDebug() << lifeTime << "   " << effects[i].getEffectTimeHowLong();
 
 
-
-                //qDebug() << ":"<<playTime-beginAtTime;
-
-
-                if (bPlay && ((playTime >= beginAtTime && playTime <= endAtTime) || lifeTime == effects[i].getEffectTimeHowLong()))//endAtTime + 50 if flickering !!!
+               // if ((((playTime >= beginAtTime && playTime <= endAtTime))))//endAtTime + 50 if flickering !!! @BAG@//NICOLAS problem with animation in last ms
                 {
-                    if(endAtTime-beginAtTime>0)
+                    if(endAtTime-beginAtTime > 0)
                         keyFrame=(float)(playTime-beginAtTime)/(endAtTime-beginAtTime);
+
                     if(keyFrame > 1)
                         keyFrame = 1;
 
@@ -264,8 +263,8 @@ void DrawElement::paint()
                     effects[i].setUniform("reverse",effects[i].getReverse());
                     effects[i].setUniform("count",effects[i].getCount());
                     effects[i].setUniform("elementSize",effects[i].getElementSize());
-                    //  qDebug() <<i<< "-b:"<<beginAtTime;
-                    // qDebug() << i<<"-keyFrame:"<<keyFrame;
+                     // qDebug() <<i<< "-b:"<<beginAtTime;
+                     //qDebug() << i<<"-keyFrame:"<<keyFrame;
                     if(drawToSecondBuffer)
                     {
                         qDebug()<<"drawToSecondBuffer:"<<pDrawWidget->getPingPongFBO().frameBuffer;
@@ -284,7 +283,7 @@ void DrawElement::paint()
                     }
                     else
                     {
-                        qDebug()<<"drawToFirstBuffer:"<<fboWrapper.frameBuffer;
+                       // qDebug()<<"drawToFirstBuffer:"<<fboWrapper.frameBuffer;
                         pDrawWidget->bindBuffer(fboWrapper.frameBuffer);
                         pDrawWidget->clearFrameBuffer(fboWrapper);
                         // float keyFrame = (float)(pDrawWidget->getTimeLine()->getPlayTime()-startDrawTime)/lifeTime;//MOVE UP LATER
@@ -294,9 +293,6 @@ void DrawElement::paint()
                             pDrawWidget->drawTexture(0,0,pDrawWidget->getPingPongFBO().tWidth,
                                                      pDrawWidget->getPingPongFBO().tHeight,
                                                      pDrawWidget->getPingPongFBO().bindedTexture,0,1,1,z );
-
-
-
                     }
                     pDrawWidget->useShader(0);
                     effectsUsedInOneTime++;
