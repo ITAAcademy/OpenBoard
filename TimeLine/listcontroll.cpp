@@ -1926,14 +1926,14 @@ void ListControll::cloneBlock(DrawElement *origin, DrawElement *clone)
     setBlocked(true);
     QBuffer buff;
     buff.open(QBuffer::ReadWrite);
-    origin->save(&buff, NULL);
+    origin->save(&buff, NULL, NULL);
     QPoint p = QPoint(clone->getBlockColumn(), clone->getBlockIndex());
     //tracks[p.x()].addTime(origin->getLifeTime() - clone->getLifeTime());
     tracks[p.x()].updateTime();
     if(clone != NULL)
         delete clone;
     buff.seek(0);
-    clone = loadDrawElement(&buff, VERSION);
+    clone = loadDrawElement(&buff, NULL, VERSION);
 
     clone->setDrawWidget(origin->getDrawWidget());
 
@@ -3418,7 +3418,7 @@ void ListControll::show()
     }\
 }
 
-bool ListControll::save(QIODevice* device, QProgressBar *bar)
+bool ListControll::save(QIODevice* device, QString projectPath, QProgressBar *bar)
 {
     QDataStream stream(device);
     stream << (float)VERSION;
@@ -3427,7 +3427,7 @@ bool ListControll::save(QIODevice* device, QProgressBar *bar)
 
     for (int i=0; i< tracks.size(); i++)
     {
-        tracks[i].save(device, bar);
+        tracks[i].save(device, projectPath, bar);
 
         for(DrawElement* elm : tracks[i].block)
         {
@@ -3447,7 +3447,7 @@ bool ListControll::save(QIODevice* device, QProgressBar *bar)
     return true;
 }
 
-bool ListControll::load(QIODevice* device)
+bool ListControll::load(QIODevice* device, QString projectPath)
 {
     //QDataStream stream(device);
     float version = 0.0f;
@@ -3461,7 +3461,7 @@ bool ListControll::load(QIODevice* device)
     for (int i=0; i< tracks_size; i++)
     {
         Track temp;
-        temp.load(device, version);
+        temp.load(device,projectPath, version);
         //qDebug() << "load blocks size in track" << temp.block.size();
         tracks.append(temp);
 

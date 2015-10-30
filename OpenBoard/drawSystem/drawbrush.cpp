@@ -23,7 +23,7 @@ QVector<BrushBeginingIndex> DrawBrushElm::getBrushes(){
     return brushes;
 }
 
-bool DrawBrushElm::load_add(QDataStream &stream, float version)
+bool DrawBrushElm::load_add(QDataStream &stream, QString projectPATH, float version)
 {
     clear();
     QVector<QImage> images;
@@ -124,7 +124,7 @@ bool DrawBrushElm::setDrawWidget(OGLWidget *value){
     
 }
 
-bool DrawBrushElm::save_add(QDataStream &stream)
+bool DrawBrushElm::save_add(QDataStream &stream, QString projectPATH)
 {
     //QVector<QImage> brushImages;
     stream << coords;

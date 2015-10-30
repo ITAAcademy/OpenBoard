@@ -143,8 +143,8 @@ private:
     bool textCursorVisible = true;
     int drawFrameNumber = 0;
     void setTickTime(int value);
-    bool load_add(QDataStream &stream, float version);
-    bool save_add(QDataStream &stream);
+    bool load_add(QDataStream &stream, QString projectPATH, float version);
+    bool save_add(QDataStream &stream, QString projectPATH);
 protected slots:
     void start();
 public slots:

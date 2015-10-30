@@ -16,8 +16,8 @@ public:
     explicit DrawImageElm( OGLWidget *drawWidget = NULL, QObject *parent = 0);
     ~DrawImageElm();
     void draw();
-    bool load_add(QDataStream &stream, float version);
-    bool save_add(QDataStream &stream);
+    bool load_add(QDataStream &stream, QString projectPATH, float version);
+    bool save_add(QDataStream &stream, QString projectPATH);
      void setDrawImage(QImage img,bool set_bk = true);
 
     bool setDrawWidget(OGLWidget *value);

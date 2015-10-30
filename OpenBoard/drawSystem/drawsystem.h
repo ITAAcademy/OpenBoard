@@ -38,6 +38,8 @@ static inline QString mSuffixFromFilter(const QString &filter, QString name)
 
 static DrawElement *GenerationDrawElement( QString path, OGLWidget *drawWidget = NULL, QObject *parent = NULL )
 {
+    QDir dir;
+    path = dir.relativeFilePath(path);
     QFileInfo target(path);
     if(!target.exists())
         return NULL;
@@ -131,7 +133,7 @@ static DrawElement *GenerationDrawElement( QString path, OGLWidget *drawWidget =
                             return (DrawElement*) elm;
                         }
                         else
-                            if(format == "mp3" || format == "flac" || format == "wav")
+                            if(format == "mp3" || format == "flac" || format == "wav" || format == "m4a")
                             {
                                 DrawAudioElm *elm = new DrawAudioElm(drawWidget, parent);
                                 elm->setAudioFile(path);
@@ -144,7 +146,7 @@ static DrawElement *GenerationDrawElement( QString path, OGLWidget *drawWidget =
     return NULL;
 }
 
-static DrawElement *loadDrawElement(QIODevice *device, float version)
+static DrawElement *loadDrawElement(QIODevice *device, QString projectPath, float version)
 {
     DrawElement *draw_element  = new DrawElement(NULL,NULL);
 
@@ -160,7 +162,7 @@ static DrawElement *loadDrawElement(QIODevice *device, float version)
     if(typeId == Element_type::Text)
     {
         DrawTextElm *elm = new DrawTextElm(NULL,NULL);
-        elm->loadRest(device, version);
+        elm->loadRest(device, projectPath, version);
         delete  draw_element;
         draw_element = (DrawElement*) elm;
     }
@@ -168,7 +170,7 @@ static DrawElement *loadDrawElement(QIODevice *device, float version)
         if(typeId == Element_type::Image)
         {
             DrawImageElm *elm = new DrawImageElm(NULL,NULL);
-            elm->loadRest(device, version);
+            elm->loadRest(device, projectPath, version);
             delete  draw_element;
             elm->setDrawImage(elm->getIcon());
             draw_element = (DrawElement*) elm;
@@ -179,7 +181,7 @@ static DrawElement *loadDrawElement(QIODevice *device, float version)
             if(typeId == Element_type::Brushh)
             {
                 DrawBrushElm *elm = new DrawBrushElm(NULL,NULL);
-                elm->loadRest(device, version);
+                elm->loadRest(device, projectPath, version);
                 delete  draw_element;
                 draw_element = (DrawElement*) elm;
             }
@@ -187,7 +189,7 @@ static DrawElement *loadDrawElement(QIODevice *device, float version)
                 if(typeId == Element_type::Empty)
                 {
                     DrawElement *elm = new DrawElement(NULL,NULL);
-                    elm->loadRest(device, version);
+                    elm->loadRest(device, projectPath, version);
                     if (version < 2.95)
                     {
                         DrawTextElm *elm_t = new DrawTextElm(NULL,NULL);
@@ -208,7 +210,7 @@ static DrawElement *loadDrawElement(QIODevice *device, float version)
                     if(typeId == Element_type::Video)
                     {
                         DrawVideoElm *elm = new DrawVideoElm(NULL,NULL);
-                        elm->loadRest(device, version);
+                        elm->loadRest(device, projectPath, version);
                         //delete  draw_element;
                         // if (elm->isVidePathValid())
                         if (isFileExists(elm->getVidePath()))
@@ -234,7 +236,7 @@ static DrawElement *loadDrawElement(QIODevice *device, float version)
                         if(typeId == Element_type::Audio)
                         {
                             DrawAudioElm *elm = new DrawAudioElm(NULL,NULL);
-                            elm->loadRest(device, version);
+                            elm->loadRest(device, projectPath, version);
                             //delete  draw_element;
                             if (isFileExists(elm->getFilePath()))
                             {
@@ -278,7 +280,7 @@ public:
     explicit drawImage( OGLWidget *drawWidget, QObject *parent = 0);
     ~drawImage();
     void draw();
-    bool load_add(QDataStream &stream, float version);
-    bool save_add(QDataStream &stream);
+    bool load_add(QDataStream &stream, QString projectPATH, float version);
+    bool save_add(QDataStream &stream, QString projectPATH);
 };
 */

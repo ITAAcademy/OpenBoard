@@ -21,8 +21,8 @@ public:
     void draw();
 
     bool setVideoFile( QString path);
-    bool load_add(QDataStream &stream, float version);
-    bool save_add(QDataStream &stream);
+    bool load_add(QDataStream &stream, QString projectPATH, float version);
+    bool save_add(QDataStream &stream, QString projectPATH);
     bool setDrawWidget(OGLWidget *value);
     QString getVidePath() const;
     void setVidePath(const QString &value);
@@ -31,7 +31,7 @@ public:
 public slots:
     void start();
     void stop();
-
+    void pause();
 };
 
 #endif // VIDEO_H

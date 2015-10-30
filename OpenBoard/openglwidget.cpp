@@ -344,7 +344,7 @@ void OGLWidget::paintBrushInBuffer(GLuint& texture,Brush& currentBrushOfDrawSyst
 
 
         drawTexture(xPos-BRUSH_SIZE/2 + dispersX ,yPos-BRUSH_SIZE/koff/2 + dispersY,BRUSH_SIZE,BRUSH_SIZE/koff,
-                    texture,angle,scaleX,scaleY, i);
+                    texture,angle,scaleX,scaleY, 1000 + i);
     }
     if (shaderSupported)
         useShader(0);
@@ -1506,7 +1506,7 @@ void OGLWidget::paintGL()
 */
 
     if(curStatus != PLAY)
-        paintBufferOnScreen(mouseFBO,0, 0, wax, way,-100);
+        paintBufferOnScreen(mouseFBO,0, 0, wax, way, 1000);
     /*
  *  APPLY SHADER EFFECT
 */

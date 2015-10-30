@@ -223,8 +223,10 @@ Item{
                                 implicitWidth: 100
                                 implicitHeight: 20
                                 border.color: "dimgrey"
+                                color: "#666"
                                 radius: 2
                             }
+                    textColor: "white"
                     horizontalAlignment: Qt.AlignLeft
                    }
                 //text: if(small) (root.value2/1000).toFixed(2);else Math.round(root.value2)
@@ -260,8 +262,11 @@ Item{
                                 implicitWidth: 100
                                 implicitHeight: 20
                                 border.color: "dimgrey"
+                                color: "#666"
                                 radius: 2
                             }
+                    textColor: "white"
+
                     horizontalAlignment: Qt.AlignLeft
                    }
                 minimumValue: minimum

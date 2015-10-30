@@ -35,8 +35,8 @@ public:
     void draw();
     void addBrush(Brush brush);
     QVector<BrushBeginingIndex> getBrushes();
-    bool load_add(QDataStream &stream, float version);
-    bool save_add(QDataStream &stream);
+    bool load_add(QDataStream &stream, QString projectPATH, float version);
+    bool save_add(QDataStream &stream, QString projectPATH);
 
     void setLifeTime(int value, bool feedBack, bool visual);
     bool setDrawWidget(OGLWidget *value);

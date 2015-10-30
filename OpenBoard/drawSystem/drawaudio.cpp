@@ -14,6 +14,15 @@ void DrawAudioElm::stop()
     pDrawWidget->clearAudioList();
 }
 
+void DrawAudioElm::pause()
+{
+    qDebug() << "pause";
+    DrawElement::pause();
+    keyCouter = 0;
+    decoder.restart(0);
+    pDrawWidget->clearAudioList();
+}
+
 DrawAudioElm::DrawAudioElm(OGLWidget *drawWidget, QObject *parent) : DrawElement(drawWidget, parent)
 {
     setType("audio");
@@ -41,6 +50,8 @@ void DrawAudioElm::draw()
    // qDebug () << k << " " << keyCouter;
    // while( k > keyCouter)
     int k = 0;
+    if(!init)
+        return;
 
     if(bPlay && !bPause && pDrawWidget->getTimeLine()->getPlayTime() > 0 ) /// NEED FIX FOR SECOND BLOCK
     {
@@ -71,22 +82,29 @@ void DrawAudioElm::setAudioFile(QString path)
     {
         if(decoder.initFF(path) != NULL)
             audioPath = path;
-
+        init = true;
     }
     playTimeUntilFreeze = decoder.getDuration();
     if(lifeTime < 1000)
         lifeTime = decoder.getDuration();
 }
 
-bool DrawAudioElm::load_add(QDataStream &stream, float version)
+bool DrawAudioElm::load_add(QDataStream &stream, QString projectPATH, float version)
 {
+    QDir dir(projectPATH);
+
     stream >> audioPath;
+    QFileInfo path(audioPath);
+    if(path.isRelative())
+        audioPath = dir.absoluteFilePath(audioPath);
+ //   qDebug() << audioPath;
     setAudioFile(audioPath);
 }
 
-bool DrawAudioElm::save_add(QDataStream &stream)
+bool DrawAudioElm::save_add(QDataStream &stream, QString projectPATH)
 {
-    stream << audioPath;
+    QDir dir(projectPATH);
+    stream << dir.relativeFilePath(audioPath);
 }
 
 QString DrawAudioElm::getFilePath()

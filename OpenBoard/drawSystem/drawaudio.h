@@ -13,6 +13,7 @@ class DrawAudioElm  :public DrawElement
     GLuint textureIndex = -1;
     int failedLoad = 10;
     QString audioPath;
+    bool init = false;
 
 public:
     explicit DrawAudioElm( OGLWidget *drawWidget, QObject *parent = 0);
@@ -20,14 +21,15 @@ public:
     void draw();
 
     void setAudioFile( QString path);
-    bool load_add(QDataStream &stream, float version);
-    bool save_add(QDataStream &stream);
+    bool load_add(QDataStream &stream, QString projectPATH, float version);
+    bool save_add(QDataStream &stream, QString projectPATH);
     bool setDrawWidget(OGLWidget *value);
     QString getFilePath();
     long getDuration();
 protected slots:
     void start();
     void stop();
+    void pause();
 
 };
 

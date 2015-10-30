@@ -231,7 +231,7 @@ DrawTextElm::DrawTextElm(OGLWidget *drawWidget, QObject *parent) : DrawElement(d
     scroll = 0;
     //clearBuffer();
 
-    setTextFont(QFont("123")); //444
+    //setTextFont(QFont("123")); //444
     mainFillColor = QColor(0,0,0,0);
 
     use_anim_time = 2;
@@ -498,10 +498,12 @@ void DrawTextElm::setTickTime(int value)
 
 }
 
-bool DrawTextElm::load_add(QDataStream &stream, float version)
+bool DrawTextElm::load_add(QDataStream &stream, QString projectPATH, float version)
 {
     stream >> unParsestring >> loggerText >> textCursor >> prevTextCursor >> mainTextFont
             >> mainFillColor >> bCalcTime;
+    setTextFont(mainTextFont);
+
     setUnParsestring(unParsestring, loggerText);
     if(version > 2.801)
     {
@@ -521,7 +523,7 @@ bool DrawTextElm::load_add(QDataStream &stream, float version)
     {
         stream >> show_text_cursor;
     }
-
+    //qDebug() << mainTextFont;
     /*int sizeOfString = 0;
     stream >> sizeOfString;
     QByteArray data;
@@ -533,7 +535,7 @@ bool DrawTextElm::load_add(QDataStream &stream, float version)
     //myParser.ParsingLine(mUnitList, unParsestring,drawTime,delay);
 }
 
-bool DrawTextElm::save_add(QDataStream &stream)
+bool DrawTextElm::save_add(QDataStream &stream, QString projectPATH)
 {
     /*   stream << unParsestring.length();
     // //qDebug() << "IN " << unParsestring.length();

@@ -28,8 +28,6 @@ class DrawElement;
 
 bool isFileExists(QString path) ;
 
-
-
 struct Track {
 private:
     quint64 time = 0 ;
@@ -111,7 +109,7 @@ public:
 
     }
 
-    bool save(QIODevice* device, QProgressBar *bar)
+    bool save(QIODevice* device, QString projectPath, QProgressBar *bar)
     {
         QDataStream stream(device);
         stream << block.size() ;
@@ -120,13 +118,13 @@ public:
         for (int i=0; i< block.size(); i++)
         {
             qDebug() << "block[i]:  " << i;
-            block[i]->save(device, bar);
+            block[i]->save(device, projectPath, bar);
         }
 
         return true;
     }
 
-    bool load(QIODevice* device, float version)
+    bool load(QIODevice* device, QString projectPath, float version)
     {
         block.clear();
         time = 0;
@@ -147,7 +145,7 @@ public:
                 empt->setLifeTime(500);
                 block.append(empt);
             }*/
-            DrawElement *element = loadDrawElement(device, version);
+            DrawElement *element = loadDrawElement(device, projectPath, version);
             block.append(element);
         }
         // qDebug() << "block size" << block.size();
@@ -244,8 +242,8 @@ public:
     static const int blockHeightPlusSpacing = 70;
 
 
-    bool save(QIODevice* device, QProgressBar *bar);
-    bool load(QIODevice* device);
+    bool save(QIODevice* device, QString projectPath, QProgressBar *bar);
+    bool load(QIODevice* device, QString projectPath);
 
 
     volatile bool isBlocked = false;

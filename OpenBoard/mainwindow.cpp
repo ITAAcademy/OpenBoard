@@ -1452,6 +1452,7 @@ bool MainWindow::on_action_Save_Project_triggered()
 
     QFile backupFile(curProjectFile+".bak");
     QFile file(curProjectFile);
+    QFileInfo info(curProjectFile);
     setWindowTitle(QFileInfo(curProjectFile).baseName() + " - Open Board");
 
 
@@ -1462,7 +1463,7 @@ bool MainWindow::on_action_Save_Project_triggered()
         status.setMaximum(mpOGLWidget->getTimeLine()->getMemberCount());
         status.setValue(0);
 
-        mpOGLWidget->getTimeLine()->save(&file, &status);
+        mpOGLWidget->getTimeLine()->save(&file, info.absoluteDir().absolutePath(), &status);
         QDataStream stream(&file);
         int state =   static_cast<int>(curentState.state);
         stream << curentState.advance_mode << state ;
@@ -1485,7 +1486,7 @@ bool MainWindow::on_action_Save_Project_triggered()
         status.setMaximum(mpOGLWidget->getTimeLine()->getMemberCount());
         status.setValue(0);
 
-        mpOGLWidget->getTimeLine()->save(&backupFile, &status);
+        mpOGLWidget->getTimeLine()->save(&backupFile, info.absoluteDir().absolutePath(), &status);
         QDataStream stream(&backupFile);
         int state =   static_cast<int>(curentState.state);
         stream << curentState.advance_mode << state ;
@@ -1502,7 +1503,7 @@ bool MainWindow::on_action_Save_Project_triggered()
         return false;
     }
 
-
+    qDebug() << "   save    " << info.absoluteDir().absolutePath();
 
     return true;
 }
@@ -1541,6 +1542,7 @@ void MainWindow::on_action_Open_Project_triggered()
     curProjectFile = fileName;
 
     setWindowTitle(QFileInfo(fileName).baseName() + " - Open Board");
+    QFileInfo info(curProjectFile);
 
     QFile file(curProjectFile);
     if(file.open(QIODevice::ReadOnly))
@@ -1549,7 +1551,7 @@ void MainWindow::on_action_Open_Project_triggered()
 
 
 
-        mpOGLWidget->getTimeLine()->load(&file);
+        mpOGLWidget->getTimeLine()->load(&file, info.absolutePath());
 
         QDataStream stream(&file);
         int state ;
@@ -2116,8 +2118,13 @@ void MainWindow::updateTextEditFromBlock()
             DrawElement *elm = t_line->getSelectedBlock();
             if(elm != NULL)
             {
+                disconnect(t_line, SIGNAL(setBlockPlayTimeUntilFreezeSignal2(int)),
+                        this, SLOT(on_slider_speedTB_2_valueChanged(int))); //99090
+
                 //DrawElement* elm = mpOGLWidget->getTimeLine()->getBlock(point);
                 lastInpuAnimTime = elm->getPlayTimeUntilFreeze();
+                ui->slider_speedTB_2->setEnabled(false);
+                ui->spinBox_speedTB_2->setEnabled(false);
                 int life_time = elm->getLifeTime();
                 ui->expected_time_2->setText(QString::number(life_time) + " ms");
                 ui->slider_speedTB_2->setMaximum(life_time);
@@ -2133,7 +2140,8 @@ void MainWindow::updateTextEditFromBlock()
                 ui->check_is_static->setChecked(false);
 
                 qDebug() << "void MainWindow::updateTextEditFromBlock(QPoint point)  = " << elm->useAnimTime();
-
+                ui->slider_speedTB_2->setEnabled(true);
+                ui->spinBox_speedTB_2->setEnabled(true);
                 if(elm->getTypeId() == Element_type::Text)
                 {
                     ui->check_is_static->setEnabled(true);
@@ -2174,6 +2182,13 @@ void MainWindow::updateTextEditFromBlock()
                     ui->check_show_text_cursor->setEnabled(false);
                     ui->check_use_speed_value->setEnabled(false);
                 }
+                connect(t_line, SIGNAL(setBlockPlayTimeUntilFreezeSignal2(int)),
+                        this, SLOT(on_slider_speedTB_2_valueChanged(int))); //99090
+            }
+            else
+            {
+                ui->slider_speedTB_2->setEnabled(false);
+                ui->spinBox_speedTB_2->setEnabled(false);
             }
             //qDebug() << "DISABLE INPUT";
             textEdit->newText();
@@ -2545,9 +2560,7 @@ void MainWindow::setEnabledToolBar(bool status, Element_type type)
     ui->speedBtn->setEnabled(status);
     ui->slider_delayTB->setEnabled(status);
     ui->slider_speedTB->setEnabled(status);
-    ui->slider_speedTB_2->setEnabled(status);
     ui->spinBox_speedTB->setEnabled(status);
-    ui->spinBox_speedTB_2->setEnabled(status);
     ui->spinBox_delayTB->setEnabled(status);
 
     ui->check_use_block_time->setEnabled(status);

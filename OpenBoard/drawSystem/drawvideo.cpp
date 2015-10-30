@@ -14,6 +14,11 @@ void DrawVideoElm::stop()
     pDrawWidget->clearAudioList();
 }
 
+void DrawVideoElm::pause()
+{
+    stop();
+}
+
 
 QString DrawVideoElm::getVidePath() const
 {
@@ -51,7 +56,7 @@ void DrawVideoElm::draw()
    // while( k > keyCouter)
     int k = 0;
 
-    if(bPlay && !bPause && pDrawWidget->getTimeLine()->getPlayTime() > 0 ) /// NEED FIX FOR SECOND BLOCK
+    if(videoValid && bPlay && !bPause && pDrawWidget->getTimeLine()->getPlayTime() > 0 ) /// NEED FIX FOR SECOND BLOCK
     {
         pDrawWidget->clearFrameBuffer(fboWrapper);
         FFmpegHelp::Frame frame = decoder.getNextFrame(pDrawWidget->getTimeLine()->getPlayTime() - startDrawTime);
@@ -75,7 +80,7 @@ void DrawVideoElm::draw()
 
 bool DrawVideoElm::isVidePathValid()
 {
-    return  videoValid = true;
+    return  videoValid;
 }
 
 bool DrawVideoElm::setVideoFile(QString path)
@@ -97,16 +102,24 @@ bool DrawVideoElm::setVideoFile(QString path)
         lifeTime = decoder.getDuration();
 }
 
-bool DrawVideoElm::load_add(QDataStream &stream, float version)
+bool DrawVideoElm::load_add(QDataStream &stream, QString projectPATH, float version)
 {
+    QDir dir(projectPATH);
+
     stream >> videPath;
+    QFileInfo path(videPath);
+    if(path.isRelative())
+        videPath = dir.absoluteFilePath(videPath);
+//    qDebug() << "videoPATH  " << videPath;
     key = videPath;
     setVideoFile(videPath);
 }
 
-bool DrawVideoElm::save_add(QDataStream &stream)
+bool DrawVideoElm::save_add(QDataStream &stream, QString projectPATH)
 {
-    stream << videPath;
+    QDir dir(projectPATH);
+
+    stream << dir.relativeFilePath(videPath);
 }
 
 

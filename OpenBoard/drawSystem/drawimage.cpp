@@ -96,7 +96,7 @@ void DrawImageElm::draw()
 
 }
 
-bool DrawImageElm::load_add(QDataStream &stream, float version)
+bool DrawImageElm::load_add(QDataStream &stream, QString projectPATH, float version)
 {
     stream >> bGIF ;
     // qDebug() << "DrawImageElm lastPath:" + lastPath;
@@ -104,6 +104,11 @@ bool DrawImageElm::load_add(QDataStream &stream, float version)
     if(bGIF)
     {
         stream >> lastPath;
+        QDir dir(projectPATH);
+        QFileInfo path(lastPath);
+        if(path.isRelative())
+            lastPath = dir.absoluteFilePath(lastPath);
+
         gif = new QMovie(lastPath);
         if(!gif->isValid())
             bGIF = false;
@@ -111,14 +116,16 @@ bool DrawImageElm::load_add(QDataStream &stream, float version)
     // qDebug() << "wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwwww" + bGIF;
 }
 
-bool DrawImageElm::save_add(QDataStream &stream)
+bool DrawImageElm::save_add(QDataStream &stream, QString projectPATH)
 {
     stream << bGIF;
     //qDebug() << "DrawImageElm lastPath:" + lastPath;
 
     if(bGIF)
     {
-        stream << lastPath;
+        QDir dir(projectPATH);
+
+        stream << dir.relativeFilePath(lastPath);
     }
 
 }

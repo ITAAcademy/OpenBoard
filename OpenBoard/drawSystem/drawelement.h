@@ -101,10 +101,10 @@ public:
     bool reloadLastDone();
 
     void setLastPath(QString path);
-    bool load(QIODevice* device, float version);
+    bool load(QIODevice* device, QString projectName, float version);
     bool loadTypeId(QIODevice* device);
-    bool loadRest(QIODevice* device, float version);
- bool save(QIODevice* device, QProgressBar *bar);
+    bool loadRest(QIODevice* device, QString projectName, float version);
+    bool save(QIODevice* device, QString projectName, QProgressBar *bar);
 
     QRect getRect();
 
@@ -129,8 +129,8 @@ public:
     int getZ() const;
     void setZ(int value);
 
-     quint64 getLifeTime() ;
-     quint64 setLifeTime(quint64 value, bool feedBack = false, bool visual = true, bool use_value = true);
+    quint64 getLifeTime() ;
+    quint64 setLifeTime(quint64 value, bool feedBack = false, bool visual = true, bool use_value = true);
 
 
     quint64 getStartDrawTime() const;
@@ -179,7 +179,7 @@ public:
     void setPlayTimeUntilFreeze(int value, bool emit_value = true);
 
     float getBorder() const;
-     void setBorder(float value);
+    void setBorder(float value);
 
 signals:
     void playTimeUntilFreezeChangeSignal(int col,int ind, int value);
@@ -203,8 +203,8 @@ protected slots:
     QImage load_image(QDataStream &stream);
 
 protected:
-    virtual bool load_add(QDataStream &stream, float version);
-    virtual bool save_add(QDataStream &stream);
+    virtual bool load_add(QDataStream &stream, QString projectPATH, float version);
+    virtual bool save_add(QDataStream &stream, QString projectPATH);
 
 
 };

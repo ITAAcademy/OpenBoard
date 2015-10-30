@@ -246,10 +246,11 @@ void DrawElement::paint()
                 int endAtTime = beginAtTime + effects[i].getEffectTimeHowLong();
                 float keyFrame = 1;
              //   qDebug() << ":"<<playTime-beginAtTime;
-                qDebug() << lifeTime << "   " << effects[i].getEffectTimeHowLong();
+               // qDebug() << lifeTime << "   " << effects[i].getEffectTimeHowLong();
 
 
                // if ((((playTime >= beginAtTime && playTime <= endAtTime))))//endAtTime + 50 if flickering !!! @BAG@//NICOLAS problem with animation in last ms
+                if(bPlay)
                 {
                     if(endAtTime-beginAtTime > 0)
                         keyFrame=(float)(playTime-beginAtTime)/(endAtTime-beginAtTime);
@@ -267,7 +268,7 @@ void DrawElement::paint()
                      //qDebug() << i<<"-keyFrame:"<<keyFrame;
                     if(drawToSecondBuffer)
                     {
-                        qDebug()<<"drawToSecondBuffer:"<<pDrawWidget->getPingPongFBO().frameBuffer;
+                        //qDebug()<<"drawToSecondBuffer:"<<pDrawWidget->getPingPongFBO().frameBuffer;
                         pDrawWidget->bindBuffer(pDrawWidget->getPingPongFBO().frameBuffer);
                         pDrawWidget->clearFrameBuffer(pDrawWidget->getPingPongFBO());
                         // qDebug() << "Shader program ("<<i<<"):"<<effects[i].getShaderWrapper()->getShaderProgram();
@@ -482,12 +483,12 @@ bool DrawElement::load(QString path)
         return false;
     //lastPath = path; //@BUG@09/09/NicolasFix
     appFile.open(QFile::ReadOnly);
-    this->load(&appFile, VERSION);
+    this->load(&appFile, path, VERSION);
     appFile.close();
 
 }
 
-bool DrawElement::load(QIODevice* device, float version)
+bool DrawElement::load(QIODevice* device, QString projectName, float version)
 {
     /*QDataStream stream(device);
 
@@ -497,7 +498,7 @@ bool DrawElement::load(QIODevice* device, float version)
     icon = load_image(stream);
     load_add(stream);*/
     loadTypeId(device);
-    loadRest(device, version);
+    loadRest(device, projectName, version);
 }
 bool DrawElement::loadTypeId(QIODevice* device)
 {
@@ -512,7 +513,7 @@ bool DrawElement::loadTypeId(QIODevice* device)
     qDebug() << "DrawElement::load temp_type = " << getTypeId();
 
 }
-bool DrawElement::loadRest(QIODevice* device, float version)
+bool DrawElement::loadRest(QIODevice* device, QString projectName, float version)
 {
     //qDebug() << "load rest begin";
     QDataStream stream(device);
@@ -564,12 +565,12 @@ bool DrawElement::loadRest(QIODevice* device, float version)
         stream >> use_anim_time;
     }
     // qDebug() << "load rest end";
-    load_add(stream, version);
+    load_add(stream, projectName, version);
     // qDebug() << "load add";
 
 }
 
-bool DrawElement::save(QIODevice* device, QProgressBar *bar) //-=-=-=
+bool DrawElement::save(QIODevice* device, QString projectName, QProgressBar *bar) //-=-=-=
 {
     QDataStream stream(device);
 
@@ -600,7 +601,7 @@ bool DrawElement::save(QIODevice* device, QProgressBar *bar) //-=-=-=
 
     stream << use_anim_time;
 
-    save_add(stream);
+    save_add(stream, projectName);
     if(bar != NULL)
     {
         bar->setValue(bar->value() + 1);
@@ -614,7 +615,7 @@ bool DrawElement::save(QString path)
 {
     QFile appFile(QString(path + "." + type));
     appFile.open(QFile::WriteOnly);
-    this->save(&appFile, NULL);
+    this->save(&appFile,NULL, NULL);
     appFile.close();
     /*QImage icon;
     int lifeTime;
@@ -901,12 +902,12 @@ void DrawElement::restart()
     tickTimer.restart();
 }
 
-bool DrawElement::load_add(QDataStream &stream, float version)
+bool DrawElement::load_add(QDataStream &stream, QString projectPATH, float version)
 {
 
 }
 
-bool DrawElement::save_add( QDataStream &stream)
+bool DrawElement::save_add( QDataStream &stream, QString projectPATH)
 {
 
 }
