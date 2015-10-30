@@ -105,6 +105,7 @@ MouseAreaForWindowDraging{
             // anim_
         }
 
+        property int local_x : 0
         property Item selectedBlock: null
         property int selectedBlockCol : -1
         property int selectedBlockIndex : -1
@@ -435,10 +436,6 @@ MouseAreaForWindowDraging{
             }
 
 
-            /*onSetScalePointerPosSignal: {
-            main222.setScalePointerPos(value * main222.scaling)
-       }*/
-
 
             onDrawRectangleSignal: {
                 var rec = timeControll.getYellowRect()
@@ -757,16 +754,51 @@ MouseAreaForWindowDraging{
 
                 timeControll.setScalePointerPos((x  -20 + scroll.flickableItem.contentX)* main222.scaling);
 
-            }
-
+            }           
             MouseArea {
                 id: spMA
                 anchors.fill: parent
                 drag.target : scale_pointer
+                hoverEnabled: true
                 onPressed: {
                     context_menu.closeIt();
+                     scale_pointer_info.visible = true
+                }
+                onMouseXChanged: {
+
+                }
+                onEntered: {
+                    tooltip_timer.running = true
+                }
+
+                onExited:  {
+                     scale_pointer_info.visible = false
                 }
             }
+            Timer {
+                id: tooltip_timer
+                   interval: 50; running: false; repeat: false
+                   onTriggered: scale_pointer_info.visible = true
+               }
+
+        }
+        Rectangle {
+            id: scale_pointer_info
+            visible: false
+            width: 150
+            height: 30
+            color: "white"
+             z: 201
+            property int pos : scale_pointer.x - scale_pointer.width
+            x: pos + 15
+            y: scale_pointer.y + 10
+           Label {
+               anchors.fill: parent
+               font.family: "Tahoma"
+               font.pixelSize: 12
+               color: "black"
+               text: "global time: "+ scale_pointer_info.pos*main222.scaling + " ms\nlocal time: " + (scale_pointer_info.pos - main222.local_x)*main222.scaling+" ms" //1545
+           }
         }
 
         Rectangle{
@@ -1063,7 +1095,6 @@ MouseAreaForWindowDraging{
                                         repka.itemAt(indexa).p_color_overlay.color = color
                                     //  // //console.log("GGGGGGGGGG " + repka.itemAt(indexa).mX)
                                     // // //console.log("GGGGGGGGGG " + repka.itemAt(indexa).x)
-                                    //main222.p_scale_pointer.x = repka.itemAt(indexa).x
                                 }
                                 function getBlockX (indexa)
                                 {

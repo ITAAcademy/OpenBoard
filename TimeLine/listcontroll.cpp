@@ -1138,7 +1138,7 @@ bool ListControll::getBlockIndToAddFromPos(DrawElement * move_block, int pos, in
                     {
                         if (reback_block)
                             getBlockIndToAddFromPos(move_block,move_block_start_time);
-                            return false;
+                        return false;
                         break;
                     }
                 }
@@ -1166,7 +1166,7 @@ bool ListControll::getBlockIndToAddFromPos(DrawElement * move_block, int pos, in
                                 qDebug() << "KKKKKKKKK         2";
                                 if (reback_block)
                                     getBlockIndToAddFromPos(move_block,move_block_start_time);
-                                    return false;
+                                return false;
                                 break;
                             }
                             else //+++++++++++++
@@ -1233,7 +1233,7 @@ bool ListControll::getBlockIndToAddFromPos(DrawElement * move_block, int pos, in
                                     qDebug() << "KKKKKKKKK         20";
                                     if (reback_block)
                                         getBlockIndToAddFromPos(move_block,move_block_start_time);
-                                        return false;
+                                    return false;
                                     break;
                                 }
                                 else
@@ -2341,65 +2341,85 @@ int ListControll::setBlockStartTimeGroup(int col,int ind,int value )
 
 }
 
-int ListControll::setBlockTimeLeft(int col,int ind,int value )
+int ListControll::setBlockTimeLeft(int col,int ind,quint64 value )
 {
-    qDebug() << "##############   value = " << value;
     if (!blockValid(col,ind))
         return -1;
     DrawElement * elm = tracks[col].block[ind];
     if (elm == NULL)
         return -1;
-    int life = elm->getLifeTime(); // 1000
-    int start = elm->getStartDrawTime(); //5000
-    //value -= elm->getStartDrawTime();
-    if (value < 0)
-        value = 0;
-    //value = 5500
-    int set_time = 0;
+    quint64 life = elm->getLifeTime(); // 1000
+    quint64 start = elm->getStartDrawTime(); //5000
+    quint64 end = life + start;
+    if (value == start)
+        return life;
+
+    if (value > end)
+        value = end;
+
+    int zdvig ;
+    if (start < value)
+        zdvig = value - start;
+    else
+    {
+        zdvig = start - value;
+        zdvig *= -1;
+    }
     DrawElement *prev = NULL;
+    quint64 set_life_time ;
+    quint64 set_start;
     if (ind > 0)
     {
         prev = tracks[col].block[ind - 1];
-        int prev_end = prev->getStartDrawTime() ;//3000
-        if (value < start)
+        if (prev == NULL)
+            return life;
+        quint64 prev_life = prev->getLifeTime();
+        quint64 prev_start = prev->getStartDrawTime() ;
+
+        quint64 set_prev_life;
+
+        if (zdvig < 0)
         {
-            if (prev_end > value )
+
+            if (-zdvig > prev_life)
             {
-                value = prev_end;
-                set_time = value - start ;
+                set_prev_life = 0;
+                value = prev_start;
+                zdvig = -prev_life;
             }
             else
             {
-                set_time = value - start ;
+                set_prev_life = prev_life + zdvig;
             }
-            if (set_time > 0)
-                set_time = 0;
+            set_life_time = life - zdvig;
+            set_start = start + zdvig;
         }
         else
         {
-            set_time = value - start ;
-            if (set_time < 0)
-                set_time = 0;
+            set_start = value;
+            quint64 able_start = end - minBlockTime;
+            if (set_start > able_start)
+            {
+                set_start = able_start;
+                set_life_time =  minBlockTime;
+                set_prev_life = prev_life + life - minBlockTime;
+                qDebug() << "__________________________shit";
+            }
+            else
+            {
+                set_life_time = life - zdvig;
+                set_prev_life = prev_life + zdvig;
+            }
+
         }
+
+        prev->setLifeTime(set_prev_life,true );
+        elm->setLifeTime(set_life_time,true);
+        elm->setStartDraw(set_start);
+
     }
-
-    if (set_time == 0 || value > start + life)
-        return -1;
-
-    int set_life_time = elm->setLifeTime(life - set_time, true);
-    if ( set_life_time == -1)
-        return -1;
-
-    int set_start = setBlockStartTime(col,ind,value);
-    if (set_start  == -1)
-        return -1;
-
-    if (prev != NULL)
-        if (prev->setLifeTime(prev->getLifeTime() + ( set_time),true ) == -1)
-            return -1;
-
-
     return set_life_time;
+
 }
 
 int ListControll::addBlockStartTime(int col,int ind,int value )
@@ -2503,7 +2523,7 @@ int ListControll::addBlockStartTimeGroup(int col,int ind,int value ) //@@@@@@@@@
     //value+= elm_start;
     // int zdvig = value -  elm_start;
     /* foreach(BlockType btype, columns)
-        foreach (DrawElement * draw_el, btype)*/
+                foreach (DrawElement * draw_el, btype)*/
     foreach(BlockType btype, columns)
     {
         int lastk =  btype.lastKey();
@@ -2561,16 +2581,16 @@ int ListControll::addBlockStartTimeGroup(int col,int ind,int value ) //@@@@@@@@@
                                 DrawElement *next = tracks[el_col].block[el_ind + 1];
 
                                 /* if (next->getTypeId() == Element_type::Empty )
-                    {
-                        if (el_ind < track_size - 2)
-                        {
-                            DrawElement * next_p = tracks[el_col].block[el_ind + 2];
-                            if (next_p->getGroupWichElBelong() != group)
                             {
-                                next = next_p;
-                            }
-                        }
-                    }*/
+                                if (el_ind < track_size - 2)
+                                {
+                                    DrawElement * next_p = tracks[el_col].block[el_ind + 2];
+                                    if (next_p->getGroupWichElBelong() != group)
+                                    {
+                                        next = next_p;
+                                    }
+                                }
+                            }*/
                                 int next_start = next->getStartDrawTime() + next->getLifeTime(); //cuz nex block empty
 
                                 int able_zdvig = next->getLifeTime();// next_start - end;
@@ -2591,12 +2611,12 @@ int ListControll::addBlockStartTimeGroup(int col,int ind,int value ) //@@@@@@@@@
                                 DrawElement *prev = tracks[el_col].block[el_ind - 1];
 
                                 /*if (prev->getTypeId() == Element_type::Empty )
-                        {
-                            if (el_ind > 1)
-                            {
-                                prev = tracks[el_col].block[el_ind - 2];
-                            }
-                        }*/
+                                {
+                                    if (el_ind > 1)
+                                    {
+                                        prev = tracks[el_col].block[el_ind - 2];
+                                    }
+                                }*/
                                 //int prev_end = prev->getStartDrawTime() ;//+ prev->getLifeTime();
                                 int diff =  -prev->getLifeTime();    //prev_end - elm_start ; //how mush get left a able to do
 
@@ -2620,7 +2640,7 @@ int ListControll::addBlockStartTimeGroup(int col,int ind,int value ) //@@@@@@@@@
     // qDebug() << "@@@@@@@@@@@@@@@   min_zdvig = " << min_zdvig;
 
     /*foreach(BlockType btype, columns)
-        foreach (DrawElement * draw_el, btype)*/
+                foreach (DrawElement * draw_el, btype)*/
     foreach(BlockType btype, columns)
     {
         int lastk =  btype.lastKey();
@@ -2651,16 +2671,16 @@ int ListControll::addBlockStartTimeGroup(int col,int ind,int value ) //@@@@@@@@@
 
                     }
                     /* else
-                    if (ind < tracks[el_col].block.size() - 1)
-                    {
-                        DrawElement *next = tracks[el_col].block[el_ind + 1];
-                        next->setLifeTime(next->getLifeTime() + min_zdvig, true);
-                    }*/
+                            if (ind < tracks[el_col].block.size() - 1)
+                            {
+                                DrawElement *next = tracks[el_col].block[el_ind + 1];
+                                next->setLifeTime(next->getLifeTime() + min_zdvig, true);
+                            }*/
                 }
                 /*if (force_resize_block)
-                {
-                    tracks[el_col].updateTime();
-                }*/
+                        {
+                            tracks[el_col].updateTime();
+                        }*/
             }
 
         }
@@ -2670,18 +2690,18 @@ int ListControll::addBlockStartTimeGroup(int col,int ind,int value ) //@@@@@@@@@
 }
 
 
-int ListControll::setBlockStartTime(DrawElement * elm,int value, bool move_group )
+quint64 ListControll::setBlockStartTime(DrawElement * elm,quint64 value, bool move_group )
 {
-    if (value < 0)
-    {
-        value = 0;
-    }
+    /* if (value < 0)
+            {
+                value = 0;
+            }*/
     return elm->setStartDraw(value);
 
 
 }
 
-int ListControll::setBlockStartTime(int col, int i,int value, bool move_group )
+quint64 ListControll::setBlockStartTime(int col, int i,quint64 value, bool move_group )
 {
 
     qDebug() << "void ListControll::setBlockStartTime(int col, int i,int value)";
@@ -2689,10 +2709,10 @@ int ListControll::setBlockStartTime(int col, int i,int value, bool move_group )
 
     if (!blockValid(col,i))
         return -1;
-    if (value < 0)
-    {
-        value = 0;
-    }
+    /*if (value < 0)
+            {
+                value = 0;
+            }*/
 
     DrawElement * elm = tracks[col].block[i];
 
@@ -2703,8 +2723,8 @@ int ListControll::setBlockStartTime(int col, int i,int value, bool move_group )
 
     //qDebug() << "value = " << value;
     /*
-    if(testIndexs(col, i))
-        tracks[col].block[i]->setStartDraw(value);*/
+            if(testIndexs(col, i))
+                tracks[col].block[i]->setStartDraw(value);*/
 
 }
 
@@ -2766,7 +2786,7 @@ int ListControll::getDrawBorder(int col, int ind)
         return -1;
     DrawElement *elm = tracks[col].block[ind];
     /*if (elm->getTypeId() != Element_type::Image)
-        return -1;*/
+                return -1;*/
     return elm->getBorder() ;
 }
 
@@ -2776,7 +2796,7 @@ bool ListControll::setDrawBorder(int col, int ind, int value)
         return false;
     DrawElement *elm = tracks[col].block[ind];
     /*if (elm->getTypeId() != Element_type::Image)
-        return false;*/
+                return false;*/
     elm->setBorder(value);
     return true;
 }
@@ -2922,19 +2942,19 @@ bool  ListControll::addBlockToCurentGroup(DrawElement* block)
 
     qDebug() << " ListControll::addBlockToGroup          block->getGroupWichElBelong() == NULL";
     /*if (curent_block_group_num == -1)
-         {
-             Group temp_group;
-            block_groups.append(temp_group);
-            block_groups.last().addTo(block);
-            curent_block_group_num = block_groups.size() - 1;
-            qDebug() << " ListControll::addBlockToGroup 1";
+                 {
+                     Group temp_group;
+                    block_groups.append(temp_group);
+                    block_groups.last().addTo(block);
+                    curent_block_group_num = block_groups.size() - 1;
+                    qDebug() << " ListControll::addBlockToGroup 1";
 
-         }
-         else
-         {
-             block_groups[curent_block_group_num].addTo(block);
-             qDebug() << " ListControll::addBlockToGroup 2";
-         }*/
+                 }
+                 else
+                 {
+                     block_groups[curent_block_group_num].addTo(block);
+                     qDebug() << " ListControll::addBlockToGroup 2";
+                 }*/
     if(curent_group->addTo(block))
     {
         return true;
@@ -2982,7 +3002,7 @@ void ListControll::setCtrlPressed(bool value)
                     //
                     // curent_group = new Group();
                     /*if (curent_group_buffer != NULL)
-                        delete curent_group_buffer;*/
+                                delete curent_group_buffer;*/
                     //curent_group_buffer = new Group(*(curent_group));
                     curent_group->setBlocksBorderColor("blue");
                     curent_group->initGroupBlocks();
@@ -3011,13 +3031,13 @@ void ListControll::setCtrlPressed(bool value)
                     }
 
                     /* if (curent_group_buffer != NULL)
-                    {
-                        curent_group = curent_group_buffer;
-                        curent_group_buffer = NULL;
+                            {
+                                curent_group = curent_group_buffer;
+                                curent_group_buffer = NULL;
 
-                        curent_group->setBlocksBorderColor("blue");
-                        curent_group->initGroupBlocks();
-                    }*/
+                                curent_group->setBlocksBorderColor("blue");
+                                curent_group->initGroupBlocks();
+                            }*/
                     //curent_group.setBlocksBorderColor("green");
                 }
             }
@@ -3127,15 +3147,15 @@ bool ListControll::attachBlockLeft(int col, int index, int value)
     {
         setBlockTimeLeft(col,index,from_begin - dovod_value);
         /*
-        draw_el->setLifeTime(draw_el->getLifeTime() + dovod_value);
-        draw_el->setStartDraw(from_begin - dovod_value);*/
+                draw_el->setLifeTime(draw_el->getLifeTime() + dovod_value);
+                draw_el->setStartDraw(from_begin - dovod_value);*/
         //   setBlockTime(col,index,draw_el->getLifeTime() - dovod_value);
         /* qDebug() << "DOVODKA21 life = " << life;
-        from_begin = dovod_value;
-        setBlockTimeLeft(col,index,from_begin);
-        qDebug() << "DOVODKA22 life = " << life << " dov_val = " << dovod_value;*/
+                from_begin = dovod_value;
+                setBlockTimeLeft(col,index,from_begin);
+                qDebug() << "DOVODKA22 life = " << life << " dov_val = " << dovod_value;*/
         /*reduceEmptyBlocksFromV2(col,index,-dovod_value);
-        updateBlocksStartTimesFrom(col,index);*/
+                updateBlocksStartTimesFrom(col,index);*/
         tracks[col].updateTime();
     }
     // ctrl_pressed = value;
@@ -3214,7 +3234,7 @@ ListControll::ListControll(/*OGLWidget *drawWidget ,*/QObject *parent) : QObject
     setSelectedBlockPoint(QPoint(-1,-1));
     resetProjectToDefault();
     /*Group temp_group;
-   block_groups.append(temp_group);*/
+           block_groups.append(temp_group);*/
 
     this->drawWidget = drawWidget;
 
@@ -3253,7 +3273,7 @@ ListControll::ListControll(/*OGLWidget *drawWidget ,*/QObject *parent) : QObject
 
 
     /* view.setWidth(1200);
-   view.setHeight(600);*/
+           view.setHeight(600);*/
     connect(this,SIGNAL(setBlockPlayTimeUntilFreezeSignal(int,int,int)),
             this, SLOT (emitSetBlockPlayTimeUntilFreezeSignal2(int,int,int)));
 }
@@ -3443,7 +3463,7 @@ bool ListControll::save(QIODevice* device, QString projectPath, QProgressBar *ba
     }
     // qDebug() << "Num of saved tracks: " << tracks.size();
     /*mess_box.setText("Project saved");
-    mess_box.show();*/
+            mess_box.show();*/
     return true;
 }
 
@@ -3618,14 +3638,14 @@ void ListControll::calcPointedBlocks( )
     calcPointedBlocksAtTime(scale_pointer_pos);
     //  //qDebug() << "qweqweqweqweqweqw";
     /*
-    *		show curent play element
-*/
+            *		show curent play element
+        */
     // //qDebug() << "FFFFFFFFFFFFFFF getPointedBlocks size" << pointed_block.size()
     //<< " scale_pointer_pos " << scale_pointer_pos;
     /* for(int i = 0; i <pointed_block.size(); i++)
-      {
-          // //qDebug() << i <<  "   " << pointed_block[i].draw_element->getType();
-      }*/
+              {
+                  // //qDebug() << i <<  "   " << pointed_block[i].draw_element->getType();
+              }*/
 
 }
 
@@ -3693,13 +3713,13 @@ qint64 ListControll::getPlayTime()
 {
     return timerValue;
     /* if (isPlayPauseStop ==1 )
-        //return timer.elapsed() + time_sum;
-        return timerValue;
-    else
-        if (isPlayPauseStop ==2 )
-        return  time_sum ;
+                //return timer.elapsed() + time_sum;
+                return timerValue;
             else
-                return 0;*/
+                if (isPlayPauseStop ==2 )
+                return  time_sum ;
+                    else
+                        return 0;*/
 }
 
 void ListControll::setPlayTime(qint64 value)
@@ -3719,13 +3739,13 @@ QImage ListControll::requestImage(const QString &id, QSize *size, const QSize &r
     //   if (reply->error() != QNetworkReply::NoError)
     //       return QImage();
     /*if(getSelectedBlock().draw_element->getIcon().isNull())
-        return QImage(":/0.png");
+                return QImage(":/0.png");
 
-    return getSelectedBlock().draw_element->getIcon();*/
+            return getSelectedBlock().draw_element->getIcon();*/
 
     //= QImage::fromData(reply->readAll());
     /*size->setWidth(image.width());
-    size->setHeight(image.height());*/
+            size->setHeight(image.height());*/
     // //qDebug() << "
 
     if(!isBlocked)
@@ -3808,16 +3828,16 @@ void  ListControll::copyBlockToBuffer()
 
     block_in_buffer = this->getBlock(sel_block);
     /* DrawElement *blocK_draw_el =  block_in_buffer.draw_element;
-          DrawElement *draw_el = new DrawElement(blocK_draw_el->getDrawWidget(),this) ; //();
+                  DrawElement *draw_el = new DrawElement(blocK_draw_el->getDrawWidget(),this) ; //();
 
-         // draw_el->setDrawWidget(blocK_draw_el->getDrawWidget());
-          draw_el->copy(blocK_draw_el);
-          draw_el->setTypeId(blocK_draw_el->getTypeId()); //999999999999
+                 // draw_el->setDrawWidget(blocK_draw_el->getDrawWidget());
+                  draw_el->copy(blocK_draw_el);
+                  draw_el->setTypeId(blocK_draw_el->getTypeId()); //999999999999
 
-          //block_in_buffer.draw_element->copy(block_in_buffer.draw_element);
-          block_in_buffer.draw_element = draw_el;
+                  //block_in_buffer.draw_element->copy(block_in_buffer.draw_element);
+                  block_in_buffer.draw_element = draw_el;
 
-          */
+                  */
     life_time_in_buffer = block_in_buffer->getLifeTime();
     buffer_is_full = true;
 
@@ -3830,15 +3850,15 @@ void ListControll::pasteBlockFromBuffer()
     if (!buffer_is_full)
         return;
     /*QPoint sel_block = this->getSelectedBlockPoint();
-      if (sel_block.x() == -1)
-          return;
+              if (sel_block.x() == -1)
+                  return;
 
-      tracks[sel_block.x()].appendBlockAt(sel_block.y()+1, block_in_buffer);
-      long temp_time = tracks[sel_block.x()].getTime();
-      if (maxTrackTime <  temp_time)
-          maxTrackTime =  temp_time;
-     // calcPointedBlocks();
-    */
+              tracks[sel_block.x()].appendBlockAt(sel_block.y()+1, block_in_buffer);
+              long temp_time = tracks[sel_block.x()].getTime();
+              if (maxTrackTime <  temp_time)
+                  maxTrackTime =  temp_time;
+             // calcPointedBlocks();
+            */
     cloneBlock(block_in_buffer, getBlock(getSelectedBlockPoint()));
     emit updateTrackAt(block_in_buffer->getBlockColumn());
 
@@ -3948,33 +3968,33 @@ void  ListControll::drawYellowRectangle(QRect rect)
 }
 
 /*void ListControll::calcBlockHighliteViaYellowRec()
-   {
-       for (int y=0; y< tracks.size(); y++)
-       {
-           int prev_blocks_width_sum = 0;
-           for (int i=0; i < tracks[y].block.size(); i++)
            {
-               DrawElement\ *draw_el = tracks[y].block[i].draw_element;
-               int x_1 =  prev_blocks_width_sum;
-               int x_2 = draw_el->getStartDrawTime() + x_1;
-               int y_1 = y * blockHeightPlusSpacing;
-               int y_2 = blockHeightPlusSpacing + y1;
-               int x2 = x + width;
-               int y2 = y + height;
-               //for future counting
-               prev_blocks_width_sum = x_2;
-               if (((vmeg(x_1, x, x_2) || vmeg(x, x_1,x2)) && (vmeg(y_1, y,y_2) || vmeg(y, y_1, y2))) //peretyn
-                    || (vmeg(x_1, x, x_2) && vmeg(x_1, x2, x_2) && vmeg(y_1, y,y_2) && vmeg(y_1, y2,y_2)))
-                   tracks[y].block[i].block_cross_with_yellow_rec = true;
-               else
+               for (int y=0; y< tracks.size(); y++)
                {
-                   tracks[y].block[i].block_cross_with_yellow_rec = false;
-                   break;
-               }
+                   int prev_blocks_width_sum = 0;
+                   for (int i=0; i < tracks[y].block.size(); i++)
+                   {
+                       DrawElement\ *draw_el = tracks[y].block[i].draw_element;
+                       int x_1 =  prev_blocks_width_sum;
+                       int x_2 = draw_el->getStartDrawTime() + x_1;
+                       int y_1 = y * blockHeightPlusSpacing;
+                       int y_2 = blockHeightPlusSpacing + y1;
+                       int x2 = x + width;
+                       int y2 = y + height;
+                       //for future counting
+                       prev_blocks_width_sum = x_2;
+                       if (((vmeg(x_1, x, x_2) || vmeg(x, x_1,x2)) && (vmeg(y_1, y,y_2) || vmeg(y, y_1, y2))) //peretyn
+                            || (vmeg(x_1, x, x_2) && vmeg(x_1, x2, x_2) && vmeg(y_1, y,y_2) && vmeg(y_1, y2,y_2)))
+                           tracks[y].block[i].block_cross_with_yellow_rec = true;
+                       else
+                       {
+                           tracks[y].block[i].block_cross_with_yellow_rec = false;
+                           break;
+                       }
 
-           }
-       }
-   }*/
+                   }
+               }
+           }*/
 
 bool vmeg(int i1,int i2,int i3) // i1 <=i2 <= i3
 {
@@ -4016,9 +4036,9 @@ void ListControll::convertCurentBlockToText()
     DrawTextElm *text = new DrawTextElm(NULL);
     text->copy(elm);
     /* if(elm->getGroupWichElBelong() != NULL)
-    {
-        elm->getGroupWichElBelong()->tryMemberReverce(elm, text);
-    }*/
+            {
+                elm->getGroupWichElBelong()->tryMemberReverce(elm, text);
+            }*/
     delete elm;
     tracks[selectedBlockPoint.x()].block[selectedBlockPoint.y()] = text;
     text->setBlockColumn(selectedBlockPoint.x());

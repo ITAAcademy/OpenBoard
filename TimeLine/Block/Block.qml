@@ -139,15 +139,6 @@ Rectangle{
         spread: 0.00002
         // cornerRadius: shadow.radius + glowRadius
     }
-    /* RectangularGlow {
-          id: effect
-          anchors.fill: shadow
-          glowRadius: 10
-          spread: 0.00002
-          color: "black"
-         // opacity: 0.5
-          cornerRadius: shadow.radius + glowRadius
-      }*/
 
     Rectangle
     {
@@ -585,7 +576,7 @@ Rectangle{
                         root.p_main222.p_trackbar.globalRep.updateModel()*/
 
                     var block = root.columnRep.itemAt(entered_block_index).getBlock(0);
-                  /*  if (block !== null)
+                    /*  if (block !== null)
                         block.globalRep.updateModel() //55555555
                     else
                         root.p_main222.p_trackbar.globalRep.updateModel()*/
@@ -611,7 +602,6 @@ Rectangle{
             onTriggered: root.double_click = false
         }
         onExited: {
-
         }
 
         onMouseXChanged: {
@@ -643,7 +633,7 @@ Rectangle{
             }
             // main222.miss_drag = !main222.miss_drag
 
-            if( main222.selectedBlock == root )
+            // if( main222.selectedBlock == root )
             {
                 if(globalRep.isDrag === false &&  (mouseX > root.width-resize_capture_area_width || mouseX < resize_capture_area_width)) //mouseX < root.width * 0.1 ||/
                 {
@@ -691,42 +681,10 @@ Rectangle{
                     if(bChangeSizeLeft)
                     {
                         map_mouseX = mapToItem(item_col,mouseX -30/*-30 - main222.press_mouseX*/,0).x
-                        // var val = timeControll.setBlockStartTime(colIndex, mIndex,map_mouseX * main222.scaling,true)
-                        // var val = timeControll.setBlockTimeLeft(colIndex, mIndex,map_mouseX * main222.scaling,true)
-                        // var val = timeControll.setBlockStartTime(colIndex, mIndex,(map_mouseX + root.x) * main222.scaling,true)
                         var baba = main222.scaling * map_mouseX;
+                        if (baba < 0)
+                            baba = 0;
                         var val = timeControll.setBlockTimeLeft(colIndex, mIndex,(baba) ,true)
-                        //var val = timeControll.setBlockStartTime(colIndex, mIndex,(baba) * main222.scaling,true)
-                        console.log("@@@@@@@@@@@@@@@@@@@@ baba = " + (baba * main222.scaling))
-                        console.log("@@@@@@@@@@@@@@@@@@@@ val = " + val)
-
-
-                        if (val === -1)
-                        {
-                            root.x = timeControll.getBlockStartTime(root.colIndex,root.mIndex)/main222.scaling
-                            root.width = timeControll.getBlockTime(root.colIndex,root.mIndex)/main222.scaling
-                        }
-                        else
-                        {
-                            /*root.width = val / main222.scaling
-                            root.x = timeControll.getBlockStartTime(root.colIndex,root.mIndex)/main222.scaling*/
-                        }
-                        //console.log(xChange);
-                        /* if(timeControll.getCurent_group())
-                        root.width -= timeControll.tryResizeMemberInCurentGroup(-xChange*main222.scaling, root.colIndex, root.mIndex)/main222.scaling;
-                    else*/
-                        {
-
-                            /*root.width += xChange;
-                        drag.target = root;
-                        root.x -= xChange;
-
-                        drag.target = null;*/
-
-                        }
-                        //timeControll.setTestWidth(bar_track.index,root.width, mIndex);
-
-
                     }
                 oldMouseX = mouseX;
             }
@@ -734,6 +692,7 @@ Rectangle{
 
 
         onPressed: {
+            main222.local_x = root.x
             root.p_anim_pointer.x = timeControll.getBlockPlayTimeUntilFreeze(root.colIndex,root.mIndex)/main222.scaling
             main222.prev_block_time = root.width
             root.z += 200
