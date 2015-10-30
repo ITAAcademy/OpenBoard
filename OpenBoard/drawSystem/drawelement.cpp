@@ -246,7 +246,7 @@ void DrawElement::paint()
                 int endAtTime = beginAtTime + effects[i].getEffectTimeHowLong();
                 float keyFrame = 1;
              //   qDebug() << ":"<<playTime-beginAtTime;
-                qDebug() << lifeTime << "   " << effects[i].getEffectTimeHowLong();
+               //qDebug() << lifeTime << "   " << effects[i].getEffectTimeHowLong();
 
 
                // if ((((playTime >= beginAtTime && playTime <= endAtTime))))//endAtTime + 50 if flickering !!! @BAG@//NICOLAS problem with animation in last ms
@@ -267,7 +267,7 @@ void DrawElement::paint()
                      //qDebug() << i<<"-keyFrame:"<<keyFrame;
                     if(drawToSecondBuffer)
                     {
-                        qDebug()<<"drawToSecondBuffer:"<<pDrawWidget->getPingPongFBO().frameBuffer;
+                       // qDebug()<<"drawToSecondBuffer:"<<pDrawWidget->getPingPongFBO().frameBuffer;
                         pDrawWidget->bindBuffer(pDrawWidget->getPingPongFBO().frameBuffer);
                         pDrawWidget->clearFrameBuffer(pDrawWidget->getPingPongFBO());
                         // qDebug() << "Shader program ("<<i<<"):"<<effects[i].getShaderWrapper()->getShaderProgram();

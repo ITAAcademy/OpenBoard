@@ -765,6 +765,7 @@ OGLWidget::OGLWidget(QWidget *parent, QGLFormat format) :
     connect(timeLine,SIGNAL(focusFoundSignal()),this,SLOT(hideBrushManager()));
     connect(timeLine,SIGNAL(focusFoundSignal()),this,SLOT(hideEffectsManager()));
 
+
     selElm = NULL; //because it undefined
 
     //qRegisterMetaType<DrawData>("DrawData");
@@ -845,7 +846,6 @@ OGLWidget::OGLWidget(QWidget *parent, QGLFormat format) :
     qDebug() <<  "OGL WIDGET COnstructor end";
     connect(effectManager,SIGNAL(hideSignal()),this,SLOT(applyEffectsToCurrentBlock()));
     connect(effectManager,SIGNAL(showSignal()),this,SLOT(loadEffectFromCurrentBlockToEffectManager()));
-
     //qDebug() << "@@@@@@@@@@@@@@@@@@@@@@@@@@  glGetString(GL_VERSION)  " << glGetString(GL_VERSION) ;
 }
 
