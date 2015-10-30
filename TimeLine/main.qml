@@ -154,7 +154,7 @@ MouseAreaForWindowDraging{
         property Item p_item_col
         property Item p_timeControll
         property Item  p_trackbar
-        property Item  p_scale_pointer
+        property Item  p_scale_pointer: null
         property Item  p_context_menu
         property Item  p_divider
         property Item  p_columns
@@ -227,7 +227,7 @@ MouseAreaForWindowDraging{
                 var step = 10;
                 if (event.key === Qt.Key_Left)
                 {
-                     console.log("event.key === Qt.Key_Left")
+                    console.log("event.key === Qt.Key_Left")
                     if (timeControll.isBlockInGroup(main222.selectedBlockCol,main222.selectedBlockIndex))
                     {
                         timeControll.addBlockStartTimeGroup(main222.selectedBlockCol,main222.selectedBlockIndex, -step * main222.scaling)
@@ -278,7 +278,8 @@ MouseAreaForWindowDraging{
         function removeTrack()    {
             timeControll.removeLastTrack()
             rep_columns.model -=1
-            item_col.width = (timeControll.getMaxTrackTime() + 31) * main222.scaling
+            // item_col.width = (timeControll.getMaxTrackTime() + 31) * main222.scaling
+
         }
 
         function play()    {
@@ -381,12 +382,25 @@ MouseAreaForWindowDraging{
         Connections {
             target: timeControll
             onMaxTrackTimeChanged: {
-                main222.max_time = value
+
+                var max_time = value/ main222.scaling
+                main222.max_time = max_time
+
+               item_col.width = (value) / main222.scaling +31
+
+               /* if (main222.p_scale_pointer != null)
+                    main222.p_scale_pointer.x += 1;*/
+
+                var tt_pos = max_time - scroll.flickableItem.contentX + main222.p_scale_pointer.width
+                if (main222.p_scale_pointer.x > tt_pos ) //741
+                    main222.p_scale_pointer.x = tt_pos;
+                console.log("function 1212`1212 tt_pos = " + tt_pos + " main222.p_scale_pointer.x = " + main222.p_scale_pointer.x + " value = " + max_time)
+
             }
 
             onSetBlockPlayTimeUntilFreezeSignal:
             {
-               /* console.log("onSetBlockPlayTimeUntilFreezeSignal value = " + value/main222.scaling
+                /* console.log("onSetBlockPlayTimeUntilFreezeSignal value = " + value/main222.scaling
                             + "  col = " + col + " ind = " + ind);*/
                 rep_columns.itemAt(col).getBlock(ind).p_anim_pointer.x = value/main222.scaling
             }
@@ -405,9 +419,12 @@ MouseAreaForWindowDraging{
 
             }
             onMaxTrackSizeChange: {
-                //console.log( "onMaxTrackSizeChange")
-                main222.p_columns.width =  timeControll.getMaxTrackTime();
+                console.log( "onMaxTrackSizeChange")
+                var max_time = timeControll.getMaxTrackTime();
+                main222.p_columns.width =  max_time;
                 item_col.width = (main222.p_columns.width) / main222.scaling + 31
+
+
             }
 
             onBorderColorChangedSignal :
@@ -1147,7 +1164,7 @@ MouseAreaForWindowDraging{
                                                     rep_columns.itemAt(main222.selectedBlockCol).setColorize(main222.selectedBlockIndex,"#8000FF00")
 
                                                 }
-                                              /*  for (var i=0; i < model; i++ )
+                                                /*  for (var i=0; i < model; i++ )
                                                     repka.itemAt(i).p_anim_pointer.x = timeControll.getBlockPlayTimeUntilFreeze(main222.selectedBlockCol,main222.selectedBlockIndex)/main222.scaling*/
 
                                                 timeControll.calcPointedBlocks();

@@ -38,7 +38,7 @@ Item{
         spacing: 10
         Text{
             id: name
-            text: root.name
+            text:  root.name
             y: parent.height/4
             width: contentWidth
             color: "white"
@@ -137,7 +137,7 @@ Item{
 
             Text {
                 id: size_value
-                text: if(small) (root.value1/1000).toFixed(2);else Math.round(root.value1)
+                text:  if(small) (root.value1/1000).toFixed(2);else Math.round(root.value1)
                 width: 30
                 color: "white"
                 font.pixelSize: 14

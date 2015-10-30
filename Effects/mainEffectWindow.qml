@@ -180,7 +180,7 @@ Rectangle{
                         font.family: "Courier"
                         font.capitalization: Font.SmallCaps
                         color: "white"
-                        text: control.currentText
+                        text:  control.currentText
                     }
 
                     // drop-down customization here
@@ -200,7 +200,7 @@ Rectangle{
                             font.family: "Courier"
                             font.capitalization: Font.SmallCaps
                             color: styleData.selected ? "gray" : "white"
-                            text: styleData.text
+                            text:  styleData.text
                         }
 
                         itemDelegate.background: Rectangle {  // selection of an item

@@ -271,7 +271,7 @@ public:
     bool isVisible();
     bool isActiveWindow();
     Q_INVOKABLE bool attachBlock(int col, int index, int value);
-
+    Q_INVOKABLE bool attachBlockLeft(int col, int index, int value);
     Q_INVOKABLE bool addBlockToCurentGroup(DrawElement* block);
     Q_INVOKABLE bool addBlockToCurentGroup(int col,int ind);
     Q_INVOKABLE bool removeBlockFromGroup(DrawElement* block);
@@ -411,8 +411,8 @@ public:
     Q_INVOKABLE void addBlockWithSpaceFromBufferAt(int col, int ind,int space,   int life_time = -1 ,bool need_balance = false);
 
     Q_INVOKABLE DrawElement* getBlockFromBuffer();
-    Q_INVOKABLE getBlockIndToAddFromPos(int col,int ind, int pos, int col_dest = -1,bool remove_movable_block = true);
-    Q_INVOKABLE getBlockIndToAddFromPos(DrawElement * elm, int pos, int col_dest = -1); //dont delete draw_elm
+    Q_INVOKABLE int getBlockIndToAddFromPos(int col,int ind, int pos, int col_dest = -1,bool remove_movable_block = true);
+    Q_INVOKABLE bool getBlockIndToAddFromPos(DrawElement * elm, int pos, int col_dest = -1, bool reback_block = true); //dont delete draw_elm
     Q_INVOKABLE getBlockSpaceToAddFromPos(int col,int ind); //call after getBlockIndToAddFromPos
     Q_INVOKABLE void logBlocksTypes(int col);
     Q_INVOKABLE void logBlocksDrawElColInd(int col);
