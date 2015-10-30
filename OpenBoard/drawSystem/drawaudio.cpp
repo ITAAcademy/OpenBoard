@@ -27,7 +27,6 @@ DrawAudioElm::DrawAudioElm(OGLWidget *drawWidget, QObject *parent) : DrawElement
 {
     setType("audio");
     setTypeId(Element_type::Audio);
-    bPlay = false;
     delta = 0;
     decoder.setType(AudioType);
 
@@ -53,7 +52,7 @@ void DrawAudioElm::draw()
     if(!init)
         return;
 
-    if(bPlay && !bPause && pDrawWidget->getTimeLine()->getPlayTime() > 0 ) /// NEED FIX FOR SECOND BLOCK
+    if(!bPause && pDrawWidget->getTimeLine()->getPlayTime() > 0 ) /// NEED FIX FOR SECOND BLOCK
     {
         //pDrawWidget->clearFrameBuffer(fboWrapper);
         FFmpegHelp::Frame frame = decoder.getNextFrame(pDrawWidget->getTimeLine()->getPlayTime() - startDrawTime);

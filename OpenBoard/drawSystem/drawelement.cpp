@@ -74,7 +74,6 @@ DrawElement::DrawElement(OGLWidget *drawWidget, QObject *parent) : QObject(paren
     startDrawTime = 0;
     pDrawWidget = drawWidget;
     bPause = false;
-    bPlay = false;
     x = 0;
     y = 0;
     z = 0;
@@ -872,7 +871,6 @@ void DrawElement::stop()
     bPause = false;
     keyCouter = 0;
     bPause = false;
-    bPlay = false;
     tickTimer.restart();
 }
 
@@ -881,7 +879,6 @@ void DrawElement::start()
     if (!bPause)
         keyCouter = 0;
     bPause = false;
-    bPlay = true;
 
     /*
      * NOT NEED SLOW
