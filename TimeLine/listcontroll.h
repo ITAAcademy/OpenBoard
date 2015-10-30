@@ -312,13 +312,13 @@ public:
     Q_INVOKABLE bool setBlockTimeBlockBalance(int col, int ind, int value, bool resize_next_empty = false);
     Q_INVOKABLE void deleteBlockToDel(int col);
     Q_INVOKABLE void setBlockTimeWithUpdate(int col, int i, quint64 value, bool visual);
-    Q_INVOKABLE int setBlockStartTime(int col, int i, int value, bool move_group = false);
-    Q_INVOKABLE int setBlockStartTime(DrawElement *elm, int value, bool move_group = false);// if return -1 then ime was setted, but dont the value you write
+    Q_INVOKABLE quint64 setBlockStartTime(int col, int i, quint64 value, bool move_group = false);
+    Q_INVOKABLE quint64 setBlockStartTime(DrawElement *elm, quint64 value, bool move_group = false);// if return -1 then ime was setted, but dont the value you write
     Q_INVOKABLE int setBlockStartTimeGroup(int col,int ind,int value ) ;
     Q_INVOKABLE int addBlockStartTimeGroup(int col,int ind,int value ) ;
     Q_INVOKABLE quint64 getBlockStartTime(int col, int i);
     Q_INVOKABLE int addBlockStartTime(int col,int ind,int value );
-    Q_INVOKABLE int setBlockTimeLeft(int col,int ind,int value );
+    Q_INVOKABLE int setBlockTimeLeft(int col,int ind,quint64 value );
     Q_INVOKABLE Group * getBlockGroup(int col, int ind);
     Q_INVOKABLE bool isBlockInGroup(int col, int ind);
     //Q_INVOKABLE bool setBlockDrawElemet(DrawElement *elm, int col, int i);
