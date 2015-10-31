@@ -248,7 +248,7 @@ void DrawElement::paint()
 
 
                // if ((((playTime >= beginAtTime && playTime <= endAtTime))))//endAtTime + 50 if flickering !!! @BAG@//NICOLAS problem with animation in last ms
-                if(bPlay)
+                if(playTime > 0)
                 {
                     if(endAtTime-beginAtTime > 0)
                         keyFrame=(float)(playTime-beginAtTime)/(endAtTime-beginAtTime);
