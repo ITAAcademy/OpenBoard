@@ -458,6 +458,22 @@ void OGLWidget::processMouse()
         int rightBottomCornerY2=y2 + editingRectangle.cornerSize/2;
 
 
+        QVector2D vec(qCos((editingRectangle.angle * M_PI)/180), qSin((editingRectangle.angle * M_PI)/180));
+        vec.normalize();
+        vec *= -(editingRectangle.rect.width() + editingRectangle.rect.height())/4;
+        int CX = vec.x() + x1 + (x2 - x1)/2;
+        int CY = vec.y() + y1 + (y2 - y1)/2;
+
+    /*    qDebug() << CX << " " << mousePos.x();
+        qDebug() << CY << " " << mousePos.y();*/
+
+        if(CX + editingRectangle.circleSize > mousePos.x() && CX - editingRectangle.circleSize < mousePos.x())
+            if(CY + editingRectangle.circleSize > mousePos.y() && CY - editingRectangle.circleSize < mousePos.y())
+        {
+            editingRectangle.editingRectangleMode = EDIT_RECTANGLE_ROTATION;
+           // return;
+        }
+
 
 
         //editingRectangle.setX(0);
@@ -568,7 +584,7 @@ void OGLWidget::processMouse()
         }
         }
         testRectangle();
-        qDebug()<<"curStatus:"<<curStatus;
+        //qDebug()<<"curStatus:"<<curStatus;
         if ((curStatus != PLAY) &&  able_drawing  && (prevMousePos != mousePos) )
         {
             paintBrushInBuffer(mouseFBO);
@@ -897,10 +913,12 @@ void OGLWidget::resizeGL(int nWidth, int nHeight)
     way=nHeight;
     // qDebug() << "end resize";
 }
-void OGLWidget::paintBufferOnScreen( FBOWrapper buffer,int x, int y, int width, int height, int z){
+void OGLWidget::paintBufferOnScreen( FBOWrapper buffer,int x, int y, int width, int height, int z, int angle, double scaleX, double scaleY){
 
     if (buffer.errorStatus==-1)qDebug() << "BAD BUFFER";
-    glColor3f(1.0,1.0,1.0);
+
+    drawTexture(x, y, width, height, buffer.bindedTexture, angle, scaleX, scaleY, z);
+    /*glColor3f(1.0,1.0,1.0);
     glEnable(GL_TEXTURE_2D);
 
     glBindTexture(GL_TEXTURE_2D,buffer.bindedTexture);
@@ -912,16 +930,10 @@ void OGLWidget::paintBufferOnScreen( FBOWrapper buffer,int x, int y, int width, 
     glTexCoord2i(1,1); glVertex3i(x+width,y,z);
     glTexCoord2i(1,0); glVertex3i(x+width, y+height, z);
 
-    /*
-    glTexCoord2i(0,0); glVertex2i(0,0);
-    glTexCoord2i(0,1); glVertex2i(0,way);
-    glTexCoord2i(1,1); glVertex2i(wax,way);
-    glTexCoord2i(1,0); glVertex2i(wax,0);*/
-
     glEnd();
     // glDeleteTextures(1, &texture);
     glBindTexture(GL_TEXTURE_2D, 0);
-    glDisable(GL_TEXTURE_2D);
+    glDisable(GL_TEXTURE_2D);*/
 }
 
 
@@ -1596,12 +1608,41 @@ void OGLWidget::drawGlobalShader( QVector<ShaderProgramWrapper*> shaders)
 
 }
 
+
+void drawCircle(GLfloat x, GLfloat y, GLfloat z, GLfloat radius)
+{
+    int i;
+    int triangleAmount = 1000;
+    GLfloat twicePi = 2.0f * M_PI;
+
+    glEnable(GL_LINE_SMOOTH);
+    glLineWidth(5.0);
+
+    glBegin(GL_LINES);
+    glColor4f(1.0, 0.0, 0.0, 1.0);
+    for(i = 0; i <= triangleAmount; i++)
+    {
+        glVertex3f( x, y, z);
+        glVertex3f(x + (radius * cos(i * twicePi / triangleAmount)), y + (radius * sin(i * twicePi / triangleAmount)), z);
+    }
+    glEnd();
+}
+
 void OGLWidget::drawEditBox( int z)
 {
     int x1 = editingRectangle.rect.x();
     int y1 = editingRectangle.rect.y();
     int x2 = editingRectangle.rect.x()+editingRectangle.rect.width();
     int y2 = editingRectangle.rect.y()+editingRectangle.rect.height();
+
+
+qDebug() << editingRectangle.angle;
+
+  //  editingRectangle.angle++;
+
+
+
+
     // m_manager.setAbleToDraw(true);
 
     int leftTopCornerX1=x1-editingRectangle.cornerSize/2;
@@ -1626,6 +1667,30 @@ void OGLWidget::drawEditBox( int z)
 
     if (editingRectangle.isEditingRectangleVisible && !forceEditBoxDisable && !able_drawing && getStatus()!= PLAY)
     {
+
+        if(editingRectangle.editingRectangleMode == EDIT_RECTANGLE_ROTATION)
+        {
+            QVector2D vec(x1 + (x2 - x1)/2 - mousePos.x(), y1 + (y2-y1)/2 - mousePos.y());
+            vec.normalize();
+            vec *= -(editingRectangle.rect.width() + editingRectangle.rect.height())/4;
+
+            drawCircle(vec.x() + x1 + (x2 - x1)/2 , vec.y() + y1 + (y2-y1)/2, z, editingRectangle.circleSize);
+
+            editingRectangle.angle = (180*qAcos(-vec.x()/vec.length()))/M_PI;
+            if(vec.y() > 0)
+            {
+                editingRectangle.angle = 360 - editingRectangle.angle;
+            }
+
+        }
+        else
+        {
+            QVector2D vec(qCos((editingRectangle.angle * M_PI)/180), qSin((editingRectangle.angle * M_PI)/180));
+            vec.normalize();
+            vec *= -(editingRectangle.rect.width() + editingRectangle.rect.height())/4;
+
+            drawCircle(vec.x() + x1 + (x2 - x1)/2 , vec.y() + y1 + (y2-y1)/2, z, editingRectangle.circleSize);
+        }
 
         // paintBufferOnScreen(0, 0, wax, way);
         //rectangle
@@ -1672,8 +1737,6 @@ void OGLWidget::drawEditBox( int z)
       glVertex3i(rightBottomCornerX1, rightBottomCornerY2, z);
 
         glEnd();
-
-
 
     }
 }
@@ -2545,6 +2608,7 @@ void  OGLWidget::updateWindow(){
             //clearBuffer();
             selElm = timeLine->getBlock(t);
             editingRectangle.rect = timeLine->getDrawRect(t.x(), t.y());
+            editingRectangle.angle = selElm->getRotationAngle();
         }
         else
         {
@@ -2555,6 +2619,7 @@ void  OGLWidget::updateWindow(){
                 selElm->setX( t2.x());
                 selElm->setY( t2.y());
                 selElm->setSize(t2.width(), t2.height());
+                selElm->setRotationAngle(editingRectangle.angle);
             }
 
 

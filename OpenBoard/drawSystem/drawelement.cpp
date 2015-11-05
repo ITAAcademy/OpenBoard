@@ -248,7 +248,7 @@ void DrawElement::paint()
 
 
                // if ((((playTime >= beginAtTime && playTime <= endAtTime))))//endAtTime + 50 if flickering !!! @BAG@//NICOLAS problem with animation in last ms
-                if(bPlay)
+                if(playTime > 0)
                 {
                     if(endAtTime-beginAtTime > 0)
                         keyFrame=(float)(playTime-beginAtTime)/(endAtTime-beginAtTime);
@@ -365,7 +365,7 @@ void DrawElement::paint()
             else pDrawWidget->paintBufferOnScreen(fboWrapper,x, y, height, height, z);
         }
         else*/
-        pDrawWidget->paintBufferOnScreen(fboWrapper,x, y, width, height, z);
+        pDrawWidget->paintBufferOnScreen(fboWrapper,x, y, width, height, z, rotationAngle);
         // pDrawWidget->context()->functions()->glUseProgram(0);
     }
     else
@@ -439,6 +439,16 @@ float DrawElement::getBorder() const
 void DrawElement::setBorder(float value)
 {
     border = value;
+}
+
+int DrawElement::getRotationAngle() const
+{
+    return rotationAngle;
+}
+
+void DrawElement::setRotationAngle(int value)
+{
+    rotationAngle = value;
 }
 void DrawElement::draw()
 {
