@@ -1886,6 +1886,10 @@ void OGLWidget::loadEffectFromCurrentBlockToEffectManager()
         effect.setPropetrie("effect_type",currentEffect.getShaderWrapperIndex());
         effect.setPropetrie("count",currentEffect.getCount());
         effect.setPropetrie("elementSize",currentEffect.getElementSize());
+        effect.setPropetrie("rotate_angle",currentEffect.getRotateAngle());
+        effect.setPropetrie("move_destination_x",currentEffect.getMoveDestination().x());
+        effect.setPropetrie("move_destination_y",currentEffect.getMoveDestination().y());
+        effect.setPropetrie("moving",currentEffect.getMoving());
         effectManager->addEffect(effect);
     }
     //effectManager->update();

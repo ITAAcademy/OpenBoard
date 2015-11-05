@@ -55,6 +55,7 @@ protected:
 
     QString key;
     QVector<ShaderEffect> effects;
+
     quint64 lifeTime = 0;
     int tickTime;
     int playTimeUntilFreeze;//zero value can crash program if another value not assigned before play.. causing by div by zero exception :(

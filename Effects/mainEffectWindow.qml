@@ -25,6 +25,10 @@ Rectangle{
         var effectType=effectsControll.getCurrentEffectProperty("effect_type")
         var count = effectsControll.getCurrentEffectProperty("count");
         var elementSize = effectsControll.getCurrentEffectProperty("elementSize");
+        var rotateAngle = effectsControll.getCurrentEffectProperty("rotate_angle");
+        var moveDestinationX = effectsControll.getCurrentEffectProperty("move_destination_x");
+        var moveDestinationY = effectsControll.getCurrentEffectProperty("move_destination_y");
+        var isMove = effectsControll.getCurrentEffectProperty("moving");
         console.log("current index changed");
         console.log("startTime:"+startTime);
         console.log("endTime:"+endTime);
@@ -97,6 +101,12 @@ Rectangle{
             effectsSlide.setEndTime(endTime);
             effectsSlide.setInverted(inversion);
         break;
+        case 8:
+            console.log("effectsSlide");
+            effectsTransformations.setStartTime(startTime);
+            effectsTransformations.setEndTime(endTime);
+            effectsTransformations.setInverted(inversion);
+        break;
 
         }
     }
@@ -123,6 +133,8 @@ Rectangle{
     property bool isEffectRandomSquares : (combo.currentIndex===5);
     property bool isEffectTreshold : (combo.currentIndex===6);
     property bool isEffectSlide : (combo.currentIndex == 7);
+    property bool isEffectTransformations : (combo.currentIndex == 8);
+
 
     property bool isEmptyList : (listBox.listBox.count==0);
     property bool isNonSelected : (listBox.listBox.currentIndex==-1);
@@ -237,11 +249,14 @@ Rectangle{
                     ListElement { text: "Random squares"; color: "Pink" }
                     ListElement { text: "Treshold"; color: "Pink" }
                     ListElement { text: "Slide"; color: "Yellow" }
+                     ListElement { text: "Transformations"; color: "Yellow" }
 
                 }
                 onCurrentIndexChanged:{
                     effectsControll.setCurrentEffectProperty("effect_type",currentIndex);
+
                     loadEffectParams();
+
                     console.log("onPressedChanged");
                 }
                 /*Rectangle{
@@ -262,6 +277,7 @@ Rectangle{
                 effectsRandomSquares.z=0;
                 effectsTreshold.z=0;
                 effectsSlide.z=0;
+                effectsTransformations.z=0;
                 if (isEffectAlpha)effectsPanelAlpha.z=1;
                 else
                 if (isEffectSpin)effectsPanelSpin.z=1;
@@ -277,6 +293,10 @@ Rectangle{
                 if (isEffectTreshold)effectsTreshold.z=1;
                 else
                 if (isEffectSlide)effectsSlide.z=1;
+                else if
+                (isEffectTransformations)effectsSlide.z=1;
+                else
+                if (isEffectTransformations)effectsTransformations.z=1;
 
             }
 
@@ -344,6 +364,14 @@ Rectangle{
             }
             SettingPages.EffectSlide{
                 id:effectsSlide
+                y:listBox.border.width
+                color: root.color
+                width:secondColumn.width
+                height:parent.height-combo.height
+                visible:!isEmptyList && !isNonSelected
+            }
+            SettingPages.EffectSlide{
+                id:effectsTransformations
                 y:listBox.border.width
                 color: root.color
                 width:secondColumn.width
