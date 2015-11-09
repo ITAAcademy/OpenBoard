@@ -28,17 +28,19 @@ Item{
         return mouse_drag_right;
     }
 
-    onValue1Changed: {
 
+
+    onValue1Changed: {
+console.log("gggggggggg onValue2Changed");
         handle1.x = 2 + (root.value1 - root.minimum) * root.xMax / (root.maximum - root.minimum);
 //size_value.forceActiveFocus();
         if(true)//(!size_value.focus)
         {
-
             var rootval = root.value1/1000.0
             console.log("root.value1:"+rootval)
             size_value.value =  rootval// (value1/1000).toFixed(2);
             console.log("onValue1Changed:"+rootval+" "+root.value1)
+
         }
         // if (handle1.x>handle2.x)handle1.x=handle2.x;
 
@@ -46,6 +48,7 @@ Item{
     onValue2Changed: {
         handle2.x = 2 + (root.value2 - root.minimum2) * root.xMax2 / (root.maximum2 - root.minimum2)
       //  size_value2.forceActiveFocus();
+
         //if (handle1.x>handle2.x)handle2.x=handle1.x;
        /* if(!size_value2.focus)
             size_value2.value = (value2/1000).toFixed(2);*/
@@ -142,7 +145,7 @@ Item{
                     onEntered:{
                         to.start();
                         size_value.focus = false;
-                        //size_value.value = (value1/1000)
+                       // size_value.value = (value1/1000)
                     }
                     onReleased: {
                         from.start();
@@ -242,17 +245,11 @@ Item{
                 maximumValue: maximum/1000
                 width: out.width
                 decimals: 2
+                //value: 20
                 font.pixelSize: 14
                 anchors.bottom: parent.top
                 onValueChanged:
                 {
-                   /* var t_value = value//*1000;
-                    if(!handle1.focus && t_value >= minimum && t_value <= maximum)
-                    {
-                        value2 = value/1000;
-                        if (value1>value2)value2=value1;
-                        mouse_drag_right_signal();
-                    }*/
                     if (focus)
                     {
                         value2 = value*1000;
@@ -283,19 +280,17 @@ Item{
                 decimals: 2
                 font.pixelSize: 14
                 anchors.top: parent.bottom
+                value: value1/1000
                 onValueChanged: {
-                   /* var t_value = value//*1000;
-                    if(!handle2.focus && t_value >= minimum2 && t_value <= maximum2)
-                    {
-                        value1 = value//parseFloat(text)*1000
-                        if (value1>value2)value1=value2;//BUG HERE. RESET VALUE IN 0 WHEN LOADING
-                        mouse_drag_left_signal()
-                    }*/
                     if (focus)
                     {
-                        value1 = value*1000;
+                        value1 =  value*1000;
                         mouse_drag_right_signal();
                     }
+                    //console.log(" GGGGGGGGGGGG  " + value)
+                }
+                Component.onCompleted: {
+
                 }
 
             }

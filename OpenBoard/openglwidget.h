@@ -86,7 +86,7 @@ using namespace QtAV;
     }
 
 };*/
-enum EditingRectangleBindMode {EDIT_RECTANGLE_UNBINDED =0,EDIT_RECTANGLE_MOVE=1,EDIT_RECTANGLE_RESIZE=2};
+enum EditingRectangleBindMode {EDIT_RECTANGLE_UNBINDED =0,EDIT_RECTANGLE_MOVE=1,EDIT_RECTANGLE_RESIZE=2, EDIT_RECTANGLE_ROTATION=12};
 enum ResizeCorner {RESIZE_CORNER_TOP_LEFT,RESIZE_CORNER_TOP_RIGHT,RESIZE_CORNER_BOTTOM_LEFT,RESIZE_CORNER_BOTTOM_RIGHT,RESIZE_CORNER_NONE};
 class OGLWidget;
 
@@ -94,6 +94,8 @@ class OGLWidget;
 struct RectangleEditor {
     QRect rect;
     int cornerSize;
+    int circleSize = 8;
+    int angle = 0;
     ResizeCorner currentCornerResize;
     volatile bool isEditingRectangleVisible = true;
     int editingRectangleMode = EDIT_RECTANGLE_UNBINDED;
@@ -276,7 +278,7 @@ public:
     int getWax();
     int getWay();
 
-    void paintBufferOnScreen(FBOWrapper buffer,int x , int y , int width, int height, int z = 0);
+    void paintBufferOnScreen(FBOWrapper buffer, int x , int y , int width, int height, int z = 0, int angle = 0, double scaleX = 1, double scaleY = 1);
 
     void deleteFBO(FBOWrapper wrapper);
 

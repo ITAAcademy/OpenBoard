@@ -110,6 +110,7 @@ void DrawElement::copy(DrawElement *elm)
     z = elm->getZ();
     width = elm->getSize().width();
     height = elm->getSize().height();
+    rotationAngle = elm->rotationAngle;
     //typeId = elm->getTypeId();
 }
 
@@ -245,12 +246,12 @@ int shaderAngle = 0;
 
                 int endAtTime = beginAtTime + effects[i].getEffectTimeHowLong();
                 float keyFrame = 1;
-             //   qDebug() << ":"<<playTime-beginAtTime;
+                //   qDebug() << ":"<<playTime-beginAtTime;
 
 
                // if ((((playTime >= beginAtTime && playTime <= endAtTime))))//endAtTime + 50 if flickering !!! @BAG@//NICOLAS problem with animation in last ms
 
-                if(pDrawWidget->getTimeLine()->getPlayTime() > 0)
+                if(playTime > 0)
                 {
                     bool shaderUsed = false;
                     if(endAtTime-beginAtTime > 0)
@@ -276,9 +277,6 @@ int shaderAngle = 0;
                      //qDebug() << i<<"-keyFrame:"<<keyFrame;
                     if (effects[i].getRotateAngle()!=0)
                      shaderAngle = effects[i].getRotateAngle()*keyFrame;
-                     qDebug() << "keyFrame:"<<keyFrame;
-                     qDebug() << "rotate angle:"<<effects[i].getRotateAngle();
-                     qDebug() << "shaderAngle:"<<shaderAngle;
 
                     if(drawToSecondBuffer)
                     {
@@ -297,7 +295,7 @@ int shaderAngle = 0;
                     }
                     else
                     {
-                       // qDebug()<<"drawToFirstBuffer:"<<fboWrapper.frameBuffer;
+                        // qDebug()<<"drawToFirstBuffer:"<<fboWrapper.frameBuffer;
                         pDrawWidget->bindBuffer(fboWrapper.frameBuffer);
                         pDrawWidget->clearFrameBuffer(fboWrapper);
                         // float keyFrame = (float)(pDrawWidget->getTimeLine()->getPlayTime()-startDrawTime)/lifeTime;//MOVE UP LATER
@@ -383,7 +381,7 @@ int shaderAngle = 0;
             else pDrawWidget->paintBufferOnScreen(fboWrapper,x, y, height, height, z);
         }
         else*/
-        pDrawWidget->paintBufferOnScreen(fboWrapper,x, y, width, height, z);
+        pDrawWidget->paintBufferOnScreen(fboWrapper,x, y, width, height, z, rotationAngle);
         // pDrawWidget->context()->functions()->glUseProgram(0);
     }
     else
@@ -457,6 +455,16 @@ float DrawElement::getBorder() const
 void DrawElement::setBorder(float value)
 {
     border = value;
+}
+
+int DrawElement::getRotationAngle() const
+{
+    return rotationAngle;
+}
+
+void DrawElement::setRotationAngle(int value)
+{
+    rotationAngle = value;
 }
 void DrawElement::draw()
 {
@@ -536,14 +544,23 @@ bool DrawElement::loadRest(QIODevice* device, QString projectName, float version
     if (version > 3.00008)
         stream.readRawData((char*)&lifeTime, sizeof(quint64));
     else
-        stream >> lifeTime;
+    {
+        int temp_time ;
+        stream >> temp_time;
+        lifeTime = temp_time;
+    }
     stream >> tickTime;
     if (version > 3.00008)
         stream.readRawData((char*)&startDrawTime, sizeof(quint64));
     else
-        stream >> startDrawTime ;
+    {
+        int temp_time ;
+        stream.readRawData((char*)&temp_time, sizeof(int));
+        // stream >>
+        startDrawTime = temp_time ;
+    }
     stream >> x >> y >> z >>
-                width >> height >> keyCouter>> blockIndex >> blockColumn;
+            width >> height >> keyCouter>> blockIndex >> blockColumn;
     //if (typeId == Element_type::Image)
     icon = load_image(stream);
 
@@ -579,6 +596,10 @@ bool DrawElement::loadRest(QIODevice* device, QString projectName, float version
     {
         stream >> use_anim_time;
     }
+    if(version > 3.2)
+    {
+        stream >> rotationAngle;
+    }
     // qDebug() << "load rest end";
     load_add(stream, projectName, version);
     // qDebug() << "load add";
@@ -598,7 +619,7 @@ bool DrawElement::save(QIODevice* device, QString projectName, QProgressBar *bar
     stream   << tickTime ;
     stream.writeRawData((char*)&startDrawTime, sizeof(quint64));
     stream << x << y << z
-             << width << height << keyCouter << blockIndex << blockColumn;
+           << width << height << keyCouter << blockIndex << blockColumn;
     //if (typeId == Element_type::Image)
     //save_image(stream, icon);
     // qDebug() << "qwewqewqeqewqQQQQ  " << lastPath;
@@ -614,7 +635,7 @@ bool DrawElement::save(QIODevice* device, QString projectName, QProgressBar *bar
     for (int i = 0 ; i < effects.length();i++)
         effects[i].save(stream,VERSION);
 
-    stream << use_anim_time;
+    stream << use_anim_time << rotationAngle;
 
     save_add(stream, projectName);
     if(bar != NULL)
@@ -797,7 +818,7 @@ quint64 DrawElement::setLifeTime(quint64 value, bool feedBack, bool visual,bool 
     if (this->getTypeId() !=Element_type::Empty)
         if (value < minBlockTime)
             return -1;
-        /*else
+    /*else
             if (value < 0)
                 return -1;*/
 

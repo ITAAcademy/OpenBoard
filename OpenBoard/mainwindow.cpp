@@ -47,7 +47,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
     ListControll *t_line = mpOGLWidget->getTimeLine();
-    connect(ui->check_use_speed_value,SIGNAL(clicked()),this,SLOT(connectUZVandSVF()));
+    connect(ui->check_use_speed_value,SIGNAL(clicked()),this,SLOT(setUseThisValueFalse()));
 
     connect(t_line, SIGNAL(setBlockPlayTimeUntilFreezeSignal2(int)),
             this, SLOT(on_slider_speedTB_2_valueChanged(int))); //99090
@@ -446,9 +446,7 @@ MainWindow::MainWindow(QWidget *parent) :
     addToolBarBreak();
     addToolBar(Qt::RightToolBarArea, toolBarBoard);
 
-    /* drawElements.append(new DrawTextElm(mpOGLWidget));
-       ((DrawTextElm*)drawElements[0])->setLifeTime(6000);
-       ((DrawTextElm*)drawElements[0])->setRect(180,180,200,200);*/
+
 
 
     connect(mpOGLWidget->getTimeLine(), SIGNAL(stopSignal()), this, SLOT(on_action_Stop_triggered()));
@@ -476,7 +474,7 @@ MainWindow::MainWindow(QWidget *parent) :
     onTextChangeUpdateTimer.setInterval(300);
     onTextChangeUpdateTimer.setSingleShot(true);
     connect(&onTextChangeUpdateTimer,SIGNAL(timeout()),this,SLOT(updateBlockFromTextEdit()));
-    connect(ui->check_use_speed_value,SIGNAL(released()),this,SLOT(updateBlockFromTextEdit()));
+    //connect(ui->check_use_speed_value,SIGNAL(released()),this,SLOT(updateBlockFromTextEdit()));
     connect(ui->check_use_speed_value_2,SIGNAL(released()),this,SLOT(updateBlockAnimTime()));
     connect(ui->check_is_static,SIGNAL(released()),this,SLOT(updateBlockFromTextEdit()));
 
@@ -818,23 +816,27 @@ bool MainWindow::event(QEvent * e) // overloading event(QEvent*) method of QMain
 
 void MainWindow::connectUZVandSVF( )
 {
+     qDebug() << "505050 v    4";
     if ( ui->check_use_speed_value->isChecked())
         connect(mpOGLWidget->getTimeLine(),SIGNAL(dontUseThisValue()),this,SLOT(setUseThisValueFalse()));
 }
 
 void MainWindow::setUseThisValueFalse( )
 {
-    ListControll *t_line = mpOGLWidget->getTimeLine();
+    /*ListControll *t_line = mpOGLWidget->getTimeLine();
     //disconnect(t_line,SIGNAL(dontUseThisValue()),this,SLOT(setUseThisValueFalse()));
     DrawElement *elm = t_line->getSelectedBlock();
+     qDebug() << "505050 v    5";
     if (elm->getTypeId() == Element_type::Text)
     {
+
         //disconnect(ui->check_use_speed_value,SIGNAL(clicked()),this,SLOT(connectUZVandSVF()));
         DrawTextElm * telm = (DrawTextElm *) elm;
         telm->setBNeedTime(false);
+
         ui->check_use_speed_value->setChecked(false);
         // connect(ui->check_use_speed_value,SIGNAL(clicked()),this,SLOT(connectUZVandSVF()));
-    }
+    }*/
 
     //connect(t_line,SIGNAL(dontUseThisValue()),this,SLOT(setUseThisValueFalse()));
 
@@ -1561,6 +1563,15 @@ void MainWindow::on_action_Open_Project_triggered()
         ui->statusBar->showMessage("project opened");
         mpOGLWidget->getTimeLine()->sendUpdateModel();
         mpOGLWidget->setList(mpOGLWidget->getTimeLine()->getPointedBlocks());
+
+
+        ui->check_use_block_time->setChecked(false);
+        ui->check_use_speed_value_2->setChecked(false);
+        ui->check_use_speed_value->setChecked(false);
+
+        ui->check_show_text_cursor->setChecked(false);
+        ui->check_is_static->setChecked(false);
+
         return ;
     }
     else
@@ -1733,6 +1744,12 @@ void MainWindow::on_action_New_Project_triggered()
     }
 
 
+    ui->check_use_block_time->setChecked(false);
+    ui->check_use_speed_value_2->setChecked(false);
+    ui->check_use_speed_value->setChecked(false);
+
+    ui->check_show_text_cursor->setChecked(false);
+    ui->check_is_static->setChecked(false);
 
 
 
@@ -2151,13 +2168,13 @@ void MainWindow::updateTextEditFromBlock()
                     switch (anim_state)
                     {
                     case 0:
-                        on_check_use_speed_value_2_clicked();
+                        ui->check_use_speed_value_2->setChecked(true);
                         break;
                     case 1:
-                        on_check_use_speed_value_clicked();
+                        ui->check_use_speed_value->setChecked(true);
                         break;
                     case 2:
-                        on_check_use_block_time_clicked();
+                        ui->check_use_block_time->setChecked(true);
                         break;
                     }
 
@@ -2170,7 +2187,7 @@ void MainWindow::updateTextEditFromBlock()
                     commandTextEdit->setPreviousCursorPosition(text_elm->getPrevTextCursor());
                     commandTextEdit->textCursor().setPosition(text_elm->getTextCursor());
                     textEdit->setPlainText(text_elm->getUnParsestring());
-                    ui->check_use_speed_value->setChecked(text_elm->getBNeedCalcTime());
+                    //ui->check_use_speed_value->setChecked(text_elm->getBNeedCalcTime());
                     connect(textEdit, SIGNAL(textChanged()), this, SLOT(onTextChanged()));
                     ui->check_is_static->setChecked(text_elm->isStaticText());
                     ui->check_show_text_cursor->setChecked(elm->getShowTextCursor());
@@ -2910,11 +2927,46 @@ void MainWindow::on_check_use_speed_value_clicked()
             DrawTextElm *elm = (DrawTextElm *) t_line->getSelectedBlock();
             if(elm != NULL)
             {
-                int time = elm->getDrawTime();
-                if (elm->getLifeTime() < time)
-                    t_line->setBlockTime(elm->getBlockColumn(),elm->getBlockIndex(),time);
+                int col = elm->getBlockColumn();
+                int ind = elm->getBlockIndex();
+                quint64 time = elm->getDrawTime();
+                quint64 life = elm->getLifeTime();
+                if (life > time)
+                    t_line->setBlockTime(elm->getBlockColumn(),elm->getBlockIndex(),time,true,true,true);
+                else
+                {
+                    quint64 diff = time - life;
+                    if (ind < t_line->getTrackSize(col) - 2)
+                    {
+                        quint64 next_life = t_line->getBlockTime(col,ind + 1);
+                        if (next_life > diff)
+                        {
+                            qDebug() << " 56565 1";
+                            t_line->setBlockTime(elm->getBlockColumn(),elm->getBlockIndex(),time,false,true,true);
+                            elm->setUseAnimTime(1);
+                        }
+                        else
+                        {
+                             qDebug() << " 56565 2";
+                            time = life + next_life;
+                            t_line->setBlockTime(elm->getBlockColumn(),elm->getBlockIndex(),time,true,true,true);
+                            time = elm->getLifeTime();
+                            qDebug() << "56565  next_life = " << next_life << " time = " << time << "  life = " << life;
+                            ui->check_use_speed_value->setChecked(false);
+                            ui->check_use_block_time->setChecked(true);
+                              elm->setUseAnimTime(2);
+                        }
+                    }
+                    else
+                    {
+                         qDebug() << " 56565 3";
+                       t_line->setBlockTime(elm->getBlockColumn(),elm->getBlockIndex(),time,true,true,true);
+                       elm->setUseAnimTime(1);
+                    }
+                }
                 ui->spinBox_speedTB_2->setValue(time);
-                elm->setUseAnimTime(1);
+
+
                 // ui->spinBox_speedTB_2->setValue(time); //887
             }
         }

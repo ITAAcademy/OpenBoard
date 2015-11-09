@@ -212,7 +212,15 @@ MouseAreaForWindowDraging{
                                     }
                                     else
                                         if ((event.key === Qt.Key_O  || event.key === 1065) && (event.modifiers & Qt.ShiftModifier)) //1065 - 'Щ'
+                                        {
                                             timeControll.emitOpenProject();
+                                         //     rep_columns.itemAt(main222.selectedBlockCol).setColorize(main222.selectedBlockIndex,"#8000FF00")
+                                            rep_columns.itemAt(main222.selectedBlockCol).abortColorize()
+                                            timeControll.setSelectedBlockPoint(-1,-1)
+                                            main222.selectedBlock = null
+                                            main222.selectedBlockCol = -1
+                                            main222.selectedBlockIndex = -1
+                                        }
                                         else
                                             if ((event.key === Qt.Key_N || event.key === 1058) && (event.modifiers & Qt.ShiftModifier))
                                                 timeControll.emitNewProject();
@@ -387,9 +395,9 @@ MouseAreaForWindowDraging{
                 var max_time = value/ main222.scaling
                 main222.max_time = max_time
 
-               item_col.width = (value) / main222.scaling +31
+                item_col.width = (value) / main222.scaling +31
 
-               /* if (main222.p_scale_pointer != null)
+                /* if (main222.p_scale_pointer != null)
                     main222.p_scale_pointer.x += 1;*/
 
                 var tt_pos = max_time - scroll.flickableItem.contentX + main222.p_scale_pointer.width
@@ -754,51 +762,60 @@ MouseAreaForWindowDraging{
 
                 timeControll.setScalePointerPos((x  -20 + scroll.flickableItem.contentX)* main222.scaling);
 
-            }           
+            }
             MouseArea {
                 id: spMA
                 anchors.fill: parent
                 drag.target : scale_pointer
                 hoverEnabled: true
+
                 onPressed: {
                     context_menu.closeIt();
-                     scale_pointer_info.visible = true
+                   // scale_pointer_info.visible = true
                 }
                 onMouseXChanged: {
-
+                   /* if (mouseX < 0 || mouseX > width)
+                        scale_pointer_info.visible = false*/
                 }
+                onMouseYChanged: {
+                   /* if ( mouseY < 0 || mouseY > height )
+                        scale_pointer_info.visible = false*/
+                }
+
                 onEntered: {
                     tooltip_timer.running = true
                 }
 
                 onExited:  {
-                     scale_pointer_info.visible = false
+                    scale_pointer_info.visible = false
+                    tooltip_timer.running = false
                 }
+
             }
             Timer {
                 id: tooltip_timer
-                   interval: 50; running: false; repeat: false
-                   onTriggered: scale_pointer_info.visible = true
-               }
+                interval: 50; running: false; repeat: false
+                onTriggered: scale_pointer_info.visible = true
+            }
 
         }
         Rectangle {
             id: scale_pointer_info
-            visible: false
             width: 150
             height: 30
             color: "white"
-             z: 201
+            z: 201
+            visible : false
             property int pos : scale_pointer.x - scale_pointer.width
             x: pos + 15
             y: scale_pointer.y + 10
-           Label {
-               anchors.fill: parent
-               font.family: "Tahoma"
-               font.pixelSize: 12
-               color: "black"
-               text: "global time: "+ scale_pointer_info.pos*main222.scaling + " ms\nlocal time: " + (scale_pointer_info.pos - main222.local_x)*main222.scaling+" ms" //1545
-           }
+            Label {
+                anchors.fill: parent
+                font.family: "Tahoma"
+                font.pixelSize: 12
+                color: "black"
+                text: "global time: "+ scale_pointer_info.pos*main222.scaling + " ms\nlocal time: " + (scale_pointer_info.pos - main222.local_x)*main222.scaling+" ms" //1545
+            }
         }
 
         Rectangle{

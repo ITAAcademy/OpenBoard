@@ -396,7 +396,8 @@ QByteArray AudioDecoder::nextFrame(AVPacket &audioPacket, qint64 time)
         while( audioBuffer.size() > 0 && (time >= audioBuffer.first().dts))
         {
             //qDebug() << "AUDIO  " << currentDts; // currentdts very smoll in the fuftre need fix //@BAG@NicolasFix
-            m_output->write(audioBuffer.first().arr.data(), audioBuffer.first().arr.size());
+            if(m_output != NULL)
+                m_output->write(audioBuffer.first().arr.data(), audioBuffer.first().arr.size());
             res += audioBuffer.first().arr;
             audioBuffer.pop_front();
 
@@ -444,7 +445,7 @@ void AudioDecoder::initFormat()
         format = info.nearestFormat(format);
     }
 
-    audio = 0;
+    audio = NULL;
     audio = new QAudioOutput(QAudioDeviceInfo::defaultOutputDevice(), format, 0);
 
     //qDebug() << "FORMAT PARAM:";

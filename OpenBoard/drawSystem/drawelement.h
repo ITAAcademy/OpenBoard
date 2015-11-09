@@ -64,7 +64,7 @@ protected:
     quint64 startDrawTime;
     int x, y, z, width, height;
     int keyCouter = 0;
-
+    int rotationAngle = 0;
     bool aspectRatio = false;
     QTimer lifeTimer;
     QElapsedTimer tickTimer;
@@ -180,6 +180,9 @@ public:
 
     float getBorder() const;
     void setBorder(float value);
+
+    int getRotationAngle() const;
+    void setRotationAngle(int value);
 
 signals:
     void playTimeUntilFreezeChangeSignal(int col,int ind, int value);
