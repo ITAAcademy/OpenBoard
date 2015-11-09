@@ -306,7 +306,7 @@ public:
     Q_INVOKABLE void reverseBlocks(int col, int init_pos, int end_pos);
     void setBlocks(int col,const  QList <DrawElement * > &value);
     Q_INVOKABLE   void setBlockKey(int col, int i, QString name);\
-    Q_INVOKABLE int setBlockTime(int col, int i, int value, bool resize_next_empty = false, bool use_value = true);
+    Q_INVOKABLE int setBlockTime(int col, int i, int value, bool resize_next_empty = false, bool use_value = true, bool visual = false);
     Q_INVOKABLE bool setBlockTimeBlockBalance(int col, int ind, int value, bool resize_next_empty = false);
     Q_INVOKABLE void deleteBlockToDel(int col);
     Q_INVOKABLE void setBlockTimeWithUpdate(int col, int i, quint64 value, bool visual);

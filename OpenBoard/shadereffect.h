@@ -11,6 +11,9 @@ class ShaderEffect
     bool anchorToEnd = false;
    ShaderProgramWrapper *shaderWrapper = nullptr;
    int shaderWrapperIndex = -1;
+   QPoint moveDestination;
+   bool moving = false;
+   int rotateAngle=0;
 
 
 public:
@@ -48,6 +51,12 @@ public:
     void setCount(int value);
     int getElementSize() const;
     void setElementSize(int value);
+    QPoint getMoveDestination() const;
+    void setMoveDestination(const QPoint &value);
+    bool getMoving() const;
+    void setMoving(bool value);
+    int getRotateAngle() const;
+    void setRotateAngle(int value);
 };
 
 #endif // SHADEREFFECT_H

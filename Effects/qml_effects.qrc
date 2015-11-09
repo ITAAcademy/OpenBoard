@@ -21,5 +21,6 @@
         <file>Content/BrushSettingPages/EffectRandomsquares.qml</file>
         <file>Content/BrushSettingPages/EffectTreshold.qml</file>
         <file>Content/BrushSettingPages/EffectSlide.qml</file>
+        <file>Content/BrushSettingPages/EffectTransformations.qml</file>
     </qresource>
 </RCC>

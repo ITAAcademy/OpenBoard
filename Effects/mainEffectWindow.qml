@@ -25,6 +25,10 @@ Rectangle{
         var effectType=effectsControll.getCurrentEffectProperty("effect_type")
         var count = effectsControll.getCurrentEffectProperty("count");
         var elementSize = effectsControll.getCurrentEffectProperty("elementSize");
+        var rotateAngle = effectsControll.getCurrentEffectProperty("rotate_angle");
+        var moveDestinationX = effectsControll.getCurrentEffectProperty("move_destination_x");
+        var moveDestinationY = effectsControll.getCurrentEffectProperty("move_destination_y");
+        var isMove = effectsControll.getCurrentEffectProperty("moving");
         console.log("current index changed");
         console.log("startTime:"+startTime);
         console.log("endTime:"+endTime);
@@ -33,23 +37,35 @@ Rectangle{
         console.log("count:"+count);
         combo.currentIndex=effectType;
         console.log("secondColumn.comboEffectType:"+effectType);
-
+        effectsPanelAlpha.disable();
+        effectsPanelSpin.disable();
+        effectsPanelPixelization.disable();
+        effectsPanelCircles.disable();
+        effectsTurnthepage.disable();
+        effectsRandomSquares.disable();
+        effectsTreshold.disable();
+        effectsSlide.disable();
+        effectsTransformations.disable();
         switch(effectType)
         {
         case 0:
             console.log("effectsPanelAlpha");
-            effectsPanelAlpha.setStartTime(startTime);
+            effectsPanelAlpha.enable();
+
             effectsPanelAlpha.setEndTime(endTime);
+            effectsPanelAlpha.setStartTime(startTime);
             effectsPanelAlpha.setInverted(inversion);
             break;
         case 1:
             console.log("effectsPanelSpin");
+            effectsPanelSpin.enable();
             effectsPanelSpin.setStartTime(startTime);
             effectsPanelSpin.setEndTime(endTime);
             effectsPanelSpin.setInverted(inversion);
             break;
         case 2:
             console.log("effectsPanelPixelization");
+            effectsPanelPixelization.enable();
             if (elementSize>effectsPanelPixelization.elementSizeSlider.maximum)
                 elementSize = effectsPanelPixelization.elementSizeSlider.maximum
             if (elementSize<effectsPanelPixelization.elementSizeSlider.minimum)
@@ -58,10 +74,12 @@ Rectangle{
             effectsPanelPixelization.setEndTime(endTime)
             effectsPanelPixelization.setInverted(inversion)
             effectsPanelPixelization.setElementSize(elementSize)
+
             effectsControll.setCurrentEffectProperty("elementSize",elementSize)
             break;
         case 3:
             console.log("effectsPanelCircles");
+            effectsPanelCircles.enable();
              if (count>effectsPanelCircles.countSlider.maximum)
                  count = effectsPanelCircles.countSlider.maximum
              if (count<effectsPanelCircles.countSlider.minimum)
@@ -75,27 +93,38 @@ Rectangle{
             break;
         case 4:
             console.log("effectsTurnthepage");
+            effectsTurnthepage.enable();
             effectsTurnthepage.setStartTime(startTime);
             effectsTurnthepage.setEndTime(endTime);
             effectsTurnthepage.setInverted(inversion);
             break;
         case 5:
             console.log("effectsRandomSquares");
+            effectsRandomSquares.enable();
             effectsRandomSquares.setStartTime(startTime);
             effectsRandomSquares.setEndTime(endTime);
             effectsRandomSquares.setInverted(inversion);
             break;
         case 6:
             console.log("effectsTreshold");
+            effectsTreshold.enable();
             effectsTreshold.setStartTime(startTime);
             effectsTreshold.setEndTime(endTime);
             effectsTreshold.setInverted(inversion);
             break;
         case 7:
             console.log("effectsSlide");
+            effectsSlide.enable();
             effectsSlide.setStartTime(startTime);
             effectsSlide.setEndTime(endTime);
             effectsSlide.setInverted(inversion);
+        break;
+        case 8:
+            console.log("effectsSlide");
+            effectsTransformations.enable();
+            effectsTransformations.setStartTime(startTime);
+            effectsTransformations.setEndTime(endTime);
+            effectsTransformations.setInverted(inversion);
         break;
 
         }
@@ -115,14 +144,16 @@ Rectangle{
     color: "#777777"
     radius: 10
     smooth: true
-    property bool isEffectAlpha : (combo.currentIndex===0);
-    property bool isEffectSpin : (combo.currentIndex===1);
-    property bool isEffectPixelization : (combo.currentIndex===2);
-    property bool isEffectCircles : (combo.currentIndex===3);
-    property bool isEffectTurnthepage : (combo.currentIndex===4);
-    property bool isEffectRandomSquares : (combo.currentIndex===5);
-    property bool isEffectTreshold : (combo.currentIndex===6);
-    property bool isEffectSlide : (combo.currentIndex == 7);
+    property bool isEffectAlpha : (combo.comboIndex==0);
+    property bool isEffectSpin : (combo.comboIndex==1);
+    property bool isEffectPixelization : (combo.comboIndex==2);
+    property bool isEffectCircles : (combo.comboIndex==3);
+    property bool isEffectTurnthepage : (combo.comboIndex==4);
+    property bool isEffectRandomSquares : (combo.comboIndex==5);
+    property bool isEffectTreshold : (combo.comboIndex==6);
+    property bool isEffectSlide : (combo.comboIndex == 7);
+    property bool isEffectTransformations : (combo.comboIndex == 8);
+
 
     property bool isEmptyList : (listBox.listBox.count==0);
     property bool isNonSelected : (listBox.listBox.currentIndex==-1);
@@ -170,7 +201,7 @@ Rectangle{
         Column
         {
             id:secondColumn
-            property  int comboEffectType: combo.currentIndex
+
             height:parent.height-root.border.width
             width:root.width-firstColumn.width-root.border.width*2
             // width:root.width-root.border.width
@@ -179,7 +210,7 @@ Rectangle{
                 height:listControl.height
                 y: root.border.width
                 width:secondColumn.width
-
+                property int comboIndex;
                 style: ComboBoxStyle {
                     id: comboBox
 
@@ -237,11 +268,16 @@ Rectangle{
                     ListElement { text: "Random squares"; color: "Pink" }
                     ListElement { text: "Treshold"; color: "Pink" }
                     ListElement { text: "Slide"; color: "Yellow" }
+                     ListElement { text: "Transformations"; color: "Yellow" }
 
                 }
                 onCurrentIndexChanged:{
+                    //TODO
                     effectsControll.setCurrentEffectProperty("effect_type",currentIndex);
+combo.comboIndex=currentIndex;
                     loadEffectParams();
+                    secondColumn.processZ();
+
                     console.log("onPressedChanged");
                 }
                 /*Rectangle{
@@ -262,6 +298,7 @@ Rectangle{
                 effectsRandomSquares.z=0;
                 effectsTreshold.z=0;
                 effectsSlide.z=0;
+                effectsTransformations.z=0;
                 if (isEffectAlpha)effectsPanelAlpha.z=1;
                 else
                 if (isEffectSpin)effectsPanelSpin.z=1;
@@ -277,16 +314,32 @@ Rectangle{
                 if (isEffectTreshold)effectsTreshold.z=1;
                 else
                 if (isEffectSlide)effectsSlide.z=1;
+                else if
+                (isEffectTransformations)effectsSlide.z=1;
+                else
+                if (isEffectTransformations)effectsTransformations.z=1;
+                console.log("effectsPanelAlpha.z:"+effectsPanelAlpha.z);
+                console.log("effectsPanelSpin.z:"+effectsPanelSpin.z);
+                console.log("effectsPanelPixelization.z:"+effectsPanelPixelization.z);
 
             }
-
+Item{
+    width:parent.width
+    height:parent.height
             SettingPages.EffectAlpha{
                 id:effectsPanelAlpha
                 y:listBox.border.width
                 color: root.color
                 width:secondColumn.width
-                height:parent.height-combo.height
+                height:parent.height
                 visible:!isEmptyList && !isNonSelected
+                enabled: false;
+                function enable(){
+                    enabled=true;
+                }
+                function disable(){
+                    enabled=false;
+                }
 
             }
             SettingPages.EffectSpin{
@@ -294,8 +347,15 @@ Rectangle{
                 y:listBox.border.width
                 color: root.color
                 width:secondColumn.width
-                height:parent.height-combo.height
+                height:parent.height
                 visible:!isEmptyList && !isNonSelected
+                enabled: false;
+                function enable(){
+                    enabled=true;
+                }
+                function disable(){
+                    enabled=false;
+                }
 
             }
             SettingPages.EffectPixelization{
@@ -303,53 +363,108 @@ Rectangle{
                 y:listBox.border.width
                 color: root.color
                 width:secondColumn.width
-                height:parent.height-combo.height
+                height:parent.height
                 visible:!isEmptyList && !isNonSelected
-
+                enabled: false;
+                function enable(){
+                    enabled=true;
+                }
+                function disable(){
+                    enabled=false;
+                }
             }
             SettingPages.EffectCircles{
                 id:effectsPanelCircles
                 y:listBox.border.width
                 color: root.color
                 width:secondColumn.width
-                height:parent.height-combo.height
+                height:parent.height
                 visible:!isEmptyList && !isNonSelected
-
+                enabled: false;
+                function enable(){
+                    enabled=true;
+                }
+                function disable(){
+                    enabled=false;
+                }
             }
             SettingPages.EffectTurnthepage{
                 id:effectsTurnthepage
                 y:listBox.border.width
                 color: root.color
                 width:secondColumn.width
-                height:parent.height-combo.height
+                height:parent.height
                 visible:!isEmptyList && !isNonSelected
-
+                enabled: false;
+                function enable(){
+                    enabled=true;
+                }
+                function disable(){
+                    enabled=false;
+                }
             }
             SettingPages.EffectRandomsquares{
                 id:effectsRandomSquares
                 y:listBox.border.width
                 color: root.color
                 width:secondColumn.width
-                height:parent.height-combo.height
+                height:parent.height
                 visible:!isEmptyList && !isNonSelected
-
+                enabled: false;
+                function enable(){
+                    enabled=true;
+                }
+                function disable(){
+                    enabled=false;
+                }
             }
             SettingPages.EffectTreshold{
                 id:effectsTreshold
                 y:listBox.border.width
                 color: root.color
                 width:secondColumn.width
-                height:parent.height-combo.height
+                height:parent.height
                 visible: !isEmptyList && !isNonSelected
+                enabled: false;
+                function enable(){
+                    enabled=true;
+                }
+                function disable(){
+                    enabled=false;
+                }
             }
             SettingPages.EffectSlide{
                 id:effectsSlide
                 y:listBox.border.width
                 color: root.color
                 width:secondColumn.width
-                height:parent.height-combo.height
+                height:parent.height
                 visible:!isEmptyList && !isNonSelected
+                enabled: false;
+                function enable(){
+                    enabled=true;
+                }
+                function disable(){
+                    enabled=false;
+                }
             }
+            SettingPages.EffectSlide{
+                id:effectsTransformations
+                y:listBox.border.width
+                color: root.color
+                width:secondColumn.width
+                height:parent.height
+                visible:!isEmptyList && !isNonSelected
+                enabled: false;
+                function enable(){
+                    enabled=true;
+                }
+                function disable(){
+                    enabled=false;
+                }
+            }
+
+}
         }
 
 

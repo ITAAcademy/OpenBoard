@@ -8,7 +8,7 @@ Rectangle {
         return doubleSliderTime.value1;
     }
     function setStartTime(n){
-        doubleSliderTime.value1=n
+        doubleSliderTime.value1 = n
     }
     function setEndTime(n){
         doubleSliderTime.value2=n
@@ -50,8 +50,8 @@ Rectangle {
             width:root.width
             height:10
             name: "time"
-            value1:0
-            value2:0
+            value1: 0
+            value2: 0
             /*  onValue1Changed: {
         startTime=value1
     }

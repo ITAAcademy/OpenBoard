@@ -248,7 +248,7 @@ DrawTextElm::~DrawTextElm()
 
 void DrawTextElm::clearBuffer()
 {
-    qDebug() << "CLEAR_TEXT_BUFFER";
+   // qDebug() << "CLEAR_TEXT_BUFFER";
     colors.clear();
     //colors.append(mainFillColor);
 

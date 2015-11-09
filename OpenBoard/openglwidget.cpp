@@ -237,9 +237,6 @@ void OGLWidget::paintBrushInBuffer(GLuint& texture,Brush& currentBrushOfDrawSyst
             currentBrushOfDrawSystem = brushes[recordedBrushN].brush;
             if(currentBrushOfDrawSystem.img.isNull())
                 qDebug() << "ISNULL";
-            if (shaderSupported) //
-                texture = loadTexture(currentBrushOfDrawSystem.img,true);
-            else
                 texture = loadTexture(currentBrushOfDrawSystem.color_img, true);
             qDebug() << "recordedBrushN:"<<recordedBrushN;
 
@@ -608,9 +605,6 @@ void OGLWidget::processMouse()
                 // //qDebug() << "mouse play index:"<<keyFrame;
 
                 currentBrushOfLastDrawing =drawBrushElm->getBrushes()[recordedBrushN].brush;
-                if (shaderSupported)
-                    brushTexture = loadTexture(drawBrushElm->getBrushes()[recordedBrushN].brush.img,true);
-                else
                     brushTexture = loadTexture(drawBrushElm->getBrushes()[recordedBrushN].brush.color_img, true);
                 break;
             }
@@ -1348,12 +1342,12 @@ void OGLWidget::initializeGL()
     backGroundTexture = loadTextureFromFile(":/ThirdPart/images/start.png");
 
     if (isShaderSupported())
-        m_manager.getCreatedBrush().color_img=m_manager.getCreatedBrush().img;
+        m_manager.getCreatedBrush().color_img=BrushPainter::getInstance()->applyBlur(m_manager.getCreatedBrush());
     else
+    {
         m_manager.getCreatedBrush().color_img=BrushPainter::getInstance()->applyColor(m_manager.getCreatedBrush());
-    if (shaderSupported)
-        brushTexture = loadTexture(m_manager.getCreatedBrush().img,true);
-    else
+        m_manager.getCreatedBrush().color_img=BrushPainter::getInstance()->applyBlur(m_manager.getCreatedBrush());
+    }
         brushTexture = loadTexture(m_manager.getCreatedBrush().color_img,true);
     //loadTextureFromFile(":/ThirdPart/images/brush.png");
     //initFrameBuffer(); // Create our frame buffer object
@@ -1955,6 +1949,10 @@ void OGLWidget::loadEffectFromCurrentBlockToEffectManager()
         effect.setPropetrie("effect_type",currentEffect.getShaderWrapperIndex());
         effect.setPropetrie("count",currentEffect.getCount());
         effect.setPropetrie("elementSize",currentEffect.getElementSize());
+        effect.setPropetrie("rotate_angle",currentEffect.getRotateAngle());
+        effect.setPropetrie("move_destination_x",currentEffect.getMoveDestination().x());
+        effect.setPropetrie("move_destination_y",currentEffect.getMoveDestination().y());
+        effect.setPropetrie("moving",currentEffect.getMoving());
         effectManager->addEffect(effect);
     }
     //effectManager->update();
@@ -2406,10 +2404,13 @@ void OGLWidget::brushParamsChanged()
 {
     if (!able_drawing)return;
     if (isShaderSupported())
-        m_manager.getCreatedBrush().color_img=m_manager.getCreatedBrush().img;
+        m_manager.getCreatedBrush().color_img=BrushPainter::getInstance()->applyBlur(m_manager.getCreatedBrush());
     else
+    {
         m_manager.getCreatedBrush().color_img=BrushPainter::getInstance()->applyColor(m_manager.getCreatedBrush());
-    brushTexture = loadTexture(m_manager.getCreatedBrush().color_img,true);
+         m_manager.getCreatedBrush().color_img=BrushPainter::getInstance()->applyBlur(m_manager.getCreatedBrush());
+   }
+        brushTexture = loadTexture(m_manager.getCreatedBrush().color_img,true);
     //while (!isInit())
     //qDebug() << "waiting for init";
     drawBrushElm->addBrush(m_manager.getCreatedBrush());

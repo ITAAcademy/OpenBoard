@@ -2034,7 +2034,7 @@ bool ListControll::setBlockTimeBlockBalance(int col, int ind, int value, bool re
 
 
 
-int ListControll::setBlockTime(int col, int i,int value, bool resize_next_empty, bool use_value)
+int ListControll::setBlockTime(int col, int i,int value, bool resize_next_empty, bool use_value, bool visual)
 {
     if(!blockValid(col,i))
         return -1;
@@ -2134,7 +2134,7 @@ int ListControll::setBlockTime(int col, int i,int value, bool resize_next_empty,
         balanceBlocksIfIsGroups(col,i);*/
 
     // tracks[col].addTime(value - elm->getLifeTime());
-    elm->setLifeTime(value,false,true, use_value);
+    elm->setLifeTime(value,visual,true, use_value);
 
     updateBlocksStartTimesFrom(col,i+1);
     tracks[col].updateTime();

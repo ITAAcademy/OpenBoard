@@ -37,8 +37,8 @@ float BlurStart = 0; /// blur offset
 vec4 PS_RadialBlur(vec2 UV );
 void main(void) {
     vec4 resultColor;
-    //vec4 col = texture2D(textureSampler, gl_TexCoord[0].st);
-    vec4 col = PS_RadialBlur(vUV);
+    vec4 col = texture2D(textureSampler, gl_TexCoord[0].st);
+    //vec4 col = PS_RadialBlur(vUV);
     //vec2 step = vec2(0,0.001*bloorStep);
     //vec4 col = smoothing(gl_TexCoord[0].st,textureSampler,step);// 1/width
     float max = col.r;

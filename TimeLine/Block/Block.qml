@@ -692,6 +692,7 @@ Rectangle{
 
 
         onPressed: {
+
             main222.local_x = root.x
             root.p_anim_pointer.x = timeControll.getBlockPlayTimeUntilFreeze(root.colIndex,root.mIndex)/main222.scaling
             main222.prev_block_time = root.width
@@ -782,6 +783,7 @@ Rectangle{
                         }
                     }
             }
+            console.log(" 9989   life = " + timeControll.getBlockTime(main222.selectedBlockCol,main222.selectedBlockIndex))
         }
         onReleased: {
 

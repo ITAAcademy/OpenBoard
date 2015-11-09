@@ -245,7 +245,7 @@ void DrawElement::paint()
 
                 int endAtTime = beginAtTime + effects[i].getEffectTimeHowLong();
                 float keyFrame = 1;
-             //   qDebug() << ":"<<playTime-beginAtTime;
+                //   qDebug() << ":"<<playTime-beginAtTime;
 
 
                // if ((((playTime >= beginAtTime && playTime <= endAtTime))))//endAtTime + 50 if flickering !!! @BAG@//NICOLAS problem with animation in last ms
@@ -263,8 +263,8 @@ void DrawElement::paint()
                     effects[i].setUniform("reverse",effects[i].getReverse());
                     effects[i].setUniform("count",effects[i].getCount());
                     effects[i].setUniform("elementSize",effects[i].getElementSize());
-                     // qDebug() <<i<< "-b:"<<beginAtTime;
-                     //qDebug() << i<<"-keyFrame:"<<keyFrame;
+                    // qDebug() <<i<< "-b:"<<beginAtTime;
+                    //qDebug() << i<<"-keyFrame:"<<keyFrame;
                     if(drawToSecondBuffer)
                     {
                         pDrawWidget->bindBuffer(pDrawWidget->getPingPongFBO().frameBuffer);
@@ -282,7 +282,7 @@ void DrawElement::paint()
                     }
                     else
                     {
-                       // qDebug()<<"drawToFirstBuffer:"<<fboWrapper.frameBuffer;
+                        // qDebug()<<"drawToFirstBuffer:"<<fboWrapper.frameBuffer;
                         pDrawWidget->bindBuffer(fboWrapper.frameBuffer);
                         pDrawWidget->clearFrameBuffer(fboWrapper);
                         // float keyFrame = (float)(pDrawWidget->getTimeLine()->getPlayTime()-startDrawTime)/lifeTime;//MOVE UP LATER
@@ -529,14 +529,23 @@ bool DrawElement::loadRest(QIODevice* device, QString projectName, float version
     if (version > 3.00008)
         stream.readRawData((char*)&lifeTime, sizeof(quint64));
     else
-        stream >> lifeTime;
+    {
+        int temp_time ;
+        stream >> temp_time;
+        lifeTime = temp_time;
+    }
     stream >> tickTime;
     if (version > 3.00008)
         stream.readRawData((char*)&startDrawTime, sizeof(quint64));
     else
-        stream >> startDrawTime ;
+    {
+        int temp_time ;
+        stream.readRawData((char*)&temp_time, sizeof(int));
+        // stream >>
+        startDrawTime = temp_time ;
+    }
     stream >> x >> y >> z >>
-                width >> height >> keyCouter>> blockIndex >> blockColumn;
+            width >> height >> keyCouter>> blockIndex >> blockColumn;
     //if (typeId == Element_type::Image)
     icon = load_image(stream);
 
@@ -595,7 +604,7 @@ bool DrawElement::save(QIODevice* device, QString projectName, QProgressBar *bar
     stream   << tickTime ;
     stream.writeRawData((char*)&startDrawTime, sizeof(quint64));
     stream << x << y << z
-             << width << height << keyCouter << blockIndex << blockColumn;
+           << width << height << keyCouter << blockIndex << blockColumn;
     //if (typeId == Element_type::Image)
     //save_image(stream, icon);
     // qDebug() << "qwewqewqeqewqQQQQ  " << lastPath;
@@ -794,7 +803,7 @@ quint64 DrawElement::setLifeTime(quint64 value, bool feedBack, bool visual,bool 
     if (this->getTypeId() !=Element_type::Empty)
         if (value < minBlockTime)
             return -1;
-        /*else
+    /*else
             if (value < 0)
                 return -1;*/
 
