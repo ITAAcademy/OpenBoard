@@ -1413,6 +1413,7 @@ Rectangle{
         anchors.fill: root
         onEntered: {
 
+            scale_pointer_info.visible = false
             main222.dropEnteredTrackIndex = main_root.col_ind
             //main_root.border.width = 3
 

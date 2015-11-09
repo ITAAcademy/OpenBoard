@@ -768,20 +768,29 @@ MouseAreaForWindowDraging{
                 anchors.fill: parent
                 drag.target : scale_pointer
                 hoverEnabled: true
+
                 onPressed: {
                     context_menu.closeIt();
-                    scale_pointer_info.visible = true
+                   // scale_pointer_info.visible = true
                 }
                 onMouseXChanged: {
-
+                   /* if (mouseX < 0 || mouseX > width)
+                        scale_pointer_info.visible = false*/
                 }
+                onMouseYChanged: {
+                   /* if ( mouseY < 0 || mouseY > height )
+                        scale_pointer_info.visible = false*/
+                }
+
                 onEntered: {
                     tooltip_timer.running = true
                 }
 
                 onExited:  {
                     scale_pointer_info.visible = false
+                    tooltip_timer.running = false
                 }
+
             }
             Timer {
                 id: tooltip_timer
@@ -792,11 +801,11 @@ MouseAreaForWindowDraging{
         }
         Rectangle {
             id: scale_pointer_info
-            visible: false
             width: 150
             height: 30
             color: "white"
             z: 201
+            visible : false
             property int pos : scale_pointer.x - scale_pointer.width
             x: pos + 15
             y: scale_pointer.y + 10
