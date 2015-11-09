@@ -51,8 +51,9 @@ Rectangle{
         case 0:
             console.log("effectsPanelAlpha");
             effectsPanelAlpha.enable();
-            effectsPanelAlpha.setStartTime(startTime);
+
             effectsPanelAlpha.setEndTime(endTime);
+            effectsPanelAlpha.setStartTime(startTime);
             effectsPanelAlpha.setInverted(inversion);
             break;
         case 1:
