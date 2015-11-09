@@ -1804,13 +1804,19 @@ void OGLWidget::applyEffectsToCurrentBlock()
         case RANDSQUARES_SHADER:
         case TRESHOLD_SHADER:
         case SLIDE_SHADER:
-            ShaderEffect sEffect(shaderPrograms[shaderProgramIndex],shaderProgramIndex);
+
+        case TRANSFORMATIONS_EFFECT:
+            ShaderProgramWrapper* shaderWrapper=NULL;
+            if (shaderProgramIndex!=TRANSFORMATIONS_EFFECT)
+                shaderWrapper=shaderPrograms[shaderProgramIndex];
+             ShaderEffect sEffect(shaderWrapper,shaderProgramIndex);
 
             int startTime = qFloor(blockEffect->getPropetrie("start_time"));
             int endTime = qFloor(blockEffect->getPropetrie("end_time"));
             bool reverse = blockEffect->getPropetrie("inversion");
             int count = blockEffect->getPropetrie("count");
             int elmSize = blockEffect->getPropetrie("elementSize");
+            int rotateAngle = blockEffect->getPropetrie("rotate_angle");
             sEffect.setStartTimeMS(startTime);
            // qDebug() << "SHOW   " << blockEffect->getPropetrie("start_time");
             sEffect.setEffectTimeHowLong(endTime-startTime);
@@ -1818,7 +1824,9 @@ void OGLWidget::applyEffectsToCurrentBlock()
             sEffect.setShaderWrapperIndex(shaderProgramIndex);
             sEffect.setCount(count);
             sEffect.setElementSize(elmSize);
+            sEffect.setRotateAngle(rotateAngle);
             timeLineEffects.push_back(sEffect);
+            break;
         }
     }
    // qDebug() << "apply effect after for";
@@ -1836,8 +1844,8 @@ void OGLWidget::loadEffectFromCurrentBlockToEffectManager()
     DrawElement *currentBlock = timeLine->getBlock(blockIndex);
     effectManager->clearEffects();
     effectManager->setBlockTime(currentBlock->getLifeTime());
-    int indexes[shaderPrograms.length()];
-    for (int i = 0; i < shaderPrograms.length();i++)
+    int indexes[shaderPrograms.length()+1];//1 -need additional value for
+    for (int i = 0; i < shaderPrograms.length()+1;i++)
         indexes[i]=0;
     qDebug() << "loadEffectFromCurrentBlockToEffectManager:"<<currentBlock->getEffects().length();
     for (ShaderEffect  currentEffect : currentBlock->getEffects())
@@ -1873,6 +1881,9 @@ void OGLWidget::loadEffectFromCurrentBlockToEffectManager()
         case SLIDE_SHADER:
             nameStart="slide";
             break;
+        case TRANSFORMATIONS_EFFECT:
+            nameStart="transformation";
+                    break;
         default:
             nameStart="effect";
             break;

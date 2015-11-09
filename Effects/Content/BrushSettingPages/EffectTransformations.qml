@@ -67,13 +67,13 @@ Rectangle {
         FullSlider{
             name:"angle"
             id: angleSlider
-            maximum:15
+            maximum:360
             width:root.width
             height:10
             minimum: 1
             value1: 1
             onMouse_drag_signal:  {
-               effectsControll.setCurrentEffectProperty("angle",value1);
+               effectsControll.setCurrentEffectProperty("rotate_angle",value1);
             }
         }
 

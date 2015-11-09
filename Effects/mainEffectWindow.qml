@@ -124,6 +124,7 @@ Rectangle{
             effectsTransformations.setStartTime(startTime);
             effectsTransformations.setEndTime(endTime);
             effectsTransformations.setInverted(inversion);
+            effectsTransformations.setAngle(rotateAngle);
         break;
 
         }
@@ -313,8 +314,6 @@ combo.comboIndex=currentIndex;
                 if (isEffectTreshold)effectsTreshold.z=1;
                 else
                 if (isEffectSlide)effectsSlide.z=1;
-                else if
-                (isEffectTransformations)effectsSlide.z=1;
                 else
                 if (isEffectTransformations)effectsTransformations.z=1;
                 console.log("effectsPanelAlpha.z:"+effectsPanelAlpha.z);
@@ -447,7 +446,7 @@ Item{
                     enabled=false;
                 }
             }
-            SettingPages.EffectSlide{
+            SettingPages.EffectTransformations{
                 id:effectsTransformations
                 y:listBox.border.width
                 color: root.color

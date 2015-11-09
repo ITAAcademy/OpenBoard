@@ -226,6 +226,7 @@ void DrawElement::paint()
             //
 
             //   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); glEnable( GL_BLEND );
+int shaderAngle = 0;
             for (int i=0;i<effects.length();i++)
             {
 
@@ -248,22 +249,37 @@ void DrawElement::paint()
 
 
                // if ((((playTime >= beginAtTime && playTime <= endAtTime))))//endAtTime + 50 if flickering !!! @BAG@//NICOLAS problem with animation in last ms
+
                 if(pDrawWidget->getTimeLine()->getPlayTime() > 0)
                 {
+                    bool shaderUsed = false;
                     if(endAtTime-beginAtTime > 0)
+                    {
                         keyFrame=(float)(playTime-beginAtTime)/(endAtTime-beginAtTime);
+                    }
 
                     if(keyFrame > 1)
                         keyFrame = 1;
+                    ShaderProgramWrapper *shaderWrapper = effects[i].getShaderWrapper();
+                    if (shaderWrapper!=NULL)
+                    {
+                         shaderUsed=true;
+                    pDrawWidget->useShader(shaderWrapper);
 
-                    pDrawWidget->useShader(effects[i].getShaderWrapper());
                     effects[i].setUniform("animationKey",keyFrame);
                     effects[i].setUniform("resolution",fboWrapper.tWidth,fboWrapper.tHeight);
                     effects[i].setUniform("reverse",effects[i].getReverse());
                     effects[i].setUniform("count",effects[i].getCount());
                     effects[i].setUniform("elementSize",effects[i].getElementSize());
+                    }
                      // qDebug() <<i<< "-b:"<<beginAtTime;
                      //qDebug() << i<<"-keyFrame:"<<keyFrame;
+                    if (effects[i].getRotateAngle()!=0)
+                     shaderAngle = effects[i].getRotateAngle()*keyFrame;
+                     qDebug() << "keyFrame:"<<keyFrame;
+                     qDebug() << "rotate angle:"<<effects[i].getRotateAngle();
+                     qDebug() << "shaderAngle:"<<shaderAngle;
+
                     if(drawToSecondBuffer)
                     {
                         pDrawWidget->bindBuffer(pDrawWidget->getPingPongFBO().frameBuffer);
@@ -277,7 +293,7 @@ void DrawElement::paint()
                             draw();
                         else
                             pDrawWidget->drawTexture(0,0,fboWrapper.tWidth,fboWrapper.tHeight,
-                                                     fboWrapper.bindedTexture,0,1,1,z );
+                                                     fboWrapper.bindedTexture,shaderAngle,1,1,z );
                     }
                     else
                     {
@@ -290,8 +306,9 @@ void DrawElement::paint()
                         else
                             pDrawWidget->drawTexture(0,0,pDrawWidget->getPingPongFBO().tWidth,
                                                      pDrawWidget->getPingPongFBO().tHeight,
-                                                     pDrawWidget->getPingPongFBO().bindedTexture,0,1,1,z );
+                                                     pDrawWidget->getPingPongFBO().bindedTexture,shaderAngle,1,1,z );
                     }
+                     if (shaderUsed)
                     pDrawWidget->useShader(0);
                     effectsUsedInOneTime++;
                     drawToSecondBuffer=!drawToSecondBuffer;
@@ -318,9 +335,10 @@ void DrawElement::paint()
                     pDrawWidget->bindBuffer(fboWrapper.frameBuffer);
                     pDrawWidget->clearFrameBuffer(fboWrapper);
                     // float keyFrame = (float)(pDrawWidget->getTimeLine()->getPlayTime()-startDrawTime)/lifeTime;//MOVE UP LATER
+
                     pDrawWidget->drawTexture(0,0,pDrawWidget->getPingPongFBO().tWidth,
                                              pDrawWidget->getPingPongFBO().tHeight,
-                                             pDrawWidget->getPingPongFBO().bindedTexture,0,1,1,z );
+                                             pDrawWidget->getPingPongFBO().bindedTexture,shaderAngle,1,1,z );
 
                 }
 
