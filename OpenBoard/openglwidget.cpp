@@ -1880,6 +1880,9 @@ void OGLWidget::applyEffectsToCurrentBlock()
             int count = blockEffect->getPropetrie("count");
             int elmSize = blockEffect->getPropetrie("elementSize");
             int rotateAngle = blockEffect->getPropetrie("rotate_angle");
+            bool movingEnabled = blockEffect->getPropetrie("move_to_enable");
+            int toPosX = blockEffect->getPropetrie("to_x_pos");
+            int toPosY = blockEffect->getPropetrie("to_y_pos");
             sEffect.setStartTimeMS(startTime);
            // qDebug() << "SHOW   " << blockEffect->getPropetrie("start_time");
             sEffect.setEffectTimeHowLong(endTime-startTime);
@@ -1888,6 +1891,9 @@ void OGLWidget::applyEffectsToCurrentBlock()
             sEffect.setCount(count);
             sEffect.setElementSize(elmSize);
             sEffect.setRotateAngle(rotateAngle);
+            sEffect.setMoving(movingEnabled);
+            sEffect.setToPosX(toPosX);
+            sEffect.setToPosY(toPosY);
             timeLineEffects.push_back(sEffect);
             break;
         }
@@ -1961,8 +1967,8 @@ void OGLWidget::loadEffectFromCurrentBlockToEffectManager()
         effect.setPropetrie("count",currentEffect.getCount());
         effect.setPropetrie("elementSize",currentEffect.getElementSize());
         effect.setPropetrie("rotate_angle",currentEffect.getRotateAngle());
-        effect.setPropetrie("move_destination_x",currentEffect.getMoveDestination().x());
-        effect.setPropetrie("move_destination_y",currentEffect.getMoveDestination().y());
+        effect.setPropetrie("to_x_pos",currentEffect.getToPosX());
+        effect.setPropetrie("to_y_pos",currentEffect.getToPosY());
         effect.setPropetrie("moving",currentEffect.getMoving());
         effectManager->addEffect(effect);
     }

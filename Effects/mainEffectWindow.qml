@@ -26,8 +26,8 @@ Rectangle{
         var count = effectsControll.getCurrentEffectProperty("count");
         var elementSize = effectsControll.getCurrentEffectProperty("elementSize");
         var rotateAngle = effectsControll.getCurrentEffectProperty("rotate_angle");
-        var moveDestinationX = effectsControll.getCurrentEffectProperty("move_destination_x");
-        var moveDestinationY = effectsControll.getCurrentEffectProperty("move_destination_y");
+        var moveDestinationX = effectsControll.getCurrentEffectProperty("to_x_pos");
+        var moveDestinationY = effectsControll.getCurrentEffectProperty("to_y_pos");
         var isMove = effectsControll.getCurrentEffectProperty("moving");
         console.log("current index changed");
         console.log("startTime:"+startTime);
@@ -138,6 +138,9 @@ Rectangle{
             effectsTransformations.setEndTime(endTime);
             effectsTransformations.setInverted(inversion);
             effectsTransformations.setAngle(rotateAngle);
+            effectsTransformations.setMoveToEnable(isMove);
+            effectsTransformations.setToXPos(moveDestinationX);
+            effectsTransformations.setToYPos(moveDestinationY);
         break;
 
         }

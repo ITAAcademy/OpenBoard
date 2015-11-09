@@ -201,7 +201,12 @@ void DrawElement::paint()
     //  qDebug() << "paint on buffer:"<<fboWrapper.frameBuffer;
     /*if (pDrawWidget->getTimeLine()->getPlayTime() >= lifeTime + startDrawTime)
         return;*/
-
+int shaderAngle = 0;
+float xDelta=0;
+float yDelta=0;
+int toX=0;
+int toY=0;
+bool isMoveTo = false;
     if(fboWrapper.errorStatus == 0)
     {
         bool drawToSecondBuffer = true;
@@ -227,7 +232,7 @@ void DrawElement::paint()
             //
 
             //   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); glEnable( GL_BLEND );
-int shaderAngle = 0;
+
             for (int i=0;i<effects.length();i++)
             {
 
@@ -277,6 +282,13 @@ int shaderAngle = 0;
                      //qDebug() << i<<"-keyFrame:"<<keyFrame;
                     if (effects[i].getRotateAngle()!=0)
                      shaderAngle = effects[i].getRotateAngle()*keyFrame;
+                    if (effects[i].getMoving())isMoveTo=true;
+                    toX=effects[i].getToPosX();
+                    toY=effects[i].getToPosY();
+                    if (isMoveTo){
+                        xDelta=(toX-x)*keyFrame;
+                        yDelta=(toY-y)*keyFrame;
+                    }
 
                     if(drawToSecondBuffer)
                     {
@@ -291,7 +303,7 @@ int shaderAngle = 0;
                             draw();
                         else
                             pDrawWidget->drawTexture(0,0,fboWrapper.tWidth,fboWrapper.tHeight,
-                                                     fboWrapper.bindedTexture,shaderAngle,1,1,z );
+                                                     fboWrapper.bindedTexture,0,1,1,z );
                     }
                     else
                     {
@@ -304,7 +316,7 @@ int shaderAngle = 0;
                         else
                             pDrawWidget->drawTexture(0,0,pDrawWidget->getPingPongFBO().tWidth,
                                                      pDrawWidget->getPingPongFBO().tHeight,
-                                                     pDrawWidget->getPingPongFBO().bindedTexture,shaderAngle,1,1,z );
+                                                     pDrawWidget->getPingPongFBO().bindedTexture,0,1,1,z );
                     }
                      if (shaderUsed)
                     pDrawWidget->useShader(0);
@@ -336,7 +348,7 @@ int shaderAngle = 0;
 
                     pDrawWidget->drawTexture(0,0,pDrawWidget->getPingPongFBO().tWidth,
                                              pDrawWidget->getPingPongFBO().tHeight,
-                                             pDrawWidget->getPingPongFBO().bindedTexture,shaderAngle,1,1,z );
+                                             pDrawWidget->getPingPongFBO().bindedTexture,0,1,1,z );
 
                 }
 
@@ -381,7 +393,9 @@ int shaderAngle = 0;
             else pDrawWidget->paintBufferOnScreen(fboWrapper,x, y, height, height, z);
         }
         else*/
-        pDrawWidget->paintBufferOnScreen(fboWrapper,x, y, width, height, z, rotationAngle);
+
+
+        pDrawWidget->paintBufferOnScreen(fboWrapper,x+xDelta, y+yDelta, width, height, z, rotationAngle+shaderAngle);
         // pDrawWidget->context()->functions()->glUseProgram(0);
     }
     else
