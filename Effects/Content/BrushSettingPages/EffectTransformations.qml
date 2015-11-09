@@ -19,6 +19,12 @@ Rectangle {
     function setAngle(val){
         angleSlider.value1=val;
     }
+    function resetToDefault(){
+        setStartTime(0);
+        setEndTime(0);
+         setInverted(false);
+        setAngle(0);
+    }
 
     //property alias inversion : cbInversion.checked
    // property alias sliderTimer : doubleSliderTime

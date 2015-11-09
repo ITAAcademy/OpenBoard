@@ -19,6 +19,12 @@ Rectangle {
     function setElementSize(n){
         sizeSlider.value1 = n
     }
+    function resetToDefault(){
+        setStartTime(0);
+        setEndTime(0);
+         setInverted(false);
+    }
+
 
     //property alias inversion : cbInversion.checked
    // property alias sliderTimer : doubleSliderTime

@@ -28,8 +28,6 @@ Item{
         return mouse_drag_right;
     }
 
-
-
     onValue1Changed: {
 console.log("gggggggggg onValue2Changed");
         handle1.x = 2 + (root.value1 - root.minimum) * root.xMax / (root.maximum - root.minimum);

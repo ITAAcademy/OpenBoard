@@ -19,6 +19,12 @@ Rectangle {
     function setCount(val){
         countSlider.value1=val;
     }
+    function resetToDefault(){
+        setStartTime(0);
+        setEndTime(0);
+         setInverted(false);
+        setCount(1);
+    }
 
     //property alias inversion : cbInversion.checked
    // property alias sliderTimer : doubleSliderTime

@@ -37,6 +37,7 @@ Rectangle{
         console.log("count:"+count);
         combo.currentIndex=effectType;
         console.log("secondColumn.comboEffectType:"+effectType);
+
         effectsPanelAlpha.disable();
         effectsPanelSpin.disable();
         effectsPanelPixelization.disable();
@@ -46,6 +47,17 @@ Rectangle{
         effectsTreshold.disable();
         effectsSlide.disable();
         effectsTransformations.disable();
+
+        effectsPanelAlpha.resetToDefault();
+         effectsPanelSpin.resetToDefault();
+         effectsPanelPixelization.resetToDefault();
+         effectsPanelCircles.resetToDefault();
+         effectsTurnthepage.resetToDefault();
+         effectsRandomSquares.resetToDefault();
+         effectsTreshold.resetToDefault();
+         effectsSlide.resetToDefault();
+         effectsTransformations.resetToDefault();
+
         switch(effectType)
         {
         case 0:
@@ -300,6 +312,7 @@ combo.comboIndex=currentIndex;
                 effectsTreshold.z=0;
                 effectsSlide.z=0;
                 effectsTransformations.z=0;
+
                 if (isEffectAlpha)effectsPanelAlpha.z=1;
                 else
                 if (isEffectSpin)effectsPanelSpin.z=1;
