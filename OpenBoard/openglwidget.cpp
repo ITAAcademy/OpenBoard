@@ -460,7 +460,7 @@ void OGLWidget::processMouse()
 
         QVector2D vec(qCos((editingRectangle.angle * M_PI)/180), qSin((editingRectangle.angle * M_PI)/180));
         vec.normalize();
-        vec *= -(editingRectangle.rect.width() + editingRectangle.rect.height())/4;
+        vec *= -( qMin(editingRectangle.rect.width(), editingRectangle.rect.height()))/4;
         int CX = vec.x() + x1 + (x2 - x1)/2;
         int CY = vec.y() + y1 + (y2 - y1)/2;
 
@@ -1636,7 +1636,7 @@ void OGLWidget::drawEditBox( int z)
     int y2 = editingRectangle.rect.y()+editingRectangle.rect.height();
 
 
-qDebug() << editingRectangle.angle;
+qDebug() <<  editingRectangle.editingRectangleMode << "     " << editingRectangle.angle;
 
   //  editingRectangle.angle++;
 
@@ -1672,7 +1672,7 @@ qDebug() << editingRectangle.angle;
         {
             QVector2D vec(x1 + (x2 - x1)/2 - mousePos.x(), y1 + (y2-y1)/2 - mousePos.y());
             vec.normalize();
-            vec *= -(editingRectangle.rect.width() + editingRectangle.rect.height())/4;
+            vec *= -( qMin(editingRectangle.rect.width(), editingRectangle.rect.height()))/4;
 
             drawCircle(vec.x() + x1 + (x2 - x1)/2 , vec.y() + y1 + (y2-y1)/2, z, editingRectangle.circleSize);
 
@@ -1687,7 +1687,7 @@ qDebug() << editingRectangle.angle;
         {
             QVector2D vec(qCos((editingRectangle.angle * M_PI)/180), qSin((editingRectangle.angle * M_PI)/180));
             vec.normalize();
-            vec *= -(editingRectangle.rect.width() + editingRectangle.rect.height())/4;
+            vec *= -( qMin(editingRectangle.rect.width(), editingRectangle.rect.height()))/4;
 
             drawCircle(vec.x() + x1 + (x2 - x1)/2 , vec.y() + y1 + (y2-y1)/2, z, editingRectangle.circleSize);
         }
@@ -2055,8 +2055,26 @@ void OGLWidget::mousePressEvent(QMouseEvent *event)
 
 void OGLWidget::testRectangle()
 {
+#define MAX_DELTA 10
 
-    if(editingRectangle.rect.x() > this->width() - editingRectangle.rect.width())
+    if(editingRectangle.rect.x() > this->width() - MAX_DELTA)
+        editingRectangle.rect.moveTo(this->width() - MAX_DELTA, editingRectangle.rect.y());
+    if(editingRectangle.rect.y() > this->height() - MAX_DELTA)
+        editingRectangle.rect.moveTo(editingRectangle.rect.x(), this->height()  - MAX_DELTA);
+
+    if(editingRectangle.rect.x() < -editingRectangle.rect.width() + MAX_DELTA)
+        editingRectangle.rect.moveTo(-editingRectangle.rect.width() + MAX_DELTA, editingRectangle.rect.y());
+    if(editingRectangle.rect.y() < -editingRectangle.rect.height() + MAX_DELTA)
+        editingRectangle.rect.moveTo(editingRectangle.rect.x(), -editingRectangle.rect.height() + MAX_DELTA);
+
+    if(editingRectangle.rect.width() > this->width()*2)
+        editingRectangle.rect.setWidth(this->width() *2);
+    if(editingRectangle.rect.height() > this->height() *2)
+        editingRectangle.rect.setHeight(this->height()*2);
+
+    /*
+     *
+     *    if(editingRectangle.rect.x() > this->width() - editingRectangle.rect.width())
         editingRectangle.rect.moveTo(this->width() - editingRectangle.rect.width(), editingRectangle.rect.y());
     if(editingRectangle.rect.y() > this->height() - editingRectangle.rect.height())
         editingRectangle.rect.moveTo(editingRectangle.rect.x(), this->height()  - editingRectangle.rect.height());
@@ -2070,6 +2088,7 @@ void OGLWidget::testRectangle()
         editingRectangle.rect.setWidth(this->width());
     if(editingRectangle.rect.height() > this->height())
         editingRectangle.rect.setHeight(this->height());
+    */
 
 }
 
@@ -2621,15 +2640,12 @@ void  OGLWidget::updateWindow(){
                 selElm->setSize(t2.width(), t2.height());
                 selElm->setRotationAngle(editingRectangle.angle);
             }
-
-
-
         }
     }
     else
     {
         // //qDebug() << "SBLOCK " << t;
-        selElm = timeLine->getBlock(t);
+        selElm = NULL;
         editingRectangle.isEditingRectangleVisible = false;
 
     }

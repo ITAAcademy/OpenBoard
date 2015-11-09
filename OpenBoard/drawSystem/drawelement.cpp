@@ -110,6 +110,7 @@ void DrawElement::copy(DrawElement *elm)
     z = elm->getZ();
     width = elm->getSize().width();
     height = elm->getSize().height();
+    rotationAngle = elm->rotationAngle;
     //typeId = elm->getTypeId();
 }
 
@@ -571,6 +572,10 @@ bool DrawElement::loadRest(QIODevice* device, QString projectName, float version
     {
         stream >> use_anim_time;
     }
+    if(version > 3.2)
+    {
+        stream >> rotationAngle;
+    }
     // qDebug() << "load rest end";
     load_add(stream, projectName, version);
     // qDebug() << "load add";
@@ -606,7 +611,7 @@ bool DrawElement::save(QIODevice* device, QString projectName, QProgressBar *bar
     for (int i = 0 ; i < effects.length();i++)
         effects[i].save(stream,VERSION);
 
-    stream << use_anim_time;
+    stream << use_anim_time << rotationAngle;
 
     save_add(stream, projectName);
     if(bar != NULL)
