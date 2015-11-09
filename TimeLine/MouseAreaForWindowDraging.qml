@@ -122,4 +122,7 @@ MouseArea
          isChangingHeightUp = isChangingHeightDown  = isChangingWidthLeft  = isChangingWidthRight = false
          mainMA.z = -149
     }
+    onEntered: {
+
+    }
 }

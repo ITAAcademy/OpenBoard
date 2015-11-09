@@ -884,18 +884,17 @@ void ListControll::addNewBlock(int col, QString str, DrawElement *element)
 
 
 
-    if (getBlockIndToAddFromPos(element,scale_pointer_pos,-1,false)) //741
-        return;
+    if (!getBlockIndToAddFromPos(element,scale_pointer_pos,-1,false)) //741
+    {
 
-    tracks[col].block.append(element);
-    addEmptyBlockAt(col, tracks[col].block.size() - 1 , 0);
-
+        tracks[col].block.append(element);
+        addEmptyBlockAt(col, tracks[col].block.size() - 1 , 0);
+    }
     updateBlocksStartTimesFrom(col,0);
     //tracks[col].addTime(element->getLifeTime());
     tracks[col].updateTime();
     quint64   temp_time = tracks[col].getTime();
 
-    updateMaxTrackTime(temp_time);
 
     //recountMaxTrackTime();
 
@@ -903,8 +902,8 @@ void ListControll::addNewBlock(int col, QString str, DrawElement *element)
 
 
     element->setUseAnimTime(2);
-    quint64 ddd = element->getLifeTime();
-    qDebug() << " 121 void ListControll::addNewBlock(   ddd = " << ddd;
+    updateMaxTrackTime(temp_time);
+
 }
 
 bool ListControll::addNewBlockFromLibrary(QString str , DrawElement *element)
@@ -1528,6 +1527,7 @@ void ListControll::addNewTrack( )
 
 DrawElement* ListControll::loadFromFile( QString path)
 {
+    qDebug() << "PPPPPPPPPPPPPPPPPPPPPPPP";
     /*  DrawElement* current = tracks[curent_block.x()].block[curent_block.y()];
 
     delete current;
@@ -1597,6 +1597,7 @@ DrawElement* ListControll::loadFromFile(int col, int ind, QString path,bool emit
             elm->setLifeTime(temp->getLifeTime());
         elm->setStartDraw(temp->getStartDrawTime());
         elm->setZ(col);
+        elm->copy(temp);
         elm->setBlockColumn(col);
         elm->setBlockIndex(ind);
         qDebug() << "loadFromFile() 9";
