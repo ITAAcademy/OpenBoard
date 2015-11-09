@@ -116,9 +116,12 @@ bool DrawBrushElm::setDrawWidget(OGLWidget *value){
     for (int i=0;i<brushes.length();i++)
     {
         if (pDrawWidget!=NULL && pDrawWidget->isShaderSupported())
-            brushes[i].brush.color_img = brushes[i].brush.img;
+            brushes[i].brush.color_img = BrushPainter::getInstance()->applyBlur(brushes[i].brush);
         else
+        {
             brushes[i].brush.color_img = BrushPainter::getInstance()->applyColor(brushes[i].brush);
+            brushes[i].brush.color_img = BrushPainter::getInstance()->applyBlur(brushes[i].brush);
+        }
     }
     return true;
     

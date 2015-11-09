@@ -247,8 +247,8 @@ void DrawElement::paint()
                 //   qDebug() << ":"<<playTime-beginAtTime;
 
 
-                // if ((((playTime >= beginAtTime && playTime <= endAtTime))))//endAtTime + 50 if flickering !!! @BAG@//NICOLAS problem with animation in last ms
-                if(playTime > 0)
+               // if ((((playTime >= beginAtTime && playTime <= endAtTime))))//endAtTime + 50 if flickering !!! @BAG@//NICOLAS problem with animation in last ms
+                if(pDrawWidget->getTimeLine()->getPlayTime() > 0)
                 {
                     if(endAtTime-beginAtTime > 0)
                         keyFrame=(float)(playTime-beginAtTime)/(endAtTime-beginAtTime);

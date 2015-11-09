@@ -124,6 +124,36 @@ void ShaderEffect::setElementSize(int value)
 {
     elementSize = value;
 }
+
+QPoint ShaderEffect::getMoveDestination() const
+{
+    return moveDestination;
+}
+
+void ShaderEffect::setMoveDestination(const QPoint &value)
+{
+    moveDestination = value;
+}
+
+bool ShaderEffect::getMoving() const
+{
+    return moving;
+}
+
+void ShaderEffect::setMoving(bool value)
+{
+    moving = value;
+}
+
+int ShaderEffect::getRotateAngle() const
+{
+    return rotateAngle;
+}
+
+void ShaderEffect::setRotateAngle(int value)
+{
+    rotateAngle = value;
+}
 ShaderEffect::ShaderEffect(ShaderProgramWrapper *shaderWrp, int shaderIndex)
 {
     // qDebug() << "shaderWrapper=shaderWrp";

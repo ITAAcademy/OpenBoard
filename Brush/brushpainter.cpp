@@ -27,10 +27,7 @@ void BrushPainter::close()
      QGraphicsColorizeEffect *effect;
      effect = new QGraphicsColorizeEffect();
      effect->setColor(brush.color_main);
-     QGraphicsBlurEffect *blur;
-     blur = new QGraphicsBlurEffect();
-     blur->setBlurRadius(brush.blur);
-     res = applyEffectToImage(applyEffectToImage(res, effect).scaled(brush.img.size()), blur);
+     res = applyEffectToImage(res, effect);
      // res = applyEffectToImage(res, effect);
      return res;
 }
