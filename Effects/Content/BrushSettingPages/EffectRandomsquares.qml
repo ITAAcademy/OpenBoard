@@ -16,6 +16,11 @@ Rectangle {
     function setInverted(val){
         cbInversion.checked=val
     }
+    function resetToDefault(){
+        setStartTime(0);
+        setEndTime(0);
+         setInverted(false);
+    }
 
     //property alias inversion : cbInversion.checked
    // property alias sliderTimer : doubleSliderTime

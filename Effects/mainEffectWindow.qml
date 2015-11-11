@@ -26,8 +26,8 @@ Rectangle{
         var count = effectsControll.getCurrentEffectProperty("count");
         var elementSize = effectsControll.getCurrentEffectProperty("elementSize");
         var rotateAngle = effectsControll.getCurrentEffectProperty("rotate_angle");
-        var moveDestinationX = effectsControll.getCurrentEffectProperty("move_destination_x");
-        var moveDestinationY = effectsControll.getCurrentEffectProperty("move_destination_y");
+        var moveDestinationX = effectsControll.getCurrentEffectProperty("to_x_pos");
+        var moveDestinationY = effectsControll.getCurrentEffectProperty("to_y_pos");
         var isMove = effectsControll.getCurrentEffectProperty("moving");
         console.log("current index changed");
         console.log("startTime:"+startTime);
@@ -37,6 +37,7 @@ Rectangle{
         console.log("count:"+count);
         combo.currentIndex=effectType;
         console.log("secondColumn.comboEffectType:"+effectType);
+
         effectsPanelAlpha.disable();
         effectsPanelSpin.disable();
         effectsPanelPixelization.disable();
@@ -46,6 +47,17 @@ Rectangle{
         effectsTreshold.disable();
         effectsSlide.disable();
         effectsTransformations.disable();
+
+        effectsPanelAlpha.resetToDefault();
+         effectsPanelSpin.resetToDefault();
+         effectsPanelPixelization.resetToDefault();
+         effectsPanelCircles.resetToDefault();
+         effectsTurnthepage.resetToDefault();
+         effectsRandomSquares.resetToDefault();
+         effectsTreshold.resetToDefault();
+         effectsSlide.resetToDefault();
+         effectsTransformations.resetToDefault();
+
         switch(effectType)
         {
         case 0:
@@ -125,6 +137,10 @@ Rectangle{
             effectsTransformations.setStartTime(startTime);
             effectsTransformations.setEndTime(endTime);
             effectsTransformations.setInverted(inversion);
+            effectsTransformations.setAngle(rotateAngle);
+            effectsTransformations.setMoveToEnable(isMove);
+            effectsTransformations.setToXPos(moveDestinationX);
+            effectsTransformations.setToYPos(moveDestinationY);
         break;
 
         }
@@ -299,6 +315,7 @@ combo.comboIndex=currentIndex;
                 effectsTreshold.z=0;
                 effectsSlide.z=0;
                 effectsTransformations.z=0;
+
                 if (isEffectAlpha)effectsPanelAlpha.z=1;
                 else
                 if (isEffectSpin)effectsPanelSpin.z=1;
@@ -314,8 +331,6 @@ combo.comboIndex=currentIndex;
                 if (isEffectTreshold)effectsTreshold.z=1;
                 else
                 if (isEffectSlide)effectsSlide.z=1;
-                else if
-                (isEffectTransformations)effectsSlide.z=1;
                 else
                 if (isEffectTransformations)effectsTransformations.z=1;
                 console.log("effectsPanelAlpha.z:"+effectsPanelAlpha.z);
@@ -448,7 +463,7 @@ Item{
                     enabled=false;
                 }
             }
-            SettingPages.EffectSlide{
+            SettingPages.EffectTransformations{
                 id:effectsTransformations
                 y:listBox.border.width
                 color: root.color

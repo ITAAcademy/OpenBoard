@@ -74,7 +74,7 @@ using namespace QtAV;
 #define TRESHOLD_VERTEX_SHADER_PATH ":/dynamic/openGL/shaders/treshold.vert"
 #define SLIDE_FRAGMENT_SHADER_PATH ":/dynamic/openGL/shaders/slide.frag"
 #define SLIDE_VERTEX_SHADER_PATH ":/dynamic/openGL/shaders/slide.vert"
-
+#define TRANSFORMATIONS_EFFECT 8
 
 /*struct ColorMarker{
     int startIndex;
@@ -86,7 +86,7 @@ using namespace QtAV;
     }
 
 };*/
-enum EditingRectangleBindMode {EDIT_RECTANGLE_UNBINDED =0,EDIT_RECTANGLE_MOVE=1,EDIT_RECTANGLE_RESIZE=2};
+enum EditingRectangleBindMode {EDIT_RECTANGLE_UNBINDED =0,EDIT_RECTANGLE_MOVE=1,EDIT_RECTANGLE_RESIZE=2, EDIT_RECTANGLE_ROTATION=12};
 enum ResizeCorner {RESIZE_CORNER_TOP_LEFT,RESIZE_CORNER_TOP_RIGHT,RESIZE_CORNER_BOTTOM_LEFT,RESIZE_CORNER_BOTTOM_RIGHT,RESIZE_CORNER_NONE};
 class OGLWidget;
 
@@ -94,6 +94,8 @@ class OGLWidget;
 struct RectangleEditor {
     QRect rect;
     int cornerSize;
+    int circleSize = 8;
+    int angle = 0;
     ResizeCorner currentCornerResize;
     volatile bool isEditingRectangleVisible = true;
     int editingRectangleMode = EDIT_RECTANGLE_UNBINDED;
@@ -147,7 +149,9 @@ signals:
     void stopShowLastDrawingSignal();
 public:
     void zoomGrid(int val);
-    enum shaderEnum {ALPHA_SHADER=0,SPIN_SHADER=1,PIXELIZATION_SHADER=2,CIRCLES_SHADER=3,TURNTHEPAGE_SHADER=4,RANDSQUARES_SHADER=5,TRESHOLD_SHADER=6,SLIDE_SHADER=7,CROSS_SHADER=8};
+    enum shaderEnum {ALPHA_SHADER=0,SPIN_SHADER=1,PIXELIZATION_SHADER=2,CIRCLES_SHADER=3,TURNTHEPAGE_SHADER=4,
+                     RANDSQUARES_SHADER=5,TRESHOLD_SHADER=6,SLIDE_SHADER=7,CROSS_SHADER=8};
+
     void processMouse();
     ShaderProgramWrapper* getMainShader();
     void initPBO();
@@ -274,7 +278,7 @@ public:
     int getWax();
     int getWay();
 
-    void paintBufferOnScreen(FBOWrapper buffer,int x , int y , int width, int height, int z = 0);
+    void paintBufferOnScreen(FBOWrapper buffer, int x , int y , int width, int height, int z = 0, int angle = 0, double scaleX = 1, double scaleY = 1);
 
     void deleteFBO(FBOWrapper wrapper);
 

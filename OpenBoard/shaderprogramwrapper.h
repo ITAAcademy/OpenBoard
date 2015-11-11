@@ -10,7 +10,7 @@ class QOpenGLFunctions_3_0;
 class ShaderProgramWrapper
 {
 
-GLuint ShaderProgram;
+GLuint ShaderProgram = -1;
 bool inited = false;
 QString info;
 int errorStatus = 0;

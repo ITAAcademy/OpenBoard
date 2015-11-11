@@ -110,6 +110,7 @@ void DrawElement::copy(DrawElement *elm)
     z = elm->getZ();
     width = elm->getSize().width();
     height = elm->getSize().height();
+    rotationAngle = elm->rotationAngle;
     //typeId = elm->getTypeId();
 }
 
@@ -200,7 +201,12 @@ void DrawElement::paint()
     //  qDebug() << "paint on buffer:"<<fboWrapper.frameBuffer;
     /*if (pDrawWidget->getTimeLine()->getPlayTime() >= lifeTime + startDrawTime)
         return;*/
-
+int shaderAngle = 0;
+float xDelta=0;
+float yDelta=0;
+int toX=0;
+int toY=0;
+bool isMoveTo = false;
     if(fboWrapper.errorStatus == 0)
     {
         bool drawToSecondBuffer = true;
@@ -226,6 +232,7 @@ void DrawElement::paint()
             //
 
             //   glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA); glEnable( GL_BLEND );
+
             for (int i=0;i<effects.length();i++)
             {
 
@@ -248,22 +255,41 @@ void DrawElement::paint()
 
 
                // if ((((playTime >= beginAtTime && playTime <= endAtTime))))//endAtTime + 50 if flickering !!! @BAG@//NICOLAS problem with animation in last ms
-                if(pDrawWidget->getTimeLine()->getPlayTime() > 0)
+
+                if(playTime > 0)
                 {
+                    bool shaderUsed = false;
                     if(endAtTime-beginAtTime > 0)
+                    {
                         keyFrame=(float)(playTime-beginAtTime)/(endAtTime-beginAtTime);
+                    }
 
                     if(keyFrame > 1)
                         keyFrame = 1;
+                    ShaderProgramWrapper *shaderWrapper = effects[i].getShaderWrapper();
+                    if (shaderWrapper!=NULL)
+                    {
+                         shaderUsed=true;
+                    pDrawWidget->useShader(shaderWrapper);
 
-                    pDrawWidget->useShader(effects[i].getShaderWrapper());
                     effects[i].setUniform("animationKey",keyFrame);
                     effects[i].setUniform("resolution",fboWrapper.tWidth,fboWrapper.tHeight);
                     effects[i].setUniform("reverse",effects[i].getReverse());
                     effects[i].setUniform("count",effects[i].getCount());
                     effects[i].setUniform("elementSize",effects[i].getElementSize());
-                    // qDebug() <<i<< "-b:"<<beginAtTime;
-                    //qDebug() << i<<"-keyFrame:"<<keyFrame;
+                    }
+                     // qDebug() <<i<< "-b:"<<beginAtTime;
+                     //qDebug() << i<<"-keyFrame:"<<keyFrame;
+                    if (effects[i].getRotateAngle()!=0)
+                     shaderAngle = effects[i].getRotateAngle()*keyFrame;
+                    if (effects[i].getMoving())isMoveTo=true;
+                    toX=effects[i].getToPosX();
+                    toY=effects[i].getToPosY();
+                    if (isMoveTo){
+                        xDelta=(toX-x)*keyFrame;
+                        yDelta=(toY-y)*keyFrame;
+                    }
+
                     if(drawToSecondBuffer)
                     {
                         pDrawWidget->bindBuffer(pDrawWidget->getPingPongFBO().frameBuffer);
@@ -292,6 +318,7 @@ void DrawElement::paint()
                                                      pDrawWidget->getPingPongFBO().tHeight,
                                                      pDrawWidget->getPingPongFBO().bindedTexture,0,1,1,z );
                     }
+                     if (shaderUsed)
                     pDrawWidget->useShader(0);
                     effectsUsedInOneTime++;
                     drawToSecondBuffer=!drawToSecondBuffer;
@@ -318,6 +345,7 @@ void DrawElement::paint()
                     pDrawWidget->bindBuffer(fboWrapper.frameBuffer);
                     pDrawWidget->clearFrameBuffer(fboWrapper);
                     // float keyFrame = (float)(pDrawWidget->getTimeLine()->getPlayTime()-startDrawTime)/lifeTime;//MOVE UP LATER
+
                     pDrawWidget->drawTexture(0,0,pDrawWidget->getPingPongFBO().tWidth,
                                              pDrawWidget->getPingPongFBO().tHeight,
                                              pDrawWidget->getPingPongFBO().bindedTexture,0,1,1,z );
@@ -365,7 +393,9 @@ void DrawElement::paint()
             else pDrawWidget->paintBufferOnScreen(fboWrapper,x, y, height, height, z);
         }
         else*/
-        pDrawWidget->paintBufferOnScreen(fboWrapper,x, y, width, height, z);
+
+
+        pDrawWidget->paintBufferOnScreen(fboWrapper,x+xDelta, y+yDelta, width, height, z, rotationAngle+shaderAngle);
         // pDrawWidget->context()->functions()->glUseProgram(0);
     }
     else
@@ -439,6 +469,16 @@ float DrawElement::getBorder() const
 void DrawElement::setBorder(float value)
 {
     border = value;
+}
+
+int DrawElement::getRotationAngle() const
+{
+    return rotationAngle;
+}
+
+void DrawElement::setRotationAngle(int value)
+{
+    rotationAngle = value;
 }
 void DrawElement::draw()
 {
@@ -570,6 +610,10 @@ bool DrawElement::loadRest(QIODevice* device, QString projectName, float version
     {
         stream >> use_anim_time;
     }
+    if(version > 3.2)
+    {
+        stream >> rotationAngle;
+    }
     // qDebug() << "load rest end";
     load_add(stream, projectName, version);
     // qDebug() << "load add";
@@ -605,7 +649,7 @@ bool DrawElement::save(QIODevice* device, QString projectName, QProgressBar *bar
     for (int i = 0 ; i < effects.length();i++)
         effects[i].save(stream,VERSION);
 
-    stream << use_anim_time;
+    stream << use_anim_time << rotationAngle;
 
     save_add(stream, projectName);
     if(bar != NULL)
