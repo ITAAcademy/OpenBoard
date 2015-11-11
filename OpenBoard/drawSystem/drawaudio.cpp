@@ -45,9 +45,9 @@ DrawAudioElm::~DrawAudioElm()
 
 void DrawAudioElm::draw()
 {
-  //  int k = qFloor(pDrawWidget->getTimeLine()->getScalePointerPos()/(1000/40));
-   // qDebug () << k << " " << keyCouter;
-   // while( k > keyCouter)
+    //  int k = qFloor(pDrawWidget->getTimeLine()->getScalePointerPos()/(1000/40));
+    // qDebug () << k << " " << keyCouter;
+    // while( k > keyCouter)
     int k = 0;
     if(!init)
         return;
@@ -64,9 +64,9 @@ void DrawAudioElm::draw()
             pDrawWidget->addAudioToList(this, frame.audioFrame);
         }
 
-   //     qDebug() << "KEY    " << keyCouter;
+        //     qDebug() << "KEY    " << keyCouter;
         keyCouter++;
-     /*   double qwe = (double)keyCouter/(decoder.getPTS() + 1);// for test :)
+        /*   double qwe = (double)keyCouter/(decoder.getPTS() + 1);// for test :)
         qDebug() << qwe;
         if(k++ >= qFloor(qwe))
             break;*/
@@ -77,15 +77,21 @@ void DrawAudioElm::draw()
 void DrawAudioElm::setAudioFile(QString path)
 {
     QFile file(path);
+    if(lifeTime < minBlockTime)
+        lifeTime = minBlockTime;
     if(file.exists())
     {
         if(decoder.initFF(path) != NULL)
             audioPath = path;
         init = true;
+        playTimeUntilFreeze = decoder.getDuration();
     }
-    playTimeUntilFreeze = decoder.getDuration();
-    if(lifeTime < 1000)
-        lifeTime = decoder.getDuration();
+    else
+    {
+        playTimeUntilFreeze = lifeTime;
+    }
+
+
 }
 
 bool DrawAudioElm::load_add(QDataStream &stream, QString projectPATH, float version)
@@ -96,7 +102,6 @@ bool DrawAudioElm::load_add(QDataStream &stream, QString projectPATH, float vers
     QFileInfo path(audioPath);
     if(path.isRelative())
         audioPath = dir.absoluteFilePath(audioPath);
- //   qDebug() << audioPath;
     setAudioFile(audioPath);
 }
 
