@@ -83,8 +83,7 @@ Rectangle {
                 effectsControll.setCurrentEffectProperty("end_time",value2);
             }
         }
-        Column{
-
+       // Column        {
 
 
             FullSlider{
@@ -102,7 +101,6 @@ Rectangle {
 
             SpinBox {
                 id: posX
-
                 style: SpinBoxStyle{
                     background: Rectangle {
                         implicitWidth: 100
@@ -112,13 +110,12 @@ Rectangle {
                         radius: 2
                     }
                     textColor: "white"
-
-                    horizontalAlignment: Qt.AlignLeft
+                    horizontalAlignment: Qt.AlignRight
                 }
                 minimumValue: 0
                 stepSize : 1
                 maximumValue: 640// maximum/1000
-                width: 50
+                width: 70
                 decimals: 0
                 font.pixelSize: 14
                 value: 0
@@ -132,7 +129,6 @@ Rectangle {
 
             SpinBox {
                 id: posY
-
                 style: SpinBoxStyle{
                     background: Rectangle {
                         implicitWidth: 100
@@ -143,12 +139,13 @@ Rectangle {
                     }
                     textColor: "white"
 
-                    horizontalAlignment: Qt.AlignLeft
+                    horizontalAlignment: Qt.AlignRight
                 }
+
                 minimumValue: 0
                 stepSize : 1
                 maximumValue: 640// maximum/1000
-                width: 50
+                width: 70
                 decimals: 0
                 font.pixelSize: 14
                 value: 0
@@ -166,7 +163,7 @@ Rectangle {
                     effectsControll.setCurrentEffectProperty("move_to_enable",checked);
                 }
             }
-        }
+        //}
 
     }
 }
