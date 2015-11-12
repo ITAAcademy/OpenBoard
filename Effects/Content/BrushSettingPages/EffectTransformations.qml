@@ -25,6 +25,13 @@ Rectangle {
     function setToYPos(n){
         posY.value=n;
     }
+
+    function setToXScale(n){
+        scaleX.value=n;
+    }
+    function setToYScale(n){
+        scaleY.value=n;
+    }
     function setMoveToEnable(v){
         cbMoveToEnable.checked=v;
     }
@@ -37,6 +44,8 @@ Rectangle {
         setToXPos(0);
         setToYPos(0);
         setMoveToEnable(false);
+        setToXScale(1);
+        setToYScale(1);
     }
 
     //property alias inversion : cbInversion.checked
@@ -162,6 +171,83 @@ Rectangle {
                 onCheckedChanged: {
                     effectsControll.setCurrentEffectProperty("move_to_enable",checked);
                 }
+            }
+
+
+            SpinBox {
+                id: scaleX
+                style: SpinBoxStyle{
+                    background: Rectangle {
+                        implicitWidth: 100
+                        implicitHeight: 20
+                        border.color: "dimgrey"
+                        color: "#666"
+                        radius: 2
+                    }
+                    textColor: "white"
+                    horizontalAlignment: Qt.AlignRight
+                }
+                minimumValue: 0
+                stepSize : 0.01
+                maximumValue: 640// maximum/1000
+                width: 70
+                decimals: 2
+                font.pixelSize: 14
+                value: 1.0
+                onValueChanged: {
+                    setToXScale(value);
+                    effectsControll.setCurrentEffectProperty("to_x_scale",value);
+                    //console.log(" GGGGGGGGGGGG  " + value)
+                }
+                Text{
+                    anchors.left: parent.right
+                    anchors.leftMargin: 20
+                    font.pixelSize: 14
+                    style: Text.Outline;
+                    styleColor: "black"
+
+                    color: "white";
+                    text: "scale value X"
+                }
+            }
+
+            SpinBox {
+                id: scaleY
+                style: SpinBoxStyle{
+                    background: Rectangle {
+                        implicitWidth: 100
+                        implicitHeight: 20
+                        border.color: "dimgrey"
+                        color: "#666"
+                        radius: 2
+                    }
+                    textColor: "white"
+
+                    horizontalAlignment: Qt.AlignRight
+                }
+
+                minimumValue: 0
+                stepSize : 0.01
+                maximumValue: 640// maximum/1000
+                width: 70
+                decimals: 2
+                font.pixelSize: 14
+                value: 1.0
+                onValueChanged: {
+                    setToYScale(value);
+                    effectsControll.setCurrentEffectProperty("to_y_scale",value);
+                }
+                Text{
+                    anchors.left: parent.right
+                    anchors.leftMargin: 20
+                    font.pixelSize: 14
+                    style: Text.Outline;
+                    styleColor: "black"
+
+                    color: "white";
+                    text: "scale value Y"
+                }
+
             }
         //}
 

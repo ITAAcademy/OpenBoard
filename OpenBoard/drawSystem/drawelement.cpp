@@ -201,11 +201,15 @@ void DrawElement::paint()
     //  qDebug() << "paint on buffer:"<<fboWrapper.frameBuffer;
     /*if (pDrawWidget->getTimeLine()->getPlayTime() >= lifeTime + startDrawTime)
         return;*/
-int shaderAngle = 0;
-float xDelta=0;
-float yDelta=0;
 int toX=0;
 int toY=0;
+
+shaderAngle = 0;
+shaderScaleX = 1;
+shaderScaleY = 1;
+xDelta=0;
+yDelta=0;
+
 bool isMoveTo = false;
     if(fboWrapper.errorStatus == 0)
     {
@@ -235,7 +239,7 @@ bool isMoveTo = false;
 
             for (int i=0;i<effects.length();i++)
             {
-
+                isMoveTo = false;
                 int beginAtTime;
                 if(!effects[i].getAnchorToEnd())
                     beginAtTime = effects[i].getStartTimeMS()+ startDrawTime ;
@@ -281,13 +285,15 @@ bool isMoveTo = false;
                      // qDebug() <<i<< "-b:"<<beginAtTime;
                      //qDebug() << i<<"-keyFrame:"<<keyFrame;
                     if (effects[i].getRotateAngle()!=0)
-                     shaderAngle = effects[i].getRotateAngle()*keyFrame;
+                     shaderAngle += effects[i].getRotateAngle()*keyFrame;
                     if (effects[i].getMoving())isMoveTo=true;
                     toX=effects[i].getToPosX();
                     toY=effects[i].getToPosY();
+                    shaderScaleX += (effects[i].getToScaleX() - shaderScaleX)*keyFrame;
+                    shaderScaleY += (effects[i].getToScaleY() - shaderScaleY)*keyFrame;
                     if (isMoveTo){
-                        xDelta=(toX-x)*keyFrame;
-                        yDelta=(toY-y)*keyFrame;
+                        xDelta +=(toX-(x + xDelta))*keyFrame;
+                        yDelta +=(toY-(y + yDelta))*keyFrame;
                     }
 
                     if(drawToSecondBuffer)
@@ -323,7 +329,6 @@ bool isMoveTo = false;
                     effectsUsedInOneTime++;
                     drawToSecondBuffer=!drawToSecondBuffer;
                 }
-
             }
 
             //qDebug()<<"before remove temp effect";
@@ -395,7 +400,7 @@ bool isMoveTo = false;
         else*/
 
 
-        pDrawWidget->paintBufferOnScreen(fboWrapper,x+xDelta, y+yDelta, width, height, z, rotationAngle+shaderAngle);
+        pDrawWidget->paintBufferOnScreen(fboWrapper,x+xDelta, y+yDelta, width, height, z, rotationAngle+shaderAngle,  shaderScaleX, shaderScaleY);
         // pDrawWidget->context()->functions()->glUseProgram(0);
     }
     else

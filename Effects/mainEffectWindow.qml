@@ -28,6 +28,8 @@ Rectangle{
         var rotateAngle = effectsControll.getCurrentEffectProperty("rotate_angle");
         var moveDestinationX = effectsControll.getCurrentEffectProperty("to_x_pos");
         var moveDestinationY = effectsControll.getCurrentEffectProperty("to_y_pos");
+        var scaleDestinationX = effectsControll.getCurrentEffectProperty("to_x_scale");
+        var scaleDestinationY = effectsControll.getCurrentEffectProperty("to_y_scale");
         var isMove = effectsControll.getCurrentEffectProperty("moving");
         console.log("current index changed");
         console.log("startTime:"+startTime);
@@ -71,8 +73,9 @@ Rectangle{
         case 1:
             console.log("effectsPanelSpin");
             effectsPanelSpin.enable();
-            effectsPanelSpin.setStartTime(startTime);
+
             effectsPanelSpin.setEndTime(endTime);
+            effectsPanelSpin.setStartTime(startTime);
             effectsPanelSpin.setInverted(inversion);
             break;
         case 2:
@@ -82,8 +85,9 @@ Rectangle{
                 elementSize = effectsPanelPixelization.elementSizeSlider.maximum
             if (elementSize<effectsPanelPixelization.elementSizeSlider.minimum)
                 elementSize = effectsPanelPixelization.elementSizeSlider.minimum
-            effectsPanelPixelization.setStartTime(startTime)
+
             effectsPanelPixelization.setEndTime(endTime)
+            effectsPanelPixelization.setStartTime(startTime)
             effectsPanelPixelization.setInverted(inversion)
             effectsPanelPixelization.setElementSize(elementSize)
 
@@ -96,8 +100,9 @@ Rectangle{
                  count = effectsPanelCircles.countSlider.maximum
              if (count<effectsPanelCircles.countSlider.minimum)
                  count = effectsPanelCircles.countSlider.minimum
-            effectsPanelCircles.setStartTime(startTime)
+
             effectsPanelCircles.setEndTime(endTime)
+             effectsPanelCircles.setStartTime(startTime)
             effectsPanelCircles.setInverted(inversion)
             effectsPanelCircles.setCount(count)
             effectsControll.setCurrentEffectProperty("count",count)
@@ -106,41 +111,50 @@ Rectangle{
         case 4:
             console.log("effectsTurnthepage");
             effectsTurnthepage.enable();
-            effectsTurnthepage.setStartTime(startTime);
+
             effectsTurnthepage.setEndTime(endTime);
+            effectsTurnthepage.setStartTime(startTime);
             effectsTurnthepage.setInverted(inversion);
             break;
         case 5:
             console.log("effectsRandomSquares");
             effectsRandomSquares.enable();
-            effectsRandomSquares.setStartTime(startTime);
+
             effectsRandomSquares.setEndTime(endTime);
+            effectsRandomSquares.setStartTime(startTime);
             effectsRandomSquares.setInverted(inversion);
             break;
         case 6:
             console.log("effectsTreshold");
             effectsTreshold.enable();
-            effectsTreshold.setStartTime(startTime);
+
             effectsTreshold.setEndTime(endTime);
+            effectsTreshold.setStartTime(startTime);
             effectsTreshold.setInverted(inversion);
             break;
         case 7:
             console.log("effectsSlide");
             effectsSlide.enable();
-            effectsSlide.setStartTime(startTime);
+
             effectsSlide.setEndTime(endTime);
+            effectsSlide.setStartTime(startTime);
             effectsSlide.setInverted(inversion);
         break;
         case 8:
             console.log("effectsSlide");
             effectsTransformations.enable();
-            effectsTransformations.setStartTime(startTime);
+
             effectsTransformations.setEndTime(endTime);
+            effectsTransformations.setStartTime(startTime);
             effectsTransformations.setInverted(inversion);
             effectsTransformations.setAngle(rotateAngle);
             effectsTransformations.setMoveToEnable(isMove);
             effectsTransformations.setToXPos(moveDestinationX);
             effectsTransformations.setToYPos(moveDestinationY);
+            effectsTransformations.setToXScale(scaleDestinationX);
+            effectsTransformations.setToYScale(scaleDestinationY);
+
+
         break;
 
         }

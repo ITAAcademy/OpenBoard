@@ -28,12 +28,18 @@ bool ShaderEffect::save(QDataStream &stream,float version)
     //shaderWrapper->getParentWidget()->getTimeLine()->get
     if (version > 2.8)
         stream <<count << elementSize ;
+    stream << moving << rotateAngle << toPosX << toPosY << toScaleX << toScaleY << moveEffect;
+
 }
 bool ShaderEffect::load(QDataStream &stream,float version)
 {
     stream >> startTimeMS >> effectTimeHowLong >> shaderWrapperIndex >> reverse;
     if (version > 2.8)
         stream >> count >> elementSize;
+    if(version >= 3.2 )
+    {
+        stream >> moving >> rotateAngle >> toPosX >> toPosY >> toScaleX >> toScaleY >> moveEffect;
+    }
 
 }
 
@@ -173,6 +179,26 @@ bool ShaderEffect::getMoveEffect() const
 void ShaderEffect::setMoveEffect(bool value)
 {
     moveEffect = value;
+}
+
+double ShaderEffect::getToScaleX() const
+{
+    return toScaleX;
+}
+
+void ShaderEffect::setToScaleX(double value)
+{
+    toScaleX = value;
+}
+
+double ShaderEffect::getToScaleY() const
+{
+    return toScaleY;
+}
+
+void ShaderEffect::setToScaleY(double value)
+{
+    toScaleY = value;
 }
 ShaderEffect::ShaderEffect(ShaderProgramWrapper *shaderWrp, int shaderIndex)
 {

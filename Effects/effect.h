@@ -25,7 +25,7 @@ public:
     void setInversion(bool val);*/
     QMap<QString, double> getPropetries() const;
     void setPropetries(const QMap<QString, double> &value);
-    void setPropetrie(QString propertieName, int value);
+    void setPropetrie(QString propertieName, double value);
     double getPropetrie(QString propertieName);
 };
 

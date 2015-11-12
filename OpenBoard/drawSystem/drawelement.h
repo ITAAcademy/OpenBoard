@@ -41,6 +41,14 @@ class DrawElement : public QObject
 
 protected:
 
+    int shaderAngle = 0;
+    double shaderScaleX = 1;
+    double shaderScaleY = 1;
+    float xDelta=0;
+    float yDelta=0;
+
+
+    //////////////////////////////////////////////////////////
     int use_anim_time = 2; //0 - use anim time, 1 - use text time, 2 - use life time
     QString block_border_color = "white";
     Group *group_wich_el_belong = NULL;

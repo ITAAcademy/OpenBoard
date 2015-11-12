@@ -16,6 +16,8 @@ class ShaderEffect
    int rotateAngle=0;
    int toPosX=0;
    int toPosY=0;
+   double toScaleX = 1;
+   double toScaleY = 1;
    bool moveEffect=false;
 
 
@@ -65,6 +67,10 @@ public:
     void setToPosY(int value);
     bool getMoveEffect() const;
     void setMoveEffect(bool value);
+    double getToScaleX() const;
+    void setToScaleX(double value);
+    double getToScaleY() const;
+    void setToScaleY(double value);
 };
 
 #endif // SHADEREFFECT_H

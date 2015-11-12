@@ -56,7 +56,7 @@ void Effect::setPropetries(const QMap<QString, double> &value)
 {
     propetries = value;
 }
-void Effect::setPropetrie(QString propertieName, int value)
+void Effect::setPropetrie(QString propertieName, double value)
 {
     propetries[propertieName] = value;
 }
@@ -74,6 +74,8 @@ Effect::Effect(QString name, int startTime, int endTime)
     this->name=name;
     propetries["start_time"]=startTime;
     propetries["end_time"]=endTime;
+    setPropetrie("to_x_scale", 1);
+    setPropetrie("to_y_scale", 1);
 
    // this->startTime=startTime;
     //this->endTime=endTime;
