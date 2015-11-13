@@ -9,7 +9,7 @@ QString DrawTextElm::getLoggerText() const
 void DrawTextElm::setLoggerText(const QString &value)
 {
     loggerText = value;
-    qDebug() << "DrawTextElm::setLoggerText " << value;
+    //qDebug() << "DrawTextElm::setLoggerText " << value;
 }
 
 quint64 DrawTextElm::getDrawTime() const

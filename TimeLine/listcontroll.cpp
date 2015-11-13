@@ -2063,7 +2063,7 @@ int ListControll::setBlockTime(int col, int i,int value, bool resize_next_empty,
         return -1;
 
     int adding_time = value - cur_time___;
-    qDebug() << "   force_resize_block = " << force_resize_block;
+//    qDebug() << "   force_resize_block = " << force_resize_block;
     if (!force_resize_block)
     {
         if (i < tracks[col].block.size() - 1)
@@ -2141,7 +2141,7 @@ int ListControll::setBlockTime(int col, int i,int value, bool resize_next_empty,
     tracks[col].updateTime();
     recountMaxTrackTime();
 
-    qDebug() << "HHHHHHHHHHH  " << elm->getPlayTimeUntilFreeze();
+ //   qDebug() << "HHHHHHHHHHH  " << elm->getPlayTimeUntilFreeze();
     blockTimeSignel2(value);
     return value;
 

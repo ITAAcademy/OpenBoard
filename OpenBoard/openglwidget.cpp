@@ -1630,7 +1630,7 @@ void OGLWidget::drawEditBox( int z)
     int y2 = editingRectangle.rect.y()+editingRectangle.rect.height();
 
 
-qDebug() <<  editingRectangle.editingRectangleMode << "     " << editingRectangle.angle;
+    //qDebug() <<  editingRectangle.editingRectangleMode << "     " << editingRectangle.angle;
 
   //  editingRectangle.angle++;
 

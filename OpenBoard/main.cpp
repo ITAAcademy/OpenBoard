@@ -29,8 +29,8 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QS
         case QtDebugMsg:
             // sprintf(stream, "Debug: %s (%s:%u, %s)\n", localMsg.constData(), context.file, context.line, context.function);
             file.write("Debug: ");
-            // fprintf(file, "Debug: %s (%s:%u, %s)\n", localMsg.constData(), context.file, context.line, context.function);
-            printf("%s \n", localMsg.constData());
+            //printf(file, "Debug: %s (%s:%u, %s)\n", localMsg.constData(), context.file, context.line, context.function);
+            printf("%s (%s:%u, %s)\n", localMsg.constData(), context.file, context.line, context.function);
             break;
         case QtWarningMsg:
             file.write("Warning: ");
